@@ -18,17 +18,20 @@
  */
 package org.alfresco.module.vti.web.ws;
 
+import java.util.Date;
+import java.util.Locale;
+
 import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
-import org.alfresco.repo.site.SiteDoesNotExistException;
-import org.alfresco.service.cmr.dictionary.InvalidTypeException;
-import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
+import org.alfresco.module.vti.web.VtiFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
+
+import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * Parent class of List Endpoints, which need to return
@@ -38,13 +41,18 @@ import org.jaxen.dom4j.Dom4jXPath;
  */
 public abstract class AbstractListEndpoint extends AbstractEndpoint
 {
-	private final static Log logger = LogFactory.getLog(AbstractListEndpoint.class);
+	 private final static Log logger = LogFactory.getLog(AbstractListEndpoint.class);
+	 private final static String DEFAULT_LOCALE = "1033";
 
     // handler that provides methods for operating with lists
     protected ListServiceHandler handler;
 
     // xml namespace prefix
     protected static final String prefix = "listsws";
+    
+    private static final SimpleDateFormat xmlDateFormat = 
+       new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.ENGLISH);
+
 
     /**
      * constructor
@@ -122,39 +130,39 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        Element listResult = root.addElement(getName()+"Result");
        Element listE = listResult.addElement("List");
 
-       listE.addAttribute("ID", null); // TODO
-       listE.addAttribute("Name", list.getName());
-       listE.addAttribute("Title", null); // TODO
-       listE.addAttribute("Description", null); // TODO
+       listE.addAttribute("ID", list.getNodeRef().getId());
+       listE.addAttribute("Name",  list.getName());
+       listE.addAttribute("Title", list.getTitle());
+       listE.addAttribute("Description", list.getDescription());
+       listE.addAttribute("Author", list.getAuthor());
        listE.addAttribute("DefaultViewUrl", null); // TODO
        listE.addAttribute("ImageUrl", null); // TODO
-       listE.addAttribute("BaseType", null); // TODO
-       listE.addAttribute("FeatureId", null); // TODO
-       listE.addAttribute("ServerTemplate", null); // TODO
-       listE.addAttribute("Created", null); // TODO
-       listE.addAttribute("Modified", null); // TODO
-       listE.addAttribute("Version", null); // TODO
-       listE.addAttribute("Direction", null); // TODO
-       listE.addAttribute("ItemCount", null); // TODO
-       listE.addAttribute("Author", null); // TODO
-       listE.addAttribute("EnableAttachments", null); // TODO
+       listE.addAttribute("FeatureId", ""); // Not feature based
+       listE.addAttribute("BaseType", Integer.toString( list.getType().getBaseType() ));
+       listE.addAttribute("ServerTemplate", Integer.toString( list.getType().getId() ));
+       listE.addAttribute("Created", formatDate(list.getCreated()));
+       listE.addAttribute("Modified", formatDate(list.getModified()));
+       listE.addAttribute("Direction", "none");
+       listE.addAttribute("Version", "1"); // Whole lists aren't versioned
+       listE.addAttribute("ItemCount", Integer.toString( list.getNumItems() ));
+       listE.addAttribute("EnableAttachments", "True");
        listE.addAttribute("EnableVersioning", null); // TODO
 
        // General Info
        Element regional = listE.addElement("RegionalSettings");
-       regional.addElement("Language").addText("1033");
-       regional.addElement("Locale").addText("1033");
+       regional.addElement("Language").addText(DEFAULT_LOCALE);
+       regional.addElement("Locale").addText(DEFAULT_LOCALE);
        regional.addElement("AdvanceHijri").addText("0");
        regional.addElement("CalendarType").addText("1");
        regional.addElement("Time24").addText("True");
        regional.addElement("TimeZone").addText("0");
-       regional.addElement("SortOrder").addText("1033");
+       regional.addElement("SortOrder").addText(DEFAULT_LOCALE);
        regional.addElement("Presence").addText("False");
        
        Element server = listE.addElement("ServerSettings");
-       server.addElement("ServerVersion").addText("");
+       server.addElement("ServerVersion").addText(VtiFilter.EMULATED_SHAREPOINT_VERSION);
        server.addElement("RecycleBinEnabled").addText("False");
-       server.addElement("ServerRelativeUrl").addText("");
+       server.addElement("ServerRelativeUrl").addText("/");
        
        // Field Details
        Element fieldsE = listE.addElement("Fields");
@@ -165,4 +173,12 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        }        
     }
 
+    private String formatDate(Date date)
+    {
+       if(date == null)
+       {
+          return null;
+       }
+       return xmlDateFormat.format(date);
+    }
 }

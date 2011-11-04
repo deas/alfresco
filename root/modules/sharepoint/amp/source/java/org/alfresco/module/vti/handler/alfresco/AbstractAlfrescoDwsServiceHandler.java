@@ -31,6 +31,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.DwsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListServiceHandler;
 import org.alfresco.module.vti.metadata.dic.CAMLMethod;
 import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.alfresco.module.vti.metadata.dic.Permission;
@@ -253,10 +254,12 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             // set Documents listInfo for documents list
             List<ListInfoBean> listInfoItems = new ArrayList<ListInfoBean>();
-            listInfoItems.add(new ListInfoBean("Documents", false, permissions));
+            listInfoItems.add(new ListInfoBean(
+                  null, "Documents", AlfrescoListServiceHandler.TYPE_DOCUMENT_LIBRARY, false, permissions));
             
             // set Links listInfo for links list            
-            listInfoItems.add(new ListInfoBean("Links", false, permissions));
+            listInfoItems.add(new ListInfoBean(
+                  null, "Links", AlfrescoListServiceHandler.TYPE_LINKS, false, permissions));
             
             dwsMetadata.setListInfoItems(listInfoItems);
         }

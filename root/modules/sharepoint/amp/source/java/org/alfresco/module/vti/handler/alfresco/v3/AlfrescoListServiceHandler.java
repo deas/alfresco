@@ -21,6 +21,7 @@ package org.alfresco.module.vti.handler.alfresco.v3;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
+import org.alfresco.query.PagingRequest;
+import org.alfresco.query.PagingResults;
 import org.alfresco.repo.calendar.CalendarServiceImpl;
 import org.alfresco.repo.discussion.DiscussionServiceImpl;
 import org.alfresco.repo.links.LinksServiceImpl;
@@ -39,6 +42,7 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -68,6 +72,11 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
     private static final QName PROP_DATA_LIST_ITEM_TYPE = QName.createQName(
           NamespaceService.DATALIST_MODEL_1_0_URI, "dataListItemType");
 
+    // These are commonly used Types
+    public static final ListTypeBean TYPE_DOCUMENT_LIBRARY = buildType(VtiBuiltInListType.DOCLIB);
+    public static final ListTypeBean TYPE_DISCUSSIONS = buildType(VtiBuiltInListType.DISCUSS);
+    public static final ListTypeBean TYPE_LINKS = buildType(VtiBuiltInListType.LINKS);
+    public static final ListTypeBean TYPE_WIKI = buildType(VtiBuiltInListType.WIKI);
 
     private FileFolderService fileFolderService;
     private NodeService nodeService;
@@ -154,6 +163,10 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        return dws;
     }
     
+    /**
+     * Identifies the NodeRef of a list, be it a DataList list or
+     *  a Container list
+     */
     private NodeRef locateList(String listName, SiteInfo site) throws FileNotFoundException
     {
        // Is this a Container Based or DataList based one?
@@ -171,7 +184,6 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        // Check the Container
        containerNodeRef = siteService.getContainer(siteName, listName);
 
-       
        // Sanity check
        if(dataListNodeRef == null && containerNodeRef == null)
        {
@@ -190,6 +202,31 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
           return containerNodeRef;
        }
     }
+    
+    /**
+     * Populates the non core parts of the List Info 
+     */
+    private void populateListInfo(ListInfoBean list)
+    {
+       // Grab all the properties
+       Map<QName,Serializable> props = nodeService.getProperties(list.getNodeRef());
+       
+       // Set the ones of interest
+       list.setTitle((String)props.get(ContentModel.PROP_TITLE));
+       list.setDescription((String)props.get(ContentModel.PROP_DESCRIPTION));
+       list.setAuthor((String)props.get(ContentModel.PROP_CREATOR));
+       
+       list.setCreated((Date)props.get(ContentModel.PROP_CREATED));
+       list.setModified((Date)props.get(ContentModel.PROP_MODIFIED));
+       
+       // How many items in the list?
+       PagingRequest paging = new PagingRequest(1);
+       paging.setRequestTotalCountMax(1000);
+       PagingResults<FileInfo> items = fileFolderService.list(list.getNodeRef(), true, false, null, null, paging);
+       list.setNumItems(items.getTotalResultCount().getFirst());
+       
+       // All done
+    }
 
     @Override
     public ListInfoBean getList(String listName, String dws)
@@ -205,9 +242,45 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
         // Get the NodeRef
         NodeRef listNodeRef = locateList(listName, site);
         
-        // Use it
-        // TODO
-        return new ListInfoBean(listName, false, null);
+        // Identify the type
+        ListTypeBean type = null;
+        
+        // Is it a DataList type?
+        String dlType = (String)nodeService.getProperty(listNodeRef, PROP_DATA_LIST_ITEM_TYPE);
+        if(dlType != null)
+        {
+           for(Integer id : dataListTypes.keySet())
+           {
+              if(dlType.equals(dataListTypes.get(id)))
+              {
+                 // It's this type
+                 type = listTypes.get(id);
+                 break;
+              }
+           }
+        }
+        else
+        {
+           // Container based
+           String containerName = (String)nodeService.getProperty(listNodeRef, ContentModel.PROP_NAME);
+           for(VtiBuiltInListType t : VtiBuiltInListType.values())
+           {
+              if(containerName.equals(t.component))
+              {
+                 type = listTypes.get(t.id);
+                 break;
+              }
+           }
+        }
+        if(type == null)
+        {
+           throw new FileNotFoundException("Entry with name '" + listName + "' is not a list");
+        }
+        
+        // Wrap it
+        ListInfoBean list = new ListInfoBean(listNodeRef, listName, type, false, null);
+        populateListInfo(list);
+        return list;
     }
 
     @Override
@@ -241,6 +314,7 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        }
        
        // Attach additional information to it
+       populateListInfo(list);
        
        // All done
        return list;
@@ -272,10 +346,10 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        // Have it created
        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
        props.put(ContentModel.PROP_DESCRIPTION, description);
-       siteService.createContainer(site.getShortName(), listName, ContentModel.TYPE_CONTAINER, props);
+       NodeRef nodeRef = siteService.createContainer(site.getShortName(), listName, ContentModel.TYPE_CONTAINER, props);
        
        // Return a wrapper around it
-       return new ListInfoBean(listName, false, null);
+       return new ListInfoBean(nodeRef, listName, type, false, null);
     }
     
     private ListInfoBean createDataList(SiteInfo site, String listName, String description, ListTypeBean type)
@@ -302,13 +376,13 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        props.put(ContentModel.PROP_NAME, listName);
        props.put(ContentModel.PROP_DESCRIPTION, description);
        
-       nodeService.createNode(
+       NodeRef nodeRef = nodeService.createNode(
              container, ContentModel.ASSOC_CONTAINS, QName.createQName(listName),
              TYPE_DATALIST, props
-       );
+       ).getChildRef();
        
        // Return a wrapper around it
-       return new ListInfoBean(listName, false, null);
+       return new ListInfoBean(nodeRef, listName, type, false, null);
     }
 
     @Override
@@ -336,6 +410,23 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
           new ArrayList<ListTypeBean>( listTypes.values() )
        );
     }
+    
+    /**
+     * Builds the Type, or null if it's not 
+     *  suitable to be used
+     */
+    private static ListTypeBean buildType(VtiBuiltInListType type)
+    {
+       if(type.component != null)
+       {
+          ListTypeBean list = new ListTypeBean(
+                type.id, type.type.id, false,
+                type.name, null, null
+          );
+          return list;
+       }
+       return null;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception 
@@ -347,12 +438,9 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
         // Do the build in types
         for(VtiBuiltInListType type : VtiBuiltInListType.values())
         {
-           if(type.component != null)
+           ListTypeBean list = buildType(type);
+           if(list != null)
            {
-              ListTypeBean list = new ListTypeBean(
-                    type.id, type.type.id, false,
-                    type.name, null, null
-              );
               listTypes.put(type.id, list);
            }
            else

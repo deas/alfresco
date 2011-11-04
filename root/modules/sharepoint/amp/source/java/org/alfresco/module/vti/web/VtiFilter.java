@@ -65,6 +65,8 @@ public class VtiFilter implements Filter
     public static final String METHOD_UNLOCK = "UNLOCK";
     
     public static final String AUTHENTICATE_HEADER = "WWW-Authenticate";
+    
+    public static final String EMULATED_SHAREPOINT_VERSION = "14.00.0.000";
 
     private AuthenticationHandler authenticationHandler;
     private MethodHandler vtiHandler;
@@ -270,7 +272,7 @@ public class VtiFilter implements Filter
         }
         else if (METHOD_POST.equals(httpMethod))
         {
-            httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
+            httpResponse.setHeader("MicrosoftSharePointTeamServices", EMULATED_SHAREPOINT_VERSION);
             httpResponse.setHeader("Cache-Control", "no-cache");
             httpResponse.setHeader("Connection", "close");
             
