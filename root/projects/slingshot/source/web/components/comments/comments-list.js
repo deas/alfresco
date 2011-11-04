@@ -29,7 +29,7 @@
     * @return {Alfresco.CommentsList} The new Comment instance
     * @constructor
     */
-   Alfresco.CommentsList = function(htmlId)
+   Alfresco.CommentsList = function Alfresco_CommentsList(htmlId)
    {
       Alfresco.CommentsList.superclass.constructor.call(this, "Alfresco.CommentsList", htmlId, ["datasource", "datatable", "paginator", "history", "animation"]);
 
@@ -37,6 +37,7 @@
       YAHOO.Bubbling.on("commentNode", this.onCommentNode, this);
 
       this.busy = false;
+      this.hashChecked = false;
       return this;
    };
    
@@ -91,6 +92,14 @@
        * @see _setBusy/_releaseBusy
        */
       busy: null,
+
+      /**
+       * Flag indicating location.hash has been checked
+       *
+       * @property hashChecked
+       * @type boolean
+       */
+      hashChecked: null,
 
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -182,7 +191,12 @@
          }, this, this);
       },
 
-      handlePermissions: function(oRequest, oFullResponse)
+      /**
+       * Update UI to reflect current user's permissions
+       *
+       * @method handlePermissions
+       */
+      handlePermissions: function CommentsList_handlePermissions(oRequest, oFullResponse)
       {
          // Examine the user permissions on the parent node
          var permissions = oFullResponse.nodePermissions || {};
@@ -338,7 +352,12 @@
          }
       },
 
-      restoreEditForm: function()
+      /**
+       * Restore UI after an edit operation
+       *
+       * @method restoreEditForm
+       */
+      restoreEditForm: function CommentsList_restoreEditForm()
       {
          if (this.currentEditedRowId)
          {
@@ -421,7 +440,7 @@
          {
             html += '      <input type="hidden" name="site" value="' + this.options.siteId + '" />';
          }
-         html += '      <textarea name="content" id="' + rowId + '-content" style="width: 100%;">' + (comment || '') + '</textarea>';
+         html += '      <textarea name="content" id="' + rowId + '-content" style="width: 100%">' + (comment || '') + '</textarea>';
          html += '      <div class="buttons">';
          html += '         <input type="submit" id="' + rowId + '-submit" value=""/>';
          html += '         <input type="reset"  id="' + rowId + '-cancel" value="" />';
@@ -440,8 +459,9 @@
        */
       onEditorInitialized: function CommentsList_onEditorInitialized()
       {
-         if (window.location.hash == "#comment")
+         if (!this.hashChecked && window.location.hash == "#comment")
          {
+            this.hashChecked = true;
             // Ensure comments form is visible and in view
             this.onAddCommentClick();
             Dom.get(this.id + "-add-comment").scrollIntoView();
@@ -515,11 +535,17 @@
          Dom.removeClass(this.widgets.editFormWrapper, "hidden");
       },
 
+      /**
+       * Helper function to position DOM elements
+       *
+       * @method synchronizeElements
+       */
       synchronizeElements: function synchronizeElements(syncEl, sourceEl)
       {
          var sourceYuiEl = new YAHOO.util.Element(sourceEl),
-            syncYuiEl = new YAHOO.util.Element(syncEl);
-         var region = YAHOO.util.Dom.getRegion(sourceYuiEl.get("id"));
+            syncYuiEl = new YAHOO.util.Element(syncEl),
+            region = YAHOO.util.Dom.getRegion(sourceYuiEl.get("id"));
+
          syncYuiEl.setStyle("position", "absolute");
          syncYuiEl.setStyle("left", region.left + "px");
          syncYuiEl.setStyle("top", region.top + "px");
@@ -633,6 +659,7 @@
        * the component isn't busy set.
        *
        * @method _setBusy
+       * @protected
        * @return true if the busy state was set, false if the component is already busy
        */
       _setBusy: function CommentsList__setBusy(busyMessage)
@@ -655,6 +682,7 @@
        * Removes the busy message and marks the component as non-busy
        *
        * @method _releaseBusy
+       * @protected
        */
       _releaseBusy: function CommentsList__releaseBusy()
       {

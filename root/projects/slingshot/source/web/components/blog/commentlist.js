@@ -21,7 +21,7 @@
     * @return {Alfresco.CommentList} The new Comment instance
     * @constructor
     */
-   Alfresco.CommentList = function(htmlId)
+   Alfresco.CommentList = function Alfresco_CommentList(htmlId)
    {
       Alfresco.CommentList.superclass.constructor.call(this, "Alfresco.CommentList", htmlId, ["editor", "paginator"]);
       
@@ -167,6 +167,7 @@
                {
                   var commentElem = Dom.getAncestorByClassName(owner, 'comment'),
                      index = parseInt(commentElem.id.substring((me.id + '-comment-view-').length), 10);
+
                   me[action].call(me, index);
                   args[1].stop = true;
                }
@@ -193,6 +194,10 @@
       
       /**
        * Called by another component to set the node for which comments should be displayed
+       *
+       * @method onSetCommentedNode
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (nodeRef, title, page, pageParams)
        */
       onSetCommentedNode: function CommentList_onSetCommentedNode(layer, args)
       {
@@ -209,23 +214,29 @@
     
       /**
        * Forces the comments list to fresh by reloading the data from the server
+       *
+       * @method onRefreshComments
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (reason)
        */
       onRefreshComments: function CommentList_onRefreshComments(layer, args)
       {
          if (this.options.itemNodeRef && this.options.activityTitle)
          {
-            var p = this.widgets.paginator;
-            var obj = args[1];
+            var p = this.widgets.paginator,
+               obj = args[1];
 
             // Find appropriate index
-            var startIndex = 0;
-            var tr = p.getTotalRecords();
-            var ps = this.options.pageSize;
+            var startIndex = 0,
+               tr = p.getTotalRecords(),
+               ps = this.options.pageSize;
+
             if (obj.reason == "deleted")
             {
                // Make sure we dont use n invalid startIndex now that one is removed
-               var newTotalPages = Math.floor((tr - 1) / ps) + (((tr - 1) % ps) > 0 ? 1 : 0);
-               var currentPage = p.getCurrentPage();
+               var newTotalPages = Math.floor((tr - 1) / ps) + (((tr - 1) % ps) > 0 ? 1 : 0),
+                  currentPage = p.getCurrentPage();
+
                if (newTotalPages < currentPage)
                {
                   // the deletion was done of the last comment in the current page
@@ -243,7 +254,11 @@
       },
             
       /**
-       * Loads the comments for the provided nodeRef and refreshes the ui
+       * Loads the comments for the provided nodeRef and refreshes the UI
+       *
+       * @method _loadCommentsList
+       * @protected
+       * @param startIndex First comment to show
        */
       _loadCommentsList: function CommentList__loadCommentsList(startIndex)
       {
@@ -274,6 +289,9 @@
 
       /**
        * Load comments ajax request success handler.
+       *
+       * @method loadCommentsSuccess
+       * @param response AJAX response object
        */
       loadCommentsSuccess: function CommentsList_loadCommentsSuccess(response)
       {
@@ -353,6 +371,9 @@
 
       /**
        * Edit comment action links handler.
+       *
+       * @method onEditComment
+       * @param row {object} Comment to edit
        */
       onEditComment: function CommentList_onEditComment(row)
       {   
@@ -361,6 +382,9 @@
 
       /**
        * Delete comment action links handler.
+       *
+       * @method onDeleteComment
+       * @param row {object} Comment to delete
        */
       onDeleteComment: function CommentList_onDeleteComment(row)
       {
@@ -390,7 +414,11 @@
       },
 
       /**
-       * Delete comment implementation.
+       * Delete comment confirmed.
+       *
+       * @method _onDeleteCommentConfirm
+       * @protected
+       * @param row {object} Comment to delete
        */
       _onDeleteCommentConfirm: function CommentList__onDeleteCommentConfirm(row)
       {
@@ -402,17 +430,22 @@
       
       /**
        * Implementation of the comment deletion action
+       *
+       * @method _deleteComment
+       * @protected
+       * @param row {object} Comment to delete
+       * @param data {object} Comment data
        */
       _deleteComment: function CommentList__deleteComment(row, data)
       {
          // show busy message
-         if (! this._setBusy(this.msg('message.wait')))
+         if (!this._setBusy(this.msg('message.wait')))
          {
             return;
          }
          
          // ajax request success handler
-         var success = function CommentList__deleteComment_success(response, object)
+         var success = function CommentList__deleteComment_success(response)
          {
             // remove busy message
             this._releaseBusy();
@@ -425,13 +458,13 @@
          };
          
          // ajax request success handler
-         var failure = function CommentList__deleteComment_failure(response, object)
+         var failure = function CommentList__deleteComment_failure(response)
          {
             // remove busy message
             this._releaseBusy();
          };
 
-         // put together the request url to delete the comment
+         // construct the request url to delete the comment
          var url = YAHOO.lang.substitute(Alfresco.constants.PROXY_URI + "api/comment/node/{nodeRef}/?site={site}&itemTitle={itemTitle}&page={page}&pageParams={pageParams}",
          {
             site: this.options.siteId,
@@ -468,6 +501,11 @@
 
       /**
        * Loads the comment edit form
+       *
+       * @method _loadForm
+       * @protected
+       * @param row {object} Comment to edit
+       * @param data {object} Comment data
        */
       _loadForm: function CommentList__loadForm(row, data)
       {
@@ -503,6 +541,7 @@
        *
        * @method onFormLoaded
        * @param response {object} Server response from load form XHR request
+       * @param obj {object} Comment scope (row, data, formId)
        */
       onFormLoaded: function CommentList_onFormLoaded(response, obj)
       {
@@ -555,6 +594,12 @@
       /**
        * Registers the form with the html (that should be available in the page)
        * as well as the buttons that are part of the form.
+       *
+       * @method _registerEditCommentForm
+       * @protected
+       * @param row {object} Comment to edit
+       * @param data {object} Comment data
+       * @param formId {string} Form ID
        */
       _registerEditCommentForm: function CommentList__registerEditCommentForm(row, data, formId)
       {
@@ -640,16 +685,18 @@
       
       /**
        * Edit form submit success handler
+       *
+       * @method onEditFormSubmitSuccess
+       * @param response {object} Ajax response object
        */
-      onEditFormSubmitSuccess: function CommentList_onCreateFormSubmitSuccess(response, object)
+      onEditFormSubmitSuccess: function CommentList_onEditFormSubmitSuccess(response)
       {
          this.editData.widgets.feedbackMessage.destroy();
           
          // the response contains the new data for the comment. Render the comment html
          // and insert it into the view element
          this.commentsData[this.editData.row] = response.json.item;
-         var html = this.renderCommentView(this.editData.row, response.json.item);
-         this.editData.viewDiv.innerHTML = html;
+         this.editData.viewDiv.innerHTML = this.renderCommentView(this.editData.row, response.json.item);
             
          // hide the form and display an information message
          this._hideEditView();
@@ -657,8 +704,11 @@
       
       /**
        * Edit form submit failure handler
+       *
+       * @method onEditFormSubmitFailure
+       * @param response {object} Ajax response object
        */
-      onEditFormSubmitFailure: function CommentList_onEditFormSubmitFailure(response, args)
+      onEditFormSubmitFailure: function CommentList_onEditFormSubmitFailure(response)
       {
          this.editData.widgets.feedbackMessage.destroy();
          this.editData.widgets.okButton.set("disabled", false);
@@ -668,8 +718,10 @@
       
       /**
        * Form cancel button click handler
+       *
+       * @method onEditFormCancelButtonClick
        */
-      onEditFormCancelButtonClick: function CommentList_onEditFormCancelButtonClick(type, args)
+      onEditFormCancelButtonClick: function CommentList_onEditFormCancelButtonClick()
       {
           this._hideEditView();
       },
@@ -677,12 +729,15 @@
       /**
        * Renders a comment element.
        * Each comment element consists of an edit and a view div.
+       *
+       * @method renderComment
+       * @param index {int} Comment DOM index
+       * @param data {object} Comment data
        */
       renderComment: function CommentList_renderComment(index, data)
       {
          // add a div for the comment edit form
-         var html = '';
-         html += '<div id="' + this.id + '-comment-edit-' + index + '" class="hidden"></div>';
+         var html = '<div id="' + this.id + '-comment-edit-' + index + '" class="hidden"></div>';
          
          // output the view
          var rowClass = index % 2 === 0 ? "even" : "odd";
@@ -695,13 +750,15 @@
       
       /**
        * Renders the content of the comment view div.
+       *
+       * @method renderCommentView
+       * @param index {int} Comment DOM index
+       * @param data {object} Comment data
        */
       renderCommentView: function CommentList_renderCommentView(index, data)
       {
-         var html = '';
-         
          // actions
-         html += '<div class="nodeEdit">';
+         var html = '<div class="nodeEdit">';
          if (data.permissions.edit)
          {
             html += '<div class="onEditComment"><a href="#" class="blogcomment-action">' + this.msg("action.edit") + '</a></div>';
@@ -736,9 +793,13 @@
          return html;
       },
 
-      // mouse over
-      
-      /** Called when the mouse enters into a list item. */
+      /**
+       * Mouse enter event handler for list items
+       *
+       * @method onCommentElementMouseEntered
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (target)
+       */
       onCommentElementMouseEntered: function CommentList_onCommentElementMouseEntered(layer, args)
       {
          // find out whether the user has actions, otherwise we won't show an overlay
@@ -754,7 +815,13 @@
          Dom.addClass(elem, 'over');
       },
       
-      /** Called whenever the mouse exits a list item. */
+      /**
+       * Mouse leave event handler for list items
+       *
+       * @method onCommentElementMouseExited
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (target)
+       */
       onCommentElementMouseExited: function CommentList_onCommentElementMouseExited(layer, args)
       {
          var elem = args[1].target;
@@ -769,6 +836,9 @@
       /**
        * Makes sure that all forms get removed and if available the hidden content
        * elements displayed again.
+       *
+       * @method _hideEditView
+       * @protected
        */
       _hideEditView: function CommentList__hideEditView()
       {
@@ -788,9 +858,10 @@
       },
 
       /**
-       * Displays the provided busyMessage but only in case
-       * the component isn't busy set.
+       * Displays busyMessage popup if busy flag is currently unset
        * 
+       * @method _setBusy
+       * @protected
        * @return true if the busy state was set, false if the component is already busy
        */
       _setBusy: function CommentList__setBusy(busyMessage)
@@ -811,6 +882,9 @@
       
       /**
        * Removes the busy message and marks the component as non-busy
+       * 
+       * @method _releaseBusy
+       * @protected
        */
       _releaseBusy: function CommentList__releaseBusy()
       {

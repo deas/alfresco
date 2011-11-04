@@ -19,7 +19,7 @@
     * @return {Alfresco.CreateComment} The new CreateComment instance
     * @constructor
     */
-   Alfresco.CreateComment = function(htmlId)
+   Alfresco.CreateComment = function Alfresco_CreateComment(htmlId)
    {
       Alfresco.CreateComment.superclass.constructor.call(this, "Alfresco.CreateComment", htmlId, ["event", "json", "editor"]);
 
@@ -133,6 +133,10 @@
 
       /**
        * Called by a bubble event to set the node for which comments should be displayed
+       *
+       * @method onSetCommentedNode
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (nodeRef, title, page, pageParams)
        */
       onSetCommentedNode: function CreateComment_onSetCommentedNode(layer, args)
       {
@@ -149,6 +153,10 @@
       
       /**
        * Called by a bubble event to set whether the user is allowed to comment.
+       *
+       * @method onSetCanCreateComment
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (canCreateComment)
        */
       onSetCanCreateComment: function CreateComment_onSetCanCreateComment(layer, args)
       {
@@ -162,6 +170,8 @@
 
       /**
        * Initializes the create comment form.
+       *
+       * @method initializeCreateCommentForm
        */
       initializeCreateCommentForm: function CreateComment_initializeCreateCommentForm()
       {
@@ -214,6 +224,8 @@
       /**
        * Registers the form with the html (that should be available in the page)
        * as well as the buttons that are part of the form.
+       *
+       * @method registerCreateCommentForm
        */
       registerCreateCommentForm: function CreateComment_registerCreateCommentForm()
       {
@@ -278,7 +290,7 @@
          {
             fn: function(form, obj)
             {
-               //Put the HTML back into the text area
+               // Put the HTML back into the text area
                this.widgets.editor.save();
 
                this.widgets.editor.disable();
@@ -299,7 +311,7 @@
       },
 
       /**
-       *
+       * Validate comment content
        *
        * @method _validateTextContent
        * @param field {object} The element representing the field the validation is for
@@ -317,8 +329,11 @@
 
       /**
        * Success handler for the form submit ajax request
+       *
+       * @method onCreateFormSubmitSuccess
+       * @param response {object} Ajax response object
        */
-      onCreateFormSubmitSuccess: function CreateComment_onCreateFormSubmitSuccess(response, object)
+      onCreateFormSubmitSuccess: function CreateComment_onCreateFormSubmitSuccess(response)
       {
          // clear the content of the comment editor
          this.widgets.editor.clear();
@@ -334,12 +349,13 @@
 
       /**
        * Reenables the inputs which got disabled as part of a comment submit
+       *
+       * @method enableInputs
        */
       enableInputs: function CreateComment_enableInputs()
       {
          this.widgets.feedbackMessage.destroy();
          this.widgets.editor.enable();
       }
-
    });
 })();
