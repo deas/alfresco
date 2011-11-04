@@ -275,6 +275,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteList">
                     <ref bean="deleteListEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListTemplates">
+                    <ref bean="getListTemplatesEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsData">
                     <ref bean="getDwsDataEndpoint"/>
                 </entry>
@@ -541,6 +544,16 @@
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>DeleteList</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="getListTemplatesEndpoint" class="org.alfresco.module.vti.web.ws.GetListTemplatesEndpoint">
+        <constructor-arg ref="listServiceHandler" />
+        <property name="name">
+            <value>GetListTemplates</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>

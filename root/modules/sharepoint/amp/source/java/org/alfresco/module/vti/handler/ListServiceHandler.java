@@ -18,6 +18,9 @@
  */
 package org.alfresco.module.vti.handler;
 
+import java.util.List;
+
+import org.alfresco.module.vti.metadata.model.ListTypeBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -44,4 +47,9 @@ public interface ListServiceHandler
      */
     public void deleteList(String listName, String dws) 
        throws SiteDoesNotExistException, FileNotFoundException;
+    
+    /**
+     * Returns the list of available List Types
+     */
+    public List<ListTypeBean> getAvailableListTypes();
 }

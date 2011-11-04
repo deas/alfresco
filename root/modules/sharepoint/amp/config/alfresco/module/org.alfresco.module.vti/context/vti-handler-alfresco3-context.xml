@@ -18,36 +18,37 @@
         <property name="shareUtils" ref="shareUtils" />  
         <property name="transactionService" ref="transactionService"/>
         <property name="dictionaryService" ref="DictionaryService"/>
-        <property name="listTypes">
+        <property name="namespaceService" ref="NamespaceService"/>
+        <property name="dataListTypes">
             <!-- SharePoint works with Numeric IDs for its List Types -->
-            <!-- This defines all the Alfresco List Types you want -->
+            <!-- This defines all the Alfresco DataList Types you want -->
             <!--  to expose, along with a unique numeric ID for each -->
             <map>
-                <entry key="1001">
-                    <value>dl:todoList</value>
-                </entry>
-                <entry key="1002">
-                    <value>dl:task</value>
-                </entry>
-                <entry key="1003">
-                    <value>dl:simpletask</value>
-                </entry>
-                <entry key="1004">
+                <entry key="105">
                     <value>dl:contact</value>
                 </entry>
-                <entry key="1005">
+                <entry key="107">
+                    <value>dl:task</value>
+                </entry>
+                <entry key="1100">
                     <value>dl:issue</value>
                 </entry>
-                <entry key="1006">
+                <entry key="5001">
+                    <value>dl:todoList</value>
+                </entry>
+                <entry key="5002">
+                    <value>dl:simpletask</value>
+                </entry>
+                <entry key="5003">
                     <value>dl:event</value>
                 </entry>
-                <entry key="1007">
+                <entry key="5004">
                     <value>dl:location</value>
                 </entry>
-                <entry key="1008">
+                <entry key="5005">
                     <value>dl:meetingAgenda</value>
                 </entry>
-                <entry key="1009">
+                <entry key="5006">
                     <value>dl:eventAgenda</value>
                 </entry>
             </map>
