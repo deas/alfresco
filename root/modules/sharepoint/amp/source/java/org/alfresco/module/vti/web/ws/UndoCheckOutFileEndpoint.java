@@ -72,7 +72,7 @@ public class UndoCheckOutFileEndpoint extends AbstractEndpoint
         String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
         if(docPath.indexOf(host) == -1 || docPath.indexOf(context) == -1)
         {
-           throw new VtiSoapException("Invalid URI: The format of the URI could not be determined", -1);
+           throw new VtiSoapException("Invalid URI: The format of the URI could not be determined", 0x80070002l);
         }
         docPath = docPath.substring(host.length() + context.length());
 
