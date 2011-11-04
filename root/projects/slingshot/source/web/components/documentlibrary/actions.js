@@ -190,24 +190,26 @@
             fnPageURL = Alfresco.util.bind(function(page)
             {
                return Alfresco.util.siteURL(page, siteObj);
-            }, this);
+            }, this),
+            actionUrls =
+            {
+               downloadUrl: $combine(Alfresco.constants.PROXY_URI, contentUrl) + "?a=true",
+               viewUrl:  $combine(Alfresco.constants.PROXY_URI, contentUrl) + "\" target=\"_blank",
+               documentDetailsUrl: fnPageURL("document-details?nodeRef=" + strNodeRef),
+               folderDetailsUrl: fnPageURL("folder-details?nodeRef=" + strNodeRef),
+               editMetadataUrl: fnPageURL("edit-metadata?nodeRef=" + strNodeRef),
+               inlineEditUrl: fnPageURL("inline-edit?nodeRef=" + strNodeRef),
+               managePermissionsUrl: fnPageURL("manage-permissions?nodeRef=" + strNodeRef),
+               manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + strNodeRef),
+               workingCopyUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef)),
+               workingCopySourceUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef)),
+               viewGoogleDocUrl: workingCopy.googleDocUrl + "\" target=\"_blank",
+               explorerViewUrl: $combine(this.options.repositoryUrl, "/n/showSpaceDetails/", nodeRefUri) + "\" target=\"_blank"
+            };
+         
+         actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
 
-         return (
-         {
-            downloadUrl: $combine(Alfresco.constants.PROXY_URI, contentUrl) + "?a=true",
-            viewUrl:  $combine(Alfresco.constants.PROXY_URI, contentUrl) + "\" target=\"_blank",
-            documentDetailsUrl: fnPageURL("document-details?nodeRef=" + strNodeRef),
-            folderDetailsUrl: fnPageURL("folder-details?nodeRef=" + strNodeRef),
-            editMetadataUrl: fnPageURL("edit-metadata?nodeRef=" + strNodeRef),
-            inlineEditUrl: fnPageURL("inline-edit?nodeRef=" + strNodeRef),
-            managePermissionsUrl: fnPageURL("manage-permissions?nodeRef=" + strNodeRef),
-            manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + strNodeRef),
-            workingCopyUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef)),
-            workingCopySourceUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef)),
-            viewGoogleDocUrl: workingCopy.googleDocUrl + "\" target=\"_blank",
-            explorerViewUrl: $combine(this.options.repositoryUrl, "/n/showSpaceDetails/", nodeRefUri) + "\" target=\"_blank",
-            sourceRepositoryUrl: this.viewInSourceRepositoryURL(record) + "\" target=\"_blank"
-         });
+         return actionUrls;
       },
 
 
@@ -1227,8 +1229,9 @@
        *
        * @method viewInSourceRepositoryURL
        * @param record {object} Object literal representing the file or folder to be actioned
+       * @param actionUrls {object} Action urls for this record
        */
-      viewInSourceRepositoryURL: function dlA_viewInSourceRepositoryURL(record)
+      viewInSourceRepositoryURL: function dlA_viewInSourceRepositoryURL(record, actionUrls)
       {
          var node = record.node,
             repoId = record.location.repositoryId,
@@ -1241,7 +1244,7 @@
          }
 
          // Generate a URL to the relevant details page
-         siteUrl = this.getActionUrls(record)[node.isContainer ? "folderDetailsUrl" : "documentDetailsUrl"];
+         siteUrl = node.isContainer ? actionUrls.folderDetailsUrl : actionUrls.documentDetailsUrl;
          // Strip off this webapp's context as the mapped one might be different
          siteUrl = siteUrl.substring(Alfresco.constants.URL_CONTEXT.length);
 

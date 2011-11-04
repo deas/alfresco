@@ -653,6 +653,7 @@
             <action index="290" id="document-cancel-editing" />
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
+            <action index="320" id="document-view-in-source-repository" />
          </actionGroup>
 
          <actionGroup id="document-details">
@@ -697,6 +698,7 @@
             <action index="190" id="document-manage-site-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="200" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="210" id="document-manage-aspects" label="actions.folder.manage-aspects" />
+            <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
          </actionGroup>
 
          <actionGroup id="folder-details">

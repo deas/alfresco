@@ -66,7 +66,7 @@ public class ChainedMatchAllEvaluator extends BaseEvaluator
                 BaseEvaluator evaluator = (BaseEvaluator)evalIter.next();
                 evaluator.args = this.args;
                 evaluator.metadata = this.metadata;
-                result = evaluator.evaluate(jsonObject);
+                result = evaluator.negateOutput ^ evaluator.evaluate(jsonObject);
             }
         }
 

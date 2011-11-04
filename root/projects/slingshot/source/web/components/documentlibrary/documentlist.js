@@ -1581,7 +1581,7 @@
             }
 
             // Locked / Working Copy handling
-            if ($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner))
+            if (($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner)) && !jsNode.hasAspect("trx:transferred"))
             {
                var bannerUser = properties.lockOwner || properties.workingCopyOwner,
                   bannerLink = Alfresco.DocumentList.generateUserLink(scope, bannerUser);
