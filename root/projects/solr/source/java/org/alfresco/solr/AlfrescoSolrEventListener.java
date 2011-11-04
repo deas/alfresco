@@ -2588,7 +2588,14 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          */
         public String get(int owner)
         {
-            return idToOwner.get(owner);
+           if(owner < idToOwner.size())
+           {
+               return idToOwner.get(owner);
+           }
+           else
+           {
+               return null;
+           }
         }
 
         /**
