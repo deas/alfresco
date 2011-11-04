@@ -232,7 +232,7 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        
        // Create the list
        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
-       props.put(TYPE_DATALIST, typeName);
+       props.put(PROP_DATA_LIST_ITEM_TYPE, typeName);
        props.put(ContentModel.PROP_NAME, listName);
        props.put(ContentModel.PROP_DESCRIPTION, description);
        
@@ -254,23 +254,39 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        }
        
        // Is this a Container Based or DataList based one?
+       NodeRef dataListNodeRef = null;
+       NodeRef containerNodeRef = null;
        
-       // Grab the component
-       NodeRef container = siteService.getContainer(siteName, DATALIST_CONTAINER);
-       if(container == null)
+       // Check the DataList
+       NodeRef dataLists = siteService.getContainer(siteName, DATALIST_CONTAINER);
+       if(dataLists != null)
        {
-          throw new FileNotFoundException("No DataList Container found in Site");
+          dataListNodeRef = nodeService.getChildByName(dataLists, ContentModel.ASSOC_CONTAINS, listName);
        }
        
-       // Grab the datalist
-       NodeRef list = nodeService.getChildByName(container, ContentModel.ASSOC_CONTAINS, listName);
-       if(list == null)
+       // Check the Container
+       containerNodeRef = siteService.getContainer(siteName, listName);
+
+       
+       // Sanity check
+       if(dataListNodeRef == null && containerNodeRef == null)
        {
           throw new FileNotFoundException("No List found with name '" + listName + "'");
        }
-       
-       // Delete it
-       nodeService.deleteNode(list);
+       else if(dataListNodeRef != null && containerNodeRef != null)
+       {
+          throw new FileNotFoundException("Two different Lists found with name '" + listName + "' - can't distinguish");
+       }
+       else if(dataListNodeRef != null)
+       {
+          // Delete it
+          nodeService.deleteNode(dataListNodeRef);
+       }
+       else
+       {
+          // Delete it
+          nodeService.deleteNode(containerNodeRef);
+       }
     }
     
     @Override
