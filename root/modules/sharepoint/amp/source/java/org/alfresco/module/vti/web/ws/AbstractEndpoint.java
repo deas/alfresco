@@ -21,6 +21,7 @@ package org.alfresco.module.vti.web.ws;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -275,20 +276,23 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
     public String generateXml(DwsBean dwsBean)
     {
         StringBuilder result = new StringBuilder("");
-        result.append(startTag("Results")).append(processTag("Url", dwsBean.getUrl())).append(processTag("DoclibUrl", dwsBean.getDoclibUrl())).append(
-                processTag("ParentWeb", dwsBean.getParentWeb())).append(startTag("FailedUsers"));
+        result.append(startTag("Results"))
+            .append(processTag("Url", dwsBean.getUrl()))
+            .append(processTag("DoclibUrl", dwsBean.getDoclibUrl()))
+            .append(processTag("ParentWeb", dwsBean.getParentWeb()));
+        result.append(startTag("FailedUsers"));
         if (dwsBean.getFailedUsers() != null)
         {
             for (String user : dwsBean.getFailedUsers())
             {
-                Map<String, Object> attributes = new LinkedHashMap<String, Object>();
-
-                attributes.put("Email", user);
+                Map<String, Object> attributes =  Collections.<String, Object>singletonMap("Email", user);
                 result.append(singleTag("User", attributes));
             }
         }
-        result.append(endTag("FailedUsers"));
-        result.append(endTag("Results"));
+        result.append(endTag("FailedUsers"))
+            .append(processTag("AddUsersUrl", dwsBean.getAddUsersUrl()))
+            .append(processTag("AddUsersRole", dwsBean.getAddUsersRole()))
+            .append(endTag("Results"));
         return result.toString();
     }
 
@@ -573,5 +577,12 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
                 processTag("LoginName", userBean.getLoginName())).append(processTag("Email", userBean.getEmail())).append(processTag("IsDomainGroup", userBean.isDomainGroup()))
                 .append(processTag("IsSiteAdmin", userBean.isSiteAdmin())).append(endTag("User"));
         return result.toString();
+    }
+
+    protected Element buildResultTag(VtiSoapResponse soapResponse)
+    {
+        Element root = soapResponse.getDocument().addElement(getResponseTagName(), namespace);
+        Element resultElement = root.addElement(getResultTagName());
+        return resultElement;
     }
 }

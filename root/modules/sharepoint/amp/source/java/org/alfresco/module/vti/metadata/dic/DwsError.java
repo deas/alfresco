@@ -73,7 +73,12 @@ public enum DwsError
     /**
      * General Failure
      */
-    FAILED (-1, "Failed");
+    FAILED (2, "Failed"),
+    
+    /**
+     * Server Failure
+     */
+    SERVER_FAILURE(1, "ServerFailure");
     
     private final int value;
     private final String code;

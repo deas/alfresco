@@ -63,10 +63,8 @@ public class DeleteDwsEndpoint extends AbstractEndpoint
         handler.deleteDws(getDwsFromUri(soapRequest), (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));      
         
         // creating soap response
-        Element root = soapResponse.getDocument().addElement("DeleteDwsResponse");
-        Element deleteDwsResult = root.addElement("DeleteDwsResult", namespace);
-        
-        deleteDwsResult.addElement("Result");
+        Element resultTag = buildResultTag(soapResponse);
+        resultTag.setText(processTag("Result", "").toString());
         
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");

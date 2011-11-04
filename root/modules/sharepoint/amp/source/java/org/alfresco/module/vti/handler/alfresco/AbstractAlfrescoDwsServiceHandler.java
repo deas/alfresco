@@ -28,9 +28,11 @@ import java.util.regex.Pattern;
 import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.DwsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dic.CAMLMethod;
+import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.alfresco.module.vti.metadata.dic.Permission;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.dic.WorkspaceType;
@@ -206,11 +208,12 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         DwsMetadata dwsMetadata = new DwsMetadata();
 
-        dwsMetadata.setSubscribeUrl(host + context + dws + "/subscribe.vti");
+        String fullUrl = host + context + dws;
+        dwsMetadata.setSubscribeUrl(fullUrl + "/subscribe.vti");
         dwsMetadata.setMtgInstance("");
-        dwsMetadata.setSettingsUrl(host + context + dws + "/siteSettings.vti");
-        dwsMetadata.setPermsUrl(host + context + dws + "/siteGroupMembership.vti");
-        dwsMetadata.setUserInfoUrl(host + context + dws + "/userInformation.vti");
+        dwsMetadata.setSettingsUrl(fullUrl + "/siteSettings.vti");
+        dwsMetadata.setPermsUrl(getDwsPermissionsUrl(fullUrl));
+        dwsMetadata.setUserInfoUrl(fullUrl + "/userInformation.vti");
 
         // adding the list of roles
         dwsMetadata.setRoles(permissionService.getSettablePermissions(doGetModelType()));
@@ -278,6 +281,11 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         }
 
         return dwsMetadata;
+    }
+
+    protected String getDwsPermissionsUrl(String dwsUrl)
+    {
+        return dwsUrl + "/siteGroupMembership.vti";
     }
     
     public abstract WorkspaceType getWorkspaceType(FileInfo dwsNode);
@@ -363,7 +371,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
     {
         if (dwsExists(name))
         {
-            throw new VtiHandlerException(VtiError.ALREADY_EXISTS);
+            throw new DwsException(DwsError.ALREADY_EXISTS);
         }
         
         if(false == stringExists(name))
@@ -405,14 +413,14 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             }
             catch (Exception tex)
             {
+                //NOOP
             }
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
+                throw new DwsException(DwsError.NO_ACCESS);
             }
-
-            throw VtiExceptionUtils.createRuntimeException(e);
+            throw new DwsException(DwsError.SERVER_FAILURE);
         }
 
         if (logger.isDebugEnabled())
@@ -425,7 +433,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
     private boolean stringExists(String s)
     {
-        return false == (s == null | s.isEmpty());
+        return false == (s == null || s.isEmpty());
     }
     
     /**
@@ -435,12 +443,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
     {
         FileInfo dwsFileInfo = pathHelper.resolvePathFileInfo(dwsUrl);
 
-        if (dwsFileInfo == null)
-        {
-            throw new VtiHandlerException(VtiError.NOT_FOUND);
-        }
-
-        if (dwsFileInfo.isFolder() == false)
+        if (dwsFileInfo == null || dwsFileInfo.isFolder() == false)
         {
             throw new VtiHandlerException(VtiError.NOT_FOUND);
         }
@@ -462,14 +465,15 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             }
             catch (Exception tex)
             {
+                //NOOP
             }
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
+                throw new DwsException(DwsError.NO_ACCESS);
             }
 
-            throw VtiExceptionUtils.createRuntimeException(e);
+            throw new DwsException(DwsError.FAILED);
         }
 
         if (logger.isDebugEnabled())
@@ -531,6 +535,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             }
             catch (Exception tex)
             {
+                //NOOP
             }
 
             if (e instanceof AccessDeniedException)
@@ -581,6 +586,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             }
             catch (Exception tex)
             {
+                //NOOP
             }
 
             if (e instanceof AccessDeniedException)
@@ -625,6 +631,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             }
             catch (Exception tex)
             {
+                //NOOP
             }
 
             if (e instanceof AccessDeniedException)
@@ -670,6 +677,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             }
             catch (Exception tex)
             {
+                //NOOP
             }
 
             if (e instanceof AccessDeniedException)

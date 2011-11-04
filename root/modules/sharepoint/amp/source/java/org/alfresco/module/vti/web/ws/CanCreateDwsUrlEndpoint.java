@@ -20,7 +20,9 @@ package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.DwsServiceHandler;
+import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dic.DwsError;
+import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -74,15 +76,15 @@ public class CanCreateDwsUrlEndpoint extends AbstractEndpoint
         XPath urlPath = new Dom4jXPath(buildXPath(prefix, "/CanCreateDwsUrl/url"));
         urlPath.setNamespaceContext(nc);
         Element url = (Element) urlPath.selectSingleNode(soapRequest.getDocument().getRootElement());
-        if (url == null)
-        {
-           throw new DwsException(DwsError.FAILED);
-        }
         
-        String urlText = url.getTextTrim();
+        String urlText = "";
+        if(url != null)
+        {
+            urlText = url.getTextTrim();
+        }
         if (false == handler.canCreateDwsUrl(urlText))
         {
-           throw new DwsException(DwsError.NO_ACCESS);
+           throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
         }
         
         // creating soap response
@@ -92,17 +94,6 @@ public class CanCreateDwsUrlEndpoint extends AbstractEndpoint
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");
     	}        
-    }
-
-    /**
-     * @param soapResponse
-     * @return
-     */
-    private Element buildResultTag(VtiSoapResponse soapResponse)
-    {
-        Element root = soapResponse.getDocument().addElement(getResponseTagName(), namespace);
-        Element resultElement = root.addElement(getResultTagName());
-        return resultElement;
     }
 
 }

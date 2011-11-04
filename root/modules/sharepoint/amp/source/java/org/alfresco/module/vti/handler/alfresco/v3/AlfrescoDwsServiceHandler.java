@@ -85,7 +85,8 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     private static final QName PROP_LINK_TITLE = QName.createQName("http://www.alfresco.org/model/linksmodel/1.0", "title");
     private static final QName PROP_LINK_URL = QName.createQName("http://www.alfresco.org/model/linksmodel/1.0", "url");
     private static final QName PROP_LINK_DESCRIPTION = QName.createQName("http://www.alfresco.org/model/linksmodel/1.0", "description");    
-
+    private static final String DOC_LIB_URL = "documentLibrary";
+    
     private AuthenticationComponent authenticationComponent;
     private SiteService siteService;
     private ShareUtils shareUtils;
@@ -454,11 +455,10 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     @Override
     protected DwsBean doGetResultBean(String parentUrl, String dwsUrl, String host, String context)
     {
-        DwsBean dwsBean = new DwsBean();
-        dwsBean.setDoclibUrl("documentLibrary");
-        dwsBean.setUrl(host + context + dwsUrl);
-        dwsBean.setParentWeb(parentUrl);
-        return dwsBean;
+        String url = host + context + dwsUrl;
+        String addUsersUrl = getDwsPermissionsUrl(url);
+        String addUsersRole = "Microsoft.SharePoint.SPRoleDefinition";
+        return new DwsBean(url, DOC_LIB_URL, parentUrl, null, addUsersUrl, addUsersRole);
     }
 
     /**

@@ -84,10 +84,9 @@ public class CreateDwsEndpoint extends AbstractEndpoint
         DwsBean dws = handler.createDws(parentDws, dwsName, null, title, null, getHost(soapRequest), getContext(soapRequest), (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
         
         // creating soap response
-        Element root = soapResponse.getDocument().addElement("CreateDwsResponse", namespace);
-        Element createDwsResult = root.addElement("CreateDwsResult");
-
-        createDwsResult.addText(generateXml(dws));
+        Element resultElement = buildResultTag(soapResponse);
+        
+        resultElement.addText(generateXml(dws));
         
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");

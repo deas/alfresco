@@ -36,6 +36,8 @@ public class DwsBean implements Serializable
     private String doclibUrl;
     private String parentWeb;
     private List<String> failedUsers;
+    private String addUsersUrl = "";
+    private String addUsersRole = "";
 
     public DwsBean()
     {
@@ -47,13 +49,17 @@ public class DwsBean implements Serializable
      * @param doclibUrl
      * @param parentWeb
      * @param failedUsers
+     * @param addUsersUrl TODO
+     * @param addUsersRole TODO
      */
-    public DwsBean(String url, String doclibUrl, String parentWeb, List<String> failedUsers)
+    public DwsBean(String url, String doclibUrl, String parentWeb, List<String> failedUsers, String addUsersUrl, String addUsersRole)
     {
         this.url = url;
         this.doclibUrl = doclibUrl;
         this.parentWeb = parentWeb;
         this.failedUsers = failedUsers;
+        this.addUsersUrl = addUsersUrl;
+        this.addUsersRole = addUsersRole;
     }
 
     /**
@@ -126,4 +132,19 @@ public class DwsBean implements Serializable
         this.failedUsers = failedUsers;
     }
         
+    /**
+     * @return the addUsersRole
+     */
+    public String getAddUsersRole()
+    {
+        return addUsersRole;
+    }
+    
+    /**
+     * @return the addUsersUrl
+     */
+    public String getAddUsersUrl()
+    {
+        return addUsersUrl;
+    }
 }
