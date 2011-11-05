@@ -343,6 +343,12 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
           throw new IllegalArgumentException("Name '" + listName + "' didn't match required name '" + builtin.component + "'");
        }
        
+       // Check it isn't there already
+       if(siteService.hasContainer(site.getShortName(), listName))
+       {
+          throw new DuplicateChildNodeNameException(site.getNodeRef(), ContentModel.ASSOC_CONTAINS, listName, null);
+       }
+       
        // Have it created
        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
        props.put(ContentModel.PROP_DESCRIPTION, description);

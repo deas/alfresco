@@ -56,7 +56,7 @@ public class GetWebEndpoint extends AbstractEndpoint
     }
 
     /**
-    * Creates new document workspace with given title
+    * Returns info on a site
     * 
     * @param soapRequest Vti soap request ({@link VtiSoapRequest})
     * @param soapResponse Vti soap response ({@link VtiSoapResponse}) 

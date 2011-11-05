@@ -341,6 +341,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetWeb">
                     <ref bean="getWebEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/IsClaimsMode">
+                    <ref bean="isClaimsModeEndpoint"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -720,6 +723,15 @@
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="isClaimsModeEndpoint" class="org.alfresco.module.vti.web.ws.IsClaimsModeEndpoint">
+        <property name="name">
+            <value>IsClaimsMode</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
         </property>
     </bean>
 

@@ -55,6 +55,7 @@ import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.MimetypeService;
@@ -1144,7 +1145,13 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 docMetaInfo.setTimelastmodified(modifiedDate);
                 docMetaInfo.setTimelastwritten(modifiedDate);
 
-                docMetaInfo.setFilesize(String.valueOf(originalFileInfo.getContentData().getSize()));
+                long size = 0;
+                ContentData data = originalFileInfo.getContentData();
+                if (data != null)
+                {
+                   size = data.getSize();
+                }
+                docMetaInfo.setFilesize(String.valueOf(size));
 
                 if (isShortCheckedout)
                 {
