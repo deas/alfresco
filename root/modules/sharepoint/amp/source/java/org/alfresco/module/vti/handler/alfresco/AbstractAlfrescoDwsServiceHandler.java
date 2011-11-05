@@ -225,11 +225,11 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         // includes information about the schemas, lists, documents, links lists of a document workspace site
         if (!minimal)
         {
-            // set Documents schema
+            // Prepare for schemas
             List<SchemaBean> schemaItems = new ArrayList<SchemaBean>();
-
             List<String> choices = new ArrayList<String>();
 
+            // Build the Document Library schema
             List<SchemaFieldBean> fields = new ArrayList<SchemaFieldBean>(5);
             fields.add(new SchemaFieldBean("FileLeafRef", "Invalid", true, choices));
             fields.add(new SchemaFieldBean("_SourceUrl", "Text", false, choices));
@@ -238,7 +238,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             fields.add(new SchemaFieldBean("Title", "Text", false, choices));
             schemaItems.add(doCreateDocumentSchemaBean(dwsNode, fields));
 
-            // set Links schema
+            // Build the Links schema
             List<SchemaFieldBean> linkFields = new ArrayList<SchemaFieldBean>(4);
             linkFields.add(new SchemaFieldBean("Attachments", "Attachments", false, choices));
             linkFields.add(new SchemaFieldBean("Order", "Number", false, choices));
@@ -250,6 +250,21 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
                 schemaItems.add(linkSchema);
             }
             
+            // Build the Tasks (Data List / Tasks) schema
+            List<SchemaFieldBean> taskFields = new ArrayList<SchemaFieldBean>(4);
+            taskFields.add(new SchemaFieldBean("Type", "Type", false, choices)); // TODO List
+            taskFields.add(new SchemaFieldBean("Title", "Title", false, choices));
+            taskFields.add(new SchemaFieldBean("Assign To", "AssignTo", true, choices));
+            taskFields.add(new SchemaFieldBean("Status", "Status", false, choices)); // TODO List
+            taskFields.add(new SchemaFieldBean("Priority", "Priority", false, choices)); // TODO List
+            taskFields.add(new SchemaFieldBean("Due Date", "Date", false, choices));
+            SchemaBean taskSchema = doCreateTasksSchemaBean(dwsNode, taskFields);
+            if (taskSchema != null)
+            {
+                schemaItems.add(taskSchema);
+            }
+            
+            // Record
             dwsMetadata.setSchemaItems(schemaItems);
 
             // set Documents listInfo for documents list
@@ -260,6 +275,10 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
             // set Links listInfo for links list            
             listInfoItems.add(new ListInfoBean(
                   null, "Links", AlfrescoListServiceHandler.TYPE_LINKS, false, permissions));
+            
+            // set Tasks listInfo for tasks list
+//            listInfoItems.add(new ListInfoBean(
+//                  null, "Tasks", AlfrescoListServiceHandler.TYPE_TASKS, false, permissions));
             
             dwsMetadata.setListInfoItems(listInfoItems);
         }
@@ -808,6 +827,15 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
      * @return SchemaBean link schema
      */
     protected abstract SchemaBean doCreateLinkSchemaBean(FileInfo dwsFileInfo, List<SchemaFieldBean> fields);
+
+    /**
+     * Create tasks schema
+     * 
+     * @param dwsFileInfo document workspace site file info ({@link FileInfo})
+     * @param fields system fields of the link ({@link SchemaFieldBean})
+     * @return SchemaBean link schema
+     */
+    protected abstract SchemaBean doCreateTasksSchemaBean(FileInfo dwsFileInfo, List<SchemaFieldBean> fields);
 
     /**
      * Get current user

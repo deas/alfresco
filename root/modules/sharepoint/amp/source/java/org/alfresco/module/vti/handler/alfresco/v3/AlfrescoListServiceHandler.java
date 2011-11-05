@@ -77,6 +77,7 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
     public static final ListTypeBean TYPE_DISCUSSIONS = buildType(VtiBuiltInListType.DISCUSS);
     public static final ListTypeBean TYPE_LINKS = buildType(VtiBuiltInListType.LINKS);
     public static final ListTypeBean TYPE_WIKI = buildType(VtiBuiltInListType.WIKI);
+    public static final ListTypeBean TYPE_TASKS = buildType(VtiBuiltInListType.TASKS); // TODO Needs linking to DataList
 
     private FileFolderService fileFolderService;
     private NodeService nodeService;

@@ -273,6 +273,14 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     }
 
     /**
+     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doCreateTasksSchemaBean(org.alfresco.service.cmr.model.FileInfo, java.util.List)
+     */
+    protected SchemaBean doCreateTasksSchemaBean(FileInfo dwsFileInfo, List<SchemaFieldBean> fields)
+    {
+        return null;
+    }
+
+    /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doDeleteDws(org.alfresco.service.cmr.model.FileInfo, org.alfresco.repo.SessionUser)
      */
     protected void doDeleteDws(FileInfo dwsFileInfo, SessionUser user) throws HttpException, IOException

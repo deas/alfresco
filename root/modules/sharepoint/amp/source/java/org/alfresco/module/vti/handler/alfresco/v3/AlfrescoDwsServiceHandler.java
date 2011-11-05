@@ -399,6 +399,14 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     {
         return new SchemaBean("Links", null, fields);
     }
+    
+    /**
+     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doCreateTasksSchemaBean(org.alfresco.service.cmr.model.FileInfo, java.util.List)
+     */
+    protected SchemaBean doCreateTasksSchemaBean(FileInfo dwsFileInfo, List<SchemaFieldBean> fields)
+    {
+        return new SchemaBean("Tasks", null, fields);
+    }
 
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doDeleteDws(org.alfresco.service.cmr.model.FileInfo, org.alfresco.repo.SessionUser)

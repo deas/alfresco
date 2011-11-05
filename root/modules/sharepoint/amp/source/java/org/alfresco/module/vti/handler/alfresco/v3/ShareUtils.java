@@ -141,21 +141,25 @@ public class ShareUtils
         // create component-2-2 sites component
         createComponent(httpClient, shortName, user, "component-2-2", "dashlets/colleagues");
 
-        // create documetnLibrary folder
+        // create documentLibrary folder
         createDocumentLibrary(httpClient, shortName, user);
 
         // create sites dashboard
         createSiteDashboard(httpClient, shortName, user, sitePreset);
-        
+
+        // If it's a Document WorkSpace, create Links and Data Lists
         if ("document-workspace".equalsIgnoreCase(sitePreset))
         {
-        // create links folder
-        createLinks(httpClient, shortName, user);
-    }
+           // Create the Links Component
+           createLinks(httpClient, shortName, user);
+           
+           // Create the DataLists Component
+           createDataLists(httpClient, shortName, user);
+        }
         else
         {
-            // create component-2-3 sites component
-            createComponent(httpClient, shortName, user, "component-2-3", "dashlets/calendar");
+           // Otherwise create the Calendar
+           createComponent(httpClient, shortName, user, "component-2-3", "dashlets/calendar");
         }
     }
     
@@ -229,7 +233,8 @@ public class ShareUtils
                 "<template-instance>dashboard-2-columns-wide-left</template-instance>\n" +
                 "<authentication>user</authentication>\n" + 
                 "<properties>\n" +
-                    "<sitePages>[{\"pageId\":\"documentlibrary\"}, {\"pageId\":\"links\"}]</sitePages>\n" +
+                    "<sitePages>[{\"pageId\":\"documentlibrary\"}, {\"pageId\":\"links\"}," +
+                    " {\"pageId\":\"data-lists\"]</sitePages>\n" +
                 "</properties>\n" +
             "</page>";
         }
@@ -318,9 +323,10 @@ public class ShareUtils
      */
     private void createLinks(HttpClient httpClient, String siteName, SessionUser user)
     {
-
-        GetMethod createLinksFolderMethod = createGetMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/api/links/site/" + siteName + "/links?page=1&pageSize=512&alf_ticket="
-                + user.getTicket());
+        GetMethod createLinksFolderMethod = createGetMethod(
+              getAlfrescoHostWithPort() + getAlfrescoContext() + 
+              "/s/api/links/site/" + siteName + "/links?page=1&pageSize=1&alf_ticket="
+              + user.getTicket());
         try
         {
             if (logger.isDebugEnabled())
@@ -341,6 +347,42 @@ public class ShareUtils
         finally
         {
             createLinksFolderMethod.releaseConnection();
+        }
+    }
+    
+    /**
+     * Creates the Data Lists folder in site
+     * 
+     * @param httpClient HTTP client
+     * @param siteName short name of site
+     * @param user current user
+     */
+    private void createDataLists(HttpClient httpClient, String siteName, SessionUser user)
+    {
+        GetMethod createDataListsFolderMethod = createGetMethod(
+              getAlfrescoHostWithPort() + getAlfrescoContext() + 
+              "/s/slingshot/datalists/lists/site/" + siteName + "/dataLists?page=1&pageSize=1&alf_ticket="
+              + user.getTicket());
+        try
+        {
+            if (logger.isDebugEnabled())
+                logger.debug("Trying to create site Data Lists folder. URL: " + createDataListsFolderMethod.getURI());
+            
+            int status = httpClient.executeMethod(createDataListsFolderMethod);
+            createDataListsFolderMethod.getResponseBody();
+            
+            if (logger.isDebugEnabled())
+                logger.debug("Create site Data Lists folder method returned status: " + status);
+        }
+        catch (Exception e)
+        {
+            if (logger.isDebugEnabled())
+                logger.debug("Fail to create site Data Lists folder. Message: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            createDataListsFolderMethod.releaseConnection();
         }
     }
     
