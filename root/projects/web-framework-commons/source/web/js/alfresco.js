@@ -6211,7 +6211,7 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
        * Therefore description can be accessed either as node.properties[Alfresco.constants.PROP_DESCRIPTION]
        * or, more simply, as node.properties.description.
        *
-       * For properties outside the "cm:" namespace, the ":" character is replaced with an underscore.
+       * For all properties, the ":" character is replaced with an underscore.
        * These can then be accessed as, for example, node.properties.gd_googleUrl
        */
       for (var index in properties)
@@ -6222,10 +6222,7 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
             {
                properties[index.substring(3)] = properties[index];
             }
-            else
-            {
-               properties[index.replace(/:/g, "_")] = properties[index];
-            }
+            properties[index.replace(/:/g, "_")] = properties[index];
          }
       };
 
