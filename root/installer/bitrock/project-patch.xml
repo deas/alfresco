@@ -16,7 +16,7 @@
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
     <allowComponentSelection>0</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
-    <allowedLanguages>en fr es it de ja</allowedLanguages>
+    <allowedLanguages>en fr es it de ja nl</allowedLanguages>
     <enableRollback>0</enableRollback>
     <installationType>upgrade</installationType>
 

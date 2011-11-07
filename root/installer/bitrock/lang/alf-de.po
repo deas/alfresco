@@ -13,8 +13,11 @@ msgstr "Admin-Passwort"
 msgid "Admin Password:"
 msgstr "Admin-Passwort:"
 
-msgid "Advanced - Configures server ports and service properties. Also choose optional components to install."
-msgstr "Erweitert: Serverports und Diensteigenschaften werden konfiguriert Außerdem können optionale\n Komponenten für die Installation ausgewählt werden."
+msgid "Advanced - Configures server ports and service properties." 
+msgstr "Erweitert: Serverports und Diensteigenschaften werden konfiguriert."
+
+msgid "Also choose optional components to install."
+msgstr "Außerdem können optionale Komponenten für die Installation ausgewählt werden."
 
 msgid "Alfresco"
 msgstr "Alfresco"
