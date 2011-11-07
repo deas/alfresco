@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- This file is must reside on alfresco.com, it is included via an iframe on the Publishing Channel Admin webscript.
+   It's purpose is to enable communication between the redirect URL and the channel admin console in the situation where
+   the authentication redirection page must be known in advance but the URL for the alfresco install is not. This page,
+   when included as an iframe ensures that same-domain communication is possible between the redirect target page
+   (stand-alone-auth-return.html) and the Channel Admin webscript on the Alfresco install by acting as a message relay.
+   This relaying is necessary to work around browser security limitations, particularly in IE9.
+-->
+	<head>
+		<title>Alfresco &raquo; Authorisation</title>
+	</head>
+	<body>
+		<script type="text/javascript">
+         // Bind the event listeners
+         window.addEventListener("message", receiveMessage, false);
+         window.addEventListener("hashchange", sendMessage, false);
+
+         function receiveMessage(event)
+         {
+            // Open the Auth window with the URL passed in.
+            window.open(event.data);
+         }
+
+         function sendMessage(event)
+         {
+            // Pass the message (received via the hashchange event) back up the stack to the iframe's parent.
+            var data = window.location.hash;
+            window.parent.window.postMessage(data, "*");
+         }
+		</script>
+	</body>
+</html>
