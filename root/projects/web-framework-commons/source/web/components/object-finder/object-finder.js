@@ -934,9 +934,15 @@
                            {
                               link = this.options.targetLinkTemplate.call(this, item);
                            }
-                           else if (YAHOO.lang.isString(this.options.targetLinkTemplate))
+                           else
                            {
-                              link = YAHOO.lang.substitute(this.options.targetLinkTemplate, item);
+                              //Discard template, build link from scratch
+                              var linkTemplate = (item.site) ? Alfresco.constants.URL_PAGECONTEXT + "site/{site}/document-details?nodeRef={nodeRef}" : Alfresco.constants.URL_PAGECONTEXT + "document-details?nodeRef={nodeRef}";
+                              link = YAHOO.lang.substitute(linkTemplate,
+                              {
+                                 nodeRef : item.nodeRef,
+                                 site : item.site
+                              });
                            }
                            displayValue += this.options.objectRenderer.renderItem(item, 16,
                                  "<div>{icon} <a href='" + link + "'>{name}</a></div>");
@@ -1332,9 +1338,15 @@
                {
                   link = scope.options.targetLinkTemplate.call(scope, oRecord.getData());
                }
-               else if (YAHOO.lang.isString(scope.options.targetLinkTemplate))
+               else
                {
-                  link = YAHOO.lang.substitute(scope.options.targetLinkTemplate, oRecord.getData());
+                  //Discard template, build link from scratch
+                  var linkTemplate = (item.site) ? Alfresco.constants.URL_PAGECONTEXT + "site/{site}/document-details?nodeRef={nodeRef}" : Alfresco.constants.URL_PAGECONTEXT + "document-details?nodeRef={nodeRef}";
+                  link = YAHOO.lang.substitute(linkTemplate,
+                  {
+                     nodeRef : item.nodeRef,
+                     site : item.site
+                  });
                }
                title = '<a href="' + link + '">' + $html(item.name) + '</a>';
             }
