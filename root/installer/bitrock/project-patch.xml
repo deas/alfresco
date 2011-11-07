@@ -70,6 +70,11 @@
 	    <encoding>utf-8</encoding>
 	    <file>${build_project_directory}/lang/alf-ja.po</file>
 	</language>
+	<language> 
+	    <code>nl</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-nl.po</file>
+	</language>
     </customLanguageFileList>
 
     <readyToInstallActionList>
