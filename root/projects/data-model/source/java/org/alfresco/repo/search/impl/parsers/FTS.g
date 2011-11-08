@@ -1224,7 +1224,17 @@ DECIMAL_INTEGER_LITERAL
 FLOATING_POINT_LITERAL
         // Integer ranges
         :
-        start=START_RANGE_I dotdot=DOTDOT end=START_RANGE_I {
+          (START_RANGE_I DOTDOT START_RANGE_F) =>
+          start=START_RANGE_I dotdot=DOTDOT end=START_RANGE_F {
+                        $start.setType(DECIMAL_INTEGER_LITERAL);
+                        emit($start);
+                        $dotdot.setType(DOTDOT);
+                        emit($dotdot);
+                        $end.setType(FLOATING_POINT_LITERAL);
+                        emit($end);
+                }
+        | (START_RANGE_I DOTDOT START_RANGE_I) =>
+          start=START_RANGE_I dotdot=DOTDOT end=START_RANGE_I {
                         $start.setType(DECIMAL_INTEGER_LITERAL);
                         emit($start);
                         $dotdot.setType(DOTDOT);
@@ -1233,12 +1243,21 @@ FLOATING_POINT_LITERAL
                         emit($end);
                 }
         // Float ranges
-        | start=START_RANGE_F dotdot=DOTDOT end=START_RANGE_F {
+        | (START_RANGE_F DOTDOT START_RANGE_F) =>
+          start=START_RANGE_F dotdot=DOTDOT end=START_RANGE_F {
                         $start.setType(FLOATING_POINT_LITERAL);
                         emit($start);
                         $dotdot.setType(DOTDOT);
                         emit($dotdot);
                         $end.setType(FLOATING_POINT_LITERAL);
+                        emit($end);
+                }
+        | start=START_RANGE_F dotdot=DOTDOT end=START_RANGE_I {
+                        $start.setType(FLOATING_POINT_LITERAL);
+                        emit($start);
+                        $dotdot.setType(DOTDOT);
+                        emit($dotdot);
+                        $end.setType(DECIMAL_INTEGER_LITERAL);
                         emit($end);
                 }
         // Normal float rules

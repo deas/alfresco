@@ -1074,8 +1074,30 @@ public class FTSQueryParser
             {
                 return ISO9075.decode(unescape(text));
             }
-        case FTSParser.COMMA:
+        case FTSParser.URI:
+        case FTSParser.OR:
+        case FTSParser.AND:
+        case FTSParser.NOT:
+        case FTSParser.TILDA:
+        case FTSParser.PLUS:
+        case FTSParser.MINUS:
+        case FTSParser.COLON:
+        case FTSParser.STAR:
+        case FTSParser.DOTDOT:
         case FTSParser.DOT:
+        case FTSParser.AMP:
+        case FTSParser.EXCLAMATION:
+        case FTSParser.BAR:
+        case FTSParser.EQUALS:
+        case FTSParser.QUESTION_MARK:
+        case FTSParser.TO:
+        case FTSParser.COMMA:
+        case FTSParser.CARAT:
+        case FTSParser.DOLLAR:
+        case FTSParser.AT:
+        case FTSParser.PERCENT:
+        case FTSParser.DECIMAL_INTEGER_LITERAL:
+        case FTSParser.FLOATING_POINT_LITERAL:
             return text;
         default:
             if(returnTextFromUnknownNodes)
