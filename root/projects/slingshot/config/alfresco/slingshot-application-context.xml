@@ -66,6 +66,7 @@
    <!-- Override Web Framework Abstract Handler Mappings -->
    <bean id="webframeworkHandlerMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" abstract="true">
       <property name="urlPathHelper" ref="urlPathHelper" />
+      <property name="pathMatcher" ref="pathMatcher" />
       <property name="interceptors">
          <list>
             <ref bean="requestContextInterceptor"/>
