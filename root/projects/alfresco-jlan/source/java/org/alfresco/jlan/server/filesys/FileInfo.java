@@ -303,6 +303,8 @@ public class FileInfo {
 	/**
 	 * Return the inode change date/time of the file.
 	 * 
+	 * This is the time of last metadata change.
+	 * 
 	 * @return long
 	 */
 	public long getChangeDateTime() {
