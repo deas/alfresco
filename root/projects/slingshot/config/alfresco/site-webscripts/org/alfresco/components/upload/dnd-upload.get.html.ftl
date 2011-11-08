@@ -57,17 +57,7 @@
       <div style="display:none">
          <div id="${el}-left-div" class="fileupload-left-div">
             <span class="fileupload-percentage-span">0%</span>
-            <#if (contentTypes?size == 1)>
-            <input class="fileupload-contentType-input" type="hidden" value="${contentTypes[0].id}"/>
-            <#elseif (contentTypes?size > 1)>
-            <select class="fileupload-contentType-select" tabindex="0">
-               <#if (contentTypes?size > 0)>
-                  <#list contentTypes as contentType>
-                     <option value="${contentType.id}">${msg(contentType.value)}</option>
-                  </#list>
-               </#if>
-            </select>
-            </#if>
+            <input class="fileupload-contentType-input" type="hidden" value="cm:content"/>
          </div>
          <div id="${el}-center-div" class="fileupload-center-div">
             <span class="fileupload-progressSuccess-span">&nbsp;</span>
