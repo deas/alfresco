@@ -141,3 +141,10 @@ div.channels.managePermissions .permissions-show
 {
    padding: 1em 1em 0;
 }
+
+.channels iframe
+{
+   height:1px;
+   width: 1px;
+   border: 0;
+}

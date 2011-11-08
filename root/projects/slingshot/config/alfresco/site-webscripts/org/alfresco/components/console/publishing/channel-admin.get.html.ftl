@@ -5,7 +5,10 @@
 
 <#assign el=args.htmlid?html>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.ConsoleChannels("${el}").setMessages(${messages});
+   new Alfresco.ConsoleChannels("${el}").setOptions(
+   {
+      acceptMessagesFrom: "${config.script.config.remoteAuthDomain}"
+   }).setMessages(${messages});
 //]]></script>
 
 <div id="${el}-body" class="channels">
@@ -46,4 +49,5 @@
    
    <div id="${el}-datatable" class="permissions-hide channellist"></div>
    <div id="${el}-managepermissions" class="permissions-show"></div>
+   <iframe id="${el}-iframe" src="${config.script.config.remoteAuthDomain}${config.script.config.remoteAuthSendPath}"></iframe>
 </div>

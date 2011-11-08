@@ -86,6 +86,18 @@
    YAHOO.extend(Alfresco.ConsoleChannels, Alfresco.ConsoleTool, 
    {
       /**
+       * Set multiple initialization options at once.
+       *
+       * @method setOptions
+       * @param obj {object} Object literal specifying a set of options
+       */
+      setOptions: function ConsoleChannels_setOptions(obj)
+      {
+         this.options = YAHOO.lang.merge(this.options, obj);
+         return this;
+      },
+
+      /**
        * Is the UI waiting for a callback from the Auth Scripts?
        *
        * @property isWaiting
@@ -126,11 +138,28 @@
        * @property authWindow
        */
       authWindow: null,
-      
+
+      options:
+      {
+         /**
+          * Should we use the iframe for communicating with the popup Auth window?
+          *
+          * @property iframeComms
+          */
+         iframeComms: false,
+
+         /**
+          * Which remote site are we using for authentication callbacks?
+          *
+          * @property acceptMessagesFrom
+          */
+         acceptMessagesFrom: ""
+      },
+
 		/**
 		 * Contains details for instantiating Insitu editors
 		 * (array generated during cell rendering, editors instantiated after DOM written.)
-		 * 
+		 *
 		 * @property insituEditors
 		 * @type array
 		 * 
@@ -197,7 +226,16 @@
 			
 			dt.subscribe("cellClickEvent", this.onChannelInteraction, this, true); 
 			dt.subscribe("renderEvent", this.onRenderEvent, this, true);
-			
+
+         // grab handle to iframe used for communicating with popups.
+         this.widgets.iframe = Dom.get(this.id + "-iframe");
+
+         // If we've got postMessage support, use it, through an iframe to facilitate communication with popups.
+         if (typeof(window.postMessage) === "function")
+         {
+            this.options.iframeComms = true;
+         }
+
       },
       
       /**
@@ -315,7 +353,7 @@
 		/**
 		 * Called when the channel create API call returns successfully, this triggers the start of the authentication process.
 		 * 
-		 * @method authoriseChannel
+		 * @method onCreateChannelSuccess
 		 * @param {Object} response
 		 */
       onCreateChannelSuccess: function consoleChannels_onCreateChannelSuccess(response)
@@ -338,9 +376,36 @@
 			   callbackUrl = response.json.data.authCallbackUrl,
 				channelId = response.json.data.channelId,
 				reauth = reauth || false;
-         
-			// Open the auth window & save the handler.
-			this.authWindow = window.open(authUrl);
+
+         // Two supported scenarios:
+         // window.postMessage is supported by browser, so we can communicate with iframe.
+         // window.postMessage is NOT supported by browser, so we ignore iframe.
+
+         if (this.options.iframeComms)
+         {
+            this.widgets.iframe.contentWindow.postMessage(authUrl, "*");
+            this.authWindow = null; // We've got no direct handle on the popup window.
+
+            var me = this,
+               receiveMessage = function consoleChannels_receiveMessage(event)
+               {
+                  // Check the message comes from the correct place
+                  if (event.origin === me.options.acceptMessagesFrom)
+                  {
+                     // we're accepting the message, so set the location hash, which triggers the rest of the auth process.
+                     window.location.hash = event.data;
+                  }
+               }
+
+            // Listen for the message back from the iframe:
+            window.addEventListener("message", receiveMessage , false);
+
+         }
+         else
+         {
+            // If we're not using the iframe, open the window directly & save handle.
+            this.authWindow = window.open(authUrl);
+         }
 			
 			if (reauth === false) 
          {
@@ -357,7 +422,7 @@
        * @method newChannelName
        * @property {string} channelType
        */
-      newChannelName: function newChannelName(channelType)
+      newChannelName: function consoleChannels_newChannelName(channelType)
       {
          var elements = Dom.getElementsByClassName("channelName", "div", this.id),
             name = this.msg("channelAdmin.new-channel", channelType),
