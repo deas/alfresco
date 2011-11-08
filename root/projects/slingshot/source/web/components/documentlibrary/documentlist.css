@@ -469,6 +469,7 @@ body .doclist tr.yui-dt-highlighted
 .doclist .documents .detail em
 {
    font-style: normal;
+   font-weight: bold;
 }
 
 .doclist .documents .detail span.item

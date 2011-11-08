@@ -46,6 +46,9 @@
 
    <bean id="evaluator.doclib.metadata.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
    <bean id="evaluator.doclib.metadata.hasAspect" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
+   <bean id="evaluator.doclib.metadata.nodeType" class="org.alfresco.web.evaluator.NodeTypeEvaluator">
+      <property name="dictionary" ref="slingshot.scriptprocessor.dictionaryQuery" />
+   </bean>
 
    <!-- Display Template: Working Copy -->
    <bean id="evaluator.doclib.metadata.isWorkingCopy" parent="evaluator.doclib.metadata.value">
@@ -62,6 +65,24 @@
       <property name="aspects">
          <list>
             <value>cm:generalclassifiable</value>
+         </list>
+      </property>
+   </bean>
+
+   <!-- Display Template: Dictionary Model -->
+   <bean id="evaluator.doclib.metadata.isDictionaryModel" parent="evaluator.doclib.action.nodeType">
+      <property name="types">
+         <list>
+            <value>cm:dictionaryModel</value>
+         </list>
+      </property>
+   </bean>
+
+   <!-- Display Template: Transfer Target -->
+   <bean id="evaluator.doclib.metadata.isTransferTarget" parent="evaluator.doclib.action.nodeType">
+      <property name="types">
+         <list>
+            <value>trx:transferTarget</value>
          </list>
       </property>
    </bean>

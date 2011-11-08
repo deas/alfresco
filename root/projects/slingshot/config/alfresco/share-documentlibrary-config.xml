@@ -255,6 +255,22 @@
             <line index="10" id="date">{date}{size}</line>
             <line index="20" id="description" view="detailed">{description}</line>
          </template>
+
+         <!-- Dictionary Models -->
+         <template id="dictionaryModel">
+            <evaluator>evaluator.doclib.metadata.isDictionaryModel</evaluator>
+            <line index="10" id="date">{date}</line>
+            <line index="20" id="description" view="detailed">{description}</line>
+            <line index="30" id="dictionaryModel" simpleView="true">{modelActive label.modelActive}{modelName label.modelName}{modelDescription label.modelDescription}</line>
+         </template>
+
+         <!-- Replication Transfer Targets -->
+         <template id="transferTarget">
+            <evaluator>evaluator.doclib.metadata.isTransferTarget</evaluator>
+            <line index="10" id="date">{date}</line>
+            <line index="20" id="description" view="detailed">{description}</line>
+            <line index="30" id="transferTarget" simpleView="true">{trx_enabled label.trx_enabled}{trx_endpointhost label.trx_endpointhost}{trx_endpointport label.trx_endpointport}</line>
+         </template>
       </metadata-templates>
 
       <!--
