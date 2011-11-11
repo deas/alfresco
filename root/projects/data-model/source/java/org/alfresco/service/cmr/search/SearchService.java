@@ -123,13 +123,13 @@ public interface SearchService
      * @param xpath -
      *            the xpath string to evaluate
      * @param parameters -
-     *            parameters to bind in to the xpath expression
+     *            parameters to bind in to the xpath expression, may be null for no parameters
      * @param namespacePrefixResolver -
      *            prefix to namespace mappings
      * @param followAllParentLinks -
      *            if false ".." follows only the primary parent links, if true
      *            it follows all
-     * @return a list of all the child assoc relationships to the selected nodes
+     * @return a list of the node refs of the selected nodes
      */
     @Auditable(
             
@@ -147,7 +147,7 @@ public interface SearchService
      * @param xpath -
      *            the xpath string to evaluate
      * @param parameters -
-     *            parameters to bind in to the xpath expression
+     *            parameters to bind in to the xpath expression, may be null for no parameters
      * @param namespacePrefixResolver -
      *            prefix to namespace mappings
      * @param followAllParentLinks -
@@ -155,7 +155,7 @@ public interface SearchService
      *            it follows all
      * @param langauage -
      *            the xpath variant
-     * @return a list of all the child assoc relationships to the selected nodes
+     * @return a list of all the node refs of the selected nodes
      */
     @Auditable(
             
