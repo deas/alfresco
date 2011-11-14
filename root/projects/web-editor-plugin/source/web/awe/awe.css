@@ -424,3 +424,8 @@ span.alfresco-content-marker hide
 {
    zoom:1;
 }
+
+#wef-ribbon-container.wef-ribbon-orientation-top #wef-ribbon li.wef-toolbar-groupitem .bd
+{
+   margin: 0;
+}
