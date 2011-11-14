@@ -132,7 +132,7 @@ public abstract class FileState implements Serializable {
 		
     // File size and allocation size
     
-    private long m_fileSize;
+    private long m_fileSize = -1;
     private long m_allocSize;
     
     /**
