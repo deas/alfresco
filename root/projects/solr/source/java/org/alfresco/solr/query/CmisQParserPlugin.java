@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,45 +18,25 @@
  */
 package org.alfresco.solr.query;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Locale;
-
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
-import org.alfresco.repo.search.MLAnalysisMode;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
-import org.alfresco.repo.search.impl.lucene.LuceneUtils;
 import org.alfresco.repo.search.impl.querymodel.Order;
 import org.alfresco.repo.search.impl.querymodel.Ordering;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.PropertyAccessor;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
-import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchParameters;
-import org.alfresco.service.cmr.search.SearchParameters.Operator;
-import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.SortField;
-import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.common.util.ContentStream;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QParserPlugin;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Andy
@@ -85,14 +65,8 @@ public class CmisQParserPlugin extends QParserPlugin
     {
     }
 
-    public static class CmisQParser extends QParser
+    public static class CmisQParser extends AbstractQParser
     {
-        private static final String ALFRESCO_JSON = "ALFRESCO_JSON";
-
-        private static final String AUTHORITY_FILTER_FROM_JSON = "AUTHORITY_FILTER_FROM_JSON";
-
-        AbstractLuceneQueryParser lqp;
-
         public CmisQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
         {
             super(qstr, localParams, params, req);
@@ -105,142 +79,11 @@ public class CmisQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws ParseException
         {   
-            SearchParameters searchParameters = new SearchParameters();
-
-            Iterable<ContentStream> streams = req.getContentStreams();
-
-            JSONObject json = (JSONObject) req.getContext().get(ALFRESCO_JSON);
-
-            if (json == null)
-            {
-                if (streams != null)
-                {
-
-                    try
-                    {
-                        Reader reader = null;
-                        for (ContentStream stream : streams)
-                        {
-                            reader = new BufferedReader(new InputStreamReader(stream.getStream(), "UTF-8"));
-                        }
-
-                        // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
-                        if (reader != null)
-                        {
-                            json = new JSONObject(new JSONTokener(reader));
-                            req.getContext().put(ALFRESCO_JSON, json);
-                        }
-                    }
-                    catch (JSONException e)
-                    {
-                        // This is expected when there is no json element to the request
-                    }
-                    catch (IOException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            if (json != null)
-            {
-                try
-                {
-                    if (getString().equals(AUTHORITY_FILTER_FROM_JSON))
-                    {
-                        String filter = json.getString("filter");
-                        if (filter != null)
-                        {
-                            searchParameters.setQuery(filter);
-                        }
-                    }
-                    else
-                    {
-                        String query = json.getString("query");
-                        if (query != null)
-                        {
-                            searchParameters.setQuery(query);
-                        }
-                    }
-
-                    JSONArray locales = json.getJSONArray("locales");
-                    for (int i = 0; i < locales.length(); i++)
-                    {
-                        String localeString = locales.getString(i);
-                        Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
-                        searchParameters.addLocale(locale);
-                    }
-                   
-                    JSONArray templates = json.getJSONArray("templates");
-                    for (int i = 0; i < templates.length(); i++)
-                    {
-                        JSONObject template = templates.getJSONObject(i);
-                        String name = template.getString("name");
-                        String queryTemplate = template.getString("template");
-                        searchParameters.addQueryTemplate(name, queryTemplate);
-                    }
-
-                    JSONArray allAttributes = json.getJSONArray("allAttributes");
-                    for (int i = 0; i < allAttributes.length(); i++)
-                    {
-                        String allAttribute = allAttributes.getString(i);
-                        searchParameters.addAllAttribute(allAttribute);
-                    }
-
-                    searchParameters.setDefaultFTSOperator(Operator.valueOf(json.getString("defaultFTSOperator")));
-                    searchParameters.setDefaultFTSFieldConnective(Operator.valueOf(json.getString("defaultFTSFieldOperator")));
-                    if (json.has("mlAnalaysisMode"))
-                    {
-                        searchParameters.setMlAnalaysisMode(MLAnalysisMode.valueOf(json.getString("mlAnalaysisMode")));
-                    }
-                    searchParameters.setNamespace(json.getString("defaultNamespace"));
-
-                    JSONArray textAttributes = json.getJSONArray("textAttributes");
-                    for (int i = 0; i < textAttributes.length(); i++)
-                    {
-                        String textAttribute = textAttributes.getString(i);
-                        searchParameters.addAllAttribute(textAttribute);
-                    }
-
-                }
-                catch (JSONException e)
-                {
-                    // This is expected when there is no json element to the request
-                }
-            }
-
-            if(json != null)
-            {
-                if(log.isDebugEnabled())
-                {
-                    log.debug(json.toString());
-                }
-            }
-            
-            if (searchParameters.getQuery() == null)
-            {
-                searchParameters.setQuery(getString());
-            }
-
-            if(searchParameters.getLocales().size() == 0)
-            {
-                searchParameters.addLocale(I18NUtil.getLocale());
-            }
-            
-            String defaultField = getParam(CommonParams.DF);
-            if(defaultField != null)
-            {
-                searchParameters.setDefaultFieldName(defaultField);
-            }
-
+            SearchParameters searchParameters = getSearchParameters();
             // these could either be checked & set here, or in the SolrQueryParser constructor
 
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
-
-            // searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
-            searchParameters.setNamespace(NamespaceService.CONTENT_MODEL_1_0_URI);
 
             org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = AlfrescoSolrDataModel.getInstance(id).parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader);
             

@@ -84,7 +84,7 @@ public interface TenantService extends TenantUserService
      * @return          the reference <b>with</b> the tenant-specific ID attached
      */
     public String getName(String name);
-
+    
     /**
      * @return          the reference <b>without</b> the tenant-specific ID attached
      */
@@ -98,12 +98,22 @@ public interface TenantService extends TenantUserService
     /**
      * @return          the reference <b>without</b> the tenant-specific ID attached
      */
+    public NodeRef getBaseName(NodeRef nodeRef, boolean forceForNonTenant);
+    
+    /**
+     * @return          the reference <b>without</b> the tenant-specific ID attached
+     */
     public StoreRef getBaseName(StoreRef storeRef);
     
     /**
      * @return          the reference <b>without</b> the tenant-specific ID attached
      */
     public ChildAssociationRef getBaseName(ChildAssociationRef childAssocRef);
+    
+    /**
+     * @return          the reference <b>without</b> the tenant-specific ID attached
+     */
+    public ChildAssociationRef getBaseName(ChildAssociationRef childAssocRef, boolean forceIfNonTenant);
     
     /**
      * @return          the reference <b>without</b> the tenant-specific ID attached

@@ -68,6 +68,7 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
@@ -401,12 +402,10 @@ public class CoreTracker implements CloseHook
         }
         catch (ParseException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         catch (SchedulerException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -483,17 +482,14 @@ public class CoreTracker implements CloseHook
         }
         catch (IOException e1)
         {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         catch (JSONException e1)
         {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         catch (AuthenticationException e1)
         {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         finally
@@ -1543,9 +1539,31 @@ public class CoreTracker implements CloseHook
             input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclReaders.getId());
             input.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclReaders.getId());
             input.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
+            String tenant = aclReaders.getTenantDomain();
             for (String reader : aclReaders.getReaders())
             {
-                input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                switch(AuthorityType.getAuthorityType(reader))
+                {
+                case USER:
+                    input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                    break;
+                case GROUP:
+                case EVERYONE:
+                case GUEST:
+                    if(tenant.length() == 0)
+                    {
+                        // Default tenant matches 4.0 
+                        input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                    }
+                    else
+                    {
+                        input.addField(AbstractLuceneQueryParser.FIELD_READER, reader+"@"+tenant);
+                    }
+                    break;
+                default:
+                    input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                    break;
+                }
             }
             cmd.solrDoc = input;
             cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -1777,8 +1795,16 @@ public class CoreTracker implements CloseHook
                     }
                     doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
                     doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
-
-                    doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+                    // TODO: Place holder to test tenant queries
+                    String tenant =  nodeMetaData.getTenantDomain();
+                    if(tenant.length() > 0)
+                    {
+                        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, nodeMetaData.getTenantDomain());
+                    }
+                    else
+                    {
+                        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+                    }
                     
                     leafDocCmd.solrDoc = doc;
                     leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -3101,7 +3127,6 @@ public class CoreTracker implements CloseHook
         }
         catch (SchedulerException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

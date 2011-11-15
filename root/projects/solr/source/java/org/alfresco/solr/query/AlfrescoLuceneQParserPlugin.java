@@ -58,10 +58,6 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
 {
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoLuceneQParserPlugin.class);
     
-    private static final String ALFRESCO_JSON = "ALFRESCO_JSON";
-
-    private static final String AUTHORITY_FILTER_FROM_JSON = "AUTHORITY_FILTER_FROM_JSON";
-    
     /*
      * (non-Javadoc)
      * @see org.apache.solr.search.QParserPlugin#createParser(java.lang.String,
@@ -83,11 +79,8 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
     {
     }
 
-    public static class AlfrescoLuceneQParser extends QParser
+    public static class AlfrescoLuceneQParser extends AbstractQParser
     {
-
-        AbstractLuceneQueryParser lqp;
-
         public AlfrescoLuceneQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
         {
             super(qstr, localParams, params, req);
@@ -100,143 +93,10 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws ParseException
         {
-            SearchParameters searchParameters = new SearchParameters();
-
-            Iterable<ContentStream> streams = req.getContentStreams();
-
-            JSONObject json = (JSONObject) req.getContext().get(ALFRESCO_JSON);
-
-            if (json == null)
-            {
-                if (streams != null)
-                {
-
-                    try
-                    {
-                        Reader reader = null;
-                        for (ContentStream stream : streams)
-                        {
-                            reader = new BufferedReader(new InputStreamReader(stream.getStream(), "UTF-8"));
-                        }
-
-                        // TODO - replace with streaming-based solution e.g. SimpleJSON ContentHandler
-                        if (reader != null)
-                        {
-                            json = new JSONObject(new JSONTokener(reader));
-                            req.getContext().put(ALFRESCO_JSON, json);
-                        }
-                    }
-                    catch (JSONException e)
-                    {
-                        // This is expected when there is no json element to the request
-                    }
-                    catch (IOException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            if (json != null)
-            {
-                try
-                {
-                    if (getString().equals(AUTHORITY_FILTER_FROM_JSON))
-                    {
-                        String filter = json.getString("filter");
-                        if (filter != null)
-                        {
-                            searchParameters.setQuery(filter);
-                        }
-                    }
-                    else
-                    {
-                        String query = json.getString("query");
-                        if (query != null)
-                        {
-                            searchParameters.setQuery(query);
-                        }
-                    }
-
-                    JSONArray locales = json.getJSONArray("locales");
-                    for (int i = 0; i < locales.length(); i++)
-                    {
-                        String localeString = locales.getString(i);
-                        Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
-                        searchParameters.addLocale(locale);
-                    }
-                   
-                    JSONArray templates = json.getJSONArray("templates");
-                    for (int i = 0; i < templates.length(); i++)
-                    {
-                        JSONObject template = templates.getJSONObject(i);
-                        String name = template.getString("name");
-                        String queryTemplate = template.getString("template");
-                        searchParameters.addQueryTemplate(name, queryTemplate);
-                    }
-
-                    JSONArray allAttributes = json.getJSONArray("allAttributes");
-                    for (int i = 0; i < allAttributes.length(); i++)
-                    {
-                        String allAttribute = allAttributes.getString(i);
-                        searchParameters.addAllAttribute(allAttribute);
-                    }
-
-                    searchParameters.setDefaultFTSOperator(Operator.valueOf(json.getString("defaultFTSOperator")));
-                    searchParameters.setDefaultFTSFieldConnective(Operator.valueOf(json.getString("defaultFTSFieldOperator")));
-                    if (json.has("mlAnalaysisMode"))
-                    {
-                        searchParameters.setMlAnalaysisMode(MLAnalysisMode.valueOf(json.getString("mlAnalaysisMode")));
-                    }
-                    searchParameters.setNamespace(json.getString("defaultNamespace"));
-
-                    JSONArray textAttributes = json.getJSONArray("textAttributes");
-                    for (int i = 0; i < textAttributes.length(); i++)
-                    {
-                        String textAttribute = textAttributes.getString(i);
-                        searchParameters.addAllAttribute(textAttribute);
-                    }
-
-                }
-                catch (JSONException e)
-                {
-                    // This is expected when there is no json element to the request
-                }
-            }
-
-            if(json != null)
-            {
-                if(log.isDebugEnabled())
-                {
-                    log.debug(json.toString());
-                }
-            }
-            
-            if (searchParameters.getQuery() == null)
-            {
-                searchParameters.setQuery(getString());
-            }
-
-            if(searchParameters.getLocales().size() == 0)
-            {
-                searchParameters.addLocale(I18NUtil.getLocale());
-            }
-            
-            String defaultField = getParam(CommonParams.DF);
-            if(defaultField != null)
-            {
-                searchParameters.setDefaultFieldName(defaultField);
-            }
-
-            // these could either be checked & set here, or in the SolrQueryParser constructor
+            SearchParameters searchParameters = getSearchParameters();
 
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
-
-            // searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
-            searchParameters.setNamespace(NamespaceService.CONTENT_MODEL_1_0_URI);
-            
             
             AbstractLuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(searchParameters, indexReader);
             Query query = lqp.parse(qstr);

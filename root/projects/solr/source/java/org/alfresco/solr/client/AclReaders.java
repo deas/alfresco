@@ -32,18 +32,21 @@ public class AclReaders
     private final List<String> readers;
 
     private final long aclChangeSetId;
+    
+    private final String tenantDomain;
 
-    public AclReaders(long id, List<String> readers, long aclChangeSetId)
+    public AclReaders(long id, List<String> readers, long aclChangeSetId, String tenantDomain)
     {
         this.id = id;
         this.readers = readers;
         this.aclChangeSetId = aclChangeSetId;
+        this.tenantDomain = tenantDomain;
     }
 
     @Override
     public String toString()
     {
-        return "AclReaders [id=" + id + ", readers=" + readers + "]";
+        return "AclReaders [id=" + id + ", readers=" + readers + ", tenantDomain=" + tenantDomain + "]";
     }
 
     @Override
@@ -95,5 +98,9 @@ public class AclReaders
     {
         return aclChangeSetId;
     }
-
+    
+    public String getTenantDomain()
+    {
+        return tenantDomain;
+    }
 }

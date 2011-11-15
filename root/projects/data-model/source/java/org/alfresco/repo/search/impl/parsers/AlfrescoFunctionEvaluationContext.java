@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -98,6 +98,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_INACLTXID);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_INTXID);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TENANT);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ANCESTOR);
     }
 

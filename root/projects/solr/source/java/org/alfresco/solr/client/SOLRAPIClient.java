@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +41,7 @@ import org.alfresco.httpclient.PostRequest;
 import org.alfresco.httpclient.Response;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
+import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -57,14 +57,11 @@ import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConverter.Converter;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.solr.SetLocaleSearchComponent;
 import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.Pair;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.DateUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -296,7 +293,7 @@ public class SOLRAPIClient
 
 	        if (response.getStatus() != HttpStatus.SC_OK)
 	        {
-	            throw new AlfrescoRuntimeException(GET_ACL_CHANGESETS_URL + " return status:" + response.getStatus());
+	            throw new AlfrescoRuntimeException(GET_ACLS_READERS + " return status:" + response.getStatus());
 	        }
         
 	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
@@ -329,7 +326,14 @@ public class SOLRAPIClient
                 readers.add(readerJSON);
             }
             long aclChangeSetId = aclReadersJSON.getLong("aclChangeSetId");
-            AclReaders aclReaders = new AclReaders(aclId, readers, aclChangeSetId);
+            
+            String tenantDomain = aclReadersJSON.getString("tenantDomain");
+            if (tenantDomain == null)
+            {
+                tenantDomain = TenantService.DEFAULT_DOMAIN;
+            }
+            
+            AclReaders aclReaders = new AclReaders(aclId, readers, aclChangeSetId, tenantDomain);
             aclsReaders.add(aclReaders);
         }
         // Done
@@ -724,10 +728,15 @@ public class SOLRAPIClient
         {
             JSONObject jsonNodeInfo = jsonNodes.getJSONObject(i);
             NodeMetaData metaData = new NodeMetaData();
-
+            
             if(jsonNodeInfo.has("id"))
             {
                 metaData.setId(jsonNodeInfo.getLong("id"));
+            }
+            
+            if(jsonNodeInfo.has("tenantDomain"))
+            {
+                metaData.setTenantDomain(jsonNodeInfo.getString("tenantDomain"));
             }
             
             if(jsonNodeInfo.has("txnId"))

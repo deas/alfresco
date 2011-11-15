@@ -48,6 +48,7 @@ public class NodeMetaData
     private String owner;
     private long txnId;
     private Set<NodeRef> ancestors;
+    private String tenantDomain;
     
     public long getId()
     {
@@ -167,15 +168,21 @@ public class NodeMetaData
     {
         this.ancestors = ancestors;
     }
+    public String getTenantDomain()
+    {
+        return tenantDomain;
+    }
+    public void setTenantDomain(String tenantDomain)
+    {
+        this.tenantDomain = tenantDomain;
+    }
+    
     @Override
     public String toString()
     {
         return "NodeMetaData [id="
                 + id + ", nodeRef=" + nodeRef + ", type=" + type + ", aclId=" + aclId + ", properties=" + properties + ", aspects=" + aspects + ", paths=" + paths
                 + ", parentAssocsCrc=" + parentAssocsCrc + ", parentAssocs=" + parentAssocs + ", childAssocs=" + childAssocs + ", childIds=" + childIds + ", owner=" + owner
-                + ", txnId=" + txnId + ", ancestors=" + ancestors + "]";
+                + ", txnId=" + txnId + ", ancestors=" + ancestors + ", tenantDomain=" + tenantDomain + "]";
     }
-  
-  
-   
 }

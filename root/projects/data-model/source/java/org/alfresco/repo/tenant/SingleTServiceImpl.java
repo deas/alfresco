@@ -88,6 +88,11 @@ public class SingleTServiceImpl implements TenantService
         return nodeRef;
     }
     
+    public NodeRef getBaseName(NodeRef nodeRef, boolean forceForNonTenant)
+    {
+        return nodeRef;
+    }
+    
     public StoreRef getBaseName(StoreRef storeRef)
     {
         return storeRef;
@@ -95,7 +100,12 @@ public class SingleTServiceImpl implements TenantService
     
     public ChildAssociationRef getBaseName(ChildAssociationRef childAssocRef)
     {
-    	return childAssocRef;
+        return childAssocRef;
+    }
+    
+    public ChildAssociationRef getBaseName(ChildAssociationRef childAssocRef, boolean forceForNonTenant)
+    {
+        return childAssocRef;
     }
     
     public AssociationRef getBaseName(AssociationRef assocRef)

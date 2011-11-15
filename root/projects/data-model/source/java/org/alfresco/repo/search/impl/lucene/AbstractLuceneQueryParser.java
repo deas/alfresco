@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -867,6 +867,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 return createTagQuery(queryText);
             }
+            else if (field.equals(FIELD_TENANT))
+            {
+                return createTenantQuery(queryText);
+            }
             else if (field.equals(FIELD_ANCESTOR))
             {
                 return createAncestorQuery(queryText);
@@ -884,6 +888,18 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 
     }
 
+    protected Query createTenantQuery(String queryText) throws ParseException
+    {
+        if(queryText.length() > 0)
+        {
+            return getFieldQueryImpl(FIELD_TENANT, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+        }
+        else
+        {
+            return getFieldQueryImpl(FIELD_TENANT, "_DEFAULT_", AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+        }
+    }
+    
     
     protected Query createAncestorQuery(String queryText) throws ParseException
     {
