@@ -582,7 +582,7 @@
             }
             else
             {
-               menuData = meunData.concat(scope.settableRolesMenuData);
+               menuData = menuData.concat(scope.settableRolesMenuData);
 
                // Internationalise the roles strings displayed:
                for (var j = 0, jj = menuData.length; j < jj; j++)
