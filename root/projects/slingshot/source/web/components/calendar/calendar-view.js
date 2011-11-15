@@ -142,7 +142,8 @@
             url: Alfresco.constants.PROXY_URI + "calendar/events/" + this.options.siteId + "/user",
             dataObj:
             {
-               from: toISO8601(this.options.startDate).split('T')[0]
+               from: toISO8601(this.options.startDate).split('T')[0],
+               repeating: "all"
             },
             //filter out non relevant events for current view            
             successCallback: 

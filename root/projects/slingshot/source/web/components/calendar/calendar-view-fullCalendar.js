@@ -252,7 +252,7 @@
                eventSources:
                [
                   {
-                     url: Alfresco.constants.PROXY_URI + "calendar/events/" + me.options.siteId + "/user",
+                     url: Alfresco.constants.PROXY_URI + "calendar/events/" + me.options.siteId + "/user?repeating=all",
                      startParam: "from",
                      startParamFn: function(rangeStart)
                      {
