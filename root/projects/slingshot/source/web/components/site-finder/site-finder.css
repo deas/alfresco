@@ -75,7 +75,7 @@
 
 .site-finder .yui-dt td.yui-dt-last
 {
-   text-align: center;
+   text-align: right;
 }
 
 .site-finder .yui-dt-last td
@@ -90,7 +90,7 @@
 
 .site-finder .yui-dt-last
 {
-   width: 165px;
+   width: 18em;
 }
 
 .site-finder tr.yui-dt-odd
