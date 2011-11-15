@@ -129,7 +129,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-1.0.0-tests.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-1.0.0.jar" sourcepath="src/spring-webscripts-1.0.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-api-1.0.0.jar" sourcepath="src/spring-webscripts-api-1.0.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-2009-09-27.jar" sourcepath="src/PDFRenderer-2009-09-27-src.zip"/>
 	<classpathentry kind="lib" path="lib/abdera/axiom-impl-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/abdera/axiom-api-1.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-compress-1.1.jar"/>
@@ -238,5 +237,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1.jar" sourcepath="src/PDFRenderer-0.9.1-src.zip"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
