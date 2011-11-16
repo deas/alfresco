@@ -59,11 +59,10 @@ public class TcpipSMBChannelHandler extends ChannelPacketHandler {
 
 		int len = readBytes( m_headerBuf, 0, 4);
 
-		// Check if the connection has been closed, read length equals -1
+		// Check if the connection has been closed, read length equals -1, or no data, read length equals 0
 
-		if ( len == -1)
+		if ( len <= 0)
 			return null;
-//			throw new IOException("Connection closed (header read)");
 
 		// Check if we received a valid header
 

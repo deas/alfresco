@@ -36,6 +36,10 @@ import org.alfresco.jlan.smb.server.SMBSrvSession;
  */
 public class NIOCIFSThreadRequest implements ThreadRequest {
 
+	// Maximum packets to run per thread run
+	
+	private static final int MaxPacketsPerRun	= 4;
+	
 	// CIFS session
 	
 	private SMBSrvSession m_sess;
@@ -65,23 +69,82 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 		
 		if ( m_sess.isShutdown() == false) {
 			
+			// Read one or more packets from the socket for this session
+
+			int pktCount = 0;
+			boolean morePkts = true;
+			boolean pktError = false;
+			
 			SMBSrvPacket smbPkt = null;
 			
-			try {
+			while ( pktCount < MaxPacketsPerRun && morePkts == true && pktError == false) {
 				
-				// Get the packet handler and read in the CIFS request
-				
-				PacketHandler pktHandler = m_sess.getPacketHandler();
-				smbPkt = pktHandler.readPacket();
-				
-				// If the request packet is not valid then close the session
-				
-				if ( smbPkt == null) {
+				try {
 					
+					// Get the packet handler and read in the CIFS request
+					
+					PacketHandler pktHandler = m_sess.getPacketHandler();
+					smbPkt = pktHandler.readPacket();
+					
+					// If the request packet is not valid then close the session
+					
+					if ( smbPkt == null) {
+						
+						// If we have not processed any packets in this run it is an error
+						
+						if ( pktCount == 0) {
+							
+							// DEBUG
+							
+							if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
+								Debug.println("Received null packet, closing session sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress());
+							
+							// Close the session
+							
+							m_sess.hangupSession( "Client closed socket");
+							m_sess.processPacket( null);
+							
+							// Cancel the selection key
+							
+							m_selectionKey.cancel();
+							m_selectionKey.selector().wakeup();
+							
+							// Indicate socket/packet error
+							
+							pktError = true;
+						}
+						
+						// No more packets available
+						
+						morePkts = false;
+					}
+					else {
+						
+						
+						// Update the count of packets processed
+						
+						pktCount++;
+
+						// If this is the last packet before we hit the maximum packets per thread then
+						// re-enable read events for this socket channel
+						
+						if ( pktCount == MaxPacketsPerRun) {
+							m_selectionKey.interestOps( m_selectionKey.interestOps() | SelectionKey.OP_READ);
+							m_selectionKey.selector().wakeup();
+						}
+						
+						// Process the CIFS request
+						
+						m_sess.processPacket( smbPkt);
+						smbPkt = null;
+					}
+				}
+				catch ( Throwable ex) {
+	
 					// DEBUG
 					
 					if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
-						Debug.println("Received null packet, closing session sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress());
+						Debug.println("Error during packet receive, closing session sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress() + " ex=" + ex.getMessage());
 					
 					// Close the session
 					
@@ -92,44 +155,34 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 					
 					m_selectionKey.cancel();
 					m_selectionKey.selector().wakeup();
+					
+					// Indicate socket/packet error
+					
+					pktError = true;
 				}
-				else {
+				finally {
 					
-					// Re-enable read events for this socket channel
+					// Make sure the request packet is returned to the pool
 					
-					m_selectionKey.interestOps( m_selectionKey.interestOps() | SelectionKey.OP_READ);
-					m_selectionKey.selector().wakeup();
-					
-					// Process the CIFS request
-					
-					m_sess.processPacket( smbPkt);
-					smbPkt = null;
+					if ( smbPkt != null)
+						m_sess.getPacketPool().releasePacket( smbPkt);
 				}
 			}
-			catch ( Throwable ex) {
-
-				// DEBUG
+			
+			// Re-enable read events for this socket channel, if there were no errors
+			
+			if ( pktError == false && pktCount < MaxPacketsPerRun) {
 				
-				if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
-					Debug.println("Error during packet receive, closing session sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress() + " ex=" + ex.getMessage());
-				
-				// Close the session
-				
-				m_sess.hangupSession( "Client closed socket");
-				m_sess.processPacket( null);
-				
-				// Cancel the selection key
-				
-				m_selectionKey.cancel();
+				// Re-enable read events for this socket channel
+			
+				m_selectionKey.interestOps( m_selectionKey.interestOps() | SelectionKey.OP_READ);
 				m_selectionKey.selector().wakeup();
-			}
-			finally {
-				
-				// Make sure the request packet is returned to the pool
-				
-				if ( smbPkt != null)
-					m_sess.getPacketPool().releasePacket( smbPkt);
-			}
+			}			
+
+			// DEBUG
+			
+			if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_THREADPOOL) && pktCount > 1)
+				Debug.println("Processed " + pktCount + " packets for addr=" + m_sess.getRemoteAddress().getHostAddress() + " in one thread run (max=" + MaxPacketsPerRun + ")");
 		}
 	}
 	

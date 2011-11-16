@@ -156,8 +156,18 @@ public class WinsockNetBIOSPacketHandler extends PacketHandler implements Asynch
 					}
 				}
 			}
-			if ( rxlen == 0 && hasDebug())
-				Debug.println("***** Still no data after 100ms *****");
+			if ( rxlen == 0) {
+				
+				// DEBUG
+				
+				if ( hasDebug())
+					Debug.println("***** Still no data after 100ms *****");
+				
+				// Check for asynchronous mode, return a null packet
+			
+				if ( hasAsynchronousMode())
+					return null;
+			}
 		}
 		
 		SMBSrvPacket pkt = null;
