@@ -68,7 +68,14 @@ public class LuceneFTSProximity extends FTSProximity implements LuceneQueryBuild
         if(argument != null)
         {
             String val = (String) argument.getValue(functionContext);
-            slop = Integer.parseInt(val);
+            try
+            {
+                slop = Integer.parseInt(val);
+            }
+            catch(NumberFormatException nfe)
+            {
+                // ignore rubbish
+            }
         }
         
         

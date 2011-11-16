@@ -443,6 +443,15 @@ public class FTSQueryParser
             PropertyArgument parg = buildFieldReference(FTSProximity.ARG_PROPERTY, fieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
             functionArguments.put(parg.getName(), parg);
         }
+        else
+        {
+            CommonTree specifiedFieldReferenceNode = findFieldReference(testNode);
+            if (specifiedFieldReferenceNode != null)
+            {
+                PropertyArgument parg = buildFieldReference(FTSProximity.ARG_PROPERTY, specifiedFieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+                functionArguments.put(parg.getName(), parg);
+            }
+        }
         return factory.createFunctionalConstraint(function, functionArguments);
     }
 

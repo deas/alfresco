@@ -408,10 +408,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
         else if (field.startsWith(PROPERTY_FIELD_PREFIX))
         {
-            // need to build each term for the span
-            SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
-            SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
-            return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
+            return spanQueryBuilder(field, first, last, slop, inOrder);
         }
         else if (field.equals(FIELD_ALL))
         {
@@ -468,7 +465,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
         else if (field.equals(FIELD_TAG))
         {
-            throw new UnsupportedOperationException("Span is not supported for "+FIELD_TAG);
+            return null;
         }
         else
         {
@@ -4331,6 +4328,140 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             return getSuperWildcardQuery(field, translateLocale(termStr));
         }
     }
+
+    private Query spanQueryBuilder(String field, String first, String last, int slop, boolean inOrder)
+    {
+        String propertyFieldName = field.substring(1);
+        
+        String expandedFieldName;
+        QName propertyQName;
+        PropertyDefinition propertyDef = matchPropertyDefinition(propertyFieldName);
+        IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
+        if (propertyDef != null)
+        {
+            tokenisationMode = propertyDef.getIndexTokenisationMode();
+            if (tokenisationMode == null)
+            {
+                tokenisationMode = IndexTokenisationMode.TRUE;
+            }
+            expandedFieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName();
+            propertyQName = propertyDef.getName();
+        }
+        else
+        {
+            expandedFieldName = expandAttributeFieldName(field);
+            propertyQName = QName.createQName(propertyFieldName);
+        }
+        
+        
+        if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT)))
+        {
+            // Build a sub query for each locale and or the results together - the analysis will take care of
+            // cross language matching for each entry
+            BooleanQuery booleanQuery = new BooleanQuery();
+            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
+            List<Locale> locales = searchParameters.getLocales();
+            List<Locale> expandedLocales = new ArrayList<Locale>();
+            for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
+            {
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, false));
+            }
+            for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
+            {
+                addMLTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
+                        mlAnalysisMode, locale);
+            }
+            return booleanQuery;
+        }
+        // Content
+        else if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
+        {
+           
+            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
+
+            List<Locale> locales = searchParameters.getLocales();
+            List<Locale> expandedLocales = new ArrayList<Locale>();
+            for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
+            {
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, true));
+            }
+
+            return addContentSpanQuery(field, first, last, slop, inOrder, expandedFieldName, expandedLocales, mlAnalysisMode);
+
+        }
+        else if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT)))
+        {
+            BooleanQuery booleanQuery = new BooleanQuery();
+            MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
+            List<Locale> locales = searchParameters.getLocales();
+            List<Locale> expandedLocales = new ArrayList<Locale>();
+            for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
+            {
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, false));
+            }
+            for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
+            {
+
+                addTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+
+            }
+            return booleanQuery;
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Span queries are only supported for d:text, d:mltext and d:content data types");    
+        }
+        
+        // need to build each term for the span
+        //SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
+        //SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
+        //return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
+    }
+    
+    /**
+     * @param field
+     * @param first
+     * @param last
+     * @param slop
+     * @param inOrder
+     * @param expandedFieldName
+     * @param tokenisationMode
+     * @param booleanQuery
+     * @param mlAnalysisMode
+     * @param locale
+     */
+    protected abstract void addTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
+            BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale);
+
+    /**
+     * @param field
+     * @param first
+     * @param last
+     * @param slop
+     * @param inOrder
+     * @param expandedFieldName
+     * @param expandedLocales
+     * @param mlAnalysisMode
+     * @return
+     */
+    protected abstract org.apache.lucene.search.Query addContentSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName,
+            List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode);
+
+    /**
+     * @param field
+     * @param first
+     * @param last
+     * @param slop
+     * @param inOrder
+     * @param expandedFieldName
+     * @param propertyDef
+     * @param tokenisationMode
+     * @param booleanQuery
+     * @param mlAnalysisMode
+     * @param locale
+     */
+    protected abstract void addMLTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, PropertyDefinition propertyDef,
+            IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale);
 
     private Query attributeQueryBuilder(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {

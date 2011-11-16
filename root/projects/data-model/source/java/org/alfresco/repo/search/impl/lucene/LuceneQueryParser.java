@@ -44,6 +44,9 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ConstantScoreRangeQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.spans.SpanNearQuery;
+import org.apache.lucene.search.spans.SpanQuery;
+import org.apache.lucene.search.spans.SpanTermQuery;
 import org.saxpath.SAXPathException;
 
 import com.werken.saxpath.XPathReader;
@@ -103,7 +106,7 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
         parser.setDefaultSearchMLAnalysisMode(defaultSearchMLAnalysisMode);
         parser.setIndexReader(indexReader);
         parser.setAllowLeadingWildcard(true);
-        // TODO: Apply locale contstraints at the top level if required for the non ML doc types.
+        // TODO: Apply locale constraints at the top level if required for the non ML doc types.
         Query result = parser.parse(query);
         if (s_logger.isDebugEnabled())
         {
@@ -826,6 +829,45 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
     protected boolean isLucene()
     {
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#addTextSpanQuery(java.lang.String, java.lang.String, java.lang.String, int, boolean, java.lang.String, org.alfresco.repo.dictionary.IndexTokenisationMode, org.apache.lucene.search.BooleanQuery, org.alfresco.repo.search.MLAnalysisMode, java.util.Locale)
+     */
+    @Override
+    protected void addTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
+            BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
+    {
+        SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
+        SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
+        SpanNearQuery result =  new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
+        booleanQuery.add(result, Occur.SHOULD);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#addContentSpanQuery(java.lang.String, java.lang.String, java.lang.String, int, boolean, java.lang.String, java.util.List, org.alfresco.repo.search.MLAnalysisMode)
+     */
+    @Override
+    protected org.apache.lucene.search.Query addContentSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName,
+            List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode)
+    {
+        SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
+        SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
+        SpanNearQuery result =  new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#addMLTextSpanQuery(java.lang.String, java.lang.String, java.lang.String, int, boolean, java.lang.String, org.alfresco.service.cmr.dictionary.PropertyDefinition, org.alfresco.repo.dictionary.IndexTokenisationMode, org.apache.lucene.search.BooleanQuery, org.alfresco.repo.search.MLAnalysisMode, java.util.Locale)
+     */
+    @Override
+    protected void addMLTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, PropertyDefinition propertyDef,
+            IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
+    {
+        SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
+        SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
+        SpanNearQuery result =  new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
+        booleanQuery.add(result, Occur.SHOULD);
     }
 
 }
