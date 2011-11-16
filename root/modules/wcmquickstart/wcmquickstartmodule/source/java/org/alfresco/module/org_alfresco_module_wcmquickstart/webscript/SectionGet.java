@@ -180,7 +180,7 @@ public class SectionGet extends AbstractWebScript
         searchParameters.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         searchParameters.setLanguage(SearchService.LANGUAGE_LUCENE);
         searchParameters.setQuery(query);
-        searchParameters.addSort(WebSiteModel.PROP_ORDER_INDEX.toString(), true);
+        searchParameters.addSort("@"+WebSiteModel.PROP_ORDER_INDEX.toString(), true);
 
         ResultSet rs = searchService.query(searchParameters);
         for (ResultSetRow row : rs)
