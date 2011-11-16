@@ -390,45 +390,50 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
                 this.dictionaryLock.writeLock().lock();
                 try
                 {
-                    // initiate a call to retrieve the dictionary from the repository
-                    final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
-                    final Response response = conn.call("/api/dictionary");
-                    if (response.getStatus().getCode() == Status.STATUS_OK)
+                    // check again, as more than one thread could have been waiting on the Write lock 
+                    dictionary = dictionaries.get(storeId);
+                    if (dictionary == null)
                     {
-                        logger.info("Successfully retrieved dictionary information from Alfresco." +
-                                    (storeId.length() != 0 ? (" - for domain: " + storeId) : ""));
-                        
-                        final Map<String, DictionaryItem> types = new HashMap<String, DictionaryItem>(128);
-                        final Map<String, DictionaryItem> aspects = new HashMap<String, DictionaryItem>(128);
-                        
-                        // TODO: remove url field from response template? waste of space...
-                        
-                        // extract dictionary types and aspects
-                        final JSONArray json = new JSONArray(response.getResponse());
-                        for (int i=0; i<json.length(); i++)
+                        // initiate a call to retrieve the dictionary from the repository
+                        final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
+                        final Response response = conn.call("/api/dictionary");
+                        if (response.getStatus().getCode() == Status.STATUS_OK)
                         {
-                            // get the object representing the dd class
-                            JSONObject ddclass = json.getJSONObject(i);
+                            logger.info("Successfully retrieved dictionary information from Alfresco." +
+                                        (storeId.length() != 0 ? (" - for domain: " + storeId) : ""));
                             
-                            // is this an aspect or a type definition?
-                            String typeName = ddclass.getString("name");
-                            if (ddclass.getBoolean("isAspect"))
+                            final Map<String, DictionaryItem> types = new HashMap<String, DictionaryItem>(128);
+                            final Map<String, DictionaryItem> aspects = new HashMap<String, DictionaryItem>(128);
+                            
+                            // TODO: remove url field from response template? waste of space...
+                            
+                            // extract dictionary types and aspects
+                            final JSONArray json = new JSONArray(response.getResponse());
+                            for (int i=0; i<json.length(); i++)
                             {
-                                aspects.put(typeName, new DictionaryItem(typeName, ddclass));
+                                // get the object representing the dd class
+                                JSONObject ddclass = json.getJSONObject(i);
+                                
+                                // is this an aspect or a type definition?
+                                String typeName = ddclass.getString("name");
+                                if (ddclass.getBoolean("isAspect"))
+                                {
+                                    aspects.put(typeName, new DictionaryItem(typeName, ddclass));
+                                }
+                                else
+                                {
+                                    types.put(typeName, new DictionaryItem(typeName, ddclass));
+                                }
                             }
-                            else
-                            {
-                                types.put(typeName, new DictionaryItem(typeName, ddclass));
-                            }
+                            
+                            // store the dictionary against the tenant domain
+                            dictionary = new Dictionary(types, aspects);
+                            this.dictionaries.put(storeId, dictionary);
                         }
-                        
-                        // store the dictionary against the tenant domain
-                        dictionary = new Dictionary(types, aspects);
-                        this.dictionaries.put(storeId, dictionary);
-                    }
-                    else
-                    {
-                       throw new AlfrescoRuntimeException("Unable to retrieve dictionary information from Alfresco: " + response.getStatus().getCode());
+                        else
+                        {
+                           throw new AlfrescoRuntimeException("Unable to retrieve dictionary information from Alfresco: " + response.getStatus().getCode());
+                        }
                     }
                 }
                 catch (ConnectorServiceException cerr)
