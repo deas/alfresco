@@ -24,7 +24,7 @@ ftsQuery:
 "+\++" -> "(DISJUNCTION (CONJUNCTION (MANDATORY (TERM \\++))))"
 ".txt" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM . txt))))"
 ".txt.doc.banana" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM . txt . doc . banana))))"
-"quick * fox" -> ""
+"quick * fox" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PROXIMITY quick PROXIMITY fox))))"
 //"*.txt" -> ""
 //"doc.*" -> ""
 "{http://www.alfresco.org/test/lucenetest}float\\-ista:3..3.40" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (RANGE INCLUSIVE 3 3.40 INCLUSIVE (FIELD_REF float\\-ista (NAME_SPACE {http://www.alfresco.org/test/lucenetest}))))))"
@@ -447,9 +447,9 @@ FTSWORD:
 "a"   OK
 "z"   OK
 "{"   FAIL
-"×"   FAIL
+//"×"   FAIL
 //"Ø"   OK
-"÷"   FAIL
+//"÷"   FAIL
 //"ə"   OK
 "("   FAIL
 ")"   FAIL

@@ -53,7 +53,7 @@ public class FTSTest extends TestCase
 
     }
 
-    public void DISABLE_testLexer() throws IOException, RecognitionException
+    public void testLexer() throws IOException, RecognitionException
     {
         ClassLoader cl = FTSTest.class.getClassLoader();
         InputStream modelStream = cl.getResourceAsStream("org/alfresco/repo/search/impl/parsers/fts_test.gunit");
