@@ -30,6 +30,7 @@ import org.alfresco.jlan.server.config.ServerConfiguration;
 import org.alfresco.jlan.server.filesys.FileName;
 import org.alfresco.jlan.server.filesys.FileStatus;
 import org.alfresco.jlan.server.locking.OpLockDetails;
+import org.alfresco.jlan.util.StringList;
 import org.springframework.extensions.config.ConfigElement;
 
 /**
@@ -278,20 +279,18 @@ public class StandaloneFileStateCache extends FileStateCache {
     				// Check if the path is below the renamed path
     
     				if ( statePath.length() > oldPath.length() && statePath.startsWith(oldPath)) {
-    
-    					// Get the associated file state, update and put back into the cache
-    
-    					FileState renState = (FileState) m_stateCache.remove(statePath);
-    
-    					renState.setFileStatus(FileStatus.NotExist);
-    					renState.setFileId(FileState.UnknownFileId);
-    
-    					m_stateCache.put(renState.getPath(), renState);
-    
-    					// DEBUG
-    
-    					if ( Debug.EnableInfo && hasDebug())
-    						Debug.println("++ Rename update " + statePath);
+    					
+						// Get the associated file state, mark as not existing
+    					
+						FileState renState = (FileState) m_stateCache.get( statePath);
+	
+						renState.setFileStatus(FileStatus.NotExist);
+						renState.setFileId(FileState.UnknownFileId);
+
+						// DEBUG
+						
+						if ( Debug.EnableInfo && hasDebug())
+							Debug.println("++ Rename update " + statePath);
     				}
     			}
     		}
