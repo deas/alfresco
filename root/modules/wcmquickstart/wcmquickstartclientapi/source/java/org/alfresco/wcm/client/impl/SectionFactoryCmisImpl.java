@@ -82,7 +82,7 @@ public class SectionFactoryCmisImpl extends AbstractCachingSectionFactoryImpl
                 (Boolean) result.getPropertyValueById(Section.PROPERTY_EXCLUDE_FROM_NAV));
 
         List<String> configList = result.getPropertyMultivalueById(Section.PROPERTY_SECTION_CONFIG);
-        properties.put(Section.PROPERTY_SECTION_CONFIG, (Serializable) parseSectionConfig(configList));
+        properties.put(Section.PROPERTY_SECTION_CONFIG, (Serializable) configList);
 
         section.setProperties(properties);
         List<String> tagSummary = result.getPropertyMultivalueById(PROPERTY_TAG_SUMMARY);
