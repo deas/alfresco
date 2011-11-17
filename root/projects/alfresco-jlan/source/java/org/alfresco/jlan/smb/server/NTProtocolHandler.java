@@ -7809,6 +7809,17 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 							
 							return;
 						}
+						else if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0) {
+							
+							// DEBUG
+							
+							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+								m_sess.debugPrintln("No oplock break, access attributes only, params=" + params + ", oplock=" + oplock);
+							
+							// Oplock break not required
+							
+							return;
+						}
 					
 						// Check if the oplock has a failed break timeout, do not send another break request to the client, fail the open
 						// request with an access denied error
