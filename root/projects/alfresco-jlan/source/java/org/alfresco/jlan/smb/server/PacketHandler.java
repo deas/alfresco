@@ -240,31 +240,35 @@ public abstract class PacketHandler {
 	public void closeHandler() {
 	}
 
+	/**
+	 * Rethrow an exception, allow for logging
+	 * 
+	 * @param t Throwable
+	 * @throws IOException
+	 */
 	protected void rethrowException(Throwable t) throws IOException
 	{
         if ( Debug.EnableDbg && hasDebug())
-            Debug.println(t);
+            Debug.println( t);
 	    
 	    // Most method signatures allow IOExceptions so let these pass straight through
+        
 	    if (t instanceof IOException)
-	    {
-	        throw (IOException)t;
-	    }
+	        throw (IOException) t;
+
 	    // Allow unchecked exceptions straight through
+	    
 	    else if (t instanceof RuntimeException)
-	    {
-	        throw (RuntimeException)t;
-	    }
+	        throw (RuntimeException) t;
 	    else if (t instanceof Error)
-	    {
-	        throw (Error)t;
-	    }
+	        throw (Error) t;
+	    
 	    // We have to wrap any other exceptions as unchecked
+	    
 	    else
-	    {
-	        throw new RuntimeException(t);
-	    }
+	        throw new RuntimeException( t);
 	}
+	
 	/**
 	 * Set the client name
 	 * 

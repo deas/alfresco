@@ -6178,10 +6178,10 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			else
 				prms.packInt( AccessMode.NTFileGenericRead);
 			
-			// 6 byte block of zeroes
+			// 8 byte block of zeroes
 			
 			prms.packInt( 0);
-			prms.packWord( 0);
+			prms.packInt( 0);
 		}
 
 		// Set the AndX offset

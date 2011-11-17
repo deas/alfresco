@@ -650,10 +650,10 @@ class IPCHandler {
 			
 			prms.packInt( 0x1F01FF);
 			
-			// 6 byte block of zeroes
+			// 8 byte block, from network trace observed values
 			
+			prms.packInt( 0x12019B);
 			prms.packInt( 0);
-			prms.packWord( 0);
 		}
 		
 		// Set the AndX offset
