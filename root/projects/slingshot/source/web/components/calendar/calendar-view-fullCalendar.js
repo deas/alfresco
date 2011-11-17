@@ -258,7 +258,11 @@
                      {
                         return toISO8601(rangeStart).split('T')[0];
                      },
-                     endParam: false,
+                     endParam: "to",
+                     endParamFn: function(rangeEnd)
+                     {
+                        return toISO8601(rangeEnd).split('T')[0];
+                     },
                      success: function(data)
                      {
                         var parsedEvents = [];

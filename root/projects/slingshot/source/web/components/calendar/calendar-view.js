@@ -143,6 +143,7 @@
             dataObj:
             {
                from: toISO8601(this.options.startDate).split('T')[0],
+               to: toISO8601(this.options.endDate).split('T')[0],
                repeating: "all"
             },
             //filter out non relevant events for current view            
