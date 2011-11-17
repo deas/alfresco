@@ -1178,37 +1178,46 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
                   var _this = this;
                   if (currAction.eventOnClick)
                   {
-                     var customEvent = currAction.eventOnClick; // Copy this value as the currAction handle will be reassigned...
-
-                     // If the action is an event then the value passed should be a custom event that
-                     // we will simply fire when the action node is clicked...
-                     Event.addListener(currActionNode, "click", function(e)
+                     Event.addListener(currActionNode, "click", (function(e)
                      {
-                        _this._fadeOut(e, _this);
-                        customEvent.fire({});
-                     });
+                        // If the action is an event then the value passed should be a custom event that
+                        // we will simply fire when the action node is clicked...
+                        var customEvent = currAction.eventOnClick; // Copy this value as the currAction handle will be reassigned...
+                        
+                        return function(e)
+                        {
+                           _this._fadeOut(e, _this);
+                           customEvent.fire({});
+                        }
+                     })());
                   }
                   else if (currAction.linkOnClick)
                   {
-                     var link = currAction.linkOnClick; // Copy this value as the currAction handle will be reassigned...
-
-                     // If the action is a navigation link, then add a listener function that updates
-                     // the browsers current location to be the supplied value...
-                     Event.addListener(currActionNode, "click", function()
+                     Event.addListener(currActionNode, "click", (function()
                      {
-                        window.location = link;
-                     });
+                        // If the action is a navigation link, then add a listener function that updates
+                        // the browsers current location to be the supplied value...
+                        var link = currAction.linkOnClick; // Copy this value as the currAction handle will be reassigned...
+                        
+                        return function()
+                        { 
+                           window.location = link;
+                        };
+                     })());
                   }
                   else if (currAction.targetOnClick)
                   {
-                     // If the action is a target link, then open a new window/tab and set its location
-                     // to the supplied value...
-                     var target = currAction.targetOnClick; // Copy this value as the currAction handle will be reassigned...
-
-                     Event.addListener(currActionNode, "click", function()
+                     Event.addListener(currActionNode, "click", (function()
                      {
-                        window.open(target);
-                     });
+                        // If the action is a target link, then open a new window/tab and set its location
+                        // to the supplied value...
+                        var target = currAction.targetOnClick; // Copy this value as the currAction handle will be reassigned...
+                         
+                        return function()
+                        {
+                           window.open(target);
+                        };
+                     })());
                   }
                   else if (currAction.bubbleOnClick)
                   {
