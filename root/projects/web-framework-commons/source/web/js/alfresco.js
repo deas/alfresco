@@ -2797,6 +2797,27 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
       },
 
       /**
+       * Successful property persistence handler
+       *
+       * @method onPersistSuccess
+       * @param response {Object} Server response object literal
+       */
+      onPersistSuccess: function InsituEditor_base_onPersistSuccess(response)
+      {
+         var restoreUI = true;
+         if (this.params.callback.fn)
+         {
+            restoreUI = this.params.callback.fn.call(this.params.callback.scope || this, response, this.params.callback.obj);
+         }
+         this.doHide(restoreUI);
+         
+         // Fire an event to cause the tags to refresh. A short-timeout is used to compensate for requests coming back too
+         // tag requests being completed before server side persistence is complete. Tests without this timeout have shown
+         // that tag updates get missed more often than not.
+         window.setTimeout(function() { YAHOO.Bubbling.fire("tagRefresh") }, 1000);
+      },
+      
+      /**
       * Failure property persistence handler
       *
       * @override
