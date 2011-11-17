@@ -658,6 +658,12 @@ public class FileInfo {
 		m_gid = finfo.getGid();
 		m_uid = finfo.getUid();
 		m_mode = finfo.getMode();
+		
+		if ( finfo.isDirectory())
+            setFileType(FileType.Directory);
+        else
+            setFileType(FileType.RegularFile);
+		
 	}
 
 	/**
