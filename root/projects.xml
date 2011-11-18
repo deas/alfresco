@@ -1458,7 +1458,6 @@
    
    <target name="minimize-slingshot-javascript"
            depends="init">
-<!--
       <echo>Merging selected Slingshot Javascript files...</echo>
       <concat destfile="${dir.project.slingshot.assemble}/js/yui-common.js" force="no">
          <fileset file="${dir.project.slingshot.assemble}/yui/utilities/utilities.js" />
@@ -1497,7 +1496,6 @@
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.project.slingshot.assemble}" 
                            destdir="${dir.project.slingshot.assemble}" />
--->
    </target>
 
    <target name="test-slingshot" 
