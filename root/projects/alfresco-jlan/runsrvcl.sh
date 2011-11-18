@@ -1,4 +1,4 @@
 # ! /bin/sh
 
 echo "Alfresco JLAN Server starting, enter 'x' to shutdown server, 'r' to restart server ..."
-java -Xms512m -Xmx1024m -Djava.library.path=./jni -cp ./jars/alfresco-jlan-full.jar:./libs/cryptix-jce-provider.jar:./service/wrapper.jar:./hazelcast/hazelcast-1.9.2.1.jar:./jgroups/jgroups-2.10.0.GA.jar:./libs/mysql-connector-java-5.1.15-bin.jar -Djava.net.preferIPv4Stack=true org.alfresco.jlan.app.JLANServer jlanConfigCluster.xml
+java -Xms512m -Xmx1024m -Djava.library.path=./jni -cp ./jars/alfresco-jlan-full.jar:./libs/cryptix-jce-provider.jar:./service/wrapper.jar:./hazelcast/hazelcast-1.9.4.4.jar:./libs/mysql-connector-java-5.1.15-bin.jar -Djava.net.preferIPv4Stack=true org.alfresco.jlan.app.JLANServer jlanConfigCluster.xml
