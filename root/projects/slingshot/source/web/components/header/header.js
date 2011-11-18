@@ -326,6 +326,13 @@
          }
       },
       
+      /**
+       * This is the user status at the time the page was loaded. It is also updated each time the user makes an update.
+       * 
+       * @property _currentStatus
+       * @type string
+       */
+      _currentStatus: "",
       
       /**
        * My Status handlers
@@ -340,6 +347,8 @@
       {
          this.widgets.statusBox = Dom.get(this.id + "-statusText");
          this.widgets.statusTime = Dom.get(this.id + "-statusTime");
+         this._currentStatus = this.widgets.statusBox.value; // Store the loaded value.
+         
          var statusISOTime = this.widgets.statusTime.attributes.title.value;
          if (statusISOTime !== "")
          {
@@ -381,6 +390,24 @@
             Event.stopEvent(p_oEvent);
          });
 
+         // When the user clicks in the status box, clear the previous status to make it easier to add new information...
+         var _this = this;
+         YAHOO.util.Event.addListener(this.id + "-statusText", "click", function(e)
+         {
+            Dom.get(_this.id + "-statusText").value = "";
+         });
+         
+         // When the user clicks away from the status box, reset the previous status if they have not entered a value...
+         YAHOO.util.Event.addListener(this.id + "-statusText", "blur", function(e)
+         {
+            var textBox = Dom.get(_this.id + "-statusText");
+            if (textBox.value.length == 0)
+            {
+               // If the user has not entered any data then reset the status...
+               textBox.value = _this._currentStatus;
+            }
+         });
+         
          this.widgets.submitStatus = new YAHOO.widget.Button(this.id + "-submitStatus");
          this.widgets.submitStatus.on("click", this.submitStatus, this.widgets.submitStatus, this);
       },
@@ -439,6 +466,7 @@
       {
          this.statusUpdateTime = Alfresco.util.fromISO8601(response.json.userStatusTime.iso8601);
          this.setStatusRelativeTime();
+         this._currentStatus = this.getStatusText();
          Alfresco.util.PopupManager.displayMessage(
          {
             text: this.msg("message.status.success")
