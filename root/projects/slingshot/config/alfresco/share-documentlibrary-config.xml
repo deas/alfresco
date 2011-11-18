@@ -109,9 +109,8 @@
       -->
       <google-docs>
          <!--
-            Enable/disable the Google Docs UI integration (Extra types on Create Content menu, Google Docs actions).
+            Google Docs UI integration is now toggled by the respective subsystem state within the Repository.
          -->
-         <enabled>false</enabled>
          
          <!--
             The mimetypes of documents Google Docs allows you to create via the Share interface.
@@ -597,7 +596,7 @@
                <permission allow="true">Write</permission>
             </permissions>
             <!-- gd:googleEditable -->
-            <evaluator>evaluator.doclib.action.googleDocsEditable</evaluator>
+            <evaluator>evaluator.doclib.action.googleDocsCheckOut</evaluator>
          </action>
 
          <!-- Checkin from Google Docs -->

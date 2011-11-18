@@ -250,7 +250,16 @@
    <!--
       Google Docs
    -->
-   <bean id="evaluator.doclib.action.googleDocsEditable" parent="evaluator.doclib.action.hasAspect">
+   <bean id="evaluator.doclib.action.googleDocsEnabled" parent="evaluator.doclib.action.metadataValue">
+      <property name="accessor" value="custom.googleDocs.enabled" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.StringEqualsComparator">
+            <property name="value" value="true" />
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.googleDocsEditableAspect" parent="evaluator.doclib.action.hasAspect">
       <property name="aspects">
          <list>
             <value>gd:googleEditable</value>
@@ -258,7 +267,7 @@
       </property>
    </bean>
 
-   <bean id="evaluator.doclib.action.googleDocsView" parent="evaluator.doclib.action.hasAspect">
+   <bean id="evaluator.doclib.action.googleDocsResourceAspect" parent="evaluator.doclib.action.hasAspect">
       <property name="aspects">
          <list>
             <value>gd:googleResource</value>
@@ -266,7 +275,33 @@
       </property>
    </bean>
 
-   <bean id="evaluator.doclib.action.googleDocsCheckIn" class="org.alfresco.web.evaluator.doclib.action.GoogleDocsCheckInEvaluator" />
+   <bean id="evaluator.doclib.action.googleDocsCheckOut" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.googleDocsEnabled" />
+            <ref bean="evaluator.doclib.action.googleDocsEditableAspect" />
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.googleDocsView" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.googleDocsEnabled" />
+            <ref bean="evaluator.doclib.action.googleDocsResourceAspect" />
+         </list>
+      </property>
+   </bean>
+
+   <bean id="evaluator.doclib.action.googleDocsCheckInCustom" class="org.alfresco.web.evaluator.doclib.action.GoogleDocsCheckInEvaluator" />
+   <bean id="evaluator.doclib.action.googleDocsCheckIn" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.googleDocsEnabled" />
+            <ref bean="evaluator.doclib.action.googleDocsCheckInCustom" />
+         </list>
+      </property>
+   </bean>
 
    <!--
       Google Maps

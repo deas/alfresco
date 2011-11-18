@@ -81,61 +81,58 @@ function getCreateContent()
    }
 
    // Google Docs enabled?
-   var googleDocsEnabledShare = false,
-      googleDocsEnabledRepo = false,
+   var googleDocsEnabled = false,
       googleDocsConfig = config.scoped["DocumentLibrary"]["google-docs"];
 
    if (googleDocsConfig !== null)
    {
-      googleDocsEnabledShare = (googleDocsConfig.getChildValue("enabled").toString() == "true");
-
-      if (googleDocsEnabledShare)
+      // Request the Google Docs status on the Repository
+      var result = remote.call("/api/googledocs/status");
+      if (result.status == 200 && result != "{}")
       {
-         // Request the Google Docs status on the Repository
-         var result = remote.call("/api/googledocs/status");
-         if (result.status == 200 && result != "{}")
+         var obj = eval('(' + result + ')');
+         try
          {
-            var obj = eval('(' + result + ')');
-            try
-            {
-               googleDocsEnabledRepo = obj.data.enabled;
-            }
-            catch (e)
-            {
-            }
+            googleDocsEnabled = obj.data.enabled;
+         }
+         catch (e)
+         {
          }
       }
-      
-      var configs = googleDocsConfig.getChildren("creatable-types"),
-         creatableConfig,
-         configItem,
-         creatableType,
-         mimetype;
 
-      if (configs)
+      if (googleDocsEnabled)
       {
-         for (var i = 0; i < configs.size(); i++)
+         var configs = googleDocsConfig.getChildren("creatable-types"),
+            creatableConfig,
+            configItem,
+            creatableType,
+            mimetype;
+
+         if (configs)
          {
-            creatableConfig = configs.get(i).childrenMap["creatable"];
-            if (creatableConfig)
+            for (var i = 0; i < configs.size(); i++)
             {
-               for (var j = 0; j < creatableConfig.size(); j++)
+               creatableConfig = configs.get(i).childrenMap["creatable"];
+               if (creatableConfig)
                {
-                  configItem = creatableConfig.get(j);
-                  // Get type and mimetype from each config item
-                  creatableType = configItem.attributes["type"].toString();
-                  mimetype = configItem.value.toString();
-                  if (creatableType && mimetype)
+                  for (var j = 0; j < creatableConfig.size(); j++)
                   {
-                     createContent.push(
+                     configItem = creatableConfig.get(j);
+                     // Get type and mimetype from each config item
+                     creatableType = configItem.attributes["type"].toString();
+                     mimetype = configItem.value.toString();
+                     if (creatableType && mimetype)
                      {
-                        mimetype: mimetype,
-                        icon: creatableType,
-                        permission: "create-google-doc",
-                        itemid: "cm:content",
-                        formid: "doclib-create-googledoc",
-                        label: "google-docs." + creatableType
-                     });
+                        createContent.push(
+                        {
+                           mimetype: mimetype,
+                           icon: creatableType,
+                           permission: "create-google-doc",
+                           itemid: "cm:content",
+                           formid: "doclib-create-googledoc",
+                           label: "google-docs." + creatableType
+                        });
+                     }
                   }
                }
             }
@@ -147,7 +144,7 @@ function getCreateContent()
    var createContentByTemplateConfig = config.scoped["DocumentLibrary"]["create-content-by-template"];
    createContentByTemplateEnabled = createContentByTemplateConfig !== null ? createContentByTemplateConfig.value.toString() == "true" : false;
 
-   model.googleDocsEnabled = googleDocsEnabledShare && googleDocsEnabledRepo;
+   model.googleDocsEnabled = googleDocsEnabled;
    model.createContent = createContent;
    model.createContentByTemplateEnabled = createContentByTemplateEnabled;
 }
