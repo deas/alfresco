@@ -1458,7 +1458,7 @@
    
    <target name="minimize-slingshot-javascript"
            depends="init">
-
+<!--
       <echo>Merging selected Slingshot Javascript files...</echo>
       <concat destfile="${dir.project.slingshot.assemble}/js/yui-common.js" force="no">
          <fileset file="${dir.project.slingshot.assemble}/yui/utilities/utilities.js" />
@@ -1497,6 +1497,7 @@
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.project.slingshot.assemble}" 
                            destdir="${dir.project.slingshot.assemble}" />
+-->
    </target>
 
    <target name="test-slingshot" 
@@ -1832,7 +1833,7 @@
          <fileset dir="${dir.project.datamodel.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}"
-                  excludes="**/extension/**,alfresco/module/test/**" />
+                  excludes="**/extension/**" />
          <fileset dir="${dir.project.remoteapi.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}"
@@ -1906,7 +1907,7 @@
          <fileset dir="${dir.project.jlan.dist}" 
                   includes="${file.name.jar.jlan}" />
          <fileset dir="${dir.project.jlan}/hazelcast" 
-                  includes="hazelcast-1.9.3.1.jar"/>
+                  includes="hazelcast-1.9.4.4.jar"/>
       </copy>
    </target>
 
