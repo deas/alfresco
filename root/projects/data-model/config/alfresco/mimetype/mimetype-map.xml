@@ -342,6 +342,11 @@
          <mimetype mimetype="application/x-fla" display="Flash Source">
             <extension>fla</extension>
          </mimetype>
+         <mimetype mimetype="application/dita+xml" display="DITA">
+            <extension display="DITA Topic" default="true">dita</extension>
+            <extension display="DITA Conditional Processing Profile">ditaval</extension>
+            <extension display="DITA Map">ditamap</extension>
+         </mimetype>
          <mimetype mimetype="application/x-tar" display="Tarball">
             <extension>tar</extension>
          </mimetype>
