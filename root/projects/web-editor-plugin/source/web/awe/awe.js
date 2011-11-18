@@ -110,6 +110,12 @@
          this.initAttributes(this.config);
          this.initEditor();
 
+         // A Dynamically loaded TinyMCE instance needs this setting:
+         if (tinyMCE)
+         {
+            tinyMCE.dom.Event.domLoaded = true;
+         }
+         
          return this;
       },
       
