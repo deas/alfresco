@@ -113,7 +113,7 @@ public class WebSiteServiceImpl extends WebSiteService
         {
             contextPath = "/" + contextPath;
         }
-        String key = hostName + ":" + hostPort + contextPath;
+        String key = (hostName + ":" + hostPort).toLowerCase() + contextPath;
         WebSite website = getWebSiteCache().get(key);
         if (website == null)
         {
@@ -184,7 +184,7 @@ public class WebSiteServiceImpl extends WebSiteService
                 // Default to port 80 if not set
                 hostPort = new BigInteger("80");
             }
-            String key = hostName + ":" + hostPort.toString() + "/" + context;
+            String key = (hostName + ":" + hostPort.toString()).toLowerCase() + "/" + context;
 
             String title = result.getPropertyValueById(Asset.PROPERTY_TITLE);
             String description = result.getPropertyValueById(Asset.PROPERTY_DESCRIPTION);
