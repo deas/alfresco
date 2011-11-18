@@ -199,7 +199,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.0.RC1.jar" sourcepath="src/spring-social-web-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.RC1.jar" sourcepath="src/spring-social-twitter-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-facebook-1.0.0.RC1.jar" sourcepath="src/spring-social-facebook-1.0.0.RC1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hazelcast/hazelcast-1.9.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.1.jar" sourcepath="src/mybatis-spring-1.0.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.aop-3.0.5.RELEASE.jar" sourcepath="C:/Users/Nick/.m2/repository/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
@@ -238,5 +237,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1.jar" sourcepath="src/PDFRenderer-0.9.1-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/hazelcast/hazelcast-1.9.4.4.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
