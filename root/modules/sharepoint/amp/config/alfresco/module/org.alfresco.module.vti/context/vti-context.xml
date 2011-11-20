@@ -54,6 +54,7 @@
     <bean id="vtiFilter" class="org.alfresco.module.vti.web.VtiFilter">
         <property name="authenticationHandler" ref="vtiAuthenticationHandler"/>
         <property name="vtiHandler" ref="vtiHandler"/>
+        <property name="vtiPathHelper" ref="vtiPathHelper"/>
         <property name="sysAdminParams">
            <ref bean="sysAdminParams" />
         </property>
@@ -134,6 +135,33 @@
                         <map>
                             <entry key="Request-method"><value>(GET)|(PUT)</value></entry>
                             <entry key="If"><value>^.+$</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiIfHeaderAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>GET</value></entry>
+                            <entry key="If-None-Match"><value>^.*$</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiIfHeaderAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>PUT</value></entry>
+                            <entry key="X-MSDAVEXTLockTimeout"><value>^.+$</value></entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiIfHeaderAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method"><value>PUT</value></entry>
+                            <entry key="Lock-Token"><value>^.+$</value></entry>
                         </map>
                     </property>
                     <property name="action" ref="vtiIfHeaderAction"/>
@@ -224,13 +252,7 @@
 
 
     <bean id="vtiIfHeaderAction" class="org.alfresco.module.vti.web.actions.VtiIfHeaderAction">
-        <property name="nodeService" ref="NodeService" />
-        <property name="fileFolderService" ref="FileFolderService" />
-        <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
-        <property name="authenticationService" ref="AuthenticationService" />
-        <property name="mimetypeService" ref="MimetypeService" />
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="versionService" ref="VersionService" />
+        <property name="handler" ref="vtiHandler" />
     </bean>
 
     <bean id="vtiBrowserAction" class="org.alfresco.module.vti.web.actions.VtiBrowserAction">
@@ -247,6 +269,9 @@
             <map>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/WebUrlFromPageUrl">
                     <ref bean="webUrlFromPageUrlEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetWebCollection">
+                    <ref bean="getWebCollectionEndpoint"/>
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsMetaData">
                     <ref bean="getDwsMetaDataEndpoint"/>
@@ -271,9 +296,6 @@
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/AddList">
                     <ref bean="addListEndpoint"/>
-                </entry>
-                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
-                    <ref bean="getListEndpoint"/>
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteList">
                     <ref bean="deleteListEndpoint"/>
@@ -344,6 +366,15 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/IsClaimsMode">
                     <ref bean="isClaimsModeEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListCollection">
+                    <ref bean="getListCollectionEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListItems">
+                    <ref bean="getListItemsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
+                    <ref bean="getListEndpoint"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -410,6 +441,16 @@
         <constructor-arg ref="vtiHandler" />
         <property name="name">
             <value>WebUrlFromPageUrl</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="getWebCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetWebCollectionEndpoint">
+        <constructor-arg ref="vtiHandler" />
+        <property name="name">
+            <value>GetWebCollection</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>
@@ -540,16 +581,6 @@
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>AddList</value>
-        </property>
-        <property name="namespace">
-            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
-        </property>
-    </bean>
-
-    <bean id="getListEndpoint" class="org.alfresco.module.vti.web.ws.GetListEndpoint">
-        <constructor-arg ref="listServiceHandler" />
-        <property name="name">
-            <value>GetList</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>
@@ -729,6 +760,37 @@
     <bean id="isClaimsModeEndpoint" class="org.alfresco.module.vti.web.ws.IsClaimsModeEndpoint">
         <property name="name">
             <value>IsClaimsMode</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="getListCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetListCollectionEndpoint">
+        <constructor-arg ref="listsServiceHandler"/>
+        <property name="name">
+            <value>GetListCollection</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+    
+    <bean id="getListItemsEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemsEndpoint">
+        <constructor-arg ref="vtiHandler"/>
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="name">
+            <value>GetListItems</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+    
+    <bean id="getListEndpoint" class="org.alfresco.module.vti.web.ws.GetListEndpoint">
+        <constructor-arg ref="listsServiceHandler"/>
+        <property name="name">
+            <value>GetList</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>

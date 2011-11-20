@@ -21,8 +21,12 @@ package org.alfresco.module.vti.web.ws;
 
 import java.net.URLDecoder;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.module.vti.handler.alfresco.VtiUtils;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -112,24 +116,36 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
         }
 
         NodeRef workingCopy;
+        boolean lockAfterSucess = true;
+
+        // Do not lock working copy node if we work with Office 2008/2011 for Mac
+        if (VtiUtils.isMacClientRequest(soapRequest))
+        {
+            lockAfterSucess = false;
+        }
+
         try
         {
-           workingCopy = handler.checkOutDocument(docPath);
+            workingCopy = handler.checkOutDocument(docPath, lockAfterSucess);
+
+            // creating soap response
+            Element responseElement = soapResponse.getDocument().addElement("CheckOutFileResponse", namespace);
+            Element result = responseElement.addElement("CheckOutFileResult");
+            result.setText(workingCopy != null ? "true" : "false");
+
+            soapResponse.setContentType("text/xml");
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Soap Method with name " + getName() + " is finished.");
+            }
+        }
+        catch (AccessDeniedException e) 
+        {
+            soapResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         catch(FileNotFoundException fnfe)
         {
            throw new VtiSoapException("File not found", -1, fnfe);
-        }
-
-        // creating soap response
-        Element responsElement = soapResponse.getDocument().addElement("CheckOutFileResponse", namespace);
-        Element result = responsElement.addElement("CheckOutFileResult");
-        result.setText(workingCopy != null ? "true" : "false");
-
-        soapResponse.setContentType("text/xml");
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("Soap Method with name " + getName() + " is finished.");
         }
 
     }

@@ -56,7 +56,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
     }
 
     /**
-     * Deletes document workspace
+     * Deletes a given data list
      * 
      * @param soapRequest Vti soap request ({@link VtiSoapRequest})
      * @param soapResponse Vti soap response ({@link VtiSoapResponse}) 
@@ -71,8 +71,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
        nc.addNamespace(soapUriPrefix, soapUri);
        nc.addNamespace(prefix, namespace);
        
-       String host = getHost(soapRequest);
-       String context = soapRequest.getAlfrescoContextName();
+       
        String dws = getDwsFromUri(soapRequest);        
 
        // getting listName parameter from request
@@ -109,7 +108,7 @@ public class DeleteListEndpoint extends AbstractEndpoint
        }
        
        // If we managed to delete the list, we simply send an empty <DeleteListResponse />
-       Element root = soapResponse.getDocument().addElement("DeleteListResponse");
+       soapResponse.getDocument().addElement("DeleteListResponse");
 
        if (logger.isDebugEnabled()) {
           logger.debug("SOAP method with name " + getName() + " is finished.");

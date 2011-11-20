@@ -85,9 +85,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        SimpleNamespaceContext nc = new SimpleNamespaceContext();
        nc.addNamespace(soapUriPrefix, soapUri);
        nc.addNamespace(prefix, namespace);
-       
-       String host = getHost(soapRequest);
-       String context = soapRequest.getAlfrescoContextName();
+
        String dws = getDwsFromUri(soapRequest);        
 
        // Get the listName parameter from the request
@@ -165,7 +163,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        server.addElement("ServerRelativeUrl").addText("/");
        
        // Field Details
-       Element fieldsE = listE.addElement("Fields");
+       listE.addElement("Fields");
        
        // All done
        if (logger.isDebugEnabled()) {

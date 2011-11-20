@@ -85,19 +85,16 @@ public class UndoCheckOutFileEndpoint extends AbstractEndpoint
         String officeVersion = soapRequest.getHeader(HEADER_X_OFFICE_VERSION);
 
         // Lock original node if we work with Office 2010 and greater
-        if (officeVersion != null)
+        if (officeVersion != null && Integer.parseInt(officeVersion.split("\\.")[0]) >= 14)
         {
-           if (Integer.parseInt(officeVersion.split("\\.")[0]) >= 14)
-           {
-               lockAfterSucess = true;
-           }
+            lockAfterSucess = true;
         }
 
         NodeRef originalNode = handler.undoCheckOutDocument(docPath, lockAfterSucess);
 
         // creating soap response
-        Element responsElement = soapResponse.getDocument().addElement("UndoCheckOutResponse", namespace);
-        Element result = responsElement.addElement("UndoCheckOutResult");
+        Element responseElement = soapResponse.getDocument().addElement("UndoCheckOutResponse", namespace);
+        Element result = responseElement.addElement("UndoCheckOutResult");
         result.setText(originalNode != null ? "true" : "false");
 
         soapResponse.setContentType("text/xml");

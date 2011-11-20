@@ -21,7 +21,11 @@ package org.alfresco.module.vti.web.fp;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
+import org.alfresco.repo.webdav.WebDAVServerException;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ContentWriter;
@@ -119,6 +123,21 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
         outputFormat.setNewlines(false);
         outputFormat.setIndent(false);
         return new XMLWriter(m_response.getWriter(), outputFormat);
+    }
+
+    @Override
+    protected void executeImpl() throws WebDAVServerException, Exception
+    {
+        try
+        {
+            super.executeImpl();
+        }
+        catch (AccessDeniedException e) 
+        {
+            // Office 2008/2011 for Mac special error handling
+            // returning 403 status will cause client to show user friendly message
+            m_response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
     }
 
 }

@@ -19,23 +19,31 @@
 package org.alfresco.module.vti.handler.alfresco.v3;
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.model.WebDAVModel;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoMethodHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiDocumentHepler;
 import org.alfresco.module.vti.handler.alfresco.VtiExceptionUtils;
+import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
+import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
 import org.alfresco.module.vti.metadata.dic.DocumentStatus;
 import org.alfresco.module.vti.metadata.dic.GetOption;
 import org.alfresco.module.vti.metadata.dic.VtiError;
+import org.alfresco.module.vti.metadata.dic.VtiSort;
+import org.alfresco.module.vti.metadata.dic.VtiSortField;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
@@ -44,16 +52,25 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.site.SiteModel;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
+import org.alfresco.repo.version.VersionModel;
+import org.alfresco.repo.webdav.WebDAV;
+import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
+import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.version.Version;
 import org.alfresco.service.cmr.version.VersionHistory;
+import org.alfresco.service.cmr.version.VersionType;
+import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.URLDecoder;
 import org.springframework.util.FileCopyUtils;
 
 /**
@@ -64,6 +81,7 @@ import org.springframework.util.FileCopyUtils;
 public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
 {
     private final static Log logger = LogFactory.getLog(AlfrescoMethodHandler.class);
+    private static final String DAV_EXT_LOCK_TIMEOUT = "X-MSDAVEXTLockTimeout";
 
     private SiteService siteService;
     private AuthenticationComponent authenticationComponent;
@@ -139,6 +157,12 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
 
             public String[] doWork() throws Exception
             {
+                // Office 2008/2011 for Mac fix
+                if (url.equals(""))
+                {
+                    return new String[] {"", ""};
+                }
+                
                 if (!url.startsWith(alfrescoContext))
                 {
                     if (logger.isDebugEnabled())
@@ -214,11 +238,17 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
     }
 
     /**
-     * @see org.alfresco.module.vti.handler.MethodHandler#existResource(java.lang.String, javax.servlet.http.HttpServletResponse)
+     * @see org.alfresco.module.vti.handler.MethodHandler#existResource(HttpServletRequest, HttpServletResponse)
      */
-    public boolean existResource(String uri, HttpServletResponse response)
+    public boolean existResource(HttpServletRequest request, HttpServletResponse response)
     {
-        FileInfo resourceFileInfo = getPathHelper().resolvePathFileInfo(uri);
+        String decodedUrl = URLDecoder.decode(request.getRequestURI());
+        if (decodedUrl.length() > getPathHelper().getAlfrescoContext().length())
+        {
+            decodedUrl = decodedUrl.substring(getPathHelper().getAlfrescoContext().length() + 1);
+        }
+
+        FileInfo resourceFileInfo = getPathHelper().resolvePathFileInfo(decodedUrl);
         if (resourceFileInfo == null)
         {
             try
@@ -236,36 +266,223 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             if (!resourceFileInfo.isFolder())
             {
                 NodeRef resourceNodeRef = resourceFileInfo.getNodeRef();
-                ContentData contentData = (ContentData) getNodeService().getProperty(resourceNodeRef, ContentModel.PROP_CONTENT);
+                String guid = resourceNodeRef.getId().toUpperCase();
                 
                 NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(resourceNodeRef);
+
+                // original node props
+                Map<QName, Serializable> props = getNodeService().getProperties(resourceNodeRef);
+                // original node reader
+                ContentReader contentReader = getFileFolderService().getReader(resourceNodeRef);
+                
                 if (workingCopyNodeRef != null)
                 {
                     String workingCopyOwner = getNodeService().getProperty(workingCopyNodeRef, ContentModel.PROP_WORKING_COPY_OWNER).toString();
-                    if (workingCopyOwner.equals(getAuthenticationService().getCurrentUserName()))
+                    if (workingCopyOwner.equals(getUserName()))
                     {
                         // allow to see changes in document after it was checked out (only for checked out owner)
-                        contentData = (ContentData) getNodeService().getProperty(workingCopyNodeRef, ContentModel.PROP_CONTENT);
-                        resourceNodeRef = workingCopyNodeRef;
+                        contentReader = getFileFolderService().getReader(workingCopyNodeRef);
+
+                        // working copy props
+                        props = getNodeService().getProperties(workingCopyNodeRef);
                     }
                 }
                 
-                response.setContentType(contentData.getMimetype());
-                ContentReader reader = getFileFolderService().getReader(resourceNodeRef);
-                try
+                Date lastModified = (Date) props.get(ContentModel.PROP_MODIFIED);
+
+                // Office 2008/2011 for Mac requires following headers
+                response.setHeader("Last-Modified", VtiUtils.formatBrowserDate(lastModified));
+                String etag = VtiUtils.constructETag(guid, lastModified);
+                response.setHeader("ETag", etag);
+                response.setHeader("ResourceTag", VtiUtils.constructResourceTag(guid, lastModified));
+                
+                boolean writeContent = true;
+                
+                if ("HEAD".equals(request.getMethod()))
                 {
-                    FileCopyUtils.copy(reader.getContentInputStream(), response.getOutputStream());
+                    writeContent = false;
                 }
-                catch (Exception e)
+                
+                String ifNonMatch = request.getHeader("If-None-Match");
+                
+                if (ifNonMatch != null && ifNonMatch.equals(etag))
                 {
-                    if (logger.isDebugEnabled())
+                    writeContent = false;
+                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                }
+                
+                if (writeContent)
+                {
+                    ContentData content = (ContentData) props.get(ContentModel.PROP_CONTENT);
+        
+                    response.setContentType(content.getMimetype());
+        
+                    try
                     {
-                        logger.debug("Exception while copying content stream to response ", e);
+                        FileCopyUtils.copy(contentReader.getContentInputStream(), response.getOutputStream());
+                    }
+                    catch (Exception e)
+                    {
+                        if (logger.isDebugEnabled())
+                        {
+                            logger.debug("Exception while copying content stream to response ", e);
+                        }
                     }
                 }
             }
         }
         return resourceFileInfo != null;
+    }
+
+    /**
+     * @see org.alfresco.module.vti.handler.MethodHandler#putResource(HttpServletRequest, HttpServletResponse)
+     */
+    public void putResource(HttpServletRequest request, HttpServletResponse response)
+    {
+        // Office 2008/2011 for Mac specific header
+        final String lockTimeOut = request.getHeader(DAV_EXT_LOCK_TIMEOUT);
+        
+        if (request.getContentLength() == 0 && lockTimeOut == null)
+        {
+            return;
+        }
+
+        String decodedUrl = URLDecoder.decode(request.getRequestURI());
+        if (decodedUrl.length() > getPathHelper().getAlfrescoContext().length())
+        {
+            decodedUrl = decodedUrl.substring(getPathHelper().getAlfrescoContext().length() + 1);
+        }
+
+        FileInfo resourceFileInfo = getPathHelper().resolvePathFileInfo(decodedUrl);
+        NodeRef resourceNodeRef = null;
+        
+        if (resourceFileInfo != null)
+        {
+            resourceNodeRef = resourceFileInfo.getNodeRef();
+        }
+        
+        // Office 2008/2011 for Mac
+        if (resourceNodeRef == null && lockTimeOut != null)
+        {
+            try
+            {
+                final Pair<String, String> parentChild = VtiPathHelper.splitPathParentChild(decodedUrl);
+                final FileInfo parent = getPathHelper().resolvePathFileInfo(parentChild.getFirst());
+                
+                RetryingTransactionCallback<NodeRef> cb = new RetryingTransactionCallback<NodeRef>()
+                {
+                    @Override
+                    public NodeRef execute() throws Throwable
+                    {
+                        NodeRef result = getFileFolderService().create(parent.getNodeRef(), parentChild.getSecond(), ContentModel.TYPE_CONTENT).getNodeRef();
+                        
+                        
+                        int timeout = Integer.parseInt(lockTimeOut.substring(WebDAV.SECOND.length()));
+                        String lockToken = WebDAV.makeLockToken(result, getUserName());
+                    
+                        getLockService().lock(result, LockType.WRITE_LOCK, timeout);
+
+                        getNodeService().setProperty(result, WebDAVModel.PROP_OPAQUE_LOCK_TOKEN, lockToken);
+                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_DEPTH, "0");
+                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_SCOPE, WebDAV.XML_EXCLUSIVE);
+                        
+                        return result;
+                    }
+                };
+
+                resourceNodeRef = getTransactionService().getRetryingTransactionHelper().doInTransaction(cb);
+
+                response.setStatus(HttpServletResponse.SC_CREATED);
+                response.setHeader(WebDAV.HEADER_LOCK_TOKEN, WebDAV.makeLockToken(resourceNodeRef, getUserName()));
+                response.setHeader(DAV_EXT_LOCK_TIMEOUT, lockTimeOut);
+            }
+            catch (AccessDeniedException e) 
+            {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+        }
+        
+        final NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(resourceNodeRef);
+        
+        // updates changes on the server
+        
+        UserTransaction tx = getTransactionService().getUserTransaction(false);
+        try
+        {
+            // we don't use RetryingTransactionHelper here cause we can read request input stream only once
+            tx.begin();
+
+            ContentWriter writer = null;
+
+            if (workingCopyNodeRef != null)
+            {
+                String workingCopyOwner = getNodeService().getProperty(workingCopyNodeRef, ContentModel.PROP_WORKING_COPY_OWNER).toString();
+                if (workingCopyOwner.equals(getAuthenticationService().getCurrentUserName()))
+                {
+                    // working copy writer
+                    writer = getContentService().getWriter(workingCopyNodeRef, ContentModel.PROP_CONTENT, true);
+                }
+            }
+            else
+            {
+                if (getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
+                {
+                    // adds 'versionable' aspect and saves current version
+                    getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
+                }
+
+                // original document writer
+                writer = getContentService().getWriter(resourceNodeRef, ContentModel.PROP_CONTENT, true);
+
+            }
+
+            String documentName = getNodeService().getProperty(resourceNodeRef, ContentModel.PROP_NAME).toString();
+            String mimetype = getMimetypeService().guessMimetype(documentName);
+            writer.setMimetype(mimetype);
+            writer.putContent(request.getInputStream());
+
+            tx.commit();
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                tx.rollback();
+            }
+            catch (Exception tex)
+            {
+            }
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            return;
+        }
+
+        // original document properties
+        Map<QName, Serializable> props = getNodeService().getProperties(resourceNodeRef);
+
+        if (workingCopyNodeRef != null)
+        {
+            String workingCopyOwner = getNodeService().getProperty(workingCopyNodeRef, ContentModel.PROP_WORKING_COPY_OWNER).toString();
+            if (workingCopyOwner.equals(getAuthenticationService().getCurrentUserName()))
+            {
+                // working copy properties
+                props = getNodeService().getProperties(workingCopyNodeRef);
+            }
+        }
+        String guid = resourceNodeRef.getId().toUpperCase();
+        Date lastModified = (Date) props.get(ContentModel.PROP_MODIFIED);
+        response.setHeader("Repl-uid", VtiUtils.constructRid(guid));
+        response.setHeader("ResourceTag", VtiUtils.constructResourceTag(guid, lastModified));
+        response.setHeader("Last-Modified", VtiUtils.formatBrowserDate(lastModified));
+        response.setHeader("ETag", VtiUtils.constructETag(guid, lastModified));
+        
+        ContentReader reader = getContentService().getReader(resourceNodeRef, ContentModel.PROP_CONTENT);
+        String mimetype = reader == null ? null : reader.getMimetype();
+
+        if (mimetype != null)
+        {
+            response.setContentType(mimetype);
+        }
     }
 
     /**
@@ -533,6 +750,42 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         setDocMetaInfo(documentFileInfo, docMetaInfo);
 
         return docMetaInfo;
+    }
+
+    /**
+     * @see org.alfresco.module.vti.handler.MethodHandler#getFileOpen(java.lang.String, java.lang.String, java.util.List, java.lang.String,
+     *      org.alfresco.module.vti.metadata.dic.VtiSortField, org.alfresco.module.vti.metadata.dic.VtiSort, java.lang.String)
+     */
+    public DialogsMetaInfo getFileOpen(String siteUrl, String location, List<String> fileDialogFilterValue,
+            String rootFolder, VtiSortField sortField, VtiSort sortDir, String view)
+    {
+        if (siteUrl.equals(""))
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Generating list of sites");
+            }
+
+            DialogsMetaInfo result = new DialogsMetaInfo();
+
+            List<SiteInfo> sites = siteService.listSites(getAuthenticationService().getCurrentUserName());
+
+            for (SiteInfo site : sites)
+            {
+                result.getDialogMetaInfoList().add(getDialogMetaInfo(getFileFolderService().getFileInfo(site.getNodeRef())));
+            }
+
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Retrieved " + result.getDialogMetaInfoList().size() + " sites");
+            }
+
+            return result;
+        }
+        else
+        {
+            return super.getFileOpen(siteUrl, location, fileDialogFilterValue, rootFolder, sortField, sortDir, view);
+        }
     }
 
     /**

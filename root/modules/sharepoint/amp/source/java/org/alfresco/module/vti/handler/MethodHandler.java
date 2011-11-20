@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
@@ -184,11 +185,19 @@ public interface MethodHandler
     /**
      * Check on existing resource
      * 
-     * @param uri check if resource exists
+     * @param request HTTP request
      * @param response HTTP response
      * @return <i>true</i>, if resource exists; otherwise, <i>false</i>
      */
-    public boolean existResource(String uri, HttpServletResponse response);
+    public boolean existResource(HttpServletRequest request, HttpServletResponse response);
+    
+    /**
+     * Update the content of existing resource or create empty locked resource if it doesn't exist
+     * 
+     * @param request HTTP request
+     * @param response HTTP response
+     */
+    public void putResource(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Deletes the specified documents or folders from the Web site

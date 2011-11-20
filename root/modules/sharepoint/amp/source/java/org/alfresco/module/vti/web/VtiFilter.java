@@ -36,9 +36,12 @@ import org.alfresco.module.vti.handler.AuthenticationHandler;
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.SiteMemberMappingException;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
-import org.alfresco.module.vti.web.actions.VtiSoapAction;
+import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.admin.SysAdminParams;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLDecoder;
@@ -65,11 +68,15 @@ public class VtiFilter implements Filter
     public static final String METHOD_UNLOCK = "UNLOCK";
     
     public static final String AUTHENTICATE_HEADER = "WWW-Authenticate";
-    
+
+    public static final String CONTENT_TYPE_XML = "text/xml; charset=utf-8";
+    public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8";
+    public static final String CONTENT_TYPE_X_VERMEER_RPC = "application/x-vermeer-rpc";
     public static final String EMULATED_SHAREPOINT_VERSION = "14.00.0.000";
 
     private AuthenticationHandler authenticationHandler;
     private MethodHandler vtiHandler;
+    private VtiPathHelper vtiPathHelper;
 
     private SysAdminParams sysAdminParams;
     private ServletContext context;
@@ -111,16 +118,12 @@ public class VtiFilter implements Filter
         }
 
         String httpMethod = httpRequest.getMethod();
-        if ((METHOD_OPTIONS.equals(httpMethod)) && ("/".equals(uri) || getAlfrescoContext().equals(uri)))
-        {
-            writeResponseForMiniRedir(httpResponse);
-            return;
-        }
 
         String ifHeader = httpRequest.getHeader("If");
+        String ifNonMatchHeader = httpRequest.getHeader("If-None-Match");
         boolean checkResourceExistence = false;
         if ((METHOD_GET.equals(httpMethod) || METHOD_HEAD.equals(httpMethod)) && !uri.equals("/_vti_inf.html") && !uri.contains("_vti_bin") && !uri.contains("/_vti_history")
-                && !uri.startsWith(getAlfrescoContext() + "/resources") && ifHeader == null)
+                && !uri.startsWith(getAlfrescoContext() + "/resources") && ifHeader == null && ifNonMatchHeader == null)
         {
             if (validSiteUrl != null || uri.endsWith(".vti"))
             {
@@ -156,7 +159,7 @@ public class VtiFilter implements Filter
         {
             if (!httpResponse.containsHeader(AUTHENTICATE_HEADER))
             {
-                httpResponse.setHeader(AUTHENTICATE_HEADER, "BASIC realm=\"Alfresco Server\"");
+                httpResponse.setHeader(AUTHENTICATE_HEADER, "Basic realm=\"Alfresco Server\"");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpResponse.getOutputStream().close();
             }
@@ -176,13 +179,8 @@ public class VtiFilter implements Filter
             {
                 logger.debug("Checking if resource exists");
             }
-            String decodedUrl = URLDecoder.decode(httpRequest.getRequestURI());
-            if (decodedUrl.length() > getAlfrescoContext().length())
-            {
-                decodedUrl = decodedUrl.substring(getAlfrescoContext().length() + 1);
-            }
 
-            if (!vtiHandler.existResource(decodedUrl, httpResponse))
+            if (!vtiHandler.existResource(httpRequest, httpResponse))
             {
                 return;
             }
@@ -218,6 +216,10 @@ public class VtiFilter implements Filter
     private void writeHeaders(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
         String httpMethod = httpRequest.getMethod();
+
+        // this header is returned always
+        httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
+
         if (METHOD_OPTIONS.equals(httpMethod))
         {
             if (logger.isDebugEnabled())
@@ -226,13 +228,19 @@ public class VtiFilter implements Filter
             }
             httpResponse.setHeader("MS-Author-Via", "MS-FP/4.0,DAV");
             httpResponse.setHeader("MicrosoftOfficeWebServer", "5.0_Collab");
-            httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
             httpResponse.setHeader("DAV", "1,2");
             httpResponse.setHeader("Accept-Ranges", "none");
             httpResponse.setHeader("Cache-Control", "no-cache");
             httpResponse.setHeader("Allow", "GET, POST, OPTIONS, HEAD, MKCOL, PUT, PROPFIND, PROPPATCH, DELETE, MOVE, COPY, GETLIB, LOCK, UNLOCK");
             
             httpResponse.setHeader("DocumentManagementServer", "Properties Schema;Source Control;Version History;");
+
+            if (VtiUtils.isMacClientRequest(httpRequest))
+            {
+                // Office 2008/2011 for Mac
+                httpResponse.setHeader("X-MSDAVEXT", "1");
+                httpResponse.setHeader("Public-Extension", "http://schemas.microsoft.com/repl-2");
+            }
 
         }
         else if (METHOD_HEAD.equals(httpMethod) || METHOD_GET.equals(httpMethod) || METHOD_PUT.equals(httpMethod))
@@ -242,7 +250,6 @@ public class VtiFilter implements Filter
                 logger.debug("Return VTI answer for HEAD request");
             }
             httpResponse.setHeader("Public-Extension", "http://schemas.microsoft.com/repl-2");
-            httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
             if (METHOD_GET.equals(httpMethod))
             {
                 if (httpRequest.getRequestURI().startsWith(getAlfrescoContext() + "/resources"))
@@ -267,40 +274,30 @@ public class VtiFilter implements Filter
                 logger.debug("Return VTI answer for " + httpMethod + " request");
             }
             httpResponse.setHeader("Public-Extension", "http://schemas.microsoft.com/repl-2");
-            httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
             httpResponse.setHeader("Cache-Control", "no-cache");
         }
         else if (METHOD_POST.equals(httpMethod))
         {
-            httpResponse.setHeader("MicrosoftSharePointTeamServices", EMULATED_SHAREPOINT_VERSION);
             httpResponse.setHeader("Cache-Control", "no-cache");
             httpResponse.setHeader("Connection", "close");
-            
-            // The content type depends on if we're doing SOAP or FPE
-            String soapAction = VtiSoapAction.getSOAPAction(httpRequest);
-            if(soapAction != null)
-            {
-               // SOAP Request
-               httpResponse.setContentType("text/xml; charset=utf-8");
-            }
-            else
-            {
-               // Front Page Extensions Request
-               httpResponse.setContentType("application/x-vermeer-rpc");
-            }
+            httpResponse.setContentType(getContentType(httpRequest));
         }
     }    
     
-    private void writeResponseForMiniRedir(HttpServletResponse httpResponse) throws IOException
+    private String getContentType(HttpServletRequest httpRequest)
     {
-        httpResponse.setHeader("MS-Author-Via", "MS-FP/4.0,DAV");
-        httpResponse.setHeader("MicrosoftOfficeWebServer", "5.0_Collab");
-        httpResponse.setHeader("MicrosoftSharePointTeamServices", "14.00.0.000");
-        httpResponse.setHeader("DAV", "1,2");
-        httpResponse.setHeader("Accept-Ranges", "none");
-        httpResponse.setHeader("Cache-Control", "no-cache");
-        httpResponse.setHeader("Allow", "GET, POST, OPTIONS, HEAD, MKCOL, PUT, PROPFIND, PROPPATCH, DELETE, MOVE, COPY, GETLIB, LOCK, UNLOCK");
-
+        if (VtiUtils.isMacClientRequest(httpRequest))
+        {
+            if (httpRequest.getRequestURI().endsWith(".dll"))
+            {
+                return CONTENT_TYPE_HTML;
+            }
+            else
+            {
+                return CONTENT_TYPE_XML;
+            }
+        }
+        return CONTENT_TYPE_X_VERMEER_RPC;
     }
 
     private boolean validSiteUri(HttpServletRequest request)
@@ -315,7 +312,30 @@ public class VtiFilter implements Filter
         String[] parts = VtiPathHelper.removeSlashes(uri).split("/");
 
         if (parts[parts.length - 1].indexOf('.') != -1)
+        {
             return false;
+        }
+
+        String decodedUri = URLDecoder.decode(uri);
+        if (decodedUri.length() > context.length())
+        {
+            decodedUri = decodedUri.substring(context.length() + 1);
+        }
+
+        final String path = decodedUri;
+        FileInfo resourceFileInfo = AuthenticationUtil.runAs(new RunAsWork<FileInfo>()
+        {
+            @Override
+            public FileInfo doWork() throws Exception
+            {
+                return vtiPathHelper.resolvePathFileInfo(path);
+            }
+        }, AuthenticationUtil.getSystemUserName());
+        
+        if (resourceFileInfo != null && !resourceFileInfo.isFolder())
+        {
+            return false;
+        }
 
         try
         {
@@ -344,6 +364,16 @@ public class VtiFilter implements Filter
     public void setVtiHandler(MethodHandler vtiHandler)
     {
         this.vtiHandler = vtiHandler;
+    }
+
+    public VtiPathHelper getVtiPathHelper()
+    {
+        return vtiPathHelper;
+    }
+    
+    public void setVtiPathHelper(VtiPathHelper vtiPathHelper)
+    {
+        this.vtiPathHelper = vtiPathHelper;
     }
 
     public String getAlfrescoContext()

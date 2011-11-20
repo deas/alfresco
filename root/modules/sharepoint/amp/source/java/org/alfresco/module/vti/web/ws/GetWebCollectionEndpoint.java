@@ -18,26 +18,26 @@
  */
 package org.alfresco.module.vti.web.ws;
 
-import java.net.URLDecoder;
+import java.util.HashMap;
 
 import org.alfresco.module.vti.handler.MethodHandler;
+import org.alfresco.module.vti.metadata.model.DocMetaInfo;
+import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
- * Class for handling WebUrlFromPageUrl method from webs web service
+ * Class for handling GetWebCollection method from webs web service
  *
  * @author PavelYur
  */
-public class WebUrlFromPageUrlEndpoint extends AbstractEndpoint
+public class GetWebCollectionEndpoint extends AbstractEndpoint
 {
 
-    private static Log logger = LogFactory.getLog(WebUrlFromPageUrlEndpoint.class);
-    
+    private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
+
     // handler that provides methods for operating with documents and folders
     private MethodHandler handler;    
 
@@ -49,13 +49,13 @@ public class WebUrlFromPageUrlEndpoint extends AbstractEndpoint
      *
      * @param handler that provides methods for operating with documents and folders
      */
-    public WebUrlFromPageUrlEndpoint(MethodHandler handler)
+    public GetWebCollectionEndpoint(MethodHandler handler)
     {
         this.handler = handler;
     }
 
     /**
-     * Retrieves url of the document workspace site from the document url
+     * Returns the titles and URLs of all sites directly beneath the current site
      * 
      * @param soapRequest Vti soap request ({@link VtiSoapRequest})
      * @param soapResponse Vti soap response ({@link VtiSoapResponse}) 
@@ -64,32 +64,40 @@ public class WebUrlFromPageUrlEndpoint extends AbstractEndpoint
     {
         if (logger.isDebugEnabled())
             logger.debug("Soap Method with name " + getName() + " is started.");
-        
+
         // mapping xml namespace to prefix
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
-        // getting pageUrl parameter from request
-        XPath xpath = new Dom4jXPath(buildXPath(prefix, "/WebUrlFromPageUrl/pageUrl"));
-        xpath.setNamespaceContext(nc);
-        String pageUrl = URLDecoder.decode(((Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");        
+        // get site name that is used to list subsites
+        String siteName = getDwsFromUri(soapRequest);
+        DocsMetaInfo docsMetaInfo = null;
 
-        if (logger.isDebugEnabled())
-            logger.debug("pageUrl parameter for this request: " + pageUrl);
-        String server = getHost(soapRequest);
-        String context = soapRequest.getAlfrescoContextName();
-                
-        String[] uris = handler.decomposeURL(pageUrl.replaceAll(server, ""), context);
+        if (siteName.equals(""))
+        {
+            docsMetaInfo = handler.getListDocuments(siteName, false, false, "", "", false, false, true, true, false, false, false, false, new HashMap<String, Object>(0), false);
+        }
 
         // creating soap response
-        Element responseElement = soapResponse.getDocument().addElement("WebUrlFromPageUrlResponse", namespace);
-        Element result = responseElement.addElement("WebUrlFromPageUrlResult");       
-        result.setText(server + uris[0]);
-        
+        Element responseElement = soapResponse.getDocument().addElement("GetWebCollectionResponse", namespace);
+        Element result = responseElement.addElement("GetWebCollectionResult");       
+        Element webs = result.addElement("Webs");
+
+        if (docsMetaInfo != null)
+        {
+            for (DocMetaInfo docMetaInfo : docsMetaInfo.getFolderMetaInfoList())
+            {
+                Element web = webs.addElement("Web");
+                web.addAttribute("Title", docMetaInfo.getPath());
+                web.addAttribute("Url", getHost(soapRequest) + soapRequest.getAlfrescoContextName() + "/" + docMetaInfo.getPath());
+            }
+        }
+
         if (logger.isDebugEnabled())
         {
             logger.debug("Soap Method with name " + getName() + " is finished.");
         }
     }
+
 }

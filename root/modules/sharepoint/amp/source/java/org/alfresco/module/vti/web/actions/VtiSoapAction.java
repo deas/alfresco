@@ -174,7 +174,7 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
             Element endpointResponseE = responseElement.addElement(vtiEndpoint.getName() + "Response", vtiEndpoint.getNamespace());
             Element endpointResultE = endpointResponseE.addElement(vtiEndpoint.getName() + "Result");
             
-            String errorMessage = handlerException.getMessage();
+            //String errorMessage = handlerException.getMessage();
             String errorCode;
             if(handlerException.getErrorCode() > -1)
             {

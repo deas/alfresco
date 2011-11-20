@@ -270,6 +270,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#updateMeetingFromICal(String, MeetingBean, boolean)
      */
+    @SuppressWarnings("deprecation")
     public void updateMeetingFromICal(final String siteName, MeetingBean meeting, boolean ignoreAttendees)
     {
         NodeRef calendarContainer = null;

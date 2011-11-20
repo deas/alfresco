@@ -374,7 +374,7 @@ public class PropfindMethod extends WebDAVMethod
         Map<QName, Serializable> props = getNodeService().getProperties(node);
         TypeConverter typeConv = DefaultTypeConverter.INSTANCE;
 
-        String etag = node.getId();
+        String guid = node.getId().toUpperCase();
 
         NodeRef workingCopy = getDAVHelper().getServiceRegistry().getCheckOutCheckInService().getWorkingCopy(node);
         Map<QName, Serializable> workingCopyProps = null;
@@ -395,6 +395,14 @@ public class PropfindMethod extends WebDAVMethod
         xml.startElement(WebDAV.DAV_NS, WebDAV.XML_PROPSTAT, WebDAV.XML_NS_PROPSTAT, nullAttr);
         xml.startElement(WebDAV.DAV_NS, WebDAV.XML_PROP, WebDAV.XML_NS_PROP, nullAttr);
 
+        xml.startElement(WebDAV.DAV_NS, WebDAV.XML_RESOURCE_TYPE, WebDAV.XML_RESOURCE_TYPE, nullAttr);
+        if (isDir)        
+        {
+            xml.startElement(WebDAV.DAV_NS, WebDAV.XML_COLLECTION, WebDAV.XML_COLLECTION, nullAttr);
+            xml.endElement(WebDAV.DAV_NS, WebDAV.XML_COLLECTION, WebDAV.XML_COLLECTION);
+        }
+        xml.endElement(WebDAV.DAV_NS, WebDAV.XML_RESOURCE_TYPE, WebDAV.XML_RESOURCE_TYPE);
+
         // Get the node name
 
         Object davValue = WebDAV.getDAVPropertyValue(props, WebDAV.XML_DISPLAYNAME);
@@ -414,8 +422,15 @@ public class PropfindMethod extends WebDAVMethod
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_DISPLAYNAME, WebDAV.XML_NS_DISPLAYNAME);
 
         // Generate a lock status report, if locked
-
-        generateLockDiscoveryResponse(xml, nodeInfo, isDir);
+        if (workingCopy != null && VtiUtils.isMacClientRequest(m_request))
+        {
+            // Office 2008/2011 for Mac assumes that checkouted node is locked node
+            generateFakeLockDiscoveryResponseForWorkingCopy(xml, workingCopy, isDir);
+        }
+        else
+        {
+            generateLockDiscoveryResponse(xml, nodeInfo, isDir);
+        }
 
         // Output the supported lock types
 
@@ -511,16 +526,16 @@ public class PropfindMethod extends WebDAVMethod
         // Print out all the custom properties
 
         xml.startElement("Repl", "repl-uid", "Repl:repl-uid", nullAttr);
-        xml.write("rid:{" + etag + "}");
+        xml.write(VtiUtils.constructRid(guid));
         xml.endElement("Repl", "repl-uid", "Repl:repl-uid");
 
         xml.startElement("Repl", "resourcetag", "Repl:resourcetag", nullAttr);
-        xml.write("rt:" + etag + "@" + convertDateToVersion(lastModified));
+        xml.write(VtiUtils.constructResourceTag(guid, lastModified));
         xml.endElement("Repl", "resourcetag", "Repl:resourcetag");
 
         // Output the etag        
         xml.startElement(WebDAV.DAV_NS, WebDAV.XML_GET_ETAG, WebDAV.XML_NS_GET_ETAG, nullAttr);
-        xml.write("\"{" + etag + "}," + convertDateToVersion(lastModified) + "\"");
+        xml.write(VtiUtils.constructETag(guid, lastModified));
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_GET_ETAG, WebDAV.XML_NS_GET_ETAG);
 
         if (!isDir)
@@ -529,6 +544,11 @@ public class PropfindMethod extends WebDAVMethod
             xml.startElement("Office", "modifiedby", "Office:modifiedby", nullAttr);
             xml.write(modifiedBy);
             xml.endElement("Office", "modifiedby", "Office:modifiedby");
+
+            // Office 2011 for Mac special property
+            xml.startElement(WebDAV.DAV_NS, "getmodifiedby", WebDAV.DAV_NS_PREFIX + "getmodifiedby", nullAttr);
+            xml.write(modifiedBy);
+            xml.endElement(WebDAV.DAV_NS, "getmodifiedby", WebDAV.DAV_NS_PREFIX + "getmodifiedby");
 
         }
         // Close off the response
@@ -570,8 +590,70 @@ public class PropfindMethod extends WebDAVMethod
         {
             xml.startElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY, getDAVHelper().getNullAttributes());
             xml.endElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY);
-            xml.startElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK, getDAVHelper().getNullAttributes());
-            xml.endElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK);
+
+            if (isDir)
+            {
+                xml.startElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK, getDAVHelper().getNullAttributes());
+                xml.endElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK);
+            }
+        }
+    }
+    
+    /**
+     * Generates the XML response snippet showing the fake lock information for the given path
+     * 
+     * @param xml XMLWriter
+     * @param node NodeRef
+     * @param isDir boolean
+     */
+    protected void generateFakeLockDiscoveryResponseForWorkingCopy(XMLWriter xml, NodeRef node, boolean isDir) throws Exception
+    {
+
+        Attributes nullAttr= getDAVHelper().getNullAttributes();
+        String ns = WebDAV.DAV_NS;
+        if (node != null)
+        {
+            String owner = (String) getNodeService().getProperty(node, ContentModel.PROP_WORKING_COPY_OWNER);
+            String lockTocken = WebDAV.makeLockToken(node, owner);
+            // Output the XML response
+
+            xml.startElement(ns, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY, nullAttr);  
+            xml.startElement(ns, WebDAV.XML_ACTIVE_LOCK, WebDAV.XML_NS_ACTIVE_LOCK, nullAttr);
+             
+            xml.startElement(ns, WebDAV.XML_LOCK_TYPE, WebDAV.XML_NS_LOCK_TYPE, nullAttr);
+            xml.write(DocumentHelper.createElement(WebDAV.XML_NS_WRITE));
+            xml.endElement(ns, WebDAV.XML_LOCK_TYPE, WebDAV.XML_NS_LOCK_TYPE);
+             
+            xml.startElement(ns, WebDAV.XML_LOCK_SCOPE, WebDAV.XML_NS_LOCK_SCOPE, nullAttr);
+            xml.write(DocumentHelper.createElement(WebDAV.XML_NS_EXCLUSIVE));
+            xml.endElement(ns, WebDAV.XML_LOCK_SCOPE, WebDAV.XML_NS_LOCK_SCOPE);
+             
+            // NOTE: We only support one level of lock at the moment
+           
+            xml.startElement(ns, WebDAV.XML_DEPTH, WebDAV.XML_NS_DEPTH, nullAttr);
+            xml.write("0");
+            xml.endElement(ns, WebDAV.XML_DEPTH, WebDAV.XML_NS_DEPTH);
+             
+            xml.startElement(ns, WebDAV.XML_OWNER, WebDAV.XML_NS_OWNER, nullAttr);
+            xml.write(owner);
+            xml.endElement(ns, WebDAV.XML_OWNER, WebDAV.XML_NS_OWNER);
+             
+            xml.startElement(ns, WebDAV.XML_TIMEOUT, WebDAV.XML_NS_TIMEOUT, nullAttr);
+            
+            xml.write(WebDAV.SECOND + "604800");
+           
+            xml.endElement(ns, WebDAV.XML_TIMEOUT, WebDAV.XML_NS_TIMEOUT);
+             
+            xml.startElement(ns, WebDAV.XML_LOCK_TOKEN, WebDAV.XML_NS_LOCK_TOKEN, nullAttr);
+            xml.startElement(ns, WebDAV.XML_HREF, WebDAV.XML_NS_HREF, nullAttr);
+           
+            xml.write(lockTocken);
+            
+            xml.endElement(ns, WebDAV.XML_HREF, WebDAV.XML_NS_HREF);
+            xml.endElement(ns, WebDAV.XML_LOCK_TOKEN, WebDAV.XML_NS_LOCK_TOKEN);
+           
+            xml.endElement(ns, WebDAV.XML_ACTIVE_LOCK, WebDAV.XML_NS_ACTIVE_LOCK);
+            xml.endElement(ns, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY);
         }
     }
 
@@ -674,10 +756,5 @@ public class PropfindMethod extends WebDAVMethod
         outputFormat.setNewlines(false);
         outputFormat.setIndent(false);
         return new XMLWriter(m_response.getWriter(), outputFormat);
-    }
-
-    public static String convertDateToVersion(Date date)
-    {
-        return (Long.toString(date.getTime())).substring(0, 11);
     }
 }

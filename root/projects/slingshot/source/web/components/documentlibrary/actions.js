@@ -636,36 +636,123 @@
                record.onlineEditUrl = onlineEditUrl;
             }
 
-            // Try each version of the SharePoint control in turn, newest first
-            try
+            if (YAHOO.env.ua.ie > 0)
             {
-               activeXControl = new ActiveXObject(controlProgID + ".3");
-               return activeXControl.EditDocument3(window, record.onlineEditUrl, true, appProgID);
+               return this._launchOnlineEditorIE(controlProgID, record, appProgID);
             }
-            catch(e)
+            
+            if (Alfresco.util.isSharePointPluginInstalled())
             {
-               try
+               return this._launchOnlineEditorPlugin(record, appProgID);
+            }
+            else
+            {
+               Alfresco.util.PopupManager.displayPrompt(
                {
-                  activeXControl = new ActiveXObject(controlProgID + ".2");
-                  return activeXControl.EditDocument2(window, record.onlineEditUrl, appProgID);
-               }
-               catch(e1)
-               {
-                  try
-                  {
-                     activeXControl = new ActiveXObject(controlProgID + ".1");
-                     return activeXControl.EditDocument(record.onlineEditUrl, appProgID);
-                  }
-                  catch(e2)
-                  {
-                     // Do nothing
-                  }
-               }
+                  text: this.msg("actions.editOnline.failure", loc.file)
+               });
+               return false;
             }
          }
 
          // No success in launching application via ActiveX control; launch the WebDAV URL anyway
          return window.open(record.onlineEditUrl, "_blank");
+      },
+
+      /**
+       * Opens the appropriate Microsoft Office application for online editing.
+       * Supports: Microsoft Office 2003, 2007 & 2010.
+       *
+       * @method Alfresco.util.sharePointOpenDocument
+       * @param record {object} Object literal representing file or folder to be actioned
+       * @return {boolean} True if the action was completed successfully, false otherwise.
+       */
+      _launchOnlineEditorIE: function dlA__launchOnlineEditorIE(controlProgID, record, appProgID)
+      {
+         // Try each version of the SharePoint control in turn, newest first
+         try
+         {
+            activeXControl = new ActiveXObject(controlProgID + ".3");
+            return activeXControl.EditDocument3(window, record.onlineEditUrl, true, appProgID);
+         }
+         catch(e)
+         {
+            try
+            {
+               activeXControl = new ActiveXObject(controlProgID + ".2");
+               return activeXControl.EditDocument2(window, record.onlineEditUrl, appProgID);
+            }
+            catch(e1)
+            {
+               try
+               {
+                  activeXControl = new ActiveXObject(controlProgID + ".1");
+                  return activeXControl.EditDocument(record.onlineEditUrl, appProgID);
+               }
+               catch(e2)
+               {
+                  // Do nothing
+               }
+            }
+         }
+         return false;
+      },
+
+      /**
+       * Opens the appropriate Microsoft Office application for online editing.
+       * Supports: Microsoft Office 2010 & 2011 for Mac.
+       *
+       * @method Alfresco.util.sharePointOpenDocument
+       * @param record {object} Object literal representing file or folder to be actioned
+       * @return {boolean} True if the action was completed successfully, false otherwise.
+       */
+      _launchOnlineEditorPlugin: function dlA__launchOnlineEditorPlugin(record, appProgID)
+      {
+         var plugin = document.getElementById("SharePointPlugin");
+         if (plugin == null && Alfresco.util.isSharePointPluginInstalled())
+         {
+            var pluginMimeType = null;
+            if (YAHOO.env.ua.webkit && Alfresco.util.isBrowserPluginInstalled("application/x-sharepoint-webkit"))
+               pluginMimeType = "application/x-sharepoint-webkit";
+            else
+               pluginMimeType = "application/x-sharepoint";
+            var pluginNode = document.createElement("object");
+            pluginNode.id = "SharePointPlugin";
+            pluginNode.type = pluginMimeType;
+            pluginNode.width = 0;
+            pluginNode.height = 0;
+            pluginNode.style.setProperty("visibility", "hidden", "");
+            document.body.appendChild(pluginNode);
+            plugin = document.getElementById("SharePointPlugin");
+            
+            if (!plugin)
+            {
+               return false;
+            }
+         }
+         
+         try
+         {
+            return plugin.EditDocument3(window, record.onlineEditUrl, true, appProgID);
+         }
+         catch(e)
+         {
+            try
+            {
+               return plugin.EditDocument2(window, record.onlineEditUrl, appProgID);
+            }
+            catch(e1)
+            {
+               try
+               {
+                  return plugin.EditDocument(record.onlineEditUrl, appProgID);
+               }
+               catch(e2)
+               {
+                  return false;
+               }
+            }
+         }
       },
 
       /**

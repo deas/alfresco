@@ -22,6 +22,7 @@ package org.alfresco.module.vti.web.ws;
 import java.net.URLDecoder;
 
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
+import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.version.VersionType;
@@ -118,7 +119,7 @@ public class CheckInFileEndpoint extends AbstractEndpoint
            }
            else if ("2".equals(typeS))
            {
-              throw new VtiSoapException("OverwriteCheckIn is not supported", -1);
+               type = VersionType.MAJOR;
            }
            else
            {
@@ -133,9 +134,17 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         }
 
         NodeRef originalNode;
+        boolean lockAfterSucess = true;
+
+        // Do not lock original node if we work with Office 2008/2011 for Mac
+        if (VtiUtils.isMacClientRequest(soapRequest))
+        {
+            lockAfterSucess = false;
+        }
+
         try
         {
-           originalNode = handler.checkInDocument(docPath, type, comment);
+           originalNode = handler.checkInDocument(docPath, type, comment, lockAfterSucess);
         }
         catch(FileNotFoundException fnfe)
         {
@@ -143,8 +152,8 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         }
 
         // creating soap response
-        Element responsElement = soapResponse.getDocument().addElement("CheckInFileResponse", namespace);
-        Element result = responsElement.addElement("CheckInFileResult");
+        Element responseElement = soapResponse.getDocument().addElement("CheckInFileResponse", namespace);
+        Element result = responseElement.addElement("CheckInFileResult");
         result.setText(originalNode != null ? "true" : "false");
 
         soapResponse.setContentType("text/xml");

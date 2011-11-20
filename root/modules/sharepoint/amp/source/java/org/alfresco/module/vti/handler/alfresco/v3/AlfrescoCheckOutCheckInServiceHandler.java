@@ -26,6 +26,7 @@ import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.repo.webdav.WebDAV;
@@ -115,6 +116,12 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                 try
                 {
                     NodeRef workingCopy = checkOutCheckInService.getWorkingCopy(documentFileInfo.getNodeRef());
+
+                    if (workingCopy == null && checkOutCheckInService.isWorkingCopy(documentFileInfo.getNodeRef()))
+                    {
+                        workingCopy = documentFileInfo.getNodeRef();
+                    }
+
                     String workingCopyOwner = nodeService.getProperty(workingCopy, ContentModel.PROP_WORKING_COPY_OWNER).toString();
                     if (!workingCopyOwner.equals(authenticationService.getCurrentUserName()))
                     {
@@ -152,7 +159,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     /**
      * @see org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler#checkInDocument(java.lang.String, java.lang.String)
      */
-    public NodeRef checkInDocument(final String fileName, final VersionType type, final String comment) throws FileNotFoundException
+    public NodeRef checkInDocument(final String fileName, final VersionType type, final String comment, final boolean lockAfterSucess) throws FileNotFoundException
     {
         final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
         if(documentFileInfo == null)
@@ -167,6 +174,12 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                 try
                 {
                     NodeRef workingCopy = checkOutCheckInService.getWorkingCopy(documentFileInfo.getNodeRef());
+
+                    if (workingCopy == null && checkOutCheckInService.isWorkingCopy(documentFileInfo.getNodeRef()))
+                    {
+                        workingCopy = documentFileInfo.getNodeRef();
+                    }
+
                     String workingCopyOwner = nodeService.getProperty(workingCopy, ContentModel.PROP_WORKING_COPY_OWNER).toString();
                     if (!workingCopyOwner.equals(authenticationService.getCurrentUserName()))
                     {
@@ -187,7 +200,14 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     NodeRef originalNode = checkOutCheckInService.checkin(workingCopy, versionProperties);
                     if (originalNode != null)
                     {
-                       lockService.unlock(originalNode);
+                       if (lockAfterSucess)
+                       {
+                          lockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                       }
+                       else
+                       {
+                          lockService.unlock(originalNode);
+                       }
                     }
                     else
                     {
@@ -213,7 +233,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
     /**
      * @see org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler#checkOutDocument(java.lang.String)
      */
-    public NodeRef checkOutDocument(final String fileName) throws FileNotFoundException
+    public NodeRef checkOutDocument(final String fileName, final boolean lockAfterSucess) throws FileNotFoundException, AccessDeniedException
     {
         final FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
         if(documentFileInfo == null)
@@ -234,14 +254,26 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
                     // Now, perform the checkout of the file
                     NodeRef workingCopy = checkOutCheckInService.checkout(documentFileInfo.getNodeRef());
-                    lockService.lock(workingCopy, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                    
+                    if (lockAfterSucess)
+                    {
+                        lockService.lock(workingCopy, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                    }
+
                     return workingCopy;
+
                 }
                 catch (Exception e)
                 {
                     if (logger.isDebugEnabled())
                     {
                         logger.debug("Can't perform 'check out' operation for file '" + fileName + "'", e);
+                    }
+                    
+                    // Office 2008/2011 for Mac special case
+                    if (e instanceof AccessDeniedException && !lockAfterSucess)
+                    {
+                        throw (AccessDeniedException)e;
                     }
                     return null;
                 }
@@ -250,4 +282,5 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
         return workingCopy;
     }
+
 }

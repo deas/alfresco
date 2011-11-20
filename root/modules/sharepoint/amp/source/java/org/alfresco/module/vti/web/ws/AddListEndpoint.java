@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AddListEndpoint extends AbstractListEndpoint
 {
+    @SuppressWarnings("unused")
     private final static Log logger = LogFactory.getLog(AddListEndpoint.class);
 
     /**

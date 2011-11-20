@@ -45,6 +45,7 @@ import org.alfresco.module.vti.metadata.dic.VtiSortField;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
+import org.alfresco.module.vti.web.VtiEncodingUtils;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -1066,6 +1067,14 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
      */
     public void setDocMetaInfo(FileInfo fileInfo, DocMetaInfo docMetaInfo)
     {
+        String guid = fileInfo.getNodeRef().getId().toUpperCase();
+        NodeRef listNode = pathHelper.findList(fileInfo.getNodeRef());
+        
+        docMetaInfo.setListName(VtiEncodingUtils.encode("{" + listNode.getId().toUpperCase()  + "}"));
+        docMetaInfo.setRtag(VtiEncodingUtils.encode(VtiUtils.constructResourceTag(guid, fileInfo.getModifiedDate())));
+        docMetaInfo.setEtag(VtiEncodingUtils.encode(VtiUtils.constructETag(guid, fileInfo.getModifiedDate())));
+        docMetaInfo.setId(guid);
+
         if (fileInfo.isFolder())
         {
             NodeRef folderNodeRef = fileInfo.getNodeRef();
@@ -1134,7 +1143,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 docMetaInfo.setTimelastmodified(modifiedDate);
                 docMetaInfo.setTimelastwritten(modifiedDate);
 
-                docMetaInfo.setFilesize(String.valueOf(workingCopyFileInfo.getContentData().getSize()));
+                docMetaInfo.setFilesize(calculateFileSize(workingCopyFileInfo));
 
                 docMetaInfo.setSourcecontrolcheckedoutby((String) workingCopyProps.get(ContentModel.PROP_WORKING_COPY_OWNER));
                 docMetaInfo.setSourcecontroltimecheckedout(modifiedDate);
@@ -1145,13 +1154,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 docMetaInfo.setTimelastmodified(modifiedDate);
                 docMetaInfo.setTimelastwritten(modifiedDate);
 
-                long size = 0;
-                ContentData data = originalFileInfo.getContentData();
-                if (data != null)
-                {
-                   size = data.getSize();
-                }
-                docMetaInfo.setFilesize(String.valueOf(size));
+                docMetaInfo.setFilesize(calculateFileSize(originalFileInfo));
 
                 if (isShortCheckedout)
                 {
@@ -1200,7 +1203,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
      * @param fileInfo file info ({@link FileInfo})
      * @return DialogMetaInfo dialog meta info     
      */
-    private DialogMetaInfo getDialogMetaInfo(FileInfo fileInfo)
+    protected DialogMetaInfo getDialogMetaInfo(FileInfo fileInfo)
     {
         DialogMetaInfo dialogMetaInfo = new DialogMetaInfo(fileInfo.isFolder());
         dialogMetaInfo.setPath(getPathHelper().toUrlPath(fileInfo).replace("\'", "%27"));
@@ -1436,5 +1439,20 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         {
             throw new VtiHandlerException(VtiError.V_BAD_URL);
         }
+    }
+    
+    /*
+     * helper method for retrieving file size
+     */
+    private String calculateFileSize(FileInfo fileInfo)
+    {
+        ContentData contentData = fileInfo.getContentData();
+
+        if (contentData == null)
+        {
+            return "0";
+        }
+
+        return String.valueOf(fileInfo.getContentData().getSize());
     }
 }

@@ -18,12 +18,15 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utils class for alfresco handlers that implement frontpage protocol
@@ -32,16 +35,22 @@ import java.util.regex.Pattern;
  */
 public class VtiUtils
 {
+    public final static String HEADER_USER_AGENT = "User-Agent";
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
-    private static final SimpleDateFormat propfindDateFormate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+    private static final SimpleDateFormat propfindDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
     private static final SimpleDateFormat versionDateFormat = new SimpleDateFormat("M/d/yyyy h:mm a", Locale.ENGLISH);
+    private static final SimpleDateFormat browserDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
     
+    private static Pattern macClientPattern = Pattern.compile(".*Microsoft Document Connection.*");
     private static Pattern validNamePattern = Pattern.compile("[^#]+");
     
     static
     {
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        propfindDateFormate.setTimeZone(TimeZone.getTimeZone("GMT"));    
+        propfindDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        browserDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
@@ -102,7 +111,18 @@ public class VtiUtils
      */
     public static String formatPropfindDate(Date date)
     {
-        return propfindDateFormate.format(date);
+        return propfindDateFormat.format(date);
+    }
+    
+    /**
+     * Format browser date
+     * 
+     * @param date input date
+     * @return String formated browser date
+     */
+    public static String formatBrowserDate(Date date)
+    {
+        return browserDateFormat.format(date);
     }
 
     /**
@@ -121,5 +141,87 @@ public class VtiUtils
     {
         Matcher matcher = validNamePattern.matcher(value);
         return !matcher.matches();
+    }
+    
+    public static String convertToPropfindFormat(String dateInVtiFormat)
+    {
+        try
+        {
+            return propfindDateFormat.format(dateFormat.parse(dateInVtiFormat));
+        }
+        catch (ParseException e)
+        {
+            return dateInVtiFormat;
+        }
+    }
+    
+    /**
+     * 
+     * @return the amount of time in minutes to deduct from local time to get UTC.
+     */
+    public static int getServerOffset()
+    {
+        int offset = TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60000;
+        
+        return -offset;
+    }
+    
+    public static String convertDateToVersion(Date date)
+    {
+        return (Long.toString(date.getTime())).substring(0, 11);
+    }
+
+    /**
+     * Generates a SharePoint style ETag for the resource,
+     *  based on its GUID and last modified date
+     */
+    public static String constructETag(String guid, Date lastModified)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\"{");
+        sb.append(guid);
+        sb.append("},");
+        sb.append(VtiUtils.convertDateToVersion(lastModified));
+        sb.append("\"");
+
+        return sb.toString();
+    }
+
+    /**
+     * Generate a SharePoint style Resource Tag (RTag) for
+     *  the resource, based on its GUID and last modified date.
+     * This contains the same information as the ETag, but
+     *  is formatted differently. 
+     */
+    public static String constructResourceTag(String guid, Date lastModified)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("rt:");
+        sb.append(guid);
+        sb.append("@");
+        sb.append(VtiUtils.convertDateToVersion(lastModified));
+
+        return sb.toString();
+    }
+    
+    public static String constructRid(String guid)
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("rid:{");
+        sb.append(guid);
+        sb.append("}");
+
+        return sb.toString();
+    }
+    
+    public static boolean isMacClientRequest(HttpServletRequest request)
+    {
+        String userAgent = request.getHeader(HEADER_USER_AGENT);
+        
+        // TODO Should we do this check only once, and cache it?
+        return (userAgent != null && macClientPattern.matcher(userAgent).matches());
     }
 }

@@ -233,7 +233,7 @@ public class VtiRequestDispatcher extends HttpServlet
             if (logger.isDebugEnabled())
             {
                 logger.debug("Action found for request");
-                logger.debug("Execute target action " + targetAction.toString());
+                logger.debug("Execute target action: " + targetAction.getClass().getSimpleName());
             }
             targetAction.execute(httpRequest, httpResponse);
         }
@@ -271,7 +271,10 @@ public class VtiRequestDispatcher extends HttpServlet
                 analyzedData = request.getHeader(entry.getKey());
             }
             if (analyzedData == null)
-                analyzedData = "";
+            {
+                result = false;
+                break;
+            }
             Matcher matcher = entry.getValue().matcher(analyzedData);
             if (!matcher.matches())
             {

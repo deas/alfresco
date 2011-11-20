@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
@@ -46,6 +47,7 @@ import org.alfresco.service.cmr.version.Version;
 import org.alfresco.service.cmr.version.VersionHistory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Alfresco implementation of MethodHandler and AbstractAlfrescoMethodHandler
@@ -321,11 +323,25 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
     }
 
     /**
-     * @see org.alfresco.module.vti.handler.MethodHandler#existResource(java.lang.String, javax.servlet.http.HttpServletResponse)
+     * @see org.alfresco.module.vti.handler.MethodHandler#existResource(HttpServletRequest, HttpServletResponse)
      */
-    public boolean existResource(String uri, HttpServletResponse response)
+    public boolean existResource(HttpServletRequest request, HttpServletResponse response)
     {
-        return getPathHelper().resolvePathFileInfo(uri) != null;
+        String decodedUrl = URLDecoder.decode(request.getRequestURI());
+        if (decodedUrl.length() > getPathHelper().getAlfrescoContext().length())
+        {
+            decodedUrl = decodedUrl.substring(getPathHelper().getAlfrescoContext().length() + 1);
+        }
+
+        return getPathHelper().resolvePathFileInfo(decodedUrl) != null;
+    }
+    
+    /**
+     * @see org.alfresco.module.vti.handler.MethodHandler#putResource(HttpServletRequest, HttpServletResponse)
+     */
+    public void putResource(HttpServletRequest request, HttpServletResponse response)
+    {
+        throw new UnsupportedOperationException();
     }
 
     /**

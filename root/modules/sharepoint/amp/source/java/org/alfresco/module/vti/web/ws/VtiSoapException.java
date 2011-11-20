@@ -29,6 +29,8 @@ import org.alfresco.module.vti.metadata.dic.VtiError;
  */
 public class VtiSoapException extends RuntimeException
 {
+    private static final long serialVersionUID = -6212010064088831048L;
+    
     /**
      * What SharePoint error code to return
      */

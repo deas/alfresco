@@ -15,8 +15,8 @@
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>    	
         <property name="siteService" ref="SiteService" />
-        <property name="shareUtils" ref="shareUtils" />  
-        <property name="transactionService" ref="transactionService"/>
+        <!-- <property name="shareUtils" ref="shareUtils" />  
+        <property name="transactionService" ref="transactionService"/>-->
         <property name="dictionaryService" ref="DictionaryService"/>
         <property name="namespaceService" ref="NamespaceService"/>
         <property name="dataListTypes">
@@ -124,6 +124,13 @@
         <property name="versionService" ref="VersionService"/>
         <property name="authenticationService" ref="AuthenticationService" />
     </bean>    
+
+    <bean id="listsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListsServiceHandler">
+        <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="siteService" ref="SiteService"/>
+        <property name="transactionService" ref="transactionService"/>
+    </bean>
 
     <bean id="vtiHandlerTarget" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMethodHandler">
         <property name="nodeService" ref="NodeService" />

@@ -67,6 +67,7 @@ public abstract class AbstractAlfrescoUserGroupServiceHandler implements UserGro
     /**
      * @see org.alfresco.module.vti.handler.UserGroupServiceHandler#getUserLoginFromEmail(java.lang.String, java.util.List)
      */
+    @SuppressWarnings("deprecation")
     public List<UserBean> getUserLoginFromEmail(String dwsUrl, List<String> emailList)
     {
         if (logger.isDebugEnabled())

@@ -164,7 +164,7 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
     public static String getDwsFromUri(VtiSoapRequest request)
     {
         String uri = request.getRequestURI();
-        if (uri.startsWith(request.getAlfrescoContextName() + "/_vti_bin"))
+        if (uri.startsWith(request.getAlfrescoContextName() + "/_vti_bin") || uri.startsWith("/_vti_bin"))
             return "";
         
         String dws = uri;

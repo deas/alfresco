@@ -29,6 +29,7 @@ import org.alfresco.module.vti.metadata.dic.VtiProperty;
  */
 public class DocMetaInfo
 {
+    private String id;
     private boolean folder;
     private String path;
 
@@ -60,6 +61,29 @@ public class DocMetaInfo
     private String author;
     private String modifiedBy;
 
+    // Office 2008/2011 for Mac related properties
+    private String listname;
+    private String rtag;
+    private String etag;
+
+    /**     
+     * <p>Identifies the uniqueId of the item.</p>
+     * 
+     * @param id the id to set
+     */
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+    
+    /**     
+     * @return the unique id 
+     */
+    public String getId()
+    {
+        return id;
+    }
+    
     /**     
      * @return the author 
      */
@@ -478,6 +502,18 @@ public class DocMetaInfo
             {
                 this.setThicketdir(properties.get(key));
             }
+            else if (key.equals(VtiProperty.FILE_LISTNAME.toString()))
+            {
+                this.setListName(properties.get(key));
+            }
+            else if (key.equals(VtiProperty.FILE_RTAG.toString()))
+            {
+                this.setRtag(properties.get(key));
+            }
+            else if (key.equals(VtiProperty.FILE_ETAG.toString()))
+            {
+                this.setEtag(properties.get(key));
+            }
 
             // set FOLDER properties
             if (this.isFolder())
@@ -601,5 +637,71 @@ public class DocMetaInfo
     public void setSourcecontrolversion(String sourcecontrolversion)
     {
         this.sourcecontrolversion = sourcecontrolversion;
+    }
+    
+    /**
+     * <p>Sets the "name" of the list this item is part of</p>
+     * 
+     * Note that in Alfresco, the "list name" is actually based
+     *  on the ID of the list node, rather than the name property. 
+     * 
+     * @param listname The List Name to set
+     */
+    public void setListName(String listname)
+    {
+        this.listname = listname;
+    }
+    
+    /**
+     * Returns the name of the list that this item is part of.
+     * 
+     * Note that for Alfresco, this is actually based on the ID 
+     *  of the list node, rather than the name property of the 
+     *  list node, to both ensure uniqueness and better match
+     *  what SharePoint itself does. 
+     * 
+     * @return the "name" (ID) of the list this belongs to 
+     */
+    public String getListName()
+    {
+        return listname;
+    }
+    
+    /**
+     * <p>The resource tag of the item</p>
+     * 
+     * @param rtag the resource tag to set
+     */
+    public void setRtag(String rtag)
+    {
+        this.rtag = rtag;
+    }
+    
+    /**
+     * 
+     * @return the resource tag of the item
+     */
+    public String getRtag()
+    {
+        return rtag;
+    }
+    
+    /**
+     * <p>The entity tag of the item</p>
+     * 
+     * @param etag the entity tag to set
+     */
+    public void setEtag(String etag)
+    {
+        this.etag = etag;
+    }
+    
+    /**
+     * 
+     * @return the entity tag of the item
+     */
+    public String getEtag()
+    {
+        return etag;
     }
 }

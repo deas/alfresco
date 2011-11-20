@@ -18,6 +18,7 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import org.alfresco.repo.security.authentication.AuthenticationComponent;
 import org.alfresco.repo.security.authentication.AuthenticationException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.repo.webdav.MTNodesCache;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -470,6 +472,62 @@ public class VtiPathHelper extends AbstractLifecycleBean
         {
             throw new VtiHandlerException(VtiHandlerException.BAD_URL);
         }
+    }
+    
+    /**
+     * Helper method that allows to resolve list name from listId
+     * 
+     * @param listId the id of the list
+     * @return the list' name
+     */
+    public String resolveListName(String listId)
+    {
+        if (listId.startsWith("{"))
+            listId = listId.substring(1);
+        if (listId.endsWith("}"))
+            listId = listId.substring(0, listId.length() - 1);
+        try
+        {
+            Serializable listName = 
+                nodeService.getProperty(new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, listId), ContentModel.PROP_NAME);
+            return (String)listName;
+        }
+        catch (Exception e) 
+        {
+            throw new VtiHandlerException(VtiHandlerException.BAD_URL); 
+        }
+    }
+    
+    /** 
+     * For a given node, looks up the parent tree to find the List
+     *  (Site Container) that it is part of.
+     *  
+     * @param itemInList the nodeRef of item to look parent container for
+     * @return the nodeRef of the list this item is part of, or the node itself if it isn't in one
+     */
+    public NodeRef findList(NodeRef itemInList)
+    {
+        NodeRef result = null;
+        NodeRef nodeToCheck = itemInList;
+        while (result == null && nodeToCheck != null)
+        {
+            if (nodeService.hasAspect(nodeToCheck, SiteModel.ASPECT_SITE_CONTAINER))
+            {
+                result = nodeToCheck;
+                break;
+            }
+            else
+            {
+                nodeToCheck = nodeService.getPrimaryParent(nodeToCheck).getParentRef();
+            }
+        }
+        
+        if (result == null)
+        {
+            return itemInList;
+        }
+
+        return result;
     }
 
     /**

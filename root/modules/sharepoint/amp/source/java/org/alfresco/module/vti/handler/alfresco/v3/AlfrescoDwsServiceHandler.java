@@ -422,8 +422,19 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     @Override
     protected String doCreateDws(String dwsName, String title, SessionUser user) throws HttpException, IOException
     {
-        shareUtils.createSite(user, "document-workspace", dwsName, title, "", true);
-        return dwsName;
+        // Find a unique name for the site, based on the requested one
+        SiteInfo siteInfo = null;
+        String uniqueDwsName = null;
+        int i = 0;
+        do {
+            uniqueDwsName = dwsName + (i == 0 ? "" : "_" + i);
+            siteInfo = siteService.getSite(uniqueDwsName);
+            i++;
+        } while (siteInfo != null);
+        
+        // Create and return the new site name
+        shareUtils.createSite(user, "document-workspace", uniqueDwsName, title, "", true);
+        return uniqueDwsName;
     }
 
     /**

@@ -59,6 +59,11 @@ public enum VtiProperty
     FILE_AUTHOR("vti_author"),
     FILE_MODIFIEDBY("vti_modifiedby"),
     
+    // Required by the Office 2008/2011 for Mac implementation
+    FILE_RTAG ("vti_rtag"),
+    FILE_ETAG ("vti_etag"),
+    FILE_LISTNAME("vti_listname"),
+    
     // SERVICE
     SERVICE_CASESENSITIVEURLS ("vti_casesensitiveurls"),
     SERVICE_LONGFILENAMES ("vti_longfilenames"),

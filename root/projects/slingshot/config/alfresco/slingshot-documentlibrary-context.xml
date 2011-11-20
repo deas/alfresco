@@ -168,7 +168,7 @@
             <ref bean="evaluator.doclib.action.siteBased" />
             <ref bean="evaluator.doclib.action.onlineEditVtiServer" />
             <ref bean="evaluator.doclib.action.onlineEditMimetype" />
-            <ref bean="evaluator.doclib.action.onlineEditBrowser" />
+            <!--<ref bean="evaluator.doclib.action.onlineEditBrowser" />-->
          </list>
       </property>
    </bean>

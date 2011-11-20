@@ -128,6 +128,11 @@ public abstract class AbstractMethod implements VtiMethod
         response.writeMetaDictionary(VtiProperty.FILE_TIMELASTMODIFIED, VtiType.TIME, VtiConstraint.R, docMetaInfo.getTimelastmodified());
         response.writeMetaDictionary(VtiProperty.FILE_TIMELASTWRITTEN , VtiType.TIME, VtiConstraint.R, docMetaInfo.getTimelastwritten());
 
+        // next 3 properties requires for Office 2008/2011 for Mac support
+        response.writeMetaDictionary(VtiProperty.FILE_RTAG , VtiType.STRING, VtiConstraint.W, docMetaInfo.getRtag());
+        response.writeMetaDictionary(VtiProperty.FILE_ETAG , VtiType.STRING, VtiConstraint.W, docMetaInfo.getEtag());
+        response.writeMetaDictionary(VtiProperty.FILE_LISTNAME , VtiType.STRING, VtiConstraint.R, docMetaInfo.getListName());
+
         if (docMetaInfo.isFolder())
         {
             response.writeMetaDictionary(VtiProperty.FOLDER_DIRLATESTSTAMP, VtiType.TIME, VtiConstraint.R, docMetaInfo.getDirlateststamp());

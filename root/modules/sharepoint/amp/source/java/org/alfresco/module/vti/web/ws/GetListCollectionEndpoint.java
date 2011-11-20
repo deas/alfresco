@@ -18,44 +18,43 @@
  */
 package org.alfresco.module.vti.web.ws;
 
-import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.alfresco.module.vti.handler.MethodHandler;
+import org.alfresco.module.vti.handler.ListsServiceHandler;
+import org.alfresco.module.vti.metadata.model.ListBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
- * Class for handling WebUrlFromPageUrl method from webs web service
+ * Class for handling GetListCollection method from lists web service
  *
  * @author PavelYur
  */
-public class WebUrlFromPageUrlEndpoint extends AbstractEndpoint
+public class GetListCollectionEndpoint extends AbstractEndpoint
 {
+    private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
 
-    private static Log logger = LogFactory.getLog(WebUrlFromPageUrlEndpoint.class);
-    
     // handler that provides methods for operating with documents and folders
-    private MethodHandler handler;    
+    private ListsServiceHandler handler;    
 
     // xml namespace prefix
-    private static String prefix = "webs";
-
+    private static String prefix = "lists";
+    
     /**
      * constructor
      *
      * @param handler that provides methods for operating with documents and folders
      */
-    public WebUrlFromPageUrlEndpoint(MethodHandler handler)
+    public GetListCollectionEndpoint(ListsServiceHandler handler)
     {
         this.handler = handler;
     }
-
+    
     /**
-     * Retrieves url of the document workspace site from the document url
+     * Returns the names and GUIDs for all the lists in the site
      * 
      * @param soapRequest Vti soap request ({@link VtiSoapRequest})
      * @param soapResponse Vti soap response ({@link VtiSoapResponse}) 
@@ -64,32 +63,44 @@ public class WebUrlFromPageUrlEndpoint extends AbstractEndpoint
     {
         if (logger.isDebugEnabled())
             logger.debug("Soap Method with name " + getName() + " is started.");
-        
+
         // mapping xml namespace to prefix
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
-        // getting pageUrl parameter from request
-        XPath xpath = new Dom4jXPath(buildXPath(prefix, "/WebUrlFromPageUrl/pageUrl"));
-        xpath.setNamespaceContext(nc);
-        String pageUrl = URLDecoder.decode(((Element) xpath.selectSingleNode(soapRequest.getDocument().getRootElement())).getTextTrim(), "UTF-8");        
-
-        if (logger.isDebugEnabled())
-            logger.debug("pageUrl parameter for this request: " + pageUrl);
-        String server = getHost(soapRequest);
-        String context = soapRequest.getAlfrescoContextName();
-                
-        String[] uris = handler.decomposeURL(pageUrl.replaceAll(server, ""), context);
+        // get site name that is used to list subsites
+        String siteName = getDwsFromUri(soapRequest);
+        
+        List<ListBean> lists;
+        
+        if (siteName.equals(""))
+        {
+            lists = new ArrayList<ListBean>(0); 
+        }
+        else
+        {
+            lists = handler.getListCollection(siteName.substring(1));
+        }
 
         // creating soap response
-        Element responseElement = soapResponse.getDocument().addElement("WebUrlFromPageUrlResponse", namespace);
-        Element result = responseElement.addElement("WebUrlFromPageUrlResult");       
-        result.setText(server + uris[0]);
+        Element responseElement = soapResponse.getDocument().addElement("GetListCollectionResponse", namespace);
+        Element resultElement = responseElement.addElement("GetListCollectionResult");       
+        Element listsElement = resultElement.addElement("Lists");
         
+        for (ListBean list : lists)
+        {
+            Element listElement = listsElement.addElement("List");
+            listElement.addAttribute("ID", list.getId());
+            listElement.addAttribute("Title", list.getTitle());
+            listElement.addAttribute("Name", list.getName());
+            listElement.addAttribute("Description", list.getDescription());
+        }
+
         if (logger.isDebugEnabled())
         {
             logger.debug("Soap Method with name " + getName() + " is finished.");
         }
     }
+
 }

@@ -32,6 +32,7 @@ import org.alfresco.service.cmr.calendar.CalendarEntryDTO;
  */
 public class MeetingBean extends CalendarEntryDTO
 {
+    private static final long serialVersionUID = -367359427553658900L;
     private String organizer;
     private List<String> attendees;
     

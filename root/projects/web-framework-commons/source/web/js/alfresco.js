@@ -160,6 +160,30 @@ Alfresco.messages = Alfresco.messages ||
 };
 
 /**
+ * Checks whether particular plugin for associated mimetype is installed
+ * 
+ * @method Alfresco.util.isBrowserPluginInstalled
+ */
+Alfresco.util.isBrowserPluginInstalled = function(mimeType)
+{
+   return navigator.mimeTypes && navigator.mimeTypes[mimeType] && navigator.mimeTypes[mimeType].enabledPlugin;
+};
+
+/**
+ * Checks whether Mac browser plugin for SharePoint is installed
+ * 
+ * @method Alfresco.util.appendArrayToObject
+ */
+Alfresco.util.isSharePointPluginInstalled = function()
+{
+   var webkitPluginInstalled = Alfresco.util.isBrowserPluginInstalled("application/x-sharepoint-webkit");
+   var npapiPluginInstalled = Alfresco.util.isBrowserPluginInstalled("application/x-sharepoint");
+   if (YAHOO.env.ua.webkit && webkitPluginInstalled)
+      return true;
+   return npapiPluginInstalled != undefined;
+};
+
+/**
  * Appends an array onto an object
  *
  * @method Alfresco.util.appendArrayToObject

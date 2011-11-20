@@ -55,7 +55,7 @@ public class FileOpenDialog extends AbstractMethod
     
     private static final String METHOD_NAME = "dialogview";
  
-	private Template template = null;    
+	private Template template = null;
     
     public String getName()
     {

@@ -57,6 +57,13 @@ public class OpenServiceMethod extends AbstractMethod
             logger.debug("Start method execution. Method name: " + getName());
         }
         String service_name = request.getParameter("service_name");
+
+        // Office 2008/2011 for Mac special case
+        if (service_name == null)
+        {
+            service_name = "";
+        }
+        
         if (logger.isDebugEnabled())
         {
             logger.debug("Opening service with name: '" + service_name + "'");

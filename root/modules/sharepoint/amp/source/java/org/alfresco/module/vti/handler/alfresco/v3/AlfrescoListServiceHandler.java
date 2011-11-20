@@ -51,7 +51,6 @@ import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.PropertyCheck;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -82,11 +81,11 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
     private FileFolderService fileFolderService;
     private NodeService nodeService;
     private SiteService siteService;
-    private ShareUtils shareUtils;
+    //private ShareUtils shareUtils;
     private NamespaceService namespaceService;
     private DictionaryService dictionaryService;
-    private TransactionService transactionService;
-    private AuthenticationComponent authenticationComponent;
+    //private TransactionService transactionService;
+    //private AuthenticationComponent authenticationComponent;
     
     private Map<Integer,String> dataListTypes;
     private Map<Integer, ListTypeBean> listTypes; 
@@ -96,10 +95,10 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
      * 
      * @param authenticationComponent the authentication component to set ({@link AuthenticationComponent})
      */
-    public void setAuthenticationComponent(AuthenticationComponent authenticationComponent)
+    /*public void setAuthenticationComponent(AuthenticationComponent authenticationComponent)
     {
         this.authenticationComponent = authenticationComponent;
-    }
+    }*/
     
     public void setNodeService(NodeService nodeService) 
     {
@@ -121,10 +120,10 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
      * 
      * @param shareUtils the share utils to set ({@link ShareUtils})
      */
-    public void setShareUtils(ShareUtils shareUtils)
+    /*public void setShareUtils(ShareUtils shareUtils)
     {
         this.shareUtils = shareUtils;
-    }
+    }*/
 
     public void setFileFolderService(FileFolderService fileFolderService) 
     {
@@ -141,10 +140,10 @@ public class AlfrescoListServiceHandler implements ListServiceHandler, Initializ
        this.dictionaryService = dictionaryService;
     }
 
-    public void setTransactionService(TransactionService transactionService) 
+    /*public void setTransactionService(TransactionService transactionService) 
     {
        this.transactionService = transactionService;
-    }
+    }*/
 
     /**
      * Sets the list of SharePoint Template IDs to 

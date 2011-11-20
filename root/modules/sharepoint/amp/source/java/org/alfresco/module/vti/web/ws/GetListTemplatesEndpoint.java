@@ -39,7 +39,8 @@ public class GetListTemplatesEndpoint extends AbstractEndpoint
     private ListServiceHandler handler;
 
     // xml namespace prefix
-    private static String prefix = "webss";
+    @SuppressWarnings("unused") // Unused until fully implemented
+    private static String prefix = "webss"; 
 
     /**
      * constructor
@@ -52,12 +53,14 @@ public class GetListTemplatesEndpoint extends AbstractEndpoint
     }
 
     /**
-     * Deletes document workspace
+     * Returns the list templates (kinds of document library
+     *  components) that are available
      * 
      * @param soapRequest Vti soap request ({@link VtiSoapRequest})
      * @param soapResponse Vti soap response ({@link VtiSoapResponse}) 
      */
-    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception   {
+    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception   
+    {
        if (logger.isDebugEnabled()) {
           logger.debug("SOAP method with name " + getName() + " is started.");
        }
