@@ -6,6 +6,6 @@
         <li><strong>${msg('content.details.published')}</strong>: <#if asset.properties['cmis:lastModificationDate']??>${asset.properties['cmis:lastModificationDate']?string(msg('date.format'))}</#if></li>
         <li><strong>${msg('content.details.size')}</strong>: ${size}</li>
         <li><strong>${msg('content.details.mimeType')}</strong>: ${asset.properties['cmis:contentStreamMimeType']!''}</li>
-        <li><strong>${msg('content.details.download')}</strong>: <a href="<@makeurl asset=asset force='short'/>">${asset.properties['cmis:name']!''}</a></li>
+        <li><strong>${msg('content.details.download')}</strong>: <a href="<@makeurl asset=asset force='short' attach='true' />">${asset.properties['cmis:name']!''}</a></li>
     </ul>
 </div>    
