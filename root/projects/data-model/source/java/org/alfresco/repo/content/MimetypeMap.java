@@ -541,11 +541,18 @@ public class MimetypeMap implements MimetypeService
         {
             return filenameGuess;
         }
+        
+        // Alfresco doesn't support mimetype parameters
+        // Use the form of the mimetype without any
+        if (type.hasParameters())
+        {
+            type = type.getBaseType();
+        }
 
         // Not all the mimetypes we use are the Tika Canonical one.
         // So, detect when this happens and use ours in preference
         String tikaType = type.toString();
-        if(mimetypes.contains(tikaType))
+        if (mimetypes.contains(tikaType))
         {
             // Alfresco and Tika agree!
             return tikaType;
