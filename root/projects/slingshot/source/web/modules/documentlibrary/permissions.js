@@ -38,11 +38,11 @@
    Alfresco.module.DoclibPermissions = function(htmlId)
    {
       Alfresco.module.DoclibPermissions.superclass.constructor.call(this, "Alfresco.module.DoclibPermissions", htmlId, ["button", "container", "connection", "json"]);
-
+      
       // Initialise prototype properties
       this.rolePickers = {};
-      this.hiddenRoles = [];
-
+      this.hiddenRoles = {};
+      
       return this;
    };
    
@@ -101,7 +101,7 @@
        * Object container for storing roles that picker doesn't show
        * 
        * @property hiddenRoles
-       * @type array of objects
+       * @type objects
        */
       hiddenRoles: null,
 
@@ -119,6 +119,9 @@
        */
       showDialog: function DLP_showDialog()
       {
+         // Clear cached values
+         this.hiddenRoles = {};
+         
          // DocLib Actions module
          if (!this.modules.actions)
          {
@@ -427,18 +430,25 @@
          for (i = 0, j = defaultRoles.length; i < j; i++)
          {
             permissions = defaultRoles[i].split(";");
-            if (permissions[1] in this.rolePickers && permissions[2] in this.options.roles)
+            if (permissions[1] in this.rolePickers)
             {
                this.rolePickers[permissions[1]].set("name", permissions[2]);
-               this.rolePickers[permissions[1]].set("label", this.msg("role." + permissions[2]));
+               // it's possible that an odd collection of permissions have been set - one that is not defined
+               // as a well known Share role combination - so all for that possibility i.e. no msg available
+               var msg = this.msg("role." + permissions[2]);
+               if (msg === "role." + permissions[2])
+               {
+                  msg = permissions[2];
+               }
+               this.rolePickers[permissions[1]].set("label", msg);
             }
             else
             {
-               this.hiddenRoles.push(
+               this.hiddenRoles[permissions[1]] =
                {
-                  user:permissions[1],
-                  role:permissions[2]
-               });
+                  user: permissions[1],
+                  role: permissions[2]
+               };
             }
          }
 
@@ -489,6 +499,17 @@
          var params = [],
             role;
          
+         // Set any hidden roles to avoid removing them from node
+         for (var user in this.hiddenRoles)
+         {
+            params.push(
+            {
+               group: this.hiddenRoles[user].user,
+               role: this.hiddenRoles[user].role
+            });
+         }
+         
+         // Set roles from the permission selectors
          for (var picker in this.rolePickers)
          {
             if (this.rolePickers.hasOwnProperty(picker))
@@ -503,16 +524,6 @@
                   });
                }
             }
-         }
-
-         // Set hiddenRoles to avoid removing them from node
-         for (var i = 0, j = this.hiddenRoles.length; i < j; i++)
-         {
-            params.push(
-            {
-               group: this.hiddenRoles[i].user,
-               role: this.hiddenRoles[i].role
-            });
          }
 
          return params;
