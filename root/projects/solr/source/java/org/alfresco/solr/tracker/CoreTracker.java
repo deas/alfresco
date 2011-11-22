@@ -156,6 +156,8 @@ public class CoreTracker implements CloseHook
     private volatile long lastIndexedIdBeforeHoles = -1;
 
     private volatile boolean running = false;
+    
+    private volatile boolean checkedFirstTransactionTime = false;
 
     volatile boolean check = false;
 
@@ -1158,6 +1160,51 @@ public class CoreTracker implements CloseHook
             long lastTxCommitTime = lastGoodTxCommitTimeInIndex;
             long aclLastCommitTime = lastGoodTxCommitTimeInIndex;
 
+            // Check we are tracking the correct repository
+            // hcekc the first TX time
+            
+            if(reader.numDocs() == 0)
+            {
+                checkedFirstTransactionTime = true;
+                log.info("Empty index - no verification required");
+            }
+            
+            if(!checkedFirstTransactionTime)
+            {
+                Transactions firstTransactions = client.getTransactions(null, null, 1);
+                if(firstTransactions.getTransactions().size() > 0)
+                {
+                    Transaction firstTransaction = firstTransactions.getTransactions().get(0);
+                    long firstTxId = firstTransaction.getId();
+                    String targetTxId = NumericEncoder.encode(firstTxId);
+                    long firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
+                    String targetTxCommitTime = NumericEncoder.encode(firstTransactionCommitTime);
+                    
+                    BooleanQuery query = new BooleanQuery();
+                    
+                    
+                    query.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_TXID, targetTxId)), Occur.MUST);
+                    query.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, targetTxCommitTime)), Occur.MUST);
+                    
+                    DocSet set = solrIndexSearcher.getDocSet(query);
+                    if(set.size() == 0)
+                    {
+                        log.error("First transaction was not found with the correct timestamp -> SOLR is tracking the wrong repository");
+                        throw new AlfrescoRuntimeException("Initial transaction not found with correct timestamp");
+                    }
+                    else if(set.size() == 1)
+                    {
+                        checkedFirstTransactionTime = true;
+                        log.info("Verified first transaction and timetsamp in index");
+                    }
+                    else
+                    {
+                        log.warn("Duplicate initial transaction found with correct timestamp");
+                    }
+                }
+                
+            }
+            
             // Track Acls up to end point
             long aclLoopStartingCommitTime;
             List<AclChangeSet> aclChangeSets;
@@ -1425,6 +1472,11 @@ public class CoreTracker implements CloseHook
                 }
                 break;
             case REMOVED:
+                // At the moment we do not unload models - I can see no side effects .... 
+                // However search is used to check for references to indexed properties or types
+                // This will be partially broken anyway due to eventual consistency
+                // A model should only be unloaded if there are no data dependencies
+                // Should have been on the de-lucene list.
                 break;
             }
         }
@@ -1434,7 +1486,10 @@ public class CoreTracker implements CloseHook
         {
             loadModel(modelMap, loadedModels, model, dataModel);
         }
-        dataModel.afterInitModels();
+        if(modelDiffs.size() > 0)
+        {
+            dataModel.afterInitModels();
+        }
 
         File alfrescoModelDir = new File(id, "alfrescoModels");
         if (!alfrescoModelDir.exists())
@@ -1477,7 +1532,7 @@ public class CoreTracker implements CloseHook
     private void removeMatchingModels(File alfrescoModelDir, QName modelName)
     {
 
-        final String prefix = modelName.toString().replace(":", ".") + ".";
+        final String prefix = modelName.toPrefixString(dataModel.getNamespaceDAO()).replace(":", ".") + ".";
         final String postFix = ".xml";
 
         File[] toDelete = alfrescoModelDir.listFiles(new FileFilter()
