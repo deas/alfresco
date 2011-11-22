@@ -403,6 +403,22 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             }
         }
         
+        // Check we managed to find the node one way or another
+        if (resourceNodeRef == null)
+        {
+           if(logger.isInfoEnabled())
+           {
+              logger.info("No node found for resource " + decodedUrl);
+           }
+           
+           // TODO Is this the correct status code to return if they've
+           //  tried to query for something that doesn't exist?
+           // Or should we return something else, or even create it?
+           response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+           return;
+        }
+        
+        // Get the working copy of it
         final NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(resourceNodeRef);
         
         // updates changes on the server
