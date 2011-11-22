@@ -705,7 +705,7 @@
             <action index="110" id="document-edit-properties" icon="folder-edit-properties" label="actions.folder.edit-metadata" />
             <action index="120" id="document-approve" icon="folder-approve" />
             <action index="130" id="document-reject" icon="folder-reject" />
-            <action index="140" id="document-locate" icon="folder-locate" label="actions.folder.locate" />
+            <action index="140" id="document-locate" icon="document-locate" label="actions.folder.locate" />
             <action index="150" id="document-copy-to" icon="folder-copy-to" label="actions.folder.copy-to" />
             <action index="160" id="document-move-to" icon="folder-move-to" label="actions.folder.move-to" />
             <action index="170" id="folder-manage-rules" />
