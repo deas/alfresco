@@ -220,15 +220,15 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-security-core-3.1.0.RC2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT.jar" sourcepath="src/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-server-support-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-test-browser-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-test-tck-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-client-api-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-client-bindings-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-client-impl-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-commons-api-0.6.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT.jar" sourcepath="src/chemistry-opencmis-commons-impl-0.6.0-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1.jar" sourcepath="src/PDFRenderer-0.9.1-src.zip"/>
