@@ -41,15 +41,12 @@ import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
 import org.alfresco.module.vti.metadata.dic.DocumentStatus;
 import org.alfresco.module.vti.metadata.dic.GetOption;
-import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.dic.VtiSort;
 import org.alfresco.module.vti.metadata.dic.VtiSortField;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
 import org.alfresco.repo.security.authentication.AuthenticationComponent;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
@@ -152,89 +149,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
      */
     public String[] decomposeURL(final String url, final String alfrescoContext)
     {
-        return AuthenticationUtil.runAs(new RunAsWork<String[]>()
-        {
-
-            public String[] doWork() throws Exception
-            {
-                // Office 2008/2011 for Mac fix
-                if (url.equals(""))
-                {
-                    return new String[] {"", ""};
-                }
-                
-                if (!url.startsWith(alfrescoContext))
-                {
-                    if (logger.isDebugEnabled())
-                    {
-                        logger.debug("Url must start with alfresco context.");
-                    }
-                    throw new VtiHandlerException(VtiError.V_BAD_URL);
-                }
-
-                if (url.equalsIgnoreCase(alfrescoContext))
-                {
-                    if (logger.isDebugEnabled())
-                    {
-                        logger.debug("WebUrl: " + alfrescoContext + ", fileUrl: ''");
-                    }
-                    return new String[] { alfrescoContext, "" };
-                }
-
-                String webUrl = "";
-                String fileUrl = "";
-
-                String[] splitPath = url.replaceAll(alfrescoContext, "").substring(1).split("/");
-
-                StringBuilder tempWebUrl = new StringBuilder();
-
-                for (int i = splitPath.length; i > 0; i--)
-                {
-                    tempWebUrl.delete(0, tempWebUrl.length());
-
-                    for (int j = 0; j < i; j++)
-                    {
-                        if (j < i - 1)
-                        {
-                            tempWebUrl.append(splitPath[j] + "/");
-                        }
-                        else
-                        {
-                            tempWebUrl.append(splitPath[j]);
-                        }
-                    }
-
-                    FileInfo fileInfo = getPathHelper().resolvePathFileInfo(tempWebUrl.toString());
-
-                    if (fileInfo != null)
-                    {
-                        if (getDictionaryService().isSubClass(getNodeService().getType(fileInfo.getNodeRef()), SiteModel.TYPE_SITE))
-                        {
-                            webUrl = alfrescoContext + "/" + tempWebUrl;
-                            if (url.replaceAll(webUrl, "").startsWith("/"))
-                            {
-                                fileUrl = url.replaceAll(webUrl, "").substring(1);
-                            }
-                            else
-                            {
-                                fileUrl = url.replaceAll(webUrl, "");
-                            }
-                            if (logger.isDebugEnabled())
-                            {
-                                logger.debug("WebUrl: " + webUrl + ", fileUrl: '" + fileUrl + "'");
-                            }
-                            return new String[] { webUrl, fileUrl };
-                        }
-                    }
-                }
-                if (webUrl.equals(""))
-                {
-                    throw new VtiHandlerException(VtiError.V_BAD_URL);
-                }
-                return new String[] { webUrl, fileUrl };
-            }
-
-        }, authenticationComponent.getSystemUserName());
+        return getPathHelper().decomposeDocumentURL(alfrescoContext, url, SiteModel.TYPE_SITE);
     }
 
     /**

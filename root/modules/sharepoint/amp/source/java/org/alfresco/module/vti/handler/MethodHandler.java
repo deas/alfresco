@@ -174,7 +174,7 @@ public interface MethodHandler
     public DocsMetaInfo getDocsMetaInfo(String serviceName, boolean listHiddenDocs, boolean listLinkInfo, boolean validateWelcomeNames, List<String> urlList);
 
     /**
-     * Decompose URL
+     * Decompose the URL into its parts, eg /foo/bar.doc -> { "foo", "bar.doc" }
      * 
      * @param url url to decompose
      * @param alfrescoContext Alfresco Context

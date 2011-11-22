@@ -313,6 +313,107 @@ public class VtiPathHelper extends AbstractLifecycleBean
     }
     
     /**
+     * Breaks down the Document Context + URI into the 
+     *  document path and name.
+     * @param alfrescoContext The alfresco context
+     * @param uri The document URI
+     * @param spaceType The type of the space
+     */
+    public String[] decomposeDocumentURL(final String alfrescoContext,
+          final String uri, final QName spaceType)
+    {
+       String[] parts = AuthenticationUtil.runAs(new RunAsWork<String[]>()
+         {
+            public String[] doWork() throws Exception
+            {
+               // Office 2008/2011 for Mac fix
+               if (uri.equals(""))
+               {
+                   return new String[] {"", ""};
+               }
+               
+               // We require the path to start with the context
+               if (!uri.startsWith(alfrescoContext))
+               {
+                   if (logger.isDebugEnabled())
+                   {
+                       logger.debug("Url must start with alfresco context.");
+                   }
+                   throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+               }
+               
+               // Handle the case of the context with no site/document
+               if (uri.equalsIgnoreCase(alfrescoContext))
+               {
+                   if (logger.isDebugEnabled())
+                   {
+                       logger.debug("WebUrl: " + alfrescoContext + ", fileUrl: ''");
+                   }
+                   return new String[]{alfrescoContext, ""};
+               }
+               
+               // Strip off the context before continuing with the path resolution
+               String pathUri = uri.substring(alfrescoContext.length() + 1);
+               // Split it into parts based on slashes
+               String[] splitPath = pathUri.split("/");
+               
+               // Build up the path
+               String webUrl = "";
+               String fileUrl = "";
+               
+               StringBuilder tempWebUrl = new StringBuilder();
+               for (int i = splitPath.length; i > 0; i--)
+               {
+                   tempWebUrl.delete(0, tempWebUrl.length());
+                   
+                   for (int j = 0; j < i; j++)
+                   {
+                       if ( j < i-1)
+                       {
+                           tempWebUrl.append(splitPath[j] + "/");
+                       }
+                       else
+                       {
+                           tempWebUrl.append(splitPath[j]);
+                       }
+                   }            
+                   
+                   FileInfo fileInfo = resolvePathFileInfo(tempWebUrl.toString());
+                   
+                   if (fileInfo != null)
+                   {
+                       if (dictionaryService.isSubClass(nodeService.getType(fileInfo.getNodeRef()), spaceType))
+                       {
+                           webUrl = alfrescoContext + "/" + tempWebUrl;
+                           if (uri.replaceAll(webUrl, "").startsWith("/"))
+                           {
+                               fileUrl = uri.replaceAll(webUrl, "").substring(1);
+                           }
+                           else
+                           {
+                               fileUrl = uri.replaceAll(webUrl, "");                        
+                           }
+                           if (logger.isDebugEnabled())
+                           {
+                               logger.debug("WebUrl: " + webUrl + ", fileUrl: '" + fileUrl + "'");
+                           }
+                           return new String[]{webUrl, fileUrl};
+                       }
+                   }
+               }
+               if (webUrl.equals(""))
+               {
+                   throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+               }
+               return new String[]{webUrl, fileUrl};
+            }
+         },
+         authenticationComponent.getSystemUserName()
+       );  
+       return parts;
+    }
+    
+    /**
      * Get Document Workspace site from document name
      * 
      * @param document document
@@ -323,84 +424,7 @@ public class VtiPathHelper extends AbstractLifecycleBean
     {
         final String alfrescoContext = getContextFromDocumentName(document);
         final String uri = getPathFromDocumentName(document);
-        String[] parts = AuthenticationUtil.runAs(new RunAsWork<String[]>()
-                {
-
-                    public String[] doWork() throws Exception
-                    {
-                        if (!uri.startsWith(alfrescoContext))
-                        {
-                            if (logger.isDebugEnabled())
-                            {
-                                logger.debug("Url must start with alfresco context.");
-                            }
-                            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
-                        }
-                        
-                        if (uri.equalsIgnoreCase(alfrescoContext))
-                        {
-                            if (logger.isDebugEnabled())
-                            {
-                                logger.debug("WebUrl: " + alfrescoContext + ", fileUrl: ''");
-                            }
-                            return new String[]{alfrescoContext, ""};
-                        }
-                        
-                        String webUrl = "";
-                        String fileUrl = "";        
-                        
-                        String[] splitPath = uri.replaceAll(alfrescoContext, "").substring(1).split("/");
-                        
-                        StringBuilder tempWebUrl = new StringBuilder();
-                        
-                        for (int i = splitPath.length; i > 0; i--)
-                        {
-                            tempWebUrl.delete(0, tempWebUrl.length());
-                            
-                            for (int j = 0; j < i; j++)
-                            {
-                                if ( j < i-1)
-                                {
-                                    tempWebUrl.append(splitPath[j] + "/");
-                                }
-                                else
-                                {
-                                    tempWebUrl.append(splitPath[j]);
-                                }
-                            }            
-                            
-                            FileInfo fileInfo = resolvePathFileInfo(tempWebUrl.toString());
-                            
-                            if (fileInfo != null)
-                            {
-                                if (dictionaryService.isSubClass(nodeService.getType(fileInfo.getNodeRef()), spaceType))
-                                {
-                                    webUrl = alfrescoContext + "/" + tempWebUrl;
-                                    if (uri.replaceAll(webUrl, "").startsWith("/"))
-                                    {
-                                        fileUrl = uri.replaceAll(webUrl, "").substring(1);
-                                    }
-                                    else
-                                    {
-                                        fileUrl = uri.replaceAll(webUrl, "");                        
-                                    }
-                                    if (logger.isDebugEnabled())
-                                    {
-                                        logger.debug("WebUrl: " + webUrl + ", fileUrl: '" + fileUrl + "'");
-                                    }
-                                    return new String[]{webUrl, fileUrl};
-                                }
-                            }
-                        }
-                        if (webUrl.equals(""))
-                        {
-                            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
-                        }
-                        return new String[]{webUrl, fileUrl};
-                    }
-            
-                },
-                authenticationComponent.getSystemUserName());   
+        String[] parts = decomposeDocumentURL(alfrescoContext, uri, spaceType); 
         return parts[0].substring(parts[0].lastIndexOf("/"));
     }
     
