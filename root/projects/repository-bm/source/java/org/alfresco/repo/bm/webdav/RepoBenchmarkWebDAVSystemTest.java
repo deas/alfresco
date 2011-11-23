@@ -366,21 +366,16 @@ public class RepoBenchmarkWebDAVSystemTest extends AbstractRepoBenchmarkSystemTe
     @Override
     protected boolean existsItem(String path)
     {
-        // see https://code.google.com/p/sardine/issues/detail?id=48
-        //Sardine sardine = SardineFactory.begin(testUserUN, testUserPW);
-        //return sardine.exists(url);
-        
+        Sardine sardine;
         try
         {
-            getItem(getUrl(path), 0, false);
-            return true;
+            sardine = SardineFactory.begin(testUserUN, testUserPW);
+            return sardine.exists(getUrl(path));
         }
-        catch (SardineException se)
+        catch (SardineException e)
         {
-            // ignore - does not exist
+            throw new RuntimeException(e);
         }
-        
-        return false;
     }
     
     private String getUrl(String path)
