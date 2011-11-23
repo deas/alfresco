@@ -352,12 +352,7 @@ public class AlfrescoSolrDataModel
         {
             if (propertyDefinition.isIndexed())
             {
-                switch (propertyDefinition.getIndexTokenisationMode())
-                {
-                case TRUE:
-                case BOTH:
-                    return true;
-                }
+               return true;
             }
             if(propertyDefinition.isStoredInIndex())
             {
