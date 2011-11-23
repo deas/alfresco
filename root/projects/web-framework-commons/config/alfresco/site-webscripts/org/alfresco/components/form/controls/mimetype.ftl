@@ -28,11 +28,10 @@
          <@mimetypeOption mt="application/illustrator" />
          <@mimetypeOption mt="application/x-indesign" />
          <@mimetypeOption mt="application/pdf" />
-         <@mimetypeOption mt="application/photoshop" />
          <@mimetypeOption mt="audio/x-aiff" />
          <@mimetypeOption mt="application/acp" />
          <@mimetypeOption mt="image/x-portable-anymap" />
-         <@mimetypeOption mt="image/x-dwg" />
+         <@mimetypeOption mt="image/vnd.dwg" />
          <@mimetypeOption mt="image/x-dwt" />
          <@mimetypeOption mt="audio/basic" />
          <@mimetypeOption mt="image/bmp" />
@@ -105,7 +104,7 @@
          <@mimetypeOption mt="video/x-rad-screenplay" />
          <@mimetypeOption mt="image/x-cmu-raster" />
          <@mimetypeOption mt="image/x-rgb" />
-         <@mimetypeOption mt="application/photoshop" />
+         <@mimetypeOption mt="image/vnd.adobe.photoshop" />
          <@mimetypeOption mt="image/vnd.adobe.premiere" />
          <@mimetypeOption mt="audio/vnd.adobe.soundbooth" />
          <@mimetypeOption mt="text/richtext" />
@@ -163,7 +162,7 @@
       "audio/x-aiff": "AIFF Audio",
       "application/acp": "Alfresco Content Package",
       "image/x-portable-anymap": "Anymap Image",
-      "image/x-dwg": "AutoCAD Drawing",
+      "image/vnd.dwg": "AutoCAD Drawing",
       "image/x-dwt": "AutoCAD Template",
       "audio/basic": "Basic Audio",
       "image/bmp": "Bitmap Image",
@@ -238,7 +237,8 @@
       "application/illustrator": "Adobe Illustrator File",
       "application/x-zip": "Adobe Flex Project File",
       "application/x-indesign": "Adobe InDesign Document",
-      "application/photoshop": "Adobe Photoshop Document",
+      "image/vnd.adobe.photoshop": "Adobe Photoshop Document",
+      "image/vnd.adobe.premiere": "Adobe Premiere",
       "audio/ogg": "OGG Audio",
       "video/ogg": "OGG Video",
       "video/ogv": "OGG Video",

@@ -24,11 +24,16 @@
             <extension default="true">mpp</extension>
          </mimetype>
 
-         <mimetype mimetype="application/photoshop" display="Adobe Photoshop">
+         <mimetype mimetype="image/vnd.adobe.photoshop" display="Adobe Photoshop">
             <extension default="true">psd</extension>
          </mimetype>
+         <!-- Legacy, no longer used -->
+<!--
+         <mimetype mimetype="application/photoshop" display="Adobe Photoshop">
+         </mimetype>
+-->
 
-         <mimetype mimetype="image/vnd.adobe.premiere" display="Adobe Photoshop">
+         <mimetype mimetype="image/vnd.adobe.premiere" display="Adobe Premiere">
             <extension default="true">ppj</extension>
          </mimetype>
 
@@ -132,14 +137,14 @@
             <extension>avi</extension>
             <extension>qvi</extension>
          </mimetype>
-         <mimetype mimetype="video/x-ms-asf" display="MS Streaming Video">
+         <mimetype mimetype="video/x-ms-asf" display="MS ASF Streaming Video">
             <extension>asf</extension>
             <extension>asx</extension>
          </mimetype>
-         <mimetype mimetype="video/x-ms-wmv" display="MS Streaming Video">
+         <mimetype mimetype="video/x-ms-wmv" display="MS WMV Streaming Video">
             <extension>wmv</extension>
          </mimetype>
-         <mimetype mimetype="video/x-ms-wma" display="MS Streaming Audio">
+         <mimetype mimetype="video/x-ms-wma" display="MS WMA Streaming Audio">
             <extension>wma</extension>
          </mimetype>
          <mimetype mimetype="video/x-rad-screenplay" display="RAD Screen Display">
@@ -192,9 +197,6 @@
          </mimetype>
          <mimetype mimetype="image/gif" display="GIF Image">
             <extension>gif</extension>
-         </mimetype>
-         <mimetype mimetype="application/sgml" display="SGML">
-            <extension>gml</extension>
          </mimetype>
          <mimetype mimetype="application/x-gtar" display="GZIP Tarball">
             <extension>gtar</extension>
@@ -291,9 +293,6 @@
          <mimetype mimetype="image/x-portable-pixmap" display="Pixmap Image">
             <extension>ppm</extension>
          </mimetype>
-         <mimetype mimetype="image/vnd.adobe.photoshop" display="Adobe Photoship Image">
-            <extension>psd</extension>
-         </mimetype>
          <mimetype mimetype="image/x-cmu-raster" display="Raster Image">
             <extension>ras</extension>
          </mimetype>
@@ -311,9 +310,12 @@
          <mimetype mimetype="text/richtext" display="Rich Text">
             <extension>rtx</extension>
          </mimetype>
-         <mimetype mimetype="text/sgml" display="SGML">
-            <extension>sgml</extension>
+         <mimetype mimetype="text/sgml" display="SGML (Human Readable)">
+            <extension default="true">sgml</extension>
             <extension>sgm</extension>
+         </mimetype>
+         <mimetype mimetype="application/sgml" display="SGML (Machine Readable)">
+            <extension>gml</extension>
          </mimetype>
          <mimetype mimetype="application/x-sh" text="true" display="Shell Script">
             <extension>sh</extension>
@@ -394,15 +396,21 @@
             <extension display="JAR">jar</extension>
             <extension display="EAR">ear</extension>
          </mimetype>
-         <mimetype mimetype="application/dwg" display="AutoCAD Drawing">
+
+         <mimetype mimetype="image/vnd.dwg" display="AutoCAD Drawing">
             <extension>dwg</extension>
+         </mimetype>
+         <!-- Legacy, no longer used -->
+<!--
+         <mimetype mimetype="application/dwg" display="AutoCAD Drawing">
          </mimetype>
          <mimetype mimetype="image/x-dwg" display="AutoCAD Drawing">
-            <extension>dwg</extension>
          </mimetype>
+-->
          <mimetype mimetype="image/x-dwt" display="AutoCAD Template">
             <extension>dwt</extension>
          </mimetype>
+
          <mimetype mimetype="message/rfc822" display="EMail">
             <extension>eml</extension>
          </mimetype>
