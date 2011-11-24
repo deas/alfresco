@@ -124,6 +124,7 @@
       "pptx": "ppt",
       "psd": "psd",
       "qt": "video",
+      "rtf": "rtf",
       "snd": "audio",
       "spx": "audio",
       "svg": "img",

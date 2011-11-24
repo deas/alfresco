@@ -678,6 +678,7 @@ Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize)
       "pptx": "ppt",
       "psd": "psd",
       "qt": "video",
+      "rtf": "rtf",
       "snd": "audio",
       "spx": "audio",
       "svg": "img",
