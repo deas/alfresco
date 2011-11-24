@@ -36,6 +36,8 @@ import java.util.TimeZone;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
+import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
+import org.alfresco.module.vti.metadata.model.TimeZoneInformationDate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -154,8 +156,8 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         meeting.setTitle(params.get("SUMMARY"));
         meeting.setOrganizer(params.get("ORGANIZER"));
         meeting.setId(params.get("UID"));
-        meeting.setStart(parseDate(params.get("DTSTART")));
-        meeting.setEnd(parseDate(params.get("DTEND")));
+        meeting.setStart(parseDate("DTSTART", params));
+        meeting.setEnd(parseDate("DTEND", params));
         if (params.get("RRULE") != null)
         {
             meeting.setRecurrenceRule(params.get("RRULE"));
@@ -182,10 +184,12 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
      * 
      * @param stringDate iCal date value
      */
-    private Date parseDate(String stringDate)
+    private Date parseDate(String dateType, Map<String,String> params)
     {
         DateFormat dateFormat;
         
+        // Is this a whole-day date, or a date+time?
+        String stringDate = params.get(dateType);
         if (stringDate.indexOf("T") == -1)
         {
             dateFormat = new SimpleDateFormat(ALL_DAY_DATE_FROMAT);
@@ -195,11 +199,14 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
             dateFormat = new SimpleDateFormat(DATE_FROMAT);
         }
         
-        TimeZone timeZone = getTimeZone(stringDate);
+        // Try to work out the timezone
+        TimeZone timeZone = getTimeZone(dateType, params);
         dateFormat.setTimeZone(timeZone);
 
+        // Change from iCal to Java format
         stringDate = prepareDate(stringDate);
 
+        // Try to parse
         Date date = null;
         try
         {
@@ -216,11 +223,27 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
     /**
      * Retrieve TimeZone from specific iCal format
      * 
+     * TODO Parse out the extended TimeZone details
+     * TODO Link with {@link TimeZoneInformation} and
+     *  {@link TimeZoneInformationDate}
+     * 
      * @param stringDate iCal date value
+     * @param params the full iCal parameters (used to find full TZ info from)
      */
-    private TimeZone getTimeZone(String stringDate)
+    private TimeZone getTimeZone(String dateType, Map<String,String> params)
     {
+        String stringDate = params.get(dateType);
+        String dateTypeTZID = dateType+"-TZID";
         TimeZone timeZone = null;
+        
+        // Did the date come with a helpful timezone ID?
+        if (params.containsKey(dateTypeTZID))
+        {
+           String timezoneId = params.get(dateTypeTZID);
+           // TODO Link this in with TimeZoneInformationDate
+        }
+        
+        // TODO Full timezone details
         if (stringDate.startsWith("TZID"))
         {
             String timeZoneId = stringDate.substring(5, stringDate.indexOf(":"));
@@ -291,7 +314,26 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
                 {
                     if (keyValue[0].contains(";"))
                     {
-                        keyValue[0] = keyValue[0].substring(0, keyValue[0].indexOf(";"));
+                        // Capture the extra details as suffix keys, they're sometimes needed
+                        int splitAt = keyValue[0].indexOf(';');
+                        String mainKey = keyValue[0].substring(0, splitAt);
+                        
+                        if (splitAt < keyValue[0].length() - 2)
+                        {
+                           // Grab each ;k=v part and store as mainkey-k=v
+                           String[] extras = keyValue[0].substring(splitAt+1).split(";");
+                           for (String extra : extras)
+                           {
+                              splitAt = extra.indexOf('=');
+                              if (splitAt > -1)
+                              {
+                                 result.put(mainKey+"-"+extra.substring(0,splitAt-1), extra.substring(splitAt+1));
+                              }
+                           }
+                        }
+
+                        // Use the main key for the core value
+                        keyValue[0] = mainKey;
                     }
                     if (keyValue[0].equals("ATTENDEE"))
                     {
@@ -299,6 +341,18 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
                         attendeeNum++;
                     }
                     result.put(keyValue[0], keyValue[keyValue.length - 1]);
+                }
+                
+                if (!stack.isEmpty() && stack.peek().equals("VTIMEZONE"))
+                {
+                    // Store the top level timezone details with a TZ prefix
+                    result.put("TZ-"+keyValue[0], keyValue[keyValue.length-1]);
+                }
+                if (stack.size() >= 2 && stack.get(stack.size()-2).equals("VTIMEZONE") &&
+                      (stack.peek().equals("STANDARD") || stack.peek().equals("DAYLIGHT")) )
+                {
+                    // Store the timezone details with a TZ prefix + details type
+                    result.put("TZ-"+stack.peek()+"-"+keyValue[0], keyValue[keyValue.length-1]);
                 }
             }
         }
@@ -392,7 +446,7 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         }
         else if (eventParam.get("UNTIL") != null)
         {
-            return parseDate(eventParam.get("UNTIL"));
+            return parseDate("UNTIL", eventParam);
         }
 
         return null;
