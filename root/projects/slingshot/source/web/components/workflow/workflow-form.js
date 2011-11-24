@@ -508,7 +508,13 @@
        */
       renderCellStatus: function WorkflowForm_renderCellStatus(elCell, oRecord, oColumn, oData)
       {
-         elCell.innerHTML = $html(oRecord.getData("properties").bpm_status);
+         var status = oRecord.getData("properties").bpm_status;
+         if (oRecord.getData("propertyLabels") && Alfresco.util.isValueSet(oRecord.getData("propertyLabels").bpm_status, false))
+         {
+            status = oRecord.getData("propertyLabels").bpm_status;
+         }
+         
+         elCell.innerHTML = $html(status);
       },
 
       /**

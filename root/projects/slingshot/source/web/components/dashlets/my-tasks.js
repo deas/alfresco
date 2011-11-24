@@ -302,13 +302,18 @@
                status = data.properties["bpm_status"],
                assignee = data.owner;
 
+            // if there is a property label available for the status use that instead
+            if (data.propertyLabels && Alfresco.util.isValueSet(data.propertyLabels["bpm_status"], false))
+            {
+               status = data.propertyLabels["bpm_status"];
+            }
             // if message is the same as the task type show the <no message> label
             if (message == type)
             {
                message = this.msg("workflow.no_message");
             }
 
-         var messageDesc = '<h3><a href="' + $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h3>',
+            var messageDesc = '<h3><a href="' + $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h3>',
                dateDesc = dueDate ? '<h4><span class="' + (today > dueDate ? "task-delayed" : "") + '" title="' + 
                           this.msg("title.dueOn", Alfresco.util.formatDate(dueDate, "longDate")) + '">' + Alfresco.util.formatDate(dueDate, "longDate") + '</span></h4>' : "",
                statusDesc = '<div title="' + this.msg("title.taskSummary", type, status) + '">' + this.msg("label.taskSummary", type, status) + '</div>',
