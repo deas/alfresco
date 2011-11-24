@@ -125,6 +125,9 @@
          if (Alfresco.logger.isDebugEnabled())
             Alfresco.logger.debug("Set transitions hidden field to: " + transitionId);
          
+         // generate the hidden transitions field
+         this._generateTransitionsHiddenField();
+         
          // attempt to submit the form
          Alfresco.util.submitForm(p_obj.getForm());
       },
@@ -226,6 +229,22 @@
          }
          
          return hiddenField;
+      },
+      
+      _generateTransitionsHiddenField: function ActivitiTransitions__generateTransitionsHiddenField()
+      {
+         // create the hidden transitions field (if necessary)
+         var hiddenField = Dom.get(this.id + "-transitions-hidden");
+         if (hiddenField === null)
+         {
+            hiddenField = document.createElement('input');
+            hiddenField.setAttribute("id", this.id + "-transitions-hidden");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "prop_transitions");
+            hiddenField.setAttribute("value", "Next");
+            
+            Dom.get(this.id).appendChild(hiddenField);
+         }
       }
    });
 })();

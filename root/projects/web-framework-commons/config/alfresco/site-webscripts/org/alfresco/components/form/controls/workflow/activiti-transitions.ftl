@@ -13,8 +13,6 @@
 })();
 //]]></script>
 
-<input type="hidden" name="prop_transitions" value="Next" />
-
 <div class="form-field suggested-actions" id="${fieldHtmlId}">
    <div id="${fieldHtmlId}-buttons">
    </div>
