@@ -3,7 +3,7 @@
    <#assign id = args.htmlid?html>
    <#if !isContainer>
       <#assign fileExtIndex = item.fileName?last_index_of(".")>
-      <#assign fileExt = (fileExtIndex > -1)?string(item.fileName?substring(fileExtIndex + 1), "generic")>
+      <#assign fileExt = (fileExtIndex > -1)?string(item.fileName?substring(fileExtIndex + 1)?lower_case, "generic")>
    </#if>
    <#assign displayName = (item.displayName!item.fileName)?html>
    <#assign itemType = isContainer?string("folder", "document")>
