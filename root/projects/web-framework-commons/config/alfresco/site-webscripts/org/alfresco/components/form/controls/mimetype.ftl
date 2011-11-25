@@ -60,6 +60,7 @@
          <@mimetypeOption mt="application/msword" />
          <@mimetypeOption mt="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
          <@mimetypeOption mt="application/vnd.ms-outlook" />
+         <@mimetypeOption mt="application/vnd.ms-project" />
          <@mimetypeOption mt="application/vnd.apple.keynote" />
          <@mimetypeOption mt="application/vnd.apple.pages" />
          <@mimetypeOption mt="application/vnd.apple.numbers" />
@@ -157,6 +158,10 @@
       "application/vnd.openxmlformats-officedocument.presentationml.presentation": "Microsoft PowerPoint 2007",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "Microsoft Word 2007",
       "application/vnd.ms-outlook": "Microsoft Outlook Message",
+      "application/vnd.ms-project": "Microsoft Project",
+      "application/vnd.apple.keynote": "Apple iWork Keynote",
+      "application/vnd.apple.pages": "Apple iWork Pages",
+      "application/vnd.apple.numbers": "Apple iWork Numbers",
       "text/richtext": "Rich Text",
       "application/rtf": "Rich Text Format",
       "audio/x-aiff": "AIFF Audio",
