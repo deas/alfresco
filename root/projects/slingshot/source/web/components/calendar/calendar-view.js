@@ -830,7 +830,7 @@
             // are we adding a new event?
             else if (Sel.test(elTarget, 'button#addEventButton') || Sel.test(elTarget.offsetParent, 'button#addEventButton') || Sel.test(elTarget, 'a.addEvent')) 
             {
-               this.showAddDialog(elTarget);
+               this.showAddDialog();
                Event.preventDefault(e);
             }
             // a.summary = a click on the event title. Therefore into Event Info mode.
