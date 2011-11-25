@@ -401,7 +401,8 @@ public class FileOpenParams {
 	 * @return boolean
 	 */
 	public final boolean isReadOnlyAccess() {
-		if (( m_accessMode & AccessMode.NTReadWrite) == AccessMode.NTRead)
+		if (( m_accessMode & AccessMode.NTReadWrite) == AccessMode.NTRead ||
+				m_accessMode == AccessMode.NTGenericRead)
 			return true;
 		return false;
 	}
@@ -412,7 +413,8 @@ public class FileOpenParams {
 	 * @return boolean
 	 */
 	public final boolean isWriteOnlyAccess() {
-		if (( m_accessMode & AccessMode.NTReadWrite) == AccessMode.NTWrite)
+		if (( m_accessMode & AccessMode.NTReadWrite) == AccessMode.NTWrite ||
+				m_accessMode == AccessMode.NTGenericWrite)
 			return true;
 		return false;
 	}
@@ -423,7 +425,8 @@ public class FileOpenParams {
 	 * @return boolean
 	 */
 	public final boolean isReadWriteAccess() {
-		if (( m_accessMode & AccessMode.NTReadWrite)  == AccessMode.NTReadWrite)
+		if (( m_accessMode & AccessMode.NTReadWrite)  == AccessMode.NTReadWrite ||
+				m_accessMode == AccessMode.NTGenericAll)
 			return true;
 		return false;
 	}
