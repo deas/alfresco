@@ -263,6 +263,19 @@
          editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.comment"));
          editor.render();
 
+         // This IE specific code addresses ALF-11666. Without this code it is not possible to paste and submit
+         // a comment. The problem only occurred on the first post after loading the page, but this solution ensures
+         // that the paste and post will always work. Similar behaviour has been noticed on Chrome and Firefox but
+         // a second click of the post button will always successfully post the comment.
+         if (YAHOO.env.ua.ie > 0)
+         {
+            editor.subscribe("onPaste", function(ed, e)
+            {
+               editor.setContent("work around");
+               editor.save();
+            });
+         }
+         
          // Add validation to the editor
          var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
          editor.subscribe(keyUpIdentifier, function (e)
