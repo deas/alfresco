@@ -55,8 +55,12 @@
 </#if>
    <br />
    <div class="bdft">
-      <input type="submit" id="${el}-edit-button" value="${msg("button.edit")}" />
-      <input type="submit" id="${el}-delete-button" value="${msg("button.delete")}" />
+      <#if result.permissions.edit>
+         <input type="submit" id="${el}-edit-button" value="${msg("button.edit")}" />
+      </#if>
+      <#if result.permissions.delete>
+         <input type="submit" id="${el}-delete-button" value="${msg("button.delete")}" />
+      </#if>
       <input type="submit" id="${el}-cancel-button" value="${msg("button.ok")}" />
    </div>
    <#if result.isoutlook == 'false'>
