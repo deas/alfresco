@@ -2616,7 +2616,7 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 		
 		PerNodeState perNode = m_perNodeCache.get( msg.getPath());
 		
-		if ( perNode.hasOpLock()) {
+		if ( perNode != null && perNode.hasOpLock()) {
 		
 			// Get the local oplock
 			
