@@ -27,7 +27,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.DialectFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 
@@ -37,7 +36,7 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
  * 
  * @author dward
  */
-public class DialectFactoryBean implements FactoryBean
+public class DialectFactoryBean implements FactoryBean<Dialect>
 {
 
     /** The local session factory. */
@@ -54,12 +53,9 @@ public class DialectFactoryBean implements FactoryBean
         this.localSessionFactory = localSessionFactory;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.beans.factory.FactoryBean#getObject()
-     */
     @SuppressWarnings("deprecation")
-    public Object getObject() throws SQLException
+    @Override
+    public Dialect getObject() throws SQLException
     {
         Session session = ((SessionFactory) this.localSessionFactory.getObject()).openSession();
         Configuration cfg = this.localSessionFactory.getConfiguration();
@@ -126,19 +122,13 @@ public class DialectFactoryBean implements FactoryBean
         // }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.beans.factory.FactoryBean#getObjectType()
-     */
+    @Override
     public Class<?> getObjectType()
     {
         return Dialect.class;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.beans.factory.FactoryBean#isSingleton()
-     */
+    @Override
     public boolean isSingleton()
     {
         return true;
