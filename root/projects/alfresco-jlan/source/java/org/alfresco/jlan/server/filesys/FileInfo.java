@@ -461,7 +461,7 @@ public class FileInfo {
 	 * @return boolean
 	 */
 	public boolean hasCreationDateTime() {
-		return m_createDate == 0L ? false : true;
+		return m_createDate > 0L ? true : false;
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class FileInfo {
 	 * @return boolean
 	 */
 	public boolean hasModifyDateTime() {
-		return m_modifyDate == 0L ? false : true;
+		return m_modifyDate > 0L ? true : false;
 	}
 
 	/**
