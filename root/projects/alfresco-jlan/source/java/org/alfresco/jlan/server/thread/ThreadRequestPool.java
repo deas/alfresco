@@ -23,6 +23,7 @@ import java.util.Vector;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.alfresco.jlan.debug.Debug;
+import org.alfresco.jlan.server.FileFilterMode;
 
 /**
  * Thread Request Pool Class
@@ -117,6 +118,8 @@ public class ThreadRequestPool {
 			// Loop until shutdown
 
 			ThreadRequest threadReq = null;
+			
+			FileFilterMode.setMode(FileFilterMode.Mode.ENHANCED);
 			
 			while (mi_shutdown == false) {
 
