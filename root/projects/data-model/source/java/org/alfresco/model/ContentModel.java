@@ -50,7 +50,7 @@ public interface ContentModel
     
     // tag for nodes being formed (CIFS)
     static final QName ASPECT_NO_CONTENT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "noContent");
-    
+
     // tag for nodes being formed (WebDAV)
     static final QName ASPECT_WEBDAV_NO_CONTENT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "webdavNoContent");
     
@@ -58,6 +58,9 @@ public interface ContentModel
     static final QName ASPECT_LOCALIZED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "localized");
     static final QName PROP_LOCALE = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "locale");
     
+    // tag for hidden nodes
+    static final QName ASPECT_HIDDEN = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "hidden");
+
     // archived nodes aspect constants
     static final QName ASPECT_ARCHIVED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archived");
     static final QName PROP_ARCHIVED_ORIGINAL_PARENT_ASSOC = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archivedOriginalParentAssoc");
