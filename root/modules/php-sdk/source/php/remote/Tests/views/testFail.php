@@ -1,1 +1,0 @@
-<h2>No tests performed, please enter the tests you wish to run.</h2>
