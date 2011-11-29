@@ -18,7 +18,7 @@ function main()
    // fetch the user information from the url
    var inviteId = page.url.args.inviteId,
       inviteTicket = page.url.args.inviteTicket,
-      inviteeUserName = page.url.args.inviteeUserName;
+      inviteeUserName = decodeURIComponent(page.url.args.inviteeUserName);
    
    // fetch the invite information, which gives us all information required to display the page
    var theUrl, connector, json, data;

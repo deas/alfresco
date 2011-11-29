@@ -8,7 +8,7 @@ function main()
    // fetch the user information from the url
    var inviteId = page.url.args.inviteId,
       inviteTicket = page.url.args.inviteTicket,
-      inviteeUserName = page.url.args.inviteeUserName;
+      inviteeUserName = decodeURIComponent(page.url.args.inviteeUserName);
    
    if ((inviteId == undefined) || (inviteTicket == undefined))
    {
