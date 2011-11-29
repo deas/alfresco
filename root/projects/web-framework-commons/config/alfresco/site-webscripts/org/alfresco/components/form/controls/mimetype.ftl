@@ -73,7 +73,7 @@
          <@mimetypeOption mt="audio/ogg" />
          <@mimetypeOption mt="video/ogg" />
          <@mimetypeOption mt="video/webm" />
-         <@mimetypeOption mt="video/x-ms-wma" />
+         <@mimetypeOption mt="audio/x-ms-wma" />
          <@mimetypeOption mt="video/x-ms-asf" />
          <@mimetypeOption mt="video/x-ms-wmv" />
          <@mimetypeOption mt="video/x-msvideo" />
@@ -194,7 +194,7 @@
       "video/mpeg2", "MPEG2 Video",
       "video/mp4", "MPEG4 Video",
       "video/x-m4v", "MPEG4 Video (m4v)",
-      "video/x-ms-wma", "MS Streaming Audio",
+      "audio/x-ms-wma", "MS Streaming Audio",
       "video/x-ms-asf", "MS Streaming Video (asf)",
       "video/x-ms-wmv", "MS Streaming Video (wmv)",
       "video/x-msvideo", "MS Video",
