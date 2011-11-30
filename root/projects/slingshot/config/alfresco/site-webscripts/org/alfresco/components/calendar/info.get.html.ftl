@@ -53,6 +53,17 @@
       <div class="yui-u">${result.recurrence?html}</div>
    </div>
 </#if>
+
+<#if result.docfolder != ''>
+   <div class="yui-g">
+      <h2>${msg("label.relatedcontent")}</h2>
+   </div>
+   <div class="yui-gd">
+      <div class="yui-u first">${msg("label.docfolder")}:</div>
+      <div class="yui-u"><a href="documentlibrary#filter=path|${((result.docfolder?html)?replace("documentLibrary",""))?url}">${result.docfolder?html}</a></div>
+   </div>
+</#if>
+
    <br />
    <div class="bdft">
       <#if result.permissions.edit>
