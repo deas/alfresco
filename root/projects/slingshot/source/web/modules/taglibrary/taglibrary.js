@@ -428,7 +428,7 @@
          // load the popular tags through an ajax call
          var url = YAHOO.lang.substitute(Alfresco.constants.PROXY_URI + "api/tagscopes/site/{site}/tags?d={d}&topN={tn}",
          {
-            site: this.options.siteId,
+            site: Alfresco.constants.SITE,
             d: new Date().getTime(),
             tn: this.options.topN
          });
