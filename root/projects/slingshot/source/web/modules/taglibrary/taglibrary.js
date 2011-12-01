@@ -372,6 +372,19 @@
             }
          }
          
+         // Find any previously created "tag" and "tag[]" input elements that were previously created
+         // and added to the form and remove them. This might have occured when the form save operation
+         // did not complete. If these are not removed then the tag data will at best be wrong and at
+         // worst cause and error.
+         var elementsToClear = Dom.getElementsBy(function(el)
+            {
+               return (el.name == tagsFieldName || el.name == fullFieldName);
+            }, "input", formElem);
+         for (i = 0; i < elementsToClear.length; i++)
+         {
+            formElem.removeChild(elementsToClear[i]);
+         }
+         
          var tagName, elem;
          if (this.currentTags.length > 0)
          {
