@@ -31,6 +31,7 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
     private static final String INSERT_FTI = "alfresco.filetransfer.insert.insert_FileTransferInfo";
     private static final String SELECT_FTI_BY_NODEREF = "alfresco.filetransferinfo.select_FileTransferInfoByNodeRef";
     private static final String UPDATE_FTI_BY_NODEREF = "alfresco.filetransferinfo.update_FileTransferInfoByNodeRef";
+    private static final String UPDATE_PATH_BY_PARENT = "alfresco.filetransferinfo.update_PathByParent";
     private static final String SELECT_FTI_BY_PARENT_NODEREF = "alfresco.filetransferinfo.select_FileTransferInfoByParentNodeRef";
     private static final String DELETE_FILE_TRANSFER_INFO_BY_NODEREF = "alfresco.filetransferinfo.delete_FileTransferInfoByNodeRef";
     private static final String INSERT_FTNR = "alfresco.filetransfer.insert.insert_FileTransferNodeRename";
@@ -48,7 +49,9 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
             String parent,
             String path,
             String content_name,
-            String contentUrl)
+            String contentUrl,
+            boolean isFolder,
+            String sourceRepoId)
     {
         FileTransferInfoEntity entity = new FileTransferInfoEntity();
         entity.setNodeRef(nodeRef);
@@ -56,6 +59,8 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
         entity.setPath(path);
         entity.setContentName(content_name);
         entity.setContentUrl(contentUrl);
+        entity.setFolder(isFolder);
+        entity.setSourceRepoId(sourceRepoId);
         template.insert(INSERT_FTI, entity);
         return entity;
     }
@@ -69,6 +74,7 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
         return entity;
     }
 
+    @SuppressWarnings("unchecked")
     public List<FileTransferInfoEntity> findFileTransferInfoByParentNodeRef(String nodeRef)
     {
 
@@ -107,11 +113,21 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
         template.delete(DELETE_FILE_TRANSFER_RENAME_BY_ID, params);
     }
 
+    @SuppressWarnings("unchecked")
     public List<FileTransferNodeRenameEntity> findFileTransferNodeRenameEntityByTransferId(String transferId)
     {
         FileTransferNodeRenameEntity newNameEntity = new FileTransferNodeRenameEntity();
         newNameEntity.setTransferId(transferId);
         return (List<FileTransferNodeRenameEntity>)template.selectList(SELECT_FILE_TRANSFER_RENAME_BY_TRANSFER_ID, newNameEntity);
+    }
+
+    @Override
+    public void updatePathOfChildren(String parentId, String newPath)
+    {
+        Map<String, Object> params = new HashMap<String, Object>(5);
+        params.put("parent", parentId);
+        params.put("path", newPath);
+        template.update(UPDATE_PATH_BY_PARENT, params);
     }
 
 }

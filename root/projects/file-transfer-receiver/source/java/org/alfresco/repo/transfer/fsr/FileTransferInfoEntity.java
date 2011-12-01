@@ -26,6 +26,8 @@ public class FileTransferInfoEntity
     private String path;
     private String contentName;
     private String contentUrl;
+    private boolean folder;
+    private String sourceRepoId;
 
     public FileTransferInfoEntity()
     {
@@ -91,6 +93,23 @@ public class FileTransferInfoEntity
         this.contentUrl = contentUrl;
     }
 
+    public boolean isFolder()
+    {
+        return folder;
+    }
 
+    public void setFolder(boolean folder)
+    {
+        this.folder = folder;
+    }
 
+    public String getSourceRepoId()
+    {
+        return sourceRepoId;
+    }
+
+    public void setSourceRepoId(String sourceRepoId)
+    {
+        this.sourceRepoId = sourceRepoId;
+    }
 }

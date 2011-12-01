@@ -27,9 +27,13 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.transfer.TransferException;
 import org.alfresco.service.cmr.transfer.TransferProgress;
 import org.alfresco.service.cmr.transfer.TransferProgress.Status;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class HookableTransferMonitorImpl implements TransferProgressMonitor
 {
+    private static Log log = LogFactory.getLog(HookableTransferMonitorImpl.class);
+    
     private TransferProgressMonitor systemMonitor;
     private List<TransferListener> listeners = new ArrayList<TransferListener>();
     
@@ -69,7 +73,14 @@ public class HookableTransferMonitorImpl implements TransferProgressMonitor
         systemMonitor.logCreated(transferId, sourceNode, destNode, newParent, newPath, orphan);
         for (TransferListener listener : listeners)
         {
-            listener.created(transferId, sourceNode, destNode, newParent, newPath, orphan);
+            try
+            {
+                listener.created(transferId, sourceNode, newParent, newPath, orphan);
+            }
+            catch(Throwable t)
+            {
+                log.warn("Caught and discarding exception from external transfer listener", t);
+            }
         }
     }
 
@@ -79,7 +90,14 @@ public class HookableTransferMonitorImpl implements TransferProgressMonitor
         systemMonitor.logDeleted(transferId, sourceNode, destNode, path);
         for (TransferListener listener : listeners)
         {
-            listener.deleted(transferId, sourceNode, destNode, path);
+            try
+            {
+                listener.deleted(transferId, sourceNode, path);
+            }
+            catch (Throwable t)
+            {
+                log.warn("Caught and discarding exception from external transfer listener", t);
+            }
         }
     }
 
@@ -96,7 +114,14 @@ public class HookableTransferMonitorImpl implements TransferProgressMonitor
         systemMonitor.logMoved(transferId, sourceNodeRef, destNodeRef, oldPath, newParent, newPath);
         for (TransferListener listener : listeners)
         {
-            listener.moved(transferId, sourceNodeRef, destNodeRef, oldPath, newParent, newPath);
+            try
+            {
+                listener.moved(transferId, sourceNodeRef, oldPath, newParent, newPath);
+            }
+            catch (Throwable t)
+            {
+                log.warn("Caught and discarding exception from external transfer listener", t);
+            }
         }
     }
 
@@ -106,7 +131,14 @@ public class HookableTransferMonitorImpl implements TransferProgressMonitor
         systemMonitor.logUpdated(transferId, sourceNode, destNode, path);
         for (TransferListener listener : listeners)
         {
-            listener.updated(transferId, sourceNode, destNode, path);
+            try
+            {
+                listener.updated(transferId, sourceNode, path);
+            }
+            catch (Throwable t)
+            {
+                log.warn("Caught and discarding exception from external transfer listener", t);
+            }
         }
     }
 
@@ -128,7 +160,14 @@ public class HookableTransferMonitorImpl implements TransferProgressMonitor
         systemMonitor.updateStatus(transferId, status);
         for (TransferListener listener : listeners)
         {
-            listener.statusChanged(transferId, status);
+            try
+            {
+                listener.statusChanged(transferId, status);
+            }
+            catch (Throwable t)
+            {
+                log.warn("Caught and discarding exception from external transfer listener", t);
+            }
         }
     }
 

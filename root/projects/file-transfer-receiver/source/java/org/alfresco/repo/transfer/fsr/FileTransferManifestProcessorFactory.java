@@ -25,12 +25,9 @@ import org.alfresco.repo.transfer.ManifestProcessorFactory;
 import org.alfresco.repo.transfer.manifest.TransferManifestProcessor;
 import org.alfresco.repo.transfer.requisite.TransferRequsiteWriter;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
-import org.alfresco.service.transaction.TransactionService;
 
 public class FileTransferManifestProcessorFactory implements ManifestProcessorFactory
 {
-    private TransactionService transactionService;
-    
     /**
      * The requisite processor
      *
@@ -56,18 +53,10 @@ public class FileTransferManifestProcessorFactory implements ManifestProcessorFa
     public List<TransferManifestProcessor> getCommitProcessors(TransferReceiver receiver, String transferId)
     {
         List<TransferManifestProcessor> processors = new ArrayList<TransferManifestProcessor>();
-
-        TransferManifestProcessor processor = new FileTransferPrimaryManifestProcessor(receiver, transferId, transactionService);
-        processors.add(processor);
-        processor = new FileTransferSecondaryManifestProcessor(receiver, transferId, transactionService);
-        processors.add(processor);
+        
+        DbHelper dbHelper = ((FileTransferReceiver)receiver).getDbHelper();
+        processors.add(new ManifestProcessorImpl(receiver, transferId, dbHelper));
 
         return processors;
     }
-
-    public void setTransactionService(TransactionService transactionService)
-    {
-        this.transactionService = transactionService;
-    }
-
 }

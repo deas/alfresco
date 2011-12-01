@@ -19,7 +19,6 @@
 package org.alfresco.repo.transfer.fsr;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.transfer.AbstractManifestProcessorBase;
@@ -31,13 +30,13 @@ import org.alfresco.repo.transfer.requisite.TransferRequsiteWriter;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.transfer.TransferReceiver;
-import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author mrogers The requisite manifest processor performs a parse of the manifest file to determine which resources
- *         are required. In particular it returns a list of nodes which require content to be transferred.
+ * @author Brian Remmington
+ * @author Philippe Dubois
+ * @author Mark Rogers
  */
 public class FileTransferReceiverRequisiteManifestProcessor extends AbstractManifestProcessorBase
 {
@@ -75,42 +74,30 @@ public class FileTransferReceiverRequisiteManifestProcessor extends AbstractMani
     {
 
         //Skip over any nodes that are not parented with a cm:contains association or 
-        //are not content or folders (we don't need their content)
+        //are not content nodes (we don't need their content)
         if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
-                !(ContentModel.TYPE_FOLDER.equals(node.getType()) ||
-                        ContentModel.TYPE_CONTENT.equals(node.getType())))
+                !ContentModel.TYPE_CONTENT.equals(node.getType()))
         {
             return;
         }
 
-        for (Map.Entry<QName, Serializable> propEntry : node.getProperties().entrySet())
+        Serializable value = node.getProperties().get(ContentModel.PROP_CONTENT);
+        if ((value != null) && ContentData.class.isAssignableFrom(value.getClass()))
         {
-            Serializable value = propEntry.getValue();
-            if (log.isDebugEnabled())
+            ContentData srcContent = (ContentData) value;
+            if (srcContent.getContentUrl() != null && !srcContent.getContentUrl().isEmpty())
             {
-                if (value == null)
+                // Only ask for content if content is new or if contentUrl is modified
+                boolean contentisMissing = fileTransferReceiver.isContentNewOrModified(
+                        node.getNodeRef().toString(), srcContent.getContentUrl());
+                if (contentisMissing)
                 {
-                    log.debug("Received a null value for property " + propEntry.getKey());
-                }
-            }
-            if ((value != null) && ContentData.class.isAssignableFrom(value.getClass()))
-            {
-                ContentData srcContent = (ContentData) value;
-                if (srcContent.getContentUrl() != null && !srcContent.getContentUrl().isEmpty())
-                {
-                    // Only ask for content if content is new or if contentUrl is modified
-                    boolean contentisMissing = fileTransferReceiver.isContentNewOrModified(
-                            node.getNodeRef().toString(), srcContent.getContentUrl());
-                    if (contentisMissing == true)
+                    if (log.isDebugEnabled())
                     {
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("no node on destination, content is required" + propEntry.getKey()
-                                    + srcContent.getContentUrl());
-                        }
-                        out.missingContent(node.getNodeRef(), propEntry.getKey(), TransferCommons
-                                .URLToPartName(srcContent.getContentUrl()));
+                        log.debug("No node on destination, content is required: " + srcContent.getContentUrl());
                     }
+                    out.missingContent(node.getNodeRef(), ContentModel.PROP_CONTENT, 
+                            TransferCommons.URLToPartName(srcContent.getContentUrl()));
                 }
             }
         }
@@ -118,7 +105,6 @@ public class FileTransferReceiverRequisiteManifestProcessor extends AbstractMani
 
     protected void processHeader(TransferManifestHeader header)
     {
-        // T.B.D
     }
 
     /*

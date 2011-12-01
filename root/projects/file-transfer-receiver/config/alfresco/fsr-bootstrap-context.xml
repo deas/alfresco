@@ -193,9 +193,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
         <property name="descriptorDAO" ref="serverDescriptorDAO" />
     </bean>
 
-    <bean id="fTransferManifestProcessorFactory" class="org.alfresco.repo.transfer.fsr.FileTransferManifestProcessorFactory">
-        <property name="transactionService" ref="transactionService" />
-    </bean>
+    <bean id="fTransferManifestProcessorFactory" class="org.alfresco.repo.transfer.fsr.FileTransferManifestProcessorFactory" />
 
     <bean id="transferProgressMonitor" class="org.alfresco.repo.transfer.fsr.HookableTransferMonitorImpl">
         <property name="systemMonitor">

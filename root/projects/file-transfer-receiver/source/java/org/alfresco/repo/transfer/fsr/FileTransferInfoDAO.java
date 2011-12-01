@@ -31,7 +31,9 @@ public interface FileTransferInfoDAO
             String parent,
             String path,
             String content_name,
-            String contentUrl);
+            String contentUrl,
+            boolean isFolder,
+            String sourceRepoId);
 
     FileTransferInfoEntity findFileTransferInfoByNodeRef(String nodeRef);
 
@@ -41,10 +43,11 @@ public interface FileTransferInfoDAO
 
     void deleteFileTransferInfoByNodeRef(String nodeRef);
 
-    public FileTransferNodeRenameEntity createFileTransferNodeRenameEntity(String noderef, String transferId, String newName);
+    FileTransferNodeRenameEntity createFileTransferNodeRenameEntity(String noderef, String transferId, String newName);
 
-    public void deleteNodeRenameByTransferIdAndNodeRef(String transferId, String nodeRef);
+    void deleteNodeRenameByTransferIdAndNodeRef(String transferId, String nodeRef);
 
     List<FileTransferNodeRenameEntity> findFileTransferNodeRenameEntityByTransferId(String transferId);
 
+    void updatePathOfChildren(String parentId, String newPath);
 }

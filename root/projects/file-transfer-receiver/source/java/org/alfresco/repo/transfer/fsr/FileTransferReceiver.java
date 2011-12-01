@@ -110,7 +110,7 @@ public class FileTransferReceiver implements TransferReceiver
     private long lockRetryWait = 100;
 
     /**
-     * How long in mS to keep the lock before giving up and ending the transfer, possibly the client has terminated?
+     * How long in ms to keep the lock before giving up and ending the transfer, possibly the client has terminated?
      */
     private long lockTimeOut = 20L * 60L * 1000L;  //20 mins default
 
@@ -132,6 +132,8 @@ public class FileTransferReceiver implements TransferReceiver
     private SortedSet<String> setOfNodesBeforeSyncMode;
     
     private DescriptorDAO descriptorDAO;
+    private String sourceRepoId;
+    
 
     public void cancel(String transferId) throws TransferException
     {
@@ -155,8 +157,8 @@ public class FileTransferReceiver implements TransferReceiver
         {
             progressMonitor.updateStatus(transferId, TransferProgress.Status.COMMITTING);
 
-            List<TransferManifestProcessor> commitProcessors = manifestProcessorFactory
-                    .getCommitProcessors(FileTransferReceiver.this, fTransferId);
+            List<TransferManifestProcessor> commitProcessors = 
+                manifestProcessorFactory.getCommitProcessors(FileTransferReceiver.this, fTransferId);
 
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser parser = saxParserFactory.newSAXParser();
@@ -539,7 +541,7 @@ public class FileTransferReceiver implements TransferReceiver
     public String start(String fromRepositoryId, boolean transferToSelf, TransferVersion fromVersion)
     {
         log.debug("Start transfer");
-
+        sourceRepoId = fromRepositoryId;
         /**
          * Check that transfer is allowed to this repository
          */
@@ -887,105 +889,6 @@ public class FileTransferReceiver implements TransferReceiver
         }
     }
 
-    public FileTransferInfoEntity findFileTransferInfoByNodeRef(String nodeRef)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localNodeRef = nodeRef;
-
-        FileTransferInfoEntity fileTransferInfoEntity = txHelper.doInTransaction(
-                new RetryingTransactionHelper.RetryingTransactionCallback<FileTransferInfoEntity>()
-                    {
-                        public FileTransferInfoEntity execute() throws Throwable
-                        {
-                            FileTransferInfoEntity fileTransferInfoEntity = fileTransferInfoDAO
-                                    .findFileTransferInfoByNodeRef(localNodeRef);
-
-                            return fileTransferInfoEntity;
-
-                        }
-                    }, true, false);
-        return fileTransferInfoEntity;
-    }
-
-    public List<FileTransferInfoEntity> findFileTransferInfoByParentNodeRef(String nodeRef)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localNodeRef = nodeRef;
-
-        List<FileTransferInfoEntity> fileTransferInfoEntityList = txHelper.doInTransaction(
-                new RetryingTransactionHelper.RetryingTransactionCallback<List<FileTransferInfoEntity>>()
-                    {
-                        public List<FileTransferInfoEntity> execute() throws Throwable
-                        {
-                            List<FileTransferInfoEntity> fileTransferInfoEntityList = fileTransferInfoDAO
-                                    .findFileTransferInfoByParentNodeRef(localNodeRef);
-
-                            return fileTransferInfoEntityList;
-
-                        }
-                    }, true, false);
-        return fileTransferInfoEntityList;
-    }
-
-    public void updateFileTransferInfoByNodeRef(FileTransferInfoEntity modifiedEntity)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final FileTransferInfoEntity localmodifiedEntity = modifiedEntity;
-
-        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-            {
-                public Void execute() throws Throwable
-                {
-                    fileTransferInfoDAO.updateFileTransferInfoByNodeRef(localmodifiedEntity);
-
-                    return null;
-                }
-            }, false, false);
-    }
-
-    public void deleteNodeByNodeRef(String nodeRef)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localNodeRef = nodeRef;
-
-        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-            {
-                public Void execute() throws Throwable
-                {
-                    fileTransferInfoDAO.deleteFileTransferInfoByNodeRef(localNodeRef);
-
-                    return null;
-                }
-            }, false, false);
-    }
-
-    public void createNodeInDB(String nodeRef, String parentNodeRef, String path, String name, String contentUrl)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localNodeRef = nodeRef;
-        final String localParentNodeRef = parentNodeRef;
-        final String localPath = path;
-        final String localName = name;
-        final String localContentUrl = contentUrl;
-
-        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-            {
-                public Void execute() throws Throwable
-                {
-                    fileTransferInfoDAO.createFileTransferInfo(localNodeRef, localParentNodeRef, localPath, localName,
-                            localContentUrl);
-
-                    return null;
-
-                }
-            }, false, false);
-    }
-
     public boolean isContentNewOrModified(final String nodeRef, final String contentUrl)
     {
         RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
@@ -1034,100 +937,6 @@ public class FileTransferReceiver implements TransferReceiver
     protected File getSnapshotFile(String transferId)
     {
         return new File(getStagingFolder(transferId), SNAPSHOT_FILE_NAME);
-    }
-
-    /*
-     * Reset the set of nodes that should be used when handling sync=true This is the initial set of nodes.
-     */
-    public void resetListOfNodesBeforeSyncMode()
-    {
-        this.setOfNodesBeforeSyncMode = new TreeSet<String>();
-    }
-
-    /*
-     * Build the list of nodes that should be considered when handling sync=true This set comes from the DB. The set of
-     * nodes that will be deleted in sync mode will be the set build when removing the received nodes from this set (the
-     * one that where in the DB before transfer). We create here the full set of nodes before transfer.
-     */
-    public void updateListOfDescendantsForSyncMode(String nodeRef)
-    {
-        this.setOfNodesBeforeSyncMode.add(nodeRef);
-        // get all children of nodeToModify
-        List<FileTransferInfoEntity> childrenList = this.findFileTransferInfoByParentNodeRef(nodeRef);
-        // iterate on children
-        for (FileTransferInfoEntity curChild : childrenList)
-        {
-            if (this.setOfNodesBeforeSyncMode.contains(curChild.toString()))
-                continue;
-            updateListOfDescendantsForSyncMode(curChild.getNodeRef().toString());
-        }
-    }
-
-    /**
-     * When a node is received and if new or parent modified then put aside the final name
-     *
-     * @param nodeRef
-     * @param newName
-     */
-    public void createNodeRenameEntity(String nodeRef, String transferId, String newName)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localNodeRef = nodeRef;
-        final String localTransferId = transferId;
-        final String localNewName = newName;
-
-        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-            {
-                public Void execute() throws Throwable
-                {
-                    fileTransferInfoDAO.createFileTransferNodeRenameEntity(localNodeRef, localTransferId, localNewName);
-
-                    return null;
-
-                }
-            }, false, false);
-    }
-
-    public void deleteNodeRenameByTransferIdAndNodeRef(final String transferId, final String nodeRef)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        txHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
-            {
-                public Void execute() throws Throwable
-                {
-                    fileTransferInfoDAO.deleteNodeRenameByTransferIdAndNodeRef(transferId, nodeRef);
-
-                    return null;
-                }
-            }, false, false);
-    }
-
-    public List<FileTransferNodeRenameEntity> findFileTransferNodeRenameEntityByTransferId(String transferId)
-    {
-        RetryingTransactionHelper txHelper = transactionService.getRetryingTransactionHelper();
-
-        final String localtransferId = transferId;
-
-        List<FileTransferNodeRenameEntity> fileTransferInfoEntityList = txHelper.doInTransaction(
-                new RetryingTransactionHelper.RetryingTransactionCallback<List<FileTransferNodeRenameEntity>>()
-                    {
-                        public List<FileTransferNodeRenameEntity> execute() throws Throwable
-                        {
-                            List<FileTransferNodeRenameEntity> fileTransferInfoEntityList = fileTransferInfoDAO
-                                    .findFileTransferNodeRenameEntityByTransferId(localtransferId);
-
-                            return fileTransferInfoEntityList;
-
-                        }
-                    }, true, false);
-        return fileTransferInfoEntityList;
-    }
-
-    public SortedSet<String> getListOfDescendentsForSyncMode()
-    {
-        return this.setOfNodesBeforeSyncMode;
     }
 
     /**
@@ -1243,4 +1052,8 @@ public class FileTransferReceiver implements TransferReceiver
         this.descriptorDAO = descriptorDAO;
     }
 
+    public DbHelper getDbHelper()
+    {
+        return new DbHelperImpl(fileTransferInfoDAO, transactionService, sourceRepoId);
+    }
 }

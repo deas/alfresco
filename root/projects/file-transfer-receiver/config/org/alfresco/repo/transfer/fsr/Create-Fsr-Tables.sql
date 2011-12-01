@@ -46,7 +46,9 @@ CREATE TABLE alf_file_transfer_info (
   parent VARCHAR(80) NOT NULL,
   path VARCHAR(2048) NOT NULL,
   contentName VARCHAR(255) NOT NULL,
-  contentUrl VARCHAR(255) NOT NULL,
+  contentUrl VARCHAR(2048) NOT NULL,
+  isFolder BOOLEAN,
+  sourceRepoId VARCHAR(255) NOT NULL,
   CONSTRAINT idx_nodeRef UNIQUE (nodeRef)
 );
 
