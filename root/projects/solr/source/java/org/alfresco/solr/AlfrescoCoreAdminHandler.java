@@ -142,11 +142,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
     protected boolean handleCustomAction(SolrQueryRequest req, SolrQueryResponse rsp)
     {
+        SolrParams params = req.getParams();
+        String cname = params.get(CoreAdminParams.CORE);
+        String a = params.get(CoreAdminParams.ACTION);
         try
         {
-            SolrParams params = req.getParams();
-            String cname = params.get(CoreAdminParams.CORE);
-            String a = params.get(CoreAdminParams.ACTION);
             if (a.equalsIgnoreCase("CHECK"))
             {
                 if (cname != null)
@@ -716,7 +716,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
         catch (Exception ex)
         {
-            throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "Error executing default implementation of CREATE", ex);
+            throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "Error executing implementation of admin request "+a, ex);
         }
     }
 
