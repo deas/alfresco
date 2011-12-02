@@ -79,8 +79,8 @@
 
     <componentList>
         <include file="alfresco-componentselection-java.xml" />
-        <include file="alfresco-customstack-build-settings.xml" />
         <include file="alfresco-build-settings.xml" />
+        <include file="alfresco-customstack-build-settings.xml" />
         <include file="alfresco-functions.xml" />
         <include file="alfresco-license.xml" />
 
