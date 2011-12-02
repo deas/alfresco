@@ -189,6 +189,8 @@ public class SearchParameters
         sp.sortDefinitions.addAll(this.sortDefinitions);
         sp.stores.addAll(this.stores);
         sp.textAttributes.addAll(this.textAttributes);
+        sp.useInMemorySort = this.useInMemorySort;
+        sp.maxRawResultSetSizeForInMemorySort = this.maxRawResultSetSizeForInMemorySort;
         return sp;
     }
     

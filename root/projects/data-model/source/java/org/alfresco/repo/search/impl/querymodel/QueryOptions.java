@@ -97,6 +97,8 @@ public class QueryOptions
         options.setStores(searchParameters.getStores());
         options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
         ///options.setQuery(query); Done on construction.
+        options.setUseInMemorySort(searchParameters.getUseInMemorySort());
+        options.setMaxRawResultSetSizeForInMemorySort(searchParameters.getMaxRawResultSetSizeForInMemorySort());
         return options;
     }
     /**
