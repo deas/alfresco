@@ -189,12 +189,7 @@
             correctScope: true
          });
          this.widgets.escapeListener.enable();
-         if (this.options.permitToEditEvents!=='true')
-         {
-            this.widgets.deleteButton.set("disabled", true);
-            this.widgets.editButton.set("disabled", true);
-         }
-         if (Dom.get(this.id+"-edit-available") == null)
+         if (Dom.get(this.id+"-edit-available") == null && this.widgets.deleteButton != null)
          {
             this.widgets.deleteButton.set("disabled", true);
          }
