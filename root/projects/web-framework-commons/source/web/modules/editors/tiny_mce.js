@@ -25,7 +25,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          config.formats.fontname = {inline : 'font', attributes : {face : '%value'}};
          config.formats.fontsize = {inline : 'font', attributes : {size : '%value'}};
          config.formats.fontsize_class = {inline : 'font', attributes : {'class' : '%value'}};
-         
+
          // Need to set new size values to ensure that they work with the <font> tag
          config.font_size_style_values = "1,2,3,4,5,6,7";
          
@@ -33,11 +33,40 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          // of XSS vulnerabilities through styles in IE6/7. TinyMCE should be able to support the deprecated 
          // <u> tag but we have not been able to prevent it from being removed from the content. Therefore rather
          // than providing a button that has no effect we will remove the button. This code can be removed once
-         // support for IE6/7 is removed and styles are re-introduced. 
+         // support for IE6/7 is removed and styles are re-introduced.
+         //
+         // The is also the case for the justify buttons.
          var curr_buttons = config.theme_advanced_buttons1;
-         if (curr_buttons != null && curr_buttons.indexOf("underline") != -1)
+         if (curr_buttons != null)
          {
-            config.theme_advanced_buttons1 = curr_buttons.replace("underline", "");
+            if(curr_buttons.indexOf("underline") != -1)
+            {
+               curr_buttons = curr_buttons.replace("underline", "");
+            }
+            if (curr_buttons.indexOf("|,justifyleft,justifycenter,justifyright,justifyfull,|") != -1)
+            {
+               curr_buttons = curr_buttons.replace("|,justifyleft,justifycenter,justifyright,justifyfull,|", "|");
+            }
+            else
+            {
+               if (curr_buttons.indexOf("justifyleft") != -1)
+               {
+                  curr_buttons = curr_buttons.replace("justifyleft", "");
+               }
+               if (curr_buttons.indexOf("justifycenter") != -1)
+               {
+                  curr_buttons = curr_buttons.replace("justifycenter", "");
+               }
+               if (curr_buttons.indexOf("justifyright") != -1)
+               {
+                  curr_buttons = curr_buttons.replace("justifyright", "");
+               }
+               if (curr_buttons.indexOf("justifyfull") != -1)
+               {
+                  curr_buttons = curr_buttons.replace("justifyfull", "");
+               }
+            }
+            config.theme_advanced_buttons1 = curr_buttons;
          }
 
          // Allow back the 'embed' tag as TinyMCE now removes it - this is allowed by our editors
