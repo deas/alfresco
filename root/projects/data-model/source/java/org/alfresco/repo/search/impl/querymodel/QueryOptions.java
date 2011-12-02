@@ -70,6 +70,10 @@ public class QueryOptions
 
     private String defaultFieldName = "TEXT";
 
+    private Boolean useInMemorySort;
+
+    private Integer maxRawResultSetSizeForInMemorySort;
+
     public static QueryOptions create(SearchParameters searchParameters)
     {
         QueryOptions options = new QueryOptions(searchParameters.getQuery(), null);
@@ -383,5 +387,37 @@ public class QueryOptions
     public void setDefaultFieldName(String defaultFieldName)
     {
        this.defaultFieldName = defaultFieldName;
+    }
+    
+    /**
+     * @return the useInMemorySort
+     */
+    public Boolean getUseInMemorySort()
+    {
+        return useInMemorySort;
+    }
+
+    /**
+     * @param useInMemorySort the useInMemorySort to set
+     */
+    public void setUseInMemorySort(Boolean useInMemorySort)
+    {
+        this.useInMemorySort = useInMemorySort;
+    }
+
+    /**
+     * @return the maxRawResultSetSizeForInMemorySort
+     */
+    public Integer getMaxRawResultSetSizeForInMemorySort()
+    {
+        return maxRawResultSetSizeForInMemorySort;
+    }
+
+    /**
+     * @param maxRawResultSetSizeForInMemorySort the maxRawResultSetSizeForInMemorySort to set
+     */
+    public void setMaxRawResultSetSizeForInMemorySort(Integer maxRawResultSetSizeForInMemorySort)
+    {
+        this.maxRawResultSetSizeForInMemorySort = maxRawResultSetSizeForInMemorySort;
     }
 }

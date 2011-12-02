@@ -146,6 +146,8 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
     
     private DictionaryService dictionaryService;
     
+    private List<String> excludedProps = Collections.emptyList();
+    
     /**
      * initialise this target
      */
@@ -873,11 +875,18 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
                     
                     for (Map.Entry<String, Serializable> entry :  fprops.entrySet())
                     {
-                        QName qname = QName.createQName(entry.getKey());
-                        propertyMap.put(qname, entry.getValue());
-                        if(logger.isDebugEnabled())
+                        if (!excludedProps.contains(entry.getKey()))
                         {
-                            logger.debug(qname + " value:" + entry.getValue());
+                            QName qname = QName.createQName(entry.getKey());
+                            propertyMap.put(qname, entry.getValue());
+                            if(logger.isDebugEnabled())
+                            {
+                                logger.debug(qname + " value:" + entry.getValue());
+                            }
+                        }
+                        else
+                        {
+                            logger.debug(entry.getKey() + " property was skipped");
                         }
                     }
                     
@@ -1301,4 +1310,10 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
     {
         return storeRef;
     }
+    
+    public void setExcludedProps(List<String> excludedProps)
+    {
+        this.excludedProps = Collections.unmodifiableList(excludedProps);
+    }
+
 }

@@ -81,7 +81,12 @@ public class FTSQueryParser
                     parser.setMode(mode);
                     parser.setDefaultFieldConjunction(defaultFieldConnective == Connective.AND ? true : false);
                     CommonTree ftsNode = (CommonTree) parser.ftsQuery().getTree();
-                    templateTrees.put(name, ftsNode);
+                    //Check for duplicate template of properties e.g. NAME, name and NaMe.
+                    if(templateTrees.containsKey(name.toLowerCase())){
+                    	throw new FTSQueryException("Duplicate template of property: " + name);
+                    }
+                    
+                    templateTrees.put(name.toLowerCase(), ftsNode);
                 }
                 catch (RecognitionException e)
                 {
@@ -250,7 +255,7 @@ public class FTSQueryParser
         }
         if (parg != null)
         {
-            CommonTree template = templateTrees.get(parg.getPropertyName());
+            CommonTree template = templateTrees.get(parg.getPropertyName().toLowerCase());
             if (template != null)
             {
                 testNode = copyAndReplace(template, testNode);
@@ -260,7 +265,7 @@ public class FTSQueryParser
         {
             if(hasOptionalFieldReference(testNode))
             {
-                CommonTree template = templateTrees.get(defaultField);
+                CommonTree template = templateTrees.get(defaultField.toLowerCase());
                 if (template != null)
                 {
                     testNode = copyAndReplace(template, testNode);

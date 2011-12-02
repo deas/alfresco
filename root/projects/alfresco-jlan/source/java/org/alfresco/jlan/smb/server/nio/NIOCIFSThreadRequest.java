@@ -182,6 +182,7 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 			// DEBUG
 			
 			if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_THREADPOOL) && pktCount > 1)
+//			if ( Debug.EnableInfo && pktCount > 1)
 				Debug.println("Processed " + pktCount + " packets for addr=" + m_sess.getRemoteAddress().getHostAddress() + " in one thread run (max=" + MaxPacketsPerRun + ")");
 		}
 	}

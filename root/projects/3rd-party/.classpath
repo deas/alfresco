@@ -156,9 +156,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.4-patched.jar" sourcepath="src/wss4j-1.5.4-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.5.0.jar" sourcepath="src/pdfbox-1.5.0-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.5.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.6.0.jar" sourcepath="src/pdfbox-1.6.0-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>

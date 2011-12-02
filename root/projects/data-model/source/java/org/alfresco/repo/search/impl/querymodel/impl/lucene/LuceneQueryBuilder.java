@@ -18,9 +18,11 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
+import java.util.List;
 import java.util.Set;
 
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
+import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
@@ -48,4 +50,14 @@ public interface LuceneQueryBuilder
      * @return - the sort spec
      */
     public Sort buildSort(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext);
+    
+    /**
+     * Build a sort definition for a sorted result set wrapper
+     * @param selectors
+     * @param luceneContext
+     * @param functionContext
+     * @return
+     */
+    public List<SortDefinition> buildSortDefinitions(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext);
+
 }

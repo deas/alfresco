@@ -27,10 +27,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * This class provides parameters to define a search. TODO - paging of results page number and page size - paging
@@ -62,12 +64,12 @@ public class SearchParameters
     /**
      * Sort in ascending score
      */
-    public static final SortDefinition SORT_IN_SCORE_ORDER_ASCENDING = new SortDefinition(SortDefinition.SortType.SCORE, null, false);
+    public static final SortDefinition SORT_IN_SCORE_ORDER_ASCENDING = new SortDefinition(SortDefinition.SortType.SCORE, null, true);
 
     /**
      * Sort in descending score order
      */
-    public static final SortDefinition SORT_IN_SCORE_ORDER_DESCENDING = new SortDefinition(SortDefinition.SortType.SCORE, null, true);
+    public static final SortDefinition SORT_IN_SCORE_ORDER_DESCENDING = new SortDefinition(SortDefinition.SortType.SCORE, null, false);
 
     /**
      * An emum defining if the default action is to "and" or "or" unspecified components in the query register. Not all
@@ -148,6 +150,10 @@ public class SearchParameters
     private String defaultFieldName = "TEXT";
     
     private ArrayList<FieldFacet> fieldFacets = new ArrayList<FieldFacet>();
+
+    private Boolean useInMemorySort;
+    
+    private Integer maxRawResultSetSizeForInMemorySort;
 
     /**
      * Default constructor
@@ -668,6 +674,40 @@ public class SearchParameters
     {
         this.maxPermissionChecks = maxPermissionChecks;
     }
+    
+    /**
+     * @return the useInMemorySort
+     */
+    public Boolean getUseInMemorySort()
+    {
+        return useInMemorySort;
+    }
+
+    /**
+     * @param useInMemorySort the useInMemorySort to set
+     */
+    public void setUseInMemorySort(Boolean useInMemorySort)
+    {
+        this.useInMemorySort = useInMemorySort;
+    }
+
+    /**
+     * @return the maxRawResultSetSizeForInMemorySort
+     */
+    public Integer getMaxRawResultSetSizeForInMemorySort()
+    {
+        return maxRawResultSetSizeForInMemorySort;
+    }
+
+    /**
+     * @param maxRawResultSetSizeForInMemorySort the maxRawResultSetSizeForInMemorySort to set
+     */
+    public void setMaxRawResultSetSizeForInMemorySort(Integer maxRawResultSetSizeForInMemorySort)
+    {
+        this.maxRawResultSetSizeForInMemorySort = maxRawResultSetSizeForInMemorySort;
+    }
+
+
 
     /**
      * A helper class for sort definition. Encapsulated using the lucene sortType, field name and a flag for
@@ -705,7 +745,7 @@ public class SearchParameters
 
         boolean ascending;
 
-        SortDefinition(SortType sortType, String field, boolean ascending)
+        public SortDefinition(SortType sortType, String field, boolean ascending)
         {
             this.sortType = sortType;
             this.field = field;
@@ -768,9 +808,25 @@ public class SearchParameters
     public void addFieldFacet(FieldFacet fieldFacet)
     {
         fieldFacets.add(fieldFacet);
+    }    
+    
+    public Locale getSortLocale()
+    {
+        List<Locale> locales = getLocales();
+        if (((locales == null) || (locales.size() == 0)))
+        {
+            locales = Collections.singletonList(I18NUtil.getLocale());
+        }
+
+        if (locales.size() > 1)
+        {
+            throw new AlfrescoRuntimeException("Order on text/mltext properties with more than one locale is not curently supported");
+        }
+
+        Locale sortLocale = locales.get(0);
+        return sortLocale;
     }
-    
-    
+
     @Override
     public String toString()
     {
@@ -1118,5 +1174,17 @@ public class SearchParameters
         
     }
     
+    /**
+     * @param length
+     * @param useInMemorySort2
+     * @param maxRawResultSetSizeForInMemorySort2
+     * @return
+     */
+    public boolean usePostSort(int length, boolean useInMemorySortDefault, int maxRawResultSetSizeForInMemorySortDefault)
+    {
+        boolean use = (useInMemorySort == null) ? useInMemorySortDefault : useInMemorySort.booleanValue();
+        int max = (maxRawResultSetSizeForInMemorySort == null) ? maxRawResultSetSizeForInMemorySortDefault :  maxRawResultSetSizeForInMemorySort.intValue();
+        return use && (length <= max);
+    }
 
 }

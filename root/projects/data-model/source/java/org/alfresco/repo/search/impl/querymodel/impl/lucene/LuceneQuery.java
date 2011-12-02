@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -35,17 +36,17 @@ import org.alfresco.repo.search.impl.querymodel.Source;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseQuery;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.PropertyAccessor;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
-import org.alfresco.service.cmr.search.SearchParameters;
+import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
+import org.alfresco.service.cmr.search.SearchParameters.SortDefinition.SortType;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author andyh
@@ -181,8 +182,15 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
                 {
                     if (LuceneUtils.fieldHasTerm(luceneContext.getLuceneQueryParser().getIndexReader(), luceneField))
                     {
-                        fields[index++] = new SortField(luceneField, getLocale(luceneContext.getLuceneQueryParser().getSearchParameters()), (ordering.getOrder() == Order.DESCENDING));
-                        //fields[index++] = new SortField(luceneField, (ordering.getOrder() == Order.DESCENDING));
+                        Locale locale = luceneContext.getLuceneQueryParser().getSearchParameters().getSortLocale();
+//                        if(locale.getLanguage().equals(Locale.ENGLISH.getLanguage()))
+//                        {
+//                            fields[index++] = new SortField(luceneField, (ordering.getOrder() == Order.DESCENDING));
+//                        }
+//                        else
+//                        {
+                        fields[index++] = new SortField(luceneField, locale, (ordering.getOrder() == Order.DESCENDING));
+//                        }
                     }
                     else
                     {
@@ -207,21 +215,39 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
 
         return new Sort(fields);
     }
-    private Locale getLocale(SearchParameters searchParameters)
+    
+    public List<SortDefinition> buildSortDefinitions(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
     {
-        List<Locale> locales = searchParameters.getLocales();
-        if (((locales == null) || (locales.size() == 0)))
+        if ((getOrderings() == null) || (getOrderings().size() == 0))
         {
-            locales = Collections.singletonList(I18NUtil.getLocale());
+            return Collections.<SortDefinition>emptyList();
         }
 
-        if (locales.size() > 1)
+        ArrayList<SortDefinition> definitions = new ArrayList<SortDefinition>(getOrderings().size());
+
+        for (Ordering ordering : getOrderings())
         {
-            throw new UnsupportedOperationException("Order on text/mltext properties with more than one locale is not curently supported");
+            if (ordering.getColumn().getFunction().getName().equals(PropertyAccessor.NAME))
+            {
+                PropertyArgument property = (PropertyArgument) ordering.getColumn().getFunctionArguments().get(PropertyAccessor.ARG_PROPERTY);
+
+                if (property == null)
+                {
+                    throw new IllegalStateException();
+                }
+
+                String propertyName = property.getPropertyName();
+
+                String fieldName = functionContext.getLuceneFieldName(propertyName);
+                
+                definitions.add(new SortDefinition(SortType.FIELD, fieldName, ordering.getOrder() == Order.ASCENDING));
+            }
+            else if (ordering.getColumn().getFunction().getName().equals(Score.NAME))
+            {
+                definitions.add(new SortDefinition(SortType.SCORE, null, ordering.getOrder() == Order.ASCENDING));
+            }
         }
 
-        Locale sortLocale = locales.get(0);
-        return sortLocale;
+        return definitions;
     }
-
 }

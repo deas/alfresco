@@ -360,6 +360,10 @@
                else
                {
                   Dom.addClass(this.id + "-date", "invalid");
+                  if (YAHOO.env.ua.ie)
+                  {
+                     YAHOO.Bubbling.fire("mandatoryControlValueUpdated", this);
+                  }
                }
             }
          }
@@ -373,7 +377,7 @@
                Alfresco.logger.debug("Hidden field '" + this.currentValueHtmlId + "' has been reset");
             
             // inform the forms runtime that the control value has been updated
-            if (this.options.mandatory)
+            if (this.options.mandatory || YAHOO.env.ua.ie)
             {
                YAHOO.Bubbling.fire("mandatoryControlValueUpdated", this);
             }
