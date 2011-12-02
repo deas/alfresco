@@ -1,8 +1,8 @@
 <#function formatDay theDate>
    <#if dateCompare(date?date, theDate?date, 0, "==") == 1><#return msg("dateFormat.friendly.today")>
    <#elseif dateCompare(yesterday?date, theDate?date, 0, "==") == 1><#return msg("dateFormat.friendly.yesterday")>
-   <#elseif dateCompare(lastSunday?date, theDate?date) == 0><#return "Earlier this week">
-   <#elseif dateCompare(previousSunday?date, theDate?date) == 0><#return "Last week">
+   <#elseif dateCompare(lastSunday?date, theDate?date) == 0><#return msg("dateFormat.friendly.earlierThisWeek")>
+   <#elseif dateCompare(previousSunday?date, theDate?date) == 0><#return msg("dateFormat.friendly.lastWeek")>
    </#if>
    <#return "Older actvities">
 </#function>
