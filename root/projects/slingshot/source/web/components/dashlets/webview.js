@@ -176,6 +176,16 @@
                   {
                      form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.mandatory, null, "blur");
                      form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.url, null, "keyup");
+                     
+                     // 511 characters is the maximum length of URL that IE appears to support without causing a page direct
+                     // and preventing the user from returning to their dashboard. To avoid this occurring a check on the length
+                     // is set. Rather than just adding this for IE it is added for all browsers because it is possible that
+                     // a user could edit the URL on one browser to something greater than 511 characters and then attempt
+                     // to view the page in another browser.
+                     form.addValidation(this.configDialog.id + "-url", function(field, args, event, form, silent, message)
+                        {
+                           return (field.value.length < 512);
+                        }, null, "keyup");
                      form.setShowSubmitStateDynamically(true, false);
 
                      /* Get the link title */
