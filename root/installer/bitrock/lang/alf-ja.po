@@ -1,8 +1,8 @@
 ﻿msgid "${product_fullname} OpenOffice Service"
-msgstr "${product_fullname} OpenOffice サービス"
+msgstr "${product_fullname} OpenOfficeサービス"
 
 msgid "${product_fullname} Service"
-msgstr "${product_fullname} サービス"
+msgstr "${product_fullname}サービス"
 
 msgid "${product_fullname} Virtual Server"
 msgstr "${product_fullname} バーチャル・サーバ"
@@ -107,7 +107,7 @@ msgid "Do you want to install PostgreSQL as a Windows service?"
 msgstr "Windowsのサービスとして、PostgreSQLをインストールしますか？"
 
 msgid "Easy - Installs servers with the default configuration"
-msgstr "簡易 - サーバをデフォルト設定でインストールします"
+msgstr "簡易 - サーバをデフォルト設定でインストールします。"
 
 msgid "Encoding"
 msgstr "エンコーディング"
@@ -308,7 +308,7 @@ msgid "Please select services startup type"
 msgstr "サービスのスタートアップの種類を選択してください。"
 
 msgid "Please select the Tomcat configuration you wish to use"
-msgstr "TOMCATに必要な設定を選択して下さい。"
+msgstr "TOMCATに必要な設定を選択してください。"
 
 msgid "Please select which database configuration you wish to use"
 msgstr "使用するデータベース設定を選択してください"
@@ -320,10 +320,10 @@ msgid "Please specify the directory where the psql, pg_restore and vacuumdb bina
 msgstr "psql、pg_restoreおよびvacuumdbのバイナリを配置するディレクトリを指定してください。"
 
 msgid "Please choose a folder to install ${product_fullname}"
-msgstr "${product_fullname}をインストールするフォルダを選んでください"
+msgstr "${product_fullname}をインストールするフォルダを選択してください。"
 
 msgid "Please, select the encoding type."
-msgstr "エンコーディングの種類を選択して下さい。"
+msgstr "エンコーディングの種類を選択してください。"
 
 msgid "Port:"
 msgstr "ポート："
@@ -374,7 +374,7 @@ msgid "README destination"
 msgstr "README宛先"
 
 msgid "Re-enter password"
-msgstr "パスワードを再入力して下さい。"
+msgstr "パスワードを再入力してください。"
 
 msgid "Records Management"
 msgstr "レコード管理"
@@ -383,7 +383,7 @@ msgid "Records Management support. This is a separately licensed component and s
 msgstr "レコード管理をサポートします。 これは、独立したライセンス・コンポーネントです。ライセンスを取得している場合は単独でインストールしてください。"
 
 msgid "Repeat Password:"
-msgstr "繰り返しパスワードを入力して下さい。"
+msgstr "パスワードの再入力："
 
 msgid "SWFTOOLS Component"
 msgstr "SWFTOOLSコンポーネント"
@@ -395,7 +395,7 @@ msgid "Script for start/stop Services"
 msgstr "開始/停止サービス用スクリプト"
 
 msgid "Select a folder"
-msgstr "フォルダを選択して下さい。"
+msgstr "インストール・フォルダ"
 
 msgid "Service Startup Configuration"
 msgstr "サービスのスタートアップの設定"
@@ -482,7 +482,7 @@ msgid "Stopping services"
 msgstr "サービスを停止しています"
 
 msgid "The ${product_shortname} service script file exists. Please insert a different name for the service script."
-msgstr "${product_shortname}のサービス・スクリプト・ファイルは存在します。 そのサービス・スクリプトに別の名前を指定して下さい。"
+msgstr "${product_shortname}のサービス・スクリプト・ファイルは存在します。 そのサービス・スクリプトに別の名前を指定してください。"
 
 msgid "The Alfresco data directory tends to grow in size. Please choose where do you want to store it."
 msgstr "Alfrescoデータ・ディレクトリのサイズは大きくなる可能性があります。 データ・ディレクトリを保存する場所を選択してください。"
@@ -497,7 +497,7 @@ msgid "The installer could not get the current free space on ${installdir}. Plea
 msgstr "インストーラが ${installdir} に現在の空きスペースを確保できませんでした。  ${product_fullname} をインストールするのに十分なスペースがあるか確認してください。"
 
 msgid "The length of the password must be greater than 3 characters"
-msgstr "パスワードは3文字以上の長さにする必要があります。"
+msgstr "パスワードの長さは3文字以上でなければなりません。"
 
 msgid "The path ${postgres_binary_directory} does not seem to contain a pg_restore executable."
 msgstr "パス ${postgres_binary_directory} には実行可能なpg_restoreが含まれていないようです。"
@@ -506,13 +506,13 @@ msgid "The path ${postgres_binary_directory} does not seem to contain a pg_vacuu
 msgstr "パス ${postgres_binary_directory} には実行可能なpg_vacuumdb が含まれていないようです。"
 
 msgid "The path ${postgres_binary_directory} seems to be invalid. Please check if the directory contains the required binaries."
-msgstr "パス ${postgres_binary_directory} は無効のようです。 そのディレクトリに必要なバイナリが含まれているか確認して下さい。"
+msgstr "パス ${postgres_binary_directory} は無効のようです。 そのディレクトリに必要なバイナリが含まれているか確認してください。"
 
 msgid "The selected folder is not empty. Please select a different folder"
 msgstr "選択したフォルダは空でありません。 別のフォルダを選択してください。"
 
 msgid "The service script file exists. Please insert a different name for the service script."
-msgstr "そのサービス・スクリプト・ファイルは存在します。 そのサービス・スクリプトに別の名前を指定して下さい。"
+msgstr "そのサービス・スクリプト・ファイルは存在します。 そのサービス・スクリプトに別の名前を指定してください。"
 
 msgid "There is not enough free space on ${installdir}. You need at least ${base_needed_space} MB in order to install ${product_fullname}"
 msgstr "${installdir} に十分なスペースがありません。 ${product_fullname} をインストールするには、最低${base_needed_space} MBが必要です。"
@@ -656,7 +656,7 @@ msgid "You can optionally register ${product_fullname} as a service. This way it
 msgstr "オプションで、${product_fullname} をサービスとして登録する事ができます。 これによりマシンを起動する度にそれを自動起動できるようになります。"
 
 msgid "You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat."
-msgstr "あなたは現在インストールされているTOMCATを選択しました。 新たにインストールしたアプリケーションを使用するには、TOMCATを再起動して下さい。"
+msgstr "あなたは現在インストールされているTOMCATを選択しました。 新たにインストールしたアプリケーションを使用するには、TOMCATを再起動してください。"
 
 msgid "applyamps"
 msgstr "applyamps"
@@ -668,7 +668,7 @@ msgid "Please provide a password for the service account (postgres). If this acc
 msgstr "サービスアカウント(postgres)のパスワードを入力します。お持ちでない場合は自動的に作成されます。"
 
 msgid "The password specified was incorrect. Please enter the correct password for the postgres Windows user account."
-msgstr "入力したパスワードに誤りがあります。WIndowsユーザーアカウント(postgres)の正しいパスワードを入力して下さい。"
+msgstr "入力したパスワードに誤りがあります。WIndowsユーザーアカウント(postgres)の正しいパスワードを入力してください。"
 
 msgid "README"
 msgstr "README"
@@ -680,10 +680,13 @@ msgid "Postgres service account password"
 msgstr "サービスアカウント(postgres)のパスワード"
 
 msgid "Deploying Alfresco. Please be patient."
-msgstr "ALFRESCOを展開しています。しばらくお待ち下さい。"
+msgstr "ALFRESCOを展開しています。しばらくお待ちください。"
 
 msgid "Java is not installed in your Stack. This module requires to have Java installed."
 msgstr "Javaがインストールされていません。このモジュールにはJavaのインストールが必要です。"
 
 msgid "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
 msgstr "インストールディレクトリには文字、数字、左記の記号　'/', '.', '-' '_'."　のみが使用できます。"
+
+msgid "Show next steps"
+msgstr "次の手順を表示"

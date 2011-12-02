@@ -687,3 +687,6 @@ msgstr "Java n'est pas installé dans votre environnement. Ce module nécessite 
 
 msgid "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
 msgstr "Le chemin du répertoire d'installation ne doit contenir que des lettres, des chiffres, et les caractères '/', '.', '-' et '_'."
+
+msgid "Show next steps"
+msgstr "Voir les prochaines étapes"

@@ -687,3 +687,6 @@ msgstr "Java is niet geïnstalleerd in uw stack. Voor deze module moet Java zijn 
 
 msgid "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
 msgstr "Het installatiepad mag alleen letters, cijfers en de tekens '/', '.', '-' en '_' bevatten."
+
+msgid "Show next steps"
+msgstr "Zie de volgende stappen"

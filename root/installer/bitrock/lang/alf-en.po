@@ -687,3 +687,6 @@ msgstr "Java is not installed in your Stack. This module requires to have Java i
 
 msgid "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
 msgstr "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
+
+msgid "Show next steps"
+msgstr "Show next steps"
