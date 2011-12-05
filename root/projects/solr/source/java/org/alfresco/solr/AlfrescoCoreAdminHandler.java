@@ -34,6 +34,7 @@ import org.alfresco.solr.tracker.CoreTracker;
 import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.util.CachingDateFormat;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.params.CoreAdminParams;
@@ -115,6 +116,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 e.printStackTrace();
             }
 
+            BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
         }
         catch (SchedulerException e)
         {
