@@ -302,9 +302,9 @@
             }
 
             // Format and display the createdDate
-            Dom.get(this.id + "-createdDate-span-" + i).innerHTML = Alfresco.util.formatDate(versions[i].createdDate, this.msg("date-format.longDate"));
+            Dom.get(this.id + "-createdDate-span-" + i).innerHTML =
+               Alfresco.util.formatDate(Alfresco.thirdparty.fromISO8601(versions[i].createdDate), this.msg("date-format.longDate"));
          }
-               
       },
 
       /**
