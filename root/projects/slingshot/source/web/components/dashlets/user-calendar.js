@@ -70,7 +70,16 @@
           * @type integer
           * @default 100
           */
-         listSize: 100
+         listSize: 100,
+
+         /**
+          * Maximum number of days in the future for events to be shown
+          *
+          * @property maxDays
+          * @type integer
+          * @default 60
+          */
+         maxDays: 60
       },
 
       /**
@@ -80,9 +89,13 @@
        */
       loadEvents: function()
       {
+         var showUntil = new Date();
+         showUntil.setDate(showUntil.getDate() + this.options.maxDays);
+         showUntil = Alfresco.util.toISO8601(showUntil).split("T")[0];
+
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.PROXY_URI + "calendar/events/user?from=now&size=" + this.options.listSize,
+            url: Alfresco.constants.PROXY_URI + "calendar/events/user?from=now&to=" + showUntil + "&size=" + this.options.listSize,
             successCallback:
             {
                fn: this.onEventsLoaded,
