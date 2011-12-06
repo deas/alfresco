@@ -259,7 +259,7 @@
          
          // add listener for the status update check box.
          Event.addListener(this.widgets.statusUpdateCheckboxes, "click", this.onStatusCheckboxToggle, {}, this);
-         
+
          // add listener for selection of publish channel:
          Event.addListener(Dom.get(this.id + "-publishChannel-menu"), "click", this.onSelectPublishChannel, {}, this);
          
@@ -431,7 +431,7 @@
       onStatusCheckboxToggle: function SP_onStatusCheckboxToggle(event)
       {
          // apply the selected class
-         Alfresco.util.toggleClass(Dom.getAncestorByClassName(Dom.get(event.target), "status-channel"), "selected");
+         Alfresco.util.toggleClass(Dom.getAncestorByClassName(Event.getTarget(event), "status-channel"), "selected");
 
          // trigger onSelected function
          this.onSelectedStatusChannelChange();
@@ -450,7 +450,7 @@
             Dom.addClass(Dom.getAncestorByClassName(el, "status-channel"), "selected");
          }
          this.onSelectedStatusChannelChange();
-         event.preventDefault();
+         Event.preventDefault(event);
       },
 
       /**
@@ -466,7 +466,7 @@
             Dom.removeClass(Dom.getAncestorByClassName(el, "status-channel"), "selected");
          }
          this.onSelectedStatusChannelChange();
-         event.preventDefault();
+         Event.preventDefault(event);
       },
       
       /**
@@ -520,17 +520,13 @@
        */
       onSelectPublishChannel: function SP_onSelectPublishChannel(event, obj)
       {
-         var el;
-         if (Selector.test(event.target, "a.publishChannel")) {
-            el = event.target
-         } 
-         else 
-         {
-            el = Dom.getAncestorByClassName(event.target, "publishChannel")
+         var el = Event.getTarget(event);
+         if (!Selector.test(el, "a.publishChannel")) {
+            el = Dom.getAncestorByClassName(el, "publishChannel")
          }
          this.widgets.selectChannelButton.set("label", el.innerHTML);
          this.widgets.selectChannelButton.set("value", el.rel);
-         event.preventDefault();
+         Event.preventDefault(event);
       },
       
       /**
