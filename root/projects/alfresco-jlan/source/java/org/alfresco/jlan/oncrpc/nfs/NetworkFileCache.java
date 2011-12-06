@@ -301,7 +301,7 @@ public class NetworkFileCache {
 								// Check if the network file is closed, if not  then close the file to release the file
 								// handle but keep the file entry in the file cache for a while as the file may be re-opened
 
-								if (fentry.isClosed() == false) {
+								if (fentry.isClosed() == false && netFile != null) {
 
 									// We need to do the close in the context of the user that opened the file
 									
@@ -313,7 +313,7 @@ public class NetworkFileCache {
 									
 										// Check if the filesystem is transactional, in this case only mark the file as closed
 										
-										if ( fentry.getConnection().getInterface() instanceof TransactionalFilesystemInterface) {
+										if ( netFile.allowsOpenCloseViaNetworkFile() == false) {
 										    
 										    // Mark the file as closed, wait for second stage expiry to actually close the file
 										    

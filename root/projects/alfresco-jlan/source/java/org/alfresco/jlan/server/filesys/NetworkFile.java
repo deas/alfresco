@@ -966,6 +966,22 @@ public abstract class NetworkFile {
 	}
 	
 	/**
+	 * Indicate whether the file can be opened/closed via the NetworkFile methods rather than the DiskInterface.
+	 * 
+	 * This is primarily for use by the NFS server code when caching open files. If possible the server will
+	 * close the network file to free up file handles, but keep it in the NFS file cache for a short while
+	 * in case the file is used again.
+	 * 
+	 * Override this method to prevent the NFS server from closing the file until the file is removed from
+	 * the NFS file cache, by returning false.
+	 * 
+	 * @return boolean
+	 */
+	public boolean allowsOpenCloseViaNetworkFile() {
+		return true;
+	}
+	
+	/**
 	 * Return the file details as a string
 	 * 
 	 * @return String
