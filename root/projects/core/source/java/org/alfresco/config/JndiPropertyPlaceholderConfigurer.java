@@ -31,7 +31,7 @@ import org.springframework.jndi.JndiTemplate;
  * 
  * @author dward
  */
-public class JndiPropertyPlaceholderConfigurer extends FixedPropertyPlaceholderConfigurer
+public class JndiPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer
 {
     private JndiTemplate jndiTemplate = new JndiTemplate();
 
