@@ -8,5 +8,4 @@
       <showCancelLink>true</showCancelLink>
    </form>
    <editable>true</editable>
-   <link label="tool.license.link" target="_blank">http://team.alfresco.com</link>
 </config>
