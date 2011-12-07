@@ -47,6 +47,7 @@
     
     <bean id="userGroupServiceHandler" class="org.alfresco.module.vti.handler.alfresco.soap.AlfrescoUserGroupServiceHandler">
     	<property name="permissionService" ref="PermissionService"/>
+    	<property name="authorityService" ref="AuthorityService"/>
     	<property name="personService" ref="PersonService"/>
     	<property name="nodeService" ref="NodeService"/>    	
     	

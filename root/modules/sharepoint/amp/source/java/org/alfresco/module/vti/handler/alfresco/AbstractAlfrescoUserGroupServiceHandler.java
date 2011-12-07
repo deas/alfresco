@@ -27,6 +27,7 @@ import org.alfresco.module.vti.metadata.model.UserBean;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,11 +42,11 @@ public abstract class AbstractAlfrescoUserGroupServiceHandler implements UserGro
     private static Log logger = LogFactory.getLog(AbstractAlfrescoUserGroupServiceHandler.class);
 
     protected NodeService nodeService;
-
     protected PersonService personService;
+    protected AuthorityService authorityService;
 
     /**
-     * Set node service
+     * Set the node service
      * 
      * @param nodeService the node service to set ({@link NodeService})
      */
@@ -55,13 +56,23 @@ public abstract class AbstractAlfrescoUserGroupServiceHandler implements UserGro
     }
 
     /**
-     * Set person service
+     * Set the person service
      * 
      * @param personService the person service to set ({@link PersonService})
      */
     public void setPersonService(PersonService personService)
     {
         this.personService = personService;
+    }
+
+    /**
+     * Set the authority service
+     * 
+     * @param authorityService the authority service to set ({@link AuthorityService})
+     */
+    public void setAuthorityService(AuthorityService authorityService)
+    {
+        this.authorityService = authorityService;
     }
 
     /**

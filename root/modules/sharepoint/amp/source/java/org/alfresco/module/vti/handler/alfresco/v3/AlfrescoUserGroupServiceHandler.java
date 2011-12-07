@@ -151,6 +151,16 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
         {
             return false;
         }
-        return siteService.isMember(dwsUrl, normalized);
+        
+        boolean isMember = siteService.isMember(dwsUrl, normalized);
+        
+        if (!isMember && authorityService.isAdminAuthority(username)) 
+        {
+           // Admin is allowed to do things even on sites they're not
+           //  a member of. So, pretend they are a member so they're allowed
+           isMember = true;
+        }
+        
+        return isMember;
     }
 }

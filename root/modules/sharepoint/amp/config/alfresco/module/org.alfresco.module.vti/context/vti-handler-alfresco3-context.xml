@@ -96,9 +96,10 @@
     </bean>
 
     <bean id="userGroupServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoUserGroupServiceHandler">    	
-        <property name="personService" ref="PersonService"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="siteService" ref="SiteService" />
+        <property name="personService" ref="PersonService"/>
+    	  <property name="authorityService" ref="AuthorityService"/>
         <property name="transactionService" ref="transactionService" />
     </bean>
     
