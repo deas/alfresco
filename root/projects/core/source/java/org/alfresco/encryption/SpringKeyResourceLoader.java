@@ -53,7 +53,7 @@ public class SpringKeyResourceLoader implements KeyResourceLoader, ApplicationCo
 
         try
         {
-            Resource resource = applicationContext.getResource(keyStoreLocation);
+            Resource resource = applicationContext.getResource("file:" + keyStoreLocation);
 
             if (!resource.exists())
             {
@@ -82,7 +82,7 @@ public class SpringKeyResourceLoader implements KeyResourceLoader, ApplicationCo
         try
         {
             Properties p = new Properties();
-            Resource resource = applicationContext.getResource(keyMetaDataFileLocation);
+            Resource resource = applicationContext.getResource("file:" + keyMetaDataFileLocation);
 
             if (!resource.exists())
             {
