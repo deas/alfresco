@@ -86,6 +86,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     }
     
     /**
+     * Returns the path, excluding the Servlet Context (if present)
      * @see org.alfresco.repo.webdav.WebDAVMethod#getPath()
      */
     @Override
