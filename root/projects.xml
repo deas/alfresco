@@ -2285,16 +2285,31 @@
    </target>
 
    <target name="assemble-wcmquickstart-share" depends="init">
-      <copy todir="${dir.module.wcmquickstart-share.assemble}">
+      <copy todir="${dir.module.wcmquickstart-share.assemble}/web">
          <fileset dir="${dir.module.wcmquickstart-share.src.web}" />
+      </copy>
+      <copy todir="${dir.module.wcmquickstart-share.assemble}/config">
+         <fileset dir="${dir.module.wcmquickstart-share.config}" />
+      </copy>
+      <delete>
+         <fileset dir="${dir.module.wcmquickstart-share.assemble}/config/alfresco/messages">
+            <include name="*_en.properties" />
+         </fileset>
+      </delete>
+
+      <copy todir="${dir.module.wcmquickstart-share.assemble}/config/alfresco/messages">
+         <fileset dir="${dir.module.wcmquickstart-share.assemble}/config/alfresco/messages"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en.properties"/>
       </copy>
    </target>
    
    <target name="minimize-wcmquickstart-share-javascript"
            depends="init">
      <echo>Compressing wcmquickstart Share Javascript...</echo>
-     <minimize-javascript sourcedir="${dir.module.wcmquickstart-share.assemble}" 
-                          destdir="${dir.module.wcmquickstart-share.assemble}" />
+     <minimize-javascript sourcedir="${dir.module.wcmquickstart-share.assemble}/web" 
+                          destdir="${dir.module.wcmquickstart-share.assemble}/web" />
   </target>
    
    <target name="package-wcmquickstart-share"
@@ -2314,12 +2329,12 @@
            update="true">
          <zipfileset file="${dir.module.wcmquickstart-share.property}/module.properties"/>   
          <zipfileset file="${dir.module.wcmquickstart-share.property}/file-mapping.properties"/>       
-         <zipfileset dir="${dir.module.wcmquickstart-share.config}" 
+         <zipfileset dir="${dir.module.wcmquickstart-share.assemble}/config" 
                      prefix="config">
             <exclude name="**/module.properties"/>
             <exclude name="**/file-mapping.properties"/>
          </zipfileset>
-       <zipfileset dir="${dir.module.wcmquickstart-share.assemble}" prefix="web"/>
+       <zipfileset dir="${dir.module.wcmquickstart-share.assemble}/web" prefix="web"/>
       </zip>
    </target>
    
@@ -2408,6 +2423,19 @@
          <fileset dir="${dir.project.wcmquickstart-clientapi.config}" excludes="**/web-extension/**" />
       </copy>
       
+      <delete>
+         <fileset dir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/classes/alfresco/messages">
+            <include name="*_en.properties" />
+         </fileset>
+      </delete>
+
+      <copy todir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/classes/alfresco/messages">
+         <fileset dir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/classes/alfresco/messages"/>
+         <mapper type="regexp" 
+                 from="^([^_]*).properties$" 
+                 to="\1_en.properties"/>
+      </copy>
+
       <!-- add all JAR to WEB-INF/lib -->
       <copy todir="${dir.project.wcmquickstart-webapp.assemble}/WEB-INF/lib">
         
