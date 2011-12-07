@@ -235,8 +235,26 @@
                obj: null,
                scope: this
             };
-            var msg = Alfresco.util.message("validation-hint.nodeName");
-            tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.nodeName, null, "keyup", msg);
+
+            // Create a custom validator for the tag name - this is almost identical to the node name validation
+            // in "forms-runtime.js" with the exception that double quotes are allowed as they are required for 
+            // entering tags that comprise of space separated words.
+            var tagNameValidation = function (field, args, event, form, silent, message)
+            {
+               if (!args)
+               {
+                  args = {};
+               }
+               args.pattern = /([\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)/;
+               args.match = false;
+               return Alfresco.forms.validation.regexMatch(field, args, event, form, silent, message);
+            };
+            
+            var regexArgs = {};
+            regexArgs.pattern = /([\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)/;
+            regexArgs.match = false;
+            var msg = Alfresco.util.message("validation-hint.tagName");
+            tagFormsRuntime.addValidation(this.id + "-tag-input-field", tagNameValidation, null, "keyup", msg);
             tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.mandatory);
             tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.length,
             {
