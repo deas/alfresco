@@ -19,14 +19,15 @@
 package org.alfresco.encryption;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.springframework.util.ResourceUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 
 /**
  * Loads key resources (key store and key store passwords) from the Spring classpath.
@@ -34,51 +35,73 @@ import org.springframework.util.ResourceUtils;
  * @since 4.0
  *
  */
-public class SpringKeyResourceLoader implements KeyResourceLoader
+public class SpringKeyResourceLoader implements KeyResourceLoader, ApplicationContextAware
 {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-	public InputStream getKeyStore(String keyStoreLocation)
-	{
-		if(keyStoreLocation == null)
-		{
-			return null;
-		}
-
-    	try
-    	{
-    		File f = ResourceUtils.getFile(keyStoreLocation);
-    		return new BufferedInputStream(new FileInputStream(f));
-    	}
-    	catch(FileNotFoundException e)
-    	{
-    		return null;
-    	}
-	}
+    /* spring application context (used for resource resolving) */
+    private ApplicationContext applicationContext;
 
     /**
      * {@inheritDoc}
      */
     @Override
-	public Properties loadKeyMetaData(String keyMetaDataFileLocation) throws IOException
-	{
-		if(keyMetaDataFileLocation == null)
-		{
-			return null;
-		}
+    public InputStream getKeyStore(String keyStoreLocation)
+    {
+        if(keyStoreLocation == null)
+        {
+            return null;
+        }
 
-    	try
-    	{
-        	Properties p = new Properties();
-	    	p.load(new BufferedInputStream(new FileInputStream(ResourceUtils.getFile(keyMetaDataFileLocation))));
-	    	return p;
-    	}
-    	catch(FileNotFoundException e)
-    	{
-    		return null;
-    	}
-	}
+        try
+        {
+            Resource resource = applicationContext.getResource(keyStoreLocation);
+
+            if (!resource.exists())
+            {
+                return null;
+            }
+
+            return new BufferedInputStream(resource.getInputStream());
+        }
+        catch (IOException e) 
+        {
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Properties loadKeyMetaData(String keyMetaDataFileLocation) throws IOException
+    {
+        if(keyMetaDataFileLocation == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            Properties p = new Properties();
+            Resource resource = applicationContext.getResource(keyMetaDataFileLocation);
+
+            if (!resource.exists())
+            {
+                return null;
+            }
+
+            p.load(new BufferedInputStream(resource.getInputStream()));
+            return p;
+        }
+        catch(FileNotFoundException e)
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+    {
+        this.applicationContext = applicationContext;
+    }
 
 }
