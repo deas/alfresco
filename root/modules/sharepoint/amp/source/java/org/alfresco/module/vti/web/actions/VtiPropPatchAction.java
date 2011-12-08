@@ -18,17 +18,29 @@
 */
 package org.alfresco.module.vti.web.actions;
 
+import java.util.List;
+import java.util.Map;
+
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.module.vti.web.fp.PropPatchMethod;
 import org.alfresco.repo.webdav.WebDAVMethod;
 
 public class VtiPropPatchAction extends VtiWebDavAction implements VtiAction
 {
+    private Map<String,List<String>> ignoredProperties;
+    
+    /**
+     * Sets the list of properties (NameSpace to list of Properties) which
+     *  should be ignored when performing the PropPatch.
+     */
+    public void setIgnoredProperties(Map<String, List<String>> ignoredProperties) {
+       this.ignoredProperties = ignoredProperties;
+    }
 
     @Override
     public WebDAVMethod getWebDAVMethod()
     {
-        return new PropPatchMethod(pathHelper.getAlfrescoContext());
+        return new PropPatchMethod(pathHelper.getAlfrescoContext(), ignoredProperties);
     }
 
 }

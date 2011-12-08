@@ -242,6 +242,24 @@
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="serviceRegistry" ref="ServiceRegistry"/>
         <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="ignoredProperties">
+           <!-- See MS-WDVME 3.1.5.6 for the list of dead properties to ignore -->
+           <map>
+              <entry key="urn:schemas-microsoft-com">
+                 <list>
+                   <value>Win32FileAttributes</value>
+                   <value>Win32CreationTime</value>
+                   <value>Win32LastAccessTime</value>
+                   <value>Win32LastModifiedTime</value>
+                 </list>
+              </entry>
+              <entry key="urn:schemas-microsoft-com:office:office">
+                 <list>
+                   <value>specialFolderType</value>
+                 </list>
+              </entry>
+           </map>
+        </property>
     </bean>
 
     <bean id="vtiUnlockAction" class="org.alfresco.module.vti.web.actions.VtiUnlockAction">
