@@ -3824,6 +3824,34 @@ Alfresco.util.siteURL = function(pageURI, obj, absolute)
 };
 
 /**
+ * Parses a URL string into an object
+ *
+ * @param URL {string} The URL to convert
+ * @return urlObject {object} object literal containing the URL properties.
+ */
+Alfresco.util.parseURL = function(url)
+{
+   var a = document.createElement("a");
+   a.href = url;
+   var urlObject = {
+      // protocol includes trailing colon.
+      protocol: a.protocol,
+      hostname: a.hostname,
+      port: a.port,
+      // host = hostname:port
+      host: a.host,
+      pathname: a.pathname,
+      // search and hash include question mark and hash symbol respectively
+      search: a.search,
+      hash: a.hash,
+      // url = protocol + "//" + host + path + search + hash
+      url: url,
+      queryParams: Alfresco.util.getQueryStringParameters(url)
+   }
+   return urlObject;
+}
+
+/**
  * Navigates to a url
  *
  * @method Alfresco.util.navigateTo
