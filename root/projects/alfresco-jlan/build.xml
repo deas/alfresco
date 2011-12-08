@@ -20,6 +20,7 @@
 			<exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/derby/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/postgresql/**"/>
 			<exclude name="org/alfresco/jlan/client/**"/>
 			<exclude name="org/alfresco/jlan/client/admin/**"/>
 			<exclude name="org/alfresco/jlan/client/demo/**"/>
@@ -35,11 +36,11 @@
 			basedir="build/standalone"/>
 	</target>
 
-    <!-- Create the JLAN Server and Client Jar (with mySQL/Derby database interface implementations and cluster support) -->
+    <!-- Create the JLAN Server and Client Jar (with mySQL/Derby/PostgreSQL database interface implementations and cluster support) -->
 	<target name="createJarFull">
 		<delete dir="build/standalone" quiet="true"/>
 		<mkdir dir="build/standalone"/>
-		<javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar" debug="on">
+		<javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
 			<src path="source/java"/>
 			<src path="source/standalone-java"/>
 			<include name="**/*.java"/>
@@ -53,11 +54,11 @@
 			basedir="build/standalone"/>
 	</target>
 
-    <!-- Create the JLAN Server Jar (with database interface implementations for Derby/mySQL) -->
+    <!-- Create the JLAN Server Jar (with database interface implementations for Derby/mySQL/PostgreSQL) -->
 	<target name="createJarDB">
 		<delete dir="build/standalone-db" quiet="true"/>
 		<mkdir dir="build/standalone-db"/>
-		<javac destdir="build/standalone-db" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar" debug="on">
+		<javac destdir="build/standalone-db" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
 		  <src path="source/java"/>
 		  <src path="source/standalone-java"/>
 		  <include name="**/*.java"/>
@@ -76,14 +77,14 @@
        basedir="build/standalone-db"/>
 	</target>
 
-	<!-- Create the JLAN Server Jar (with database interface implementations for Oracle/Derby/mySQL) -->
+	<!-- Create the JLAN Server Jar (with database interface implementations for Oracle/Derby/mySQL/PostgreSQL) -->
     <!--                                                                                             -->
     <!-- Requires the Oracle ojdbc14.jar to be copied to the libs/ /folder                           -->
   
 	<target name="createJarDBOracle">
 		<delete dir="build/standalone-dbora" quiet="true"/>
 		<mkdir dir="build/standalone-dbora"/>
-		<javac destdir="build/standalone-dbora" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar" debug="on">
+		<javac destdir="build/standalone-dbora" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
 		  <src path="source/java"/>
 		  <src path="source/standalone-java"/>
 		  <include name="**/*.java"/>
@@ -101,7 +102,7 @@
        basedir="build/standalone-dbora"/>
 	</target>
 
-    <!-- Create the JLAN Server Jar (with JGroups, without database interface implementations) -->
+    <!-- Create the JLAN Server Jar (with Hazelcast, without database interface implementations) -->
 	<target name="createJarCluster">
 		<delete dir="build/standalone-cluster" quiet="true"/>
 		<mkdir dir="build/standalone-cluster"/>
@@ -112,6 +113,7 @@
 			<exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/derby/**"/>
+			<exclude name="org/alfresco/jlan/server/filesys/db/postgresql/**"/>
 			<exclude name="org/alfresco/jlan/client/**"/>
 			<exclude name="org/alfresco/jlan/client/admin/**"/>
 			<exclude name="org/alfresco/jlan/client/demo/**"/>
