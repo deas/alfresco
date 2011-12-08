@@ -477,6 +477,7 @@
       this.dragEventRefCount = 0;
       this.actionsView = "browse";
       this.renderers = {};
+      this.dataSourceUrl = $combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/doclist/");
 
       /**
        * Decoupled event listeners
@@ -2101,7 +2102,7 @@
          var me = this;
 
          // DataSource definition
-         this.widgets.dataSource = new YAHOO.util.DataSource($combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/doclist/"),
+         this.widgets.dataSource = new YAHOO.util.DataSource($combine(this.dataSourceUrl),
          {
             responseType: YAHOO.util.DataSource.TYPE_JSON,
             responseSchema:
