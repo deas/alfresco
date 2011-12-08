@@ -19,6 +19,8 @@
 package org.alfresco.encryption;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +30,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
 /**
  * Loads key resources (key store and key store passwords) from the Spring classpath.
@@ -37,30 +40,54 @@ import org.springframework.core.io.Resource;
  */
 public class SpringKeyResourceLoader implements KeyResourceLoader, ApplicationContextAware
 {
-    /* spring application context (used for resource resolving) */
+    /**
+     * The application context might not be available, in which case the usual URL
+     * loading is used.
+     */
     private ApplicationContext applicationContext;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public InputStream getKeyStore(String keyStoreLocation)
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
     {
-        if(keyStoreLocation == null)
-        {
-            return null;
-        }
-
+        this.applicationContext = applicationContext;
+    }
+    
+    /**
+     * Helper method to switch between application context resource loading or
+     * simpler current classloader resource loading.
+     */
+    private InputStream getSafeInputStream(String location)
+    {
         try
         {
-            Resource resource = applicationContext.getResource("file:" + keyStoreLocation);
-
-            if (!resource.exists())
+            final InputStream is;
+            if (applicationContext != null)
             {
-                return null;
+                Resource resource = applicationContext.getResource(location);
+                if (resource.exists())
+                {
+                    is = new BufferedInputStream(resource.getInputStream());
+                }
+                else
+                {
+                    is = null;
+                }
+            }
+            else
+            {
+                // Load conventionally (i.e. we are in a unit test)
+                File file = ResourceUtils.getFile(location);
+                if (file.exists())
+                {
+                    is = new BufferedInputStream(new FileInputStream(file));
+                }
+                else
+                {
+                    is = null;
+                }
             }
 
-            return new BufferedInputStream(resource.getInputStream());
+            return is;
         }
         catch (IOException e) 
         {
@@ -72,36 +99,50 @@ public class SpringKeyResourceLoader implements KeyResourceLoader, ApplicationCo
      * {@inheritDoc}
      */
     @Override
+    public InputStream getKeyStore(String keyStoreLocation)
+    {
+        if (keyStoreLocation == null)
+        {
+            return null;
+        }
+        return getSafeInputStream(keyStoreLocation);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Properties loadKeyMetaData(String keyMetaDataFileLocation) throws IOException
     {
-        if(keyMetaDataFileLocation == null)
+        if (keyMetaDataFileLocation == null)
         {
             return null;
         }
 
         try
         {
-            Properties p = new Properties();
-            Resource resource = applicationContext.getResource("file:" + keyMetaDataFileLocation);
-
-            if (!resource.exists())
+            InputStream is = getSafeInputStream(keyMetaDataFileLocation);
+            if (is == null)
             {
                 return null;
             }
-
-            p.load(new BufferedInputStream(resource.getInputStream()));
-            return p;
+            else
+            {
+                try
+                {
+                    Properties p = new Properties();
+                    p.load(is);
+                    return p;
+                }
+                finally
+                {
+                    try { is.close(); } catch (Throwable e) {}
+                }
+            }
         }
         catch(FileNotFoundException e)
         {
             return null;
         }
     }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
-    {
-        this.applicationContext = applicationContext;
-    }
-
 }

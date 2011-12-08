@@ -485,11 +485,18 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
 
 	        // Load it up
 	        InputStream is = getKeyStoreStream(keyStoreParameters.getLocation());
-	        if(is != null)
+	        if (is != null)
 	        {
-		        // Get the keystore password
-		        pwdKeyStore = keyInfoManager.getKeyStorePassword();
-		        ks.load(is, pwdKeyStore == null ? null : pwdKeyStore.toCharArray());
+	            try
+	            {
+    		        // Get the keystore password
+    		        pwdKeyStore = keyInfoManager.getKeyStorePassword();
+    		        ks.load(is, pwdKeyStore == null ? null : pwdKeyStore.toCharArray());
+	            }
+	            finally
+	            {
+	                try {is.close(); } catch (Throwable e) {}
+	            }
 	        }
 	        else
 	        {
@@ -787,7 +794,16 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
 	{
 		try
 		{
-			return(getKeyStoreStream(location) != null);
+		    InputStream is = getKeyStoreStream(location);
+		    if (is == null)
+		    {
+		        return false;
+		    }
+		    else
+		    {
+		        try { is.close(); } catch (Throwable e) {}
+		        return true;
+		    }
 		}
 		catch(FileNotFoundException e)
 		{
