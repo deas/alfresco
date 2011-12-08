@@ -92,16 +92,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     @Override
     protected String getPath()
     {
-        String path = URLDecoder.decode(m_request.getRequestURI());
-
-        // remove the servlet path from the path
-        if (alfrescoContext != null && alfrescoContext.length() > 0 && path.startsWith(alfrescoContext))
-        {
-            // Strip the servlet path from the relative path
-            path = path.substring(alfrescoContext.length());
-        }
-
-        return path;
+       return AbstractMethod.getPathWithoutContext(alfrescoContext, m_request);
     }
 
     /**

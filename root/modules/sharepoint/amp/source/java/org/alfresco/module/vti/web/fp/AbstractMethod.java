@@ -20,6 +20,8 @@ package org.alfresco.module.vti.web.fp;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.metadata.dic.VtiConstraint;
 import org.alfresco.module.vti.metadata.dic.VtiError;
@@ -29,6 +31,7 @@ import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.web.VtiEncodingUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Abstract base class for all the Vti method handling classes.
@@ -156,7 +159,23 @@ public abstract class AbstractMethod implements VtiMethod
             response.writeMetaDictionary(VtiProperty.FILE_MODIFIEDBY, VtiType.STRING, VtiConstraint.R, VtiEncodingUtils.encode(docMetaInfo.getModifiedBy()));
             response.writeMetaDictionary(VtiProperty.FILE_AUTHOR, VtiType.STRING, VtiConstraint.R, VtiEncodingUtils.encode(docMetaInfo.getAuthor()));
         }
-
     }
 
+    /**
+     * Returns the path, excluding the Servlet Context (if present)
+     * @see org.alfresco.repo.webdav.WebDAVMethod#getPath()
+     */
+    protected static String getPathWithoutContext(String alfrescoContext, HttpServletRequest m_request)
+    {
+       String path = URLDecoder.decode(m_request.getRequestURI());
+
+       // Remove the servlet path from the path, if present
+       if (alfrescoContext != null && alfrescoContext.length() > 0 && path.startsWith(alfrescoContext))
+       {
+           // Strip the servlet path from the relative path
+           path = path.substring(alfrescoContext.length());
+       }
+
+       return path;
+    }
 }

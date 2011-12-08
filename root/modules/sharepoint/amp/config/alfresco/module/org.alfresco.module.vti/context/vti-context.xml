@@ -104,21 +104,31 @@
                     <property name="customRules">
                         <map>
                             <entry key="Request-method">
-                                <value>LOCK</value>
-                            </entry>
-                        </map>
-                    </property>
-                    <property name="action" ref="vtiLockAction"/>
-                </bean>
-                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
-                    <property name="customRules">
-                        <map>
-                            <entry key="Request-method">
                                 <value>PROPPATCH</value>
                             </entry>
                         </map>
                     </property>
                     <property name="action" ref="vtiPropPatchAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method">
+                                <value>MKCOL</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiMkcolAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method">
+                                <value>LOCK</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiLockAction"/>
                 </bean>
                 <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
                     <property name="customRules">
@@ -232,12 +242,6 @@
         <property name="authenticationService" ref="AuthenticationService" />
     </bean>
 
-    <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
-
     <bean id="vtiPropPatchAction" class="org.alfresco.module.vti.web.actions.VtiPropPatchAction">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="serviceRegistry" ref="ServiceRegistry"/>
@@ -245,7 +249,7 @@
         <property name="ignoredProperties">
            <!-- See MS-WDVME 3.1.5.6 for the list of dead properties to ignore -->
            <map>
-              <entry key="urn:schemas-microsoft-com">
+              <entry key="urn:schemas-microsoft-com:">
                  <list>
                    <value>Win32FileAttributes</value>
                    <value>Win32CreationTime</value>
@@ -260,6 +264,18 @@
               </entry>
            </map>
         </property>
+    </bean>
+
+    <bean id="vtiMkcolAction" class="org.alfresco.module.vti.web.actions.VtiMkcolAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
     </bean>
 
     <bean id="vtiUnlockAction" class="org.alfresco.module.vti.web.actions.VtiUnlockAction">
