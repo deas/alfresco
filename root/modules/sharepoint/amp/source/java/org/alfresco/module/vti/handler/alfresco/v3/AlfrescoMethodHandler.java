@@ -373,6 +373,12 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             writer.setMimetype(mimetype);
             writer.putContent(request.getInputStream());
 
+            // If needed, mark the node as having now had its content supplied
+            if (getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT))
+            {
+                getNodeService().removeAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT);
+            }
+
             tx.commit();
         }
         catch (Exception e)
