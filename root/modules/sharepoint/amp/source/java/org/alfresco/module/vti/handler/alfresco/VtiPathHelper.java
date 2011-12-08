@@ -51,6 +51,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Helper for AlfrescoVtiMethodHandler. Help for path resolving and url formatting
@@ -354,6 +355,9 @@ public class VtiPathHelper extends AbstractLifecycleBean
                
                // Strip off the context before continuing with the path resolution
                String pathUri = uri.substring(alfrescoContext.length() + 1);
+               // Decode the URL before doing path resolution, so that we correctly
+               //  match documents or paths containing special characters
+               pathUri = URLDecoder.decode(pathUri);
                // Split it into parts based on slashes
                String[] splitPath = pathUri.split("/");
                
