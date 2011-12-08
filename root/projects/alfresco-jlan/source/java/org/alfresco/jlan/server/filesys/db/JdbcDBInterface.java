@@ -282,6 +282,19 @@ public abstract class JdbcDBInterface implements DBInterface, DBConnectionPoolLi
   }
   
   /**
+   * Set the data fragment size, used when storing file data to blob fields/oid files
+   * 
+   * @param fragSize long
+   * @return long
+   */
+  protected final long setDataFragmentSize( long fragSize) {
+	  if ( fragSize >= MinFragSize && fragSize <= MaxFragSize)
+		  m_dataFragSize = fragSize;
+	  
+	  return m_dataFragSize;
+  }
+  
+  /**
    * Initialize the database interface
    * 
    * @param context DBDeviceContext

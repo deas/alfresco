@@ -49,6 +49,7 @@ import org.alfresco.jlan.server.filesys.FileStatus;
 import org.alfresco.jlan.server.filesys.FileType;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.SearchContext;
+import org.alfresco.jlan.server.filesys.SecurityDescriptorInterface;
 import org.alfresco.jlan.server.filesys.SrvDiskInfo;
 import org.alfresco.jlan.server.filesys.SymbolicLinkInterface;
 import org.alfresco.jlan.server.filesys.TreeConnection;
@@ -63,6 +64,8 @@ import org.alfresco.jlan.server.locking.OpLockInterface;
 import org.alfresco.jlan.server.locking.OpLockManager;
 import org.alfresco.jlan.smb.SharingMode;
 import org.alfresco.jlan.smb.WinNT;
+import org.alfresco.jlan.smb.nt.SecurityDescriptor;
+import org.alfresco.jlan.smb.server.SMBSrvException;
 import org.alfresco.jlan.smb.server.ntfs.NTFSStreamsInterface;
 import org.alfresco.jlan.smb.server.ntfs.StreamInfo;
 import org.alfresco.jlan.smb.server.ntfs.StreamInfoList;
@@ -76,7 +79,7 @@ import org.springframework.extensions.config.ConfigElement;
  * @author gkspencer
  */
 public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolumeInterface, NTFSStreamsInterface,
-  FileLockingInterface, FileIdInterface, SymbolicLinkInterface, OpLockInterface {
+  FileLockingInterface, FileIdInterface, SymbolicLinkInterface, OpLockInterface, SecurityDescriptorInterface {
 
   //  Attributes attached to the file state
   
@@ -2804,6 +2807,8 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Get the main file information and convert to stream information
     
     DBFileInfo finfo = getFileDetails(fileName,dbCtx, fstate);
+    if ( finfo == null)
+    	return null;
     
     //  Create the stream list
     
@@ -3623,4 +3628,49 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     
     return symLink;
   }
+  
+  /**
+   * Return the security descriptor length for the specified file
+   * 
+   * @param sess      Server session
+   * @param tree      Tree connection
+   * @param netFile   Network file
+   * @return int
+   * @exception SMBSrvException
+   */
+  public int getSecurityDescriptorLength(SrvSession sess, TreeConnection tree, NetworkFile netFile)
+    throws SMBSrvException {
+	  
+	  return 0;
+  }
+
+  /**
+   * Load a security descriptor for the specified file
+   * 
+   * @param sess      Server session
+   * @param tree      Tree connection
+   * @param netFile   Network file
+   * @return SecurityDescriptor
+   * @exception SMBSrvException
+   */
+  public SecurityDescriptor loadSecurityDescriptor(SrvSession sess, TreeConnection tree, NetworkFile netFile)
+    throws SMBSrvException {
+	  
+	  return null;
+  }
+
+  /**
+   * Save the security descriptor for the specified file
+   * 
+   * @param sess      Server session
+   * @param tree      Tree connection
+   * @param netFile   Network file
+   * @param secDesc   Security descriptor
+   * @exception SMBSrvException
+   */
+  public void saveSecurityDescriptor(SrvSession sess, TreeConnection tree, NetworkFile netFile, SecurityDescriptor secDesc)
+    throws SMBSrvException {
+	  
+  }
+  
 }

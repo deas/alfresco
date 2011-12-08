@@ -53,6 +53,7 @@ public interface DBInterface {
   public static final int FeatureJarData		= 0x0010;	//  load/save multiple file data to Jar files
   public static final int FeatureObjectId		= 0x0020;	//	keep file id to object id mapping details
   public static final int FeatureSymLinks       = 0x0040;	//  symbolic links
+  public static final int FeatureSecDescriptor  = 0x0080;	// 	security descriptors
   
   //	File information levels, for the getFileInformation() method
   
