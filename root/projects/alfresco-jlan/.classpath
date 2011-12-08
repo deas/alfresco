@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
 	<classpathentry kind="lib" path="hazelcast/hazelcast-1.9.4.4.jar"/>
+	<classpathentry kind="lib" path="libs/postgresql-9.1-901.jdbc4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
