@@ -42,7 +42,7 @@
         <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartclientapi/config/alfresco" />
 
         <!-- Binaries -->
-        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.6_22" />
+        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.6.0_22" />
         <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.1" />
         <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat-6.0.29" />
 
