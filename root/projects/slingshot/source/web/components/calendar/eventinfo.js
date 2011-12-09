@@ -198,15 +198,15 @@
          for (var i=0,len=dateElIds.length;i<len;i++)
          {
             var dateTextEl = Dom.get(dateElIds[i]);
-            var textvalue = dateTextEl.innerHTML.split(' ');
+            var date = Alfresco.util.fromISO8601(dateTextEl.innerHTML);
             //only show date for allday events otherwise show time too
-            if (textvalue.length>1)
+            if (Dom.hasClass(dateTextEl, "allDayEvent"))
             {
-               dateTextEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(textvalue[0]), Alfresco.util.message("calendar.dateFormat.full")) + ' ' + textvalue[1] + ' ' + textvalue[2];               
+               dateTextEl.innerHTML = Alfresco.util.formatDate(date, Alfresco.util.message("date-format.fullDate"));
             }
             else 
             {
-               dateTextEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(textvalue[0]), Alfresco.util.message("calendar.dateFormat.full"));
+               dateTextEl.innerHTML = Alfresco.util.formatDate(date, Alfresco.util.message("date-format.fullDateTime"));
             }
          }
          //decode html for text values of event

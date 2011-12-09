@@ -41,11 +41,11 @@
 </#if>
    <div class="yui-gd">
       <div class="yui-u first">${msg("label.startdate")}:</div>
-      <div class="yui-u" id="${el}-startdate">${result.startAt.iso8601}<#if result.allday!='true'> ${msg("label.at")} ${xmldate(result.startAt.iso8601)?string(msg("date-format.shortTime24FTL"))} </#if></div>
+      <div class="yui-u <#if result.allday == 'true'>allDayEvent</#if>" id="${el}-startdate">${result.startAt.iso8601}</div>
    </div>
    <div class="yui-gd">
       <div class="yui-u first">${msg("label.enddate")}:</div>
-      <div class="yui-u" id="${el}-enddate">${result.endAt.iso8601}<#if result.allday!='true'> ${msg("label.at")} ${xmldate(result.endAt.iso8601)?string(msg("date-format.shortTime24FTL"))}</#if></div>
+      <div class="yui-u <#if result.allday == 'true'>allDayEvent</#if>" id="${el}-enddate">${result.endAt.iso8601}</div>
    </div>
 <#if result.recurrence != ''>
    <div class="yui-gd">
