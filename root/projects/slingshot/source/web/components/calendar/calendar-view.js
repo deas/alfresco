@@ -1250,7 +1250,7 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
        */
       writeDateToField: function Alfresco_CalendarHelper_writeDateToField(date, field)
       {
-         var formattedDate = dateFormat(date, Alfresco.util.message("calendar.dateFormat.full"));
+         var formattedDate = dateFormat(date, Alfresco.util.message("date-format.fullDate"));
          field.value = formattedDate;
          field.title = toISO8601(date);
       },

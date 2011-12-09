@@ -400,8 +400,8 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       parentEl.id = this.options.id + "-dt-" + date;
       titleEl.id = this.options.id + "-head-" + date;
       Dom.addClass(titleEl, "dayTitle");
-      titleEl.innerHTML = Alfresco.util.friendlyDate(fromISO8601(date), this.msg("calendar.dateFormat.agenda"));
-      Dom.setAttribute(titleEl, "title", dateFormat(fromISO8601(date), this.msg("calendar.dateFormat.full")));
+      titleEl.innerHTML = Alfresco.util.friendlyDate(fromISO8601(date), this.msg("date-format.dayDateMonth"));
+      Dom.setAttribute(titleEl, "title", dateFormat(fromISO8601(date), this.msg("date-format.fullDate")));
       
       // Add highlighting on today's element.
       if (date === today) 
