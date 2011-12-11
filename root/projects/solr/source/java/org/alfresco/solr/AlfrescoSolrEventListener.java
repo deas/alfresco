@@ -114,7 +114,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
     private NamedList args;
 
-    private boolean forceCheckCache = true;
+    private boolean forceCheckCache = false;
 
     private boolean incrementalCacheRebuild = true;
 
