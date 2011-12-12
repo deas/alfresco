@@ -6,7 +6,7 @@
          <div class="private">
             <form id="${el}-form-following-private" action="${url.context}/service/components/profile/following-private" method="post">
                <input id="${el}-checkbox-following-private" type="checkbox" name="private" value="1" onclick="submit();" <#if privatelist>checked=""</#if>/>
-               <label for="${el}-checkbox-following-private">Private</label>
+               <label for="${el}-checkbox-following-private">${msg("label.private")}</label>
             </form>
          </div>
          </#if>
