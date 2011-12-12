@@ -2075,7 +2075,7 @@
          if (paramDef.isMultiValued && YAHOO.lang.isArray(paramValue))
          {
             // Remove previous hidden input elements that won't be needed ...
-            for (var phei = paramEls.length, nhel = paramValue.length, phe; phei > nhel; i--)
+            for (var phei = paramEls.length, nhel = paramValue.length, phe; phei > nhel; phei--)
             {
                // Remove the previous hidden element from array and Dom
                phe = paramEls.pop();
