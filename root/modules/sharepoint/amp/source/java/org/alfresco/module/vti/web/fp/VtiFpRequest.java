@@ -86,9 +86,27 @@ public class VtiFpRequest extends HttpServletRequestWrapper
      */
     public VtiFpRequest(HttpServletRequest request)
     {
-        super(request);
+        super(ensureUTF8(request));
         supplementParamMap = new HashMap<String, String[]>();
         alfrescoContextName = (String) request.getAttribute(VtiRequestDispatcher.VTI_ALFRESCO_CONTEXT);
+    }
+    
+    /**
+     * Typically, Office neglects to include the encoding information
+     *  in the requests, and assumes it's UTF-8.
+     * So that everything works correctly, set this encoding if
+     *  it isn't there 
+     */
+    private static HttpServletRequest ensureUTF8(HttpServletRequest request)
+    {
+       if (request.getCharacterEncoding() == null)
+       {
+          try
+          {
+             request.setCharacterEncoding("UTF-8");
+          } catch(UnsupportedEncodingException e) {} // UTF-8 always supported
+       }
+       return request;
     }
 
     /**
@@ -103,16 +121,6 @@ public class VtiFpRequest extends HttpServletRequestWrapper
             param = checkForLineFeed(params[0]);
         }
 
-        try
-        {
-            if (param != null) {
-                param = new String(param.getBytes("ISO-8859-1"), "UTF-8");
-            }
-        }
-        catch (UnsupportedEncodingException e)
-        {
-        }
-        
         return param;
     }
     
