@@ -70,7 +70,16 @@ public class SpringKeyResourceLoader implements KeyResourceLoader, ApplicationCo
                 }
                 else
                 {
-                    is = null;
+                    // Fall back to conventional loading
+                    File file = ResourceUtils.getFile(location);
+                    if (file.exists())
+                    {
+                        is = new BufferedInputStream(new FileInputStream(file));
+                    }
+                    else
+                    {
+                        is = null;
+                    }
                 }
             }
             else
