@@ -217,6 +217,13 @@
                status = $html(oRecord.getData("properties")["bpm_status"]),
                assignee = oRecord.getData("owner");
                
+         // if there is a property label available for the status use that instead
+         var data = oRecord.getData();
+         if (data.propertyLabels && Alfresco.util.isValueSet(data.propertyLabels["bpm_status"], false))
+         {
+            status = data.propertyLabels["bpm_status"];
+         }
+               
          // if message is the same as the task type show the <no message> label
          if (message == type)
          {
