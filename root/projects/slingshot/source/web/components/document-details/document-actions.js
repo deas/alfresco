@@ -122,6 +122,14 @@
          },
 
          /**
+          * Root node
+          *
+          * @property rootNode
+          * @type string
+          */
+         rootNode: "alfresco://company/home",
+
+         /**
           * Replication URL Mapping details
           *
           * @property replicationUrlMapping
@@ -143,15 +151,7 @@
           * @property repositoryBrowsing
           * @type boolean
           */
-         repositoryBrowsing: true,
-         
-         /**
-          * Root node
-          * added for copy/move to the repository (see ALF-10405)
-          * @property rootNode
-          * @type Alfresco.util.NodeRef
-          */
-         rootNode: "alfresco://company/home"
+         repositoryBrowsing: true
       },
       
       /**

@@ -107,6 +107,14 @@
          containerId: "documentLibrary",
 
          /**
+          * Root node
+          *
+          * @property rootNode
+          * @type string
+          */
+         rootNode: "alfresco://company/home",
+
+         /**
           * Replication URL Mapping details
           *
           * @property replicationUrlMapping

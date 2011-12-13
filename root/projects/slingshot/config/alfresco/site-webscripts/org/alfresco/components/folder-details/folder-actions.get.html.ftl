@@ -6,6 +6,7 @@
          nodeRef: "${nodeRef?js_string}",
          siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
          containerId: "${container?js_string}",
+         rootNode: "${rootNode}",
          <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}",</#if>
          replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
          repositoryBrowsing: ${(rootNode??)?string},
