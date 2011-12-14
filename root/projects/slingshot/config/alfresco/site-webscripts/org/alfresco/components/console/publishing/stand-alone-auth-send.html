@@ -13,21 +13,25 @@
 	</head>
 	<body>
 		<script type="text/javascript">
-         // Bind the event listeners
-         window.addEventListener("message", receiveMessage, false);
-         window.addEventListener("hashchange", sendMessage, false);
-
-         function receiveMessage(event)
+         // Check browser support postMessage.
+         if (window.postMessage)
          {
-            // Open the Auth window with the URL passed in.
-            window.open(event.data);
-         }
+            // Support IE proprietary method as well as standard one.
+            var eventHandler = window.addEventListener || window.attachEvent,
+               receiveMessage = function(event)
+               {
+                  // Open the Auth window with the URL passed in.
+                  window.open(event.data);
+               },
+               sendMessage = function(event)
+               {
+                  // Pass the message (received via the hashchange event) back up the stack to the iframe's parent.
+                 , "*" var data = window.location.hash;
+                  window.parent.window.postMessage(data, "*");
+               };
 
-         function sendMessage(event)
-         {
-            // Pass the message (received via the hashchange event) back up the stack to the iframe's parent.
-            var data = window.location.hash;
-            window.parent.window.postMessage(data, "*");
+            eventHandler("message", receiveMessage, false);
+            eventHandler("hashchange", sendMessage, false);
          }
 		</script>
 	</body>

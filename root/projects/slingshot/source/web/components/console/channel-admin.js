@@ -109,28 +109,28 @@
        * @method reset - resets the state.
        */
       isWaiting: 
-		{
-			state: false,
-			callback: "",
-			reauth: false,
-			channelId: "",
-			set: function consoleChannels_isWaiting_set(callback, channelId, reauth) 
-			{
-				this.state = true;
-				this.callback = callback;
-				this.channelId = channelId;
-				if (reauth) 
-				{
-					this.reauth = reauth;
-				}
-			},
-			reset: function consoleChannels_isWaiting_reset()
-			{
-				this.state = false;
-				this.callback = this.channelId = "";
-				this.reauth = false;
-			}
-		},
+      {
+         state: false,
+         callback: "",
+         reauth: false,
+         channelId: "",
+         set: function consoleChannels_isWaiting_set(callback, channelId, reauth) 
+         {
+            this.state = true;
+            this.callback = callback;
+            this.channelId = channelId;
+            if (reauth) 
+            {
+               this.reauth = reauth;
+            }
+         },
+         reset: function consoleChannels_isWaiting_reset()
+         {
+            this.state = false;
+            this.callback = this.channelId = "";
+            this.reauth = false;
+         }
+      },
       
       /**
        * Handle to the window created during channel auth.
@@ -156,16 +156,16 @@
          acceptMessagesFrom: ""
       },
 
-		/**
-		 * Contains details for instantiating Insitu editors
-		 * (array generated during cell rendering, editors instantiated after DOM written.)
-		 *
-		 * @property insituEditors
-		 * @type array
-		 * 
-		 */
-		insituEditors: [],
-		
+      /**
+       * Contains details for instantiating Insitu editors
+       * (array generated during cell rendering, editors instantiated after DOM written.)
+       *
+       * @property insituEditors
+       * @type array
+       * 
+       */
+      insituEditors: [],
+      
       /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -179,15 +179,15 @@
          
 
          this.widgets.newChannelButton = new YAHOO.widget.Button(this.id + "-new-button",
-			{
-				type: "menu",
-				menu: this.id + "-newChannel-menu",
-				lazyloadmenu: false
-			}); 
+         {
+            type: "menu",
+            menu: this.id + "-newChannel-menu",
+            lazyloadmenu: false
+         }); 
 
          // add event listeners
-			Event.on(this.id + "-channelTypes", "click", this.onCreateChannel, this, true)
-			Event.on(this.id + "-datatable", 'click', this.onChannelInteraction, this, true);
+         Event.on(this.id + "-channelTypes", "click", this.onCreateChannel, this, true)
+         Event.on(this.id + "-datatable", 'click', this.onChannelInteraction, this, true);
          // Set up list of channels as data table for ease of updating.
          this.widgets.channelDataTable = new Alfresco.util.DataTable(
          {
@@ -221,11 +221,11 @@
             }
          });
          
-			// Set up Data Table event listeners
-			var dt = this.widgets.channelDataTable.widgets.dataTable;
-			
-			dt.subscribe("cellClickEvent", this.onChannelInteraction, this, true); 
-			dt.subscribe("renderEvent", this.onRenderEvent, this, true);
+         // Set up Data Table event listeners
+         var dt = this.widgets.channelDataTable.widgets.dataTable;
+         
+         dt.subscribe("cellClickEvent", this.onChannelInteraction, this, true); 
+         dt.subscribe("renderEvent", this.onRenderEvent, this, true);
 
          // grab handle to iframe used for communicating with popups.
          this.widgets.iframe = Dom.get(this.id + "-iframe");
@@ -258,27 +258,27 @@
       renderChannel: function consoleChannels_renderChannel(oRecord)
       {
          var channel = oRecord.getData(), 
-			   rel = ' rel="' + channel.id + '"',
+            rel = ' rel="' + channel.id + '"',
             editNodeTooltip = $html(this.msg("channelAdmin.editNode.tooltip", channel.title)),
-			   deleteLink = '<a href="#" class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
-			   permissionsLink= '<a href="#" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
-				reauth = '<a href="#" class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
+            deleteLink = '<a href="#" class="channelAction delete" ' + rel + ' title="' + this.msg("channelAdmin.delete.tooltip") + '">' + this.msg("channelAdmin.delete") + '</a>',
+            permissionsLink= '<a href="#" class="channelAction permissions" ' + rel + ' title="' + this.msg("channelAdmin.permissions.tooltip") + '">' + this.msg("channelAdmin.permissions") + '</a>',
+            reauth = '<a href="#" class="channelAction reauth" ' + rel + ' title="' + this.msg("channelAdmin.reauth.tooltip") + '">' + this.msg("channelAdmin.reauth") + '</a>',
             status = "authorised",
-				title = this.msg("channelAdmin.authorised.tooltip"),
-				image = '<a href="#" class="channelAction editNode"' + rel + ' title="' + editNodeTooltip + '"><img class="editNode" src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + editNodeTooltip + '"/></a> ',
-				channelNameId = this.id + "-channelName-" + oRecord.getId(),
+            title = this.msg("channelAdmin.authorised.tooltip"),
+            image = '<a href="#" class="channelAction editNode"' + rel + ' title="' + editNodeTooltip + '"><img class="editNode" src="' + Alfresco.constants.PROXY_URI + channel.channelType.icon +  "/64" + '" title="' + editNodeTooltip + '"/></a> ',
+            channelNameId = this.id + "-channelName-" + oRecord.getId(),
             html = "";
          
-			// Has the channel authorisation failed?
-			if (channel.authorised !== true ) 
-			{
-				status = "notAuthorised";
-				title = this.msg("channelAdmin.notAuthorised.tooltip")
-			}
-			
+         // Has the channel authorisation failed?
+         if (channel.authorised !== true ) 
+         {
+            status = "notAuthorised";
+            title = this.msg("channelAdmin.notAuthorised.tooltip")
+         }
+         
          html += '<div class="channel ' + status + '" title="' + title + '" rel="' + channel.id + '">' + image + '<div class="channelName" id="' + channelNameId + '">' + $html(channel.name) + '</div><span class="channelActions">' + permissionsLink + reauth + deleteLink + '</span></div>'
-			
-			// Insitu editors
+         
+         // Insitu editors
          this.insituEditors.push(
          {
             context: channelNameId,
@@ -310,7 +310,7 @@
                obj: channel
             }
          });
-			
+         
          return html;
       },
       
@@ -322,11 +322,12 @@
        */
       onCreateChannel: function consoleChannels_onCreateChannel(event, args)
       {
-         var channelType = event.target.rel, 
-			   newChannelURL = Alfresco.constants.PROXY_URI + "api/publishing/channels", 
-				channelName = this.newChannelName(YAHOO.lang.trim(event.target.innerHTML));
+         var channelEl = Event.getTarget(event)
+            channelType = Dom.getAttribute(channelEl, "rel"),
+            newChannelURL = Alfresco.constants.PROXY_URI + "api/publishing/channels", 
+            channelName = this.newChannelName(YAHOO.lang.trim(channelEl.innerHTML));
             params = "?channelType=" + channelType + "&channelName=" + channelName;
-         
+
          Alfresco.util.Ajax.request(
          {
             url: newChannelURL + params,
@@ -350,12 +351,12 @@
          });
       },
       
-		/**
-		 * Called when the channel create API call returns successfully, this triggers the start of the authentication process.
-		 * 
-		 * @method onCreateChannelSuccess
-		 * @param {Object} response
-		 */
+      /**
+       * Called when the channel create API call returns successfully, this triggers the start of the authentication process.
+       * 
+       * @method onCreateChannelSuccess
+       * @param {Object} response
+       */
       onCreateChannelSuccess: function consoleChannels_onCreateChannelSuccess(response)
       {
          // Begin the authorisation process.
@@ -365,23 +366,38 @@
       /**
        * 
        * Kicks off the authentication process and enables the listener.
+       *
+       * Supported scenarios:
+       * window.postMessage is supported by browser, so we can communicate with iframe.
+       * window.postMessage is NOT supported by browser, so we ignore iframe.
+       * However: the redirect URL must be the same, host protocol and port as the page that triggers the redirect.
        * 
        * @method authoriseChannel
        * @param {Object} authUrl
        */
-		authoriseChannel: function consoleChannels_authoriseChannel(response, reauth)
-		{
-			// Parse the response and retrieve the URL
+      authoriseChannel: function consoleChannels_authoriseChannel(response, reauth)
+      {
+         // Parse the response and retrieve the URL
          var authUrl = response.json.data.authoriseUrl,
-			   callbackUrl = response.json.data.authCallbackUrl,
-				channelId = response.json.data.channelId,
-				reauth = reauth || false;
+            callbackUrl = response.json.data.authCallbackUrl,
+            channelId = response.json.data.channelId,
+            redirectUrl = response.json.data.authRedirectUrl,
+            reauth = reauth || false,
+            isSameDomain = function consoleChannels_isSameDomain(url1, url2)
+            {
+               var url1Obj = Alfresco.util.parseURL(url1),
+                  url2Obj = Alfresco.util.parseURL(url2)
+               // protocol, hostname and port need to match (host contains port and hostname)
+               return (url1Obj.protocol === url2Obj.protocol && url1Obj.host === url2Obj.host)
+            };
 
-         // Two supported scenarios:
-         // window.postMessage is supported by browser, so we can communicate with iframe.
-         // window.postMessage is NOT supported by browser, so we ignore iframe.
-
-         if (this.options.iframeComms)
+         // If redirect domain is same as current domain open URL directly.
+         if (isSameDomain(redirectUrl, window.location.href))
+         {
+            // If we're not using the iframe, open the window directly & save handle.
+            this.authWindow = window.open(authUrl);
+         } // else if redirect domain is same as iframe, use iframe
+         else if (isSameDomain(redirectUrl, this.options.acceptMessagesFrom) && this.options.iframeComms)
          {
             this.widgets.iframe.contentWindow.postMessage(authUrl, "*");
             this.authWindow = null; // We've got no direct handle on the popup window.
@@ -398,23 +414,22 @@
                }
 
             // Listen for the message back from the iframe:
-            window.addEventListener("message", receiveMessage , false);
-
+            Event.addListener(window, "message", receiveMessage, false);
          }
          else
          {
-            // If we're not using the iframe, open the window directly & save handle.
-            this.authWindow = window.open(authUrl);
+            Alfresco.util.PopupManager.displayPrompt(
+            {
+               text: this.msg("channelAdmin.auth.failure")
+            });
+
+            // reload channels
+            this.refresh();
          }
-			
-			if (reauth === false) 
-         {
-			   	
-			}
-			// Let the module know it's waiting for a callback.
+         // Let the module know it's waiting for a callback.
          this.isWaiting.set(callbackUrl, channelId, reauth);
-		},
-		
+      },
+      
       /**
        * 
        * Generates a new, unique, name for the channel
@@ -426,96 +441,97 @@
       {
          var elements = Dom.getElementsByClassName("channelName", "div", this.id),
             name = this.msg("channelAdmin.new-channel", channelType),
-				unique = name,
-				channelNames = [],
-				increment = 0;
+            unique = name,
+            channelNames = [],
+            increment = 0;
          
-			// Build array of channel names.
-			for (var i = 0; i < elements.length; i++) 
-			{
-				channelNames.push(elements[i].innerHTML.toLowerCase());
-			}
+         // Build array of channel names.
+         for (var i = 0; i < elements.length; i++) 
+         {
+            channelNames.push(elements[i].innerHTML.toLowerCase());
+         }
          
-			// Check the array against the current name, and increment until it doesn't exist.
-			while (Alfresco.util.arrayContains(channelNames, unique.toLowerCase())) 
-			{
-				++increment;
-				unique = name + " " + increment; 
-			}
-			
-			return unique;
+         // Check the array against the current name, and increment until it doesn't exist.
+         while (Alfresco.util.arrayContains(channelNames, unique.toLowerCase())) 
+         {
+            ++increment;
+            unique = name + " " + increment; 
+         }
+         
+         return unique;
       },
       
-		/**
-		 * 
-		 * Called when one of the channel actions is triggered.
-		 * 
-		 * @method onChannelInteraction
-		 * @param {Object} o
-		 * @param {Object} args
-		 */
+      /**
+       * 
+       * Called when one of the channel actions is triggered.
+       * 
+       * @method onChannelInteraction
+       * @param {Object} o
+       * @param {Object} args
+       */
       onChannelInteraction: function consoleChannels_onChannelInteraction(o, args)
-		{
-         if (YAHOO.util.Selector.test(o.event.target, 'a.delete'))
+      {
+         if (YAHOO.util.Selector.test(Event.getTarget(o.event), 'a.delete'))
          {
             this.onDeleteChannel(o.event, args);
          }
-         else if (YAHOO.util.Selector.test(o.event.target, 'a.reauth'))
+         else if (YAHOO.util.Selector.test(Event.getTarget(o.event), 'a.reauth'))
          {
             this.onReauthChannel(o.event, args);
          }
-         else if (YAHOO.util.Selector.test(o.event.target, 'a.permissions'))
+         else if (YAHOO.util.Selector.test(Event.getTarget(o.event), 'a.permissions'))
          {
             this.onPermissionsClick(o.event, args);
          }
-         else if (YAHOO.util.Selector.test(o.event.target, '.editNode'))
+         else if (YAHOO.util.Selector.test(Event.getTarget(o.event), '.editNode'))
          {
             this.onEditNode(o.event, args);
          }
-		},
+      },
 
-		/**
-		 * Triggered after the data table has been rendered
-		 * 
-		 * @method onRenderEvent
-		 * @param {Object} o
-		 * @param {Object} args
-		 */
-		onRenderEvent: function consoleChannels_onRenderEvent(o, args)
-		{
-	         // Register insitu editors
-            var iEd;
-            for (i = 0, j = this.insituEditors.length; i < j; i++)
-            {
-               iEd = this.insituEditors[i];
-               Alfresco.util.createInsituEditor(iEd.context, iEd.params, iEd.callback);
-            }
+      /**
+       * Triggered after the data table has been rendered
+       * 
+       * @method onRenderEvent
+       * @param {Object} o
+       * @param {Object} args
+       */
+      onRenderEvent: function consoleChannels_onRenderEvent(o, args)
+      {
+         // Register insitu editors
+         var iEd;
+         for (i = 0, j = this.insituEditors.length; i < j; i++)
+         {
+            iEd = this.insituEditors[i];
+            Alfresco.util.createInsituEditor(iEd.context, iEd.params, iEd.callback);
+         }
 
-		},
-		
-		/**
-		 * 
-		 * Triggered after the channel has been renamed
-		 * 
-		 * @method onChannelRename
-		 * @param {Object} o
-		 * @param {Object} args
-		 */
-		onChannelRename: function consoleChannels_onChannelRename(o, args)
-		{
-			// insitu editor handles the form submission, so we just need to refresh the data.
-			this.refresh();
-		},
-		
-		/**
-		 * Triggers an API call to delete the channel.
-		 * 
-		 *  @method onDeleteChannel
-		 */
-		onDeleteChannel: function consoleChannels_onDeleteChannel(event, args)
-		{
-			var me = this;
-			Alfresco.util.PopupManager.displayPrompt(
+      },
+      
+      /**
+       * 
+       * Triggered after the channel has been renamed
+       * 
+       * @method onChannelRename
+       * @param {Object} o
+       * @param {Object} args
+       */
+      onChannelRename: function consoleChannels_onChannelRename(o, args)
+      {
+         // insitu editor handles the form submission, so we just need to refresh the data.
+         this.refresh();
+      },
+      
+      /**
+       * Triggers an API call to delete the channel.
+       * 
+       *  @method onDeleteChannel
+       */
+      onDeleteChannel: function consoleChannels_onDeleteChannel(event, args)
+      {
+         var me = this,
+            nodeRef = Dom.getAttribute(Event.getTarget(event), "rel");
+         Alfresco.util.PopupManager.displayPrompt(
          {
             title: me.msg("channelAdmin.delete.title"),
             text: me.msg("channelAdmin.delete.confirm"),
@@ -525,31 +541,31 @@
                handler: function()
                {
                   this.destroy();
-						
-						var deleteURL = Alfresco.constants.PROXY_URI + "api/publishing/channels/" + event.target.rel.replace("://", "/")
+                  
+                  var deleteURL = Alfresco.constants.PROXY_URI + "api/publishing/channels/" + nodeRef.replace("://", "/")
          
-			         Alfresco.util.Ajax.request(
-			         {
-			            url: deleteURL,
-			            method: Alfresco.util.Ajax.DELETE,
-			            successCallback: 
-			            {
-			               fn: me.onDeleteChannelSuccess,
-			               scope: me
-			            },
-			            failureCallback: 
-			            {
-			               fn: function consoleChannels_onDeleteChannel_failure(response)
-			               {
-			                  Alfresco.util.PopupManager.displayPrompt(
-			                  {
-			                     text: me.msg("channelAdmin.delete.failure")
-			                  });
-			               },
-			               scope: me
-			            }
-			         });
-						
+                  Alfresco.util.Ajax.request(
+                  {
+                     url: deleteURL,
+                     method: Alfresco.util.Ajax.DELETE,
+                     successCallback: 
+                     {
+                        fn: me.onDeleteChannelSuccess,
+                        scope: me
+                     },
+                     failureCallback: 
+                     {
+                        fn: function consoleChannels_onDeleteChannel_failure(response)
+                        {
+                           Alfresco.util.PopupManager.displayPrompt(
+                           {
+                              text: me.msg("channelAdmin.delete.failure")
+                           });
+                        },
+                        scope: me
+                     }
+                  });
+                  
                }
             },
             {
@@ -561,42 +577,42 @@
                isDefault: true
             }]
          });
-			
-		},
-		
-		/**
-		 * 
-		 * Called when the Ajax call to the Delete API succeeds. 
-		 * 
-		 * @method onDeleteChannelSuccess
-		 * @param {Object} response
-		 */
-		onDeleteChannelSuccess: function consoleChannels_onDeleteChannelSuccess(response)
-		{
-			Alfresco.util.PopupManager.displayMessage(
+         
+      },
+      
+      /**
+       * 
+       * Called when the Ajax call to the Delete API succeeds. 
+       * 
+       * @method onDeleteChannelSuccess
+       * @param {Object} response
+       */
+      onDeleteChannelSuccess: function consoleChannels_onDeleteChannelSuccess(response)
+      {
+         Alfresco.util.PopupManager.displayMessage(
          {
             text: this.msg("channelAdmin.delete.success")
          });
-			
-			// Reload Channels
-			this.refresh();
-		},
-		
-		/**
-		 * 
-		 * Called by the reauth channelAction
-		 * 
-		 * @method onReauthChannel
-		 * @param {Object} event
-		 * @param {Object} args
-		 */
-		onReauthChannel: function consoleChannels_onReauthChannel(event, args)
-		{
-		   var nodeRef = event.target.rel, 
-			   url = Alfresco.constants.PROXY_URI + "api/publishing/channels/" + nodeRef.replace("://", "/") + "/reauthorise";
-			
-			// Call the Reauth API.
-			Alfresco.util.Ajax.request(
+         
+         // Reload Channels
+         this.refresh();
+      },
+      
+      /**
+       * 
+       * Called by the reauth channelAction
+       * 
+       * @method onReauthChannel
+       * @param {Object} event
+       * @param {Object} args
+       */
+      onReauthChannel: function consoleChannels_onReauthChannel(event, args)
+      {
+         var nodeRef = Dom.getAttribute(Event.getTarget(event), "rel"),
+            url = Alfresco.constants.PROXY_URI + "api/publishing/channels/" + nodeRef.replace("://", "/") + "/reauthorise";
+         
+         // Call the Reauth API.
+         Alfresco.util.Ajax.request(
          {
             url: url,
             method: Alfresco.util.Ajax.POST,
@@ -617,34 +633,34 @@
                scope: this
             }
          });
-		},
-		
-		/**
-		 * Called when the Reauthorise API call succeeds
-		 * 
-		 * Triggers the restart of the Authorisation process
-		 * 
-		 */
-		onReauthSuccess: function consoleChannels_onReauthSuccess(response)
-		{
-			// Begin the authorisation process using that URL.
+      },
+      
+      /**
+       * Called when the Reauthorise API call succeeds
+       * 
+       * Triggers the restart of the Authorisation process
+       * 
+       */
+      onReauthSuccess: function consoleChannels_onReauthSuccess(response)
+      {
+         // Begin the authorisation process using that URL.
          this.authoriseChannel(response, true);
-		},
-		
-		/**
-		 * 
-		 * Triggered when someone clicks on the permissions link
-		 * The fires up the manage permissions webscript and supplies the callback that initialises it.
-		 * 
-		 * @method onPermissionsClick
-		 * @param {Object} event
-		 * @param {Object} args
-		 */
-		onPermissionsClick: function consoleChannels_onPermissionClick(event, args)
-		{
-			var nodeRef = event.target.rel;
-			
-			// Load the Permissions GUI
+      },
+      
+      /**
+       * 
+       * Triggered when someone clicks on the permissions link
+       * The fires up the manage permissions webscript and supplies the callback that initialises it.
+       * 
+       * @method onPermissionsClick
+       * @param {Object} event
+       * @param {Object} args
+       */
+      onPermissionsClick: function consoleChannels_onPermissionClick(event, args)
+      {
+         var nodeRef = Dom.getAttribute(Event.getTarget(event), "rel");
+         
+         // Load the Permissions GUI
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.URL_SERVICECONTEXT + "components/manage-permissions/manage-permissions?nodeRef=" + nodeRef + "&htmlid=" + this.id,
@@ -656,23 +672,22 @@
             failureMessage: Alfresco.util.message("channelAdmin.template.error", this.name),
             execScripts: true
          });
+      },
+      
+      /**
+       * 
+       * Called on successful load of the permissions management HTML.
+       * 
+       * @method onPermissionsTemplateLoaded
+       * @param {Object} response
+       */
+      onPermissionsTemplateLoaded: function consoleChannels_onPermissionsTemplateLoaded(response)
+      {
          
-		},
-		
-		/**
-		 * 
-		 * Called on successful load of the permissions management HTML.
-		 * 
-		 * @method onPermissionsTemplateLoaded
-		 * @param {Object} response
-		 */
-		onPermissionsTemplateLoaded: function consoleChannels_onPermissionsTemplateLoaded(response)
-		{
-         
-		   var permissionsEl = Dom.get(this.id + "-managepermissions"),
-			   permissionsContainerEl = Dom.get(this.id + "-body"),
-			   nodeRef = Alfresco.util.ComponentManager.findFirst("Alfresco.component.ManagePermissions").options.nodeRef, 
-			   url = Alfresco.constants.PROXY_URI + 'slingshot/doclib/node/' + nodeRef.uri;
+         var permissionsEl = Dom.get(this.id + "-managepermissions"),
+            permissionsContainerEl = Dom.get(this.id + "-body"),
+            nodeRef = Alfresco.util.ComponentManager.findFirst("Alfresco.component.ManagePermissions").options.nodeRef, 
+            url = Alfresco.constants.PROXY_URI + 'slingshot/doclib/node/' + nodeRef.uri;
 
          // Write response to DOM and switch to permissions mode (hiding channels UI):
          permissionsEl.innerHTML = response.serverResponse.responseText;
@@ -684,36 +699,36 @@
             successCallback: 
             { 
                fn: function consoleAdmin_getPermissionsDataSuccess(response)
-					{
-						if (response.json !== undefined)
-			         {
-			            var nodeDetails = response.json.item;
-			            
-			            // Fire event to inform any listening components that the data is ready
-			            YAHOO.Bubbling.fire("nodeDetailsAvailable",
-			            {
-			               nodeDetails: nodeDetails,
-			               metadata: response.json.metadata
-			            });
-			         }
-					}, 
+               {
+                  if (response.json !== undefined)
+                  {
+                     var nodeDetails = response.json.item;
+                     
+                     // Fire event to inform any listening components that the data is ready
+                     YAHOO.Bubbling.fire("nodeDetailsAvailable",
+                     {
+                        nodeDetails: nodeDetails,
+                        metadata: response.json.metadata
+                     });
+                  }
+               }, 
                scope: this 
             },
             failureMessage: "Failed to load data for permission details"
          });
-			
-			// Override the default behaviour, ready for when the permissions page is done.
-			Alfresco.component.ManagePermissions.prototype._navigateForward = function()
-			{
+         
+         // Override the default behaviour, ready for when the permissions page is done.
+         Alfresco.component.ManagePermissions.prototype._navigateForward = function()
+         {
             // reverse the displays, so the permissions Div is hidden and channels div is shown
             Dom.removeClass(permissionsContainerEl, "managePermissions");
-				
-				// empty the permissions container
+            
+            // empty the permissions container
             permissionsEl.innerHTML = "";
-			}
-			
-		},
-		
+         }
+         
+      },
+      
       /**
        * Overrides the onStateChanged to listen for token response
        *
@@ -722,47 +737,47 @@
       onStateChanged: function ConsoleChannels_onStateChanged()
       {
          // Get the hash, but remove the actual hash sign.
-			var hash = window.location.hash.substring(1),
-			   url = this.isWaiting.callback;
+         var hash = window.location.hash.substring(1),
+            url = this.isWaiting.callback;
          if (hash !== "" && this.isWaiting.state) 
          {
             if (hash !== "complete" && url !== "") 
             {
                this.onAuthCallback(hash, url);
             } 
-				else 
-				{
-               this.onAuthComplete();	
-				}
+            else 
+            {
+               this.onAuthComplete();   
+            }
          }
       },
       
-		/**
-		 * Triggers a call to the authorise Callback URL, submitting the received token.
-		 * 
-		 * @param {string} hash
-		 * @param {string} url
-		 */
-		onAuthCallback: function consoleChannels_onAuthCallback(token, url)
-		{
-			// Ensure URL Callback is has the same hostname that we've currently got:
-			// (server config files might have a different hostname to the one used in the browser, which breaks the same domain AJAX rules)
-			localUrl = Alfresco.constants.PROXY_URI + url.split(Alfresco.constants.PROXY_URI_RELATIVE)[1]
-			
-			// token needs encoding.
-			var params=token.split("&");
-			for (var i = 0; i < params.length; i++) 
-			{
-				param = params[i].split("=");
-				if (param[1] !== "undefined") 
-				{
-				   param[1] = encodeURIComponent(param[1]);
-				}
-				params[i] = param.join("=");
-			}
-			token = params.join("&");
-			
-			// Submit to authoriseCallback URL
+      /**
+       * Triggers a call to the authorise Callback URL, submitting the received token.
+       * 
+       * @param {string} hash
+       * @param {string} url
+       */
+      onAuthCallback: function consoleChannels_onAuthCallback(token, url)
+      {
+         // Ensure URL Callback is has the same hostname that we've currently got:
+         // (server config files might have a different hostname to the one used in the browser, which breaks the same domain AJAX rules)
+         localUrl = Alfresco.constants.PROXY_URI + url.split(Alfresco.constants.PROXY_URI_RELATIVE)[1]
+         
+         // token needs encoding.
+         var params=token.split("&");
+         for (var i = 0; i < params.length; i++) 
+         {
+            param = params[i].split("=");
+            if (param[1] !== "undefined") 
+            {
+               param[1] = encodeURIComponent(param[1]);
+            }
+            params[i] = param.join("=");
+         }
+         token = params.join("&");
+         
+         // Submit to authoriseCallback URL
          Alfresco.util.Ajax.request(
          {
             url: localUrl + "?" + token,
@@ -783,8 +798,8 @@
                scope: this
             }
          }); 
-		},
-		
+      },
+      
       /**
        * Called when a channel has been created and authentication has finished (regardless to outcome)
        *
@@ -793,28 +808,28 @@
       onAuthComplete: function consoleChannels_onAuthComplete()
       {
          // If this wasn't a reauth call, let the user know a new channel has been created:
-			if (!this.isWaiting.reauth) 
-			{
-				var balloon = Alfresco.util.createBalloon(this.id,
+         if (!this.isWaiting.reauth) 
+         {
+            var balloon = Alfresco.util.createBalloon(this.id,
             {
                text: this.msg("channelAdmin.createChannel.success"),
-					width: "20em"
+               width: "20em"
             });
             
             balloon.show();
             
-				// hide the balloon after 10 seconds.
+            // hide the balloon after 10 seconds.
             YAHOO.lang.later(10000, this, function()
             {
                balloon.hide();
             })
-			}
-			
-			// We're no longer waiting for authentication to complete:
+         }
+         
+         // We're no longer waiting for authentication to complete:
          this.isWaiting.reset();
-			   
-			// reload channels
-			this.refresh();
+            
+         // reload channels
+         this.refresh();
       },
 
       /**
@@ -825,7 +840,7 @@
        */
       onEditNode: function consoleChannels_onEditNode(event, o)
       {
-         var nodeRef = Dom.getAttribute(event.target, "rel") || Dom.getAttribute(Dom.getAncestorByTagName(event.target, "a"), "rel")
+         var nodeRef = Dom.getAttribute(Event.getTarget(event), "rel") || Dom.getAttribute(Dom.getAncestorByTagName(Event.getTarget(event), "a"), "rel")
 
          if (nodeRef)
          {
@@ -908,24 +923,24 @@
          this.refresh();
       },
 
-		/**
-		 * Refreshes the channels
-		 * 
-		 */
+      /**
+       * Refreshes the channels
+       * 
+       */
       refresh: function consoleChannels_refresh()
-		{
-			var dataTable = this.widgets.channelDataTable.widgets.dataTable;
-			
-			// Reset the hash.
-			window.location.hash = "";
-			
-			// Remove the insitu editor references (these will be recreated when the table is rerendered)
-			this.insituEditors = [];
-			
-			// Reload the dataTable.
-			dataTable.getDataSource().sendRequest('', { success: dataTable.onDataReturnInitializeTable, scope: dataTable });
-		},
-		
+      {
+         var dataTable = this.widgets.channelDataTable.widgets.dataTable;
+         
+         // Reset the hash.
+         window.location.hash = "";
+         
+         // Remove the insitu editor references (these will be recreated when the table is rerendered)
+         this.insituEditors = [];
+         
+         // Reload the dataTable.
+         dataTable.getDataSource().sendRequest('', { success: dataTable.onDataReturnInitializeTable, scope: dataTable });
+      },
+      
       /**
        * Prepares the gui and shows the panel.
        *
@@ -940,6 +955,6 @@
          // Show the panel
          this.widgets.panel.show();
       }
-		
+      
    });
 })();
