@@ -596,30 +596,36 @@
    Alfresco.DocumentList.generateFileFolderLinkMarkup = function DL_generateFileFolderLinkMarkup(scope, record)
    {
       var jsNode = record.jsNode,
+         recordSiteName = $isValueSet(record.location.site) ? record.location.site.name : null,
          html;
 
-      if (jsNode.isLink && $isValueSet(scope.options.siteId) && record.location.site.name !== scope.options.siteId)
+      // Test for: handling a link, we're browsing within a site and the link's target does not live within this site
+      if (jsNode.isLink && $isValueSet(scope.options.siteId) && recordSiteName !== scope.options.siteId)
       {
          if (jsNode.isContainer)
          {
-            html = $siteURL("documentlibrary?path=" + encodeURIComponent(record.location.path),
+            // Create a URL to either the Repository or Site document library where the link target lives
+            html = $siteURL((recordSiteName === null ? "repository" : "documentlibrary") + "?path=" + encodeURIComponent($combine(record.location.path, record.location.file)),
             {
-               site: record.location.site.name
+               site: recordSiteName
             });
          }
          else
          {
-            html = scope.getActionUrls(record, record.location.site.name).documentDetailsUrl;
+            // Create a URL to the document details page for the link target
+            html = scope.getActionUrls(record, recordSiteName).documentDetailsUrl;
          }
       }
       else
       {
          if (jsNode.isContainer)
          {
+            // Create path-change filter markup
             html = '#" class="filter-change" rel="' + Alfresco.DocumentList.generatePathMarkup(record.location);
          }
          else
          {
+            // Create a URL to the document details page
             html = scope.getActionUrls(record).documentDetailsUrl;
          }
       }

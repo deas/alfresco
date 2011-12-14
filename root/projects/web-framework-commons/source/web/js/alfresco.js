@@ -3738,7 +3738,7 @@ Alfresco.util.renderUriTemplate = function(template, obj, absolute)
       if (obj.hasOwnProperty("site"))
       {
          // A site parameter was given - is it valid?
-         if (typeof obj.site !== "string" || obj.site.length === 0)
+         if (!Alfresco.util.isValueSet(obj.site))
          {
             // Not valid - remove site part of template
             template = template.replace("/site/{site}", "");

@@ -186,10 +186,12 @@
             nodeRefUri = nodeRef.uri,
             contentUrl = jsNode.contentURL,
             workingCopy = record.workingCopy || {},
-            siteObj = YAHOO.lang.isString(siteId) ? { site: siteId } : null,
             fnPageURL = Alfresco.util.bind(function(page)
             {
-               return Alfresco.util.siteURL(page, siteObj);
+               return Alfresco.util.siteURL(page,
+               {
+                  site: siteId
+               });
             }, this),
             actionUrls =
             {
@@ -413,13 +415,14 @@
       {
          var jsNode = record.jsNode,
             path = record.location.path,
-            file = jsNode.isLink ? jsNode.linkedNode.properties.name : record.displayName;
+            file = jsNode.isLink ? jsNode.linkedNode.properties.name : record.displayName,
+            recordSiteName = $isValueSet(record.location.site) ? record.location.site.name : null;
          
-         if (Alfresco.util.isValueSet(this.options.siteId) && record.location.site.name !== this.options.siteId)
+         if ($isValueSet(this.options.siteId) && recordSiteName !== this.options.siteId)
          {
-            window.location = $siteURL("documentlibrary?file=" + encodeURIComponent(file) + "&path=" + encodeURIComponent(path),
+            window.location = $siteURL((recordSiteName === null ? "repository" : "documentlibrary") + "?file=" + encodeURIComponent(file) + "&path=" + encodeURIComponent(path),
             {
-               site: record.location.site.name
+               site: recordSiteName
             });
          }
          else
@@ -622,7 +625,7 @@
          if (appProgID !== null)
          {
             // Ensure we have the record's onlineEditUrl populated
-            if (!Alfresco.util.isValueSet(record.onlineEditUrl))
+            if (!$isValueSet(record.onlineEditUrl))
             {
                var onlineEditUrl = this.doclistMetadata.custom.vtiServer.host + ":" +
                      this.doclistMetadata.custom.vtiServer.port + "/" +
@@ -996,7 +999,7 @@
                scope: this
             }
          };
-         if (Alfresco.util.isValueSet(this.options.siteId))
+         if ($isValueSet(this.options.siteId))
          {
             singleUpdateConfig.siteId = this.options.siteId;
             singleUpdateConfig.containerId = this.options.containerId;
