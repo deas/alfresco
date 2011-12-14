@@ -19,11 +19,22 @@
 
 package org.alfresco.module.vti.metadata.model;
 
+import org.alfresco.service.cmr.calendar.CalendarTimezoneHelper;
+
 /**
- * @author PavelYur
+ * Information on a TimeZone to be used by an Event or a Meeting Workspace.
+ * This is simple and POJO based, to facilitate easy creation from
+ *  Web Service requests.
+ * When working with iCal feeds, you would more usually work with 
+ *  {@link CalendarTimezoneHelper}, which is able to generate
+ *  Java TimeZone objects.
+ * TODO When fully implemented on the WS side, offer to create
+ *  Java TimeZone objects too
  */
 public class TimeZoneInformation
 {
+    private String id;
+    
     private int bias;
 
     private TimeZoneInformationDate standardDate;
@@ -33,6 +44,19 @@ public class TimeZoneInformation
     private TimeZoneInformationDate daylightDate;
 
     private int daylightBias;
+    
+    /**
+     * @return The TimeZone ID, eg "Canberra, Melbourne, Sydney"
+     */
+    public String getID()
+    {
+        return id;
+    }
+    
+    public void setID(String id)
+    {
+        this.id = id;
+    }
 
     public int getBias()
     {

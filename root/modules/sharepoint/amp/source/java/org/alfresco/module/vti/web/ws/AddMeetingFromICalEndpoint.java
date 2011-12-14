@@ -38,6 +38,7 @@ import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformationDate;
+import org.alfresco.service.cmr.calendar.CalendarTimezoneHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -285,6 +286,8 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
 
     /**
      * Retrieve params from iCal text
+     * 
+     * TODO Call {@link CalendarTimezoneHelper} to do this for us
      * 
      * @param params iCal params
      */
