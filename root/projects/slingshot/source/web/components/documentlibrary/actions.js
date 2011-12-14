@@ -223,7 +223,7 @@
        */
       getAction: function dlA_getAction(record, owner, resolve)
       {
-         var actionId = owner.getAttribute("class"),
+         var actionId = owner.className,
             action = Alfresco.util.findInArray(record.actions, actionId, "id") || {};
 
          if (resolve === false)
