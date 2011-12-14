@@ -168,7 +168,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          // Page unload / unsaved changes behaviour
          window.onbeforeunload = function(e)
          {
-            if (callback())
+            if (YAHOO.lang.isFunction(callback) && callback())
             {
                var e = e || window.event;
                if (editor.isDirty())
