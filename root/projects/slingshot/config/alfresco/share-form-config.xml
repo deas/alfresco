@@ -1199,11 +1199,90 @@
       <forms>
          <form>
             <field-visibility>
-               <show id="solr.base.url" />
+               <show id="search.solrTrackingSupport.enabled" />
+               <show id="solr.host" />
+               <show id="solr.port" />
+               <show id="solr.port.ssl" />
+
+               <show id="tracker.alfresco.active" />
+               <show id="tracker.alfresco.lag" />
+               <!-- <show id="tracker.alfresco.lag.duration" /> -->
+               <show id="tracker.archive.active" />
+               <show id="tracker.archive.lag" />
+               <!-- <show id="tracker.archive.lag.duration" /> -->
+               
+               <!-- Backup Properties -->
+               <show id="solr.backup.alfresco.cronExpression" />
+               <show id="solr.backup.alfresco.remoteBackupLocation" />
+               <show id="solr.backup.archive.cronExpression" />
+               <show id="solr.backup.archive.remoteBackupLocation" />
+
             </field-visibility>
             <appearance>
                <set id="solr" appearance="title" label-id="form.set.general" template="/org/alfresco/components/form/2-column-set.ftl" />
-               <field id="solr.base.url" set="solr" label-id="solr.field.solr.base.url" />
+               <set id="solr.spacesstore" appearance="bordered-panel" label-id="solr.set.spacesstore" template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="solr.archivestore" appearance="bordered-panel" label-id="solr.set.archivestore" template="/org/alfresco/components/form/2-column-set.ftl" />
+
+               <field id="search.solrTrackingSupport.enabled" set="solr" label-id="solr.field.search.solrTrackingSupport.enabled" help-id="solr.help.search.solrTrackingSupport.enabled">
+                      <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="solr.host" set="solr" label-id="solr.field.solr.host" help-id="solr.help.field.solr.host">
+                      <control>
+                         <control-param name="style">width: 250px;</control-param>
+                      </control>
+               </field>
+               <field id="solr.port" set="solr" label-id="solr.field.solr.port" help-id="solr.help.field.solr.port">
+                      <control>
+                         <control-param name="style">width: 50px;</control-param>
+                      </control>
+               </field>
+               <field id="solr.port.ssl" set="solr" label-id="solr.field.solr.port.ssl" help-id="solr.help.field.solr.port.ssl">
+                      <control>
+                         <control-param name="style">width: 50px;</control-param>
+                      </control>
+               </field>
+               <field id="tracker.alfresco.active" set="solr.spacesstore" label-id="solr.field.tracker.alfresco.active">
+                      <control template="/org/alfresco/components/form/controls/checkbox.ftl">
+                         <control-param name="style">width: 50px;</control-param>
+                      </control>
+               </field>
+               <field id="tracker.alfresco.lag" set="solr.spacesstore" label-id="solr.field.tracker.alfresco.lag" help-id="solr.help.field.tracker.alfresco.lag">
+                      <control>
+                         <control-param name="style">width: 100px;</control-param>
+                      </control>
+               </field>
+               <field id="tracker.alfresco.lag.duration" set="solr.spacesstore" label-id="solr.field.tracker.alfresco.lag.duration"/>
+               <field id="tracker.archive.active" set="solr.archivestore" label-id="solr.field.tracker.archive.active">
+                      <control template="/org/alfresco/components/form/controls/checkbox.ftl">
+                         <control-param name="style">width: 50px;</control-param>
+                      </control>
+               </field>
+               <field id="tracker.archive.lag" set="solr.archivestore" label-id="solr.field.tracker.alfresco.lag" help-id="solr.help.field.tracker.alfresco.lag">
+                      <control>
+                         <control-param name="style">width: 100px;</control-param>
+                      </control>
+               </field>
+               <field id="tracker.archive.lag.duration" set="solr.archivestore" label-id="solr.field.tracker.archive.lag.duration"/>
+               <field id="solr.backup.alfresco.cronExpression" set="solr.spacesstore" label-id="solr.field.solr.backup.alfresco.cronExpression">
+                      <control>
+                         <control-param name="style">width: 200px;</control-param>
+                      </control>
+               </field>
+               <field id="solr.backup.alfresco.remoteBackupLocation" set="solr.spacesstore" label-id="solr.field.solr.backup.alfresco.remoteBackupLocation" help-id="solr.help.solr.backup.alfresco.remoteBackupLocation">
+                      <control>
+                         <control-param name="style">width: 325px;</control-param>
+                      </control>
+               </field>
+               <field id="solr.backup.archive.cronExpression" set="solr.archivestore" label-id="solr.field.solr.backup.archive.cronExpression">
+                      <control>
+                         <control-param name="style">width: 200px;</control-param>
+                      </control>
+               </field>
+               <field id="solr.backup.archive.remoteBackupLocation" set="solr.archivestore" label-id="solr.field.solr.backup.archive.remoteBackupLocation" help-id="solr.help.solr.backup.archive.remoteBackupLocation">
+                      <control>
+                         <control-param name="style">width: 325px;</control-param>
+                      </control>
+               </field>
             </appearance>
          </form>
       </forms>
