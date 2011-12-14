@@ -30,14 +30,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
+import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
-import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
-import org.alfresco.module.vti.metadata.model.TimeZoneInformationDate;
 import org.alfresco.service.cmr.calendar.CalendarTimezoneHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,8 +139,22 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
     {
         icalText = icalText.replaceAll("\r\n\t", "");
         icalText = icalText.replaceAll("\r\n ", "");
-        Map<String, String> icalParams = getICalParams(icalText);
+        
+        // Delegate the parsing work (for now) to CalendarTimezoneHelper
+        // In future, we should have something build the MeetingBean directly
+        Map<String, String> icalParams = ICalHelper.getICalParams(icalText);
         return getMeeting(icalParams);
+    }
+    private static class ICalHelper extends CalendarTimezoneHelper
+    {
+        protected static Map<String,String> getICalParams(String icalText)
+        {
+           return CalendarTimezoneHelper.getICalParams(icalText);
+        }
+        protected static SimpleTimeZone buildTimeZone(Map<String,String> icalParams)
+        {
+           return CalendarTimezoneHelper.buildTimeZone(icalParams);
+        }
     }
 
     /**
@@ -224,10 +236,6 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
     /**
      * Retrieve TimeZone from specific iCal format
      * 
-     * TODO Parse out the extended TimeZone details
-     * TODO Link with {@link TimeZoneInformation} and
-     *  {@link TimeZoneInformationDate}
-     * 
      * @param stringDate iCal date value
      * @param params the full iCal parameters (used to find full TZ info from)
      */
@@ -235,29 +243,32 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
     {
         String stringDate = params.get(dateType);
         String dateTypeTZID = dateType+"-TZID";
-        TimeZone timeZone = null;
         
-        // Did the date come with a helpful timezone ID?
-        if (params.containsKey(dateTypeTZID))
+        // If there's a VTIMEZONE block, use that
+        TimeZone timeZone = ICalHelper.buildTimeZone(params);
+        if (timeZone != null)
         {
-           String timezoneId = params.get(dateTypeTZID);
-           // TODO Link this in with TimeZoneInformationDate
+           return timeZone;
         }
         
-        // TODO Full timezone details
-        if (stringDate.startsWith("TZID"))
-        {
-            String timeZoneId = stringDate.substring(5, stringDate.indexOf(":"));
-            timeZone = TimeZone.getTimeZone(timeZoneId);
-        }
-        else if (stringDate.endsWith("Z"))
+        // Try other ways to find it
+        if (stringDate.endsWith("Z"))
         {
             timeZone = TimeZone.getTimeZone("GMT");
         }
+        else if (params.containsKey(dateTypeTZID))
+        {
+            // Let's hope it's in the Java format!
+            String timezoneId = params.get(dateTypeTZID);
+            timeZone = TimeZone.getTimeZone(timezoneId);
+        }
         else
         {
+            // No useful timezone info given
+            // Fall back on the system default as our best hope
             timeZone = TimeZone.getDefault();
         }
+        
         return timeZone;
     }
 
@@ -282,84 +293,6 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
             preparedDate = preparedDate.replace("Z", "");
         }
         return preparedDate;
-    }
-
-    /**
-     * Retrieve params from iCal text
-     * 
-     * TODO Call {@link CalendarTimezoneHelper} to do this for us
-     * 
-     * @param params iCal params
-     */
-    private Map<String, String> getICalParams(String icalText)
-    {
-        Map<String, String> result = new HashMap<String, String>();
-        String[] segregatedLines = icalText.split("\r\n");
-        int attendeeNum = 0;
-        Stack<String> stack = new Stack<String>();
-        for (String line : segregatedLines)
-        {
-            String[] keyValue = line.split(":");
-            if (keyValue.length >= 2)
-            {
-                if (keyValue[0].equals("BEGIN"))
-                {
-                    stack.push(keyValue[1]);
-                    continue;
-                }
-                if (keyValue[0].equals("END"))
-                {
-                    stack.pop();
-                    continue;
-                }
-                
-                if (!stack.isEmpty() && stack.peek().equals("VEVENT"))
-                {
-                    if (keyValue[0].contains(";"))
-                    {
-                        // Capture the extra details as suffix keys, they're sometimes needed
-                        int splitAt = keyValue[0].indexOf(';');
-                        String mainKey = keyValue[0].substring(0, splitAt);
-                        
-                        if (splitAt < keyValue[0].length() - 2)
-                        {
-                           // Grab each ;k=v part and store as mainkey-k=v
-                           String[] extras = keyValue[0].substring(splitAt+1).split(";");
-                           for (String extra : extras)
-                           {
-                              splitAt = extra.indexOf('=');
-                              if (splitAt > -1)
-                              {
-                                 result.put(mainKey+"-"+extra.substring(0,splitAt-1), extra.substring(splitAt+1));
-                              }
-                           }
-                        }
-
-                        // Use the main key for the core value
-                        keyValue[0] = mainKey;
-                    }
-                    if (keyValue[0].equals("ATTENDEE"))
-                    {
-                        keyValue[0] = keyValue[0] + attendeeNum;
-                        attendeeNum++;
-                    }
-                    result.put(keyValue[0], keyValue[keyValue.length - 1]);
-                }
-                
-                if (!stack.isEmpty() && stack.peek().equals("VTIMEZONE"))
-                {
-                    // Store the top level timezone details with a TZ prefix
-                    result.put("TZ-"+keyValue[0], keyValue[keyValue.length-1]);
-                }
-                if (stack.size() >= 2 && stack.get(stack.size()-2).equals("VTIMEZONE") &&
-                      (stack.peek().equals("STANDARD") || stack.peek().equals("DAYLIGHT")) )
-                {
-                    // Store the timezone details with a TZ prefix + details type
-                    result.put("TZ-"+stack.peek()+"-"+keyValue[0], keyValue[keyValue.length-1]);
-                }
-            }
-        }
-        return result;
     }
 
     /**
