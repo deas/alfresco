@@ -60,6 +60,7 @@ public interface ContentModel
     
     // tag for hidden nodes
     static final QName ASPECT_HIDDEN = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "hidden");
+    static final QName PROP_VISIBILITY_MASK = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "clientVisibilityMask");
 
     // archived nodes aspect constants
     static final QName ASPECT_ARCHIVED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archived");

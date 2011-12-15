@@ -30,7 +30,7 @@ public class PatternFilter
     private List<Pattern> patterns;
     
 	/**
-     * A list of regular expressions that represent patterns of temporary files.
+     * A list of regular expressions that represent patterns of files.
      * 
      * @param regexps list of regular expressions
      * 
