@@ -61,40 +61,10 @@ public class FileFilterMode
         }
     };
     
-//    private static ThreadLocal<Mode> mode = new ThreadLocal<Mode>()
-//    {
-//        protected Mode initialValue() {
-//            return Mode.BASIC;
-//        }
-//    };
-    
     public static void clearClient()
     {
         client.set(null);
     }
-
-//    public static Pair<Client, Mode> setMode(SrvSession srvSession, Mode newMode)
-//    {
-//        Mode oldMode = mode.get();
-//        mode.set(newMode);
-//
-//        Client oldClient = client.get();
-//        Client newClient = Client.getClient(srvSession);
-//        client.set(newClient);
-//
-//        return new Pair<Client, Mode>(oldClient, oldMode);
-//    }
-//
-//    public static Pair<Client, Mode> setMode(Client newClient, Mode newMode)
-//    {
-//        Mode oldMode = mode.get();
-//        mode.set(newMode);
-//        
-//        Client oldClient = client.get();
-//        client.set(newClient);
-//
-//        return new Pair<Client, Mode>(oldClient, oldMode);
-//    }
     
     public static Client setClient(Client newClient)
     {
