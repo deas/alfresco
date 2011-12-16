@@ -21,6 +21,7 @@ package org.alfresco.web.site;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -54,7 +55,11 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
 {
     private static Log logger = LogFactory.getLog(EditionInterceptor.class);
     
+    /** From repository REST API exception message - @see AbstractAuthenticationService.GUEST_AUTHENTICATION_NOT_SUPPORTED */
+    private static final String GUEST_AUTH_NOT_SUPPORTED = "Guest authentication not supported";
+    
     private static EditionInfo EDITIONINFO = null;
+    private static volatile boolean outputInfo = false;
     private static final ReadWriteLock editionLock = new ReentrantReadWriteLock();
     
     
@@ -80,9 +85,10 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                         RequestContext rc = ThreadLocalRequestContext.getRequestContext();
                         Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco");
                         Response response = conn.call("/api/admin/restrictions?guest=true");
-                        if (response.getStatus().getCode() == Status.STATUS_UNAUTHORIZED)
+                        if (response.getStatus().getCode() == Status.STATUS_UNAUTHORIZED ||
+                            (response.getStatus().getCode() == Status.STATUS_INTERNAL_SERVER_ERROR && response.getText().contains(GUEST_AUTH_NOT_SUPPORTED)))
                         {
-                            // if this occurs we may be running a multi-tennant repository
+                            // if this occurs we may be running a multi-tennant repository or guest auth is disabled
                             if (MTAuthenticationFilter.getCurrentServletRequest() != null)
                             {
                                 HttpSession session = MTAuthenticationFilter.getCurrentServletRequest().getSession(false);
@@ -131,7 +137,12 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                         }
                         else
                         {
-                            logger.info("Unable to retrieve License information from Alfresco: " + response.getStatus().getCode());
+                            
+                            if (!outputInfo)
+                            {
+                                logger.info("Unable to retrieve License information from Alfresco: " + response.getStatus().getCode());
+                                outputInfo = true;
+                            }
                             // set a value so scripts have something to work with - the interceptor will retry later
                             ThreadLocalRequestContext.getRequestContext().setValue("editionInfo", new EditionInfo());
                         }
