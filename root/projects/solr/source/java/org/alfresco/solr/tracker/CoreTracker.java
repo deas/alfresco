@@ -509,7 +509,7 @@ public class CoreTracker implements CloseHook
             Long aclChangeSetId = aclChangeSetsToIndex.poll();
             if (aclChangeSetId != null)
             {
-                List<AclChangeSet> aclChangeSets = client.getAclChangeSets(0L, aclChangeSetId, 1);
+                List<AclChangeSet> aclChangeSets = client.getAclChangeSets(null, aclChangeSetId, null, aclChangeSetId+1, 1);
                 if ((aclChangeSets.size() > 0) && aclChangeSetId.equals(aclChangeSets.get(0).getId()))
                 {
                     AclChangeSet changeSet = aclChangeSets.get(0);
@@ -565,7 +565,7 @@ public class CoreTracker implements CloseHook
                 {
                     deleteByAclChangeSetId(solrIndexSearcher, aclChangeSetId);
 
-                    List<AclChangeSet> aclChangeSets = client.getAclChangeSets(0L, aclChangeSetId, 1);
+                    List<AclChangeSet> aclChangeSets = client.getAclChangeSets(null, aclChangeSetId, null, aclChangeSetId+1, 1);
                     if ((aclChangeSets.size() > 0) && aclChangeSetId.equals(aclChangeSets.get(0).getId()))
                     {
                         AclChangeSet changeSet = aclChangeSets.get(0);
@@ -837,7 +837,7 @@ public class CoreTracker implements CloseHook
                     // make sure it is cleaned out so we do not miss deletes
                     deleteByTransactionId(solrIndexSearcher, transactionId);
 
-                    Transactions transactions = client.getTransactions(0L, transactionId, 0);
+                    Transactions transactions = client.getTransactions(null, transactionId, null, transactionId+1, 1);
                     if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
                     {
                         Transaction info = transactions.getTransactions().get(0);
@@ -986,7 +986,7 @@ public class CoreTracker implements CloseHook
                 Long transactionId = transactionsToIndex.poll();
                 if (transactionId != null)
                 {
-                    Transactions transactions = client.getTransactions(0L, transactionId, 0);
+                    Transactions transactions = client.getTransactions(null, transactionId, null, transactionId+1, 1);
                     if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
                     {
                         Transaction info = transactions.getTransactions().get(0);
@@ -1171,7 +1171,7 @@ public class CoreTracker implements CloseHook
             
             if(!checkedFirstTransactionTime)
             {
-                Transactions firstTransactions = client.getTransactions(null, null, 1);
+                Transactions firstTransactions = client.getTransactions(null, null, null, null, 1);
                 if(firstTransactions.getTransactions().size() > 0)
                 {
                     Transaction firstTransaction = firstTransactions.getTransactions().get(0);
@@ -1212,7 +1212,7 @@ public class CoreTracker implements CloseHook
             do
             {
                 aclLoopStartingCommitTime = aclLastCommitTime;
-                aclChangeSets = client.getAclChangeSets(aclLastCommitTime, null, 2000);
+                aclChangeSets = client.getAclChangeSets(aclLastCommitTime, null, null, null, 2000);
 
                 log.info("Scanning Acl change sets ...");
                 if (aclChangeSets.size() > 0)
@@ -1289,7 +1289,7 @@ public class CoreTracker implements CloseHook
                 int docCount = 0;
 
                 loopStartingCommitTime = lastTxCommitTime;
-                transactions = client.getTransactions(lastTxCommitTime, null, 2000);
+                transactions = client.getTransactions(lastTxCommitTime, null, null, null, 2000);
                 
                 Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
                 if(maxTxnCommitTime != null)
@@ -2226,7 +2226,7 @@ public class CoreTracker implements CloseHook
         DO: do
         {
             loopStartingCommitTime = lastTxCommitTime;
-            transactions = client.getTransactions(lastTxCommitTime, fromTx, 2000);
+            transactions = client.getTransactions(lastTxCommitTime, fromTx, null, null, 2000);
             for (Transaction info : transactions.getTransactions())
             {
                 // include
@@ -2277,7 +2277,7 @@ public class CoreTracker implements CloseHook
         DO: do
         {
             loopStartingCommitTime = lastAclTxCommitTime;
-            aclTransactions = client.getAclChangeSets(lastAclTxCommitTime, fromAclTx, 2000);
+            aclTransactions = client.getAclChangeSets(lastAclTxCommitTime, fromAclTx, null, null, 2000);
             for (AclChangeSet set : aclTransactions)
             {
                 // include
@@ -3010,7 +3010,7 @@ public class CoreTracker implements CloseHook
         try
         {
             ArrayList<Long> answer = new ArrayList<Long>();
-            List<AclChangeSet> changeSet = client.getAclChangeSets(null, acltxid, 1);
+            List<AclChangeSet> changeSet = client.getAclChangeSets(null, acltxid, null, acltxid+1, 1);
             List<Acl> acls = client.getAcls(changeSet, null, Integer.MAX_VALUE);
             for (Acl acl : acls)
             {

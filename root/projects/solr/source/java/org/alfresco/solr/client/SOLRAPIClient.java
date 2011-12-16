@@ -114,7 +114,7 @@ public class SOLRAPIClient
      * @param maxResults                    the maximum number of results (a reasonable value only)
      * @return                              the ACL ChangeSets in order of commit time and ID
      */
-    public List<AclChangeSet> getAclChangeSets(Long fromCommitTime, Long minAclChangeSetId, int maxResults)
+    public List<AclChangeSet> getAclChangeSets(Long fromCommitTime, Long minAclChangeSetId, Long toCommitTime, Long maxAclChangeSetId, int maxResults)
              throws AuthenticationException, IOException, JSONException
     {
         StringBuilder url = new StringBuilder(GET_ACL_CHANGESETS_URL);
@@ -126,6 +126,14 @@ public class SOLRAPIClient
         if (minAclChangeSetId != null)
         {
             args.append(args.length() == 0 ? "?" : "&").append("fromId").append("=").append(minAclChangeSetId);            
+        }
+        if (toCommitTime != null)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("toTime").append("=").append(toCommitTime);            
+        }
+        if (maxAclChangeSetId != null)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("toId").append("=").append(maxAclChangeSetId);            
         }
         if (maxResults != 0 && maxResults != Integer.MAX_VALUE)
         {
@@ -340,7 +348,7 @@ public class SOLRAPIClient
         return aclsReaders;
     }
     
-    public Transactions getTransactions(Long fromCommitTime, Long minTxnId, int maxResults) throws AuthenticationException, IOException, JSONException
+    public Transactions getTransactions(Long fromCommitTime, Long minTxnId, Long toCommitTime, Long maxTxnId, int maxResults) throws AuthenticationException, IOException, JSONException
     {
         StringBuilder url = new StringBuilder(GET_TRANSACTIONS_URL);
         StringBuilder args = new StringBuilder();
@@ -352,10 +360,19 @@ public class SOLRAPIClient
         {
             args.append(args.length() == 0 ? "?" : "&").append("minTxnId").append("=").append(minTxnId);            
         }
+        if (toCommitTime != null)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("toCommitTime").append("=").append(toCommitTime);            
+        }
+        if (maxTxnId != null)
+        {
+            args.append(args.length() == 0 ? "?" : "&").append("maxTxnId").append("=").append(maxTxnId);            
+        }
         if (maxResults != 0 && maxResults != Integer.MAX_VALUE)
         {
             args.append(args.length() == 0 ? "?" : "&").append("maxResults").append("=").append(maxResults);            
         }
+        
         url.append(args);
         
         GetRequest req = new GetRequest(url.toString());

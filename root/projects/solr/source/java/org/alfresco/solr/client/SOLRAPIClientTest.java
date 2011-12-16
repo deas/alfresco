@@ -221,7 +221,7 @@ public class SOLRAPIClientTest extends TestCase
     {
         List<AclChangeSet> aclChangeSets = null;
         
-        aclChangeSets = client.getAclChangeSets(null, null, 50);
+        aclChangeSets = client.getAclChangeSets(null, null, null, null, 50);
         assertTrue("Too many results", aclChangeSets.size() <= 50);
         if (aclChangeSets.size() < 2)
         {
@@ -234,7 +234,7 @@ public class SOLRAPIClientTest extends TestCase
         long commitTimeMs0 = aclChangeSet0.getCommitTimeMs();
         // Now query for the next ID
         Long nextId = id0 + 1;
-        aclChangeSets = client.getAclChangeSets(commitTimeMs0, nextId, 1);
+        aclChangeSets = client.getAclChangeSets(commitTimeMs0, nextId, null, null, 1);
         assertEquals(1, aclChangeSets.size());
         aclChangeSetCheck = aclChangeSets.get(0);
         assertEquals(aclChangeSet1, aclChangeSetCheck);
@@ -251,7 +251,7 @@ public class SOLRAPIClientTest extends TestCase
         Long fromCommitTimeMs = null;
         for (int i = 0; i < 100; i++)
         {
-            aclChangeSets = client.getAclChangeSets(fromCommitTimeMs, minAclChangeSetId, 10);
+            aclChangeSets = client.getAclChangeSets(fromCommitTimeMs, minAclChangeSetId, null, null, 10);
             if (aclChangeSets.size() == 0)
             {
                 break;
@@ -301,10 +301,10 @@ public class SOLRAPIClientTest extends TestCase
     public void testGetTransactions() throws Exception
     {
         // get transactions starting from txn id 1298288417234l
-        Transactions transactions = client.getTransactions(1298288417234l, null, 5);
+        Transactions transactions = client.getTransactions(1298288417234l, null, null, null, 5);
 
         // get transactions starting from transaction 426
-        transactions = client.getTransactions(null, Long.valueOf(1), 5);
+        transactions = client.getTransactions(null, Long.valueOf(1), null, null, 5);
         List<Long> transactionIds = new ArrayList<Long>(transactions.getTransactions().size());
         for(Transaction info : transactions.getTransactions())
         {
@@ -446,7 +446,7 @@ public class SOLRAPIClientTest extends TestCase
     	// should fail with a 401
     	try
     	{
-    		Transactions transactions = invalidKeyClient.getTransactions(1298288417234l, null, 5);
+    		Transactions transactions = invalidKeyClient.getTransactions(1298288417234l, null, null, null, 5);
     	}
     	catch(AuthenticationException e)
     	{
@@ -456,7 +456,7 @@ public class SOLRAPIClientTest extends TestCase
     	try
     	{
         	tamperWithEncryptionService.setOverrideTimestamp(true);
-        	Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
+        	Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, null, null, 5);
     	}
     	catch(AuthenticationException e)
     	{
@@ -470,7 +470,7 @@ public class SOLRAPIClientTest extends TestCase
     	try
     	{
     		tamperWithEncryptionService.setOverrideMAC(true);
-    		Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, 5);
+    		Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, null, null, 5);
     	}
     	catch(AuthenticationException e)
     	{
