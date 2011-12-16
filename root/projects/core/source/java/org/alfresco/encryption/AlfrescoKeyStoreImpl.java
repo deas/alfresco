@@ -868,15 +868,14 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
 					}
 					else if(backupKeys.getKey(keyAlias) != null && encryptionKeysRegistry.isKeyRegistered(keyAlias))
 					{
-						// Both key and backup key exist and the key is registered. Check that backup key is valid.
-						if(encryptionKeysRegistry.checkKey(keyAlias, backupKeys.getKey(keyAlias)) == KEY_STATUS.CHANGED)
+						// Both key and backup key exist and the key is registered.
+						if(encryptionKeysRegistry.checkKey(keyAlias, backupKeys.getKey(keyAlias)) == KEY_STATUS.OK)
 						{
-							throw new InvalidKeystoreException("The key with alias " + keyAlias + " in the backup keystore is not valid, re-instate the previous keystore");
+						    // The registered key is the backup key so lets re-register the key in the main key store.
+						    // Unregister the existing (now backup) key and re-register the main key.
+						    encryptionKeysRegistry.unregisterKey(keyAlias);
+						    encryptionKeysRegistry.registerKey(keyAlias, keys.getKey(keyAlias));
 						}
-	
-						// Unregister the key and re-register the main key
-						encryptionKeysRegistry.unregisterKey(keyAlias);
-						encryptionKeysRegistry.registerKey(keyAlias, keys.getKey(keyAlias));
 					}
 	    		}
 	    	}
