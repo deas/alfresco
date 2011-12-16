@@ -25,6 +25,7 @@
 package org.alfresco.web.site;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.extensions.config.RemoteConfigElement;
 import org.springframework.extensions.config.WebFrameworkConfigElement;
@@ -73,6 +74,12 @@ public class SlingshotPageView extends PageView
         super(webFrameworkConfiguration, modelObjectService, resourceService, renderService, templatesContainer);
     }
     
+    @Override
+    protected void prepareResponse(HttpServletRequest request, HttpServletResponse response)
+    {
+        response.setHeader("Cache-Control", "no-cache");
+    }
+
     /* (non-Javadoc)
      * @see org.springframework.extensions.surf.mvc.AbstractWebFrameworkView#validateRequestContext(org.springframework.extensions.surf.RequestContext, javax.servlet.http.HttpServletRequest)
      */

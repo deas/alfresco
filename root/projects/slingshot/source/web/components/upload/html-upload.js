@@ -356,7 +356,7 @@
       onUploadSuccess: function HtmlUpload_onUploadSuccess(response)
       {
          // Hide the current message display
-         this.widgets.feedbackMessage.destroy();
+         this.widgets.feedbackMessage.hide();
 
          // Tell the document list to refresh itself if present
          var fileName = response.fileName ? response.fileName : this.widgets.filedata.value;
@@ -397,7 +397,7 @@
       onUploadFailure: function HtmlUpload_onUploadFailure(e)
       {
          // Hide the current message display
-         this.widgets.feedbackMessage.destroy();
+         this.widgets.feedbackMessage.hide();
 
          // Inform user that the upload failed
          var key = "message.failure." + e.status.code,
