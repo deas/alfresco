@@ -78,7 +78,8 @@ public class TestConfiguration {
 									   				{ "NTCreateFile",		"org.alfresco.jlan.test.cluster.NTCreateFileTest"},
 									   				{ "perfFilesPerFolder", "org.alfresco.jlan.test.cluster.PerfFilesPerFolderTest"},
 									   				{ "perfFolderTree",		"org.alfresco.jlan.test.cluster.PerfFolderTreeTest"},
-									   				{ "perfDataTransfer",	"org.alfresco.jlan.test.cluster.PerfDataTransferTest"}
+									   				{ "perfDataTransfer",	"org.alfresco.jlan.test.cluster.PerfDataTransferTest"},
+									   				{ "oplockLeak",			"org.alfresco.jlan.test.cluster.OplockLeakTest"}
 	};
 
 	// List of remote servers

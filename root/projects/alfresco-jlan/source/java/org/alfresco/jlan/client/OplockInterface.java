@@ -32,4 +32,11 @@ public interface OplockInterface {
 	 * @param file CIFSFile
 	 */
 	public void oplockBreak( CIFSFile file);
+	
+	/**
+	 * Send an automatic oplock break response, or not
+	 * 
+	 * @return boolean
+	 */
+	public boolean sendAutomaticBreakResponse();
 }

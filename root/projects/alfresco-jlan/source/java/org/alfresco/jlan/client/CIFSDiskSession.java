@@ -1950,38 +1950,43 @@ public final class CIFSDiskSession extends DiskSession {
 						}
 					}
 					
-					// Build an oplock break response
-	
-					SMBPacket respPkt = new SMBPacket( 128);
+					// Check if an oplock break response should be sent
 					
-					respPkt.setCommand(PacketType.LockingAndX);
-					respPkt.setUserId(this.getUserId());
-					respPkt.setTreeId(this.getTreeId());
-	
-					respPkt.setFlags(getDefaultFlags() + SMBPacket.FLG_RESPONSE);
-					respPkt.setFlags2(getDefaultFlags2());
-	
-					respPkt.setParameterCount(8);
-					respPkt.setAndXCommand( PacketType.NoChainedCommand);
-					respPkt.setParameter(1, 0);							// AndX offset
-					respPkt.setParameter(2, fileId);
-					respPkt.setParameter(3, LockingAndX.OplockBreak);
-					respPkt.setParameterLong(4, 0);						// timeout
-					respPkt.setParameter(6, 0);							// number of unlocks
-					respPkt.setParameter(7, 0);							// number of locks
-					
-					respPkt.setByteCount( 0);
-					
-					// Send the oplock break to the server
-					//
-					// Note: The response flag must be set, and we do not expect a response from the server
-					
-					respPkt.SendSMB( this);
-					
-					// Clear the oplock on the file
-					
-					cifsFile.setOplockType( OpLock.TypeNone);
-					cifsFile.setOplockInterface( null);
+					if ( cifsFile.getOplockInterface().sendAutomaticBreakResponse() == true) {
+
+						// Build an oplock break response
+						
+						SMBPacket respPkt = new SMBPacket( 128);
+						
+						respPkt.setCommand(PacketType.LockingAndX);
+						respPkt.setUserId(this.getUserId());
+						respPkt.setTreeId(this.getTreeId());
+		
+						respPkt.setFlags(getDefaultFlags() + SMBPacket.FLG_RESPONSE);
+						respPkt.setFlags2(getDefaultFlags2());
+		
+						respPkt.setParameterCount(8);
+						respPkt.setAndXCommand( PacketType.NoChainedCommand);
+						respPkt.setParameter(1, 0);							// AndX offset
+						respPkt.setParameter(2, fileId);
+						respPkt.setParameter(3, LockingAndX.OplockBreak);
+						respPkt.setParameterLong(4, 0);						// timeout
+						respPkt.setParameter(6, 0);							// number of unlocks
+						respPkt.setParameter(7, 0);							// number of locks
+						
+						respPkt.setByteCount( 0);
+						
+						// Send the oplock break to the server
+						//
+						// Note: The response flag must be set, and we do not expect a response from the server
+						
+						respPkt.SendSMB( this);
+						
+						// Clear the oplock on the file
+						
+						cifsFile.setOplockType( OpLock.TypeNone);
+						cifsFile.setOplockInterface( null);
+					}
 				}
 				catch (Exception ex) {
 						
