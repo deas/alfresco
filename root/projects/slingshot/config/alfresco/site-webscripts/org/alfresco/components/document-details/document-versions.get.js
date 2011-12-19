@@ -8,7 +8,7 @@ function main()
    var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
-      var userPermissions = documentDetails.item.node.permissions;
+      var userPermissions = documentDetails.item.node.permissions.user;
       model.allowNewVersionUpload = (userPermissions["Write"] && userPermissions["Delete"]) || false;
       if (documentDetails.workingCopy && documentDetails.workingCopy.workingCopyVersion)
       {
