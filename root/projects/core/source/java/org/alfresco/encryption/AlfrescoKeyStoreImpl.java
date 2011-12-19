@@ -29,6 +29,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -52,6 +53,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.management.openmbean.KeyAlreadyExistsException;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManager;
@@ -631,11 +633,16 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
 	        Key key = getSecretKey(keyInfoManager.getKeyInformation(keyAlias));
 	    	encryptionKeysRegistry.registerKey(keyAlias, key);
 	    	keys.setKey(keyAlias, key);
+
+	    	logger.info("Created key: " + keyAlias + "\n in key store: \n" +
+                    "   Location: " + getKeyStoreParameters().getLocation() + "\n" +
+                    "   Provider: " + getKeyStoreParameters().getProvider() + "\n" +
+                    "   Type:     " + getKeyStoreParameters().getType());
 		}
 		catch(Throwable e)
 		{
             throw new AlfrescoRuntimeException(
-                    "Failed to create keystore: \n" +
+                    "Failed to create key: " + keyAlias + "\n in key store: \n" +
                     "   Location: " + getKeyStoreParameters().getLocation() + "\n" +
                     "   Provider: " + getKeyStoreParameters().getProvider() + "\n" +
                     "   Type:     " + getKeyStoreParameters().getType(),
@@ -727,9 +734,40 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
 //		createKeyStore(backupKeyStoreParameters, backupKeys);
 //	}
 
+    private byte[] generateKeyData()
+    {
+        try
+        {
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(System.currentTimeMillis());
+            byte bytes[] = new byte[DESedeKeySpec.DES_EDE_KEY_LEN];
+            random.nextBytes(bytes);
+            return bytes;
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException("Unable to generate secret key", e);
+        }
+    }
+
 	protected Key getSecretKey(KeyInformation keyInformation) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException
     {
-		DESedeKeySpec keySpec = new DESedeKeySpec(keyInformation.getKeyData());	
+	    byte[] keyData = keyInformation.getKeyData();
+
+	    if(keyData == null)
+	    {
+	        if(keyInformation.getKeyAlgorithm().equals("DESede"))
+	        {
+    	        // no key data provided, generate key data automatically
+    	        keyData = generateKeyData();
+	        }
+	        else
+	        {
+	            throw new AlfrescoRuntimeException("Unable to generate secret key: key algorithm is not DESede and no keyData provided");
+	        }
+	    }
+
+		DESedeKeySpec keySpec = new DESedeKeySpec(keyData);
     	SecretKeyFactory kf = SecretKeyFactory.getInstance(keyInformation.getKeyAlgorithm());
     	SecretKey secretKey = kf.generateSecret(keySpec);
     	return secretKey;
