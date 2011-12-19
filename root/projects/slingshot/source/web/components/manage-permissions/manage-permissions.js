@@ -587,7 +587,7 @@
                // Internationalise the roles strings displayed:
                for (var j = 0, jj = menuData.length; j < jj; j++)
                {
-                  menuData[j].text = scope._i18nRole(menuData[j].text);
+                  menuData[j].text = scope._i18nRole(menuData[j].value);
                }
 
                elCell.innerHTML = '<span id="' + menuId + '"></span>';
