@@ -126,7 +126,7 @@
          <div class="header-bar">${msg("label.companyinfo")}</div>
          <#if profile.organization?? && profile.organization?length!=0>
          <div class="row">
-            <span class="fieldlabelright">${msg("label.name")}:</span>
+            <span class="fieldlabelright">${msg("label.companyname")}:</span>
             <span class="fieldvalue">${profile.organization?html}</span>
          </div>
          </#if>
@@ -241,7 +241,7 @@
       
       <div class="header-bar">${msg("label.companyinfo")}</div>
       <div class="row">
-         <span class="label"><label for="${el}-input-organization">${msg("label.name")}:</label></span>
+         <span class="label"><label for="${el}-input-organization">${msg("label.companyname")}:</label></span>
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-organization" value="" <@immutablefield field="organization" /> /></span>
       </div>
       <div class="row">

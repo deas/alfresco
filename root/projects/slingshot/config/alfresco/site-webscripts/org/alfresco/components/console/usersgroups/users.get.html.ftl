@@ -150,7 +150,7 @@
          
          <div class="header-bar">${msg("label.companyinfo")}</div>
          <div class="field-row">
-            <span class="field-label-right">${msg("label.name")}:</span>
+            <span class="field-label-right">${msg("label.companyname")}:</span>
             <span id="${el}-view-companyname" class="field-value"></span>
          </div>
          <div class="field-row">
