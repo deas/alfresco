@@ -240,6 +240,8 @@
       </property>
    </bean>
 
+   <bean id="evaluator.doclib.action.editableByCurrentUser" class="org.alfresco.web.evaluator.doclib.action.EditableByCurrentUser"/>
+
    <!--
       View in Explorer
    -->

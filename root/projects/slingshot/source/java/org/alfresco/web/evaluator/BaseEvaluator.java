@@ -417,6 +417,23 @@ public abstract class BaseEvaluator implements Evaluator
     }
 
     /**
+     * Get a boolean value indicating whether the node is a working copy or not
+     *
+     * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
+     * @return True if the node is a working copy
+     */
+    public final boolean getIsWorkingCopy(JSONObject jsonObject)
+    {
+        boolean isWorkingCopy = false;
+        JSONObject workingCopy = (JSONObject) jsonObject.get("workingCopy");
+        if (workingCopy != null)
+        {
+            isWorkingCopy = ((Boolean) workingCopy.get("isWorkingCopy"));
+        }
+        return isWorkingCopy;
+    }
+
+    /**
      * Checks whether the current user matches that of a given user property
      *
      * @param jsonObject JSONObject containing a "node" object as returned from the ApplicationScriptUtils class.
