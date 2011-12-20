@@ -75,6 +75,8 @@ public final class AccessMode {
 	public static final int NTMaximumAllowed	= 0x02000000;
   
 	public static final int NTReadWrite			= NTRead + NTWrite;
+	
+	public static final int NTGenericReadWrite =  NTGenericRead + NTGenericWrite;
   
 	// NT file open modes
 	

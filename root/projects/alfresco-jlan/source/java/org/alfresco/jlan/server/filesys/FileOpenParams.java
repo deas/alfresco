@@ -426,6 +426,7 @@ public class FileOpenParams {
 	 */
 	public final boolean isReadWriteAccess() {
 		if (( m_accessMode & AccessMode.NTReadWrite)  == AccessMode.NTReadWrite ||
+		        (m_accessMode & AccessMode.NTGenericReadWrite) == AccessMode.NTGenericReadWrite || 
 				m_accessMode == AccessMode.NTGenericAll)
 			return true;
 		return false;
