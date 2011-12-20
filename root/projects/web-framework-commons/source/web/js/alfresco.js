@@ -3844,9 +3844,17 @@ Alfresco.util.parseURL = function(url)
       // search and hash include question mark and hash symbol respectively
       search: a.search,
       hash: a.hash,
-      // url = protocol + "//" + host + path + search + hash
+      // url = protocol + "//" + host + pathname + search + hash
       url: url,
-      queryParams: Alfresco.util.getQueryStringParameters(url)
+      queryParams: Alfresco.util.getQueryStringParameters(url),
+      getUrl: function()
+      {
+         return this.getDomain() + this.pathname + Alfresco.util.toQueryString(this.queryParams) + this.hash;
+      },
+      getDomain: function()
+      {
+         return this.protocol + "//" + this.host;
+      }
    }
    return urlObject;
 }

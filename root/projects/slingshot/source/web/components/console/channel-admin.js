@@ -416,11 +416,37 @@
             // Listen for the message back from the iframe:
             Event.addListener(window, "message", receiveMessage, false);
          }
+         // We can't open a communication channel back from the auth return page so can't support authentication.
          else
          {
+            var error;
+            // Clarify the exact error:
+            if (!isSameDomain (redirectUrl, window.location.href))
+            {
+               var currentUrlObj = Alfresco.util.parseURL(window.location.href),
+                  newUrlObj = Alfresco.util.parseURL(window.location.href),
+                  redirectUrlObj = Alfresco.util.parseURL(redirectUrl),
+                  currentDomain = currentUrlObj,
+                  newDomain, newUrl;
+
+               // Update new URL to point to expected domain
+               newUrlObj.protocol = redirectUrlObj.protocol;
+               newUrlObj.host = redirectUrlObj.host;
+
+               // URL error: The server thinks it should be accessed via a different URL
+               error = this.msg("channelAdmin.auth.failure.url", currentUrlObj.getDomain(), newUrlObj.getDomain(), newUrlObj.getUrl());
+            }
+            else
+            {
+               // Unsupported Browser
+               error = this.msg("channelAdmin.auth.failure.browser");
+            }
+
+            // Display message
             Alfresco.util.PopupManager.displayPrompt(
             {
-               text: this.msg("channelAdmin.auth.failure")
+               text: error,
+               noEscape: true
             });
 
             // reload channels
