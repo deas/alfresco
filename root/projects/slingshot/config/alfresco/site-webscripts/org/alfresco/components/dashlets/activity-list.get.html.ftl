@@ -4,7 +4,7 @@
    <#elseif dateCompare(lastSunday?date, theDate?date) == 0><#return msg("dateFormat.friendly.earlierThisWeek")>
    <#elseif dateCompare(previousSunday?date, theDate?date) == 0><#return msg("dateFormat.friendly.lastWeek")>
    </#if>
-   <#return "Older actvities">
+   <#return msg("label.older-activities")>
 </#function>
 <#if activities?exists && activities?size &gt; 0>
    <#assign mode = args.mode!"">
