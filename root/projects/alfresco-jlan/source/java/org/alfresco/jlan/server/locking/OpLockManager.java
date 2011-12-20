@@ -21,6 +21,7 @@ package org.alfresco.jlan.server.locking;
 
 import java.io.IOException;
 
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
@@ -71,9 +72,10 @@ public interface OpLockManager {
 	 * @param sess SMBSrvSession
 	 * @param pkt SMBSrvPacket
 	 * @exception IOException
+	 * @exception DeferFailedException
 	 */
 	public void requestOpLockBreak( String path, OpLockDetails oplock, SMBSrvSession sess, SMBSrvPacket pkt)
-		throws IOException;
+		throws IOException, DeferFailedException;
 	
 	/**
 	 * Release an oplock

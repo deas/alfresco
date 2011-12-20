@@ -34,6 +34,7 @@ import org.alfresco.jlan.locking.NotLockedException;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
 import org.alfresco.jlan.server.config.ServerConfiguration;
 import org.alfresco.jlan.server.filesys.AccessDeniedException;
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.server.filesys.DiskSharedDevice;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.FileAccessToken;
@@ -415,9 +416,10 @@ public abstract class FileStateCache {
 	 * @param sess SMBSrvSession
 	 * @param pkt SMBSrvPacket
 	 * @exception IOException
+	 * @exception DeferFailedException
 	 */
 	public void requestOplockBreak( String path, OpLockDetails oplock, SMBSrvSession sess, SMBSrvPacket pkt)
-		throws IOException {
+		throws IOException, DeferFailedException {
 		
 		// Store the session/packet details to continue request once the oplock break has been
 		// handled by the client owning the oplock

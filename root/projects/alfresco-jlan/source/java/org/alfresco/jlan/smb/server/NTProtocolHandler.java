@@ -38,6 +38,7 @@ import org.alfresco.jlan.server.core.ShareType;
 import org.alfresco.jlan.server.core.SharedDevice;
 import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.AccessMode;
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.server.filesys.DeferredPacketException;
 import org.alfresco.jlan.server.filesys.DirectoryNotEmptyException;
 import org.alfresco.jlan.server.filesys.DiskDeviceContext;
@@ -2083,24 +2084,6 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				
 				if ( Debug.EnableDbg && m_sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
 					Debug.println("  Oplock released, oplock=" + oplock);
-				
-				// Check if there is a deferred CIFS request pending for this oplock
-				
-				if ( oplock.hasDeferredSession()) {
-					
-					// DEBUG
-					
-					if ( Debug.EnableDbg && m_sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
-						Debug.println("  Queued deferred request to thread pool sess=" + oplock.getDeferredSession().getUniqueId() + ", pkt=" + oplock.getDeferredPacket());
-
-					// Queue the deferred request to the thread pool for processing
-					
-					m_sess.getThreadPool().queueRequest( new CIFSThreadRequest( oplock.getDeferredSession(), oplock.getDeferredPacket()));
-					
-					// Do not send a response to the client, it is a response to the oplock break sent from the server
-					
-					return;
-				}
 			}
 			else {
 				
@@ -7795,21 +7778,10 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					
 					if ( opSess.isShutdown() == false) {
 						
-						// Check if the open is not accessing the file data, ie. accessing attributes only
+						// Check if the file open is for attributes/metadata only
 						
-						if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0 &&
-								(params.getAccessMode() & (AccessMode.NTGenericRead + AccessMode.NTGenericWrite + AccessMode.NTGenericExecute)) == 0) {
-							
-							// DEBUG
-							
-							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-								m_sess.debugPrintln("No oplock break, access attributes only, params=" + params + ", oplock=" + oplock);
-							
-							// Oplock break not required
-							
-							return;
-						}
-						else if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0) {
+						if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0 &&
+								(params.getAccessMode() & (AccessMode.NTGenericRead + AccessMode.NTGenericWrite + AccessMode.NTGenericExecute)) == 0) {	
 							
 							// DEBUG
 							
@@ -7836,6 +7808,20 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 							throw new AccessDeniedException( "Oplock has failed break");
 						}
 						
+						// Check if the oplock already has an oplock break in progress
+						
+						if ( oplock.hasDeferredSession()) {
+						
+							// DEBUG
+							
+							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+								m_sess.debugPrintln("Oplock has deferred session, break in progress, failing open request params=" + params);
+							
+							// Fail the open request with an access denied error
+							
+							throw new AccessDeniedException( "Oplock break in progress");
+						}
+						
 						// Need to send an oplock break to the oplock owner before we can continue processing the current file open request
 						
 						try {
@@ -7854,7 +7840,17 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 							
 							deferredPkt = true;
 						}
-	
+						catch ( DeferFailedException ex) {
+							
+							// Log the error
+							
+							if ( Debug.EnableError)
+								Debug.println("Failed to defer request for local oplock break:", Debug.Error);
+							
+							// Throw an access denied exception so that the file open is rejected
+							
+							throw new AccessDeniedException( "Oplock break defer failed");
+						}
 						catch ( IOException ex) {
 							
 							// Log the error
@@ -7885,7 +7881,6 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					
 					// Check if the open is not accessing the file data, ie. accessing attributes only
 					
-//					if (( params.getAccessMode() & (AccessMode.NTSynchronize + AccessMode.NTReadAttrib + AccessMode.NTWriteAttrib)) == 0)
 					if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0)
 						return;
 
@@ -7919,6 +7914,19 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 						// from the owner
 						
 						deferredPkt = true;
+					}
+					catch ( DeferFailedException ex) {
+						
+						// Log the error
+						
+						if ( Debug.EnableError) {
+							Debug.println("Failed to defer request for remote oplock break:", Debug.Error);
+							Debug.println(ex, Debug.Error);
+						}
+						
+						// Throw an access denied exception so that the file open is rejected
+						
+						throw new AccessDeniedException( "Oplock break defer failed");
 					}
 					catch ( IOException ex) {
 						

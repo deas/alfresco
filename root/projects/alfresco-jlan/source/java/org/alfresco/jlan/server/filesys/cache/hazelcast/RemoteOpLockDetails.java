@@ -22,6 +22,7 @@ package org.alfresco.jlan.server.filesys.cache.hazelcast;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.server.filesys.cache.cluster.ClusterFileStateCache;
 import org.alfresco.jlan.server.filesys.cache.cluster.ClusterNode;
 import org.alfresco.jlan.server.filesys.cache.cluster.PerNodeState;
@@ -224,8 +225,10 @@ public class RemoteOpLockDetails extends OpLockDetailsAdapter implements Seriali
 	 * 
 	 * @param deferredSess SMBSrvSession
 	 * @param deferredPkt SMBSrvPacket
+	 * @exception DeferFailedException
 	 */
-	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt) {
+	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+		throws DeferFailedException {
 		if ( getStateCache() != null) {
 			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), true);
 			if ( perNode != null) {

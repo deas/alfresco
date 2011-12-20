@@ -159,6 +159,15 @@ public class ByteBufferPool {
 	}
 	
 	/**
+	 * Return the buffer list
+	 * 
+	 * @return ByteBufferList[]
+	 */
+	public final ByteBufferList[] getBufferList() {
+		return m_bufferLists;
+	}
+	
+	/**
 	 * Return the byte buffer pool details as a string
 	 * 
 	 * @return String

@@ -19,6 +19,7 @@
 package org.alfresco.jlan.server.core;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * No Pooled Memory Exception Class
@@ -31,11 +32,19 @@ public class NoPooledMemoryException extends IOException {
 
 	private static final long serialVersionUID = 6852939454477894406L;
 
+	// Keep a global count of how many times this error is used
+	
+	private static AtomicLong _exceptionCount = new AtomicLong();
+	
 	/**
 	   * Default constructor
 	   */
 	  public NoPooledMemoryException() {
 	    super();
+	    
+	    // Increment the global count
+	    
+	    _exceptionCount.incrementAndGet();
 	  }
 
 	  /**
@@ -45,5 +54,18 @@ public class NoPooledMemoryException extends IOException {
 	   */
 	  public NoPooledMemoryException(String s) {
 	    super(s);
+	    
+	    // Increment the global count
+	    
+	    _exceptionCount.incrementAndGet();
+	  }
+	  
+	  /**
+	   * Return the exception counter
+	   * 
+	   * @return long
+	   */
+	  public static long getExceptionCounter() {
+		  return _exceptionCount.get();
 	  }
 }

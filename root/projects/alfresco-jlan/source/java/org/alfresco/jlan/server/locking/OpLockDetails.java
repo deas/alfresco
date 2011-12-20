@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 
 /**
  * OpLock Details Interface
@@ -103,8 +104,10 @@ public interface OpLockDetails {
 	 * 
 	 * @param deferredSess SMBSrvSession
 	 * @param deferredPkt SMBSrvPacket
+	 * @exception DeferFailedException	If the session/packet cannot be deferred
 	 */
-	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt);
+	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+		throws DeferFailedException;
 
 	/**
 	 * Clear the deferred session/packet details

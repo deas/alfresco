@@ -22,6 +22,7 @@ package org.alfresco.jlan.server.locking;
 import java.io.IOException;
 
 import org.alfresco.jlan.debug.Debug;
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.smb.LockingAndX;
 import org.alfresco.jlan.smb.OpLock;
 import org.alfresco.jlan.smb.PacketType;
@@ -218,7 +219,7 @@ public class LocalOpLockDetails implements OpLockDetails {
 	 * 
 	 * @return boolean
 	 */
-	public boolean hasDeferredSession() {
+	public synchronized boolean hasDeferredSession() {
 		return m_deferredSess != null ? true : false;
 	}
 	
@@ -284,19 +285,28 @@ public class LocalOpLockDetails implements OpLockDetails {
 	 * 
 	 * @param deferredSess SMBSrvSession
 	 * @param deferredPkt SMBSrvPacket
+	 * @throws DeferFailedException
 	 */
-	public final void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt) {
-		m_deferredSess = deferredSess;
-		m_deferredPkt  = deferredPkt;
+	public final void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+		throws DeferFailedException {
 		
-		// Set the time that the oplock break was sent to the client
-		
-		m_opBreakTime = System.currentTimeMillis();
-		
-		// Update the deferred processing count for the CIFS packet
-		
-		if ( deferredPkt != null)
+		if ( hasDeferredSession() == false) {
+			
+			// Save the session and request packet
+			
+			m_deferredSess = deferredSess;
+			m_deferredPkt  = deferredPkt;
+			
+			// Set the time that the oplock break was sent to the client
+			
+			m_opBreakTime = System.currentTimeMillis();
+			
+			// Update the deferred processing count for the CIFS packet
+			
 			deferredPkt.incrementDeferredCount();
+		}
+		else
+			throw new DeferFailedException( "Cannot defer session/packet");
 	}
 
 	/**
@@ -415,7 +425,7 @@ public class LocalOpLockDetails implements OpLockDetails {
 		}
 		
 		if ( hasOplockBreakFailed())
-			str.append("BreakFailed");
+			str.append(" BreakFailed");
 
 		str.append("]");
 		

@@ -110,7 +110,7 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 
 	private static final String m_sessDbgStr[] = { "NETBIOS", "STATE", "RXDATA", "TXDATA", "DUMPDATA", "NEGOTIATE", "TREE",
 			"SEARCH", "INFO", "FILE", "FILEIO", "TRANSACT", "ECHO", "ERROR", "IPC", "LOCK", "PKTTYPE", "DCERPC", "STATECACHE",
-			"TIMING", "NOTIFY", "STREAMS", "SOCKET", "PKTPOOL", "PKTSTATS", "THREADPOOL", "BENCHMARK", "OPLOCK" };
+			"TIMING", "NOTIFY", "STREAMS", "SOCKET", "PKTPOOL", "PKTSTATS", "THREADPOOL", "BENCHMARK", "OPLOCK", "PKTALLOC" };
 
 	// Default session debug flags, if enabled
 

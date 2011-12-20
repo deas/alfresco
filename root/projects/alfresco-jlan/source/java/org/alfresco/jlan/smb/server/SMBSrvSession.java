@@ -115,6 +115,7 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	public static final int DBG_THREADPOOL  = 0x02000000; // Thread pool
 	public static final int DBG_BENCHMARK	= 0x04000000; // Benchmarking
 	public static final int DBG_OPLOCK		= 0x08000000; // Opportunistic locks
+	public static final int DBG_PKTALLOC	= 0x10000000; // Memory pool allocate/release
 
 	// Server session object factory
 

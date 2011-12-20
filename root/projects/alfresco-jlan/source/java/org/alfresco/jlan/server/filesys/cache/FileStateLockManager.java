@@ -28,6 +28,7 @@ import org.alfresco.jlan.locking.FileLock;
 import org.alfresco.jlan.locking.LockConflictException;
 import org.alfresco.jlan.locking.NotLockedException;
 import org.alfresco.jlan.server.SrvSession;
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.TreeConnection;
@@ -38,6 +39,7 @@ import org.alfresco.jlan.server.thread.ThreadRequestPool;
 import org.alfresco.jlan.server.thread.TimedThreadRequest;
 import org.alfresco.jlan.smb.OpLock;
 import org.alfresco.jlan.smb.SMBStatus;
+import org.alfresco.jlan.smb.server.CIFSThreadRequest;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
 
@@ -54,6 +56,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	// Oplock break timeout
 	
 	private static final long OpLockBreakTimeout	= 5000L;	// 5 seconds
+	private static final long OpLockBreakTimeoutSecs= OpLockBreakTimeout / 1000L;
 	
 	// File state cache used for byte range locks/oplocks
 	
@@ -330,9 +333,10 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	 * @param sess SMBSrvSession
 	 * @param pkt SMBSrvPacket
 	 * @exception IOException
+	 * @exception DeferFailedException
 	 */
 	public void requestOpLockBreak( String path, OpLockDetails oplock, SMBSrvSession sess, SMBSrvPacket pkt)
-		throws IOException {
+		throws IOException, DeferFailedException {
 
 		// Request an oplock break
 		
@@ -362,16 +366,45 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 		// Get the file state
 		
 		FileState fstate = m_stateCache.findFileState(path);
-
-		// Remove the oplock from the file
-		
 		if ( fstate != null)
-			m_stateCache.clearOpLock( fstate);
+			fstate.clearOpLock();
 		
 		// Remove from the pending oplock break queue
 		
 		synchronized ( m_oplockQueue) {
-			m_oplockQueue.remove( path);
+			
+			// Remove any active oplock break from the queue
+			
+			OpLockDetails oplock = m_oplockQueue.remove( path);
+			
+			// Check if there is a deferred CIFS request pending for this oplock
+			
+			if ( oplock != null && oplock.hasDeferredSession()) {
+
+				// Get the deferred session/request
+				
+				SMBSrvSession deferredSess = oplock.getDeferredSession();
+				SMBSrvPacket deferredPkt   = oplock.getDeferredPacket();
+				
+				// DEBUG
+				
+				if ( Debug.EnableDbg && deferredSess.hasDebug(SMBSrvSession.DBG_OPLOCK))
+					Debug.println("Release oplock, queued deferred request to thread pool sess=" + deferredSess.getUniqueId() + ", pkt=" + deferredPkt);
+
+				try {
+					
+					// Queue the deferred request to the thread pool for processing
+					
+					deferredSess.getThreadPool().queueRequest( new CIFSThreadRequest( deferredSess, deferredPkt));
+				}
+				catch ( Throwable ex) {
+					
+					// Failed to queue the request to the thread pool, release the deferred packet back to the 
+					// memory pool
+					
+					deferredSess.getPacketPool().releasePacket( deferredPkt);
+				}
+			}
 		}
 	}
 	
@@ -381,35 +414,38 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	 * @return int
 	 */
 	public int checkExpiredOplockBreaks() {
+
+		// Check if the oplock queue is valid
 		
-		// Check if there are any oplock breaks in progress
-		
-		if ( m_oplockQueue.size() == 0)
+		if ( m_oplockQueue == null)
 			return 0;
 		
-		// Check for oplock break requests that have expired
-
 		int expireCnt = 0;
 		
-		long timeNow = System.currentTimeMillis();
-		Enumeration<String> opBreakKeys = m_oplockQueue.keys();
-		
-		while ( opBreakKeys.hasMoreElements()) {
+		synchronized ( m_oplockQueue) {
 			
-			// Check the current oplock break
+			// Check if there are any oplock breaks in progress
 			
-			String path = opBreakKeys.nextElement();
-			OpLockDetails opLock = m_oplockQueue.get( path);
-			if ( opLock != null) {
+			if ( m_oplockQueue.size() == 0)
+				return 0;
+			
+			// Check for oplock break requests that have expired
+	
+			long timeNow = System.currentTimeMillis();
+			Enumeration<String> opBreakKeys = m_oplockQueue.keys();
+			
+			while ( opBreakKeys.hasMoreElements()) {
 				
-				// Check if the oplock break has timed out
+				// Check the current oplock break
 				
-				if ( opLock.hasDeferredSession()) {
+				String path = opBreakKeys.nextElement();
+				OpLockDetails opLock = m_oplockQueue.get( path);
+				if ( opLock != null) {
 					
-					// Check if the oplock break request has timed out
+					// Check if the oplock break has timed out
 					
-					if ((opLock.getOplockBreakTime() + OpLockBreakTimeout) <= timeNow) {
-					
+					if ( opLock.hasDeferredSession() && (opLock.getOplockBreakTime() + OpLockBreakTimeout) <= timeNow) {
+						
 						// Get the deferred request details
 						
 						SMBSrvSession sess = opLock.getDeferredSession();
@@ -425,9 +461,6 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 								
 								if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
 									sess.debugPrintln( "Oplock break timeout, oplock=" + opLock);
-							
-							// Release the packet back to the pool
-							
 							}
 							else if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
 								sess.debugPrintln( "Failed to send open reject, oplock break timed out, oplock=" + opLock);
@@ -459,16 +492,6 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 						
 						expireCnt++;
 					}
-				}
-				else {
-					
-					// Oplock no longer has a deferred request, remove it from the queue
-					
-					m_oplockQueue.remove( path);
-
-					// Update the expired oplock break count
-					
-					expireCnt++;
 				}
 			}
 		}
@@ -561,7 +584,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
             
             // Queue a timed request to the thread pool to run the oplock expiry check
             
-            m_threadReq = new OplockExpiryTimedRequest( threadName, OpLockBreakTimeout / 1000L);
+            m_threadReq = new OplockExpiryTimedRequest( threadName, OpLockBreakTimeoutSecs);
             m_threadPool.queueTimedRequest( m_threadReq);
         }
 	    

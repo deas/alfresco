@@ -41,6 +41,7 @@ import org.alfresco.jlan.server.config.CoreServerConfigSection;
 import org.alfresco.jlan.server.config.InvalidConfigurationException;
 import org.alfresco.jlan.server.config.ServerConfiguration;
 import org.alfresco.jlan.server.filesys.AccessDeniedException;
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.server.filesys.ExistingOpLockException;
 import org.alfresco.jlan.server.filesys.FileAccessToken;
 import org.alfresco.jlan.server.filesys.FileExistsException;
@@ -1389,9 +1390,10 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 	 * @param sess SMBSrvSession
 	 * @param pkt SMBSrvPacket
 	 * @exception IOException
+	 * @exception DeferFailedException
 	 */
 	public void requestOplockBreak( String path, OpLockDetails oplock, SMBSrvSession sess, SMBSrvPacket pkt)
-		throws IOException {
+		throws IOException, DeferFailedException {
 		
 		// Check if the oplock is owned by the local node
 		

@@ -20,6 +20,7 @@
 package org.alfresco.jlan.smb.server;
 
 import java.io.DataOutputStream;
+import java.util.Date;
 
 import org.alfresco.jlan.netbios.RFCNetBIOSProtocol;
 import org.alfresco.jlan.smb.PacketType;
@@ -147,6 +148,10 @@ public class SMBSrvPacket {
 	
 	private boolean m_requestPkt;
 	
+	// Packet lease time, when allocated from the memory pool
+	
+	private long m_leaseTime;
+
 	/**
 	 * Default constructor
 	 */
@@ -1861,6 +1866,40 @@ public class SMBSrvPacket {
 	}
 	
 	/**
+	 * Check if the packet has a lease
+	 * 
+	 * @return boolean
+	 */
+	public final boolean hasLeaseTime() {
+		return m_leaseTime != 0 ? true : false;
+	}
+	
+	/**
+	 * Return the packet lease time
+	 * 
+	 * @return long
+	 */
+	public final long getLeaseTime() {
+		return m_leaseTime;
+	}
+	
+	/**
+	 * Clear the lease time
+	 */
+	public final void clearLeaseTime() {
+		m_leaseTime = 0L;
+	}
+	
+	/**
+	 * Set the packet lease time
+	 * 
+	 * @param tmo long
+	 */
+	public final void setLeaseTime( long tmo) {
+		m_leaseTime = tmo;
+	}
+	
+	/**
 	 * Return the SMB packet details as a string
 	 * 
 	 * @return String
@@ -1898,6 +1937,11 @@ public class SMBSrvPacket {
 			str.append(m_deferredCount);
 		}
 
+		if ( hasLeaseTime()) {
+			str.append(",Lease=");
+			str.append( new Date(getLeaseTime()));
+		}
+		
 		str.append("]");
 		
 		return str.toString();

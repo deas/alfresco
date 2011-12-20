@@ -117,7 +117,11 @@ public class ThreadRequestPool {
 			// Loop until shutdown
 
 			ThreadRequest threadReq = null;
+<<<<<<< .mine
+			
+=======
 
+>>>>>>> .r32889
 			while (mi_shutdown == false) {
 
 				try {
@@ -275,7 +279,7 @@ public class ThreadRequestPool {
                                 
                                 // DEBUG
                                 
-                                if ( hasTimedDebug())
+                                if ( hasTimedDebug() && m_timedQueue != null)
                                     Debug.println("Waiting for timed request, none active (" + m_timedQueue.size() + ") ...");
                                     
                                 // No active requests on the queue, sleep until an active request is queued or existing request becomes active
@@ -293,7 +297,7 @@ public class ThreadRequestPool {
                         break;
                 }
                 catch ( Throwable ex2) {
-                    ex2.printStackTrace();
+                	Debug.println( ex2);
                 }
             }
         }
@@ -429,12 +433,14 @@ public class ThreadRequestPool {
 	        
             // DEBUG
             
-            if ( hasTimedDebug())
+            if ( hasTimedDebug()) {
                 Debug.println("Queued timed request " + timedReq);
+                Debug.println("  Queue=" + m_timedQueue);
+            }
 
             // Check if the queue was empty or the request is the new head of the queue
 	        
-	        if ( queueHead == null || timedReq.getRunAtTime() < queueHead.getRunAtTime()) {
+	        if ( queueHead == null || timedReq.compareTo( queueHead) == -1) {
 	            
 	            // DEBUG
 	            
@@ -483,8 +489,11 @@ public class ThreadRequestPool {
 			for (int i = 0; i < m_workers.length; i++)
 				m_workers[i].shutdownRequest();
 		}
-
-		m_timedProcessor.shutdownRequest();
+		
+		// Shutdown the timed request handler
+		
+		if ( m_timedProcessor != null)
+			m_timedProcessor.shutdownRequest();
 	}
 	
 	/**

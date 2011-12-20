@@ -18,12 +18,16 @@
  */
 package org.alfresco.jlan.smb.server;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.core.NoPooledMemoryException;
 import org.alfresco.jlan.server.memory.ByteBufferPool;
+import org.alfresco.jlan.server.thread.ThreadRequestPool;
+import org.alfresco.jlan.server.thread.TimedThreadRequest;
 
 /**
  * CIFs Packet Pool Class
@@ -37,17 +41,22 @@ public class CIFSPacketPool {
 	// Constants
 	
 	public static final long CIFSAllocateWaitTime	= 250;	// milliseconds
+	public static final long CIFSLeaseTime			= 5000;	// 5 seconds
+	public static final long CIFSLeaseTimeSecs		= CIFSLeaseTime/1000L;
 	
-	// Main byte buffer pool
+	// Main byte buffer pool and thread pool
 	
 	private ByteBufferPool m_bufferPool;
+	private ThreadRequestPool m_threadPool;
 
-	// Debug tracking of what packets were borrowed by what stack traces
-	private Map<SMBSrvPacket, Throwable> m_borrowed = new LinkedHashMap<SMBSrvPacket, Throwable>();
+	// Track leased out packets/byte buffers
+	
+	private HashMap<SMBSrvPacket, SMBSrvPacket> m_leasedPkts = new HashMap<SMBSrvPacket, SMBSrvPacket>();
 	
 	// Debug enable
 	
 	private boolean m_debug;
+	private boolean m_allocDebug;
 	
 	// Allow over sized packet allocations, maximum over sized packet size to allow
 	
@@ -59,16 +68,45 @@ public class CIFSPacketPool {
 	private int m_maxPoolBufSize;
 	
 	/**
+	 * CIFS Packet Pool Lease Expiry Timed Thread Request Class
+	 */
+	private class CIFSLeaseExpiryTimedRequest extends TimedThreadRequest {
+	    
+	    /**
+	     * Constructor
+	     */
+	    public CIFSLeaseExpiryTimedRequest() {
+	        super( "CIFSPacketPoolExpiry", -CIFSLeaseTimeSecs, CIFSLeaseTimeSecs);
+	    }
+	    
+	    /**
+	     * Expiry checker method
+	     */
+	    protected void runTimedRequest() {
+	        
+	    	// Check for expired leases
+	    	
+	    	checkForExpiredLeases();
+	    }
+	}
+	
+	/**
 	 * Class constructor
 	 * 
 	 * @param bufPool byteBufferPool
+	 * @param threadPool ThreadRequestPool
 	 */
-	public CIFSPacketPool( ByteBufferPool bufPool) {
+	public CIFSPacketPool( ByteBufferPool bufPool, ThreadRequestPool threadPool) {
 		m_bufferPool = bufPool;
+		m_threadPool = threadPool;
 		
 		// Set the maximum pooled buffer size
 		
 		m_maxPoolBufSize = m_bufferPool.getLargestSize();
+		
+		// Queue the CIFS packet lease expiry timed request
+		
+		m_threadPool.queueTimedRequest( new CIFSLeaseExpiryTimedRequest());
 	}
 	
 	/**
@@ -84,6 +122,7 @@ public class CIFSPacketPool {
 		// Check if the buffer can be allocated from the pool
 
 		byte[] buf = null;
+		boolean overSize = false;
 		
 		if ( reqSiz <= m_maxPoolBufSize) {
 			
@@ -98,12 +137,13 @@ public class CIFSPacketPool {
 				
 			// DEBUG
 			
-			if ( Debug.EnableDbg && hasDebug())
+			if ( Debug.EnableDbg && hasAllocateDebug())
 				Debug.println("[SMB] Allocating an over-sized packet, reqSiz=" + reqSiz);
 			
 			// Allocate an over sized packet
 			
 			buf = new byte[reqSiz];
+			overSize = true;
 		}
 
 		// Check if the buffer was allocated
@@ -112,22 +152,8 @@ public class CIFSPacketPool {
 			
 			// DEBUG
 		
-			if ( Debug.EnableDbg && hasDebug()) {
+			if ( Debug.EnableDbg && hasDebug())
 				Debug.println("[SMB] CIFS Packet allocate failed, reqSiz=" + reqSiz);
-				synchronized (m_borrowed) {
-    				if (!m_borrowed.isEmpty()) {
-    	                Debug.println("[SMB] Oldest 10 allocations:");
-    	                int i=0;
-    	                for (Map.Entry<SMBSrvPacket, Throwable> entry : m_borrowed.entrySet()) {
-    	                    Debug.println(entry.getKey().toString());
-    	                    Debug.println(entry.getValue());
-                            if (++i >= 10) {
-                                break;
-                            }
-    	                }
-    				}
-				}
-			}
 			
 			// Throw an exception, no memory available
 			
@@ -136,15 +162,18 @@ public class CIFSPacketPool {
 				
 		// Create the CIFS packet
 		
-		SMBSrvPacket packet =  new SMBSrvPacket( buf);
-
-        // Record where the buffer was allocated
-
-        if (Debug.EnableDbg && hasDebug()) {
-            synchronized (m_borrowed) {
-                m_borrowed.put(packet, new Exception("Stack Trace"));
-            }
-        }
+		SMBSrvPacket packet = new SMBSrvPacket( buf);
+		
+		// Set the lease time, if allocated from a pool, and add to the leased packet list
+		
+		if ( overSize == false) {
+			synchronized ( m_leasedPkts) {
+				packet.setLeaseTime( System.currentTimeMillis() + CIFSLeaseTime);
+				m_leasedPkts.put( packet, packet);
+			}
+		}
+		
+        // Return the SMB packet with the allocated byte buffer
         
         return packet;
 	}
@@ -191,9 +220,14 @@ public class CIFSPacketPool {
 		
 		reqPkt.setAssociatedPacket( respPkt);
 		
+		// Make sure the lease time is copied, if either packet has been allocated from the pool
+		
+		if ( reqPkt.hasLeaseTime() == false && respPkt.hasLeaseTime())
+			reqPkt.setLeaseTime( respPkt.getLeaseTime());
+		
 		// DEBUG
 		
-		if ( Debug.EnableDbg && hasDebug())
+		if ( Debug.EnableDbg && hasAllocateDebug())
 			Debug.println("[SMB]  Associated packet reqSiz=" + reqSiz + " with pktSiz=" + reqPkt.getBuffer().length);
 		
 		// Return the new packet
@@ -208,11 +242,21 @@ public class CIFSPacketPool {
 	 */
 	public final void releasePacket( SMBSrvPacket smbPkt) {
 		
-		// Check if the packet is queued for async I/O
+		// Clear the lease time, remove from the leased packet list
 		
-		if ( smbPkt.isQueuedForAsyncIO())
-			Debug.println("*** Packet queued for async I/O, pkt=" + smbPkt);
-
+		if ( smbPkt.hasLeaseTime()) {
+			
+			// Check if the packet lease time has expired
+			
+			if ( hasDebug() && smbPkt.getLeaseTime() < System.currentTimeMillis())
+				Debug.println( "[SMB] Release expired packet: pkt=" + smbPkt);
+			
+			synchronized ( m_leasedPkts) {
+				smbPkt.clearLeaseTime();
+				m_leasedPkts.remove( smbPkt);
+			}
+		}
+		
 		// Check if the packet is an over sized packet, just let the garbage collector pick it up
 		
 		if ( smbPkt.getBuffer().length <= m_maxPoolBufSize) {
@@ -223,20 +267,11 @@ public class CIFSPacketPool {
 		
 			// DEBUG
 			
-			if ( Debug.EnableDbg && hasDebug() && smbPkt.hasAssociatedPacket() == false)
+			if ( Debug.EnableDbg && hasAllocateDebug() && smbPkt.hasAssociatedPacket() == false)
 				Debug.println("[SMB] CIFS Packet released bufSiz=" + smbPkt.getBuffer().length);
 		}
-		else if ( Debug.EnableDbg && hasDebug())
+		else if ( Debug.EnableDbg && hasAllocateDebug())
 			Debug.println("[SMB] Over sized packet left for garbage collector");
-		
-
-        // Remove the record of where the buffer was allocated
-
-        if (Debug.EnableDbg && hasDebug()) {
-            synchronized (m_borrowed) {
-                m_borrowed.remove(smbPkt);
-            }
-        }
 		
 		// Check if the packet has an associated packet which also needs releasing
 		
@@ -251,31 +286,72 @@ public class CIFSPacketPool {
 				
 				m_bufferPool.releaseBuffer( smbPkt.getAssociatedPacket().getBuffer());
 	
+				// Remove the associated packet from the leased list
+				
+				m_leasedPkts.remove( smbPkt.getAssociatedPacket());
+				
 				// DEBUG
 				
-				if ( Debug.EnableDbg && hasDebug())
+				if ( Debug.EnableDbg && hasAllocateDebug())
 					Debug.println("[SMB] CIFS Packet released bufSiz=" + smbPkt.getBuffer().length + " and assoc packet, bufSiz=" + smbPkt.getAssociatedPacket().getBuffer().length);
 			}
-			else if ( Debug.EnableDbg && hasDebug())
+			else if ( Debug.EnableDbg && hasAllocateDebug())
 				Debug.println("[SMB] Over sized associated packet left for garbage collector");
 			
-	        // Remove the record of where the buffer was allocated
-
-	        if (Debug.EnableDbg && hasDebug()) {
-	            synchronized (m_borrowed) {
-	                m_borrowed.remove(smbPkt.getAssociatedPacket());
-	            }
-	        }
-
 	        // Clear the associated packet
-
-			smbPkt.getAssociatedPacket().setBuffer( null);
+			
 			smbPkt.clearAssociatedPacket();
 		}
-
-		// Clear the buffer
+	}
+	
+	/**
+	 * Check for expired packet leases
+	 */
+	private final void checkForExpiredLeases() {
 		
-		smbPkt.setBuffer( null);
+		try {
+			
+			// Check if there are any packets leased out
+			
+			if ( hasDebug()) {
+				
+				synchronized ( m_leasedPkts) {
+					
+					if ( m_leasedPkts.isEmpty() == false) {
+				
+						// Iterate the leased out packet list
+						
+						Iterator<SMBSrvPacket> leaseIter = m_leasedPkts.keySet().iterator();
+						long timeNow = System.currentTimeMillis();
+						
+						while ( leaseIter.hasNext()) {
+							
+							// Get the current leased packet and check if it has timed out
+							
+							SMBSrvPacket curPkt = leaseIter.next();
+							if ( curPkt.hasLeaseTime() && curPkt.getLeaseTime() < timeNow) {
+								
+								// Report the packet, lease expired
+								
+								Debug.println( "[SMB] Packet lease expired, pkt=" + curPkt);
+							}
+						}
+					}
+				}
+			}
+		}
+		catch ( Throwable ex) {
+			Debug.println( ex);
+		}
+	}
+	
+	/**
+	 * Get the byte buffer pool
+	 * 
+	 * @return ByteBufferPool
+	 */
+	public final ByteBufferPool getBufferPool() {
+		return m_bufferPool;
 	}
 	
 	/**
@@ -324,12 +400,30 @@ public class CIFSPacketPool {
 	}
 	
 	/**
+	 * Enable/disable allocate/release debug output
+	 * 
+	 * @param ena boolean
+	 */
+	public final void setAllocateDebug( boolean ena) {
+		m_allocDebug = ena;
+	}
+	
+	/**
 	 * Check if debug output is enabled
 	 * 
 	 * @return boolean
 	 */
 	public final boolean hasDebug() {
 		return m_debug;
+	}
+	
+	/**
+	 * Check if allocate/release debug is enabled
+	 * 
+	 * @return boolean
+	 */
+	public final boolean hasAllocateDebug() {
+		return m_allocDebug;
 	}
 	
 	/**

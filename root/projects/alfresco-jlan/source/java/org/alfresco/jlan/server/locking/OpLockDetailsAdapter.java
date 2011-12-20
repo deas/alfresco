@@ -21,6 +21,7 @@ package org.alfresco.jlan.server.locking;
 
 import java.io.IOException;
 
+import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.smb.OpLock;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
@@ -71,7 +72,7 @@ public class OpLockDetailsAdapter implements OpLockDetails {
 	 * 
 	 * @return boolean
 	 */
-	public boolean hasDeferredSession() {
+	public synchronized boolean hasDeferredSession() {
 		return getDeferredSession() != null ? true : false;
 	}
 	
@@ -125,8 +126,10 @@ public class OpLockDetailsAdapter implements OpLockDetails {
 	 * 
 	 * @param deferredSess SMBSrvSession
 	 * @param deferredPkt SMBSrvPacket
+	 * @throws DeferFailedException
 	 */
-	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt) {
+	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+		throws DeferFailedException {
 	}
 
 	/**

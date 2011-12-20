@@ -227,12 +227,15 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 
 				// Create the CIFS packet pool using the global memory pool
 				
-				m_packetPool = new CIFSPacketPool( m_coreConfig.getMemoryPool());
+				m_packetPool = new CIFSPacketPool( m_coreConfig.getMemoryPool(), m_coreConfig.getThreadPool());
 				
 				// Check if packet pool debugging is enabled
 				
 				if (( m_cifsConfig.getSessionDebugFlags() & SMBSrvSession.DBG_PKTPOOL) != 0)
 					m_packetPool.setDebug( true);
+				
+				if (( m_cifsConfig.getSessionDebugFlags() & SMBSrvSession.DBG_PKTALLOC) != 0)
+					m_packetPool.setAllocateDebug( true);
 			}
 		}
 		else

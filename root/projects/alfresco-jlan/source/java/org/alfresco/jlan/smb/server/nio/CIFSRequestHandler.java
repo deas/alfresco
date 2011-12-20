@@ -27,9 +27,12 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.SrvSessionQueue;
+import org.alfresco.jlan.server.core.NoPooledMemoryException;
 import org.alfresco.jlan.server.thread.ThreadRequest;
 import org.alfresco.jlan.server.thread.ThreadRequestPool;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
@@ -52,11 +55,13 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	
 	private Selector m_selector;
 	
-    // Lock to regulate access to m_sessionCount
-	private Object m_sessionCountLock = new Object();
+	// List of thread requests, used during socket event processing
+	
+	private Vector<ThreadRequest> m_reqList = new Vector<ThreadRequest>();
 	
     // Count of the number of selector channels, maintained by the main thread
-	private int m_sessionCount;
+	
+	private AtomicInteger m_sessionCount = new AtomicInteger();
 	
 	// Thread that the request handler runs in
 	
@@ -73,6 +78,10 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	// Client socket session timeout
 	
 	private int m_clientSocketTimeout;
+
+	// Flag to indicate the idle session reaper should be run by the main thread
+	
+	private AtomicBoolean m_runIdleSessReaper = new AtomicBoolean();
 	
 	// Shutdown request flag
 	
@@ -120,14 +129,7 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	 * @return int
 	 */
 	public final int getCurrentSessionCount() {
-
-	    // Wake up the selection thread, causing it to update its count
-	    if ( m_selector != null) {
-	        m_selector.wakeup();
-	    }
-		synchronized (m_sessionCountLock) {
-		    return m_sessionCount;
-		}
+	    return m_sessionCount.get();
 	}
 	
 	/**
@@ -226,262 +228,123 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 		
 		// Loop until shutdown
 		
-		Vector<ThreadRequest> reqList = new Vector<ThreadRequest>();
-		
 		while ( m_shutdown == false) {
 			
-			// Check if there are any sessions registered
-
-			int sessCnt = 0;
-
-			synchronized (m_sessionCountLock) {
-			    m_sessionCount = m_selector.keys().size();
-			}
-			
-			if ( m_sessionCount == 0) {
-
-				// Indicate that this request handler has no active sessions
+			try {
 				
-				fireRequestHandlerEmptyEvent();
+				// Check if there are any sessions registered
+	
+				int sessCnt = 0;
+	
+			    m_sessionCount.set( m_selector.keys().size());
 				
-				// DEBUG
-				
-				if ( Debug.EnableInfo && hasDebug())
-					Debug.println( "[SMB] Request handler " + m_thread.getName() + " waiting for session ...");
-				
-				// Wait for a session to be added to the handler
-				
-				try {
-					m_sessQueue.waitWhileEmpty();
-				}
-				catch ( InterruptedException ex) {
-				}
-			}
-			else {
-				
-				// Wait for client requests
-				
-				try {
-				    sessCnt = m_selector.select();
-					synchronized (m_sessionCountLock) {
-					    m_sessionCount = m_selector.keys().size();
-					}
-				}
-				catch ( CancelledKeyException ex) {
+				if ( m_sessionCount.get() == 0) {
+	
+					// Indicate that this request handler has no active sessions
+					
+					fireRequestHandlerEmptyEvent();
 					
 					// DEBUG
 					
-					if ( Debug.EnableError && hasDebug() && m_shutdown == false) {
-						Debug.println( "[SMB] Request handler error waiting for events");
-						Debug.println(ex);
+					if ( Debug.EnableInfo && hasDebug())
+						Debug.println( "[SMB] Request handler " + m_thread.getName() + " waiting for session ...");
+					
+					// Wait for a session to be added to the handler
+					
+					try {
+						m_sessQueue.waitWhileEmpty();
+					}
+					catch ( InterruptedException ex) {
 					}
 				}
-				catch ( IOException ex) {
+				else {
 					
-					// DEBUG
+					// Wait for client requests
 					
-					if ( Debug.EnableError && hasDebug()) {
-						Debug.println( "[SMB] Request handler error waiting for events");
-						Debug.println(ex);
+					try {
+					    sessCnt = m_selector.select();
 					}
-				}
-			}
-			
-			// Check if the shutdown flag has been set
-			
-			if ( m_shutdown == true)
-				continue;
-			
-			// Check if there are any events to process
-			
-			if ( sessCnt > 0) {
-			
-				// DEBUG
-				
-//				if ( Debug.EnableInfo && hasDebug()) // && sessCnt > 1)
-//					Debug.println( "[SMB] Request handler " + m_thread.getName() + " session events, sessCnt=" + sessCnt + "/" + m_selector.keys().size());
-
-				// Clear the thread request list
-				
-				reqList.clear();
-				
-				// Iterate the selected keys
-				
-				Iterator<SelectionKey> keysIter = m_selector.selectedKeys().iterator();
-				long timeNow = System.currentTimeMillis();
-				
-				while ( keysIter.hasNext()) {
-					
-					// Get the current selection key and check if has an incoming request
-					
-					SelectionKey selKey = keysIter.next();
-					keysIter.remove();
-					
-					if ( selKey.isValid() == false) {
-						
-						// Remove the selection key
-						
-						Debug.println("CIFSRequestHandler: Cancelling selection key - " + selKey);
-						selKey.cancel();
+					catch ( CancelledKeyException ex) {
 						
 						// DEBUG
 						
-						if ( Debug.EnableInfo && hasDebug())
-							Debug.println( "[SMB] NIO Selection key not valid, sess=" + selKey.attachment());
-					}
-					else if ( selKey.isReadable()) {
-						
-						// DEBUG
-						
-//						if ( Debug.EnableInfo && hasDebug())
-//							Debug.println("[SMB] Socket read event");
-						
-						// Switch off read events for this channel until the current processing is complete
-						
-						selKey.interestOps( selKey.interestOps() & ~SelectionKey.OP_READ);
-						
-						// Get the associated session and queue a request to the thread pool to read and process the CIFS request
-						
-						SMBSrvSession sess = (SMBSrvSession) selKey.attachment();
-						reqList.add(  new NIOCIFSThreadRequest( sess, selKey));
-
-						// Update the last I/O time for the session
-						
-						sess.setLastIOTime( timeNow);
-						
-						// Check if there are enough thread requests to be queued
-						
-						if ( reqList.size() >= 5) {
-							
-							// DEBUG
-							
-//							if ( Debug.EnableInfo && hasDebug())
-//								Debug.println( "[SMB] Queueing " + reqList.size() + " thread requests");
-							
-							// Queue the requests to the thread pool
-							
-							m_threadPool.queueRequests( reqList);
-							reqList.clear();
+						if ( Debug.EnableError && hasDebug() && m_shutdown == false) {
+							Debug.println( "[SMB] Request handler error waiting for events");
+							Debug.println(ex);
 						}
 					}
-					else if ( selKey.isValid() == false) {
-						
-						// Remove the selection key
-						
-						Debug.println("CIFSRequestHandler: Cancelling selection key - " + selKey);
-						selKey.cancel();
+					catch ( IOException ex) {
 						
 						// DEBUG
 						
-						if ( Debug.EnableInfo && hasDebug())
-							Debug.println( "[SMB] NIO Selection key not valid, sess=" + selKey.attachment());
-					}
-					else {
-						
-						// DEBUG
-						
-						if ( Debug.EnableInfo && hasDebug())
-							Debug.println("[SMB] Unprocessed selection key, " + selKey);
-					}
-				}
-				
-				// Queue the thread requests
-				
-				if ( reqList.size() > 0) {
-					
-					// DEBUG
-					
-//					if ( Debug.EnableInfo && hasDebug()) // && reqList.size() > 1)
-//						Debug.println( "[SMB] Queueing " + reqList.size() + " thread requests (last)");
-					
-					// Queue the requests to the thread pool
-					
-					m_threadPool.queueRequests( reqList);
-					reqList.clear();
-				}
-			}
-			
-			// Check if there are any new sessions that need to be registered with the selector, or sessions to be removed
-			
-			if ( m_sessQueue.numberOfSessions() > 0) {
-				
-				// Register the new sessions with the selector
-				
-				while ( m_sessQueue.numberOfSessions() > 0) {
-					
-					// Get a new session from the queue
-					
-					SMBSrvSession sess = (SMBSrvSession) m_sessQueue.removeSessionNoWait();
-					
-					if ( sess != null) {
-
-						// check the session state, if the session is in a setup state it is a new session
-						
-						if ( sess.getState() <= SMBSrvSessionState.SMBNEGOTIATE) {
-							
-							// DEBUG
-							
-							if ( Debug.EnableError && hasDebug())
-								Debug.println( "[SMB] Register session with request handler, handler=" + m_thread.getName() + ", sess=" + sess.getUniqueId());
-							
-							// Get the socket channel from the sessions packet handler
-							
-							if ( sess.getPacketHandler() instanceof ChannelPacketHandler) {
-								
-								// Get the channel packet handler and register the socket channel with the selector
-								
-								ChannelPacketHandler chanPktHandler = (ChannelPacketHandler) sess.getPacketHandler();
-								SocketChannel sessChannel = chanPktHandler.getSocketChannel();
-								
-								try {
-									
-									// Register the session channel with the selector
-									
-									sessChannel.configureBlocking( false);
-									sessChannel.register( m_selector, SelectionKey.OP_READ, sess);
-									
-									// Update the last I/O time for the session
-									
-									sess.setLastIOTime( System.currentTimeMillis());
-								}
-								catch ( ClosedChannelException ex) {
-									
-									// DEBUG
-									
-									if ( Debug.EnableError && hasDebug())
-										Debug.println( "[SMB] Failed to register session channel, closed channel");
-								}
-								catch ( IOException ex) {
-									
-									// DEBUG
-									
-									if ( Debug.EnableError && hasDebug())
-										Debug.println( "[SMB] Failed to set channel blocking mode, " + ex.getMessage());
-								}
-							}
-						}
-						else {
-							
-							// Remove the session
-							
-							// TODO:
+						if ( Debug.EnableError && hasDebug()) {
+							Debug.println( "[SMB] Request handler error waiting for events");
+							Debug.println(ex);
 						}
 					}
 				}
-			}
-			
-			// Check if the idle session reaper should be run to remove stale sessions
+				
+				// Check if the shutdown flag has been set
+				
+				if ( m_shutdown == true)
+					continue;
+				
+				// Check if there are any events to process
+				
+				if ( sessCnt > 0) {
+				
+					try {
 						
-			if ( m_sessionCount > 0) {
+						// Process the socket events
+						
+						processSocketEvents();
+					}
+					catch ( Throwable ex) {
+						Debug.println( Thread.currentThread().getName() + ": Exception in processSocketEvents()");
+						Debug.println( ex);
+					}
+				}
 				
-				// Run the idle session reaper
+				// Check if there are any new sessions that need to be registered with the selector, or sessions to be removed
 				
-				int remCnt = runIdleSessionsReaper();
+				if ( m_sessQueue.numberOfSessions() > 0) {
+					
+					try {
+						
+						// Add new sessions to the selector
+						
+						addNewSockets();
+					}
+					catch ( Throwable ex) {
+						Debug.println( Thread.currentThread().getName() + ": Exception in addNewSockets()");
+						Debug.println( ex);
+					}
+				}
 				
-				// DEBUG
-				
-				if ( remCnt > 0 && Debug.EnableError && hasDebug())
-					Debug.println( "[SMB] Idle session reaper removed " + remCnt + " sessions");
+				// Check if the idle session reaper should be run to remove stale sessions
+							
+				if ( m_runIdleSessReaper.get() == true) {
+	
+					try {
+						
+						// Run the idle session reaper
+						
+						int remCnt = runIdleSessionsReaper();
+						
+						// DEBUG
+						
+						if ( remCnt > 0 && Debug.EnableError && hasDebug())
+							Debug.println( "[SMB] Idle session reaper removed " + remCnt + " sessions");
+					}
+					catch ( Throwable ex) {
+						Debug.println( Thread.currentThread().getName() + ": Exception in runIdleSessionsReaper()");
+						Debug.println( ex);
+					}
+				}
+			}
+			catch ( Throwable ex) {
+				Debug.println( Thread.currentThread().getName() + ": Exception in run() method");
+				Debug.println( ex);
 			}
 		}
 		
@@ -521,6 +384,186 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	}
 	
 	/**
+	 * Process socket events, queue sessions/sockets to the thread pool for processing
+	 */
+	private void processSocketEvents() {
+		
+		// DEBUG
+		
+//		if ( Debug.EnableInfo && hasDebug()) // && sessCnt > 1)
+//			Debug.println( "[SMB] Request handler " + m_thread.getName() + " session events, sessCnt=" + sessCnt + "/" + m_selector.keys().size());
+
+		// Clear the thread request list
+		
+		m_reqList.clear();
+		
+		// Iterate the selected keys
+		
+		Iterator<SelectionKey> keysIter = m_selector.selectedKeys().iterator();
+		long timeNow = System.currentTimeMillis();
+		
+		while ( keysIter.hasNext()) {
+			
+			// Get the current selection key and check if has an incoming request
+			
+			SelectionKey selKey = keysIter.next();
+			keysIter.remove();
+			
+			if ( selKey.isValid() == false) {
+				
+				// Remove the selection key
+				
+				Debug.println("CIFSRequestHandler: Cancelling selection key - " + selKey);
+				selKey.cancel();
+				
+				// DEBUG
+				
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println( "[SMB] NIO Selection key not valid, sess=" + selKey.attachment());
+			}
+			else if ( selKey.isReadable()) {
+				
+				// DEBUG
+				
+//				if ( Debug.EnableInfo && hasDebug())
+//					Debug.println("[SMB] Socket read event");
+				
+				// Switch off read events for this channel until the current processing is complete
+				
+				selKey.interestOps( selKey.interestOps() & ~SelectionKey.OP_READ);
+				
+				// Get the associated session and queue a request to the thread pool to read and process the CIFS request
+				
+				SMBSrvSession sess = (SMBSrvSession) selKey.attachment();
+				m_reqList.add(  new NIOCIFSThreadRequest( sess, selKey));
+
+				// Update the last I/O time for the session
+				
+				sess.setLastIOTime( timeNow);
+				
+				// Check if there are enough thread requests to be queued
+				
+				if ( m_reqList.size() >= 5) {
+					
+					// DEBUG
+					
+//					if ( Debug.EnableInfo && hasDebug())
+//						Debug.println( "[SMB] Queueing " + reqList.size() + " thread requests");
+					
+					// Queue the requests to the thread pool
+					
+					m_threadPool.queueRequests( m_reqList);
+					m_reqList.clear();
+				}
+			}
+			else if ( selKey.isValid() == false) {
+				
+				// Remove the selection key
+				
+				Debug.println("CIFSRequestHandler: Cancelling selection key - " + selKey);
+				selKey.cancel();
+				
+				// DEBUG
+				
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println( "[SMB] NIO Selection key not valid, sess=" + selKey.attachment());
+			}
+			else {
+				
+				// DEBUG
+				
+				if ( Debug.EnableInfo && hasDebug())
+					Debug.println("[SMB] Unprocessed selection key, " + selKey);
+			}
+		}
+		
+		// Queue the thread requests
+		
+		if ( m_reqList.size() > 0) {
+			
+			// DEBUG
+			
+//			if ( Debug.EnableInfo && hasDebug()) // && reqList.size() > 1)
+//				Debug.println( "[SMB] Queueing " + reqList.size() + " thread requests (last)");
+			
+			// Queue the requests to the thread pool
+			
+			m_threadPool.queueRequests( m_reqList);
+			m_reqList.clear();
+		}
+	}
+	
+	/**
+	 * Add new sockets/sessions to the event listener list
+	 */
+	private void addNewSockets() {
+		
+		// Register the new sessions with the selector
+		
+		while ( m_sessQueue.numberOfSessions() > 0) {
+			
+			// Get a new session from the queue
+			
+			SMBSrvSession sess = (SMBSrvSession) m_sessQueue.removeSessionNoWait();
+			
+			if ( sess != null) {
+
+				// check the session state, if the session is in a setup state it is a new session
+				
+				if ( sess.getState() <= SMBSrvSessionState.SMBNEGOTIATE) {
+					
+					// DEBUG
+					
+					if ( Debug.EnableError && hasDebug())
+						Debug.println( "[SMB] Register session with request handler, handler=" + m_thread.getName() + ", sess=" + sess.getUniqueId());
+					
+					// Get the socket channel from the sessions packet handler
+					
+					if ( sess.getPacketHandler() instanceof ChannelPacketHandler) {
+						
+						// Get the channel packet handler and register the socket channel with the selector
+						
+						ChannelPacketHandler chanPktHandler = (ChannelPacketHandler) sess.getPacketHandler();
+						SocketChannel sessChannel = chanPktHandler.getSocketChannel();
+						
+						try {
+							
+							// Register the session channel with the selector
+							
+							sessChannel.configureBlocking( false);
+							sessChannel.register( m_selector, SelectionKey.OP_READ, sess);
+							
+							// Update the last I/O time for the session
+							
+							sess.setLastIOTime( System.currentTimeMillis());
+						}
+						catch ( ClosedChannelException ex) {
+							
+							// DEBUG
+							
+							if ( Debug.EnableError && hasDebug())
+								Debug.println( "[SMB] Failed to register session channel, closed channel");
+						}
+						catch ( IOException ex) {
+							
+							// DEBUG
+							
+							if ( Debug.EnableError && hasDebug())
+								Debug.println( "[SMB] Failed to set channel blocking mode, " + ex.getMessage());
+						}
+					}
+				}
+				else {
+					
+					// Remove the session
+					
+					// TODO:
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Close the request handler
 	 */
 	public final void closeHandler() {
@@ -546,10 +589,28 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	 * @return int
 	 */
 	protected final int checkForIdleSessions() {
+
+		// Set the idle session reaper flag and wakeup the main thread
 		
-		// Set the run idle session reaper flag and wake up the main selector thread
+		if ( m_thread != null && m_selector != null && m_sessionCount.get() > 0) {
+			
+			// Check if the idle session run flag is still set, this indicates that the main thread has hung
+			
+			if ( m_runIdleSessReaper.get() == true) {
+			
+				// Main thread appears to have hung, dump out details
+				
+				dumpHandlerDetails();
+			}
+			
+			// Trigger the idle session reaper
 		
-		getCurrentSessionCount();
+			m_runIdleSessReaper.set( true);
+			
+			// Wakeup the main selector thread
+			
+			m_selector.wakeup();
+		}
 		
 		// Indicate no sessions closed, not run yet
 		
@@ -561,14 +622,17 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 	 * 
 	 * @return int
 	 */
-	protected final int runIdleSessionsReaper() {
+	private int runIdleSessionsReaper() {
+		
+		// Clear the idle session reaper run flag
+		
+		m_runIdleSessReaper.set( false);
 		
 		// Check if the request handler has any active sessions
 
-        // Run from the main thread, so no need to synchronize on keys		
 		int idleCnt = 0;
 		
-		if ( m_selector != null && m_selector.keys().size() > 0) {
+		if ( m_selector != null && m_sessionCount.get() > 0) {
     
 			// Time to check
     			
@@ -614,5 +678,37 @@ public class CIFSRequestHandler extends RequestHandler implements Runnable {
 		// Return the count of idle sessions that were closed
 		
 		return idleCnt;
+	}
+	
+	/**
+	 * Dump the request handler details
+	 */
+	private void dumpHandlerDetails() {
+		
+		// Dump out the request handler details
+		
+		Debug.println( "CIFSRequestHandler details:");
+		Debug.println( "  Thread: " + m_thread);
+		if ( m_thread != null) {
+			Debug.println( "    Name  : " + m_thread.getName());
+			Debug.println( "    State : " + m_thread.getState());
+			
+			StackTraceElement[] thStack = m_thread.getStackTrace();
+			if ( thStack != null) {
+				Debug.println( "    Stack : ");
+				
+				for ( StackTraceElement stElem : thStack) {
+					Debug.println( "        " + stElem);
+				}
+			}
+			else
+				Debug.println( "    No Stack");
+		}
+		Debug.println( "  Sessions: " + m_sessionCount.get());
+		Debug.println( "  Session Queue: " + m_sessQueue.numberOfSessions());
+		Debug.println( "  Selector: " + m_selector);
+		
+		Debug.println( "  ThreadRequestPool: queue=" + m_threadPool.getNumberOfRequests());
+		Debug.println( "  NoPooledMemoryException: count=" + NoPooledMemoryException.getExceptionCounter());
 	}
 }

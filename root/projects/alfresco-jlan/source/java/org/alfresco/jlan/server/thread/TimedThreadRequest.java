@@ -240,7 +240,14 @@ public abstract class TimedThreadRequest implements ThreadRequest, Comparable<Ti
      * @return int
      */
     public int compareTo( TimedThreadRequest timedReq) {
-        if ( getRunAtTime() < timedReq.getRunAtTime())
+    	if ( isPaused() && timedReq.isPaused())
+    		return 0;
+    	if ( isPaused())
+    		return 1;
+    	if ( timedReq.isPaused())
+    		return -1;
+
+    	if ( getRunAtTime() < timedReq.getRunAtTime())
             return -1;
         else if ( getRunAtTime() == timedReq.getRunAtTime())
             return 0;
