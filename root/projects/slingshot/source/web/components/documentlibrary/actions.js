@@ -124,12 +124,6 @@
          {
             if (p_action.params.href)
             {
-               /*
-               markupParams.href = YAHOO.lang.substitute(p_action.params.href, p_record, function DL_renderAction_href(p_key, p_value, p_meta)
-               {
-                  return Alfresco.util.findValueByDotNotation(p_record, p_key);
-               });
-               */
                markupParams.href = Alfresco.util.substituteDotNotation(p_action.params.href, p_record);
                markupParams.target = p_action.params.target ? "target=\"" + p_action.params.target + "\"" : "";
             }
@@ -142,13 +136,11 @@
          {
             if (p_action.params.page)
             {
-               /*
-               markupParams.pageUrl = YAHOO.lang.substitute(p_action.params.page, p_record, function DL_renderAction_pageUrl(p_key, p_value, p_meta)
+               var recordSiteName = $isValueSet(p_record.location.site) ? p_record.location.site.name : null;
+               markupParams.pageUrl = $siteURL(Alfresco.util.substituteDotNotation(p_action.params.page, p_record),
                {
-                  return Alfresco.util.findValueByDotNotation(p_record, p_key);
+                  site: recordSiteName
                });
-               */
-               markupParams.pageUrl = $siteURL(Alfresco.util.substituteDotNotation(p_action.params.page, p_record));
             }
             else
             {
@@ -186,11 +178,12 @@
             nodeRefUri = nodeRef.uri,
             contentUrl = jsNode.contentURL,
             workingCopy = record.workingCopy || {},
+            recordSiteId = $isValueSet(record.location.site) ? record.location.site.name : null,
             fnPageURL = Alfresco.util.bind(function(page)
             {
                return Alfresco.util.siteURL(page,
                {
-                  site: siteId
+                  site: YAHOO.lang.isString(siteId) ? siteId : recordSiteId
                });
             }, this),
             actionUrls =

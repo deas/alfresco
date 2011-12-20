@@ -599,8 +599,8 @@
          recordSiteName = $isValueSet(record.location.site) ? record.location.site.name : null,
          html;
 
-      // Test for: handling a link, we're browsing within a site and the link's target does not live within this site
-      if (jsNode.isLink && $isValueSet(scope.options.siteId) && recordSiteName !== scope.options.siteId)
+      // Test for: handling a link and the link's target does not live within this site
+      if (jsNode.isLink && recordSiteName !== scope.options.siteId)
       {
          if (jsNode.isContainer)
          {
