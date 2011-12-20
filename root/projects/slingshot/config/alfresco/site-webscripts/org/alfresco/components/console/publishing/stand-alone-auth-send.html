@@ -26,7 +26,7 @@
                sendMessage = function(event)
                {
                   // Pass the message (received via the hashchange event) back up the stack to the iframe's parent.
-                 , "*" var data = window.location.hash;
+                  var data = window.location.hash;
                   window.parent.window.postMessage(data, "*");
                };
 
