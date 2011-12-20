@@ -164,7 +164,8 @@ public class DialectFactory {
         MAPPERS.put( "DB2/SUN64",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
         MAPPERS.put( "DB2/PTX",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
         MAPPERS.put( "DB2/2",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
-        
+        MAPPERS.put( "DB2/LINUXX8664",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
+
         MAPPERS.put( "MySQL", new VersionInsensitiveMapper( "org.hibernate.dialect.MySQLInnoDBDialect" ) );
         MAPPERS.put( "DB2/NT64", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
         MAPPERS.put( "DB2/LINUX", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
