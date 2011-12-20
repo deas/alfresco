@@ -2063,6 +2063,11 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     if ( dirId == -1)
       return null;
 
+    // Strip any trailing slash from the path
+    
+    if ( path.length() > 1 && path.endsWith( FileName.DOS_SEPERATOR_STR))
+    	path = path.substring( 0, path.length() - 1);
+    
     //  Get the file name
     
     String[] paths = FileName.splitPathStream(path);
