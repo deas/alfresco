@@ -10,7 +10,8 @@
          label: "${f.label?js_string}",
          description: "${f.description?js_string}"
       }<#if f_has_next>,</#if></#list>],
-      savedQuery: "${(page.url.args["sq"]!"")?js_string}"
+      savedQuery: "${(page.url.args["sq"]!"")?js_string}",
+      searchRepo: ${searchRepo?string}
    }).setMessages(
       ${messages}
    );

@@ -54,6 +54,9 @@ function main()
    }
    
    // Prepare the model
+   var repoconfig = config.scoped['Search']['search'].getChildValue('repository-search');
+   // config override can force repository search on/off
+   model.searchRepo = (repoconfig != "none");
    model.siteId = siteId;
    model.searchForms = searchForms;
 }

@@ -1074,7 +1074,7 @@
          var params = YAHOO.lang.substitute("site={site}&term={term}&tag={tag}&maxResults={maxResults}&sort={sort}&query={query}&repo={repo}",
          {
             site: encodeURIComponent(site),
-            repo: (searchRepository || this.options.searchQuery.length !== 0).toString(), // always search entire repo with advanced query
+            repo: searchRepository.toString(),
             term: encodeURIComponent(searchTerm),
             tag: encodeURIComponent(searchTag),
             sort: encodeURIComponent(searchSort),
