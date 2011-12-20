@@ -566,7 +566,7 @@ public class RpcPacket {
    * @param str String
    */
   public final void packString(String str) {
-    DataPacker.putInt(str != null ? str.length() : 0, m_buffer, m_pos);
+    DataPacker.putInt(str != null ? str.getBytes().length : 0, m_buffer, m_pos);
     m_pos += 4;
     if ( str != null) {
       m_pos = DataPacker.putString(str, m_buffer, m_pos, false);
