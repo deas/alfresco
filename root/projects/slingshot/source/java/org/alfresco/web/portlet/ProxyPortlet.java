@@ -119,6 +119,19 @@ public class ProxyPortlet implements Portlet
             }
         }
         
+        // set request parameters onto the portlet
+        Enumeration<String> paramNames = req.getParameterNames();
+        while (paramNames.hasMoreElements())
+        {
+           String paramName = (String)paramNames.nextElement();
+           // don't set SCRIPT_URL parameter here as it is dealt with explicitly below
+           if (!paramName.equals(SCRIPT_URL))
+           {
+              res.setRenderParameter(paramName, req.getParameter(paramName));
+           }
+        }
+        
+        // set the parameter that identifies the script url to execute
         res.setRenderParameter(req.getWindowID() + SCRIPT_URL, req.getParameter(SCRIPT_URL));
     }
 
