@@ -215,15 +215,16 @@ public class ManifestProcessorImpl extends AbstractManifestProcessorBase
             {
                 log.debug("Sync-mode transfer: started checking received data for implicit deletes...");
             }
-            //For each 
-            for (Map.Entry<String, Set<String>> parentChildEntry : parentChildMap.entrySet())
+            //For each folder that we received in the transfer, check which children we have received in this transfer and
+            //compare with the list of children that we currently have. If there are any existing children that
+            //we didn't receive in this transfer then we assume that we must delete them...
+            for (String parentId : receivedFolderIds)
             {
-                String parentId = parentChildEntry.getKey();
-                Set<String> receivedChildren = parentChildEntry.getValue();
+                Set<String> receivedChildren = parentChildMap.get(parentId);
                 List<FileTransferInfoEntity> currentChildren = dbHelper.findFileTransferInfoByParentNodeRef(parentId);
                 for (FileTransferInfoEntity currentChild : currentChildren)
                 {
-                    if (!receivedChildren.remove(currentChild.getNodeRef()))
+                    if (receivedChildren == null || !receivedChildren.remove(currentChild.getNodeRef()))
                     {
                         if (isDebugEnabled)
                         {
