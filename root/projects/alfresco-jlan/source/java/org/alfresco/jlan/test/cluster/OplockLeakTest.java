@@ -28,10 +28,13 @@ import org.alfresco.jlan.client.DiskSession;
 import org.alfresco.jlan.client.OplockAdapter;
 import org.alfresco.jlan.client.SMBFile;
 import org.alfresco.jlan.debug.Debug;
+import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.AccessMode;
 import org.alfresco.jlan.server.filesys.FileAction;
 import org.alfresco.jlan.server.filesys.FileAttribute;
 import org.alfresco.jlan.smb.OpLock;
+import org.alfresco.jlan.smb.SMBException;
+import org.alfresco.jlan.smb.SMBStatus;
 import org.alfresco.jlan.smb.SharingMode;
 import org.alfresco.jlan.smb.WinNT;
 
@@ -210,6 +213,21 @@ public class OplockLeakTest extends Test {
 					oplockFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal, SharingMode.READWRITEDELETE, FileAction.NTOverwriteIf, 0, 0);
 	
 					testLog( log, "Opened oplocked file on server " + sess.getServer());
+				}
+				catch ( SMBException ex) {
+					
+					// Check for an access denied exception
+					
+					if ( ex.getErrorClass() == SMBStatus.NTErr && ex.getErrorCode() == SMBStatus.NTAccessDenied) {
+
+						// DEBUG
+					
+						testLog ( log, "Open failed with access denied error (expected)");
+						
+						// Successful test result
+						
+						result = new BooleanTestResult( true, "Access denied error (expected)");
+					}
 				}
 				catch ( SocketTimeoutException ex) {
 					testLog( log, "Failed to open file, request not continued by server");
