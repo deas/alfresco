@@ -18,6 +18,10 @@ diff -r -u greenmail-1.3/META-INF/MANIFEST.MF greenmail-1.3 - patched/META-INF/M
 -Created-By: 1.5.0_13-119 (Apple Inc.)
 +Created-By: 16.3-b01 (Sun Microsystems Inc.)
  
+Only in greenmail-1.3 - patched/build: .classpath
+Only in greenmail-1.3 - patched/build: .project
+Only in greenmail-1.3 - patched/build: META-INF
+Only in greenmail-1.3 - patched/build: com
 diff -r -u greenmail-1.3/com/icegreen/greenmail/imap/ImapConstants.java greenmail-1.3 - patched/com/icegreen/greenmail/imap/ImapConstants.java
 --- greenmail-1.3/com/icegreen/greenmail/imap/ImapConstants.java	2007-04-06 13:33:38.000000000 +0100
 +++ greenmail-1.3 - patched/com/icegreen/greenmail/imap/ImapConstants.java	2010-12-23 13:09:12.000000000 +0000
@@ -707,7 +711,7 @@ diff -r -u greenmail-1.3/com/icegreen/greenmail/store/MailFolder.java greenmail-
  
 diff -r -u greenmail-1.3/com/icegreen/greenmail/store/SimpleMessageAttributes.java greenmail-1.3 - patched/com/icegreen/greenmail/store/SimpleMessageAttributes.java
 --- greenmail-1.3/com/icegreen/greenmail/store/SimpleMessageAttributes.java	2007-05-14 15:47:22.000000000 +0100
-+++ greenmail-1.3 - patched/com/icegreen/greenmail/store/SimpleMessageAttributes.java	2011-12-20 21:52:05.403474800 +0000
++++ greenmail-1.3 - patched/com/icegreen/greenmail/store/SimpleMessageAttributes.java	2011-12-21 11:30:56.074911300 +0000
 @@ -3,6 +3,10 @@
   * This software is released under the LGPL which is available at http://www.gnu.org/copyleft/lesser.html
   * This file has been modified by the copyright holder. Original file can be found at http://james.apache.org
@@ -727,16 +731,20 @@ diff -r -u greenmail-1.3/com/icegreen/greenmail/store/SimpleMessageAttributes.ja
  import java.util.Set;
  
  import javax.mail.BodyPart;
-@@ -101,7 +106,7 @@
+@@ -101,7 +106,11 @@
              internalDate = new Date();
          }
  
 -        internalDateString = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss Z").format(internalDate);
-+        internalDateString = new MailDateFormat().format(internalDate);
++        /*  
++         * mrogers
++         * Internal Date Format must conform to RFC 3501
++         */
++        internalDateString = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss Z", Locale.ENGLISH).format(internalDate);
          interalDateEnvelopeString = new MailDateFormat().format(internalDate);
          parseMimePart(msg);
          envelope = null;
-@@ -120,10 +125,17 @@
+@@ -120,10 +129,17 @@
          size = GreenMailUtil.getBody(part).length();
  
          // Section 1 - Message Headers
@@ -758,7 +766,7 @@ diff -r -u greenmail-1.3/com/icegreen/greenmail/store/SimpleMessageAttributes.ja
  //                if (DEBUG) getLogger().debug("Messaging Exception for getSubject: " + me);
              }
          }
-@@ -411,8 +423,11 @@
+@@ -411,8 +427,11 @@
              buf.append(SP);
              buf.append(NIL); // should add route-addr
              buf.append(SP);
