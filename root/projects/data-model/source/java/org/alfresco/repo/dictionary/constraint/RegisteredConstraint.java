@@ -85,7 +85,7 @@ public final class RegisteredConstraint implements Constraint
     /**
      * @return      the constraint that matches the registered name
      */
-    private Constraint getConstraint()
+    public Constraint getRegisteredConstraint()
     {
         Constraint constraint = ConstraintRegistry.getInstance().getConstraint(registeredName);
         if (constraint == null)
@@ -100,7 +100,7 @@ public final class RegisteredConstraint implements Constraint
      */
     public String getType()
     {
-        return getConstraint().getType();
+        return getRegisteredConstraint().getType();
     }
     
     /**
@@ -108,7 +108,7 @@ public final class RegisteredConstraint implements Constraint
      */
     public String getTitle()
     {
-        return getConstraint().getTitle();
+        return getRegisteredConstraint().getTitle();
     }
     
     /**
@@ -116,7 +116,7 @@ public final class RegisteredConstraint implements Constraint
      */
     public Map<String, Object> getParameters()
     {
-        return getConstraint().getParameters();
+        return getRegisteredConstraint().getParameters();
     }
 
     /**
@@ -124,6 +124,6 @@ public final class RegisteredConstraint implements Constraint
      */
     public void evaluate(Object value)
     {
-        getConstraint().evaluate(value);
+        getRegisteredConstraint().evaluate(value);
     }
 }
