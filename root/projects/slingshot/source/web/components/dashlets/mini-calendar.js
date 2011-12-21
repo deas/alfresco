@@ -174,10 +174,6 @@
                var itemName = $html(item.name);
 
                // Display information about the event.
-               if (item.recurrenceRule != null)
-               {
-                  itemName += " (Recurring)";
-               }
                // if start and end datetimes match we don't need to display them (all day event).
                if (item.startAt.iso8601 === item.endAt.iso8601)
                {
@@ -262,111 +258,111 @@
       },      
 
       /**
-       * Return next occurence of provided event after currentDate.
+       * Return next occurrence of provided event after currentDate.
        */
       getNextEventStartDates: function getNextEventStartDates(event, currentDate)
       {       
-          var rubeResult = [];
-          var result = [];
-          var recurrenceRule = event.recurrenceRule;
+         var rubeResult = [],
+            result = [],
+            recurrenceRule = event.recurrenceRule,
+            evStart =  fromISO8601(event.startAt.iso8601),
+            parts = recurrenceRule.split(";"),
+            eventParam = {},
+            endDate = new Date(),
+            needCycle = true;
+
       
-          var evStart = this.cloneDate(event.from);
+         // If event starts in future, then start search from its start date
+         if (evStart >= currentDate)
+         {
+            currentDate = evStart;
+         }
       
-          // If event starts in future, then start search from its start date
-          if (evStart >= currentDate)
-          {
-             currentDate = evStart;
-          }
-          var parts = recurrenceRule.split(";");
-          var eventParam = new Object();
+         for (var i = 0; i < parts.length; i++)
+         {
+            var part = parts[i].split("=");
+            eventParam[part[0]]= part[1];
+         }
+
+         endDate.setTime(currentDate.getTime());
       
-          for (var i = 0; i < parts.length; i++)
-          {
-             var part = parts[i].split("=");
-             eventParam[part[0]]= part[1];
-          }
+         while(needCycle)
+         {
+            // Get all events between currentDate and currentDate + event interval.
+            // There must be at least one event.
+            if (eventParam['FREQ']=="WEEKLY")
+            {
+               endDate.setTime(endDate.getTime() + eventParam['INTERVAL'] * DAY_MS * 7);
+               rubeResult =  this.resolveStartDateWeekly(event, eventParam, currentDate, endDate);
+            }
+            else  if (eventParam['FREQ']=="DAILY")
+            {
+               endDate.setTime(endDate.getTime() + eventParam['INTERVAL'] * DAY_MS);
+               rubeResult =  this.resolveStartDaily(event, eventParam, currentDate, endDate);
+            }
+            else  if (eventParam['FREQ']=="MONTHLY")
+            {
+               endDate.setMonth(endDate.getMonth() + eventParam['INTERVAL'] * 1);
+               rubeResult =  this.resolveStartMonthly(event, eventParam, currentDate, endDate);
+            }
+
+            if (rubeResult.length > 0)
+            {
+               // sort rubeResult
+               for (var i = 0; i < rubeResult.length -1; i++)
+               {
+                  for(var j = i + 1; j < rubeResult.length; j++)
+                  {
+                     if(rubeResult[i] > rubeResult[j])
+                     {
+                        var tmp = rubeResult[i];
+                        rubeResult[i] = rubeResult[j];
+                        rubeResult[j] = tmp;
+                     }
+                  }
+               }
       
-          var endDate = new Date();
-          endDate.setTime(currentDate.getTime());
-          var needCycle = true;
-      
-          while(needCycle)
-          {
-             // Get all events between currentDate and currentDate + event interval.
-             // There must be at least one event.
-             if (eventParam['FREQ']=="WEEKLY")
-             {
-                endDate.setTime(endDate.getTime() + eventParam['INTERVAL'] * DAY_MS * 7);
-                rubeResult =  this.resolveStartDateWeekly(event, eventParam, currentDate, endDate);
-             }
-             else  if (eventParam['FREQ']=="DAILY")
-             {
-                endDate.setTime(endDate.getTime() + eventParam['INTERVAL'] * DAY_MS);
-                rubeResult =  this.resolveStartDaily(event, eventParam, currentDate, endDate);
-             }
-             else  if (eventParam['FREQ']=="MONTHLY")
-             {
-                endDate.setMonth(endDate.getMonth() + eventParam['INTERVAL'] * 1);
-                rubeResult =  this.resolveStartMonthly(event, eventParam, currentDate, endDate);
-             }
-      
-             if (rubeResult.length > 0)
-             {
-                // sort rubeResult
-                for (var i = 0; i < rubeResult.length -1; i++)
-                {
-                   for(var j = i + 1; j < rubeResult.length; j++)
-                   {
-                      if(rubeResult[i] > rubeResult[j])
-                      {
-                         var tmp = rubeResult[i];
-                         rubeResult[i] = rubeResult[j];
-                         rubeResult[j] = tmp;
-                      }
-                   }
-                }
-      
-                // Find first reccurent rule that not ignored
-                if (event.ignoreEvents.length > 0)
-                {
-                   for (var i = 0; i < rubeResult.length; i++)
-                   {
-                      var isIgnored = false;
-                      for(var j = 0; j < event.ignoreEvents.length; j++)
-                      {
-                         if (Alfresco.util.formatDate(rubeResult[i], "m/d/yyyy") == event.ignoreEvents[j])
-                         {
-                            isIgnored = true;
-                            break;
-                         }
-                      }
-                      if (!isIgnored)
-                      {
-                         result.push(rubeResult[i]);
-                         break;
-                      }
-                   }
-                }
-                else
-                {
-                   result.push(rubeResult[0]);
-                }
-      
-                if (result.length == 1)
-                {
-                   needCycle = false;
-                }
-                else
-                {
-                   currentDate = endDate;
-                }
-             }
-             else
-             {
-                needCycle = false;
-             }
-          }
-          return result;
+               // Find first reccurent rule that not ignored
+               if (event.ignoreEvents.length > 0)
+               {
+                  for (var i = 0; i < rubeResult.length; i++)
+                  {
+                     var isIgnored = false;
+                     for(var j = 0; j < event.ignoreEvents.length; j++)
+                     {
+                        if (Alfresco.util.formatDate(rubeResult[i], "m/d/yyyy") == event.ignoreEvents[j])
+                        {
+                           isIgnored = true;
+                           break;
+                        }
+                     }
+                     if (!isIgnored)
+                     {
+                        result.push(rubeResult[i]);
+                        break;
+                     }
+                  }
+               }
+               else
+               {
+                  result.push(rubeResult[0]);
+               }
+
+               if (result.length == 1)
+               {
+                  needCycle = false;
+               }
+               else
+               {
+                  currentDate = endDate;
+               }
+            }
+            else
+            {
+               needCycle = false;
+            }
+         }
+         return result;
       },
 
       /**
@@ -394,7 +390,7 @@
             return result;
          }
       
-         var eventStart = this.cloneDate(ev.from);
+         var eventStart = fromISO8601(ev.startAt.iso8601);
       
          // Add as much full event cycles as need
          if (eventStart.getTime() < currentDate.getTime())
@@ -426,7 +422,7 @@
       
             while (eventDate.getTime() - lastEventDay.getTime() < DAY_MS)
             {
-               if (eventDate.getTime() >= currentDate.getTime() && eventDate.getTime() >= this.cloneDate(ev.from).getTime())
+               if (eventDate.getTime() >= currentDate.getTime() && eventDate.getTime() >= fromISO8601(ev.startAt.iso8601).getTime())
                {
                   var dateToAdd = new Date();
                   dateToAdd.setTime(eventDate.getTime())
@@ -461,7 +457,7 @@
             return result;
          }
 
-         var eventStart = this.cloneDate(ev.from);
+         var eventStart = fromISO8601(ev.startAt.iso8601);
       
           // Add as much full event cycles as need
          if (eventStart.getTime() < currentDate.getTime())
@@ -510,7 +506,7 @@
       
          var interval = eventParam['INTERVAL'];
       
-         var eventStart = this.cloneDate(ev.from);
+         var eventStart = fromISO8601(ev.startAt.iso8601);
       
          var lastEventDay = this.getLastEventDay(ev, currentDate, endDate);
          if (lastEventDay == -1)
@@ -597,7 +593,7 @@
          {
             var lastAllowedDay = this.cloneDate(ev.recurrenceLastMeeting);
       
-            if (lastAllowedDay.getTime() < currentDate.getTime() || this.cloneDate(ev.from).getTime() > endDate.getTime())
+            if (lastAllowedDay.getTime() < currentDate.getTime() || fromISO8601(ev.startAt.iso8601).getTime() > endDate.getTime())
             {
                return -1;
             }
