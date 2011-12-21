@@ -69,10 +69,7 @@ public class FileFilterMode
     public static Client setClient(Client newClient)
     {
         Client oldClient = client.get();
-        if(oldClient == null)
-        {
-            client.set(newClient);
-        }
+        client.set(newClient);
 
         return oldClient;
     }
