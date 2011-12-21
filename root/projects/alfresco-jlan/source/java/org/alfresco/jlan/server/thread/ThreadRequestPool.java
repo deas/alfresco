@@ -117,11 +117,7 @@ public class ThreadRequestPool {
 			// Loop until shutdown
 
 			ThreadRequest threadReq = null;
-<<<<<<< .mine
-			
-=======
 
->>>>>>> .r32889
 			while (mi_shutdown == false) {
 
 				try {
