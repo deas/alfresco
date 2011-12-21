@@ -306,7 +306,7 @@
             // At earliest, so disable the previous button
             Dom.addClass(navEls[0], "disabled");
          }
-         else if (this.showConfig.nodeRef === this.showConfig.currentNodeRef)
+         else if (this.showConfig.nodeRef === this.showConfig.latestVersion.nodeRef)
          {   
             // at latest, so disable the next button.
             Dom.addClass(navEls[1], "disabled");
@@ -336,7 +336,7 @@
                
          
          // Write HTML for menu & add current version and option groups to menu:
-         menuHTML = "<option value='" + this.showConfig.currentNodeRef + "' title='" + currentTitle + "'>" + currentTitle + "</option>";
+         menuHTML = "<option value='" + this.showConfig.latestVersion.nodeRef + "' title='" + currentTitle + "'>" + currentTitle + "</option>";
          
          // Add an option element for each of the previous versions
          for (i in this.versions) {
@@ -372,13 +372,13 @@
 
          var firstUL = Dom.getElementsByClassName("first-of-type", "ul", navContainer)[0],
          firstLI = Dom.getElementsByClassName("first-of-type", "li", firstUL)[0];
-         
+
          // Inject item headers
          currentVersionHeader.innerHTML = Alfresco.util.message("historicProperties.menu.current", this.name);
          previousVersionHeader.innerHTML = Alfresco.util.message("historicProperties.menu.previous", this.name);
-         
+
          Dom.insertBefore(currentVersionHeader, firstLI);
-         Dom.insertAfter(previousVersionHeader, firstLI);         
+         Dom.insertAfter(previousVersionHeader, firstLI);
       },
       
       /**
@@ -407,7 +407,7 @@
          }
          
          if (returnLabel === this.showConfig.latestVersion.label) {
-            return this.showConfig.currentNodeRef;
+            return this.showConfig.latestVersion.nodeRef;
          }
          // NOTE: the versions array has the most recent item first, so to navigate backwards in time, we need to increase the index.
          else if (returnLabel === "next") {
@@ -420,7 +420,7 @@
          // Treat current version specially: -1 = current version
          if (returnIndex === -1) 
          {
-            return this.showConfig.currentNodeRef;
+            return this.showConfig.latestVersion.nodeRef;
          }
          
          returnVersion = this.versions[returnIndex]
@@ -499,7 +499,7 @@
          
          // If the title hasn't been passed, we'll need to find it from the currentNodeRef.
          if (!title) {
-            if (this.showConfig.nodeRef === this.showConfig.currentNodeRef) {
+            if (this.showConfig.nodeRef === this.showConfig.latestVersion.nodeRef) {
                label = this.showConfig.latestVersion.label
                
                title = Alfresco.util.message("historicProperties.menu.title.latest", this.name,
