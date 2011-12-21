@@ -81,7 +81,7 @@
        * @type array
        */
       insituEditors: null,
-      
+
       /**
        * Fired by YUI when parent element is available for scripting.
        *
@@ -507,7 +507,14 @@
       {
          successCallback:
          {
-            fn: this.onPersistSuccess,
+            fn: function(response)
+            {
+               this.onPersistSuccess.apply(this, arguments);
+               if (response.json.message)
+               {
+                  Alfresco.util.PopupManager.displayMessage({ text: response.json.message });
+               }
+            },
             scope: this
          },
          failureCallback:
@@ -788,6 +795,11 @@
                            treeNode.toggle();
                            treeNode.refresh();
                            treeNode.toggle();
+
+                           if (response.json.message)
+                           {
+                              Alfresco.util.PopupManager.displayMessage({ text: response.json.message });
+                           }
                         },
                         scope: this
                      },
@@ -898,6 +910,11 @@
                            tree.removeNode(treeNode);
                            parent.toggle();
                            parent.toggle();
+
+                           if (response.json.message)
+                           {
+                              Alfresco.util.PopupManager.displayMessage({ text: response.json.message });
+                           }
                         },
                         scope: obj
                      },
