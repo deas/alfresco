@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
@@ -298,6 +299,16 @@ public final class Path implements Iterable<Path.Element>, Serializable
         return elements.hashCode();
     }
     
+    public Path getBaseNamePath(TenantService tenantService)
+    {
+        Path basePath = new Path();
+        for(Element element : elements)
+        {
+            basePath.append(element.getBaseNameElement(tenantService));
+        }
+        return basePath;
+    }
+    
     /**
      * Represents a path element.
      * <p>
@@ -309,6 +320,12 @@ public final class Path implements Iterable<Path.Element>, Serializable
          * @return Returns the path element portion including leading '/' and never null
          */
         public abstract String getElementString();
+
+        /**
+         * @param tenantService
+         * @return
+         */
+        public abstract Element getBaseNameElement(TenantService tenantService);
 
         /**
          * @param resolver  namespace prefix resolver
@@ -401,6 +418,15 @@ public final class Path implements Iterable<Path.Element>, Serializable
                 sb.append("[").append(ref.getNthSibling()).append("]");
             }
             return sb.toString();
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.service.cmr.repository.Path.Element#getBaseNameElement(org.alfresco.repo.tenant.TenantService)
+         */
+        @Override
+        public Element getBaseNameElement(TenantService tenantService)
+        {
+            return new ChildAssocElement(new ChildAssociationRef(ref.getTypeQName(), tenantService.getBaseName(ref.getParentRef(), true), ref.getQName(), tenantService.getBaseName(ref.getChildRef(), true), ref.isPrimary(), ref.getNthSibling()));
         }
     }
 
@@ -499,6 +525,15 @@ public final class Path implements Iterable<Path.Element>, Serializable
             return getQName().hashCode()*32 + position();
         }
 
+        /* (non-Javadoc)
+         * @see org.alfresco.service.cmr.repository.Path.Element#getBaseNameElement(org.alfresco.repo.tenant.TenantService)
+         */
+        @Override
+        public Element getBaseNameElement(TenantService tenantService)
+        {
+            return new AttributeElement(attribute, position);
+        }
+
     }
 
     /**
@@ -529,6 +564,15 @@ public final class Path implements Iterable<Path.Element>, Serializable
         public int hashCode()
         {
             return "descendant-or-self::node()".hashCode();
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.service.cmr.repository.Path.Element#getBaseNameElement(org.alfresco.repo.tenant.TenantService)
+         */
+        @Override
+        public Element getBaseNameElement(TenantService tenantService)
+        {
+           return new DescendentOrSelfElement();
         }
 
     }
@@ -562,6 +606,15 @@ public final class Path implements Iterable<Path.Element>, Serializable
         {
             return ".".hashCode();
         }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.service.cmr.repository.Path.Element#getBaseNameElement(org.alfresco.repo.tenant.TenantService)
+         */
+        @Override
+        public Element getBaseNameElement(TenantService tenantService)
+        {
+            return new SelfElement();
+        }
     }
     
     /**
@@ -592,6 +645,15 @@ public final class Path implements Iterable<Path.Element>, Serializable
         public int hashCode()
         {
             return "..".hashCode();
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.service.cmr.repository.Path.Element#getBaseNameElement(org.alfresco.repo.tenant.TenantService)
+         */
+        @Override
+        public Element getBaseNameElement(TenantService tenantService)
+        {
+            return new ParentElement();
         }
     }
 }
