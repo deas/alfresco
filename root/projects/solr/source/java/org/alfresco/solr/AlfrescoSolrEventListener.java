@@ -32,6 +32,7 @@ import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.util.EqualsHelper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
@@ -1589,6 +1590,321 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         {
             return numberOfOldCaches;
         }
+        
+        
+        public void checkCachePosition(CacheUpdateTracker tracker, CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, SolrIndexReader reader, OwnerIdManager ownerIdManager) 
+        {
+            if(tracker.inNew ==0)
+            {
+                return;
+            }
+            if(tracker.inNew > indexedByDocId.length)
+            {
+                return;
+            }
+            try
+            {
+                if (reader.isDeleted((tracker.inNew-1)))
+                {
+                    boolean failed = false;
+                    if(indexedByDocId[(tracker.inNew-1)] != null)
+                    {
+                        log.error("Entry found for deleted doc at " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                        failed = true;
+                    }
+                    if( aclIdByDocId[(tracker.inNew-1)] != -1)
+                    {
+                        log.error("Acl found for deleted doc at " + (tracker.inNew-1) +" "+ aclIdByDocId[(tracker.inNew-1)]);
+                        failed = true;
+                    }
+                    if(txIdByDocId[(tracker.inNew-1)] != -1)
+                    {
+                        log.error("Tx found for deleted doc at " + (tracker.inNew-1) +" "+txIdByDocId[(tracker.inNew-1)]);
+                        failed = true;
+                    }
+                    if(aclTxIdByDocId[(tracker.inNew-1)] != -1)
+                    {
+                        log.error("Acl Tx found for deleted doc at " + (tracker.inNew-1) +" "+aclTxIdByDocId[(tracker.inNew-1)]);
+                        failed = true;
+                    }
+
+                    if (allLeafDocs.get((tracker.inNew-1)))
+                    {
+                        log.error("Leaf set for deleted doc at " + (tracker.inNew-1));
+                        failed = true;
+                    }
+                    if(failed)
+                    {
+                        throw new IllegalStateException("Cache position check failed");
+                    }
+                }
+                else
+                {
+                    Document document = reader.document((tracker.inNew-1));
+                    Field field = document.getField("DBID");
+                    if (field != null)
+                    {
+                        // This will skip aux data as it does not have a DBID (eg ACL docs)
+
+                        String string = field.stringValue();
+                        long dbid = Long.parseLong(string);
+
+                        field = document.getField("ISNODE");
+                        boolean isLeaf;
+                        if (field == null)
+                        {
+                            isLeaf = false;
+                        }
+                        else
+                        {
+                            string = field.stringValue();
+                            isLeaf = string.equals("T");
+                        }
+
+                        long aclId = -1;
+                        field = document.getField("ACLID");
+                        if (field != null)
+                        {
+                            string = field.stringValue();
+                            aclId = Long.parseLong(string);
+                        }
+
+                        String owner = null;
+                        field = document.getField("OWNER");
+                        if (field != null)
+                        {
+                            owner = field.stringValue();
+                        }
+
+                        boolean failed = false;
+                        CacheEntry entry = indexedByDocId[(tracker.inNew-1)];
+                        if (entry == null)
+                        {
+                            log.error("Entry was incorrectly deleted at " + (tracker.inNew-1));
+                            throw new IllegalStateException("Cache position check failed");
+                        }
+
+                        if(entry.getDbid() != dbid)
+                        {
+                            log.error("Incorrect DBID " + (tracker.inNew-1)  + " "+entry);
+                            failed = true;
+                        }
+
+                        if (isLeaf)
+                        {
+                            if(entry.getLeaf() != (tracker.inNew-1))
+                            {
+                                log.error("Leaf position not set" + (tracker.inNew-1)  + " "+entry);
+                                failed = true;
+                            }
+                            if (!allLeafDocs.get((tracker.inNew-1)))
+                            {
+                                log.error("Leaf not set" + (tracker.inNew-1));
+                                failed = true;
+                            }
+                        }
+                        else
+                        {
+                            if(entry.getPath() != (tracker.inNew-1))
+                            {
+                                log.error("Path position not set" + (tracker.inNew-1)  + " "+entry);
+                                failed = true;
+                            }
+                            if(entry.getAclid() != aclId)
+                            {
+                                log.error("Incorrect ACL set" + (tracker.inNew-1)  + " "+entry);
+                                failed = true;
+                            }
+                            if(entry.getOwner() != ownerIdManager.getOwnerId(owner))
+                            {
+                                log.error("Incorrect Owner set" + (tracker.inNew-1)  + " "+entry);
+                                failed = true;
+                            }
+                            if (allLeafDocs.get((tracker.inNew-1)))
+                            {
+                                log.error("Leaf set" + (tracker.inNew-1));
+                                failed = true;
+                            }
+
+                        }
+
+
+                        if( aclIdByDocId[(tracker.inNew-1)] != -1)
+                        {
+                            log.error("Acl found for deleted doc at " + (tracker.inNew-1) +" "+ aclIdByDocId[(tracker.inNew-1)]);
+                            failed = true;
+                        }
+                        if(txIdByDocId[(tracker.inNew-1)] != -1)
+                        {
+                            log.error("Tx found for deleted doc at " + (tracker.inNew-1) +" "+txIdByDocId[(tracker.inNew-1)]);
+                            failed = true;
+                        }
+                        if(aclTxIdByDocId[(tracker.inNew-1)] != -1)
+                        {
+                            log.error("Acl Tx found for deleted doc at " + (tracker.inNew-1) +" "+aclTxIdByDocId[(tracker.inNew-1)]);
+                            failed = true;
+                        }
+
+                        if(failed)
+                        {
+                            throw new IllegalStateException("Cache position check failed");
+                        }
+                    }
+                    else
+                    {
+                        boolean failed = false;
+
+                        // ACL DOC
+                        field = document.getField("ACLID");
+                        if (field != null)
+                        {
+                            String string = field.stringValue();
+                            long aclId = Long.parseLong(string);
+
+                            if(indexedByDocId[(tracker.inNew-1)] != null)
+                            {
+                                log.error("Entry found for ACL  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                failed = true;
+                            }
+                            if(aclIdByDocId[(tracker.inNew-1)] != aclId)
+                            {
+                                log.error("Incorrect acl id for ACL  " + (tracker.inNew-1) +" "+aclIdByDocId[(tracker.inNew-1)]);
+                                failed = true;
+                            }
+
+                            if(txIdByDocId[(tracker.inNew-1)] != -1)
+                            {
+                                log.error("Tx found for ACL at " + (tracker.inNew-1) +" "+txIdByDocId[(tracker.inNew-1)]);
+                                failed = true;
+                            }
+                            if(aclTxIdByDocId[(tracker.inNew-1)] != -1)
+                            {
+                                log.error("Acl Tx found for ACL at " + (tracker.inNew-1) +" "+aclTxIdByDocId[(tracker.inNew-1)]);
+                                failed = true;
+                            }
+
+                            if (allLeafDocs.get((tracker.inNew-1)))
+                            {
+                                log.error("Leaf set for ACL at " + (tracker.inNew-1));
+                                failed = true;
+                            }
+
+                        }
+                        else
+                        {
+                            field = document.getField("TXID");
+                            if (field != null)
+                            {
+                                String string = field.stringValue();
+                                long txId = Long.parseLong(string);
+
+                                if(indexedByDocId[(tracker.inNew-1)] != null)
+                                {
+                                    log.error("Entry found for TX  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                    failed = true;
+                                }
+                                if(aclIdByDocId[(tracker.inNew-1)] != -1)
+                                {
+                                    log.error("ACL found for TX  " + (tracker.inNew-1) +" "+aclIdByDocId[(tracker.inNew-1)]);
+                                    failed = true;
+                                }
+                                if(txIdByDocId[(tracker.inNew-1)] != txId)
+                                {
+                                    log.error("Incorrect tx id for TX  " + (tracker.inNew-1) +" "+txIdByDocId[(tracker.inNew-1)]);
+                                    failed = true;
+                                }
+                                if(aclTxIdByDocId[(tracker.inNew-1)] != -1)
+                                {
+                                    log.error("Acl Tx found for TX at " + (tracker.inNew-1) +" "+aclTxIdByDocId[(tracker.inNew-1)]);
+                                    failed = true;
+                                }
+
+                                if (allLeafDocs.get((tracker.inNew-1)))
+                                {
+                                    log.error("Leaf set for TX at " + (tracker.inNew-1));
+                                    failed = true;
+                                }
+                            }
+                            else
+                            {
+                                field = document.getField("ACLTXID");
+                                if (field != null)
+                                {
+                                    String string = field.stringValue();
+                                    long aclTxId = Long.parseLong(string);
+
+                                    if(indexedByDocId[(tracker.inNew-1)] != null)
+                                    {
+                                        log.error("Entry found for ACL TX  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+                                    if(aclIdByDocId[(tracker.inNew-1)] != -1)
+                                    {
+                                        log.error("ACL found for ACL TX  " + (tracker.inNew-1) +" "+aclIdByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+                                    if(txIdByDocId[(tracker.inNew-1)] != -1)
+                                    {
+                                        log.error("TX found for ACL TX  " + (tracker.inNew-1) +" "+txIdByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+                                    if(aclTxIdByDocId[(tracker.inNew-1)] != aclTxId)
+                                    {
+                                        log.error("Incorrect acl tx id for ACL TX at " + (tracker.inNew-1) +" "+aclTxIdByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+
+                                    if (allLeafDocs.get((tracker.inNew-1)))
+                                    {
+                                        log.error("Leaf set for ACL TX at " + (tracker.inNew-1));
+                                        failed = true;
+                                    }
+
+                                }
+                                else
+                                {
+                                    if(indexedByDocId[(tracker.inNew-1)] != null)
+                                    {
+                                        log.error("Entry found for Unkown  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+                                    if(aclIdByDocId[(tracker.inNew-1)] != -1)
+                                    {
+                                        log.error("ACL found for Unknown  " + (tracker.inNew-1) +" "+aclIdByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+                                    if(txIdByDocId[(tracker.inNew-1)] != -1)
+                                    {
+                                        log.error("TX found for Unkown " + (tracker.inNew-1) +" "+txIdByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+                                    if(aclTxIdByDocId[(tracker.inNew-1)] != -1)
+                                    {
+                                        log.error("ACL TX found for unknown " + (tracker.inNew-1) +" "+aclTxIdByDocId[(tracker.inNew-1)]);
+                                        failed = true;
+                                    }
+
+                                    if (allLeafDocs.get((tracker.inNew-1)))
+                                    {
+                                        log.error("Leaf set for ACL TX at " + (tracker.inNew-1));
+                                        failed = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        if(failed)
+                        {
+                            throw new IllegalStateException("Cache position check failed");
+                        }
+                    }
+                }
+            }
+            catch(IOException e)
+            {
+                throw new IllegalStateException("Cache position check failed", e);
+            }
+        }
     }
 
     public abstract static class RemoveNullEntriesCacheMatch extends AbstractCacheMatch
@@ -1616,6 +1932,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
+            
             if((getNumberOfOldCaches() ==1) && (tracker.earlyDeletes > 0))
             {
                 throw new IllegalStateException("Early deletes should have been cleared");
@@ -1828,6 +2146,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 // force rebuild as cache rebuild failed
                 throw new IllegalStateException("RemoveNullEntriesCacheMatch cache update failed");
             }
+            
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
 
         }
 
@@ -1894,6 +2214,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
+            
             if(tracker.earlyDeletes > 0)
             {
                 throw new IllegalStateException("Early deletes should have been cleared");
@@ -2051,6 +2373,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 // force rebuild as cache rebuild failed
                 throw new IllegalStateException("Match cache update failed");
             }
+            
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
         }
 
     }
@@ -2105,7 +2429,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
             // delete all existing
-
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
+            
             if(tracker.earlyDeletes > 0)
             {
                 throw new IllegalStateException("Early deletes should have been cleared");
@@ -2113,6 +2438,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, getFinalIndexReader(), tracker.inNew, getFinalCacheSize(), unmatchedByDBID, ownerIdManager);
             tracker.inNew += getFinalCacheSize();
             tracker.inOld += getOldCacheSize();
+            
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
         }
     }
 
@@ -2159,6 +2486,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
 
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
+            
             boolean targetHasDeletions = finalIndexReader.hasDeletions();
             int startNew = tracker.inNew;
             int startOld = tracker.inOld;
@@ -2356,6 +2685,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 // force rebuild as cache rebuild failed
                 throw new IllegalStateException("MergeAndNew cache update failed");
             }
+            
+            checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
         }
 
     }
@@ -2530,7 +2861,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     }
 
     /**
-     * Keep for inremental build
+     * Keep for incremental build
      */
 
     private void updateCacheByDocId(CacheUpdateTracker tracker, CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId,

@@ -345,6 +345,11 @@ public class AlfrescoSolrDataModel
 
     public boolean isIndexedOrStored(QName propertyQName)
     {
+        if(storeAll)
+        {
+            return true;
+        }
+        
         String fieldName = AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString();
 
         PropertyDefinition propertyDefinition = getPropertyDefinition(fieldName);
