@@ -116,7 +116,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 e.printStackTrace();
             }
 
-            BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
         }
         catch (SchedulerException e)
         {
