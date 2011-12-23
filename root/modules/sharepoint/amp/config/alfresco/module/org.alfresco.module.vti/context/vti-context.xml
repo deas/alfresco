@@ -134,6 +134,16 @@
                     <property name="customRules">
                         <map>
                             <entry key="Request-method">
+                                <value>DELETE</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiDeleteAction"/>
+                </bean>
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
+                            <entry key="Request-method">
                                 <value>LOCK</value>
                             </entry>
                         </map>
@@ -283,6 +293,12 @@
     </bean>
 
     <bean id="vtiMoveAction" class="org.alfresco.module.vti.web.actions.VtiMoveAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="vtiDeleteAction" class="org.alfresco.module.vti.web.actions.VtiDeleteAction">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="serviceRegistry" ref="ServiceRegistry"/>
         <property name="authenticationService" ref="AuthenticationService"/>
