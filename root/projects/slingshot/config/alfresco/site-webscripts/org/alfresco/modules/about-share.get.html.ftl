@@ -46,7 +46,7 @@ Zia Consulting<br/>
 Zaizi<br/>
                </div>
             </div>
-            <div class="copy">&copy; 2005-2011 Alfresco Software Inc. All rights reserved.</div>
+            <div class="copy">&copy; 2005-2012 Alfresco Software Inc. All rights reserved.</div>
             <div class="copy">
                <a href="http://www.alfresco.com" target="new">www.alfresco.com</a>
                <a href="http://www.alfresco.com/legal/agreements/" target="new">Legal and License</a>
