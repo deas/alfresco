@@ -431,8 +431,8 @@
 		<attribute name="optionalDirs" default=""/>
 
 		<sequential>
-			<echo file="@{classfile}">
-				<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+			<!-- Must not have whitespace before content -->
+			<echo file="@{classfile}"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 				<classpath>
 					<classpathentry kind="src" path="source"/>
 					<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
