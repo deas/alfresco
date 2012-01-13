@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
@@ -100,6 +102,7 @@ public class RuntimeExec
     private static final String DIRECTIVE_SPLIT = "SPLIT:";
 
     private static Log logger = LogFactory.getLog(RuntimeExec.class);
+    private static Log transformerDebugLogger = LogFactory.getLog("org.alfresco.repo.content.transform.TransformerDebug");
 
     private String[] command;
     private Charset charset;
@@ -108,6 +111,7 @@ public class RuntimeExec
     private String[] processProperties;
     private File processDirectory;
     private Set<Integer> errCodes;
+    private Timer timer = new Timer();
 
     /**
      * Default constructor.  Initialize this instance by setting individual properties.
@@ -409,13 +413,32 @@ public class RuntimeExec
 
     /**
      * Executes the statement that this instance was constructed with.
-     * <p>
+     * 
+     * @param properties the properties that the command might be executed with.
      * <code>null</code> properties will be treated as an empty string for substitution
      * purposes.
      * 
      * @return Returns the full execution results
      */
     public ExecutionResult execute(Map<String, String> properties)
+    {
+        return execute(properties, -1);
+    }
+
+    /**
+     * Executes the statement that this instance was constructed with an optional
+     * timeout after which the command is asked to 
+     * 
+     * @param properties the properties that the command might be executed with.
+     * <code>null</code> properties will be treated as an empty string for substitution
+     * purposes.
+     * @param timeoutMs a timeout after which {@link Process#destroy()} is called.
+     *        ignored if less than or equal to zero. Note this method does not guarantee
+     *        to terminate the process (it is not a kill -9).
+     * 
+     * @return Returns the full execution results
+     */
+    public ExecutionResult execute(Map<String, String> properties, final long timeoutMs)
     {
         int defaultFailureExitValue = errCodes.size() > 0 ? ((Integer)errCodes.toArray()[0]) : 1;
         
@@ -433,7 +456,34 @@ public class RuntimeExec
         {
             // execute the command with full property replacement
             commandToExecute = getCommand(properties);
-            process = runtime.exec(commandToExecute, processProperties, processDirectory);
+            final Process thisProcess = runtime.exec(commandToExecute, processProperties, processDirectory);
+            process = thisProcess;
+            if (timeoutMs > 0)
+            {
+                final String[] command = commandToExecute;
+                timer.schedule(new TimerTask()
+                {
+                    @Override
+                    public void run()
+                    {
+                        // Only try to kill the process if it is still running
+                        try
+                        {
+                            thisProcess.exitValue();
+                        }
+                        catch (IllegalThreadStateException stillRunning)
+                        {
+                            if (transformerDebugLogger.isDebugEnabled())
+                            {
+                                transformerDebugLogger.debug("Process has taken too long ("+
+                                    (timeoutMs/1000)+" seconds). Killing process "+
+                                    Arrays.deepToString(command));
+                            }
+                            thisProcess.destroy();
+                        }
+                    }
+                }, timeoutMs);
+            }
         }
         catch (IOException e)
         {
@@ -510,7 +560,7 @@ public class RuntimeExec
      * <code>null</code> properties will be treated as an empty string for substitution
      * purposes.
      * 
-     * @param properties the properties that might be executed with
+     * @param properties the properties that the command might be executed with
      * @return Returns the command that will be executed should the additional properties
      *      be supplied
      */

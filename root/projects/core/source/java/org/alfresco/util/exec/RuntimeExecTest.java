@@ -110,4 +110,57 @@ public class RuntimeExecTest extends TestCase
         assertTrue("Default command for OS " + os + " is incorrect", Arrays.deepEquals(defaultCommandCheck, defaultCommand));
         assertTrue("Dynamic command for OS " + os + " is incorrect", Arrays.deepEquals(dynamicCommandCheck, dynamicCommand));
     }
+    
+    public void testNoTimeout() throws Exception
+    {
+        long timeout = -1;
+        int runFor = 10000;
+        
+        longishRunningProcess(runFor, timeout);
+    }
+    
+    public void testTimeout() throws Exception
+    {
+        long timeout = 5000;
+        int runFor = 10000;
+        
+        longishRunningProcess(runFor, timeout);
+    }
+
+    private void longishRunningProcess(int runFor, long timeout)
+    {
+        long marginOfError = 3000;
+        boolean shouldComplete = timeout <= 0;
+
+        assertTrue("The timeout when set must be more than "+marginOfError+"ms", shouldComplete || timeout >= marginOfError);
+        assertTrue("The timeout when set plus "+marginOfError+"ms must less than the runFor value", shouldComplete || timeout+marginOfError <= runFor);
+        
+        long minTime = (shouldComplete ? runFor : timeout) - marginOfError;
+        long maxTime = (shouldComplete ? runFor : timeout) + marginOfError;
+
+        RuntimeExec exec = new RuntimeExec();
+        
+        // This test will return different results on Windows and Linux!
+        // note that some Unix variants will error without a path
+        HashMap<String, String[]> commandMap = new HashMap<String, String[]>();
+        commandMap.put("*", new String[] {"sleep", ""+(runFor/1000)});
+        commandMap.put("Windows.*", new String[] {"ping", "-n", ""+(runFor/1000+1), "127.0.0.1"}); // don't you just love Microsoft
+
+        // execute
+        exec.setCommandsAndArguments(commandMap);
+        long time = System.currentTimeMillis();
+        ExecutionResult ret = exec.execute(Collections.<String,String>emptyMap(), timeout);
+        time = System.currentTimeMillis()-time;
+        
+        String out = ret.getStdOut();
+        String err = ret.getStdErr();
+        
+        assertTrue("Command was too fast "+time+"ms", time >= minTime);
+        assertTrue("Command was too slow "+time+"ms", time <= maxTime);
+
+        if (shouldComplete)
+            assertEquals("Didn't expect error code", 0, ret.getExitValue());
+        else
+            assertFalse("Didn't expect success code", 0 == ret.getExitValue());
+    }
 }
