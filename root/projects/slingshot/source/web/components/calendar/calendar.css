@@ -1538,7 +1538,8 @@ div.fullCalendar .fc-event-vert .fc-event-bg
    opacity: 1;
 }
 
-.fc-grid .fc-widget-content:hover .fc-day-number
+/* Only show the edit icon if the user has the right permissions (denoted by the calendar-editable class) */
+.calendar-editable .fc-grid .fc-widget-content:hover .fc-day-number
 {
    background: url("images/add-event-16-2.png") no-repeat right 3px;
 }

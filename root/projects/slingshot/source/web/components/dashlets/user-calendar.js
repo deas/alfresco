@@ -35,8 +35,12 @@
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML,
-       dateFormat = Alfresco.thirdparty.dateFormat,
-       longDateMsg = Alfresco.util.message("date-format.longDate");
+      formatDate = Alfresco.util.formatDate,
+      fromISO8601 = Alfresco.util.fromISO8601,
+      toISO8601 = Alfresco.util.toISO8601,
+      dateMsg = Alfresco.util.message("date-format.longDate"),
+      timeMsg = Alfresco.util.message("date-format.shortTime"),
+      dateTimeMsg = dateMsg + " " + timeMsg;
 
    /**
     * Dashboard UserCalendar constructor.
@@ -91,7 +95,7 @@
       {
          var showUntil = new Date();
          showUntil.setDate(showUntil.getDate() + this.options.maxDays);
-         showUntil = Alfresco.util.toISO8601(showUntil).split("T")[0];
+         showUntil = toISO8601(showUntil).split("T")[0];
 
          Alfresco.util.Ajax.request(
          {
@@ -171,40 +175,47 @@
        */
       renderCellEvent: function UserCalendar_renderCellEvent(elCell, oRecord, oColumn, oData)
       {
-         var startDate = oRecord.getData("when"),
-             endDate = oRecord.getData("endDate");
-         var startDateDate = Alfresco.thirdparty.fromISO8601(startDate),
-             endDateDate = Alfresco.thirdparty.fromISO8601(endDate);
-         
-         var desc = '<div class="detail"><h4><a href="' + Alfresco.constants.URL_CONTEXT + oRecord.getData("url") + '" class="theme-color-1">' + $html(oRecord.getData("title")) + '</a></h4>';
+         var startDate = fromISO8601(oRecord.getData("startAt").iso8601),
+            endDate = fromISO8601(oRecord.getData("endAt").iso8601),
+            isSameDay = (oRecord.getData("startAt").iso8601.split("T")[0] === oRecord.getData("endAt").iso8601.split("T")[0]) ? true : false,
+            isSameTime = (oRecord.getData("startAt").iso8601.split("T")[1] === oRecord.getData("endAt").iso8601.split("T")[1]) ? true : false,
+            isAllDay = (oRecord.getData("allday") === "true")? true : false,
+            desc = '<div class="detail"><h4><a href="' + Alfresco.constants.URL_CONTEXT + oRecord.getData("url") + '" class="theme-color-1">' + $html(oRecord.getData("title")) + '</a></h4>';
+
          desc += '<div>';
-         if (startDate != endDate && oRecord.getData("allday") != "true")
+
+         // Build up the display string depending on which elements are relevant.
+         if (isSameDay)
          {
-            // simple multiday
-            desc += dateFormat(startDateDate, longDateMsg) + ' ' + oRecord.getData("start") + ' - ' + dateFormat(endDateDate, longDateMsg) + ' ' + oRecord.getData("end");
+            // Starts/Ends on same day: only need to show start date
+            desc += formatDate(startDate, dateMsg)
+            if (!isAllDay)
+            {
+               // Timed Event: show the start time
+               desc += " " + formatDate(startDate, timeMsg)
+               // Single Day Timed
+               if (!isSameTime)
+               {
+                  // End Time Differs: show the end time
+                  desc += " - " + formatDate(endDate, timeMsg)
+               }
+            }
          }
          else
          {
-            desc += dateFormat(startDateDate, longDateMsg);
-            if (oRecord.getData("allday") == "true")
+            // Multiday event: both start and end dates need showing.
+            if (isAllDay)
             {
-               if (startDate != endDate)
-               {
-                  // all day Multiday
-                  desc += ' - ' + dateFormat(endDateDate, longDateMsg);
-               }
-               desc += ' ' + this.msg("label.allday");
+               // All Day: no times needed.
+               desc += formatDate(startDate, dateMsg) + ' - ' + formatDate(endDate, dateMsg);
             }
             else
             {
-               // single day
-               desc += dateFormat(startDateDate, longDateMsg);
-               if (oRecord.getData("start") != oRecord.getData("end"))
-               {
-                  desc += ' - ' + oRecord.getData("end");
-               }
+               // Multiday timed event: show date and time for start/end
+               desc += formatDate(startDate, dateTimeMsg) + ' - ' + formatDate(endDate, dateTimeMsg);
             }
          }
+
          desc += '</div><div><a href="' + Alfresco.constants.URL_PAGECONTEXT + 'site/' + oRecord.getData("site") + '/dashboard" class="theme-link-1">' + $html(oRecord.getData("siteTitle")) + '</a></div></div>';
          
          elCell.innerHTML = desc;

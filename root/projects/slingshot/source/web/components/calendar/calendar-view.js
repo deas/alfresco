@@ -803,7 +803,7 @@
             if (Sel.test(elTarget, 'div.' + this.dragGroup))
             {
                Dom.addClass(elTarget, 'highlight');
-               if (this.options.permitToCreateEvents === 'true')
+               if (this.options.permitToCreateEvents)
                {
                   if (!Dom.hasClass(elTarget, 'disabled'))
                   {

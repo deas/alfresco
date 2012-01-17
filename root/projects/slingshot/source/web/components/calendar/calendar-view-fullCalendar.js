@@ -180,6 +180,10 @@
          // Standard jQuery wrapper maintained for clarity
          $(document).ready(function()
          {
+            if (me.options.permitToCreateEvents)
+            {
+               $jCalendar.addClass("calendar-editable");
+            }
             // FullCalendar init, inc. inline function declarations.
             $jCalendar.fullCalendar(
             {
@@ -249,7 +253,7 @@
                },
 
                // Has the user got permissions to create events?
-               editable: (me.options.permitToCreateEvents === "true") ? true : false,
+               editable: me.options.permitToCreateEvents,
 
                // Define the event source as the Alfresco Calendar Event API
                eventSources:
@@ -324,7 +328,39 @@
 
                dayClick: function CalendarFullCalendar_onDayClick(date, allDay, jsEvent, view)
                {
-                  me.showAddDialog(date);
+                  // Only show add dialogue if user has create events permission.
+                  if (me.options.permitToCreateEvents)
+                  {
+                     me.showAddDialog(date);
+                  }
+               },
+
+               /**
+                * Triggered by FullCalendar after an event has been updated (e.g. by drag and drop)
+                *
+                * @method afterEventChange
+                * @param eventID - the unique ID of the event that has moved
+                */
+               afterEventChange: function CalendarFullCalendar_afterEventChange(eventID)
+               {
+                  // the filter returns an array for when multiple (e.g. repeated) events share an ID)
+                  var events = $jCalendar.fullCalendar("clientEvents", eventID);
+
+                  // keep the Alfresco properties in sync w/ the event object ones.
+                  for (var i=0; i < events.length; i++)
+                  {
+                     var event = events[i],
+                     startISO8601 = toISO8601(event.start),
+                     endISO8601 = toISO8601(event.end) || startISO8601;
+                     event.startAt =
+                     {
+                        iso8601: startISO8601
+                     }
+                     event.endAt =
+                     {
+                        iso8601: endISO8601
+                     }
+                  }
                }
 
             });

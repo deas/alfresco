@@ -345,9 +345,11 @@ var CalendarScriptHelper = (function()
       },
       isUserPermittedToCreateEvents: function()
       {
-         var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
-         var membership = eval('(' + json + ')');
-         return (membership.role !== "SiteConsumer") ? 'true' : 'false';
+         var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name)),
+            membership = eval('(' + json + ')');
+
+         // If the user isn't a member of the site, the response won't have role.
+         return (membership.role && membership.role !== "SiteConsumer")? true : false;
       },
 
       /**

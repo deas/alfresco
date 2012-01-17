@@ -52,7 +52,7 @@
                </span>
                <span id="${el}-starttime" class="eventTime">
                   <label for="${el}-start">${msg("label.at")}</label>
-                  <input id="${el}-start" name="start" value="${config.script.config.defaultStart}" type="text" size="10" tabindex="7" />
+                  <input id="${el}-start" name="start" value="<#if !(event.startAt??)>${config.script.config.defaultStart}</#if>" type="text" size="10" tabindex="7" />
                </span>
             </div>
          </div>
@@ -66,7 +66,7 @@
                </span>
                <span id="${el}-endtime" class="eventTime">
                   <label for="${el}-end">${msg("label.at")}</label>
-                  <input id="${el}-end" name="end" value="<#if event.startAt??>${xmldate(event.endAt.iso8601)?string(msg("date-format.shortTime24FTL"))}<#else>${config.script.config.defaultEnd}</#if>" type="text" size="10" tabindex="9" />
+                  <input id="${el}-end" name="end" value="<#if !(event.endAt??)>${config.script.config.defaultEnd}</#if>" type="text" size="10" tabindex="9" />
                </span>
             </div>
          </div>

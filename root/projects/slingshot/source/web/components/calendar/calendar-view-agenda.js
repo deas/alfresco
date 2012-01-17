@@ -176,7 +176,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       me = this;
       
       // build up cell content
-      write = (this.options.permitToCreateEvents === "true")? true : false
+      write = this.options.permitToCreateEvents;
 
       // NOTE: DOM order (Delete, Edit, Info) is reverse of display order (Info, Edit, Delete), due to right float.      
       if (write) {
@@ -328,7 +328,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       } else 
       {
          // Display noEvent text
-         var noEventsTemplate = (this.options.permitToCreateEvents === "true")? noEventsEditTemplate : noEventsNoEditTemplate; // show different help text if the user can't create an event. 
+         var noEventsTemplate = (this.options.permitToCreateEvents)? noEventsEditTemplate : noEventsNoEditTemplate; // show different help text if the user can't create an event.
          
          grandParentEl.innerHTML = YAHOO.lang.substitute(noEventsTemplate, 
          {

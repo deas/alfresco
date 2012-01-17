@@ -13,7 +13,7 @@
       startDate : Alfresco.util.fromISO8601('${viewArgs.view.startDate?html}'),
       endDate : Alfresco.util.fromISO8601('${viewArgs.view.endDate?html}'),
       titleDate : Alfresco.util.fromISO8601('${viewArgs.view.titleDate?html}'),
-      permitToCreateEvents : '${viewArgs.permitToCreateEvents?html}',
+      permitToCreateEvents : ${viewArgs.permitToCreateEvents?string},
       truncateLength: ${config.script.config.truncateLength!100},
       /* FullCalendar Options */
       fcOpts:

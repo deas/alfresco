@@ -524,16 +524,16 @@
                      // show them if they are.
                      Dom.removeClass(startTimeEl.parentNode, "hidden")
                      Dom.removeClass(endTimeEl.parentNode, "hidden")
-
-                     // Make sure the time is correct if we're editing an event.
-                     if (editEvent)
-                     {
-                        // TODO: Change this to use date-format.shortTime when input parsing script can determine AM/PM
-                        Dom.setAttribute(startTimeEl, "value", formatDate(startDate, "HH:MM"));
-                        Dom.setAttribute(endTimeEl, "value", formatDate(endDate, "HH:MM"));
-                     }
                   }
 
+                  // Make sure the time is correct if we're editing an event.
+                  if (editEvent)
+                  {
+                     // TODO: Change this to use date-format.shortTime when input parsing script can determine AM/PM
+                     Dom.setAttribute(startTimeEl, "value", formatDate(startDate, "HH:MM"));
+                     Dom.setAttribute(endTimeEl, "value", formatDate(endDate, "HH:MM"));
+                  }
+                  
                   // hide mini-cal
                   EditDialog.dialog.hideEvent.subscribe(function()
                   {
