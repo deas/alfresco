@@ -11,8 +11,8 @@
       <form id="${el}-form" action="${url.context}/proxy/alfresco/calendar/create" method="POST">
          <input type="hidden" name="site" value="${(args.site!"")?html}" />
          <input type="hidden" name="page" value="calendar" />
-         <input type="hidden" id="${el}-from" name="from" value="${event.from!""}" />
-         <input type="hidden" id="${el}-to" name="to" value="${event.to!""}" />
+         <input type="hidden" id="${el}-startAt" name="startAt" value="${event.from!""}" />
+         <input type="hidden" id="${el}-endAt" name="endAt" value="${event.to!""}" />
          <#if config.script.config.enableDocFolder="false">
             <input type="hidden" name="docfolder" value="${event.docfolder}" />
          </#if>
@@ -52,7 +52,7 @@
                </span>
                <span id="${el}-starttime" class="eventTime">
                   <label for="${el}-start">${msg("label.at")}</label>
-                  <input id="${el}-start" name="start" value="<#if event.startAt??>${xmldate(event.startAt.iso8601)?string(msg("date-format.shortTime24FTL"))}<#else>${config.script.config.defaultStart}</#if>" type="text" size="10" tabindex="7" />
+                  <input id="${el}-start" name="start" value="${config.script.config.defaultStart}" type="text" size="10" tabindex="7" />
                </span>
             </div>
          </div>

@@ -36,7 +36,7 @@
       $combine = Alfresco.util.combinePaths,
       fromISO8601 = Alfresco.util.fromISO8601,
       toISO8601 = Alfresco.util.toISO8601,
-      dateFormat = Alfresco.thirdparty.dateFormat,
+      formatDate = Alfresco.util.formatDate,
       // These help with the confusing scope levels here, to be defined later.
       EventInfo,
       EditDialog,
@@ -198,15 +198,15 @@
          for (var i=0,len=dateElIds.length;i<len;i++)
          {
             var dateTextEl = Dom.get(dateElIds[i]);
-            var date = Alfresco.util.fromISO8601(dateTextEl.innerHTML);
+            var date = fromISO8601(dateTextEl.innerHTML);
             //only show date for allday events otherwise show time too
             if (Dom.hasClass(dateTextEl, "allDayEvent"))
             {
-               dateTextEl.innerHTML = Alfresco.util.formatDate(date, Alfresco.util.message("date-format.fullDate"));
+               dateTextEl.innerHTML = formatDate(date, Alfresco.util.message("date-format.fullDate"));
             }
             else 
             {
-               dateTextEl.innerHTML = Alfresco.util.formatDate(date, Alfresco.util.message("date-format.fullDateTime"));
+               dateTextEl.innerHTML = formatDate(date, Alfresco.util.message("date-format.fullDateTime"));
             }
          }
          //decode html for text values of event
@@ -304,7 +304,7 @@
       onDeleteClick: function EventInfo_onDeleteClick(e)
       {
          var me = this,
-            displayDate = Alfresco.thirdparty.dateFormat(Alfresco.util.fromISO8601(this.event.from), this._msg("date-format.mediumDate"));
+            displayDate = formatDate(fromISO8601(this.event.from), this._msg("date-format.mediumDate"));
 
          Alfresco.util.PopupManager.displayPrompt(
          {
@@ -426,6 +426,25 @@
                   Dom.get(EditDialog.id+'-title').disabled = false;
                   Dom.get(EditDialog.id+'-location').disabled = false;
 
+                  // Update time in submission fields
+                  // NOTE: this uses the user's current timezone and stores it as a UTC offset.
+                  var startTimeEl = document.getElementsByName("start")[0],
+                     startTime = startTimeEl.value.split(":"),
+                     endTimeEl = document.getElementsByName("end")[0],
+                     endTime = endTimeEl.value.split(":"),
+                     startAtEl = document.getElementsByName("startAt")[0],
+                     endAtEl = document.getElementsByName("endAt")[0],
+                     startDate = fromISO8601(startAtEl.value),
+                     endDate = fromISO8601(endAtEl.value);
+
+                  startDate.setHours(startTime[0]);
+                  startDate.setMinutes(startTime[1]);
+                  endDate.setHours(endTime[0]);
+                  endDate.setMinutes(endTime[1]);
+
+                  Dom.setAttribute(startAtEl, "value", toISO8601(startDate))
+                  Dom.setAttribute(endAtEl, "value", toISO8601(endDate))
+
                   // Make sure form submit method is correct:
                   EditDialog.form.setAjaxSubmitMethod(EditDialog.options.ajaxSubmitMethod);
 
@@ -469,14 +488,14 @@
                {
 
                   var editEvent = EventInfo.event,
-                     startDate  = (editEvent)? Alfresco.util.fromISO8601(editEvent.startAt.iso8601) : this.options.displayDate,
-                     endDate  = (editEvent)? Alfresco.util.fromISO8601(editEvent.endAt.iso8601) : this.options.displayDate;
+                     startDate  = (editEvent)? fromISO8601(editEvent.startAt.iso8601) : this.options.displayDate,
+                     endDate  = (editEvent)? fromISO8601(editEvent.endAt.iso8601) : this.options.displayDate;
                   
                   // Pretty formatting
                   Alfresco.CalendarHelper.writeDateToField(startDate, Dom.get("fd"));
                   Alfresco.CalendarHelper.writeDateToField(endDate, Dom.get("td"));
-                  Dom.get(EditDialog.id+"-from").value =  Alfresco.util.formatDate(startDate,'yyyy/mm/dd');
-                  Dom.get(EditDialog.id+"-to").value = Alfresco.util.formatDate(endDate,'yyyy/mm/dd');
+                  Dom.get(EditDialog.id+"-startAt").value =  toISO8601(startDate);
+                  Dom.get(EditDialog.id+"-endAt").value = toISO8601(endDate);
 
                   //init taglib
                   var tagInputEl = Dom.get(EditDialog.id + "-tag-input-field");
@@ -493,16 +512,26 @@
                   EditDialog.form.errorContainer = null;
 
                   // Time boxes should be hidden if it's not an all day event
+                  var startTimeEl = document.getElementsByName('start')[0],
+                     endTimeEl = document.getElementsByName('end')[0];
                   if (document.getElementsByName('allday')[0].checked===true)
                   {
                      // hide time boxes if they're not relevant.
-                     Dom.addClass(document.getElementsByName('start')[0].parentNode, "hidden")
-                     Dom.addClass(document.getElementsByName('end')[0].parentNode, "hidden")
+                     Dom.addClass(startTimeEl.parentNode, "hidden")
+                     Dom.addClass(endTimeEl.parentNode, "hidden")
                   } else
                   {
                      // show them if they are.
-                     Dom.removeClass(document.getElementsByName('start')[0].parentNode, "hidden")
-                     Dom.removeClass(document.getElementsByName('end')[0].parentNode, "hidden")
+                     Dom.removeClass(startTimeEl.parentNode, "hidden")
+                     Dom.removeClass(endTimeEl.parentNode, "hidden")
+
+                     // Make sure the time is correct if we're editing an event.
+                     if (editEvent)
+                     {
+                        // TODO: Change this to use date-format.shortTime when input parsing script can determine AM/PM
+                        Dom.setAttribute(startTimeEl, "value", formatDate(startDate, "HH:MM"));
+                        Dom.setAttribute(endTimeEl, "value", formatDate(endDate, "HH:MM"));
+                     }
                   }
 
                   // hide mini-cal
@@ -914,14 +943,14 @@
                      //...adjust the toDate if toDate is earlier than the new fromDate
                      var tdEl = Dom.get("td");
                      Alfresco.CalendarHelper.writeDateToField(selectedDate, tdEl)
-                     document.getElementsByName('to')[0].value = dateFormat(selectedDate, 'yyyy/mm/dd');
+                     document.getElementsByName('endAt')[0].value = toISO8601(selectedDate);
                   }
-                  document.getElementsByName('from')[0].value = dateFormat(selectedDate, 'yyyy/mm/dd');
+                  document.getElementsByName('startAt')[0].value = toISO8601(selectedDate);
                }
                else
                {
                   toDate = Alfresco.CalendarHelper.getDateFromField(domEl);
-                  document.getElementsByName('to')[0].value = dateFormat(toDate, 'yyyy/mm/dd');
+                  document.getElementsByName('to')[0].value = toISO8601(toDate);
                }
             }
             o.oCalendarMenu.hide();
@@ -969,7 +998,6 @@
          }
          return after;
       },
-
 
       /**
        * PRIVATE FUNCTIONS
