@@ -205,6 +205,9 @@
                // This is treated as a maximum height for day and week views - if it's set too small, you'll get an internal scrollbar.
                height: 2000,
 
+               // Why would you want to ignoreTimezones?
+               ignoreTimezone: false,
+
                // Internationalisation:
                monthNames: me.msg("months.long").split(","),
                monthNamesShort: me.msg("months.short").split(","),
