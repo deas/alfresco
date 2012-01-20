@@ -173,6 +173,46 @@ diff -r -u greenmail-1.3/com/icegreen/greenmail/imap/ImapResponse.java greenmail
      }
  
      public void setTag(String tag) {
+diff -r -u greenmail-1.3/com/icegreen/greenmail/imap/ImapServer.java greenmail-1.3 - patched/com/icegreen/greenmail/imap/ImapServer.java
+--- greenmail-1.3/com/icegreen/greenmail/imap/ImapServer.java	2007-04-06 13:33:38.000000000 +0100
++++ greenmail-1.3 - patched/com/icegreen/greenmail/imap/ImapServer.java	2012-01-12 16:08:17.827910700 +0000
+@@ -8,20 +8,34 @@
+ 
+ import com.icegreen.greenmail.AbstractServer;
+ import com.icegreen.greenmail.Managers;
++import com.icegreen.greenmail.util.DummySSLServerSocketFactory;
+ import com.icegreen.greenmail.util.ServerSetup;
+ 
+ import java.io.IOException;
+ import java.net.BindException;
++import java.net.ServerSocket;
+ import java.net.Socket;
+ import java.util.Vector;
+ import java.util.Iterator;
+ 
+-public final class ImapServer extends AbstractServer {
++import javax.net.ssl.SSLServerSocket;
++
++public class ImapServer extends AbstractServer {
+ 
+     public ImapServer(ServerSetup setup, Managers managers) {
+         super(setup, managers);
+     }
+-
++    
++    protected synchronized ServerSocket openServerSocket() throws IOException {
++        ServerSocket ret;
++        if (setup.isSecure()) {
++            ret = (SSLServerSocket) DummySSLServerSocketFactory.getDefault().createServerSocket(
++                    setup.getPort(), 0, bindTo);
++        } else {
++            ret = new ServerSocket(setup.getPort(), 0, bindTo);
++        }
++        return ret;
++    }
+ 
+ 
+     public synchronized void quit() {
 diff -r -u greenmail-1.3/com/icegreen/greenmail/imap/ImapSessionFolder.java greenmail-1.3 - patched/com/icegreen/greenmail/imap/ImapSessionFolder.java
 --- greenmail-1.3/com/icegreen/greenmail/imap/ImapSessionFolder.java	2007-04-06 13:33:38.000000000 +0100
 +++ greenmail-1.3 - patched/com/icegreen/greenmail/imap/ImapSessionFolder.java	2011-08-08 16:38:36.000000000 +0100
