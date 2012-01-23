@@ -1204,11 +1204,11 @@
                <show id="solr.port" />
                <show id="solr.port.ssl" />
 
-               <show id="tracker.alfresco.active" />
-               <show id="tracker.alfresco.lag" />
+               <show id="tracker.alfresco.active" for-mode="view" />
+               <show id="tracker.alfresco.lag" for-mode="view" />
                <!-- <show id="tracker.alfresco.lag.duration" /> -->
-               <show id="tracker.archive.active" />
-               <show id="tracker.archive.lag" />
+               <show id="tracker.archive.active" for-mode="view" />
+               <show id="tracker.archive.lag" for-mode="view" />
                <!-- <show id="tracker.archive.lag.duration" /> -->
                
                <!-- Backup Properties -->

@@ -577,7 +577,6 @@ public class SOLRAPIClient
         else if(dataTypeName.equals(DataTypeDefinition.CONTENT))
         {
             JSONObject o = (JSONObject)value;
-            long contentId = o.getLong("contentId");
             
             String localeStr = o.has("locale") ? o.getString("locale") : null;
             Locale locale = (o.has("locale") ? deserializer.deserializeValue(Locale.class, localeStr) : null);
@@ -587,7 +586,7 @@ public class SOLRAPIClient
             String encoding = o.has("encoding") ? o.getString("encoding") : null;
             String mimetype = o.has("mimetype") ? o.getString("mimetype") : null;
 
-            ret = new ContentPropertyValue(locale, size, contentId, encoding, mimetype);
+            ret = new ContentPropertyValue(locale, size, encoding, mimetype);
         }
         else
         {

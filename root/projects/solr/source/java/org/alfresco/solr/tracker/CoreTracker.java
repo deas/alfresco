@@ -1203,7 +1203,7 @@ public class CoreTracker implements CloseHook
             {
                 checkedFirstTransactionTime = true;
                 log.info("Empty index - no verification required");
-                
+
                 Transactions firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
                 if(firstTransactions.getTransactions().size() > 0)
                 {
@@ -1355,7 +1355,7 @@ public class CoreTracker implements CloseHook
                 }
                 else
                 {
-                    log.info(".... non found after lastTxCommitTime " + txnsFound.getLast().getCommitTimeMs());
+                    log.info(".... non found after lastTxCommitTime " + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : lastIndexedTxCommitTime));
                 }
                 for (Transaction info : transactions.getTransactions())
                 {
@@ -1472,6 +1472,7 @@ public class CoreTracker implements CloseHook
         catch(Throwable t)
         {
             core.getUpdateHandler().rollback(new RollbackUpdateCommand());
+            log.error("Tracking failed", t);
         }
         finally
         {
@@ -1495,7 +1496,7 @@ public class CoreTracker implements CloseHook
 
     }
 
-   
+
     /**
      * @param txnsFound
      * @param lastGoodTxCommitTimeInIndex
@@ -1533,8 +1534,8 @@ public class CoreTracker implements CloseHook
 
     private List<AclChangeSet> getSomeAclChangeSets(BoundedDeque<AclChangeSet> changeSetsFound, Long fromCommitTime, int timeStep, int maxResults, long endTime) throws AuthenticationException, IOException, JSONException
     {
-        
-       
+
+
         List<AclChangeSet> aclChangeSets;
         // step forward in time until we find something or hit the time bound
         // max id unbounded
@@ -1545,7 +1546,7 @@ public class CoreTracker implements CloseHook
             startTime += timeStep;
         }
         while( ((aclChangeSets.size() == 0)  && (startTime < endTime)) || ((aclChangeSets.size() > 0) && alreadyFoundChangeSets(changeSetsFound, aclChangeSets)));
-         
+
         return aclChangeSets;
 
     }
@@ -1556,7 +1557,7 @@ public class CoreTracker implements CloseHook
         {
             return false;
         }
-        
+
         if(aclChangeSets.size() == 1)
         {
             return aclChangeSets.get(0).getId() == changeSetsFound.getLast().getId();
@@ -1573,13 +1574,13 @@ public class CoreTracker implements CloseHook
             }
             return true;
         }
-       
+
     }
-    
+
 
     private Transactions getSomeTransactions(BoundedDeque<Transaction> txnsFound, Long fromCommitTime, int timeStep, int maxResults, long endTime) throws AuthenticationException, IOException, JSONException
     {
-        
+
         Transactions transactions;
         // step forward in time until we find something or hit the time bound
         // max id unbounded
@@ -1600,7 +1601,7 @@ public class CoreTracker implements CloseHook
         {
             return false;
         }
-        
+
         if(transactions.getTransactions().size() == 1)
         {
             return transactions.getTransactions().get(0).getId() == txnsFound.getLast().getId();
@@ -1617,7 +1618,7 @@ public class CoreTracker implements CloseHook
             }
             return true;
         }
-       
+
     }
 
 
@@ -1846,8 +1847,10 @@ public class CoreTracker implements CloseHook
      * @param dataModel
      * @param node
      * @throws IOException
+     * @throws JSONException 
+     * @throws AuthenticationException 
      */
-    private void indexNode(Node node, SolrIndexSearcher solrIndexSearcher, boolean overwrite) throws IOException
+    private void indexNode(Node node, SolrIndexSearcher solrIndexSearcher, boolean overwrite) throws IOException, AuthenticationException, JSONException
     {
         if ((node.getStatus() == SolrApiNodeStatus.DELETED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
         {
@@ -1872,209 +1875,199 @@ public class CoreTracker implements CloseHook
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
             nmdp.setFromNodeId(node.getId());
             nmdp.setToNodeId(node.getId());
-            try
+
+            List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+
+            AddUpdateCommand leafDocCmd = new AddUpdateCommand();
+            leafDocCmd.overwriteCommitted = overwrite;
+            leafDocCmd.overwritePending = overwrite;
+            AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+            auxDocCmd.overwriteCommitted = overwrite;
+            auxDocCmd.overwritePending = overwrite;
+
+            ArrayList<Reader> toClose = new ArrayList<Reader>();
+            ArrayList<File> toDelete = new ArrayList<File>();
+
+            for (NodeMetaData nodeMetaData : nodeMetaDatas)
             {
-                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
-
-                AddUpdateCommand leafDocCmd = new AddUpdateCommand();
-                leafDocCmd.overwriteCommitted = overwrite;
-                leafDocCmd.overwritePending = overwrite;
-                AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                auxDocCmd.overwriteCommitted = overwrite;
-                auxDocCmd.overwritePending = overwrite;
-
-                ArrayList<Reader> toClose = new ArrayList<Reader>();
-                ArrayList<File> toDelete = new ArrayList<File>();
-
-                for (NodeMetaData nodeMetaData : nodeMetaDatas)
+                if(nodeMetaData.getTxnId() > node.getTxnId())
                 {
-                    if(nodeMetaData.getTxnId() > node.getTxnId())
+                    // the node has moved on to a later transaction
+                    // it will be indexed later
+                    continue;
+                }
+
+                if (mayHaveChildren(nodeMetaData))
+                {
+                    log.info(".. checking for path change");
+                    BooleanQuery bQuery = new BooleanQuery();
+                    bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))), Occur.MUST);
+                    bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, NumericEncoder.encode(nodeMetaData.getParentAssocsCrc()))), Occur.MUST);
+                    DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
+                    if (docSet.size() > 0)
                     {
-                        // the node has moved on to a later transaction
-                        // it will be indexed later
-                        continue;
-                    }
-
-                    if (mayHaveChildren(nodeMetaData))
-                    {
-                        log.info(".. checking for path change");
-                        BooleanQuery bQuery = new BooleanQuery();
-                        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))), Occur.MUST);
-                        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, NumericEncoder.encode(nodeMetaData.getParentAssocsCrc()))), Occur.MUST);
-                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
-                        if (docSet.size() > 0)
-                        {
-                            log.debug("... found aux match");
-                        }
-                        else
-                        {
-                            docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))));
-                            if (docSet.size() > 0)
-                            {
-                                log.debug("... cascade updating aux doc");
-                                updateDescendantAuxDocs(nodeMetaData, overwrite);
-                            }
-                            else
-                            {
-                                log.debug("... no aux doc");
-                            }
-                        }
-                    }
-
-                    Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
-
-                    // check index control
-
-                    if (properties.containsKey(ContentModel.PROP_IS_INDEXED))
-                    {
-                        StringPropertyValue pValue = (StringPropertyValue) properties.get(ContentModel.PROP_IS_INDEXED);
-                        if (pValue != null)
-                        {
-                            Boolean isIndexed = Boolean.valueOf(pValue.getValue());
-                            if ((isIndexed != null) && (isIndexed.booleanValue() == false))
-                            {
-                                DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
-                                docCmd.id = "LEAF-" + node.getId();
-                                docCmd.fromPending = true;
-                                docCmd.fromCommitted = true;
-                                core.getUpdateHandler().delete(docCmd);
-
-                                docCmd = new DeleteUpdateCommand();
-                                docCmd.id = "AUX-" + node.getId();
-                                docCmd.fromPending = true;
-                                docCmd.fromCommitted = true;
-                                core.getUpdateHandler().delete(docCmd);
-
-                                return;
-                            }
-                        }
-                    }
-
-                    boolean isContentIndexedForNode = true;
-                    if (properties.containsKey(ContentModel.PROP_IS_CONTENT_INDEXED))
-                    {
-                        StringPropertyValue pValue = (StringPropertyValue) properties.get(ContentModel.PROP_IS_CONTENT_INDEXED);
-                        if (pValue != null)
-                        {
-                            Boolean isIndexed = Boolean.valueOf(pValue.getValue());
-                            if ((isIndexed != null) && (isIndexed.booleanValue() == false))
-                            {
-                                isContentIndexedForNode = false;
-                            }
-                        }
-                    }
-
-                    SolrInputDocument doc = new SolrInputDocument();
-                    doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
-
-                    for (QName propertyQname : properties.keySet())
-                    {
-                        if(dataModel.isIndexedOrStored(propertyQname))
-                        {
-                            PropertyValue value = properties.get(propertyQname);
-                            if (value != null)
-                            {
-                                if (value instanceof ContentPropertyValue)
-                                {
-                                    if (isContentIndexedForNode)
-                                    {
-                                        addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) value);
-                                    }
-                                }
-                                else if (value instanceof MLTextPropertyValue)
-                                {
-                                    addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
-                                }
-                                else if (value instanceof MultiPropertyValue)
-                                {
-                                    MultiPropertyValue typedValue = (MultiPropertyValue) value;
-                                    for (PropertyValue singleValue : typedValue.getValues())
-                                    {
-                                        if (singleValue instanceof ContentPropertyValue)
-                                        {
-                                            if (isContentIndexedForNode)
-                                            {
-                                                addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) singleValue);
-                                            }
-                                        }
-                                        else if (singleValue instanceof MLTextPropertyValue)
-                                        {
-                                            addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue);
-
-                                        }
-                                        else if (singleValue instanceof StringPropertyValue)
-                                        {
-                                            addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) singleValue, properties);
-                                        }
-                                    }
-                                }
-                                else if (value instanceof StringPropertyValue)
-                                {
-                                    addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, properties);
-                                }
-
-                            }
-                        }
-                    }
-                    doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
-                    for (QName aspect : nodeMetaData.getAspects())
-                    {
-                        doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect.toString());
-                    }
-                    doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
-                    doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
-                    // TODO: Place holder to test tenant queries
-                    String tenant =  nodeMetaData.getTenantDomain();
-                    if(tenant.length() > 0)
-                    {
-                        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, nodeMetaData.getTenantDomain());
+                        log.debug("... found aux match");
                     }
                     else
                     {
-                        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+                        docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))));
+                        if (docSet.size() > 0)
+                        {
+                            log.debug("... cascade updating aux doc");
+                            updateDescendantAuxDocs(nodeMetaData, overwrite);
+                        }
+                        else
+                        {
+                            log.debug("... no aux doc");
+                        }
                     }
-
-                    leafDocCmd.solrDoc = doc;
-                    leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-
-                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
-                    auxDocCmd.solrDoc = aux;
-                    auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-
                 }
 
-                core.getUpdateHandler().addDoc(leafDocCmd);
-                core.getUpdateHandler().addDoc(auxDocCmd);
+                Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
 
-                for (Reader forClose : toClose)
+                // check index control
+
+                if (properties.containsKey(ContentModel.PROP_IS_INDEXED))
                 {
-                    try
+                    StringPropertyValue pValue = (StringPropertyValue) properties.get(ContentModel.PROP_IS_INDEXED);
+                    if (pValue != null)
                     {
-                        forClose.close();
-                    }
-                    catch (IOException ioe)
-                    {
-                    }
+                        Boolean isIndexed = Boolean.valueOf(pValue.getValue());
+                        if ((isIndexed != null) && (isIndexed.booleanValue() == false))
+                        {
+                            DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
+                            docCmd.id = "LEAF-" + node.getId();
+                            docCmd.fromPending = true;
+                            docCmd.fromCommitted = true;
+                            core.getUpdateHandler().delete(docCmd);
 
+                            docCmd = new DeleteUpdateCommand();
+                            docCmd.id = "AUX-" + node.getId();
+                            docCmd.fromPending = true;
+                            docCmd.fromCommitted = true;
+                            core.getUpdateHandler().delete(docCmd);
+
+                            return;
+                        }
+                    }
                 }
 
-                for (File file : toDelete)
+                boolean isContentIndexedForNode = true;
+                if (properties.containsKey(ContentModel.PROP_IS_CONTENT_INDEXED))
                 {
-                    file.delete();
+                    StringPropertyValue pValue = (StringPropertyValue) properties.get(ContentModel.PROP_IS_CONTENT_INDEXED);
+                    if (pValue != null)
+                    {
+                        Boolean isIndexed = Boolean.valueOf(pValue.getValue());
+                        if ((isIndexed != null) && (isIndexed.booleanValue() == false))
+                        {
+                            isContentIndexedForNode = false;
+                        }
+                    }
+                }
+
+                SolrInputDocument doc = new SolrInputDocument();
+                doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
+                doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
+                doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
+                doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
+
+                for (QName propertyQname : properties.keySet())
+                {
+                    if(dataModel.isIndexedOrStored(propertyQname))
+                    {
+                        PropertyValue value = properties.get(propertyQname);
+                        if (value != null)
+                        {
+                            if (value instanceof ContentPropertyValue)
+                            {
+                                if (isContentIndexedForNode)
+                                {
+                                    addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) value);
+                                }
+                            }
+                            else if (value instanceof MLTextPropertyValue)
+                            {
+                                addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
+                            }
+                            else if (value instanceof MultiPropertyValue)
+                            {
+                                MultiPropertyValue typedValue = (MultiPropertyValue) value;
+                                for (PropertyValue singleValue : typedValue.getValues())
+                                {
+                                    if (singleValue instanceof ContentPropertyValue)
+                                    {
+                                        if (isContentIndexedForNode)
+                                        {
+                                            addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname, (ContentPropertyValue) singleValue);
+                                        }
+                                    }
+                                    else if (singleValue instanceof MLTextPropertyValue)
+                                    {
+                                        addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) singleValue);
+
+                                    }
+                                    else if (singleValue instanceof StringPropertyValue)
+                                    {
+                                        addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) singleValue, properties);
+                                    }
+                                }
+                            }
+                            else if (value instanceof StringPropertyValue)
+                            {
+                                addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, properties);
+                            }
+
+                        }
+                    }
+                }
+                doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
+                for (QName aspect : nodeMetaData.getAspects())
+                {
+                    doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect.toString());
+                }
+                doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
+                doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
+                // TODO: Place holder to test tenant queries
+                String tenant =  nodeMetaData.getTenantDomain();
+                if(tenant.length() > 0)
+                {
+                    doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, nodeMetaData.getTenantDomain());
+                }
+                else
+                {
+                    doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+                }
+
+                leafDocCmd.solrDoc = doc;
+                leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+
+                SolrInputDocument aux = createAuxDoc(nodeMetaData);
+                auxDocCmd.solrDoc = aux;
+                auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+
+            }
+
+            core.getUpdateHandler().addDoc(leafDocCmd);
+            core.getUpdateHandler().addDoc(auxDocCmd);
+
+            for (Reader forClose : toClose)
+            {
+                try
+                {
+                    forClose.close();
+                }
+                catch (IOException ioe)
+                {
                 }
 
             }
-            catch (JSONException e)
+
+            for (File file : toDelete)
             {
-                log.error(e.getStackTrace().toString());
+                file.delete();
             }
-            catch (AuthenticationException e)
-            {
-                log.error(e.getStackTrace().toString());
-            }
+
         }
 
     }
@@ -2205,7 +2198,6 @@ public class CoreTracker implements CloseHook
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".contentDataId", contentPropertyValue.getId());
         GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
@@ -2395,7 +2387,7 @@ public class CoreTracker implements CloseHook
             Transaction firstTransaction = firstTransactions.getTransactions().get(0);
             firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
         }
-        
+
         // DB TX Count
         OpenBitSet txIdsInDb = new OpenBitSet();
         Long lastTxCommitTime = Long.valueOf(firstTransactionCommitTime);

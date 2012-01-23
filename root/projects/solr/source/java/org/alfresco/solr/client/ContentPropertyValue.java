@@ -11,16 +11,14 @@ public class ContentPropertyValue extends PropertyValue
 {
     private Locale locale;
     private long length;
-    private long id;
     private String encoding;
     private String mimetype;
     
-    public ContentPropertyValue(Locale locale, long length, long id, String encoding, String mimetype)
+    public ContentPropertyValue(Locale locale, long length, String encoding, String mimetype)
     {
         super();
         this.locale = locale;
         this.length = length;
-        this.id = id;
         this.encoding = encoding;
         this.mimetype = mimetype;
     }
@@ -45,15 +43,10 @@ public class ContentPropertyValue extends PropertyValue
         return length;
     }
 
-    public long getId()
-    {
-        return id;
-    }
-
     @Override
     public String toString()
     {
-        return "ContentPropertyValue [locale=" + locale + ", length=" + length + ", id=" + id + ", encoding="
+        return "ContentPropertyValue [locale=" + locale + ", length=" + length + ", encoding="
                 + encoding + ", mimetype=" + mimetype + "]";
     }
 }
