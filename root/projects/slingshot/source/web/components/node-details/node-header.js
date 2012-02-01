@@ -180,6 +180,10 @@
                type: this.nodeType
             }).display(this.options.isFavourite);
          }
+
+         // Parse the date
+         var dateEl = Dom.get(this.id + '-modifyDate');
+         dateEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(dateEl.innerHTML), Alfresco.util.message("date-format.default"));
       },
 
       /**

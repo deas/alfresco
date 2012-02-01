@@ -791,13 +791,17 @@ Alfresco.util.getScrollPosition = function()
  * Formats a Freemarker datetime into more UI-friendly format
  *
  * @method Alfresco.util.formatDate
- * @param date {string} Optional: Date as returned from data webscript. Today used if missing.
+ * @param date {string|Date} Optional: Date as ISO8601 compatible string or JavaScript Date Object. Today used if missing.
  * @param mask {string} Optional: Mask to use to override default.
  * @return {string} Date formatted for UI
  * @static
  */
 Alfresco.util.formatDate = function(date)
 {
+   if (YAHOO.lang.isString(date))
+   {
+      arguments[0] = Alfresco.util.fromISO8601(date)
+   }
    try
    {
       return Alfresco.thirdparty.dateFormat.apply(this, arguments);
@@ -1018,38 +1022,102 @@ Alfresco.util.relativeTime = function(from, to)
 /**
  * Converts a date to a more user friendly date
  * 
- * @method Alfresco.util.friendlyDate
- * @param date {Date} - the date being converted
+ * @method Alfresco.util.relativeDate
+ * @param date {Date|String} - the date being converted
  * @param format {string} - the date format
+ * @param options {object} - overrides the default options.
  * @return {string} - the user friendly date
  */
-Alfresco.util.friendlyDate = function(date, format) 
+Alfresco.util.relativeDate = function(date, format, options)
 {
-   var $msg = Alfresco.util.message,
-      now = new Date(),
+   var $msg = Alfresco.util.message;
+
+   if (YAHOO.lang.isString(date))
+   {
+      date = Alfresco.util.fromISO8601(date);
+   }
+
+   if (YAHOO.lang.isObject(format))
+   {
+      options = format;
+      format = $msg("date-format.default");
+   }
+
+
+   var now = new Date(),
+      today = new Date(now.getTime()),
       dateFormat = Alfresco.thirdparty.dateFormat,
       dateMath = YAHOO.widget.DateMath,
       isoMask = Alfresco.thirdparty.dateFormat.masks.isoDate,
       isoDate = dateFormat(date, isoMask),
       isoToday = dateFormat(now, isoMask),
       isoYesterday = dateFormat(dateMath.add(now, dateMath.DAY, -1), isoMask),
-      isoTomorrow = dateFormat(dateMath.add(now, dateMath.DAY, 1), isoMask);
-      result = "";
-   
+      isoTomorrow = dateFormat(dateMath.add(now, dateMath.DAY, 1), isoMask),
+      result = "",
+      defaults =
+         {
+            // limit to just yesterday, today, tomorrow.
+            limit: false
+         };
+
+   options = options || {}
+   options = YAHOO.lang.augmentObject(options, defaults);
+
+   // reset time on today (ISO dates already ignore time)
+   today.setHours(0,0,0,0);
+
    switch(isoDate) 
    {
       case isoToday:
-         result = $msg("dateFormat.friendly.today");
+         result = $msg("relative.today");
          break;
       case isoYesterday:
-         result = $msg("dateFormat.friendly.yesterday");
+         result = $msg("relative.yesterday");
          break;
       case isoTomorrow:
-         result = $msg("dateFormat.friendly.tomorrow");
+         result = $msg("relative.tomorrow");
          break;
-      default:
-         result = dateFormat(date, format);
+   }
+   if (!options.limit && result === "")
+   {
+      var lastSunday = dateMath.add(now, dateMath.DAY, -now.getDay()),
+         sundayBeforeLast = dateMath.add(lastSunday, dateMath.DAY, -7),
+         nextSunday = dateMath.add(lastSunday, dateMath.DAY, +7),
+         sundayAfterNext = dateMath.add(lastSunday, dateMath.DAY, +7);
 
+      if (date < today && date > lastSunday)
+      {
+         // Earlier This week
+         result = $msg("relative.earlierThisWeek");
+      }
+      else if (date < lastSunday && date > sundayBeforeLast)
+      {
+         // Last week
+         result = $msg("relative.lastWeek");
+      }
+      else if (date > today && date < nextSunday)
+      {
+         // Later this week
+         result = $msg("relative.laterThisWeek");
+      }
+      else if (date > nextSunday && date < sundayAfterNext)
+      {
+         // Next Week
+         result = $msg("relative.nextWeek");
+      }
+      else if (options.olderDates && date < today)
+      {
+         result = options.olderDates;
+      }
+      else if (options.futureDates && date > today)
+      {
+         result = options.futureDates;
+      }
+      
+   }
+   if (result === "")
+   {
+      result = dateFormat(date, format)
    }
    return result;
 }
@@ -6792,7 +6860,8 @@ Alfresco.thirdparty.fromISO8601 = function()
       //   formattedString:
       //      A string such as 2005-06-30T08:05:00-07:00 or 2005-06-30 or T08:05:00
 
-      var isoRegExp = /^(?:(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/;
+      // Modified to parse ISO822 style timezone offsets: (0500 instead of 05:00), which are still valid but not previous supported
+      var isoRegExp = /^(?:(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):?(\d{2}))|Z)?)?$/;
 
       return function(formattedString)
       {

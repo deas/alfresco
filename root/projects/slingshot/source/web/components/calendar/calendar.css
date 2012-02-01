@@ -1250,22 +1250,22 @@ tr.early {
 
 #divCalendarContent .yui-dt-col-start
 {
-   width: 12%;
+   width: 16%;
 }
 
 #divCalendarContent .yui-dt-col-name
 {
-   width: 23%;
+   width: 22%;
 }
 
 #divCalendarContent .yui-dt-col-where
 {
-   width: 21%;
+   width: 20%;
 }
 
 #divCalendarContent .yui-dt-col-desc
 {
-   width: 30%;
+   width: 28%;
 }
 
 #divCalendarContent .yui-dt-col-actions

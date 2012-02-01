@@ -1,5 +1,4 @@
 <#include "../../include/alfresco-macros.lib.ftl" />
-<#macro dateFormat date>${date?string(msg("date-format.defaultFTL"))}</#macro>
 <#macro formatContent content date type index>
    <#if content.browseUrl??>
    <li<#if (index == 0)> class="first"</#if>>
@@ -7,7 +6,7 @@
       <p>
          <a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="theme-color-1">${(content.displayName!"")?html}</a>
          ${(content.description!"")?html}
-         <span>${msg("label." + type)} <@dateFormat date /></span></p>
+         <span>${msg("label." + type)} <span class="relativeTime">${date}</span></span></p>
    </li>
    </#if>
 </#macro>
@@ -37,3 +36,9 @@
       </#if>                  
    </div>
 </div>
+<script type="text/javascript">
+   YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("${el}-body"), function()
+            {
+               this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+            })
+</script>

@@ -38,11 +38,6 @@ function main()
             item = contents[i];
             if (store.length < maxItems)
             {
-               // convert createdOn and modifiedOn fields to date
-               if (item[dateType])
-               {
-                  item[dateType] = new Date(item[dateType]);
-               }
                if (!item.browseUrl)
                {
                   switch (item.type)

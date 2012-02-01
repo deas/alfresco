@@ -35,7 +35,7 @@
       Selector = YAHOO.util.Selector,
       fromISO8601 = Alfresco.util.fromISO8601,
       toISO8601 = Alfresco.util.toISO8601,
-      dateFormat = Alfresco.thirdparty.dateFormat,
+      formatDate = Alfresco.util.formatDate,
       DateMath = YAHOO.widget.DateMath;
    
 YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
@@ -73,8 +73,8 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
    {
       var data = oRecord.getData(),
       html = "",
-      start = data.displayStart || data.start,
-      end = data.displayEnd || data.end;
+      start = formatDate(data.startAt.iso8601, this.msg("date-format.shortTime")),
+      end = formatDate(data.endAt.iso8601, this.msg("date-format.shortTime"));
       
       // build up cell content
       if (data.isAllDay) 
@@ -82,7 +82,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          html = this.msg("label.all-day")
       } else
       {
-         html = start + "-" + end
+         html = start + " - " + end
       }
       // write to DOM
       elCell.innerHTML = html;
@@ -400,8 +400,8 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       parentEl.id = this.options.id + "-dt-" + date;
       titleEl.id = this.options.id + "-head-" + date;
       Dom.addClass(titleEl, "dayTitle");
-      titleEl.innerHTML = Alfresco.util.friendlyDate(fromISO8601(date), this.msg("date-format.dayDateMonth"));
-      Dom.setAttribute(titleEl, "title", dateFormat(fromISO8601(date), this.msg("date-format.fullDate")));
+      titleEl.innerHTML = Alfresco.util.relativeDate(fromISO8601(date), this.msg("date-format.dayDateMonth"), {limit: true});
+      Dom.setAttribute(titleEl, "title", formatDate(fromISO8601(date), this.msg("date-format.fullDate")));
       
       // Add highlighting on today's element.
       if (date === today) 
@@ -525,16 +525,16 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
             startDateString = "",
             withYear = this.msg("date-format.longDate"),
             noYear = this.msg("date-format.longDateNoYear"),
-            endDateString = dateFormat(endDate, withYear);
+            endDateString = formatDate(endDate, withYear);
 
          // convert date objects to strings
          // only show year in start date if it differs to end date.
          if (startDate.getFullYear() === endDate.getFullYear())
          {
-            startDateString = dateFormat(startDate, noYear);
+            startDateString = formatDate(startDate, noYear);
          } else
          {
-            startDateString = dateFormat(startDate, withYear)
+            startDateString = formatDate(startDate, withYear)
          }
 
          this.titleEl.innerHTML = this.msg("title.agenda", startDateString, endDateString);

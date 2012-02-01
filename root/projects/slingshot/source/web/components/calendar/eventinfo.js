@@ -437,10 +437,8 @@
                      startDate = fromISO8601(startAtEl.value),
                      endDate = fromISO8601(endAtEl.value);
 
-                  startDate.setHours(startTime[0]);
-                  startDate.setMinutes(startTime[1]);
-                  endDate.setHours(endTime[0]);
-                  endDate.setMinutes(endTime[1]);
+                  startDate.setHours(startTime[0], startTime[1]);
+                  endDate.setHours(endTime[0], endTime[1]);
 
                   Dom.setAttribute(startAtEl, "value", toISO8601(startDate))
                   Dom.setAttribute(endAtEl, "value", toISO8601(endDate))

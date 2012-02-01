@@ -37,8 +37,6 @@ function main()
                date:
                {
                   isoDate: activity.postDate,
-                  fullDate: date,
-                  relativeTime: AlfrescoUtil.relativeTime(activity.postDate)
                },
                title: summary.title || "title.generic",
                userName: activity.postUserId,
@@ -65,7 +63,6 @@ function main()
    model.activities = activities;
    model.siteTitles = siteTitles;
    model.cssClasses = getCSSClasses();
-   getDateHelpers();
 }
 
 
@@ -292,22 +289,6 @@ function trim(str)
    {
    }
    return str;
-}
-
-function getDateHelpers()
-{
-   var today = new Date(),
-      yesterday = new Date(),
-      lastSunday = new Date(),
-      previousSunday = new Date();
-
-   yesterday.setDate(today.getDate() - 1);
-   lastSunday.setDate(today.getDate() - today.getDay());
-   previousSunday.setDate(lastSunday.getDate() - 7);
-
-   model.yesterday = yesterday;
-   model.lastSunday = lastSunday;
-   model.previousSunday = previousSunday;
 }
 
 function getCSSClasses()

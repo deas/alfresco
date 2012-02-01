@@ -304,3 +304,9 @@
 {
    display: block;
 }
+
+.profile .content li p span.relativeTime,
+.profile .content li p span.relativeTime span
+{
+   display:inline;
+}

@@ -23,7 +23,7 @@
             <h4><a href="${siteURL(doc.browseUrl, doc.site.shortName)}" class="theme-color-1">${doc.displayName?html}</a></h4>
             <div>
                <#assign siteLink><a class="theme-color-1 site-link" href="${siteURL("dashboard", doc.site.shortName)}">${doc.site.title?html}</a></#assign>
-               ${msg("text.edited-on", xmldate(doc.modifiedOn)?string(msg("date-format.defaultFTL")), siteLink)}
+               ${msg("text.edited-on", "<span class='relativeTime'>${doc.modifiedOn}</span>", siteLink)}
             </div>
          </div>
       </div>
@@ -77,7 +77,7 @@
                <h4><@doclibUrl doc /></h4>
                <div>
                   <#assign siteLink><a class="theme-color-1 site-link" href="${siteURL("dashboard", doc.location.site)}">${doc.location.siteTitle?html}</a></#assign>
-                  ${msg("text.editing-since", xmldate(doc.modifiedOn)?string(msg("date-format.defaultFTL")), siteLink)}
+                  ${msg("text.editing-since", "<span class='relativeTime'>${doc.modifiedOn}</span>", siteLink)}
                </div>
             </div>
          </div>
@@ -120,3 +120,13 @@
 </#if>
    </div>
 </div>
+<script>//<![CDATA[
+(function()
+{
+   YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("myEditingDocsDashlet") , function()
+   {
+      this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+   })
+})();
+//]]>
+</script>

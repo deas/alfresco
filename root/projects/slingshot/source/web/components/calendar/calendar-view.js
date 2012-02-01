@@ -192,8 +192,8 @@
       
       getEventObj: function CalendarView_getEventObj(data)
       {
-         // If we've got the HTML node, it'll have a rel attr we can use to get the event data
-         if (typeof(data.rel) !== "undefined" && data.rel !== "")
+         // If we've got the HTML node, we can get the event object using parseRel
+         if (typeof(data.innerHTML) === "string")
          {
             return this.parseRel(data);
          }

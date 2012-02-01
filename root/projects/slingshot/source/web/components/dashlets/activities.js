@@ -49,7 +49,7 @@
     */
    Alfresco.dashlet.Activities = function Activities_constructor(htmlId)
    {
-      Alfresco.dashlet.Activities.superclass.constructor.call(this, "Alfresco.dashlet.Activities", htmlId, ["button", "container"]);
+      Alfresco.dashlet.Activities.superclass.constructor.call(this, "Alfresco.dashlet.Activities", htmlId, ["button", "container", "calendar"]);
       
       // Preferences service
       this.services.preferences = new Alfresco.service.Preferences();
@@ -307,6 +307,33 @@
          else
          {
             this.activityList.innerHTML = html;
+            Dom.getElementsByClassName("relativeTime", "span", this.activityList, function()
+            {
+               this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+            })
+            var olderDates = this.msg("label.older-activities"),
+               lastDay = "";
+            Dom.getElementsByClassName("relativeDate", "span", this.activityList, function()
+            {
+               // Get the relative Date
+               var activityDay = Alfresco.util.relativeDate(this.innerHTML,
+                  {
+                     olderDates: olderDates
+                  });
+
+               // if the relativeDate is not the same as it was last time, output it and update the last day found.
+               if (activityDay !== lastDay)
+               {
+                  this.innerHTML = activityDay;
+                  lastDay = activityDay;
+               }
+               else
+               {
+                  // if the relative date is the same, remove the element that separates the days
+                  var parent = this.parentNode;
+                  parent.parentNode.removeChild(parent);
+               }
+            })
          }
          this.updateFeedLink(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
       },
