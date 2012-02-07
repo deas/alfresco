@@ -673,19 +673,21 @@ public class ImporterComponent
             
             // Take a copy of the version label, as it'll be reset when
             //  we request that versioning occurs
-            final String label = (String)nodeService.getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL);
+            String label = (String)nodeService.getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL);
             
             // Have versioning enabled
             Version version = versionService.createVersion(nodeRef, null);
             final NodeRef versionNodeRef = VersionUtil.convertNodeRef(version.getFrozenStateNodeRef());
-            
-            // Put the version label back how it should be on the main node
-            dbNodeService.setProperty(nodeRef, ContentModel.PROP_VERSION_LABEL, label);
-            
-            // Fix up the versioned version node to be what it should be
-            // (The previous version label should be off, and the current label is the new one)
-            dbNodeService.setProperty(versionNodeRef, ContentModel.PROP_VERSION_LABEL, null);
-            dbNodeService.setProperty(versionNodeRef, Version2Model.PROP_QNAME_VERSION_LABEL, label);
+
+            if (label == null) { // We never want the label to be null
+            	label = version.getVersionLabel();
+            }
+        	// Set label (saved or fresh one) on the main node
+        	dbNodeService.setProperty(nodeRef, ContentModel.PROP_VERSION_LABEL, label);
+        	// Fix up the versioned version node to be what it should be
+        	// (The previous version label should be off, and the current label is the new one)
+        	dbNodeService.setProperty(versionNodeRef, ContentModel.PROP_VERSION_LABEL, null);
+        	dbNodeService.setProperty(versionNodeRef, Version2Model.PROP_QNAME_VERSION_LABEL, label);
         }
 
         /**
