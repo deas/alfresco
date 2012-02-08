@@ -47,6 +47,8 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.logging.Log;
@@ -98,6 +100,10 @@ public class HttpClientFactory
     private AlfrescoKeyStore sslKeyStore;
     private AlfrescoKeyStore sslTrustStore;
     private ProtocolSocketFactory sslSocketFactory;
+
+    private int maxTotalConnections = 40;
+
+    private int maxHostConnections = 40;
 
     public HttpClientFactory()
     {
@@ -176,13 +182,48 @@ public class HttpClientFactory
 		this.keyResourceLoader = keyResourceLoader;
 	}
 	
-	protected HttpClient constructHttpClient()
+	/**
+     * @return the maxTotalConnections
+     */
+    public int getMaxTotalConnections()
+    {
+        return maxTotalConnections;
+    }
+
+    /**
+     * @param maxTotalConnections the maxTotalConnections to set
+     */
+    public void setMaxTotalConnections(int maxTotalConnections)
+    {
+        this.maxTotalConnections = maxTotalConnections;
+    }
+
+    /**
+     * @return the maxHostConnections
+     */
+    public int getMaxHostConnections()
+    {
+        return maxHostConnections;
+    }
+
+    /**
+     * @param maxHostConnections the maxHostConnections to set
+     */
+    public void setMaxHostConnections(int maxHostConnections)
+    {
+        this.maxHostConnections = maxHostConnections;
+    }
+
+    protected HttpClient constructHttpClient()
 	{
         MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 		HttpClient httpClient = new HttpClient(connectionManager);
         HttpClientParams params = httpClient.getParams();
-        params.setBooleanParameter("http.tcp.nodelay", true);
-        params.setBooleanParameter("http.connection.stalecheck", false);
+        params.setBooleanParameter(HttpConnectionParams.TCP_NODELAY, true);
+        params.setBooleanParameter(HttpConnectionParams.STALE_CONNECTION_CHECK, false);
+        HttpConnectionManagerParams connectionManagerParams = httpClient.getHttpConnectionManager().getParams();
+        connectionManagerParams.setMaxTotalConnections(maxTotalConnections);
+        connectionManagerParams.setDefaultMaxConnectionsPerHost(maxHostConnections);
 
         return httpClient;
 	}
