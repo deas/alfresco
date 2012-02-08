@@ -5779,6 +5779,11 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Check if the requested file already exists
 
 			int fileSts = disk.fileExists(m_sess, conn, params.getFullPath());
+			
+			// Check if the path is to a folder, make sure the Directory flag is set in the open parameters for oplock checking
+			if ( params.isDirectory() == false && fileSts == FileStatus.DirectoryExists) {
+			    params.setCreateOption(WinNT.CreateDirectory);
+			}
 
             // Check if the file exists and it is a pseudo file, in which case the file already exists so change a create request to
             // an open request
@@ -7808,20 +7813,6 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 							throw new AccessDeniedException( "Oplock has failed break");
 						}
 						
-						// Check if the oplock already has an oplock break in progress
-						
-						if ( oplock.hasDeferredSession()) {
-						
-							// DEBUG
-							
-							if ( Debug.EnableDbg && m_sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-								m_sess.debugPrintln("Oplock has deferred session, break in progress, failing open request params=" + params);
-							
-							// Fail the open request with an access denied error
-							
-							throw new AccessDeniedException( "Oplock break in progress");
-						}
-						
 						// Need to send an oplock break to the oplock owner before we can continue processing the current file open request
 						
 						try {
@@ -7845,7 +7836,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 							// Log the error
 							
 							if ( Debug.EnableError)
-								Debug.println("Failed to defer request for local oplock break:", Debug.Error);
+								Debug.println("Failed to defer request for local oplock break, oplock=" + oplock, Debug.Error);
 							
 							// Throw an access denied exception so that the file open is rejected
 							
@@ -7919,10 +7910,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 						
 						// Log the error
 						
-						if ( Debug.EnableError) {
-							Debug.println("Failed to defer request for remote oplock break:", Debug.Error);
-							Debug.println(ex, Debug.Error);
-						}
+						if ( Debug.EnableError)
+							Debug.println("Failed to defer request for remote oplock break, oplock=" + oplock, Debug.Error);
 						
 						// Throw an access denied exception so that the file open is rejected
 						
@@ -7936,10 +7925,6 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 							Debug.println("Failed to send remote oplock break:", Debug.Error);
 							Debug.println(ex, Debug.Error);
 						}
-						
-						// Clear the deferred session details
-						
-						oplock.clearDeferredSession();
 						
 						// Throw an access denied exception so that the file open is rejected
 						

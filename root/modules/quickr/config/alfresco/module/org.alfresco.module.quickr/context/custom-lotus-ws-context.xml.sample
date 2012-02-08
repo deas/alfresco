@@ -5,7 +5,7 @@
 						
 	
     
-    <bean id="lotusWSPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="lotusWSPlaceholderConfigurer" parent="common-placeholder-configurer">
         <property name="ignoreUnresolvablePlaceholders">
             <value>true</value>
         </property>

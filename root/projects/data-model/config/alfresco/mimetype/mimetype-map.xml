@@ -230,7 +230,7 @@
          <mimetype mimetype="application/x-javascript" text="true" display="Java Script">
             <extension>js</extension>
          </mimetype>
-         <mimetype mimetype="application/x-latex" text="true" display="Latex">
+         <mimetype mimetype="application/x-latex" text="true" display="LaTeX">
             <extension>latex</extension>
          </mimetype>
          <mimetype mimetype="application/x-troff-man" display="Man Page">

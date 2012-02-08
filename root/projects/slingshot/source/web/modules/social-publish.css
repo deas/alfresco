@@ -153,7 +153,10 @@ div.publishConfirm div.success img
    padding:0 6px;   
 }
 
-div.publishConfirm a 
+div.publishConfirm a:link,
+div.publishConfirm a:visited,
+div.publishConfirm a:hover,
+div.publishConfirm a:active
 {
    display:block;
    color: #FFFFFF;

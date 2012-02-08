@@ -232,10 +232,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                 {
                     booleanQuery.add(subQuery, Occur.SHOULD);
                 }
-                else
-                {
-                    booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-                }
+               
             }
             else
             {
@@ -245,10 +242,6 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                 if (subQuery != null)
                 {
                     booleanQuery.add(subQuery, Occur.SHOULD);
-                }
-                else
-                {
-                    booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
                 }
             }
         }
@@ -448,11 +441,6 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         {
             booleanQuery.add(subQuery, Occur.SHOULD);
         }
-        else
-        {
-            booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-        }
-
     }
 
     /*

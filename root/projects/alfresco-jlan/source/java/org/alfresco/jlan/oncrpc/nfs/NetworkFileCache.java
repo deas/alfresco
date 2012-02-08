@@ -298,6 +298,11 @@ public class NetworkFileCache {
 							} 
 							else {
 
+								// Make sure there is no active transaction
+								
+								if ( fentry.getSession().hasTransaction())
+									fentry.getSession().endTransaction();
+								
 								// Check if the network file is closed, if not  then close the file to release the file
 								// handle but keep the file entry in the file cache for a while as the file may be re-opened
 
@@ -340,7 +345,10 @@ public class NetworkFileCache {
     											Debug.println("NFSFileExpiry: Closed file="	+ fentry.getFile().getFullName() + ", fid="	+ fileId + " (cached)");
 										}
 										
-										// Clear the user context
+										// Clear the user context, flush any active transaction
+										
+										if ( fentry.getSession().hasTransaction())
+											fentry.getSession().endTransaction();
 										
 										m_authenticator.setCurrentUser( fentry.getSession(), null);
 									}
@@ -395,7 +403,10 @@ public class NetworkFileCache {
 										else if ( Debug.EnableInfo && hasDebug())
 											Debug.println("NFSFileExpiry: File deleted before close, " + netFile.getFullName());
 
-										// Clear the user context
+										// Clear the user context, flush any active transaction
+										
+										if ( fentry.getSession().hasTransaction())
+											fentry.getSession().endTransaction();
 										
 										m_authenticator.setCurrentUser( fentry.getSession(), null);
 									} 

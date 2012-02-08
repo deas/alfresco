@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.extensions.surf.util.URLDecoder;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfo;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfoComparator;
@@ -144,8 +145,14 @@ public class FileOpenDialog extends AbstractMethod
 
     private String getSiteUrl(VtiFpRequest request)
     {
-        String siteUrl;
-        siteUrl = request.getRequestURI().replaceAll(request.getAlfrescoContextName(), "");
+        String siteUrl = URLDecoder.decode(request.getRequestURI());
+        String alfrescoContext = request.getAlfrescoContextName();
+
+        if (alfrescoContext != null && alfrescoContext.length() > 0 && siteUrl.startsWith(alfrescoContext))
+        {
+            siteUrl = siteUrl.substring(alfrescoContext.length());
+        }
+
         int pos = siteUrl.indexOf("/_vti_bin/");
         if (pos != 0)
         {

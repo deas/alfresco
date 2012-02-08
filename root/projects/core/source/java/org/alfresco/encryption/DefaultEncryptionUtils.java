@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AlgorithmParameters;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -427,7 +428,7 @@ public class DefaultEncryptionUtils implements EncryptionUtils
 	
 		if(logger.isDebugEnabled())
 		{
-			logger.debug("Setting MAC " + mac + " on HTTP request " + method.getPath());
+			logger.debug("Setting MAC " + Arrays.toString(mac) + " on HTTP request " + method.getPath());
 			logger.debug("Setting timestamp " + requestTimestamp + " on HTTP request " + method.getPath());
 		}
 	    
@@ -450,7 +451,7 @@ public class DefaultEncryptionUtils implements EncryptionUtils
 
 		if(logger.isDebugEnabled())
 		{
-			logger.debug("Setting MAC " + mac + " on HTTP response to request " + httpRequest.getRequestURI());
+			logger.debug("Setting MAC " + Arrays.toString(mac) + " on HTTP response to request " + httpRequest.getRequestURI());
 			logger.debug("Setting timestamp " + responseTimestamp + " on HTTP response to request " + httpRequest.getRequestURI());
 		}
 

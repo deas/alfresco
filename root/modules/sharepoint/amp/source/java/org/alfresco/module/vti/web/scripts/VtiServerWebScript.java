@@ -39,6 +39,7 @@ public class VtiServerWebScript extends AbstractWebScript
 {
     private int vtiServerPort = 0;
     private String vtiServerHost = "${localname}";
+    private String vtiServerProtocol = "http";
     private SysAdminParams sysAdminParams;
 
     public void setPort(int vtiServerPort)
@@ -49,6 +50,11 @@ public class VtiServerWebScript extends AbstractWebScript
     public void setHost(String vtiServerHost)
     {
         this.vtiServerHost = vtiServerHost;
+    }
+    
+    public void setProtocol(String vtiServerProtocol)
+    {
+        this.vtiServerProtocol = vtiServerProtocol;
     }
     
     public void setSysAdminParams(SysAdminParams sysAdminParams)
@@ -68,6 +74,7 @@ public class VtiServerWebScript extends AbstractWebScript
             out.startObject();
             out.writeValue("port", this.vtiServerPort);
             out.writeValue("host", this.sysAdminParams.subsituteHost(vtiServerHost));
+            out.writeValue("protocol", this.vtiServerProtocol);
             out.endObject();
         }
         catch (IOException jsonErr)

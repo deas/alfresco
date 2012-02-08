@@ -140,10 +140,6 @@
             dataWebScripts[RP.MODE_COPY_FROM] = "copy-from";
             dataWebScripts[RP.MODE_LINK_TO] = "link-to";
 
-            if (typeof dataWebScripts[obj.mode] == "undefined")
-            {
-               throw new Error("Alfresco.module.RulesPicker: Invalid mode '" + obj.mode + "'");
-            }
             myOptions.dataWebScript = dataWebScripts[obj.mode];
          }
 

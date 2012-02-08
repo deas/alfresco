@@ -2,16 +2,33 @@
 <classpath>
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.0.0.jar" sourcepath="/3rd Party/src/spring-surf-1.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.0.0.jar" sourcepath="/3rd Party/src/spring-webscripts-1.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-1.9.4.6.jar" sourcepath="/3rd Party/src/hazelcast-1.9.4.6-src.zip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Alfresco JLAN"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Web Framework Commons"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-cmis-framework-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.context-sources-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/json.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-httpclient-3.1.jar" sourcepath="/3rd Party/src/commons-httpclient-3.1-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/docs/apidocs"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-opencmis-extension-0.2.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.6.0.jar" sourcepath="/3rd Party/src/chemistry-opencmis-client-api-0.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.6.0.jar" sourcepath="/3rd Party/src/chemistry-opencmis-commons-api-0.6.0-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/portlet_20.jar" sourcepath="/3rd Party/src/portlet_20_src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/portlet_20_doc.zip!/doc"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

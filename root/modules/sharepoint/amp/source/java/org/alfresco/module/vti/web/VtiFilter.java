@@ -340,7 +340,7 @@ public class VtiFilter implements Filter
         try
         {
             result = vtiHandler.decomposeURL(uri, context);
-            if (result[0].length() > context.length())
+            if (result[0].length() >= context.length())
             {
                 request.setAttribute("VALID_SITE_URL", "true");
                 return true;

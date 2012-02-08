@@ -210,7 +210,7 @@ public class OplockLeakTest extends Test {
 				// Other threads just try and open the file, to break the oplock
 				
 				try {
-					oplockFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite, FileAttribute.NTNormal, SharingMode.READWRITEDELETE, FileAction.NTOverwriteIf, 0, 0);
+					oplockFile = cifsSess.NTCreate( testFileName, AccessMode.NTReadWrite + AccessMode.NTReadAttrib, FileAttribute.NTNormal, SharingMode.READWRITEDELETE, FileAction.NTOverwriteIf, 0, 0);
 	
 					testLog( log, "Opened oplocked file on server " + sess.getServer());
 				}

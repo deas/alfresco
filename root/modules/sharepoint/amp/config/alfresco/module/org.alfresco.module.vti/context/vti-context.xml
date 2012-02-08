@@ -42,6 +42,7 @@
         </property>
     </bean>
 
+    <!-- Use this Connector for plain text (non-SSL) communications -->
     <bean id="vtiServerConnector" class="org.mortbay.jetty.bio.SocketConnector">
         <property name="port">
              <value>${vti.server.port}</value>
@@ -50,6 +51,36 @@
              <value>8192</value>
         </property>
     </bean>
+
+    <!-- Use this Connector instead for SSL communications -->
+    <!-- You will need to set the location of the KeyStore holding your -->
+    <!--  server certificate, along with the KeyStore password -->
+    <!-- You should also update the vti.server.protocol property to https -->
+<!--
+    <bean id="vtiServerConnector" class="org.mortbay.jetty.security.SslSocketConnector">
+        <property name="port">
+             <value>${vti.server.port}</value>
+        </property>
+        <property name="headerBufferSize">
+             <value>8192</value>
+        </property>
+        <property name="maxIdleTime">
+             <value>30000</value>
+        </property>
+        <property name="keystore">
+             <value>${vti.server.ssl.keystore}</value>
+        </property>
+        <property name="keyPassword">
+             <value>${vti.server.ssl.password}</value>
+        </property>
+        <property name="password">
+             <value>${vti.server.ssl.password}</value>
+        </property>
+        <property name="keystoreType">
+             <value>JCEKS</value>
+        </property>
+    </bean> 
+-->
 
     <bean id="vtiFilter" class="org.alfresco.module.vti.web.VtiFilter">
         <property name="authenticationHandler" ref="vtiAuthenticationHandler"/>
@@ -870,6 +901,9 @@
         </property>
         <property name="host">
             <value>${vti.server.external.host}</value>
+        </property>
+        <property name="protocol">
+            <value>${vti.server.external.protocol}</value>
         </property>
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />

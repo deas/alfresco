@@ -182,7 +182,7 @@
       "application/java": "Java Class",
       "application/x-javascript": "JavaScript",
       "text/javascript": "JavaScript",
-      "text/sgml", "SGML",
+      "text/sgml", "SGML (Human Readable)",
       "application/x-sh", "Shell Script",
       "application/x-shockwave-flash", "Shockwave Flash",
       "video/x-flv", "Flash Video",
@@ -226,7 +226,7 @@
       "image/x-rgb": "RGB Image",
       "image/svg": "Scalable Vector Graphics Image",
       "video/x-sgi-movie": "SGI Video",
-      "application/sgml": "SGML",
+      "application/sgml": "SGML (Machine Readable)",
       "text/tab-separated-values": "Tab Separated Values",
       "application/x-tar": "Tarball",
       "application/x-tex": "Tex",
@@ -246,8 +246,11 @@
       "image/vnd.adobe.premiere": "Adobe Premiere",
       "audio/ogg": "OGG Audio",
       "video/ogg": "OGG Video",
-      "video/ogv": "OGG Video",
-      "video/webm": "WebM Video"
+      "video/webm": "WebM Video",
+      "application/x-latex": "LaTeX",
+      "application/x-troff-man": "Man Page",
+      "audio/x-mpeg": "MPEG Audio (x-mpeg)",
+      "audio/vnd.adobe.soundbooth": "Adobe SoundBooth"
       }>
    <#local label=mimetypes[mt]!msg("form.control.mimetype.unknown")>
    <#return label>

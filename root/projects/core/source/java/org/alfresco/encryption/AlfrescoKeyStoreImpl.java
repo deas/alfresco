@@ -1059,7 +1059,7 @@ public class AlfrescoKeyStoreImpl implements AlfrescoKeyStore
             String keyAlgorithm = keyProps.getProperty(keyAlias + ".algorithm");
 
             byte[] keyDataBytes = null;
-            if(keyData != null)
+            if(keyData != null && !keyData.equals(""))
             {
             	keyDataBytes = Base64.decodeBase64(keyData);
             }

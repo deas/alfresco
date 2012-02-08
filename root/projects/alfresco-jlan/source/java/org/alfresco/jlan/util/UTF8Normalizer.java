@@ -203,7 +203,7 @@ public class UTF8Normalizer {
         
         // Get the required Normalizer.Form value
         
-        m_field = normFormClass.getField("NFD");
+        m_field = normFormClass.getField("NFC");
         
         // Find the compose method
         

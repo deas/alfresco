@@ -403,6 +403,7 @@
                     generate-javadocs-jlan,
                     generate-javadocs-slingshot,
                     generate-javadocs-solr,
+                    generate-javadocs-webframeworkcommons,
                     generate-javadocs-wcmquickstart-clientapi" />
 
    <!-- ****************************************************** -->
@@ -645,7 +646,6 @@
          <fileset dir="${dir.project.3rdparty.lib}/abdera" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/gdata-1.45.0" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/spring-social" includes="*.jar"/>
-         <fileset dir="${dir.project.3rdparty.lib}/hazelcast" includes="*.jar"/>
       </copy>
       
       <!-- copy webservices files -->
@@ -1280,6 +1280,10 @@
    <target name="distribute-extras" description="Build distribution targets for enterprise projects" />
 
    <target name="assemble-command-extras" description="Assemble commands" />
+	
+   <target name="sdk-extras" description="Community additions for the SDK" />
+	
+	
 
 
 </project>

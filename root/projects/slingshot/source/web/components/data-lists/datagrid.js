@@ -919,6 +919,8 @@
             dynamicData: false,
             "MSG_EMPTY": this.msg("message.empty"),
             "MSG_ERROR": this.msg("message.error"),
+            MSG_SORTASC: this.msg("message.sortasc"),
+            MSG_SORTDESC: this.msg("message.sortdesc"),
             paginator: this.widgets.paginator
          });
          

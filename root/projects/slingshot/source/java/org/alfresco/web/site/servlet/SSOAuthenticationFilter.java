@@ -72,7 +72,6 @@ import org.springframework.extensions.surf.RequestContextUtil;
 import org.springframework.extensions.surf.UserFactory;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
 import org.springframework.extensions.surf.exception.PlatformRuntimeException;
-import org.springframework.extensions.surf.exception.RequestContextException;
 import org.springframework.extensions.surf.site.AuthenticationUtil;
 import org.springframework.extensions.surf.types.Page;
 import org.springframework.extensions.surf.util.Base64;
@@ -315,40 +314,6 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         
         if (debug) logger.debug("Processing request " + req.getRequestURI() + " SID:" + session.getId());
         
-        // initialize a new request context
-        RequestContext context = null;
-        try
-        {
-            // perform a "silent" init - i.e. no user creation or remote connections
-            context = RequestContextUtil.initRequestContext(getApplicationContext(), (HttpServletRequest)sreq, true);
-        }
-        catch (Exception ex)
-        {
-            logger.error("Error calling initRequestContext", ex);
-            throw new ServletException(ex);
-        }
-
-        // Check if there is an authorization header with a challenge response
-        String authHdr = req.getHeader(HEADER_AUTHORIZATION);
-
-        // We are not passing on a challenge response and we have sufficient client session information
-        // touch the repo to ensure we still have an authenticated  session
-        if (authHdr == null && AuthenticationUtil.isAuthenticated(req))        
-        {
-            challengeOrPassThrough(chain, req, res, session);
-            return;
-        }
-        
-        // get the page from the model if any - it may not require authentication
-        Page page = context.getPage();
-        if (page != null && page.getAuthentication() == RequiredAuthentication.none)
-        {
-            if (logger.isDebugEnabled())
-                logger.debug("Unauthenticated page requested - skipping auth filter...");
-            chain.doFilter(sreq, sresp);
-            return;
-        }
-        
         // Login page or login submission
         String pathInfo;
         if (PAGE_SERVLET_PATH.equals(req.getServletPath())
@@ -363,6 +328,29 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             return;
         }
 
+        // initialize a new request context
+        RequestContext context = null;
+        try
+        {
+            // perform a "silent" init - i.e. no user creation or remote connections
+            context = RequestContextUtil.initRequestContext(getApplicationContext(), req, true);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Error calling initRequestContext", ex);
+            throw new ServletException(ex);
+        }
+
+        // get the page from the model if any - it may not require authentication
+        Page page = context.getPage();
+        if (page != null && page.getAuthentication() == RequiredAuthentication.none)
+        {
+            if (logger.isDebugEnabled())
+                logger.debug("Unauthenticated page requested - skipping auth filter...");
+            chain.doFilter(sreq, sresp);
+            return;
+        }
+        
         // Check if the browser is Opera, if so then display the login page as Opera does not
         // support NTLM and displays an error page if a request to use NTLM is sent to it
         String userAgent = req.getHeader("user-agent");
@@ -371,6 +359,17 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             if (debug) logger.debug("Opera detected, redirecting to login page");
 
             redirectToLoginPage(req, res);
+            return;
+        }
+        
+        // Check if there is an authorization header with a challenge response
+        String authHdr = req.getHeader(HEADER_AUTHORIZATION);
+
+        // We are not passing on a challenge response and we have sufficient client session information
+        // touch the repo to ensure we still have an authenticated  session
+        if (authHdr == null && AuthenticationUtil.isAuthenticated(req))        
+        {
+            challengeOrPassThrough(chain, req, res, session);
             return;
         }
         
@@ -503,6 +502,20 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 if (debug) logger.debug("NTLM not handled, redirecting to login page");
                 
                 redirectToLoginPage(req, res);
+            }
+        }
+        // Possibly basic auth - allow through
+        else
+        {
+            if (AuthenticationUtil.isAuthenticated(req))
+            {
+                // Poll the session to make sure it's still valid
+                challengeOrPassThrough(chain, req, res, session);
+            }
+            else
+            {
+                // possibly establish a new session or bring up the login page
+                chain.doFilter(req, res);
             }
         }
     }
@@ -651,6 +664,10 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             // user same browser instance to access both apps then we could get wrong session ID!
             headers.put("Cookie", "");
         }
+
+        // ALF-12278: Prevent the copying over of headers specific to a POST request on to the touch GET request
+        headers.put("Content-Type", null);
+        headers.put("Content-Length", null);
         return headers;
     }
     

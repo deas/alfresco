@@ -119,7 +119,7 @@ public class MACUtils
 
     		if(logger.isDebugEnabled())
     		{
-    			logger.debug("...done. MAC is " + newMAC);
+    			logger.debug("...done. MAC is " + Arrays.toString(newMAC));
     		}
 
             return newMAC;
@@ -148,7 +148,7 @@ public class MACUtils
 
     		if(logger.isDebugEnabled())
     		{
-    			logger.debug("Validating expected MAC " + expectedMAC + " against mac " + mac + " for MAC input " + macInput + "...");
+    			logger.debug("Validating expected MAC " + Arrays.toString(expectedMAC) + " against mac " + Arrays.toString(mac) + " for MAC input " + macInput + "...");
     		}
 
     		boolean areEqual = Arrays.equals(expectedMAC, mac);

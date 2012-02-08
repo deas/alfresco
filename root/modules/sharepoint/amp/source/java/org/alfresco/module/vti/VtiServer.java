@@ -19,6 +19,8 @@
 
 package org.alfresco.module.vti;
 
+import java.net.BindException;
+
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 
@@ -136,12 +138,17 @@ public class VtiServer extends AbstractLifecycleBean
          server.start();
          
          if (logger.isInfoEnabled())
-            logger.info("Vti server started successfully on port: " + this.connector.getLocalPort());
+            logger.info("Vti server started successfully on port: " + this.connector.getPort());
             logger.info("Vti server SessionIdManagerWorkerName: " + this.hashSessionIdManager.getWorkerName());
       } 
+      catch (BindException be)
+      {
+          throw new AlfrescoRuntimeException("Unable to start the VtiServer, as the port " + 
+                  this.connector.getPort() + " is already in use", be);
+      }
       catch (Exception e) 
       {
-         throw new AlfrescoRuntimeException("Error start VtiServer, cause: ", e);
+         throw new AlfrescoRuntimeException("Error starting VtiServer, cause: ", e);
       }
    }
 

@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.web.VtiAction;
+import org.alfresco.module.vti.web.VtiFilter;
 import org.alfresco.module.vti.web.VtiUtilBase;
 import org.alfresco.module.vti.web.ws.VtiEndpoint;
 import org.alfresco.module.vti.web.ws.VtiSoapException;
@@ -74,6 +75,7 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
         {
             try
             {
+                soapResponse.setContentType(VtiFilter.CONTENT_TYPE_XML);
                 endpoint.execute(soapRequest, soapResponse);
             }
             catch (Exception e)

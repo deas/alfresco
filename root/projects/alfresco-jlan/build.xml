@@ -9,7 +9,7 @@
 	<target name="createJar">
 		<delete dir="build/standalone" quiet="true"/>
 		<mkdir dir="build/standalone"/>
-		<javac destdir="build/standalone" classpath="service/wrapper.jar:hazelcast/hazelcast-1.9.4.4.jar" debug="on">
+		<javac destdir="build/standalone" classpath="service/wrapper.jar:hazelcast/hazelcast-1.9.4.6.jar" debug="on">
 			<src path="source/java"/>
 			<src path="source/standalone-java"/>
 			<include name="**/*.java"/>
@@ -40,7 +40,7 @@
 	<target name="createJarFull">
 		<delete dir="build/standalone" quiet="true"/>
 		<mkdir dir="build/standalone"/>
-		<javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
+		<javac destdir="build/standalone" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.6.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
 			<src path="source/java"/>
 			<src path="source/standalone-java"/>
 			<include name="**/*.java"/>
@@ -58,7 +58,7 @@
 	<target name="createJarDB">
 		<delete dir="build/standalone-db" quiet="true"/>
 		<mkdir dir="build/standalone-db"/>
-		<javac destdir="build/standalone-db" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
+		<javac destdir="build/standalone-db" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.6.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
 		  <src path="source/java"/>
 		  <src path="source/standalone-java"/>
 		  <include name="**/*.java"/>
@@ -84,7 +84,7 @@
 	<target name="createJarDBOracle">
 		<delete dir="build/standalone-dbora" quiet="true"/>
 		<mkdir dir="build/standalone-dbora"/>
-		<javac destdir="build/standalone-dbora" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.4.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
+		<javac destdir="build/standalone-dbora" classpath="service/wrapper.jar:libs/ojdbc14.jar:hazelcast/hazelcast-1.9.4.6.jar:libs/postgresql-9.1-901.jdbc4.jar" debug="on">
 		  <src path="source/java"/>
 		  <src path="source/standalone-java"/>
 		  <include name="**/*.java"/>
@@ -106,7 +106,7 @@
 	<target name="createJarCluster">
 		<delete dir="build/standalone-cluster" quiet="true"/>
 		<mkdir dir="build/standalone-cluster"/>
-		<javac destdir="build/standalone-cluster" classpath="service/wrapper.jar:hazelcast/hazelcast-1.9.4.4.jar" debug="on">
+		<javac destdir="build/standalone-cluster" classpath="service/wrapper.jar:hazelcast/hazelcast-1.9.4.6.jar" debug="on">
 			<src path="source/java"/>
 			<src path="source/standalone-java"/>
 			<include name="**/*.java"/>

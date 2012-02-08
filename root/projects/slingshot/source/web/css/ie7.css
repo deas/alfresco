@@ -118,6 +118,11 @@ body .title-button .yui-button
    padding-right: 20px;
 }
 
+.my-sites .yui-dt-col-actions div
+{
+   visibility: visible;
+}
+
 .my-documents table,
 .my-sites table
 {
@@ -271,7 +276,7 @@ table .yui-dt-empty
 
 .global-folder .mode button
 {
-   width: 20em;
+   width: 10em;
    height: 4em;
    overflow: hidden;
 }
@@ -292,3 +297,16 @@ table .yui-dt-empty
 {
    zoom: 1;
 }
+
+/* Rules picker */
+
+.rules-picker .repository-mode .treeview
+{
+   width: 30em;
+}
+
+.rules-picker .treeview
+{
+   width: 10em;
+}
+

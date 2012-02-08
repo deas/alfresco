@@ -995,7 +995,6 @@
          Alfresco.util.Ajax.jsonDelete(
          {
             url: Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + this.options.nodeRef.replace(":/", "") + "/dispositionschedule/dispositionactiondefinitions/" + actionId,
-            dataObj: {},
             successCallback:
             {
                fn: function(response)

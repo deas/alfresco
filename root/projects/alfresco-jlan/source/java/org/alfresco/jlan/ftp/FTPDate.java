@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * FTP Date Utility Class
@@ -47,6 +48,18 @@ public class FTPDate {
 	protected final static SimpleDateFormat _mlstFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 	protected final static SimpleDateFormat _mlstFormatLong = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
 
+	
+	/**
+	 * Static initializer
+	 */
+	static {
+	
+		// Set the formatters to UTC
+		
+		_mlstFormat.setTimeZone( TimeZone.getTimeZone( "UTC"));
+		_mlstFormatLong.setTimeZone( TimeZone.getTimeZone( "UTC"));
+	}
+	
 	/**
 	 * Pack a date string in Unix format
 	 * 
@@ -75,7 +88,7 @@ public class FTPDate {
 
 		// Add the month name and date parts to the string
 
-		Calendar cal = new GregorianCalendar();
+		Calendar cal = new GregorianCalendar( TimeZone.getTimeZone( "UTC"));
 		cal.setTime(dt);
 		buf.append(_months[cal.get(Calendar.MONTH)]);
 		buf.append(" ");

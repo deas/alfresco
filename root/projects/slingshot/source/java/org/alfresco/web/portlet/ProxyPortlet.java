@@ -106,7 +106,7 @@ public class ProxyPortlet implements Portlet
             {
                String name = (String)names.nextElement();
                String value = req.getParameter(name);
-               if (prefsMap.containsKey(name) && value != null && prefsMap.get(name)[0] != value)
+               if (prefsMap.containsKey(name) && value != null && !value.equals(prefsMap.get(name)[0]))
                {
                    prefs.setValue(name, value);
                    foundPref = true;

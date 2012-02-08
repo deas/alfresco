@@ -55,7 +55,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     @Override
     protected FileInfo getNodeForPath(NodeRef rootNodeRef, String path, String servletPath) throws FileNotFoundException
     {
-        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, URLDecoder.decode(path), alfrescoContext);
+        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, URLDecoder.decode(path), servletPath);
         FileInfo workingCopy = getWorkingCopy(nodeInfo.getNodeRef());
         return workingCopy != null ? workingCopy : nodeInfo;
     }

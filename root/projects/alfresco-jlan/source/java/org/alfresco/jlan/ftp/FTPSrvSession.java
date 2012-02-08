@@ -112,7 +112,7 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 	// Enabled features
 
 	public static final boolean FeatureUTF8 = true;
-	public static final boolean FeatureMDTM = true;
+	public static final boolean FeatureMFMT = true;
 	public static final boolean FeatureSIZE = true;
 	public static final boolean FeatureMLST = true;
 	public static final boolean FeatureAUTH = true;
@@ -3229,6 +3229,79 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
+	 * Process a get modification date/time command
+	 * 
+	 * @param req FTPRequest
+	 * @exception IOException
+	 */
+	protected final void procGetModifyDateTime(FTPRequest req)
+		throws IOException {
+		
+		// Check if the user is logged in
+
+		if ( isLoggedOn() == false) {
+			sendFTPNotLoggedOnResponse();
+			return;
+		}
+
+		// Check if an argument has been specified
+
+		if ( req.hasArgument() == false) {
+			sendFTPResponse(501, "Syntax error, parameter required");
+			return;
+		}
+
+		// Create the path for the file request
+
+		FTPPath ftpPath = generatePathForRequest(req, true);
+		if ( ftpPath == null) {
+			sendFTPResponse(550, "Invalid path");
+			return;
+		}
+
+		// Get the file information
+
+		DiskInterface disk = null;
+		TreeConnection tree = null;
+
+		try {
+
+			// Create a temporary tree connection
+
+			tree = getTreeConnection(ftpPath.getSharedDevice());
+
+			// Access the virtual filesystem driver
+
+			disk = (DiskInterface) ftpPath.getSharedDevice().getInterface();
+
+			// Get the file information
+
+			FileInfo finfo = disk.getFileInformation(this, tree, ftpPath.getSharePath());
+
+			if ( finfo == null) {
+				sendFTPResponse(550, "File " + req.getArgument() + " not available");
+				return;
+			}
+
+			// Return the file modification date/time
+
+			if ( finfo.hasModifyDateTime())
+				sendFTPResponse(213, FTPDate.packMlstDateTime(finfo.getModifyDateTime()));
+			else
+				sendFTPResponse(550, "Modification date/time not available for " + finfo.getFileName());
+
+			// DEBUG
+
+			if ( Debug.EnableInfo && hasDebug(DBG_FILE))
+				debugPrintln("File modify date/time ftp=" + ftpPath.getFTPPath() + ", share=" + ftpPath.getShareName()
+						+ ", modified=" + finfo.getModifyDateTime());
+		}
+		catch (Exception ex) {
+			sendFTPResponse(550, "Error retrieving file modification date/time");
+		}
+	}
+	
+	/**
 	 * Process a modify date/time command
 	 * 
 	 * @param req FTPRequest
@@ -3298,11 +3371,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 						millis = Integer.valueOf(path.substring(MDTM_DATETIME_MINLEN + 1, sep)).intValue();
 					}
 
-					// Create the modify date/time
+					// Create the modify date/time, month is zero based
 
 					Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-					cal.set(year, month, day, hours, mins, secs);
+					cal.set(year, month - 1, day, hours, mins, secs);
 					if ( millis != 0)
 						cal.set(Calendar.MILLISECOND, millis);
 
@@ -3325,7 +3398,7 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 		}
 
-		// Create the path for the file listing
+		// Create the path for the file request
 
 		FTPPath ftpPath = generatePathForRequest(req, true);
 		if ( ftpPath == null) {
@@ -3401,10 +3474,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 		sendFTPResponse("211-Features supported");
 
-		// MOdify date/time and size commands supported
+		// Modify date/time and size commands supported
 
-		if ( FeatureMDTM)
-			sendFTPResponse(" MDTM");
+		if ( FeatureMFMT)
+			sendFTPResponse(" MFMT");
 
 		if ( FeatureSIZE)
 			sendFTPResponse(" SIZE");
@@ -4998,9 +5071,15 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 						procFileSize(ftpReq);
 						break;
 
+					// Return the modification date/time
+						
+					case FTPCommand.Mdtm:
+						procGetModifyDateTime(ftpReq);
+						break;
+						
 					// Set modify date/time command
 
-					case FTPCommand.Mdtm:
+					case FTPCommand.Mfmt:
 						procModifyDateTime(ftpReq);
 						break;
 

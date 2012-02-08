@@ -320,11 +320,11 @@ public class FTSQueryParser
                 switch (termNode.getType())
                 {
                 case FTSParser.FTSPRE:
-                    return buildPrefixTerm(fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
+                    return buildExactPrefixTerm(fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
                 case FTSParser.FTSWILD:
                 case FTSParser.STAR:
                 case FTSParser.QUESTION_MARK:
-                    return buildWildTerm(fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
+                    return buildExactWildTerm(fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
                 default:
                     return buildExactTerm(fieldReferenceNode, testNode, factory, functionEvaluationContext, selector, columnMap);
                 }
@@ -875,6 +875,7 @@ public class FTSQueryParser
         case FTSParser.TERM:
         case FTSParser.EXACT_TERM:
         case FTSParser.PHRASE:
+        case FTSParser.EXACT_PHRASE:
         case FTSParser.SYNONYM:
         case FTSParser.PROXIMITY:
         case FTSParser.RANGE:
@@ -919,6 +920,35 @@ public class FTSQueryParser
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
         LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
         functionArguments.put(larg.getName(), larg);
+        larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
+        functionArguments.put(larg.getName(), larg);
+        if (fieldReferenceNode != null)
+        {
+            PropertyArgument parg = buildFieldReference(FTSWildTerm.ARG_PROPERTY, fieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+            functionArguments.put(parg.getName(), parg);
+        }
+        else
+        {
+            CommonTree specifiedFieldReferenceNode = findFieldReference(testNode);
+            if (specifiedFieldReferenceNode != null)
+            {
+                PropertyArgument parg = buildFieldReference(FTSWildTerm.ARG_PROPERTY, specifiedFieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+                functionArguments.put(parg.getName(), parg);
+            }
+        }
+        return factory.createFunctionalConstraint(function, functionArguments);
+    }
+    
+    static private Constraint buildExactWildTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
+            Selector selector, Map<String, Column> columnMap)
+    {
+        String functionName = FTSWildTerm.NAME;
+        Function function = factory.getFunction(functionName);
+        Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
+        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        functionArguments.put(larg.getName(), larg);
+        larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
+        functionArguments.put(larg.getName(), larg);
         if (fieldReferenceNode != null)
         {
             PropertyArgument parg = buildFieldReference(FTSWildTerm.ARG_PROPERTY, fieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
@@ -943,6 +973,35 @@ public class FTSQueryParser
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
         LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        functionArguments.put(larg.getName(), larg);
+        larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
+        functionArguments.put(larg.getName(), larg);
+        if (fieldReferenceNode != null)
+        {
+            PropertyArgument parg = buildFieldReference(FTSPrefixTerm.ARG_PROPERTY, fieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+            functionArguments.put(parg.getName(), parg);
+        }
+        else
+        {
+            CommonTree specifiedFieldReferenceNode = findFieldReference(testNode);
+            if (specifiedFieldReferenceNode != null)
+            {
+                PropertyArgument parg = buildFieldReference(FTSPrefixTerm.ARG_PROPERTY, specifiedFieldReferenceNode, factory, functionEvaluationContext, selector, columnMap);
+                functionArguments.put(parg.getName(), parg);
+            }
+        }
+        return factory.createFunctionalConstraint(function, functionArguments);
+    }
+    
+    static private Constraint buildExactPrefixTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
+            Selector selector, Map<String, Column> columnMap)
+    {
+        String functionName = FTSPrefixTerm.NAME;
+        Function function = factory.getFunction(functionName);
+        Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
+        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        functionArguments.put(larg.getName(), larg);
+        larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
         if (fieldReferenceNode != null)
         {
@@ -1058,6 +1117,8 @@ public class FTSQueryParser
         switch (node.getType())
         {
         case FTSParser.FTSWORD:
+        case FTSParser.FTSPRE:
+        case FTSParser.FTSWILD:
             index = text.indexOf('\\');
             if (index == -1)
             {

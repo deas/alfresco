@@ -265,6 +265,8 @@ public class LuceneAnalyser extends AbstractAnalyzer
                             {
                             case DEFAULT:
                             case TOKENISE:
+                            case WILD:
+                            case PREFIX:
                                 if (dataType.getName().equals(DataTypeDefinition.CONTENT))
                                 {
                                     analyser = new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY);
@@ -283,6 +285,7 @@ public class LuceneAnalyser extends AbstractAnalyzer
                                 }
                                 break;
                             case IDENTIFIER:
+                            case LIKE:
                                 if (dataType.getName().equals(DataTypeDefinition.MLTEXT))
                                 {
                                     analyser = new VerbatimMLAnalayser(mlAlaysisMode);
@@ -310,10 +313,13 @@ public class LuceneAnalyser extends AbstractAnalyzer
                         switch (analysisMode)
                         {
                         case IDENTIFIER:
+                        case LIKE:
                             analyser = new VerbatimAnalyser();
                             break;
                         case DEFAULT:
                         case TOKENISE:
+                        case WILD:
+                        case PREFIX:
                             DataTypeDefinition dataType = dictionaryService.getDataType(DataTypeDefinition.TEXT);
                             analyser = loadAnalyzer(dataType);
                             break;

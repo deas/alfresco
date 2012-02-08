@@ -148,7 +148,7 @@ public class RuntimeExec
             }
             sb.append("\n");
         }
-        sb.append("   env props:  ").append(processProperties).append("\n")
+        sb.append("   env props:  ").append(Arrays.toString(processProperties)).append("\n")
           .append("   dir:        ").append(processDirectory).append("\n")
           .append("   os:         ").append(System.getProperty(KEY_OS_NAME)).append("\n");
         return sb.toString();

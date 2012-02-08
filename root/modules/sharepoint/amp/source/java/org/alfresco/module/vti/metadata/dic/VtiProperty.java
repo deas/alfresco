@@ -46,6 +46,12 @@ public enum VtiProperty
      * associated with this folder.
      */
     FOLDER_LISTBASETYPE   ("vti_listbasetype"),
+    
+    FOLDER_LISTENABLEMINORVERSIONS   ("vti_listenableminorversions"),
+    FOLDER_LISTSERVERTEMPLATE        ("vti_listservertemplate"),
+    FOLDER_LISTTITLE                 ("vti_listtitle"),
+    FOLDER_LISTENABLEVERSIONING      ("vti_listenableversioning"),    
+    FOLDER_LISTREQUIRECHECKOUT       ("vti_listrequirecheckout"),
 
     // FILE
     FILE_TITLE ("vti_title"),

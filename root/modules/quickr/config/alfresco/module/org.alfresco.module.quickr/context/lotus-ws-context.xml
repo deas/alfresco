@@ -12,7 +12,7 @@
     <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
     
-    <bean id="lotusWSPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="lotusWSPlaceholderConfigurer" parent="common-placeholder-configurer">
         <property name="ignoreUnresolvablePlaceholders">
             <value>true</value>
         </property>

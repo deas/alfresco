@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.locking.FileLock;
 import org.alfresco.jlan.locking.LockConflictException;
 import org.alfresco.jlan.locking.NotLockedException;
@@ -38,8 +37,6 @@ import org.alfresco.jlan.server.locking.OpLockManager;
 import org.alfresco.jlan.server.thread.ThreadRequestPool;
 import org.alfresco.jlan.server.thread.TimedThreadRequest;
 import org.alfresco.jlan.smb.OpLock;
-import org.alfresco.jlan.smb.SMBStatus;
-import org.alfresco.jlan.smb.server.CIFSThreadRequest;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
 
@@ -379,31 +376,11 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 			
 			// Check if there is a deferred CIFS request pending for this oplock
 			
-			if ( oplock != null && oplock.hasDeferredSession()) {
+			if ( oplock != null && oplock.hasDeferredSessions()) {
 
-				// Get the deferred session/request
+				// Requeue the deferred requests to the thread pool for processing
 				
-				SMBSrvSession deferredSess = oplock.getDeferredSession();
-				SMBSrvPacket deferredPkt   = oplock.getDeferredPacket();
-				
-				// DEBUG
-				
-				if ( Debug.EnableDbg && deferredSess.hasDebug(SMBSrvSession.DBG_OPLOCK))
-					Debug.println("Release oplock, queued deferred request to thread pool sess=" + deferredSess.getUniqueId() + ", pkt=" + deferredPkt);
-
-				try {
-					
-					// Queue the deferred request to the thread pool for processing
-					
-					deferredSess.getThreadPool().queueRequest( new CIFSThreadRequest( deferredSess, deferredPkt));
-				}
-				catch ( Throwable ex) {
-					
-					// Failed to queue the request to the thread pool, release the deferred packet back to the 
-					// memory pool
-					
-					deferredSess.getPacketPool().releasePacket( deferredPkt);
-				}
+				oplock.requeueDeferredRequests();
 			}
 		}
 	}
@@ -428,7 +405,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 			
 			if ( m_oplockQueue.size() == 0)
 				return 0;
-			
+	
 			// Check for oplock break requests that have expired
 	
 			long timeNow = System.currentTimeMillis();
@@ -444,53 +421,34 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 					
 					// Check if the oplock break has timed out
 					
-					if ( opLock.hasDeferredSession() && (opLock.getOplockBreakTime() + OpLockBreakTimeout) <= timeNow) {
+					if ( opLock.hasDeferredSessions()) {
 						
-						// Get the deferred request details
+						// Check if the oplock break has timed out
 						
-						SMBSrvSession sess = opLock.getDeferredSession();
-						SMBSrvPacket  pkt  = opLock.getDeferredPacket();
-						
-						try {
+						if (( opLock.getOplockBreakTime() + OpLockBreakTimeout) <= timeNow) {
+
+							// Fail the deferred requests
 							
-							// Return an error for the deferred file open request
+							opLock.failDeferredRequests();
 							
-							if ( sess.sendAsyncErrorResponseSMB( pkt, SMBStatus.NTAccessDenied, SMBStatus.NTErr) == true) {
+							// Remove the oplock break from the queue
 							
-								// DEBUG
-								
-								if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-									sess.debugPrintln( "Oplock break timeout, oplock=" + opLock);
-							}
-							else if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
-								sess.debugPrintln( "Failed to send open reject, oplock break timed out, oplock=" + opLock);
+							m_oplockQueue.remove( path);
+							
+							// Mark the oplock has having a failed oplock break
+							
+							opLock.setOplockBreakFailed();
+							
+							// Update the expired oplock break count
+							
+							expireCnt++;
 						}
-						catch ( IOException ex) {
+						else {
 							
+							// Update the deferred packet(s) lease timeout
+							
+							opLock.updateDeferredPacketLease();
 						}
-						finally {
-							
-							// Make sure the packet is released back to the memory pool
-							
-							if ( pkt != null)
-								sess.getPacketPool().releasePacket( pkt);
-						}
-						
-						// Remove the oplock break from the queue
-						
-						m_oplockQueue.remove( path);
-						
-						// Clear the deferred packet details
-						
-						opLock.clearDeferredSession();
-						
-						// Mark the oplock has having a failed oplock break
-						
-						opLock.setOplockBreakFailed();
-						
-						// Update the expired oplock break count
-						
-						expireCnt++;
 					}
 				}
 			}
@@ -584,7 +542,7 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
             
             // Queue a timed request to the thread pool to run the oplock expiry check
             
-            m_threadReq = new OplockExpiryTimedRequest( threadName, OpLockBreakTimeoutSecs);
+            m_threadReq = new OplockExpiryTimedRequest( threadName, OpLockBreakTimeoutSecs/2);
             m_threadPool.queueTimedRequest( m_threadReq);
         }
 	    

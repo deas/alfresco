@@ -33,6 +33,8 @@ import javax.transaction.UserTransaction;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListServiceHandler;
+import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListsServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMethodHandler;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfo;
 import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
@@ -1093,6 +1095,13 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
 
             docMetaInfo.setIsexecutable(Boolean.FALSE.toString());
             docMetaInfo.setIsscriptable(Boolean.FALSE.toString());
+            
+            // Office 2011 for Mac specific properties
+            docMetaInfo.setListEnableMinorVersions("false");
+            docMetaInfo.setListEnableVersioning("false");
+            docMetaInfo.setListTitle(pathHelper.resolveListName(listNode.getId()));
+            docMetaInfo.setListRequireCheckout("false");
+            docMetaInfo.setListServerTemplate(AbstractAlfrescoListServiceHandler.VtiBuiltInListType.DOCLIB.id);
         }
         else
         {

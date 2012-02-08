@@ -302,8 +302,6 @@ public class InMemoryTicketComponentImpl implements TicketComponent
 
         private final String ticketId;
 
-        private final String guid;
-        
         private final Duration validDuration;
 
         Ticket(ExpiryMode expires, Date expiryDate, String userName, Duration validDuration)
@@ -312,7 +310,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             this.expiryDate = expiryDate;
             this.userName = userName;
             this.validDuration = validDuration;
-            this.guid = UUIDGenerator.getInstance().generateRandomBasedUUID().toString();
+            final String guid = UUIDGenerator.getInstance().generateRandomBasedUUID().toString();
 
             String encode = (expires.toString()) + ((expiryDate == null) ? new Date().toString() : expiryDate.toString()) + userName + guid;
             MessageDigest digester;
@@ -348,6 +346,15 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             this.ticketId = ticketId;
         }
 
+        private Ticket(ExpiryMode expires, Date expiryDate, String userName, Duration validDuration, String ticketId)
+        {
+            this.expires = expires;
+            this.expiryDate = expiryDate;
+            this.userName = userName;
+            this.validDuration = validDuration;
+            this.ticketId = ticketId;
+        }
+
         Ticket getNewEntry()
         {
             switch (expires)
@@ -370,7 +377,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
                     }
                     else
                     {
-                        return new Ticket(expires, Duration.add(now, validDuration), userName, validDuration);
+                        return new Ticket(expires, Duration.add(now, validDuration), userName, validDuration, ticketId);
                     }
                     
                 case DO_NOT_EXPIRE:

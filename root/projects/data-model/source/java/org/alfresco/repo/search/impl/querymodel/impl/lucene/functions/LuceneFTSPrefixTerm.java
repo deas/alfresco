@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
@@ -62,16 +63,19 @@ public class LuceneFTSPrefixTerm extends FTSPrefixTerm implements LuceneQueryBui
         // strip trailing wildcard *
         term = term.substring(0, term.length()-1);
 
+        argument = functionArgs.get(ARG_TOKENISATION_MODE);
+        AnalysisMode mode = (AnalysisMode) argument.getValue(functionContext);
+        
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
         Query query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getPrefixQuery(functionContext.getLuceneFieldName(prop), term);
+            query = lqp.getPrefixQuery(functionContext.getLuceneFieldName(prop), term, mode);
         }
         else
         {
-            query = lqp.getPrefixQuery(lqp.getField(), term);
+            query = lqp.getPrefixQuery(lqp.getField(), term, mode);
             
         }
         return query;

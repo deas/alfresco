@@ -163,35 +163,96 @@ public class RemoteOpLockDetails extends OpLockDetailsAdapter implements Seriali
 	}
 	
 	/**
-	 * Return the deferred session details
+	 * Check if there is a deferred session attached to the oplock, this indicates an oplock break is
+	 * in progress for this oplock.
 	 * 
-	 * @return SMBSrvSession
+	 * @return boolean
 	 */
-	public SMBSrvSession getDeferredSession() {
-		SMBSrvSession sess = null;
+	public boolean hasDeferredSessions() {
+		boolean hasDefer = false;
 		
 		if ( getStateCache() != null) {
 			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
 			if ( perNode != null)
-				sess = perNode.getDeferredSession();
+				hasDefer = perNode.hasDeferredSessions();
 		}
-		return sess;
+		return hasDefer;
 	}
 	
 	/**
-	 * Return the deferred CIFS request packet
+	 * Return the count of deferred requests
 	 * 
-	 * @return SMBSrvPacket
+	 * @return int
 	 */
-	public SMBSrvPacket getDeferredPacket() {
-		SMBSrvPacket pkt = null;
+	public int numberOfDeferredSessions() {
+		int deferCnt = 0;
 		
 		if ( getStateCache() != null) {
 			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
 			if ( perNode != null)
-				pkt = perNode.getDeferredPacket();
+				deferCnt = perNode.numberOfDeferredSessions();
 		}
-		return pkt;
+		return deferCnt;
+	}
+	
+	/**
+	 * Add a deferred session/packet, whilst an oplock break is in progress
+	 * 
+	 * @param deferredSess SMBSrvSession
+	 * @param deferredPkt SMBSrvPacket
+	 * @exception DeferFailedException	If the session/packet cannot be deferred
+	 */
+	public void addDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+		throws DeferFailedException {
+		
+		if ( getStateCache() != null) {
+			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
+			if ( perNode != null)
+				perNode.addDeferredSession(deferredSess, deferredPkt);
+		}
+	}
+
+	/**
+	 * Update the deferred packet lease time(s) as we wait for an oplock break or timeout
+	 */
+	public void updateDeferredPacketLease() {
+		if ( getStateCache() != null) {
+			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
+			if ( perNode != null)
+				perNode.updateDeferredPacketLease();
+		}
+	}
+	
+	/**
+	 * Requeue deferred requests to the thread pool for processing, oplock has been released
+	 * 
+	 * @return int Number of deferred requests requeued
+	 */
+	public int requeueDeferredRequests() {
+		int requeueCnt = 0;
+		
+		if ( getStateCache() != null) {
+			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
+			if ( perNode != null)
+				requeueCnt = perNode.requeueDeferredRequests();
+		}
+		return requeueCnt;
+	}
+	
+	/**
+	 * Fail any deferred requests that are attached to this oplock, and clear the deferred list
+	 * 
+	 * @return int Number of deferred requests that were failed
+	 */
+	public int failDeferredRequests() {
+		int failCnt = 0;
+		
+		if ( getStateCache() != null) {
+			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
+			if ( perNode != null)
+				failCnt = perNode.failDeferredRequests();
+		}
+		return failCnt;
 	}
 	
 	/**
@@ -218,43 +279,6 @@ public class RemoteOpLockDetails extends OpLockDetailsAdapter implements Seriali
 	 */
 	public boolean hasOplockBreakFailed() {
 		return false;
-	}
-	
-	/**
-	 * Set the deferred session/packet details, whilst an oplock break is in progress
-	 * 
-	 * @param deferredSess SMBSrvSession
-	 * @param deferredPkt SMBSrvPacket
-	 * @exception DeferFailedException
-	 */
-	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
-		throws DeferFailedException {
-		if ( getStateCache() != null) {
-			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), true);
-			if ( perNode != null) {
-				perNode.setDeferredSession( deferredSess);
-				perNode.setDeferredPacket( deferredPkt);
-			}
-			else
-				throw new RuntimeException ( "PerNode is null oplock=" + this);
-		}
-		else
-			throw new RuntimeException( "Remote oplock does not have stateCache, oplock=" + this);
-	}
-
-	/**
-	 * Clear the deferred session/packet details
-	 */
-	public void clearDeferredSession() {
-		if ( getStateCache() != null) {
-			PerNodeState perNode = getStateCache().getPerNodeState( getPath(), false);
-			if ( perNode != null) {
-				perNode.setDeferredSession( null);
-				perNode.setDeferredPacket( null);
-			}
-		}
-		else
-			throw new RuntimeException( "Remote oplock does not have stateCache, oplock=" + this);
 	}
 	
 	/**

@@ -67,7 +67,6 @@ import org.alfresco.jlan.server.locking.OpLockManager;
 import org.alfresco.jlan.server.thread.ThreadRequestPool;
 import org.alfresco.jlan.smb.OpLock;
 import org.alfresco.jlan.smb.SharingMode;
-import org.alfresco.jlan.smb.server.CIFSThreadRequest;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
 import org.alfresco.jlan.smb.server.notify.NotifyChangeHandler;
@@ -1409,7 +1408,7 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 			// Save the session/packet details so the request can be continued once the client owning the
 			// oplock releases it
 			
-			localOpLock.setDeferredSession( sess, pkt);
+			localOpLock.addDeferredSession( sess, pkt);
 			
 			// DEBUG
 			
@@ -1457,19 +1456,12 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 			// Save the session/packet details so the request can be continued once the client owning the
 			// oplock releases it
 			
-			remoteOplock.setDeferredSession( sess, pkt);
+			remoteOplock.addDeferredSession( sess, pkt);
 			
 			// Send an oplock break request to the cluster
 			
 			OpLockMessage oplockMsg = new OpLockMessage( clNode.getName(), ClusterMessageType.OpLockBreakRequest, normPath);
 			m_clusterTopic.publish( oplockMsg);
-			
-			// Set the time the oplock break was requested
-			
-			perNode = m_perNodeCache.get( normPath);
-			if ( perNode == null)
-				throw new RuntimeException( "requestOplockBreak() perNode is null, path=" + normPath);
-			perNode.setOplockBreakStartTime();
 		}
 		else if ( hasDebugLevel( DebugOplock))
 			Debug.println( "Unable to send oplock break, oplock=" + oplock);
@@ -2663,25 +2655,11 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 		
 		PerNodeState perNode = m_perNodeCache.get( msg.getPath());
 		
-		if ( perNode != null && perNode.hasDeferredSession()) {
+		if ( perNode != null && perNode.hasDeferredSessions()) {
 
-			// Get the deferred session/packet
+			// Requeue the deferred request(s) to the thread pool, oplock released
 			
-			SMBSrvSession sess = perNode.getDeferredSession();
-			SMBSrvPacket pkt = perNode.getDeferredPacket();
-			
-			// Clear the deferred session details
-			
-			perNode.clearDeferredSession();
-			
-			// DEBUG
-			
-			if ( hasDebugLevel( DebugClusterMessage | DebugOplock))
-				Debug.println("Cluster queued deferred request to thread pool sess=" + sess.getUniqueId() + ", pkt=" + pkt);
-
-			// Queue the deferred request to the thread pool for processing
-			
-			sess.getThreadPool().queueRequest( new CIFSThreadRequest( sess, pkt));
+			perNode.requeueDeferredRequests();
 		}
 	}
 

@@ -65,6 +65,11 @@ public class DocMetaInfo
     private String listname;
     private String rtag;
     private String etag;
+    private String listenableminorversions;
+    private String listservertemplate;
+    private String listtitle;
+    private String listenableversioning;
+    private String listrequirecheckout;
 
     /**     
      * <p>Identifies the uniqueId of the item.</p>
@@ -703,5 +708,115 @@ public class DocMetaInfo
     public String getEtag()
     {
         return etag;
+    }
+
+    /**
+     * <p>The vti_listenableminorversions metakey contains a flag indicating that minor version
+     *  numbering is enabled for this List.</p>
+     * 
+     * @param listenableminorversions the listenableminorversions metakey to set
+     */
+    public void setListEnableMinorVersions(String listenableminorversions)
+    {
+        this.listenableminorversions = listenableminorversions;
+    }
+    
+    /**
+     * 
+     * @return the listenableminorversions metakey
+     */
+    public String getListEnableMinorVersions()
+    {
+        return listenableminorversions;
+    }
+    
+    /** 
+     * <p>The vti_listenableversioning metakey contains a flag indicating that version numbering
+     *  is enabled for this List.</p>
+     * 
+     * @param listenableversioning the listenableversioning metakey to set
+     */
+    public void setListEnableVersioning(String listenableversioning)
+    {
+        this.listenableversioning = listenableversioning;
+    }
+    
+    /**
+     * 
+     * @return the listenableversioning metakey
+     */
+    public String getListEnableVersioning()
+    {
+        return listenableversioning;
+    }
+    
+    /**
+     * <p>The vti_listrequirecheckout metakey contains a flag that indicates whether source 
+     * control is enabled for documents in the document library bound to this folder. </p>
+     * 
+     * @param listrequirecheckout the listrequirecheckout metakey to set
+     */
+    public void setListRequireCheckout(String listrequirecheckout)
+    {
+        this.listrequirecheckout = listrequirecheckout;
+    }
+    
+    /**
+     * 
+     * @return the listrequirecheckout metakey
+     */
+    public String getListRequireCheckout()
+    {
+        return listrequirecheckout;
+    }
+    
+    /**
+     * <p>The vti_listservertemplate metakey contains an INT that indicates which 
+     * List template is used for the List associated with this folder</p>
+     * 
+     * @param listservertemplate the listservertemplate metakey to set
+     */
+    public void setListServerTemplate(String listservertemplate)
+    {
+        this.listservertemplate = listservertemplate;
+    }
+    
+    /**
+     * <p>The vti_listservertemplate metakey contains an INT that indicates which 
+     * List template is used for the List associated with this folder</p>
+     * 
+     * @param listservertemplate the listservertemplate metakey to set
+     */
+    public void setListServerTemplate(int listservertemplate)
+    {
+        this.listservertemplate = Integer.toString(listservertemplate);
+    }
+    
+    /**
+     * 
+     * @return the listservertemplate metakey
+     */
+    public String getListServerTemplate()
+    {
+        return listservertemplate;
+    }
+    
+    /**
+     * <p>The vti_listtitle metakey contains the display name of the List.</p>
+     * 
+     * @param listtitle the listtitle to set
+     */
+    public void setListTitle(String listtitle)
+    {
+        this.listtitle = listtitle;
+    }
+    
+    /**
+     * 
+     * @return the display name of the List
+     */
+    public String getListTitle()
+    {
+        return listtitle;
     }
 }

@@ -331,8 +331,9 @@
          var success = function SP_onPublishSuccess(response)
          {
             // Check to see if there is a DocumentPublishing module that needs refreshing
-            var DocPubComponent = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentPublishing")
-            if (DocPubComponent !== null) {
+            var DocPubComponent = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentPublishing");
+            if (DocPubComponent !== null)
+            {
                DocPubComponent.doRefresh();
             }
             
@@ -340,7 +341,7 @@
             // It looks more complicated than it actually is.
             var fileName = me.showConfig.filename, 
                channelName = this.widgets.selectChannelButton.getAttributeConfig("label").value,
-               docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "document-details?nodeRef=" + me.showConfig.nodeRef;
+               docDetailsURL = Alfresco.constants.URL_PAGECONTEXT + "site/" + Alfresco.constants.SITE + "/document-details?nodeRef=" + me.showConfig.nodeRef;
                linkText = Alfresco.util.message("socialPublish.confirm.link", me.name, 
                      {
                         "0": fileName
@@ -356,21 +357,37 @@
                      "0": fileName,
                      "1": channelHTML
                   }),
-               balloonHTML = "<div class='publishConfirm'><div class='success'>" + successText + "</div><div class='tracking'>" + trackingText + "</div></div>",
-               doclib = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentList")
-               balloonElement = (doclib) ? Dom.get(doclib.id) : Dom.getElementsByClassName("document-thumbnail")[0];
+               balloonHTML = "<div class='publishConfirm'><div class='success'>" + successText + "</div>",
+               doclib = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentList");
+            // Are we in the Doc Lib?
+            if (doclib)
+            {
+               // Select the right element for showing the published message & let them know where the publish history is.
+               balloonElement = Dom.get(doclib.id);
+               balloonHTML += "<div class='tracking'>" + trackingText + "</div>";
+            }
+            else
+            {
+               // Just show the balloon at the top of the page.
+               balloonElement = Dom.getElementsByClassName("node-thumbnail")[0];
+            }
+
+            balloonHTML += "</div>";
+
+            if (balloonElement)
+            {
                balloon = Alfresco.util.createBalloon(balloonElement,
                {
                   html: balloonHTML,
                   width: "48em"
                });
-            
-            balloon.show();
-            // hide the balloon after 10 seconds.
-            YAHOO.lang.later(10000, this, function()
-            {
-               balloon.hide();
-            })
+               balloon.show();
+               // hide the balloon after 10 seconds.
+               YAHOO.lang.later(10000, this, function()
+               {
+                  balloon.hide();
+               })
+            }
          }
          
          // Make the POST request to the publishing queue

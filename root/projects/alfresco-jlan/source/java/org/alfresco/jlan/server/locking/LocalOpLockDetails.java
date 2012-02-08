@@ -20,12 +20,16 @@
 package org.alfresco.jlan.server.locking;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.filesys.DeferFailedException;
 import org.alfresco.jlan.smb.LockingAndX;
 import org.alfresco.jlan.smb.OpLock;
 import org.alfresco.jlan.smb.PacketType;
+import org.alfresco.jlan.smb.SMBStatus;
+import org.alfresco.jlan.smb.server.CIFSPacketPool;
+import org.alfresco.jlan.smb.server.CIFSThreadRequest;
 import org.alfresco.jlan.smb.server.SMBSrvPacket;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
 
@@ -36,8 +40,12 @@ import org.alfresco.jlan.smb.server.SMBSrvSession;
  *
  * @author gkspencer
  */
-public class LocalOpLockDetails implements OpLockDetails {
+public class LocalOpLockDetails extends OpLockDetailsAdapter {
 
+	// Maximum number of deferred requests allowed
+	
+	public static final int MaxDeferredRequests	= 3;
+	
 	// Oplock type
 	
 	private int m_type;
@@ -47,10 +55,9 @@ public class LocalOpLockDetails implements OpLockDetails {
 	private String m_path;
 	private boolean m_folder;
 	
-	// Oplock break deferred file open details
+	// List of deferred requests waiting for an oplock break
 	
-	private SMBSrvSession m_deferredSess;
-	private SMBSrvPacket m_deferredPkt;
+	private ArrayList<DeferredRequest> m_deferredRequests = new ArrayList<DeferredRequest>( MaxDeferredRequests);
 	
 	// Time that the oplock break was sent to the client
 	
@@ -214,34 +221,6 @@ public class LocalOpLockDetails implements OpLockDetails {
 	}
 	
 	/**
-	 * Check if there is a deferred session attached to the oplock, this indicates an oplock break is
-	 * in progress for this oplock.
-	 * 
-	 * @return boolean
-	 */
-	public synchronized boolean hasDeferredSession() {
-		return m_deferredSess != null ? true : false;
-	}
-	
-	/**
-	 * Return the deferred session details
-	 * 
-	 * @return SMBSrvSession
-	 */
-	public SMBSrvSession getDeferredSession() {
-		return m_deferredSess;
-	}
-	
-	/**
-	 * Return the deferred CIFS request packet
-	 * 
-	 * @return SMBSrvPacket
-	 */
-	public SMBSrvPacket getDeferredPacket() {
-		return  m_deferredPkt;
-	}
-	
-	/**
 	 * Return the time that the oplock break was sent to the client
 	 * 
 	 * @return long
@@ -281,43 +260,6 @@ public class LocalOpLockDetails implements OpLockDetails {
 	}
 	
 	/**
-	 * Set the deferred session/packet details, whilst an oplock break is in progress
-	 * 
-	 * @param deferredSess SMBSrvSession
-	 * @param deferredPkt SMBSrvPacket
-	 * @throws DeferFailedException
-	 */
-	public final void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
-		throws DeferFailedException {
-		
-		if ( hasDeferredSession() == false) {
-			
-			// Save the session and request packet
-			
-			m_deferredSess = deferredSess;
-			m_deferredPkt  = deferredPkt;
-			
-			// Set the time that the oplock break was sent to the client
-			
-			m_opBreakTime = System.currentTimeMillis();
-			
-			// Update the deferred processing count for the CIFS packet
-			
-			deferredPkt.incrementDeferredCount();
-		}
-		else
-			throw new DeferFailedException( "Cannot defer session/packet");
-	}
-
-	/**
-	 * Clear the deferred session/packet details
-	 */
-	public final void clearDeferredSession() {
-		m_deferredSess = null;
-		m_deferredPkt  = null;
-	}
-	
-	/**
 	 * Set the failed oplock break flag, to indicate the client did not respond to the oplock break
 	 * request within a reasonable time.
 	 */
@@ -334,6 +276,185 @@ public class LocalOpLockDetails implements OpLockDetails {
 		m_type = lockTyp;
 	}
 
+	/**
+	 * Check if there is a deferred session attached to the oplock, this indicates an oplock break is
+	 * in progress for this oplock.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasDeferredSessions() {
+		return m_deferredRequests.size() > 0 ? true : false;
+	}
+	
+	/**
+	 * Return the count of deferred requests
+	 * 
+	 * @return int
+	 */
+	public int numberOfDeferredSessions() {
+		return m_deferredRequests.size();
+	}
+	
+	/**
+	 * Requeue deferred requests to the thread pool for processing, oplock has been released
+	 * 
+	 * @return int Number of deferred requests requeued
+	 */
+	public int requeueDeferredRequests() {
+		
+		int requeueCnt = 0;
+		
+		synchronized (m_deferredRequests) {
+
+			for ( DeferredRequest deferReq : m_deferredRequests) {
+
+				// Get the deferred session/packet details
+				
+				SMBSrvSession sess = deferReq.getDeferredSession();
+				SMBSrvPacket pkt   = deferReq.getDeferredPacket();
+				
+				// DEBUG
+				
+				if ( Debug.EnableDbg && sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
+					Debug.println("Release oplock, queued deferred request to thread pool sess=" + sess.getUniqueId() + ", pkt=" + pkt);
+
+				try {
+					
+					// Queue the deferred request to the thread pool for processing
+					
+					sess.getThreadPool().queueRequest( new CIFSThreadRequest( sess, pkt));
+				}
+				catch ( Throwable ex) {
+					
+					// Failed to queue the request to the thread pool, release the deferred packet back to the 
+					// memory pool
+					
+					sess.getPacketPool().releasePacket( pkt);
+				}
+			}
+			
+			// Clear the deferred request list
+			
+			m_deferredRequests.clear();
+		}
+		
+		// Return the count of requeued requests
+		
+		return requeueCnt;
+	}
+	
+	/**
+	 * Fail any deferred requests that are attached to this oplock, and clear the deferred list
+	 * 
+	 * @return int Number of deferred requests that were failed
+	 */
+	public int failDeferredRequests() {
+		
+		int failCnt = 0;
+		
+		synchronized (m_deferredRequests) {
+
+			for ( DeferredRequest deferReq : m_deferredRequests) {
+
+				// Get the deferred session/packet details
+				
+				SMBSrvSession sess = deferReq.getDeferredSession();
+				SMBSrvPacket pkt   = deferReq.getDeferredPacket();
+				
+				try {
+					
+					// Return an error for the deferred file open request
+					
+					if ( sess.sendAsyncErrorResponseSMB( pkt, SMBStatus.NTAccessDenied, SMBStatus.NTErr) == true) {
+
+						// Update the failed request count
+						
+						failCnt++;
+						
+						// DEBUG
+						
+						if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+							Debug.println( "Oplock break timeout, oplock=" + this);
+					}
+					else if ( Debug.EnableDbg && sess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+						Debug.println( "Failed to send open reject, oplock break timed out, oplock=" + this);
+				}
+				catch ( IOException ex) {
+					
+				}
+				finally {
+					
+					// Make sure the packet is released back to the memory pool
+					
+					if ( pkt != null)
+						sess.getPacketPool().releasePacket( pkt);
+				}
+			}
+			
+			// Clear the deferred request list
+			
+			m_deferredRequests.clear();
+		}
+
+		// Return the count of failed requests
+		
+		return failCnt;
+	}
+	
+	/**
+	 * Add a deferred session/packet, whilst an oplock break is in progress
+	 * 
+	 * @param deferredSess SMBSrvSession
+	 * @param deferredPkt SMBSrvPacket
+	 * @exception DeferFailedException	If the session/packet cannot be deferred
+	 */
+	public void addDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+		throws DeferFailedException {
+
+		synchronized ( m_deferredRequests) {
+			
+			if ( m_deferredRequests.size() < MaxDeferredRequests) {
+				
+				// Add the deferred request to the list
+				
+				m_deferredRequests.add( new DeferredRequest( deferredSess, deferredPkt));
+				
+				// Update the deferred processing count for the CIFS packet
+				
+				deferredPkt.incrementDeferredCount();
+				
+				// Set the time that the oplock break was sent to the client, if this is the first deferred request
+				
+				if ( m_deferredRequests.size() == 1)
+					m_opBreakTime = System.currentTimeMillis();
+				
+				// DEBUG
+				
+				if ( Debug.EnableDbg && deferredSess.hasDebug( SMBSrvSession.DBG_OPLOCK))
+					Debug.println( "Added deferred request, list=" + m_deferredRequests.size() + ", oplock=" + this);
+			}
+			else
+				throw new DeferFailedException( "No more deferred slots available on oplock");
+		}
+	}
+
+	/**
+	 * Update the deferred packet lease time(s) as we wait for an oplock break or timeout
+	 */
+	public void updateDeferredPacketLease() {
+		
+		synchronized (m_deferredRequests) {
+			
+			// Update the packet lease time for all deferred packets to prevent them timing out
+			
+			long newLeaseTime = System.currentTimeMillis() + CIFSPacketPool.CIFSLeaseTime;
+			
+			for ( DeferredRequest deferReq : m_deferredRequests) {
+				deferReq.getDeferredPacket().setLeaseTime( newLeaseTime);
+			}
+		}
+	}
+	
 	/**
 	 * Request an oplock break
 	 */
@@ -393,6 +514,21 @@ public class LocalOpLockDetails implements OpLockDetails {
 	}
 	
 	/**
+	 * Finalize, check if there are any deferred requests in the list
+	 */
+	public void finalize() {
+		if ( m_deferredRequests != null && m_deferredRequests.size() > 0) {
+			
+			// Dump out the list of leaked deferred requests
+			
+			Debug.println( "** Deferred requests found during oplock finalize, oplock=" + this);
+			
+			for ( DeferredRequest deferReq : m_deferredRequests)
+				Debug.println( "**  Leaked deferred request=" + deferReq);
+		}
+	}
+	
+	/**
 	 * Return the oplock details as a string
 	 * 
 	 * @return String
@@ -419,9 +555,9 @@ public class LocalOpLockDetails implements OpLockDetails {
 		str.append(",FileId=");
 		str.append(getOwnerFileId());
 		
-		if ( hasDeferredSession()) {
-			str.append(",Deferred=");
-			str.append(getDeferredSession());
+		if ( hasDeferredSessions()) {
+			str.append(",DeferList=");
+			str.append(numberOfDeferredSessions());
 		}
 		
 		if ( hasOplockBreakFailed())

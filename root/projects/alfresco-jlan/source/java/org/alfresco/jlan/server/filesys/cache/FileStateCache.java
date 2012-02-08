@@ -424,7 +424,7 @@ public abstract class FileStateCache {
 		// Store the session/packet details to continue request once the oplock break has been
 		// handled by the client owning the oplock
 		
-		oplock.setDeferredSession( sess, pkt);
+		oplock.addDeferredSession( sess, pkt);
 		
 		// Request an oplock break
 		

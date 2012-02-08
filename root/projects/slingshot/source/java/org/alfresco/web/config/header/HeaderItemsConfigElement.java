@@ -174,7 +174,7 @@ public class HeaderItemsConfigElement extends ConfigElementAdapter
 
     HeaderItem addItem(String id, List<String> attributeNames, List<String> attributeValues)
     {
-        return this.addItem(id, attributeNames, null);
+        return this.addItem(id, attributeNames, attributeValues, null);
     }
 
     HeaderItem addItem(String id, List<String> attributeNames, List<String> attributeValues, String itemText)

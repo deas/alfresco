@@ -363,6 +363,11 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
       registerRPCServer(mappings);
     }
     catch (Exception ex) {
+    	
+      // Save the exception
+    	
+      setException( ex);
+      
       Debug.println(ex);
     }
   }

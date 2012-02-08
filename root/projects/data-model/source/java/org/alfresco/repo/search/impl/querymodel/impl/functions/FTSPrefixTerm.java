@@ -39,6 +39,8 @@ public class FTSPrefixTerm extends BaseFunction
     public final static String ARG_PROPERTY = "Property";
 
     public static LinkedHashMap<String, ArgumentDefinition> args;
+    
+    public final static String ARG_TOKENISATION_MODE = "TokenisationMode";
 
     static
     {

@@ -946,4 +946,15 @@ public interface NodeService
     }
     
     public List<NodeRef> findNodes(FindNodeParameters params);
+    
+    /**
+     * Counts the number of child associations of nodeRef.
+     * 
+     * @param nodeRef       the parent node id
+     * @param isPrimary     count just primary associations?
+     * 
+     * @return Returns the number of child associations
+     */
+    @Auditable(parameters = {"nodeRef", "isPrimary"})
+    public int countChildAssocs(NodeRef nodeRef, boolean isPrimary) throws InvalidNodeRefException;
 }

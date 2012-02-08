@@ -163,9 +163,19 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
                 redirectTo = pagesMap.get("siteInBrowser");
             }
 
-            String siteName = uri.substring(uri.lastIndexOf('/') + 1);
+            // Are they redirecting to the root, or one particular site?
+            String alfrescoContext = pathHelper.getAlfrescoContext();
+            if (alfrescoContext != null && alfrescoContext.length() > 0 &&
+                req.getRequestURI().equals(alfrescoContext))
+            {
+                redirectTo = "";
+            }
+            else
+            {
+                String siteName = uri.substring(uri.lastIndexOf('/') + 1);
+                redirectTo = redirectTo.replace("...", siteName);
+            }
 
-            redirectTo = redirectTo.replace("...", siteName);
             if (logger.isDebugEnabled())
                 logger.debug("Redirection URI: " + redirectTo);
         }

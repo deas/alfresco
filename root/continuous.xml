@@ -709,12 +709,6 @@
         </exec>
     </target>
     
-    <target name="windows-upgrade-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-upgrade-win.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project-patch.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.upgrade.win}"'/>
-        </exec>
-    </target>
-    
     <target name="osx-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-osx.txt" failifexecutionfails="false">
             <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
@@ -738,19 +732,7 @@
                         prefix="${file.name.dist.deployment.osx}" mode="755"/>
         </tar>
     </target>
-    
-    <target name="osx-upgrade-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-upgrade-osx.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project-patch.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.upgrade.osx}"'/>
-        </exec>
-        <tar destfile="${dir.continuous.dist}/${file.name.dist.upgrade.osx}.tar.gz"
-             longfile="gnu"
-             compression="gzip">
-            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.upgrade.osx}"
-                        prefix="${file.name.dist.upgrade.osx}" mode="755"/>
-        </tar>
-    </target>
-    
+        
     <target name="linux-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-install-linux64.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
@@ -760,12 +742,6 @@
     <target name="linux-deployment-installer">
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="build/error-deploy-linux.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
-        </exec>
-    </target>
-    
-    <target name="linux-upgrade-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="build/error-upgrade-linux.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project-patch.xml linux ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars ${installer.build.args} project.installerFilename="${file.name.dist.upgrade.linux}"'/>
         </exec>
     </target>
     
@@ -802,7 +778,7 @@
    <!-- Build installers in parallel -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
-        <parallel threadCount="2">
+        <parallel threadCount="2" failonany="true">
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
@@ -811,18 +787,9 @@
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-deployment-installer"/>
         </parallel>
-        <antcall target="distribute-upgraders"/>
    </target>
    
-   <target name="distribute-upgraders"
-           depends="continuous-init, set-build-number, set-bitrock-builder" >
-        <parallel threadCount="2">
-            <antcall target="windows-upgrade-installer"/>
-            <antcall target="linux-upgrade-installer"/>
-            <antcall target="osx-upgrade-installer"/>
-        </parallel>
-   </target>
-
+   
    <!-- ***************** -->
    <!-- ** WAR targets ** -->
    <!-- ***************** -->
@@ -1162,9 +1129,14 @@
          <fileset dir="${dir.continuous.assemble.sdk.verify}/samples" 
                   includes="*/build.xml"/>
       </subant>
-   </target>
+    </target>
+	
+	<target name="assemble-sdk"
+	           depends="continuous-init,sdk-common,sdk-extras">
+	 </target>
+	  
 
-   <target name="assemble-sdk"
+    <target name="sdk-common"
            depends="continuous-init,generate-docs,incremental">
       <mkdir dir="${dir.continuous.dist}" />
 
@@ -1212,6 +1184,9 @@
       <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip">
        <zipfileset dir="${dir.project.webserviceclient.docs.java}" />
       </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-webframeworkcommons.zip">
+       <zipfileset dir="${dir.project.webframeworkcommons.docs.java}" />
+      </zip>
       
       <!-- Taglib -->
       <mkdir dir="${dir.continuous.assemble.sdk}/doc/taglib" />
@@ -1254,6 +1229,8 @@
             file="${dir.project.deployment.dist}/${file.name.jar.deployment}" />
       <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
             file="${dir.project.webclient.dist}/${file.name.jar.webclient}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+           file="${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}" />
 
       <!-- Deployment Libraries -->
       <mkdir dir="${dir.continuous.assemble.sdk}/lib/deployment"/>

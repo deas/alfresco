@@ -20,8 +20,6 @@ package org.alfresco.jlan.smb.server;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.core.NoPooledMemoryException;

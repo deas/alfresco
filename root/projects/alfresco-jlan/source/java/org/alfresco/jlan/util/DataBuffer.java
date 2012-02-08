@@ -845,7 +845,7 @@ public class DataBuffer {
 		// Do not extend an externally allocated buffer
 		
 		if ( isExternalBuffer())
-			throw new RuntimeException( "Attempt to extend externally allocated buffer, from " + m_data.length + " to " + m_data.length + ext);
+			throw new RuntimeException( "Attempt to extend externally allocated buffer, from " + m_data.length + " to " + (m_data.length + ext));
 		
 		// Create a new buffer of the required size
 

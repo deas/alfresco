@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
@@ -61,16 +62,19 @@ public class LuceneFTSWildTerm extends FTSWildTerm implements LuceneQueryBuilder
         Argument argument = functionArgs.get(ARG_TERM);
         String term = (String) argument.getValue(functionContext);
 
+        argument = functionArgs.get(ARG_TOKENISATION_MODE);
+        AnalysisMode mode = (AnalysisMode) argument.getValue(functionContext);
+        
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
         Query query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getWildcardQuery(functionContext.getLuceneFieldName(prop), term);
+            query = lqp.getWildcardQuery(functionContext.getLuceneFieldName(prop), term, mode);
         }
         else
         {
-            query = lqp.getWildcardQuery(lqp.getField(), term);
+            query = lqp.getWildcardQuery(lqp.getField(), term, mode);
             
         }
         return query;

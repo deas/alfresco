@@ -94,6 +94,7 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_IMAGE_RGB = "image/x-rgb";
     public static final String MIMETYPE_IMAGE_SVG = "image/svg";
     public static final String MIMETYPE_IMAGE_PNG = "image/png";
+    public static final String MIMETYPE_IMAGE_TIFF = "image/tiff";
     public static final String MIMETYPE_APPLICATION_EPS = "application/eps";
     public static final String MIMETYPE_JAVASCRIPT = "application/x-javascript";
     public static final String MIMETYPE_ZIP = "application/zip";
@@ -536,8 +537,15 @@ public class MimetypeMap implements MimetypeService
         MediaType type = detectType(filename, reader);
         String filenameGuess = guessMimetype(filename);
         
-        // If Tika doesn't know, go with the filename one
-        if(type == null || MediaType.OCTET_STREAM.equals(type))
+        // If Tika doesn't know what the type is, go with the filename one
+        if (type == null || MediaType.OCTET_STREAM.equals(type))
+        {
+            return filenameGuess;
+        }
+        
+        // If Tika has supplied a very generic type, go with the filename one,
+        //  as it's probably a custom Text or XML format known only to Alfresco
+        if (MediaType.TEXT_PLAIN.equals(type) || MediaType.APPLICATION_XML.equals(type))
         {
             return filenameGuess;
         }

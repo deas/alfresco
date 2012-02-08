@@ -24,8 +24,11 @@ package org.alfresco.module.vti.metadata.dialog;
  * 
  * @author PavelYur
  */
+import java.text.ParseException;
 import java.util.Comparator;
+import java.util.Date;
 
+import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.dic.VtiSort;
 import org.alfresco.module.vti.metadata.dic.VtiSortField;
 
@@ -114,7 +117,8 @@ public class DialogMetaInfoComparator implements Comparator<DialogMetaInfo>
                 }
                 if (sortField.equals(VtiSortField.MODIFIED))
                 {
-                    return o1.getModifiedTime().compareToIgnoreCase(o2.getModifiedTime());
+                    // ALF-11054 fix, compare as dates
+                    return compareModified(o1, o2);
                 }
                 if (sortField.equals(VtiSortField.CHECKEDOUTTO))
                 {
@@ -156,7 +160,8 @@ public class DialogMetaInfoComparator implements Comparator<DialogMetaInfo>
                 }
                 if (sortField.equals(VtiSortField.MODIFIED))
                 {
-                    return -o1.getModifiedTime().compareToIgnoreCase(o2.getModifiedTime());
+                    // ALF-11054 fix, compare as dates
+                    return -compareModified(o1, o2);
                 }
                 if (sortField.equals(VtiSortField.CHECKEDOUTTO))
                 {
@@ -165,5 +170,21 @@ public class DialogMetaInfoComparator implements Comparator<DialogMetaInfo>
             }            
         }          
         return 0;
+    }
+
+    private int compareModified(DialogMetaInfo o1, DialogMetaInfo o2)
+    {
+        try
+        {
+            Date date1 = VtiUtils.parseVersionDate(o1.getModifiedTime());
+            Date date2 = VtiUtils.parseVersionDate(o2.getModifiedTime());
+
+            return date1.compareTo(date2);
+        }
+        catch (ParseException e)
+        {
+            // ignore parse exception
+            return 0;
+        }
     }
 }

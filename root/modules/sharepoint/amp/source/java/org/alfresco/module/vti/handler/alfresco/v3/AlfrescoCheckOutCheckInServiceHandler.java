@@ -204,10 +204,6 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                        {
                           lockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
                        }
-                       else
-                       {
-                          lockService.unlock(originalNode);
-                       }
                     }
                     else
                     {

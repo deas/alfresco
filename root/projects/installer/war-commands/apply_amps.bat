@@ -3,7 +3,7 @@ rem -------
 rem Script for apply AMPs to installed WAR
 rem -------
 
-set ALF_HOME=%~dp0
+for /D %%D IN (%~dp0..\) do set ALF_HOME=%%~dpD
 set CATALINA_HOME=%ALF_HOME%tomcat
 
 :start

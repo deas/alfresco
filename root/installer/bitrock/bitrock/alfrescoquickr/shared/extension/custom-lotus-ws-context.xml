@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
 
 
-    <bean id="lotusWSPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="lotusWSPlaceholderConfigurer" parent="common-placeholder-configurer">
         <property name="ignoreUnresolvablePlaceholders">
             <value>true</value>
         </property>

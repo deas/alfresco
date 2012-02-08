@@ -7,10 +7,10 @@ function setPermissions(folderDetails)
       group,
       permission;
 
-   model.roles = rawPerms;
+   model.roles = rawPerms != null ? rawPerms : [];
    model.readPermission = false;
 
-   if (rawPerms.length > 0)
+   if (rawPerms && rawPerms.length > 0)
    {
       model.readPermission = true;
       model.managers = "None";

@@ -23,13 +23,15 @@
       theme_advanced_buttons2: "link,unlink,image,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,undo,redo,separator,forecolor,backcolor",
       theme_advanced_buttons3: "fullscreen,table,emotions"
    <#elseif appearance == "explorer">
+      forced_root_block : false,
+      force_p_newlines : false,
       plugins: "table",
       theme_advanced_resizing: true,
       theme_advanced_buttons1_add: "fontselect,fontsizeselect",
       theme_advanced_buttons2_add: "separator,forecolor",
       theme_advanced_buttons3_add_before: "tablecontrols,separator",
       theme_advanced_disable: "styleselect",
-      extended_valid_elements: "a[href|target|name],font[face|size|color|style],span[class|align|style]"
+      extended_valid_elements: "a[href|target|name],font[face|size|color|style],span[class|align|style],meta[*]"
    <#elseif appearance == "webeditor">
       width:'',
       plugins: "fullscreen",

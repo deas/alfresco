@@ -37,6 +37,8 @@ public class FTSWildTerm extends BaseFunction
     public final static String ARG_TERM = "Term";
     
     public final static String ARG_PROPERTY = "Property";
+    
+    public final static String ARG_TOKENISATION_MODE = "TokenisationMode";
 
     public static LinkedHashMap<String, ArgumentDefinition> args;
 

@@ -56,7 +56,7 @@ public class VerbatimTokenFilter extends Tokenizer
             {
                 token = token.toLowerCase();
             }
-            return new Token(token, 0, token.length() - 1, "VERBATIM");
+            return new Token(token, 0, token.length(), "VERBATIM");
         }
         else
         {

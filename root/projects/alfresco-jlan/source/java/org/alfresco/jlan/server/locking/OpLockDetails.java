@@ -62,21 +62,28 @@ public interface OpLockDetails {
 	 * 
 	 * @return boolean
 	 */
-	public boolean hasDeferredSession();
+	public boolean hasDeferredSessions();
 	
 	/**
-	 * Return the deferred session details
+	 * Return the count of deferred requests
 	 * 
-	 * @return SMBSrvSession
+	 * @return int
 	 */
-	public SMBSrvSession getDeferredSession();
+	public int numberOfDeferredSessions();
 	
 	/**
-	 * Return the deferred CIFS request packet
+	 * Requeue deferred requests to the thread pool for processing, oplock has been released
 	 * 
-	 * @return SMBSrvPacket
+	 * @return int Number of deferred requests requeued
 	 */
-	public SMBSrvPacket getDeferredPacket();
+	public int requeueDeferredRequests();
+	
+	/**
+	 * Fail any deferred requests that are attached to this oplock, and clear the deferred list
+	 * 
+	 * @return int Number of deferred requests that were failed
+	 */
+	public int failDeferredRequests();
 	
 	/**
 	 * Return the time that the oplock break was sent to the client
@@ -100,19 +107,19 @@ public interface OpLockDetails {
 	public boolean isRemoteLock();
 	
 	/**
-	 * Set the deferred session/packet details, whilst an oplock break is in progress
+	 * Add a deferred session/packet, whilst an oplock break is in progress
 	 * 
 	 * @param deferredSess SMBSrvSession
 	 * @param deferredPkt SMBSrvPacket
 	 * @exception DeferFailedException	If the session/packet cannot be deferred
 	 */
-	public void setDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
+	public void addDeferredSession(SMBSrvSession deferredSess, SMBSrvPacket deferredPkt)
 		throws DeferFailedException;
 
 	/**
-	 * Clear the deferred session/packet details
+	 * Update the deferred packet lease time(s) as we wait for an oplock break or timeout
 	 */
-	public void clearDeferredSession();
+	public void updateDeferredPacketLease();
 	
 	/**
 	 * Set the failed oplock break flag, to indicate the client did not respond to the oplock break

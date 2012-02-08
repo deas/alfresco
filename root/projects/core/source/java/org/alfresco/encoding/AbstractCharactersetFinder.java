@@ -21,6 +21,7 @@ package org.alfresco.encoding;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
@@ -114,7 +115,7 @@ public abstract class AbstractCharactersetFinder implements CharactersetFinder
                     // Read a few characters for debug purposes
                     logger.debug("\n" +
                             "Failed to identify stream character set: \n" +
-                            "   Guessed 'chars': " + buffer);
+                            "   Guessed 'chars': " + Arrays.toString(buffer));
                 }
                 else
                 {

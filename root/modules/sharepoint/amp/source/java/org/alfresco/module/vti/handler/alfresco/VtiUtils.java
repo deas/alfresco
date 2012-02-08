@@ -104,6 +104,19 @@ public class VtiUtils
     }
 
     /**
+     * Parse version date
+     * 
+     * @param dateStr
+     *            string represented date
+     * @return parsed date
+     * @throws ParseException
+     */
+    public static Date parseVersionDate(String dateStr) throws ParseException
+    {
+        return versionDateFormat.parse(dateStr);
+    }
+     
+    /**
      * Format propfind date
      * 
      * @param date input date

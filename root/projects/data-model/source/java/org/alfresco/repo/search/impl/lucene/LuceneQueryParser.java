@@ -531,10 +531,6 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
         {
             booleanQuery.add(subQuery, Occur.SHOULD);
         }
-        else
-        {
-            booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-        }
     }
 
 //    private void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,

@@ -135,6 +135,11 @@
 
          // Make sure we persist the dom content from the editor in to the hidden textarea when appropriate 
          this.editor.subscribe("onChange", this._handleContentChange, this, true);
+         
+         var _this = this;
+         this.editor.getEditor().onSetContent.add(function(ed, e) {
+            _this._handleContentChange();
+         });
       },
 
       /**

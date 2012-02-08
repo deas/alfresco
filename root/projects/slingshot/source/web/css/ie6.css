@@ -716,7 +716,7 @@ table .yui-dt-empty
 
 .global-folder .mode button
 {
-   width: 20em;
+   width: 10em;
    height: 4em;
    overflow: hidden;
 }
@@ -730,6 +730,21 @@ table .yui-dt-empty
 {
    width: 22em;
 }
+
+
+/* Rules picker */
+
+.rules-picker .treeview
+{
+   width: 14em !important;
+}
+
+.rules-picker .repository-mode .treeview
+{
+   width: 30em !important;
+}
+
+/* Forms */
 
 .form-container .formsCheckBox 
 {

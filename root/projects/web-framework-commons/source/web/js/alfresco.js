@@ -5536,7 +5536,7 @@ Alfresco.util.Ajax = function()
                   c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + this.jsonToParamString(c.dataObj, true);
                }
             }
-            else
+            else if (c.method.toUpperCase() !== this.DELETE)
             {
                // If json is used encode the dataObj parameter and put it in the body
                c.dataStr = YAHOO.lang.JSON.stringify(c.dataObj || {});
@@ -5552,7 +5552,7 @@ Alfresco.util.Ajax = function()
                   // Encode the dataObj and put it in the url
                   c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + this.jsonToParamString(c.dataObj, true);
                }
-               else
+               else if (c.method.toUpperCase() !== this.DELETE)
                {
                   // Enccode the dataObj and put it in the body
                   c.dataStr = this.jsonToParamString(c.dataObj, true);

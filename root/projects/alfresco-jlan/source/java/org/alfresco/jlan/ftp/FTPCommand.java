@@ -81,8 +81,10 @@ public class FTPCommand {
 	public final static int Pbsz        = 47;
 	public final static int Prot        = 48;
 	public final static int Ccc         = 49;
+	
+	public final static int Mfmt		= 50;
   
-	public final static int MaxId		= 49;
+	public final static int MaxId		= 50;
 	
 	public final static int InvalidCmd	= -1;
 	
@@ -100,7 +102,7 @@ public class FTPCommand {
 											"FEAT",	"XPWD",	"XMKD",	"XRMD",
 											"XCUP",	"XCWD", "MLST", "MLSD",
 											"EPRT", "EPSV", "AUTH", "PBSZ",
-											"PROT", "CCC"
+											"PROT", "CCC",  "MFMT"
 	};
 	
 	/**

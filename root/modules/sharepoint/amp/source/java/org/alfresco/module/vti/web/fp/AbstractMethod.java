@@ -29,6 +29,7 @@ import org.alfresco.module.vti.metadata.dic.VtiProperty;
 import org.alfresco.module.vti.metadata.dic.VtiType;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.web.VtiEncodingUtils;
+import org.alfresco.module.vti.web.VtiFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLDecoder;
@@ -73,6 +74,7 @@ public abstract class AbstractMethod implements VtiMethod
         {
             try
             {
+                response.setContentType(VtiFilter.CONTENT_TYPE_HTML);
                 doExecute(request, response);
             }
             catch (VtiMethodException e)
@@ -144,7 +146,13 @@ public abstract class AbstractMethod implements VtiMethod
             response.writeMetaDictionary(VtiProperty.FOLDER_ISCHILDWEB, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getIschildweb());
             response.writeMetaDictionary(VtiProperty.FOLDER_ISEXECUTABLE, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getIsexecutable());
             response.writeMetaDictionary(VtiProperty.FOLDER_ISSCRIPTABLE, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getIsscriptable());
+            
             response.writeMetaDictionary(VtiProperty.FOLDER_LISTBASETYPE, VtiType.INT, VtiConstraint.R, docMetaInfo.getListbasetype());
+            response.writeMetaDictionary(VtiProperty.FOLDER_LISTENABLEMINORVERSIONS, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getListEnableMinorVersions());
+            response.writeMetaDictionary(VtiProperty.FOLDER_LISTSERVERTEMPLATE, VtiType.INT, VtiConstraint.R, docMetaInfo.getListServerTemplate());
+            response.writeMetaDictionary(VtiProperty.FOLDER_LISTTITLE, VtiType.STRING, VtiConstraint.R, docMetaInfo.getListTitle());
+            response.writeMetaDictionary(VtiProperty.FOLDER_LISTENABLEVERSIONING, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getListEnableVersioning());
+            response.writeMetaDictionary(VtiProperty.FOLDER_LISTREQUIRECHECKOUT, VtiType.BOOLEAN, VtiConstraint.R, docMetaInfo.getListRequireCheckout());
         }
         else
         {

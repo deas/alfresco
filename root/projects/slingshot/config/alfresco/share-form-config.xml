@@ -1008,7 +1008,8 @@
                <show id="imap.config.home.store" />
                <show id="imap.config.home.rootPath" />
                <show id="imap.mail.from.default" />
-               <show id="imap.config.ignore.extraction" />
+               <show id="imap.mail.to.default" />
+               <show id="imap.server.attachments.extraction.enabled" />
                <show id="imap.server.host" />
                <show id="imap.server.port" />
             </field-visibility>
@@ -1018,8 +1019,11 @@
                <field id="imap.config.home.folderPath" label-id="imap.field.imap.config.home.folderPath" set="imap" />
                <field id="imap.config.home.rootPath" label-id="imap.field.imap.config.home.rootPath" set="imap" />
                <field id="imap.config.home.store" label-id="imap.field.imap.config.home.store" set="imap" />
-               <field id="imap.config.ignore.extraction" label-id="imap.field.imap.config.ignore.extraction" set="imap" />
+               <field id="imap.server.attachments.extraction.enabled" label-id="imap.field.imap.server.attachments.extraction.enabled" set="imap" >
+                    <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
                <field id="imap.mail.from.default" label-id="imap.field.imap.mail.from.default" set="imap" />
+               <field id="imap.mail.to.default" label-id="imap.field.imap.mail.to.default" set="imap" />
                <field id="imap.server.enabled" label-id="imap.field.imap.server.enabled" set="imap">
                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>

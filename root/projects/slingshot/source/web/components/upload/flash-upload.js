@@ -592,6 +592,7 @@
          this.minorVersion.checked = true;
          this.minorVersion.disabled = false;
          this.majorVersion.disabled = false;
+         this.description.disabled = false;
          this.widgets.uploadButton.set("label", this.msg("button.upload"));
          this.widgets.uploadButton.set("disabled", true);
          Dom.removeClass(this.id + "-upload-button", "hidden");
@@ -1067,6 +1068,7 @@
                this.widgets.uploadButton.set("disabled", true);
                this.minorVersion.disabled = true;
                this.majorVersion.disabled = true;
+               this.description.disabled = true;
                this.uploader.disable();
                this._updateStatus();
             }

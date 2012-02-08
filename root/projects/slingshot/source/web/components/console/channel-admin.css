@@ -18,6 +18,7 @@
 div.channel
 {
    text-align: center;
+   position: relative; /* Needed to contain inline edit icon which uses absolute positioning */
 }
 
 div.channel .channelName
@@ -40,7 +41,7 @@ div.channel .channelActions
 
 div.channel.notAuthorised
 {
-   background: transparent url('images/publishing-failed-status-placeholder-16.png') no-repeat 42px 2px;
+   background: transparent url('images/publishing-failed-status-16.png') no-repeat 38px 2px;
 }
 
 div.channel img
@@ -121,6 +122,7 @@ div.channellist form.insitu-edit input
 div.channellist span.insitu-edit
 {
    margin-top: 0px;
+   left:0;/* Contained by position:relative on div.channel */
 }
 
 .permissions-show {

@@ -1571,7 +1571,7 @@
       <!-- add all JAR to WEB-INF/lib -->
       <copy todir="${dir.project.webeditor.assemble.war}/WEB-INF/lib">
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="${includes.webscriptframework.libs},${includes.webeditor.libs}" />
+                  includes="${includes.webscriptframework.libs}" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webeditor.spring-surf}" />
          <fileset dir="${dir.project.3rdparty.lib}/optional" 
@@ -1904,8 +1904,6 @@
                   includes="${file.name.jar.webframeworkcommons}" />
          <fileset dir="${dir.project.jlan.dist}" 
                   includes="${file.name.jar.jlan}" />
-         <fileset dir="${dir.project.jlan}/hazelcast" 
-                  includes="hazelcast-1.9.4.4.jar"/>
       </copy>
    </target>
 

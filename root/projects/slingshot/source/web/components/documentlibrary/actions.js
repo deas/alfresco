@@ -626,8 +626,18 @@
 
                if (!(/^(http|https):\/\//).test(onlineEditUrl))
                {
-                  // VTI server now supports HTTPS directly http://issues.alfresco.com/jira/browse/DOC-227
-                  onlineEditUrl = window.location.protocol + "//" + onlineEditUrl;
+                  // Did they specify the protocol on the vti server bean?
+                  var protocol = this.doclistMetadata.custom.vtiServer.protocol;
+                  if (protocol == null)
+                  {
+                      // If it's not set, assume it's the same as Share
+                      protocol = window.location.protocol;
+                      // Get it without the trailing colon, to match the vti property form
+                      protocol = protocol.substring(0, protocol.length-1);
+                  }
+
+                  // Build up the full HTTP / HTTPS URL
+                  onlineEditUrl = protocol + "://" + onlineEditUrl;
                }
                record.onlineEditUrl = onlineEditUrl;
             }
