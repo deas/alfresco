@@ -254,8 +254,15 @@
             <extension default="true">mp3</extension>
             <extension>mp2</extension>
          </mimetype>
+         <mimetype mimetype="audio/mp4" display="MPEG4 Audio">
+            <extension default="true">m4a</extension>
+            <extension>m4b</extension>
+            <extension>mp4a</extension>
+         </mimetype>
          <mimetype mimetype="video/mp4" display="MPEG4 Video">
-            <extension>mp4</extension>
+            <extension default="true">mp4</extension>
+            <extension>mp4v</extension>
+            <extension>mpg4</extension>
          </mimetype>
          <mimetype mimetype="video/x-m4v" display="MPEG4 Video (m4v)">
             <extension>m4v</extension>
@@ -266,6 +273,12 @@
          <mimetype mimetype="video/quicktime" display="Quicktime Video">
             <extension>mov</extension>
             <extension>qt</extension>
+         </mimetype>
+         <mimetype mimetype="video/3gpp" display="3G Video">
+            <extension>3gp</extension>
+         </mimetype>
+         <mimetype mimetype="video/3gpp2" display="3G2 Video">
+            <extension>3gp2</extension>
          </mimetype>
          <mimetype mimetype="video/x-sgi-movie" display="SGI Video">
             <extension>movie</extension>

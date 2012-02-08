@@ -42,6 +42,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/isoparser-1.0-beta-5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/scannotation-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javassist-3.6.0.GA.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.8.jar" sourcepath="src/myfaces-api-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-impl-1.1.8.jar" sourcepath="src/myfaces-impl-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/joda-time-1.2.1.jar"/>

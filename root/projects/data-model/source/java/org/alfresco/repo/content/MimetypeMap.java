@@ -80,6 +80,7 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_VIDEO_QUICKTIME = "video/quicktime";
     public static final String MIMETYPE_VIDEO_WMV = "video/x-ms-wmv";
     public static final String MIMETYPE_VIDEO_3GP = "video/3gpp";
+    public static final String MIMETYPE_VIDEO_3GP2 = "video/3gpp2";
     
     // Flash
     public static final String MIMETYPE_FLASH = "application/x-shockwave-flash";
@@ -152,6 +153,7 @@ public class MimetypeMap implements MimetypeService
     public static final String MIMETYPE_WORDPERFECT = "application/wordperfect";
     // Audio
     public static final String MIMETYPE_MP3 = "audio/mpeg";
+    public static final String MIMETYPE_AUDIO_MP4 = "audio/mp4";
     public static final String MIMETYPE_VORBIS = "audio/vorbis";
     public static final String MIMETYPE_FLAC = "audio/x-flac";
     // Alfresco
