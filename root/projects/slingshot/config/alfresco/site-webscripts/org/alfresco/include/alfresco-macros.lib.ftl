@@ -103,6 +103,8 @@
       "mkv": "video",
       "mov": "video",
       "movie": "video",
+      "m4a": "audio",
+      "m4b": "audio",
       "mp3": "mp3",
       "mp4": "video",
       "m4v": "video",
