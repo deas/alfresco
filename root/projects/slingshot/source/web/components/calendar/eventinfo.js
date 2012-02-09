@@ -304,7 +304,7 @@
       onDeleteClick: function EventInfo_onDeleteClick(e)
       {
          var me = this,
-            displayDate = formatDate(fromISO8601(this.event.from), this._msg("date-format.mediumDate"));
+            displayDate = formatDate(fromISO8601(this.event.startAt.iso8601), this._msg("date-format.fullDate"));
 
          Alfresco.util.PopupManager.displayPrompt(
          {
