@@ -247,6 +247,7 @@
             <description>Connects to an Alfresco instance using cookie-based authentication</description>
             <class>org.springframework.extensions.webscripts.RequestCachingConnector</class>
             <authenticator-id>alfresco-ticket</authenticator-id>
+            <reconnect-timeout>0</reconnect-timeout>
          </connector>
          
          <!-- Activiti admin authentication -->

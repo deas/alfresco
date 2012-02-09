@@ -141,7 +141,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
      */
     public String getDisplayLabel(String constraintAllowableValue)
     {
-        if (!this.allowedValues.contains(constraintAllowableValue))
+        if (!getAllowedValues().contains(constraintAllowableValue))
         {
             return null;
         }

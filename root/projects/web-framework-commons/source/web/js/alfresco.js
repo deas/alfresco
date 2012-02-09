@@ -3899,8 +3899,16 @@ Alfresco.util.siteURL = function(pageURI, obj, absolute)
  */
 Alfresco.util.parseURL = function(url)
 {
-   var a = document.createElement("a");
+   var a = document.createElement("a"),
+      _sanitizedPathname = function(pathname)
+      {
+         // pathname MUST include leading slash (IE<9: this code is for you).
+         var prepend = (pathname.substring(0,1) === "/")? "" : "/";
+         return prepend + pathname;
+      };
+
    a.href = url;
+
    var urlObject = {
       // protocol includes trailing colon.
       protocol: a.protocol,
@@ -3908,12 +3916,10 @@ Alfresco.util.parseURL = function(url)
       port: a.port,
       // host = hostname:port
       host: a.host,
-      pathname: a.pathname,
+      pathname: _sanitizedPathname(a.pathname),
       // search and hash include question mark and hash symbol respectively
       search: a.search,
       hash: a.hash,
-      // url = protocol + "//" + host + pathname + search + hash
-      url: url,
       queryParams: Alfresco.util.getQueryStringParameters(url),
       getUrl: function()
       {

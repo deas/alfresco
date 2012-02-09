@@ -35,7 +35,8 @@
    /**
     * Alfresco Slingshot aliases
     */
-   var $html = Alfresco.util.encodeHTML;
+   var $html = Alfresco.util.encodeHTML,
+      parseURL = Alfresco.util.parseURL
    
    /**
     * ConsoleChannels constructor.
@@ -231,6 +232,7 @@
          this.widgets.iframe = Dom.get(this.id + "-iframe");
 
          // If we've got postMessage support, use it, through an iframe to facilitate communication with popups.
+         // This will be false in IE<9
          if (typeof(window.postMessage) === "function")
          {
             this.options.iframeComms = true;
@@ -366,11 +368,6 @@
       /**
        * 
        * Kicks off the authentication process and enables the listener.
-       *
-       * Supported scenarios:
-       * window.postMessage is supported by browser, so we can communicate with iframe.
-       * window.postMessage is NOT supported by browser, so we ignore iframe.
-       * However: the redirect URL must be the same, host protocol and port as the page that triggers the redirect.
        * 
        * @method authoriseChannel
        * @param {Object} authUrl
@@ -382,25 +379,35 @@
             callbackUrl = response.json.data.authCallbackUrl,
             channelId = response.json.data.channelId,
             redirectUrl = response.json.data.authRedirectUrl,
-            reauth = reauth || false,
             isSameDomain = function consoleChannels_isSameDomain(url1, url2)
             {
-               var url1Obj = Alfresco.util.parseURL(url1),
-                  url2Obj = Alfresco.util.parseURL(url2)
+               var url1Obj = parseURL(url1),
+                  url2Obj = parseURL(url2);
                // protocol, hostname and port need to match (host contains port and hostname)
-               return (url1Obj.protocol === url2Obj.protocol && url1Obj.host === url2Obj.host)
+               return (url1Obj.protocol === url2Obj.protocol && url1Obj.host === url2Obj.host);
             };
+
+         reauth = reauth || false;
 
          // If redirect domain is same as current domain open URL directly.
          if (isSameDomain(redirectUrl, window.location.href))
          {
-            // If we're not using the iframe, open the window directly & save handle.
             this.authWindow = window.open(authUrl);
-         } // else if redirect domain is same as iframe, use iframe
-         else if (isSameDomain(redirectUrl, this.options.acceptMessagesFrom) && this.options.iframeComms)
+         }
+         // If we're not able to use iframe communication, we'll need to open the page directly.
+         // It needs the callback URL because it'll need to manually redirect back there.
+         else if (!this.options.iframeComms)
          {
+            var authUrlObj = parseURL(authUrl);
+               authUrlObj.queryParams.state = callbackUrl;
+               authUrl = authUrlObj.getUrl();
+            this.authWindow = window.open(authUrl);
+         }
+         // if the iframe and redirect domains match, use the iframe
+         else if (isSameDomain(redirectUrl, this.options.acceptMessagesFrom))
+         {
+
             this.widgets.iframe.contentWindow.postMessage(authUrl, "*");
-            this.authWindow = null; // We've got no direct handle on the popup window.
 
             var me = this,
                receiveMessage = function consoleChannels_receiveMessage(event)
@@ -416,18 +423,17 @@
             // Listen for the message back from the iframe:
             Event.addListener(window, "message", receiveMessage, false);
          }
-         // We can't open a communication channel back from the auth return page so can't support authentication.
+         // We'll hit here if the domain the user accessed Share on is wrong AND if they're using a modern browser.
          else
          {
             var error;
+
             // Clarify the exact error:
             if (!isSameDomain (redirectUrl, window.location.href))
             {
-               var currentUrlObj = Alfresco.util.parseURL(window.location.href),
-                  newUrlObj = Alfresco.util.parseURL(window.location.href),
-                  redirectUrlObj = Alfresco.util.parseURL(redirectUrl),
-                  currentDomain = currentUrlObj,
-                  newDomain, newUrl;
+               var currentUrlObj = parseURL(window.location.href),
+                  newUrlObj = parseURL(window.location.href),
+                  redirectUrlObj = parseURL(redirectUrl);
 
                // Update new URL to point to expected domain
                newUrlObj.protocol = redirectUrlObj.protocol;
@@ -442,7 +448,7 @@
                error = this.msg("channelAdmin.auth.failure.browser");
             }
 
-            // Display message
+            // Display Error Message
             Alfresco.util.PopupManager.displayPrompt(
             {
                text: error,
@@ -802,7 +808,6 @@
             params[i] = param.join("=");
          }
          token = params.join("&");
-         
          // Submit to authoriseCallback URL
          Alfresco.util.Ajax.request(
          {

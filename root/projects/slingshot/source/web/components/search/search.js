@@ -997,24 +997,28 @@
          // Failure handler
          function failureHandler(sRequest, oResponse)
          {
-            if (oResponse.status == 401)
+            switch (oResponse.status)
             {
-               // Our session has likely timed-out, so refresh to offer the login page
-               window.location.reload();
-            }
-            else
-            {
-               try
-               {
-                  var response = YAHOO.lang.JSON.parse(oResponse.responseText);
-                  this.widgets.dataTable.set("MSG_ERROR", response.message);
-                  this.widgets.dataTable.showTableMessage(response.message, YAHOO.widget.DataTable.CLASS_ERROR);
-               }
-               catch(e)
-               {
-                  this._setDefaultDataTableErrors(this.widgets.dataTable);
-                  this.widgets.dataTable.render();
-               }
+               case 401:
+                  // Session has likely timed-out, so refresh to display login page
+                  window.location.reload();
+                  break;
+               case 408:
+                  // Timeout waiting on Alfresco server - probably due to heavy load
+                  Dom.get(this.id + '-search-info').innerHTML = this.msg("message.timeout");
+                  break;
+               default:
+                  // General server error code
+                  if (oResponse.responseText)
+                  {
+                     var response = YAHOO.lang.JSON.parse(oResponse.responseText);
+                     Dom.get(this.id + '-search-info').innerHTML = response.message;
+                  }
+                  else
+                  {
+                     Dom.get(this.id + '-search-info').innerHTML = oResponse.statusText;
+                  }
+                  break;
             }
          }
          
