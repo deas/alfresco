@@ -46,9 +46,9 @@
       locale: "${locale?substring(0, 2)}",
       permissions:
       {
-         create: ${(permissions["create"]!false)?string},
-         edit: ${(permissions["edit"]!false)?string},
-         delete: ${(permissions["delete"]!false)?string}
+         "create": ${(permissions["create"]!false)?string},
+         "edit": ${(permissions["edit"]!false)?string},
+         "delete": ${(permissions["delete"]!false)?string}
       }
    }).setMessages(
       ${messages}
