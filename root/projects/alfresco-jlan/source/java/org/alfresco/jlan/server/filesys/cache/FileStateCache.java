@@ -94,6 +94,7 @@ public abstract class FileStateCache {
 
 	private boolean m_debug = false;
 	private boolean m_debugExpired = false;
+	private boolean m_dumpOnShutdown = false;
 	
 	/**
 	 * Class constructor
@@ -187,6 +188,15 @@ public abstract class FileStateCache {
 	}
 	
 	/**
+	 * Determine if the state cache entries should be dumped out during shutdown
+	 * 
+	 * @return boolean
+	 */
+	public final boolean hasDumpOnShutdown() {
+		return m_dumpOnShutdown;
+	}
+	
+	/**
 	 * Enable/disable debug output
 	 * 
 	 * @param dbg boolean
@@ -204,6 +214,15 @@ public abstract class FileStateCache {
 		m_debugExpired = dbg;
 	}
 
+	/**
+	 * Enable/disable dumping of the state cache entries during shutdown
+	 * 
+	 * @param dumpOnShut boolean
+	 */
+	public final void setDumpOnShutdown( boolean dumpOnShut) {
+		m_dumpOnShutdown = dumpOnShut;
+	}
+	
 	/**
 	 * Add a file state listener
 	 * 
@@ -563,6 +582,11 @@ public abstract class FileStateCache {
 		
 		if ( config.getChild( "expiryDebug") != null)
 			setDebugExpiredStates( true);
+		
+		// Check if the state cache entries should be dumped out during shutdown
+		
+		if ( config.getChild( "dumpOnShutdown") != null)
+			setDumpOnShutdown( true);
 	}
 	
 	/**
@@ -593,6 +617,11 @@ public abstract class FileStateCache {
 		
 		if ( hasStateCacheListener())
 			getStateCacheListener().stateCacheShuttingDown();
+		
+		 // Check if the state cache entries should be dumped out during shutdown
+		
+		if ( hasDumpOnShutdown())
+			dumpCache( false);
 	}
 	
 	/**

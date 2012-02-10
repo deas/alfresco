@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -101,6 +101,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     private static final String AUTH_SPNEGO = "Negotiate";
     private static final String HEADER_WWWAUTHENTICATE = "WWW-Authenticate";
     private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_ACCEPT_LANGUAGE = "Accept-Language";
     
     // NTLM authentication session object names
     private static final String NTLM_AUTH_DETAILS = "_alfwfNTLMDetails";
@@ -592,7 +593,18 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             }
 
             Connector conn = connectorService.getConnector(this.endpoint, userId, session);
-            ConnectorContext ctx = new ConnectorContext();
+
+            // ALF-10785: We must pass through the language header to set up the session in the correct locale
+            ConnectorContext ctx;
+            if (req.getHeader(HEADER_ACCEPT_LANGUAGE) != null)
+            {
+                ctx = new ConnectorContext(null, Collections.singletonMap(HEADER_ACCEPT_LANGUAGE, req.getHeader(HEADER_ACCEPT_LANGUAGE)));
+            }
+            else
+            {
+                ctx = new ConnectorContext();
+            }
+
             Response remoteRes = conn.call("/touch", ctx);
             if (Status.STATUS_UNAUTHORIZED == remoteRes.getStatus().getCode())
             {
@@ -1079,7 +1091,20 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         try
         {
             Connector conn = connectorService.getConnector(this.endpoint, session);
-            ConnectorContext ctx = new ConnectorContext();
+            ConnectorContext ctx;
+            
+            // ALF-10785: We must pass through the language header to set up the session in the correct locale            
+            if (req.getHeader(HEADER_ACCEPT_LANGUAGE) != null)
+            {
+                Map<String, String> headers = new HashMap(7);
+                headers.put(HEADER_ACCEPT_LANGUAGE, req.getHeader(HEADER_ACCEPT_LANGUAGE));
+
+                ctx = new ConnectorContext(null, headers);
+            }
+            else
+            {
+                ctx = new ConnectorContext();
+            }
 
             Response remoteRes = conn.call("/touch", ctx);
             if (Status.STATUS_UNAUTHORIZED == remoteRes.getStatus().getCode())
@@ -1087,8 +1112,15 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 String authHdr = remoteRes.getStatus().getHeaders().get(HEADER_WWWAUTHENTICATE);
                 if (authHdr.equals(AUTH_SPNEGO))
                 {
-                    ctx = new ConnectorContext(null, Collections.singletonMap(HEADER_AUTHORIZATION, AUTH_SPNEGO + ' '
-                            + tokenForEndpoint));
+                    Map<String, String> headers = new HashMap(7);
+                    headers.put(HEADER_AUTHORIZATION, AUTH_SPNEGO + ' ' + tokenForEndpoint);
+                    
+                    if (req.getHeader(HEADER_ACCEPT_LANGUAGE) != null)
+                    {
+                        headers.put(HEADER_ACCEPT_LANGUAGE, req.getHeader(HEADER_ACCEPT_LANGUAGE));
+                    }
+
+                    ctx = new ConnectorContext(null, headers);
                     remoteRes = conn.call("/touch", ctx);
                     
                     if (Status.STATUS_OK == remoteRes.getStatus().getCode() ||

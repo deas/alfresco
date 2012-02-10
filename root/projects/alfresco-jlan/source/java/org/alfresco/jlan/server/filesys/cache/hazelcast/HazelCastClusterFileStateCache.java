@@ -1828,6 +1828,10 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 			
 			accessToken = (HazelCastAccessToken) grantAccessTask.get();
 			
+			// Set the associated path for the access toekn
+			
+			accessToken.setNetworkFilePath( params.getPath());
+			
 			// Check if an oplock was also granted during the file access check
 			
 			if ( accessToken.getOpLockType() != OpLock.TypeNone) {
@@ -1983,7 +1987,8 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 			// Clear the local oplock if the token indicates an oplock on the file
 			
 			HazelCastAccessToken hcToken = (HazelCastAccessToken) token;
-				
+			hcToken.setReleased( true);
+			
 			PerNodeState perNode = m_perNodeCache.get( fstate.getPath());
 			
 			if ( perNode != null && perNode.hasOpLock()) {

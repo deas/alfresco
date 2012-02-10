@@ -21,6 +21,7 @@ package org.alfresco.jlan.server.filesys.cache.hazelcast;
 
 import java.io.Serializable;
 
+import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.filesys.FileAccessToken;
 import org.alfresco.jlan.server.filesys.cache.cluster.ClusterNode;
 import org.alfresco.jlan.smb.OpLock;
@@ -36,7 +37,7 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 
 	// Serialization id
 	
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 4L;
 
 	//	Cluster node that owns the token
 	
@@ -50,6 +51,14 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 	
 	private int m_oplock;
 	private boolean m_oplockNotAvailable;
+	
+	// Associated network file path
+	
+	private String m_path;
+	
+	// Access token has been released
+	
+	private boolean m_released;
 	
 	/**
 	 * Default constructor
@@ -140,6 +149,33 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 	}
 	
 	/**
+	 * Check if the access token has been released
+	 * 
+	 * @return boolean
+	 */
+	public final boolean isReleased() {
+		return m_released;
+	}
+	
+	/**
+	 * Set the released state of the access token
+	 * 
+	 * @param released boolean
+	 */
+	public final void setReleased( boolean released) {
+		m_released = released;
+	}
+	
+	/**
+	 * Set the associated network file path
+	 * 
+	 * @param path String
+	 */
+	public final void setNetworkFilePath( String path) {
+		m_path = path;
+	}
+	
+	/**
 	 * Return the access token as a string
 	 * 
 	 * @return String
@@ -159,8 +195,25 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 			str.append( ",opavail=");
 			str.append( isOplockAvailable());
 		}
+		if ( isReleased())
+			str.append( ",Released");
+		else {
+			str.append( ",File=");
+			str.append ( m_path);
+		}
 		str.append( "]");
 		
 		return str.toString();
+	}
+	
+	/**
+	 * Finalize
+	 */
+	public void finalize() {
+		
+		// Check if hte access token was released
+		
+		if ( isReleased() == false)
+			Debug.println( "** Access token finalized, not released, " + toString() + " **");
 	}
 }
