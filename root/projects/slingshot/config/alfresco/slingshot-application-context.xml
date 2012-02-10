@@ -193,6 +193,12 @@
       <property name="extensionName" value="evaluatorHelper"/>
    </bean>
 
+   <bean id="slingshot.templateprocessor.mimetypesQuery" parent="baseTemplateExtension" class="org.alfresco.web.scripts.MimetypesQuery">
+      <property name="extensionName">
+         <value>mimetypes</value>
+      </property>
+   </bean>
+
    <!-- Extension utils -->
    <bean id="slingshot.evaluator.utility" class="org.alfresco.web.extensibility.SlingshotEvaluatorUtil">
       <property name="serviceRegistry" ref="webframework.service.registry" />

@@ -153,7 +153,7 @@
          <mimetype mimetype="application/x-bcpio" display="">
             <extension>bcpio</extension>
          </mimetype>
-         <mimetype mimetype="application/octet-stream" display="Octet Stream">
+         <mimetype mimetype="application/octet-stream" display="Binary File (Octet Stream)">
             <extension display="Binary">bin</extension>
             <extension display="Binary Executable">exe</extension>
          </mimetype>
@@ -427,7 +427,7 @@
          <mimetype mimetype="message/rfc822" display="EMail">
             <extension>eml</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.ms-outlook" display="Outlook MSG">
+         <mimetype mimetype="application/vnd.ms-outlook" display="Microsoft Outlook Message">
             <extension>msg</extension>
          </mimetype>
 

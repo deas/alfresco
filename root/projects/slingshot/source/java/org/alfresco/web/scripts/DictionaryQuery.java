@@ -54,6 +54,7 @@ import org.springframework.extensions.webscripts.processor.BaseProcessorExtensio
  * 
  * @author Kevin Roast
  */
+@SuppressWarnings("serial")
 public class DictionaryQuery extends BaseProcessorExtension implements Serializable
 {
     private static Log logger = LogFactory.getLog(DictionaryQuery.class);
