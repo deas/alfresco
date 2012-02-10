@@ -20,6 +20,8 @@ package org.alfresco.module.vti.handler.alfresco.v3;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,6 +73,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLDecoder;
 import org.springframework.extensions.surf.util.URLEncoder;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Alfresco implementation of DwsServiceHandler and AbstractAlfrescoDwsServiceHandler
@@ -295,6 +298,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
         {
             if (nodeService.getType(item.getNodeRef()).equals(TYPE_LINK))
             {
+                // Fetch the link related properties
                 Map<QName, Serializable> props = nodeService.getProperties(item.getNodeRef());
                 String url = (String) props.get(PROP_LINK_URL);
                 String description = (String) props.get(PROP_LINK_TITLE);
@@ -305,8 +309,36 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
                 String editor = getFullUsername((String) props.get(ContentModel.PROP_MODIFIER));
                 int owshiddenversion = 0;
                 String id = (String) props.get(ContentModel.PROP_NAME);
-                LinkBean link = new LinkBean(url, description, comments, created, author, modified, editor, owshiddenversion, id);
-                linkList.add(link);
+                
+                // Share is happy for links of the form www.alfresco.com, while SharePoint
+                //  requires they all be full URLs with a protocol, like http://www.alfresco.com/
+                // Check if the URL given is valid, and assume any lacking a protocol are http:// ones
+                try
+                {
+                    new URL(url);
+                }
+                catch(MalformedURLException e)
+                {
+                    // Is it lacking a protocol?
+                    if (!url.contains("://"))
+                    {
+                        // Treat it as a http:// one
+                        url = "http://" + url;
+                    }
+                    else
+                    {
+                        // The URL is invalid in some other way, skip as we can't fix
+                        logger.info("Ignoring invalid URL in site " + fileInfo.getName() + " - " + url, e);
+                        url = null;
+                    }
+                }
+                
+                // Build and save the links bean for this
+                if (url != null)
+                {
+                    LinkBean link = new LinkBean(url, description, comments, created, author, modified, editor, owshiddenversion, id);
+                    linkList.add(link);
+                }
             }
             else
             {
@@ -338,9 +370,10 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             else
             {
                 NodeRef personNodeRef = personService.getPerson(username);
-                String firstName = nodeService.getProperty(personNodeRef, ContentModel.PROP_FIRSTNAME).toString();
-                String lastName = nodeService.getProperty(personNodeRef, ContentModel.PROP_LASTNAME).toString();
-                String email = nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL).toString();
+                String firstName = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_FIRSTNAME));
+                String lastName = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_LASTNAME));
+                String email = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL));
+
                 members.add(new MemberBean(personNodeRef.toString(), firstName + " " + lastName, username, email, false));
             }
         }

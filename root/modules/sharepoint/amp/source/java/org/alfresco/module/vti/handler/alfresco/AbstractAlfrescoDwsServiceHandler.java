@@ -67,6 +67,7 @@ import org.alfresco.util.Pair;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Alfresco implementation of DwsServiceHandler interface
@@ -847,12 +848,12 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         NodeRef person = personService.getPerson(authenticationService.getCurrentUserName());
 
         String loginName = (String) nodeService.getProperty(person, ContentModel.PROP_USERNAME);
-        String email = (String) nodeService.getProperty(person, ContentModel.PROP_EMAIL);
-        String firstName = (String) nodeService.getProperty(person, ContentModel.PROP_FIRSTNAME);
-        String lastName = (String) nodeService.getProperty(person, ContentModel.PROP_LASTNAME);
+        String email = ObjectUtils.getDisplayString(nodeService.getProperty(person, ContentModel.PROP_EMAIL));
+        String firstName = ObjectUtils.getDisplayString(nodeService.getProperty(person, ContentModel.PROP_FIRSTNAME));
+        String lastName = ObjectUtils.getDisplayString(nodeService.getProperty(person, ContentModel.PROP_LASTNAME));
         boolean isSiteAdmin = (loginName.equals("admin") ? true : false);
 
-        return new UserBean(person.toString(), firstName + ' ' + lastName, loginName, email, false, isSiteAdmin);
+        return new UserBean(person.toString(), firstName + " " + lastName, loginName, email, false, isSiteAdmin);
     }
 
     /**

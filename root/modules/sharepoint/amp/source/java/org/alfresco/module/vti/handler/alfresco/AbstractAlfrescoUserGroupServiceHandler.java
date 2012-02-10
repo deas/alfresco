@@ -31,6 +31,7 @@ import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Alfresco implementation of UserGroupServiceHandler interface
@@ -137,13 +138,14 @@ public abstract class AbstractAlfrescoUserGroupServiceHandler implements UserGro
     {
         UserBean userBean = new UserBean();
 
-        String userName = DefaultTypeConverter.INSTANCE.convert(String.class, nodeService.getProperty(personNodeRef, ContentModel.PROP_USERNAME));
+        String userName = (String)nodeService.getProperty(personNodeRef, ContentModel.PROP_USERNAME);
 
-        String firstName = DefaultTypeConverter.INSTANCE.convert(String.class, nodeService.getProperty(personNodeRef, ContentModel.PROP_FIRSTNAME));
-        String lastName = DefaultTypeConverter.INSTANCE.convert(String.class, nodeService.getProperty(personNodeRef, ContentModel.PROP_LASTNAME));
+        String firstName = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_FIRSTNAME));
+        String lastName = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_LASTNAME));
+        String email = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL));
 
         userBean.setDisplayName(firstName + " " + lastName);
-        userBean.setEmail(DefaultTypeConverter.INSTANCE.convert(String.class, nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL)));
+        userBean.setEmail(email);
         userBean.setLoginName("ALFRESCO\\" + userName);
 
         return userBean;
