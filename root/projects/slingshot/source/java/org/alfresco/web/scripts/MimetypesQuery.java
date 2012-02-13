@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -81,6 +82,23 @@ public class MimetypesQuery extends BaseProcessorExtension implements Serializab
         }
         
         return descriptions;
+    }
+    
+    /**
+     * Gets all the human readable mimetype descriptions, sorted, along
+     *  with their mimetypes.
+     */
+    public Map<String,String> getMimetypesByDisplay()
+    {
+        Map<String, String> types = new TreeMap<String, String>();
+        Map<String, Mimetype> mimetypes = getMimetypes();
+        
+        for (Mimetype mimetype : mimetypes.values())
+        {
+            types.put(mimetype.getDescription(), mimetype.getMimetype());
+        }
+        
+        return types;
     }
     
     /**
