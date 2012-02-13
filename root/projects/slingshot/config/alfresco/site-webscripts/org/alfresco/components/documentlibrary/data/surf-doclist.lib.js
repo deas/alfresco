@@ -10,7 +10,7 @@
 var DocList_Custom =
 {
    /**
-    * Overidable function to calculate correct action group based on node details
+    * Overridable function to calculate correct action group based on node details
     *
     * @method calculateActionGroupId
     * @param record {Object} Record object representing a node, as returned from data webscript
@@ -26,7 +26,36 @@ var DocList_Custom =
          logger.log("[SURF-DOCLIST] ActionGroupId = '" + actionGroupId + "' for nodeRef " + record.node.nodeRef);
 
       return actionGroupId;
-   }
+   },
+
+   /**
+    * Overridable function to calculate the remote data URL
+    *
+    * The returned URL will be used as the parameter for remote.call()
+    *
+    * @method calculateRemoteDataURL
+    * @return {String} Remote Data URL
+    */
+   calculateRemoteDataURL: function calculateRemoteDataURL()
+   {
+      var webscript = url.templateArgs.webscript,
+         params = url.templateArgs.params,
+         dataUrl = "/slingshot/doclib2/" + webscript + "/" + encodeURI(params),
+         argsArray = [];
+
+      // Need to reconstruct and encode original args
+      if (args.length > 0)
+      {
+         for (arg in args)
+         {
+            argsArray.push(arg + "=" + encodeURIComponent(args[arg].replace(/%25/g,"%2525")));
+         }
+         
+         dataUrl += "?" + argsArray.join("&");
+      }
+      
+      return dataUrl;
+   } 
 };
 
 var this_DocList = this;
@@ -279,6 +308,29 @@ var DocList =
                   }
                }
             }
+
+            // Check for evaluators in each banner
+            var banners = [];
+            for each (banner in nodeTemplate.banners)
+            {
+               if (banner == null)
+               {
+                  continue;
+               }
+
+               if (!banner.evaluator || banner.evaluator.evaluate(itemJSON, metaJSON, args))
+               {
+                  // Add display banner for this item
+                  banners.push(
+                  {
+                     index: banner.index,
+                     template: banner.template,
+                     view: banner.view
+                  });
+               }
+            }
+            nodeTemplate.banners = banners.sort(fnSortByIndex);
+            item.metadataTemplate = nodeTemplate;
 
             // Check for evaluators in each line
             var lines = [];
@@ -682,8 +734,10 @@ var DocList =
                   };
 
                   DocList.fnAddIfNotNull(template, DocList.getEvaluatorConfig(templateConfig), "evaluators");
-                  // Lines are a special case: we need to merge instead of replace to allow for custom overrides by id
-                  template.lines = DocList.merge(template.lines || {}, DocList.getTemplateLineConfig(templateConfig));
+                  template.title = DocList.getTemplateTitleConfig(templateConfig);
+                  // Banners and Lines are special cases: we need to merge instead of replace to allow for custom overrides by id
+                  template.banners = DocList.merge(template.banners || {}, DocList.getTemplateBannerConfig(templateConfig) || {});
+                  template.lines = DocList.merge(template.lines || {}, DocList.getTemplateLineConfig(templateConfig) || {});
 
                   templates[templateId] = DocList.merge({}, template);
                }
@@ -697,47 +751,77 @@ var DocList =
       return templates;
    },
 
-   getTemplateLineConfig: function getTemplateLineConfig(templateConfig)
+   getTemplateTitleConfig: function getTemplateTitleConfig(templateConfig)
    {
-      var templateLines = {},
-         lineConfig = templateConfig.childrenMap["line"],
-         line, id, index, evaluator, view;
-
-      if (!lineConfig)
+      var templateTitle = null,
+         titleConfig = templateConfig.childrenMap["title"],
+         title;
+      
+      if (!titleConfig)
       {
          return null;
       }
 
-      for (var i = 0; i < lineConfig.size(); i++)
+      title = titleConfig.get(titleConfig.size() - 1);
+      if (title.value != null)
       {
-         line = lineConfig.get(i);
-         id = line.getAttribute("id");
-         index = line.getAttribute("index");
-         evaluator = line.getAttribute("evaluator");
-         view = line.getAttribute("view");
+         templateTitle = title.value;
+      }
+
+      return templateTitle;
+   },
+
+   getTemplateBannerConfig: function getTemplateBannerConfig(templateConfig)
+   {
+      return DocList.getTemplateMetadataConfig(templateConfig, "banner");
+   },
+
+   getTemplateLineConfig: function getTemplateLineConfig(templateConfig)
+   {
+      return DocList.getTemplateMetadataConfig(templateConfig, "line");
+   },
+
+   getTemplateMetadataConfig: function getTemplateMetadataConfig(templateConfig, configElementName)
+   {
+      var templateMetadata = {},
+         metaConfig = templateConfig.childrenMap[configElementName],
+         meta, id, index, evaluator, view;
+
+      if (!metaConfig)
+      {
+         return null;
+      }
+
+      for (var i = 0; i < metaConfig.size(); i++)
+      {
+         meta = metaConfig.get(i);
+         id = meta.getAttribute("id");
+         index = meta.getAttribute("index");
+         evaluator = meta.getAttribute("evaluator");
+         view = meta.getAttribute("view");
          if (id != null)
          {
-            if (line.value == null)
+            if (meta.value == null)
             {
-               templateLines[id] = null;
+               templateMetadata[id] = null;
             }
             else
             {
-               templateLines[id] =
+               templateMetadata[id] =
                {
                   index: index || 0,
-                  template: line.value,
+                  template: meta.value,
                   view: view || ""
                };
                if (evaluator != null)
                {
-                  templateLines[id].evaluator = evaluatorHelper.getEvaluator(evaluator);
+                  templateMetadata[id].evaluator = evaluatorHelper.getEvaluator(evaluator);
                }
             }
          }
       }
 
-      return templateLines;
+      return templateMetadata;
    },
 
    filterOverrides: function filterOverrides(p_array)
@@ -813,23 +897,9 @@ var DocList =
 var surfDoclist_main = function surfDoclist_main()
 {
    var json = "{}",
-      webscript = url.templateArgs.webscript,
-      params = encodeURIComponent(url.templateArgs.params).replace(/%2f/ig,"/"),
-      dataUrl = "/slingshot/doclib2/" + webscript + "/" + params,
-      argsArray = [];
+      dataUrl = DocList_Custom.calculateRemoteDataURL(),
+      result = remote.call(dataUrl);
 
-   // Need to reconstruct and encode original args
-   if (args.length > 0)
-   {
-      for (arg in args)
-      {
-         argsArray.push(arg + "=" + encodeURIComponent(args[arg].replace(/%25/g,"%2525")));
-      }
-      
-      dataUrl += "?" + argsArray.join("&");
-   }
-   
-   var result = remote.call(dataUrl);
    if (result.status == 200)
    {
       var obj = eval('(' + result + ')');

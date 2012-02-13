@@ -250,6 +250,7 @@ public final class SMBStatus {
 	public static final int NTPipeDisconnected    	= 0xC00000B0;
 	public static final int NTFileIsADirectory 		= 0xC00000BA;
 	public static final int NTNotSupported 			= 0xC00000BB;
+	public static final int NTNetworkAccessDenied	= 0xC00000CA;
 	public static final int NTBadDeviceType 		= 0xC00000CB;
 	public static final int NTBadNetName 			= 0xC00000CC;
 	public static final int NTRequestNotAccepted 	= 0xC00000D0;

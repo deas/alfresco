@@ -596,36 +596,30 @@
    Alfresco.DocumentList.generateFileFolderLinkMarkup = function DL_generateFileFolderLinkMarkup(scope, record)
    {
       var jsNode = record.jsNode,
-         recordSiteName = $isValueSet(record.location.site) ? record.location.site.name : null,
          html;
 
-      // Test for: handling a link and the link's target does not live within this site
-      if (jsNode.isLink && recordSiteName !== scope.options.siteId)
+      if (jsNode.isLink && $isValueSet(scope.options.siteId) && record.location.site.name !== scope.options.siteId)
       {
          if (jsNode.isContainer)
          {
-            // Create a URL to either the Repository or Site document library where the link target lives
-            html = $siteURL((recordSiteName === null ? "repository" : "documentlibrary") + "?path=" + encodeURIComponent($combine(record.location.path, record.location.file)),
+            html = $siteURL("documentlibrary?path=" + encodeURIComponent(record.location.path),
             {
-               site: recordSiteName
+               site: record.location.site.name
             });
          }
          else
          {
-            // Create a URL to the document details page for the link target
-            html = scope.getActionUrls(record, recordSiteName).documentDetailsUrl;
+            html = scope.getActionUrls(record, record.location.site.name).documentDetailsUrl;
          }
       }
       else
       {
          if (jsNode.isContainer)
          {
-            // Create path-change filter markup
             html = '#" class="filter-change" rel="' + Alfresco.DocumentList.generatePathMarkup(record.location);
          }
          else
          {
-            // Create a URL to the document details page
             html = scope.getActionUrls(record).documentDetailsUrl;
          }
       }
@@ -942,7 +936,16 @@
           * @property userIsSiteManager
           * @type boolean
           */
-         userIsSiteManager: false
+         userIsSiteManager: false,
+
+         /**
+          * Where to insert the "More..." actions split
+          *
+          * @property actionsSplitAt
+          * @type number
+          * @default 3
+          */
+         actionsSplitAt: 3
       },
 
       /**
@@ -1239,14 +1242,7 @@
                {
                   args[1].stop = true;
                   var record = me.widgets.dataTable.getRecord(args[1].target.offsetParent).getData();
-                  try
-                  {
-                     me[owner.title].call(me, record, owner);
-                  }
-                  catch (e)
-                  {
-                     Alfresco.logger.error("DL_fnActionHandler", owner.title, e);
-                  }
+                  me[owner.title].call(me, record, owner);
                }
             }
             return true;
@@ -1442,12 +1438,6 @@
                   indicator = indicators[i];
                   // Note: deliberate bypass of scope.msg() function
                   label = Alfresco.util.message(indicator.label, scope.name, indicator.labelParams);
-                  /*
-                  label = YAHOO.lang.substitute(label, record, function DL_renderCellStatus_label(p_key, p_value, p_meta)
-                  {
-                     return Alfresco.util.findValueByDotNotation(record, p_key);
-                  });
-                  */
                   label = Alfresco.util.substituteDotNotation(label, record);
 
                   desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" /></div>';
@@ -1587,141 +1577,169 @@
                version = '<span class="document-version">' + $html(record.version) + '</span>';
             }
 
-            // Locked / Working Copy handling
-            if (($isValueSet(properties.lockOwner) || $isValueSet(properties.workingCopyOwner)) && !jsNode.hasAspect("trx:transferred"))
-            {
-               var bannerUser = properties.lockOwner || properties.workingCopyOwner,
-                  bannerLink = Alfresco.DocumentList.generateUserLink(scope, bannerUser);
-
-               /* Google Docs Integration */
-               if (record.workingCopy)
-               {
-                  if ($isValueSet(record.workingCopy.googleDocUrl))
-                  {
-                     if (bannerUser.userName === Alfresco.constants.USERNAME)
-                     {
-                        desc += '<div class="info-banner">' + scope.msg("details.banner.google-docs-owner", '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + scope.msg("details.banner.google-docs.link") + '</a>') + '</div>';
-                     }
-                     else
-                     {
-                        desc += '<div class="info-banner">' + scope.msg("details.banner.google-docs-locked", bannerLink, '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + scope.msg("details.banner.google-docs.link") + '</a>') + '</div>';
-                     }
-                  }
-                  else
-                  {
-                     /* Regular Working Copy handling */
-                     if (bannerUser.userName === Alfresco.constants.USERNAME)
-                     {
-                        desc += '<div class="info-banner">' + scope.msg("details.banner." + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner")) + '</div>';
-                     }
-                     else
-                     {
-                        desc += '<div class="info-banner">' + scope.msg("details.banner.locked", bannerLink) + '</div>';
-                     }
-                  }
-               }
-               else
-               {
-                  /* Regular Locked handling */
-                  if (bannerUser.userName === Alfresco.constants.USERNAME)
-                  {
-                     desc += '<div class="info-banner">' + scope.msg("details.banner.lock-owner") + '</div>';
-                  }
-                  else
-                  {
-                     desc += '<div class="info-banner">' + scope.msg("details.banner.locked", bannerLink) + '</div>';
-                  }
-               }
-            }
-
-            // Insitu editing for title (filename)
-            var filenameId = Alfresco.util.generateDomId();
-            if (jsNode.hasPermission("Write") && !jsNode.isLocked)
-            {
-               scope.insituEditors.push(
-               {
-                  context: filenameId,
-                  params:
-                  {
-                     type: "textBox",
-                     nodeRef: jsNode.nodeRef.toString(),
-                     name: "prop_cm_name",
-                     value: record.fileName,
-                     fnSelect: function fnSelect(elInput, value)
-                     {
-                        // If the file has an extension, omit it from the edit selection
-                        var extnPos = value.lastIndexOf(Alfresco.util.getFileExtension(value)) - 1;
-                        if (extnPos > 0)
-                        {
-                           Alfresco.util.selectText(elInput, 0, extnPos);
-                        }
-                        else
-                        {
-                           elInput.select();
-                        }
-                     },
-                     validations: [
-                     {
-                        type: Alfresco.forms.validation.nodeName,
-                        when: "keyup",
-                        message: scope.msg("validation-hint.nodeName")
-                     },
-                     {
-                        type: Alfresco.forms.validation.length,
-                        args: { min: 1, max: 255, crop: true },
-                        when: "keyup",
-                        message: scope.msg("validation-hint.length.min.max", 1, 255)
-                     }],
-                     title: scope.msg("tip.insitu-rename"),
-                     errorMessage: scope.msg("message.insitu-edit.name.failure")
-                  },
-                  callback:
-                  {
-                     fn: scope._insituCallback,
-                     scope: scope,
-                     obj: record
-                  }
-               });
-            }
-
-            /* Title */
-            desc += '<h3 class="filename"><span id="' + filenameId + '">'+ Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
-            desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
-
             /**
              *  Render using metadata template
              */
+            record._filenameId = Alfresco.util.generateDomId();
+
             var metadataTemplate = record.metadataTemplate;
-            if (metadataTemplate && YAHOO.lang.isArray(metadataTemplate.lines))
+            if (metadataTemplate)
             {
-               var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
+               /* Banner */
+               if (YAHOO.lang.isArray(metadataTemplate.banners))
                {
-                  var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
-                     value = "";
-                      
-                  // render value from properties or custom renderer
-                  if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                  var fnRenderBanner = function fnRenderBanner_substitute(p_key, p_value, p_meta)
                   {
-                     value = scope.renderers[p_key].call(scope, record, label);
-                  }
-                  else
-                  {
-                     value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
-                  }
-
-                  return value;
-               };
-
-               var html, line;
-               for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
-               {
-                  line = metadataTemplate.lines[i];
-                  if (!$isValueSet(line.view) || line.view == (scope.options.simpleView ? "simple" : "detailed"))
-                  {
-                     html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
-                     if ($isValueSet(html))
+                     var label = (p_meta !== null ? scope.msg(p_meta) + ': ': ''),
+                        value = "";
+                         
+                     // render value from properties or custom renderer
+                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
                      {
-                        desc += '<div class="detail">' + html + '</div>';
+                        value = scope.renderers[p_key].call(scope, record, label);
+                     }
+                     else
+                     {
+                        if (jsNode.hasProperty(p_key))
+                        {
+                           value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                        }
+                     }
+
+                     return value;
+                  };
+
+                  var html, banner;
+                  for (i = 0, j = metadataTemplate.banners.length; i < j; i++)
+                  {
+                     banner = metadataTemplate.banners[i];
+                     if (!$isValueSet(banner.view) || banner.view == (scope.options.simpleView ? "simple" : "detailed"))
+                     {
+                        html = YAHOO.lang.substitute(banner.template, scope.renderers, fnRenderBanner);
+                        if ($isValueSet(html))
+                        {
+                           desc += '<div class="info-banner">' + html + '</div>';
+                        }
+                     }
+                  }
+               }
+
+               /* Title */
+               if (YAHOO.lang.isString(metadataTemplate.title))
+               {
+                  var fnRenderTitle = function fnRenderTitle_substitute(p_key, p_value, p_meta)
+                  {
+                     var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
+                        value = "";
+                         
+                     // render value from properties or custom renderer
+                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                     {
+                        value = scope.renderers[p_key].call(scope, record, label);
+                     }
+                     else
+                     {
+                        if (jsNode.hasProperty(p_key))
+                        {
+                           value = '<div class="filename">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
+                           value += label + $html(jsNode.properties[p_key]) + '</a></span></div>';
+                        }
+                     }
+
+                     return value;
+                  };
+
+                  desc += YAHOO.lang.substitute(metadataTemplate.title, scope.renderers, fnRenderTitle);
+               }
+               else
+               {
+                  // Insitu editing for title (filename)
+                  if (jsNode.hasPermission("Write") && !jsNode.isLocked)
+                  {
+                     scope.insituEditors.push(
+                     {
+                        context: record._filenameId,
+                        params:
+                        {
+                           type: "textBox",
+                           nodeRef: jsNode.nodeRef.toString(),
+                           name: "prop_cm_name",
+                           value: record.fileName,
+                           fnSelect: function fnSelect(elInput, value)
+                           {
+                              // If the file has an extension, omit it from the edit selection
+                              var extnPos = value.lastIndexOf(Alfresco.util.getFileExtension(value)) - 1;
+                              if (extnPos > 0)
+                              {
+                                 Alfresco.util.selectText(elInput, 0, extnPos);
+                              }
+                              else
+                              {
+                                 elInput.select();
+                              }
+                           },
+                           validations: [
+                           {
+                              type: Alfresco.forms.validation.nodeName,
+                              when: "keyup",
+                              message: scope.msg("validation-hint.nodeName")
+                           },
+                           {
+                              type: Alfresco.forms.validation.length,
+                              args: { min: 1, max: 255, crop: true },
+                              when: "keyup",
+                              message: scope.msg("validation-hint.length.min.max", 1, 255)
+                           }],
+                           title: scope.msg("tip.insitu-rename"),
+                           errorMessage: scope.msg("message.insitu-edit.name.failure")
+                        },
+                        callback:
+                        {
+                           fn: scope._insituCallback,
+                           scope: scope,
+                           obj: record
+                        }
+                     });
+                  }
+
+                  desc += '<h3 class="filename"><span id="' + record._filenameId + '">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
+                  desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
+               }
+
+               if (YAHOO.lang.isArray(metadataTemplate.lines))
+               {
+                  var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
+                  {
+                     var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
+                        value = "";
+                         
+                     // render value from properties or custom renderer
+                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                     {
+                        value = scope.renderers[p_key].call(scope, record, label);
+                     }
+                     else
+                     {
+                        if (jsNode.hasProperty(p_key))
+                        {
+                           value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                        }
+                     }
+
+                     return value;
+                  };
+
+                  var html, line;
+                  for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
+                  {
+                     line = metadataTemplate.lines[i];
+                     if (!$isValueSet(line.view) || line.view == (scope.options.simpleView ? "simple" : "detailed"))
+                     {
+                        html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
+                        if ($isValueSet(html))
+                        {
+                           desc += '<div class="detail">' + html + '</div>';
+                        }
                      }
                   }
                }
@@ -1818,6 +1836,52 @@
        */
       _setupMetadataRenderers: function DL__setupMetadataRenderers()
       {
+         /**
+          *
+          */
+         this.registerRenderer("i18nLabel", function(record, label)
+         {
+            // Just return the label, removing the trailing ": "
+            return label.replace(/:\s$/, "");
+         });
+
+         /**
+          * Locked / Working Copy banner
+          */
+         this.registerRenderer("lockBanner", function(record, label)
+         {
+            var properties = record.jsNode.properties,
+               bannerUser = properties.lockOwner || properties.workingCopyOwner,
+               bannerLink = Alfresco.DocumentList.generateUserLink(this, bannerUser),
+               html = "";
+
+            /* Google Docs Integration */
+            if ($isValueSet(record.workingCopy.googleDocUrl))
+            {
+               if (bannerUser.userName === Alfresco.constants.USERNAME)
+               {
+                  html = this.msg("details.banner.google-docs-owner", '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + this.msg("details.banner.google-docs.link") + '</a>');
+               }
+               else
+               {
+                  html = this.msg("details.banner.google-docs-locked", bannerLink, '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + this.msg("details.banner.google-docs.link") + '</a>');
+               }
+            }
+            /* Regular Working Copy handling */
+            else
+            {
+               if (bannerUser.userName === Alfresco.constants.USERNAME)
+               {
+                  html = this.msg("details.banner." + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
+               }
+               else
+               {
+                  html = this.msg("details.banner.locked", bannerLink);
+               }
+            }
+            return html;
+         });
+
          /**
           * Date
           */
@@ -2015,10 +2079,17 @@
             var filters = strFilter.split("|"),
                filterObj =
                {
-                  filterId: window.unescape(filters[0] || ""),
-                  filterData: window.unescape(filters[1] || "")
+                  filterId: window.unescape(filters[0] || "")
                };
 
+            if (typeof filters[1] !== "undefined")
+            {
+               filterObj.filterData = window.unescape(filters[1]);
+            }
+            if (typeof filters[2] !== "undefined")
+            {
+               filterObj.filterDisplay = window.unescape(filters[2]);
+            }
             filterObj.filterOwner = Alfresco.util.FilterManager.getOwner(filterObj.filterId);
             return filterObj;
          };
@@ -2062,7 +2133,6 @@
             // Register History Manager page update callback
             YAHOO.util.History.register("page", bookmarkedPage, function DL_onHistoryManagerPageChanged(newPage)
             {
-               newPage = parseInt(newPage, 10);
                Alfresco.logger.debug("HistoryManager: page changed:" + newPage);
                // Update the DocList
                if (this.currentPage !== newPage)
@@ -2108,7 +2178,7 @@
          var me = this;
 
          // DataSource definition
-         this.widgets.dataSource = new YAHOO.util.DataSource($combine(this.dataSourceUrl),
+         this.widgets.dataSource = new YAHOO.util.DataSource(this.dataSourceUrl,
          {
             responseType: YAHOO.util.DataSource.TYPE_JSON,
             responseSchema:
@@ -2400,19 +2470,16 @@
          // Override abstract function within DataTable to set custom error message
          this.widgets.dataTable.doBeforeLoadData = function DL_doBeforeLoadData(sRequest, oResponse, oPayload)
          {
-            // Clear any existing error
-            this.hideTableMessage();
-
             if (oResponse.error)
             {
                try
                {
                   var response = YAHOO.lang.JSON.parse(oResponse.responseText);
-                  this.set("MSG_ERROR", response.message);
+                  me.widgets.dataTable.set("MSG_ERROR", response.message);
                }
                catch(e)
                {
-                  me._setDefaultDataTableErrors(this);
+                  me._setDefaultDataTableErrors(me.widgets.dataTable);
                }
             }
             else if (oResponse.results.length === 0)
@@ -2483,13 +2550,9 @@
             // Need to highlight a file now the data is available?
             if (this.options.highlightFile)
             {
-               // Add a delay to ensure the table is fully in the DOM
-               YAHOO.lang.later(200, this, function()
+               YAHOO.Bubbling.fire("highlightFile",
                {
-                  YAHOO.Bubbling.fire("highlightFile",
-                  {
-                     fileName: window.unescape(this.options.highlightFile)
-                  });
+                  fileName: window.unescape(this.options.highlightFile)
                });
             }
             else if (this.listUpdated)
@@ -2831,9 +2894,7 @@
                      var oColumn = this.widgets.dataTable.getColumn(e.target),
                         record = oRecord.getData();
 
-                     if (oRecord && oColumn && 
-                         (e.target.tagName == "IMG" || (e.target.tagName == "SPAN" && Dom.hasClass(e.target, "droppable"))) && 
-                         record.node.isContainer && oColumn.getKey() == "thumbnail")
+                     if (oRecord && oColumn && e.target.tagName == "IMG" && record.node.isContainer && oColumn.getKey() == "thumbnail")
                      {
                         var location = record.location;
                         directoryName = location.file;
@@ -3195,19 +3256,18 @@
             Dom.addClass(actionsEl, this.options.simpleView ? "simple" : "detailed");
 
             // Need the "More >" container?
-            var splitAt = jsNode.isContainer ? 2 : 3;
             actionsSel = YAHOO.util.Selector.query("div", actionsEl);
-            if (actionsSel.length > splitAt + (this.options.simpleView ? 0 : 1))
+            if (actionsSel.length > this.options.actionsSplitAt + (this.options.simpleView ? 0 : 1))
             {
                var moreContainer = Dom.get(this.id + "-moreActions").cloneNode(true),
                   containerDivs = YAHOO.util.Selector.query("div", moreContainer);
 
                // Insert the two necessary DIVs before the third action item
-               Dom.insertBefore(containerDivs[0], actionsSel[splitAt]);
-               Dom.insertBefore(containerDivs[1], actionsSel[splitAt]);
+               Dom.insertBefore(containerDivs[0], actionsSel[this.options.actionsSplitAt]);
+               Dom.insertBefore(containerDivs[1], actionsSel[this.options.actionsSplitAt]);
 
                // Now make action items three onwards children of the 2nd DIV
-               var index, moreActions = actionsSel.slice(splitAt);
+               var index, moreActions = actionsSel.slice(this.options.actionsSplitAt);
                for (index in moreActions)
                {
                   if (moreActions.hasOwnProperty(index))
@@ -3668,7 +3728,7 @@
       onDocListRefresh: function DL_onDocListRefresh(layer, args)
       {
          var obj = args[1];
-         if (obj && obj.highlightFile)
+         if (obj && (obj.highlightFile !== null))
          {
             this.options.highlightFile = obj.highlightFile;
          }
@@ -3690,7 +3750,10 @@
          {
             // Should be a filter in the arguments
             var filter = Alfresco.util.cleanBubblingObject(obj),
-               strFilter = window.escape(obj.filterId) + (typeof obj.filterData !== "undefined" ? "|" + window.escape(obj.filterData) : "");
+               strFilter = window.escape(obj.filterId) +
+                  (typeof obj.filterData !== "undefined" ?
+                     "|" + window.escape(obj.filterData) + (typeof obj.filterDisplay !== "undefined" ? "|" + window.escape(obj.filterDisplay) : "") :
+                     "");
 
             Alfresco.logger.debug("DL_onChangeFilter: ", filter);
 
@@ -3798,17 +3861,9 @@
                this.options.highlightFile = null;
 
                // Select the file
-               var chk = Dom.get("checkbox-" + recordFound.getId());
-               if (chk !== null)
-               {
-                  chk.checked = true;
-                  this.selectedFiles[recordFound.getData("nodeRef")] = true;
-                  YAHOO.Bubbling.fire("selectedFilesChanged");
-               }
-               else
-               {
-                  Alfresco.logger.warn("checkbox-" + recordFound.getId() + " not found.");
-               }
+               Dom.get("checkbox-" + recordFound.getId()).checked = true;
+               this.selectedFiles[recordFound.getData("nodeRef")] = true;
+               YAHOO.Bubbling.fire("selectedFilesChanged");
             }
          }
       },
@@ -4093,6 +4148,7 @@
 
          // Slow data webscript message
          this.loadingMessageShowing = false;
+         timerShowLoadingMessage = YAHOO.lang.later(this.options.loadingMessageDelay, this, fnShowLoadingMessage);
 
          var destroyLoaderMessage = function DL__uDL_destroyLoaderMessage()
          {
@@ -4118,9 +4174,6 @@
                }
             }
          };
-
-         destroyLoaderMessage();
-         timerShowLoadingMessage = YAHOO.lang.later(this.options.loadingMessageDelay, this, fnShowLoadingMessage);
 
          var successHandler = function DL__uDL_successHandler(sRequest, oResponse, oPayload)
          {

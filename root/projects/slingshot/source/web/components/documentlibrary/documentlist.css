@@ -394,7 +394,7 @@ body .doclist tr.yui-dt-highlighted
    margin-left: 40px;
 }
 
-.doclist .documents h3.filename
+.doclist .documents .filename
 {
    font-size: 139%;
    font-weight: normal;
@@ -402,14 +402,14 @@ body .doclist tr.yui-dt-highlighted
    padding-left: 20px;
 }
 
-.doclist .documents h3.filename span.title
+.doclist .documents .filename span.title
 {
    color: #606060;
    font-size: 82%;
    padding-left: 0.7em;
 }
 
-.doclist .documents h3.filename span.document-version
+.doclist .documents .filename span.document-version
 {
    margin-left: 0.8em;
    padding: 1px;
@@ -418,7 +418,7 @@ body .doclist tr.yui-dt-highlighted
    visibility: hidden;
 }
 
-.doclist .documents .yui-dt-highlighted h3.filename span.document-version
+.doclist .documents .yui-dt-highlighted .filename span.document-version
 {
    visibility: visible;
 }
@@ -468,8 +468,9 @@ body .doclist tr.yui-dt-highlighted
 
 .doclist .documents .detail em
 {
+   color: #606060;
    font-style: normal;
-   font-weight: bold;
+   font-weight: normal
 }
 
 .doclist .documents .detail span.item

@@ -1108,7 +1108,7 @@
             
             var fnFileType = function fnFileType(file)
             {
-               return (file.isContainer ? "folder" : "document");
+               return (file.node.isContainer ? "folder" : "document");
             };
 
             // Check each file for user permissions

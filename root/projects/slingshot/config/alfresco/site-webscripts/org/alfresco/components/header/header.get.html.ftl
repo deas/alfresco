@@ -1,12 +1,12 @@
 <#include "../../include/alfresco-macros.lib.ftl" />
 <#import "header.inc.ftl" as header>
 <#assign siteActive = page.url.templateArgs.site??>
-<#assign id = args.htmlid>
-<#assign jsid = id?replace("-", "_")>
+<#assign id = args.htmlid?html>
+<#assign jsid = id?replace("-", "_")?js_string>
 <#assign defaultlogo=msg("header.logo")><#if defaultlogo="header.logo"><#assign defaultlogo="app-logo.png"></#if>
 <#if !user.isGuest>
 <script type="text/javascript">//<![CDATA[
-   var ${jsid} = new Alfresco.component.Header("${id}").setOptions(
+   var ${jsid} = new Alfresco.component.Header("${jsid}").setOptions(
    {
       siteId: "${page.url.templateArgs.site!""}",
       siteTitle: "${siteTitle?js_string}",

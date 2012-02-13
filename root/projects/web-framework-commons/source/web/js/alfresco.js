@@ -6451,6 +6451,10 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
          
          /* Properties */
          properties: properties,
+         hasProperty: function(property)
+         {
+            return properties.hasOwnProperty(property);
+         },
          
          /* Aspects */
          aspects: aspects,
@@ -7911,14 +7915,19 @@ Alfresco.util.RENDERLOOPSIZE = 25;
                }
                
                var filterId = owner.className,
-                  filterData = anchor.rel;
-
-               YAHOO.Bubbling.fire("changeFilter",
+                  filterData = anchor.rel,
+                  filterObj =
+                  {
+                     filterOwner: me.name,
+                     filterId: filterId
+                  };
+               
+               if (Alfresco.util.isValueSet(filterData))
                {
-                  filterOwner: me.name,
-                  filterId: filterId,
-                  filterData: filterData
-               });
+                  filterObj.filterData = filterData;
+               }
+
+               YAHOO.Bubbling.fire("changeFilter", filterObj);
 
                // If a function has been provided which corresponds to the filter Id, then call it
                if (typeof me[filterId] == "function")

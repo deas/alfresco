@@ -63,6 +63,7 @@ import org.alfresco.jlan.server.filesys.IOCtlInterface;
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.NotifyChange;
 import org.alfresco.jlan.server.filesys.PathNotFoundException;
+import org.alfresco.jlan.server.filesys.PermissionDeniedException;
 import org.alfresco.jlan.server.filesys.SearchContext;
 import org.alfresco.jlan.server.filesys.SecurityDescriptorInterface;
 import org.alfresco.jlan.server.filesys.SrvDiskInfo;
@@ -2839,7 +2840,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			// User does not have the required access rights
 
-			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNetworkAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 
@@ -2932,9 +2933,16 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		}
 		catch (AccessDeniedException ex) {
 
-			// Not allowed to rename the file/directory
+			// Target file/directory exists
 
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+			return;
+		}
+		catch (PermissionDeniedException ex) {
+
+			// Not allowed to rename the file/directory
+
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNetworkAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
 			return;
 		}
 		catch (FileSharingException ex) {

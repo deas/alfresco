@@ -87,6 +87,22 @@
       </property>
    </bean>
 
+   <!-- Locked / Working Copy Banner -->
+   <bean id="evaluator.doclib.metadata.isLocked" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="cm:lockOwner"/>
+   </bean>
+   <bean id="evaluator.doclib.metadata.isBeingEdited" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="cm:workingCopyOwner"/>
+   </bean>
+   <bean id="evaluator.doclib.metadata.hasLockBanner" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.metadata.isLocked" />
+            <ref bean="evaluator.doclib.metadata.isBeingEdited" />
+         </list>
+      </property>
+   </bean>
+
 
    <!--                                    -->
    <!-- Document Library Action Evaluators -->

@@ -7,15 +7,6 @@ set ALF_HOME=@@BITROCK_INSTALLDIR@@
 set JAVA_HOME="@@BITROCK_JAVA_HOME_WIN@@"
 set CATALINA_HOME=%ALF_HOME%\@@BITROCK_TOMCAT_DIRNAME@@
 
-if not exist "%ALF_HOME%\SetPaths.bat" goto getpaths
-call "%ALF_HOME%\SetPaths.bat"
-goto start
-
-:getpaths
-call "%ALF_HOME%\bin\RegPaths.exe"
-call "%ALF_HOME%\SetPaths.bat"
-del "%ALF_HOME%\SetPaths.bat"
-
 :start
 echo This script will apply all the AMPs in %ALF_HOME%\amps to the alfresco.war and all the AMPs in %ALF_HOME%\amps_share to the share.war in %CATALINA_HOME%\webapps
 if ""%1"" == ""nowait"" goto nowait1

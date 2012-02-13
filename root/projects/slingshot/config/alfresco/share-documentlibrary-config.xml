@@ -241,6 +241,7 @@
       <metadata-templates>
          <!-- Default (fallback) -->
          <template id="default">
+            <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
             <line index="10" id="date">{date}{size}</line>
             <line index="20" id="description" view="detailed">{description}</line>
             <line index="30" id="tags" view="detailed">{tags}</line>
@@ -251,6 +252,7 @@
          <!-- Working Copies -->
          <template id="isWorkingCopy">
             <evaluator>evaluator.doclib.metadata.isWorkingCopy</evaluator>
+            <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
             <line index="10" id="date">{date}{size}</line>
             <line index="20" id="description" view="detailed">{description}</line>
          </template>
@@ -258,6 +260,7 @@
          <!-- Dictionary Models -->
          <template id="dictionaryModel">
             <evaluator>evaluator.doclib.metadata.isDictionaryModel</evaluator>
+            <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
             <line index="10" id="date">{date}</line>
             <line index="20" id="description" view="detailed">{description}</line>
             <line index="30" id="dictionaryModel" simpleView="true">{modelActive label.modelActive}{modelName label.modelName}{modelDescription label.modelDescription}</line>
@@ -266,6 +269,7 @@
          <!-- Replication Transfer Targets -->
          <template id="transferTarget">
             <evaluator>evaluator.doclib.metadata.isTransferTarget</evaluator>
+            <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
             <line index="10" id="date">{date}</line>
             <line index="20" id="description" view="detailed">{description}</line>
             <line index="30" id="transferTarget" simpleView="true">{trx_enabled label.trx_enabled}{trx_endpointhost label.trx_endpointhost}{trx_endpointport label.trx_endpointport}</line>

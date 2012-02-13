@@ -136,11 +136,21 @@
          {
             if (p_action.params.page)
             {
-               var recordSiteName = $isValueSet(p_record.location.site) ? p_record.location.site.name : null;
-               markupParams.pageUrl = $siteURL(Alfresco.util.substituteDotNotation(p_action.params.page, p_record),
+               markupParams.pageUrl = Alfresco.util.substituteDotNotation(p_action.params.page, p_record);
+
+               /**
+                * If the page starts with a "{" character we're going to assume it's a placeholder variable
+                * that will be resolved by the getActionsUrls() function. In which case, we do not want to
+                * use the $siteURL() function here as that will result in a double-prefix.
+                */
+               if (p_action.params.page.charAt(0) !== "{")
                {
-                  site: recordSiteName
-               });
+                  var recordSiteName = $isValueSet(p_record.location.site) ? p_record.location.site.name : null;
+                  markupParams.pageUrl = $siteURL(markupParams.pageUrl,
+                  {
+                     site: recordSiteName
+                  });
+               }
             }
             else
             {

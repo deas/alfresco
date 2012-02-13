@@ -124,7 +124,7 @@
 
       <div class="node-action">
 
-      <#if showDownload == "true">
+      <#if showDownload == "true" && node.contentURL??>
          <!-- Download Button -->
          <span class="yui-button yui-link-button onDownloadDocumentClick">
             <span class="first-child">

@@ -24,7 +24,7 @@
       <#assign addFavDisplay><#if (siteActive && !currentSiteIsFav)>block<#else>none</#if></#assign>
       <ul id="${id}-addFavourite" class="add-favourite-menuitem separator" style="display: ${addFavDisplay}">
          <li style="display: ${addFavDisplay}">
-            <a href="#" onclick='Alfresco.util.ComponentManager.get("${id_js}").addAsFavourite(); return false;'>${msg("label.add-favourite", siteTitle?html)}</a>
+            <a href="#" onclick="Alfresco.util.ComponentManager.get('${id_js}').addAsFavourite(); return false;">${msg("label.add-favourite", siteTitle?html)}</a>
          </li>
       </ul>
       <ul class="site-finder-menuitem<#if !user.isGuest> separator</#if>">
@@ -34,7 +34,7 @@
       </ul>
       <ul class="create-site-menuitem">
          <li>
-            <a href="#" onclick='Alfresco.util.ComponentManager.get("${id_js}").showCreateSite(); return false;'>${msg("label.create-site")}</a>
+            <a href="#" onclick="Alfresco.util.ComponentManager.get('${id_js}').showCreateSite(); return false;">${msg("label.create-site")}</a>
          </li>
       </ul>
    </div>
