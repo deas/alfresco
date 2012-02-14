@@ -17,7 +17,7 @@
 * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.alfresco.module.vti.handler.alfresco.v3;
+package org.alfresco.module.vti.handler.alfresco;
 
 import java.util.ArrayList;
 import java.util.List;

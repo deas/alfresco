@@ -3,7 +3,7 @@
 
 <beans>
 
-    <bean id="versionsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoVersionsServiceHandler">
+    <bean id="versionsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoVersionsServiceHandler">
         <property name="nodeService" ref="NodeService" />
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="versionService" ref="VersionService" />
@@ -11,7 +11,7 @@
         <property name="pathHelper" ref="vtiPathHelper"/>       
     </bean>
 
-    <bean id="listServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListServiceHandler">
+    <bean id="listServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoListServiceHandler">
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>    	
         <property name="siteService" ref="SiteService" />
@@ -55,7 +55,7 @@
         </property>
     </bean>
 
-    <bean id="dwsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoDwsServiceHandler">
+    <bean id="dwsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoDwsServiceHandler">
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>    	
         <property name="permissionService" ref="PermissionService"/>
@@ -95,7 +95,7 @@
         </property>
     </bean>
 
-    <bean id="userGroupServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoUserGroupServiceHandler">    	
+    <bean id="userGroupServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoUserGroupServiceHandler">    	
         <property name="nodeService" ref="NodeService"/>
         <property name="siteService" ref="SiteService" />
         <property name="personService" ref="PersonService"/>
@@ -103,7 +103,7 @@
         <property name="transactionService" ref="transactionService" />
     </bean>
     
-    <bean id="meetingServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMeetingServiceHandler">
+    <bean id="meetingServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoMeetingServiceHandler">
         <property name="siteService" ref="SiteService" />
         <property name="shareUtils" ref="shareUtils" />
         <property name="calendarService" ref="CalendarService" />
@@ -116,7 +116,7 @@
         <property name="namespaceService" ref="namespaceService" />
     </bean>
     
-    <bean id="checkOutCheckInServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoCheckOutCheckInServiceHandler">
+    <bean id="checkOutCheckInServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoCheckOutCheckInServiceHandler">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="checkOutCheckInService" ref="CheckoutCheckinService"/>
         <property name="lockService" ref="LockService" />
@@ -126,14 +126,14 @@
         <property name="authenticationService" ref="AuthenticationService" />
     </bean>    
 
-    <bean id="listsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListsServiceHandler">
+    <bean id="listsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoListsServiceHandler">
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="siteService" ref="SiteService"/>
         <property name="transactionService" ref="transactionService"/>
     </bean>
 
-    <bean id="vtiHandlerTarget" class="org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMethodHandler">
+    <bean id="vtiHandlerTarget" class="org.alfresco.module.vti.handler.alfresco.AlfrescoMethodHandler">
         <property name="nodeService" ref="NodeService" />
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="permissionService" ref="PermissionService" />
@@ -198,7 +198,7 @@
         <property name="target" ref="vtiHandlerTarget" />
     </bean>
   
-    <bean id="shareUtils" class="org.alfresco.module.vti.handler.alfresco.v3.ShareUtils">    	
+    <bean id="shareUtils" class="org.alfresco.module.vti.handler.alfresco.ShareUtils">    	
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />
         </property>

@@ -31,7 +31,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.DwsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoListServiceHandler;
+import org.alfresco.module.vti.handler.alfresco.AlfrescoListServiceHandler;
 import org.alfresco.module.vti.metadata.dic.CAMLMethod;
 import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.alfresco.module.vti.metadata.dic.Permission;
