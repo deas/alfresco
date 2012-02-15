@@ -194,6 +194,7 @@
          <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
+         <include name="**/org/alfresco/repo/cluster/ClusterTestSuite.java"/> 
       </patternset>
       <patternset id="files.tests">
          <!-- System Build Tests (runs using embedded Jetty) -->
@@ -265,6 +266,8 @@
          <include name="**/org/alfresco/repo/bm/RepoBenchmarkSystemTestSuite.java" />
          <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
          <exclude name="**/org/alfresco/repo/transfer/fsr/**/*Test.java" />
+         <!-- Messaging facade -->
+         <exclude name="**/org/alfresco/repo/cluster/**/*Test.java"/> 
          <!-- All other tests -->
          <include name="**/*Test.java" />
       </patternset>
