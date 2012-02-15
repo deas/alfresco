@@ -185,6 +185,7 @@ public interface ContentModel
     static final QName PROP_INITIAL_VERSION = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "initialVersion");
     static final QName PROP_AUTO_VERSION = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "autoVersion");
     static final QName PROP_AUTO_VERSION_PROPS = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "autoVersionOnUpdateProps");
+    static final QName PROP_VERSION_TYPE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "versionType"); 
     
     // folders
     static final QName TYPE_SYSTEM_FOLDER = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "systemfolder");

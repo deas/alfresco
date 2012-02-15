@@ -41,18 +41,23 @@ public class FileInfo {
 	//
 	// Set file information flags
 
-  public static final int SetFileSize				= 0x0001;
+	public static final int SetFileSize			= 0x0001;
 	public static final int SetAllocationSize 	= 0x0002;
-  public static final int SetAttributes			= 0x0004;
-  public static final int SetModifyDate			= 0x0008;
-  public static final int SetCreationDate		= 0x0010;
-  public static final int SetAccessDate			= 0x0020;
-  public static final int SetChangeDate			= 0x0040;
-  public static final int SetGid						= 0x0080;
-  public static final int SetUid						= 0x0100;
-  public static final int SetMode						= 0x0200;
+	public static final int SetAttributes		= 0x0004;
+	public static final int SetModifyDate		= 0x0008;
+	public static final int SetCreationDate		= 0x0010;
+	public static final int SetAccessDate		= 0x0020;
+	public static final int SetChangeDate		= 0x0040;
+	public static final int SetGid				= 0x0080;
+	public static final int SetUid				= 0x0100;
+	public static final int SetMode				= 0x0200;
 	public static final int SetDeleteOnClose 	= 0x0400;
 
+	// State flags
+	
+	public static final int FlagDeleteOnClose	= 0x0001;
+	public static final int FlagPseudoFile		= 0x0002;
+	
 	// File name string
 
 	protected String m_name;
@@ -113,15 +118,14 @@ public class FileInfo {
 
 	private int m_fileType;
 
-	// Delete file on close
+	// File flags
 
-	private boolean m_deleteOnClose;
+	private int m_flags;
 
 	// Set file information flags
 	//
 	// Used to indicate which values in the file information object are valid and should be used to
-	// set
-	// the file information.
+	// set the file information.
 
 	private int m_setFlags;
 
@@ -326,7 +330,7 @@ public class FileInfo {
 	 * @return boolean
 	 */
 	public final boolean hasDeleteOnClose() {
-		return m_deleteOnClose;
+		return (m_flags & FlagDeleteOnClose) != 0 ? true : false;
 	}
 
 	/**
@@ -542,7 +546,7 @@ public class FileInfo {
    * @return boolean
    */
   public boolean isPseudoFile() {
-      return false;
+      return (m_flags & FlagPseudoFile) != 0 ? true : false;
   }
   
 	/**
@@ -664,6 +668,7 @@ public class FileInfo {
         else
             setFileType(FileType.RegularFile);
 		
+		m_flags = finfo.getFileFlags();
 	}
 
 	/**
@@ -717,9 +722,24 @@ public class FileInfo {
 	 * @param del boolean
 	 */
 	public final void setDeleteOnClose(boolean del) {
-		m_deleteOnClose = del;
+		if ( del)
+			m_flags = m_flags | FlagDeleteOnClose;
+		else
+			m_flags = m_flags  & ~FlagDeleteOnClose;
 	}
 
+	/**
+	 * Set/clear the pseudo file flag
+	 * 
+	 * @param pseudo boolean
+	 */
+	public final void setPseudoFile(boolean pseudo) {
+		if ( pseudo)
+			m_flags = m_flags | FlagPseudoFile;
+		else
+			m_flags = m_flags  & ~FlagPseudoFile;
+	}
+	
 	/**
 	 * Set the file attributes.
 	 * 
@@ -907,6 +927,15 @@ public class FileInfo {
 	}
 
 	/**
+	 * Return the file flags
+	 * 
+	 * @return int
+	 */
+	protected final int getFileFlags() {
+		return m_flags;
+	}
+	
+	/**
 	 * Return the setter flags as a string
 	 * 
 	 *  @return String
@@ -943,19 +972,6 @@ public class FileInfo {
 		return str.toString();
 	}
 
-/**
-	public static final int SetFileSize 		= 0x0001;
-	public static final int SetAllocationSize 	= 0x0002;
-	public static final int SetAttributes 		= 0x0004;
-	public static final int SetModifyDate 		= 0x0008;
-	public static final int SetCreationDate 	= 0x0010;
-	public static final int SetAccessDate 		= 0x0020;
-	public static final int SetChangeDate 		= 0x0040;
-	public static final int SetGid 				= 0x0080;
-	public static final int SetUid 				= 0x0100;
-	public static final int SetMode 			= 0x0200;
-	public static final int SetDeleteOnClose 	= 0x0400;
-**/
 	/**
 	 * Return the file information as a string.
 	 * 
@@ -1025,6 +1041,11 @@ public class FileInfo {
 			str.append(")");
 		}
 
+		// Check if this is a pseudo file
+		
+		if ( isPseudoFile())
+			str.append( ", Pseudo");
+		
 		// Return the file information string
 
 		return str.toString();

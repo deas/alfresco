@@ -37,14 +37,7 @@ public class PseudoFileInfo extends FileInfo {
      */
     public PseudoFileInfo(String fname, long fsize, int fattr) {
         super( fname, fsize, fattr);
-    }
-    
-    /**
-     * Indicate that this is a pseudo file
-     * 
-     * @return boolean
-     */
-    public boolean isPseudoFile() {
-        return true;
+        
+        setPseudoFile( true);
     }
 }

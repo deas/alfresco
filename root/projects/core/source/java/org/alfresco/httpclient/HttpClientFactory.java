@@ -220,7 +220,7 @@ public class HttpClientFactory
 		HttpClient httpClient = new HttpClient(connectionManager);
         HttpClientParams params = httpClient.getParams();
         params.setBooleanParameter(HttpConnectionParams.TCP_NODELAY, true);
-        params.setBooleanParameter(HttpConnectionParams.STALE_CONNECTION_CHECK, false);
+        params.setBooleanParameter(HttpConnectionParams.STALE_CONNECTION_CHECK, true);
         HttpConnectionManagerParams connectionManagerParams = httpClient.getHttpConnectionManager().getParams();
         connectionManagerParams.setMaxTotalConnections(maxTotalConnections);
         connectionManagerParams.setDefaultMaxConnectionsPerHost(maxHostConnections);

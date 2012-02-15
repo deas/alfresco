@@ -2250,6 +2250,22 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 // LOWER AND UPPER
                 if (luceneFunction != LuceneFunction.FIELD)
                 {
+                    if(luceneFunction == LuceneFunction.LOWER)
+                    {
+                        if( (false == part1.toLowerCase().equals(part1)) || (false == part2.toLowerCase().equals(part2)) )
+                        {
+                            return createNoMatchQuery();
+                        }
+                    }
+                    
+                    if(luceneFunction == LuceneFunction.UPPER)
+                    {
+                        if( (false == part1.toUpperCase().equals(part1)) || (false == part2.toUpperCase().equals(part2)) )
+                        {
+                            return createNoMatchQuery();
+                        }
+                    }
+                    
                     if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
                     {
                         BooleanQuery booleanQuery = new BooleanQuery();
@@ -4793,6 +4809,21 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             if ((tokenisationMode == IndexTokenisationMode.FALSE) || (tokenisationMode == IndexTokenisationMode.BOTH))
             {
+                if(luceneFunction == LuceneFunction.LOWER)
+                {
+                    if(false == queryText.toLowerCase().equals(queryText))
+                    {
+                        return createNoMatchQuery();
+                    }
+                }
+                if(luceneFunction == LuceneFunction.UPPER)
+                {
+                    if(false == queryText.toUpperCase().equals(queryText))
+                    {
+                        return createNoMatchQuery();
+                    }
+                }
+                
                 return functionQueryBuilder(expandedFieldName, propertyQName, propertyDef, tokenisationMode, queryText, luceneFunction);
             }
         }

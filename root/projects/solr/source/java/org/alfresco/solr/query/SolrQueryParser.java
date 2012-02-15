@@ -261,16 +261,25 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
     protected void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode)
     {
-
-        StringBuilder builder = new StringBuilder(queryText.length() + 10);
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), builder.toString()));
+        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), getFixedFunctionQueryText(queryText, locale, tokenisationMode, IndexTokenisationMode.FALSE)));
         booleanQuery.add(subQuery, Occur.SHOULD);
 
         if (booleanQuery.getClauses().length == 0)
         {
             booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
         }
+    }
+    
+    private String getFixedFunctionQueryText(String queryText, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
+    {
+        StringBuilder builder = new StringBuilder(queryText.length() + 10);
+        if (locale.toString().length() > 0)
+        {
+            builder.append("{").append(locale.toString()).append("}");
+        }
+         builder.append(queryText);
+
+        return builder.toString();
     }
 
     private String getFieldName(String baseFieldName, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
@@ -328,7 +337,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         builder.append("\u0000").append(locale.toString()).append("\u0000").append(upper);
         String last = getToken(field, builder.toString(), AnalysisMode.IDENTIFIER);
 
-        Query query = new CaseInsensitiveFieldRangeQuery(expandedFieldName, first, last, includeLower, includeUpper);
+        Query query = new CaseInsensitiveFieldRangeQuery(field, first, last, includeLower, includeUpper);
         booleanQuery.add(query, Occur.SHOULD);
 
     }

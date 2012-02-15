@@ -531,7 +531,7 @@
                      Dom.setAttribute(startTimeEl, "value", formatDate(startDate, "HH:MM"));
                      Dom.setAttribute(endTimeEl, "value", formatDate(endDate, "HH:MM"));
                   }
-                  
+
                   // hide mini-cal
                   EditDialog.dialog.hideEvent.subscribe(function()
                   {

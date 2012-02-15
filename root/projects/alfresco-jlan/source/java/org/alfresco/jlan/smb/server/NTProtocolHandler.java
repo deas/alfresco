@@ -5789,6 +5789,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			int fileSts = disk.fileExists(m_sess, conn, params.getFullPath());
 			
 			// Check if the path is to a folder, make sure the Directory flag is set in the open parameters for oplock checking
+			
 			if ( params.isDirectory() == false && fileSts == FileStatus.DirectoryExists) {
 			    params.setCreateOption(WinNT.CreateDirectory);
 			}
@@ -5804,10 +5805,19 @@ public class NTProtocolHandler extends CoreProtocolHandler {
                 if ( finfo != null && finfo.isPseudoFile()) {
                     createDisp = FileAction.NTOpen;
 
+                    // Clear any oplock request for pseudo files
+                    
+                    if ( params.requestBatchOpLock() || params.requestExclusiveOpLock()) {
+                    	if ( params.requestExtendedResponse())
+                    		params.setNTCreateFlags( WinNT.ExtendedResponse);
+                    	else
+                    		params.setNTCreateFlags( 0);
+                    }
+                    
 	                // Debug
 	
 	                if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
-	                    m_sess.debugPrintln("Converted create to open for pseudo file " + params.getFullPath());
+	                    m_sess.debugPrintln("Converted create to open for pseudo file " + params);
                 }
             }
 
@@ -8004,7 +8014,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					// Store the oplock via the oplock manager, check if the oplock grant was allowed
 					
 					if ( oplockMgr.grantOpLock( params.getPath(), oplock, netFile)) {
-					
+
 						// Save the oplock details with the opened file
 						
 						netFile.setOpLock( oplock);

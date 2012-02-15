@@ -35,6 +35,7 @@
       parseISO8601 = fc.parseISO8601,
       addDays = fc.addDays,
       applyAll = fc.applyAll,
+      $html = Alfresco.util.encodeHTML,
       fromISO8601 = Alfresco.util.fromISO8601,
       toISO8601 = Alfresco.util.toISO8601,
       dateFormat = Alfresco.thirdparty.dateFormat,
@@ -282,14 +283,18 @@
                            $.each(filteredEvents, function(i, event)
                            {
                               // Map Alfresco Event object to FullCalendar Event Object (ensuring that existing properties are still present)
+                              // Parse user input strings for XSS
                               parsedEvents.push(YAHOO.lang.augmentObject(
                               {
-                                 id: event.name,
+                                 id: $html(event.name),
                                  start: parseISO8601(event.startAt.iso8601),
                                  end: parseISO8601(event.endAt.iso8601),
                                  allDay: (event.allday === "true") ? true : false,
-                                 location: event.where,
-                                 uri: "/calendar/event/" + me.options.siteId + "/" + event.name + "?date=" + event.startAt.iso8601.split("T")[0]
+                                 location: $html(event.where),
+                                 uri: "/calendar/event/" + me.options.siteId + "/" + $html(event.name) + "?date=" + event.startAt.iso8601.split("T")[0]
+                                 description: $html(event.description),
+                                 title: $html(event.title),
+                                 where: $html(event.where)
                               }, event));
                            });
                         }

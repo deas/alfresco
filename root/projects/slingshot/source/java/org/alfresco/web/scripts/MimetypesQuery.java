@@ -20,6 +20,7 @@ package org.alfresco.web.scripts;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -90,9 +91,16 @@ public class MimetypesQuery extends BaseProcessorExtension implements Serializab
      */
     public Map<String,String> getMimetypesByDisplay()
     {
-        Map<String, String> types = new TreeMap<String, String>();
-        Map<String, Mimetype> mimetypes = getMimetypes();
+        // Sorted by key, case insensitive
+        Map<String, String> types = new TreeMap<String, String>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                return o1.toLowerCase().compareTo(o2.toLowerCase());
+            }
+        });
         
+        Map<String, Mimetype> mimetypes = getMimetypes();
         for (Mimetype mimetype : mimetypes.values())
         {
             types.put(mimetype.getDescription(), mimetype.getMimetype());

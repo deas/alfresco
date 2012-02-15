@@ -2548,8 +2548,10 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
 
 				//	Remove the path from the cache
 
-				if (finfo != null)
+				if (finfo != null) {
 					details.getFileIdCache().deletePath(finfo.getFileId());
+					sess.getFileCache().removeFile( finfo.getFileId());
+				}
 
 				//	Get the post-operation details for the directory
 				

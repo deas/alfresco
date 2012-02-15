@@ -32,6 +32,7 @@
    var Dom = YAHOO.util.Dom,
       Event = YAHOO.util.Event,
       Sel = YAHOO.util.Selector,
+      $html = Alfresco.util.encodeHTML,
       fromISO8601 = Alfresco.util.fromISO8601,
       toISO8601 = Alfresco.util.toISO8601,
       dateFormat = Alfresco.thirdparty.dateFormat;
@@ -294,8 +295,9 @@
             var ev = data[i];
 
             // Escape User Input Strings to avoid XSS
-            ev.title = Alfresco.util.encodeHTML(ev.title);
-            ev.where = Alfresco.util.encodeHTML(ev.where);
+            ev.title = $html(ev.title);
+            ev.where = $html(ev.where);
+            ev.description = $html(ev.description);
 
             if (ev.site == site)
             {
@@ -1016,7 +1018,7 @@
       {
          this.getEvents();
          YAHOO.Bubbling.fire("eventDeletedAfter");
-         this.msg('message.deleted.success',this.name);
+         this.msg('message.deleted.success', this.name);
       },
 
       onAfterEventSaved: function CalendarView_onAfterEventSaved(e, args)

@@ -116,7 +116,7 @@
          {
             "id": p_action.id,
             "icon": p_action.icon,
-            "label": Alfresco.util.substituteDotNotation(this.msg(p_action.label), p_record)
+            "label": $html(Alfresco.util.substituteDotNotation(this.msg(p_action.label), p_record))
          };
          
          // Parameter substitution for each action type
@@ -169,6 +169,7 @@
             }
          }
 
+         
          return YAHOO.lang.substitute(actionTypeMarkup[p_action.type], markupParams);
       },
 
