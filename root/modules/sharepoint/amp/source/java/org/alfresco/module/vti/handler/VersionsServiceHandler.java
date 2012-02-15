@@ -25,7 +25,13 @@ import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.version.VersionDoesNotExistException;
 
 /**
- * Interface for versions web service handler
+ * Interface for the Versions web service handler.
+ * 
+ * Note that Versioning in SharePoint and Alfresco will sometimes have
+ *  different semantics. 
+ *  
+ * This interface works with SharePoint versioning, and it's up to the 
+ * implementation to translate (where needed) to Alfresco style versioning. 
  * 
  * @author Dmitry Lazurkin
  */
