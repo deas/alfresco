@@ -18,6 +18,7 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,14 +28,19 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.UserGroupServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.model.UserBean;
+import org.alfresco.query.PagingRequest;
+import org.alfresco.query.PagingResults;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.cmr.security.PersonService.PersonInfo;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.ObjectUtils;
@@ -203,7 +209,6 @@ public class AlfrescoUserGroupServiceHandler implements UserGroupServiceHandler
     /**
      * @see org.alfresco.module.vti.handler.UserGroupServiceHandler#getUserLoginFromEmail(java.lang.String, java.util.List)
      */
-    @SuppressWarnings("deprecation")
     public List<UserBean> getUserLoginFromEmail(String dwsUrl, List<String> emailList)
     {
         if (logger.isDebugEnabled())
@@ -225,24 +230,42 @@ public class AlfrescoUserGroupServiceHandler implements UserGroupServiceHandler
             }
             else
             {
-                boolean personFounded = false;
-
-                for (NodeRef personNodeRef : personService.getAllPeople())
+                // Search for the person by email
+                List<Pair<QName,String>> filter = new ArrayList<Pair<QName,String>>();
+                filter.add(new Pair<QName,String>(
+                        ContentModel.PROP_EMAIL, loginOrEmail
+                ));
+                PagingRequest paging = new PagingRequest(10);
+                
+                // Do the search, case insensitively without sorting
+                PagingResults<PersonInfo> people = personService.getPeople(filter, true, null, paging);
+                
+                // Did we find them?
+                if (people.getPage().size() == 0)
                 {
-                    if (nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL).equals(loginOrEmail))
-                    {
-                        if (logger.isDebugEnabled())
-                            logger.debug("Email '" + loginOrEmail + "' is exist, adding to result.");
-                        result.add(getUserBean(personNodeRef));
-                        personFounded = true;
-                    }
-                }
-
-                if (personFounded == false)
-                {
+                    if (logger.isDebugEnabled())
+                        logger.debug("No person details found for " + loginOrEmail);
+                    
+                    // Fake their details
                     UserBean userBean = new UserBean();
                     userBean.setEmail(loginOrEmail);
                     result.add(userBean);
+                }
+                else
+                {
+                    if (people.getPage().size() > 1)
+                    {
+                        logger.info("Found " + people.getPage().size() + " person details for " +
+                                    "email " + loginOrEmail + ", using only the first");
+                    }
+                    
+                    // Build up the details for them
+                    PersonInfo person = people.getPage().get(0);
+                    result.add(getUserBean(person.getNodeRef()));
+                    
+                    if (logger.isDebugEnabled())
+                        logger.debug("Found user details for " + loginOrEmail + " as " + person.getFirstName() + 
+                                     " " + person.getLastName() + " at " + person.getNodeRef());
                 }
             }
         }
