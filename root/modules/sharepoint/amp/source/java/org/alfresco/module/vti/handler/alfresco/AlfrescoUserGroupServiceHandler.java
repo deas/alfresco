@@ -18,36 +18,71 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.vti.handler.UserGroupServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoUserGroupServiceHandler;
-import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.metadata.model.UserBean;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.ObjectUtils;
 
 /**
- * Alfresco implementation of UserGroupServiceHandler and AbstractAlfrescoUserGroupServiceHandler
+ * Alfresco implementation of UserGroupServiceHandler
  * 
  * @author PavelYur
  */
-public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupServiceHandler
+public class AlfrescoUserGroupServiceHandler implements UserGroupServiceHandler
 {
+    private static Log logger = LogFactory.getLog(AlfrescoUserGroupServiceHandler.class);
 
+    private NodeService nodeService;
     private SiteService siteService;
-
+    private PersonService personService;
+    private AuthorityService authorityService;
     private TransactionService transactionService;
 
-    private static Log logger = LogFactory.getLog(AlfrescoUserGroupServiceHandler.class);
+    /**
+     * Set the node service
+     * 
+     * @param nodeService the node service to set ({@link NodeService})
+     */
+    public void setNodeService(NodeService nodeService)
+    {
+        this.nodeService = nodeService;
+    }
+
+    /**
+     * Set the person service
+     * 
+     * @param personService the person service to set ({@link PersonService})
+     */
+    public void setPersonService(PersonService personService)
+    {
+        this.personService = personService;
+    }
+
+    /**
+     * Set the authority service
+     * 
+     * @param authorityService the authority service to set ({@link AuthorityService})
+     */
+    public void setAuthorityService(AuthorityService authorityService)
+    {
+        this.authorityService = authorityService;
+    }
 
     /**
      * Set transaction service
@@ -68,6 +103,7 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
     {
         this.siteService = siteService;
     }
+    
 
     /**
      * @see org.alfresco.module.vti.handler.UserGroupServiceHandler#addUserCollectionToRole(java.lang.String, java.lang.String, java.util.List)
@@ -162,5 +198,80 @@ public class AlfrescoUserGroupServiceHandler extends AbstractAlfrescoUserGroupSe
         }
         
         return isMember;
+    }
+
+    /**
+     * @see org.alfresco.module.vti.handler.UserGroupServiceHandler#getUserLoginFromEmail(java.lang.String, java.util.List)
+     */
+    @SuppressWarnings("deprecation")
+    public List<UserBean> getUserLoginFromEmail(String dwsUrl, List<String> emailList)
+    {
+        if (logger.isDebugEnabled())
+            logger.debug("Method with name 'getUserLoginFromEmail' is started.");
+
+        List<UserBean> result = new LinkedList<UserBean>();
+
+        for (String loginOrEmail : emailList)
+        {
+            if (logger.isDebugEnabled())
+                logger.debug("Checking existence of login or email '" + loginOrEmail + "'.");
+
+            if (personService.personExists(loginOrEmail))
+            {
+                if (logger.isDebugEnabled())
+                    logger.debug("Login '" + loginOrEmail + "' is exist, adding to result.");
+
+                result.add(getUserBean(personService.getPerson(loginOrEmail)));
+            }
+            else
+            {
+                boolean personFounded = false;
+
+                for (NodeRef personNodeRef : personService.getAllPeople())
+                {
+                    if (nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL).equals(loginOrEmail))
+                    {
+                        if (logger.isDebugEnabled())
+                            logger.debug("Email '" + loginOrEmail + "' is exist, adding to result.");
+                        result.add(getUserBean(personNodeRef));
+                        personFounded = true;
+                    }
+                }
+
+                if (personFounded == false)
+                {
+                    UserBean userBean = new UserBean();
+                    userBean.setEmail(loginOrEmail);
+                    result.add(userBean);
+                }
+            }
+        }
+        if (logger.isDebugEnabled())
+            logger.debug("Method with name 'getUserLoginFromEmail' is finished.");
+
+        return result;
+    }
+
+    /**
+     * Returns user bean for person node reference
+     * 
+     * @param personNodeRef the person node reference ({@link NodeRef})
+     * @return UserBean
+     */
+    protected UserBean getUserBean(NodeRef personNodeRef)
+    {
+        UserBean userBean = new UserBean();
+
+        String userName = (String)nodeService.getProperty(personNodeRef, ContentModel.PROP_USERNAME);
+
+        String firstName = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_FIRSTNAME));
+        String lastName = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_LASTNAME));
+        String email = ObjectUtils.getDisplayString(nodeService.getProperty(personNodeRef, ContentModel.PROP_EMAIL));
+
+        userBean.setDisplayName(firstName + " " + lastName);
+        userBean.setEmail(email);
+        userBean.setLoginName("ALFRESCO\\" + userName);
+
+        return userBean;
     }
 }
