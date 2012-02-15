@@ -867,7 +867,7 @@
     </bean>
 
     <bean id="getListCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetListCollectionEndpoint">
-        <constructor-arg ref="listsServiceHandler"/>
+        <constructor-arg ref="listServiceHandler"/>
         <property name="name">
             <value>GetListCollection</value>
         </property>
@@ -888,7 +888,7 @@
     </bean>
     
     <bean id="getListEndpoint" class="org.alfresco.module.vti.web.ws.GetListEndpoint">
-        <constructor-arg ref="listsServiceHandler"/>
+        <constructor-arg ref="listServiceHandler"/>
         <property name="name">
             <value>GetList</value>
         </property>

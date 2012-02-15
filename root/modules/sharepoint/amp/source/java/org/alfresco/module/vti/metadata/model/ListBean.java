@@ -24,6 +24,8 @@ import java.io.Serializable;
  * <p>Represent the list of the Sharepoint site.</p>
  * 
  * @author PavelYur
+ * 
+ * @deprecated Should be replaced with the more fully-featured {@link ListInfoBean}
  */
 public class ListBean implements Serializable
 {

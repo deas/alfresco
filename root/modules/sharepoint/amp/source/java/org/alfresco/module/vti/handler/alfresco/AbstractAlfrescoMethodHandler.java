@@ -33,8 +33,6 @@ import javax.transaction.UserTransaction;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.module.vti.handler.alfresco.AlfrescoListServiceHandler;
-import org.alfresco.module.vti.handler.alfresco.AlfrescoListsServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.AlfrescoMethodHandler;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfo;
 import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;

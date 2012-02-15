@@ -126,13 +126,6 @@
         <property name="authenticationService" ref="AuthenticationService" />
     </bean>    
 
-    <bean id="listsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoListsServiceHandler">
-        <property name="fileFolderService" ref="FileFolderService"/>
-        <property name="nodeService" ref="NodeService"/>
-        <property name="siteService" ref="SiteService"/>
-        <property name="transactionService" ref="transactionService"/>
-    </bean>
-
     <bean id="vtiHandlerTarget" class="org.alfresco.module.vti.handler.alfresco.AlfrescoMethodHandler">
         <property name="nodeService" ref="NodeService" />
         <property name="fileFolderService" ref="FileFolderService" />

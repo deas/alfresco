@@ -29,7 +29,6 @@ import org.alfresco.service.cmr.repository.NodeRef;
  * <p>Represents the Sharepoint List with its meta-information.</p>
  * 
  * @author AndreyAk
- *
  */
 public class ListInfoBean implements Serializable
 {

@@ -21,7 +21,7 @@ package org.alfresco.module.vti.web.ws;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.module.vti.handler.ListsServiceHandler;
+import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.metadata.model.ListBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
     private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
 
     // handler that provides methods for operating with documents and folders
-    private ListsServiceHandler handler;    
+    private ListServiceHandler handler;    
 
     // xml namespace prefix
     private static String prefix = "lists";
@@ -48,7 +48,7 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
      *
      * @param handler that provides methods for operating with documents and folders
      */
-    public GetListCollectionEndpoint(ListsServiceHandler handler)
+    public GetListCollectionEndpoint(ListServiceHandler handler)
     {
         this.handler = handler;
     }

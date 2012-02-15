@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.module.vti.handler.ListsServiceHandler;
+import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.model.ListBean;
 import org.apache.commons.logging.Log;
@@ -48,8 +48,8 @@ public class GetListEndpoint extends AbstractEndpoint
 {
     private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
 
-    // handler that provides methods for operating with documents and folders
-    private ListsServiceHandler handler;    
+    // handler that provides methods for operating with lists
+    private ListServiceHandler handler;    
 
     // xml namespace prefix
     private static String prefix = "lists";
@@ -59,9 +59,9 @@ public class GetListEndpoint extends AbstractEndpoint
     /**
      * constructor
      *
-     * @param handler that provides methods for operating with documents and folders
+     * @param handler that provides methods for operating with lists
      */
-    public GetListEndpoint(ListsServiceHandler handler)
+    public GetListEndpoint(ListServiceHandler handler)
     {
         this.handler = handler;
     }
