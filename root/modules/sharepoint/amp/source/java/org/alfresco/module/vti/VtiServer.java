@@ -50,6 +50,7 @@ public class VtiServer extends AbstractLifecycleBean
     private Connector connector;
     private HttpServlet servlet;
     private Filter filter;
+    private String sessionCookieName;
     private HashSessionIdManager hashSessionIdManager;
     
     /**
@@ -91,6 +92,18 @@ public class VtiServer extends AbstractLifecycleBean
     {
 		this.hashSessionIdManager = hashSessionIdManager;
 	}
+    
+    /**
+     * Sets the name of the cookie to be used for tracking sessions,
+     *  typically used just on Debug / Information pages.
+     * 
+     * This should be different to the session cookie name used
+     *  in the main Alfresco application.
+     */
+    public void setSessionCookieName(String sessionCookieName)
+    {
+         this.sessionCookieName = sessionCookieName;
+    }
 
 
     /**
@@ -132,6 +145,8 @@ public class VtiServer extends AbstractLifecycleBean
       Context context = new Context(server, "/", Context.SESSIONS);
       context.addServlet(new ServletHolder(servlet), "/*");
       context.addFilter(new FilterHolder(filter), "/*", 1);
+      
+      context.getSessionHandler().getSessionManager().setSessionCookie(sessionCookieName);
       
       try 
       {

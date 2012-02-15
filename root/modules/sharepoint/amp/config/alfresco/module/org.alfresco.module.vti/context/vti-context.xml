@@ -31,15 +31,18 @@
         <property name="filter">
             <ref bean="vtiFilter"/>
         </property>
-		<property name="hashSessionIdManager">
-			<ref bean="hashSessionIdManager"/>
-		</property>
+	     <property name="hashSessionIdManager">
+            <ref bean="hashSessionIdManager"/>
+        </property>
+    	  <property name="sessionCookieName">
+            <value>${vti.server.sessionCookieName}</value>
+        </property>
     </bean>
 
     <bean id="hashSessionIdManager" class="org.mortbay.jetty.servlet.HashSessionIdManager">
-    	<property name="workerName">
-             <value>${vti.server.sessionIdManager.workerName}</value>
-        </property>
+    	 <property name="workerName">
+          <value>${vti.server.sessionIdManager.workerName}</value>
+       </property>
     </bean>
 
     <!-- Use this Connector for plain text (non-SSL) communications -->
