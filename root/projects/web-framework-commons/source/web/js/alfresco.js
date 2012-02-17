@@ -5483,6 +5483,21 @@ Alfresco.util.Ajax = function()
                {
                   // Encode the dataObj and put it in the url
                   c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + this.jsonToParamString(c.dataObj, true);
+                  // Fix URL url if we have to
+                  if (c.url.lastIndexOf("&") > c.url.indexOf("#")) { // At least two params and a hash
+                	  var tmp = c.url.split(/[?&]/);
+                	  var newUrl = tmp.shift() + "?";
+                	  var hashIdx;
+                	  for (i = 0; i < tmp.length; i++) {
+                		  if (tmp[i].indexOf("#") == -1) {
+                			  newUrl += "&" + tmp[i]; 
+                		  } else {
+                			  hashIdx = i;
+                		  }
+                	  }
+                	  newUrl += "&" + tmp[hashIdx];
+                	  c.url = newUrl; 
+                  }
                }
                else
                {
