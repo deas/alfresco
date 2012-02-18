@@ -328,9 +328,19 @@
             <substitutionList>
                 <substitution>
                     <pattern>&lt;Context&gt;</pattern>
-                    <value>&lt;Context&gt;
+                    <value>&lt;Context useHttpOnly="false"&gt;
 &lt;Valve className="org.apache.catalina.authenticator.SSLAuthenticator" securePagesWithPragma="false" /&gt;
 </value>
+                </substitution>
+            </substitutionList>
+        </substitute>
+        <substitute>
+            <files>${application_server_conf_directory}/server.xml</files>
+            <type>exact</type>
+            <substitutionList>
+                <substitution>
+                    <pattern>&lt;Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" /&gt;</pattern>
+                    <value>&lt;!--Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" /--&gt;</value>
                 </substitution>
             </substitutionList>
         </substitute>

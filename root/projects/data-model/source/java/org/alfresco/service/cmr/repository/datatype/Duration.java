@@ -791,6 +791,75 @@ public class Duration implements Comparable, Serializable
 
       return buffer.toString();
    }
+   
+   public String largestComponentformattedString()
+   {
+       StringBuffer buffer = new StringBuffer(128);
+       if (!m_positive)
+       {
+           buffer.append("-");
+       }
+       
+       if (m_years != 0)
+       {
+           if (buffer.length() > 0)
+               buffer.append(" ");
+           buffer.append(m_years);
+           buffer.append((m_years == 1) ? " Year" : " Years");
+           return buffer.toString();
+       }
+       
+       if (m_months != 0)
+       {
+           if (buffer.length() > 0)
+               buffer.append(" ");
+           buffer.append(m_months);
+           buffer.append((m_months == 1) ? " Month" : " Months");
+           return buffer.toString();
+       }
+       
+       if (m_days != 0)
+       {
+           if (buffer.length() > 0)
+               buffer.append(" ");
+           buffer.append(m_days);
+           buffer.append((m_days == 1) ? " Day" : " Days");
+           return buffer.toString();
+       }
+
+       if (m_hours != 0)
+       {
+           if (buffer.length() > 0)
+               buffer.append(" ");
+           buffer.append(m_hours);
+           buffer.append((m_hours == 1) ? " Hour" : " Hours");
+           return buffer.toString();
+       }
+       
+       if (m_mins != 0)
+       {
+           if (buffer.length() > 0)
+               buffer.append(" ");
+           buffer.append(m_mins);
+           buffer.append((m_mins == 1) ? " Minute" : " Minutes");
+           return buffer.toString();
+       }
+
+
+       if (buffer.length() > 0)
+           buffer.append(" ");
+       BigDecimal a = new BigDecimal(m_seconds);
+       BigDecimal b = new BigDecimal(m_nanos);
+       a = a.add(b.divide(new BigDecimal(1000000000), 9, BigDecimal.ROUND_HALF_EVEN));
+       NumberFormat nf = NumberFormat.getInstance();
+       String formatted = nf.format(a);
+       buffer.append(formatted);
+       buffer.append(formatted.equals("1") ? " Second" : " Seconds");
+       return buffer.toString();
+
+
+   }
+   
 
    /**
     * Format in human readable form

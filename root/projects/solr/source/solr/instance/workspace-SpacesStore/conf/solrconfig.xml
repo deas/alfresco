@@ -521,7 +521,7 @@
 <!-- remove the <lst name="master"> section if this is just a slave -->
 <!-- remove  the <lst name="slave"> section if this is just a master -->
 
-<requestHandler name="/replication" class="solr.ReplicationHandler" >
+<requestHandler name="/replication" class="org.alfresco.solr.AlfrescoReplicationHandler" >
     <lst name="master">
       <str name="confFiles">schema.xml,stopwords.txt</str>
       <str name="backupAfter">startup</str>

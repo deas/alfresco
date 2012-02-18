@@ -12,24 +12,9 @@ function main()
       var conf = new XML(config.script);
       uri = getValidRSSUri(conf.feed[0].toString());
    }
-
-   var connector = remote.connect("http");
    model.uri = uri;
    model.limit = args.limit || 100;
    model.target = args.target || "_self";
-
-   var feed = getRSSFeed(uri);
-   if (feed.error)
-   {
-      model.title = msg.get("title.error." + feed.error);
-      model.error = true;
-      model.items = [];
-   }
-   else
-   {
-      model.title = feed.title;
-      model.items = feed.items;
-   }
 
    var userIsSiteManager = true;
    if (page.url.templateArgs.site)

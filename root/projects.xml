@@ -384,7 +384,7 @@
          <fileset dir="${dir.project.repository.dist}" 
                   includes="${file.name.jar.repository}" />
          <fileset dir="${dir.project.core.src.java}" 
-                  includes="**/*log4j.properties" />
+                  includes="**/*log4j.properties,logging.properties" />
       </copy>
       <!-- delete target one-jar -->
       <delete file="${dir.project.repository.dist}/${file.name.jar.onejar}" />
@@ -1827,7 +1827,7 @@
       <!-- add config files to WEB-INF/classes -->
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes">
          <fileset dir="${dir.project.core.src.java}" 
-                  includes="log4j.properties" />
+                  includes="log4j.properties,logging.properties" />
          <fileset dir="${dir.project.datamodel.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}"
@@ -1917,7 +1917,7 @@
       </copy>
       <delete verbose="true">
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes" 
-                  includes="log4j.properties" />
+                  includes="log4j.properties,logging.properties" />
       </delete>
       <delete verbose="true">
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/lib" 

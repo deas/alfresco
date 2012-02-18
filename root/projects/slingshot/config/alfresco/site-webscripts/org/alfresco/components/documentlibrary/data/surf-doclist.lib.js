@@ -111,6 +111,11 @@ var DocList =
          metadataTemplate: false
       }, options || {});
 
+      doclist.metadata.parent = doclist.metadata.parent || {};
+      doclist.metadata.parent.permissions = doclist.metadata.parent.permissions || {};
+      doclist.metadata.parent.permissions.user = doclist.metadata.parent.permissions.user || {};
+      doclist.metadata.parent.permissions.roles = doclist.metadata.parent.permissions.roles || [];
+
       /**
        * Process a repository item (representing a node and associated metadata)
        */
@@ -119,7 +124,10 @@ var DocList =
          var permissionCheck, evaluatorQualified, index, evaluator, i;
 
          node = item.node;
-         
+         node.permissions = node.permissions || {};
+         node.permissions.user = node.permissions.user || {};
+         node.permissions.roles = node.permissions.roles || [];
+
          // If this node shares a common parent, then copy a reference to the common parent into this item
          if (!item.parent)
          {

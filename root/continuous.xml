@@ -1256,7 +1256,7 @@
 <!--         <fileset dir="${dir.project.webclient.config}" 
                   excludes="**/extension/*" /> -->
          <fileset dir="${dir.project.core.src.java}" 
-                  includes="log4j.properties" />
+                  includes="log4j.properties,logging.properties" />
       </copy>
       <delete>
          <fileset dir="${dir.continuous.assemble.sdk}/config/alfresco/messages">

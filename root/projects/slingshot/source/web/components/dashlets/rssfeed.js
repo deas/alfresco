@@ -83,8 +83,33 @@
           * @type string
           * @default "all"
           */
-         limit: "all"
+         limit: "all",
+         
+         /**
+          * The target for the RSS link to open
+          * 
+          * @property target
+          * @type string
+          * @default "_self"
+          */
+         target: "_self"
       },  
+      
+      /**
+       * The DOM element containing the feed title.
+       * 
+       * @property titleELement
+       * @type element
+       */
+      titleElement: null,
+      
+      /**
+       * The DOM element containing the feed list.
+       * 
+       * @property titleELement
+       * @type element
+       */
+      feedElement: null,
       
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -94,11 +119,56 @@
        */
       onReady: function RF_onReady()
       {
+         var _this = this;
+         
+         // Get the DOM elements for the feed title and item list...
+         this.titleElement = Dom.get(this.id + this.options.titleElSuffix);
+         this.feedElement = Dom.get(this.id + this.options.targetElSuffix);
+         
+         // Separate the protocol from the URI to ensure that WebScript request can be processed...
+         // (it is not possible to use the entire URL as a REST token)...
+         var uri = this.options.feedURL;
+         var protocol = "http://";
+         var protocolEndsAt = this.options.feedURL.indexOf("://");
+         if (protocolEndsAt != -1)
+         {
+            protocol = this.options.feedURL.substring(0, protocolEndsAt);
+            uri = this.options.feedURL.substring(protocolEndsAt + 3);
+         }
+         
+         // Request the RSS feed...
+         Alfresco.util.Ajax.request(
+         {
+            url: Alfresco.constants.URL_CONTEXT + "service/components/dashlets/async-rssfeed/protocol/" + protocol + "/feed-url/" + uri + "/limit/" + this.options.limit + "/target/" + this.options.target,
+            method: Alfresco.util.Ajax.GET,
+            requestContentType: Alfresco.util.Ajax.JSON,
+            successCallback:
+            {
+               fn: function(response)
+               {
+                  // Update the dashlet with the RSS title and items...
+                  var json = Alfresco.util.parseJSON(response.serverResponse.responseText);
+                  this.feedElement.innerHTML = json.html;
+                  this.titleElement.innerHTML = json.title;
+               },
+               scope: _this
+            },
+            failureCallback: 
+            {
+               fn: function(response)
+               {
+                  this.titleElement.innerHTML = this.msg("title.error.unavailable");
+                  this.feedElement.innerHTML = this.msg("label.noItems");
+               },
+               scope: _this
+            }
+         });
+         
          // Add click handler to config feed link that will be visible if user is site manager.
          var configFeedLink = Dom.get(this.id + "-configFeed-link");
          if (configFeedLink)
          {
-            Event.addListener(configFeedLink, "click", this.onConfigFeedClick, this, true);            
+            Event.addListener(configFeedLink, "click", this.onConfigFeedClick, this, true);
          }
       },
 

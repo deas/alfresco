@@ -154,10 +154,14 @@ public class CoreTracker implements CloseHook
     private SOLRAPIClient client;
 
     private volatile long lastIndexedTxCommitTime = 0;
+    
+    private volatile long lastIndexedTxId = 0;
 
     private volatile long lastIndexedChangeSetCommitTime = 0;
 
-    private volatile long lastTxOnServer = 0;
+    private volatile long lastTxCommitTimeOnServer = 0;
+    
+    private volatile long lastTxIdOnServer = 0;
 
     private volatile long lastIndexedTxIdBeforeHoles = -1;
 
@@ -248,20 +252,38 @@ public class CoreTracker implements CloseHook
     private ConcurrentLinkedQueue<Long> aclsToIndex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
+    
+    private TrackerStats trackerStats = new TrackerStats();
 
     public long getLastIndexedCommitTime()
     {
         return lastIndexedTxCommitTime;
     }
 
+    public long getLastIndexedId()
+    {
+        return lastIndexedTxId;
+    }
+
+    
     public boolean isRunning()
     {
         return running;
     }
 
-    public long getLastTxOnServer()
+    public long getLastTxCommitTimeOnServer()
     {
-        return lastTxOnServer;
+        return lastTxCommitTimeOnServer;
+    }
+    
+    public long getLastTxIdOnServer()
+    {
+        return lastTxIdOnServer;
+    }
+    
+    public TrackerStats getTrackerStats()
+    {
+        return trackerStats;
     }
 
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
@@ -1131,7 +1153,13 @@ public class CoreTracker implements CloseHook
         boolean indexing = false;
         boolean aclIndexing = false;
 
+        long start;
+        long end;
+        start = System.nanoTime();
         trackModels();
+        end =  System.nanoTime();
+        
+        trackerStats.addModelTime(end-start);
 
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
@@ -1144,6 +1172,11 @@ public class CoreTracker implements CloseHook
             if (lastIndexedTxCommitTime == 0)
             {
                 lastIndexedTxCommitTime = getLastTransactionCommitTime(reader);
+            }
+            
+            if (lastIndexedTxId == 0)
+            {
+                lastIndexedTxId = getLastTransactionId(reader);
             }
 
             if (lastIndexedChangeSetCommitTime == 0)
@@ -1310,6 +1343,8 @@ public class CoreTracker implements CloseHook
                         }
                         else
                         {
+                            start = System.nanoTime();
+                            
                             List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
                             for (Acl acl : acls)
                             {
@@ -1319,6 +1354,9 @@ public class CoreTracker implements CloseHook
 
                             indexAclTransaction(changeSet, true);
                             changeSetsFound.add(changeSet);
+                            
+                            end = System.nanoTime();
+                            trackerStats.addAclTxTime(end-start);
                         }
                     }
                 }
@@ -1344,7 +1382,13 @@ public class CoreTracker implements CloseHook
                 Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
                 if(maxTxnCommitTime != null)
                 {
-                    lastTxOnServer = transactions.getMaxTxnCommitTime();
+                    lastTxCommitTimeOnServer = transactions.getMaxTxnCommitTime();
+                }
+                
+                Long maxTxnId = transactions.getMaxTxnId();
+                if(maxTxnId != null)
+                {
+                     lastTxIdOnServer = transactions.getMaxTxnId();
                 }
 
                 log.info("Scanning transactions ...");
@@ -1393,6 +1437,8 @@ public class CoreTracker implements CloseHook
                         }
                         else
                         {
+                            start = System.nanoTime();
+                            
                             GetNodesParameters gnp = new GetNodesParameters();
                             ArrayList<Long> txs = new ArrayList<Long>();
                             txs.add(info.getId());
@@ -1414,10 +1460,15 @@ public class CoreTracker implements CloseHook
                             // Index the transaction doc after the node - if this is not found then a reindex will be
                             // done.
                             indexTransaction(info, true);
+                            
+                            end = System.nanoTime();
+                            trackerStats.addTxTime(end-start);
+                            trackerStats.addTxDocs(nodes.size());
 
                             if (info.getCommitTimeMs() > lastIndexedTxCommitTime)
                             {
                                 lastIndexedTxCommitTime = info.getCommitTimeMs();
+                                lastIndexedTxId = info.getId();
                             }
 
                             txnsFound.add(info);
@@ -2198,6 +2249,8 @@ public class CoreTracker implements CloseHook
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
+        
+        long start = System.nanoTime();
         GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
@@ -2223,6 +2276,9 @@ public class CoreTracker implements CloseHook
             response.release();
         }
 
+        long end = System.nanoTime();
+        trackerStats.addDocTransformationTime(end-start);
+        
         if (ris != null)
         {
             // Localised
@@ -2855,6 +2911,42 @@ public class CoreTracker implements CloseHook
                     break;
                 }
                 if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
+                {
+                    Long txCommitTime = NumericEncoder.decodeLong(term.text());
+                    lastTxCommitTime = txCommitTime;
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+        }
+        catch (IOException e1)
+        {
+
+        }
+
+        return lastTxCommitTime;
+    }
+    
+    private long getLastTransactionId(SolrIndexReader reader) throws IOException
+    {
+        long lastTxCommitTime = 0;
+
+        try
+        {
+            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, ""));
+            do
+            {
+                Term term = termEnum.term();
+                if (term == null)
+                {
+                    break;
+                }
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
                 {
                     Long txCommitTime = NumericEncoder.decodeLong(term.text());
                     lastTxCommitTime = txCommitTime;

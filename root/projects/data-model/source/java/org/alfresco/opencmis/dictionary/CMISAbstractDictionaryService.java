@@ -30,10 +30,14 @@ import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.DictionaryListener;
 import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
+import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
+import org.apache.chemistry.opencmis.commons.data.CmisExtensionElement;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.PropertyType;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.CmisExtensionElementImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
@@ -50,6 +54,10 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
 {
     // Logger
     protected static final Log logger = LogFactory.getLog(CMISAbstractDictionaryService.class);
+
+    public static final String ALFRESCO_EXTENSION_NAMESPACE = "http://www.alfresco.org";
+    public static final String MANDATORY_ASPECTS = "mandatoryAspects";
+    public static final String MANDATORY_ASPECT = "mandatoryAspect";
 
     // service dependencies
     private DictionaryDAO dictionaryDAO;
@@ -334,6 +342,40 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      */
     abstract protected void createDefinitions(DictionaryRegistry registry);
 
+    private void addTypeExtensions(DictionaryRegistry registry, TypeDefinitionWrapper td)
+    {
+        QName classQName = td.getAlfrescoClass();
+        ClassDefinition classDef = dictionaryService.getClass(classQName);
+        if(classDef != null)
+        {
+	        // add mandatory/default aspects
+	        List<AspectDefinition> defaultAspects = classDef.getDefaultAspects(true);
+	        if(defaultAspects != null && defaultAspects.size() > 0)
+	        {
+		        List<CmisExtensionElement> mandatoryAspectsExtensions = new ArrayList<CmisExtensionElement>();
+		        for(AspectDefinition aspectDef : defaultAspects)
+		        {
+		        	QName aspectQName = aspectDef.getName();
+		        	
+		        	TypeDefinitionWrapper aspectType = registry.typeDefsByQName.get(cmisMapping.getCmisType(aspectQName));
+		            if (aspectType == null)
+		            {
+		                continue;
+		            }
+	
+		        	mandatoryAspectsExtensions.add(new CmisExtensionElementImpl(ALFRESCO_EXTENSION_NAMESPACE, MANDATORY_ASPECT, null, aspectType.getTypeId()));
+		        }
+	
+	            if(!mandatoryAspectsExtensions.isEmpty())
+	            {
+	                td.getTypeDefinition(true).setExtensions(
+	                        Collections.singletonList((CmisExtensionElement) new CmisExtensionElementImpl(
+	                                ALFRESCO_EXTENSION_NAMESPACE, MANDATORY_ASPECTS, null, mandatoryAspectsExtensions)));
+	            }
+	        }
+        }
+    }
+
     /**
      * Dictionary Initialization - creates a new registry
      */
@@ -342,7 +384,9 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         DictionaryRegistry registry = new DictionaryRegistry();
 
         if (logger.isDebugEnabled())
+        {
             logger.debug("Creating type definitions...");
+        }
 
         // phase 1: construct type definitions and link them together
         createDefinitions(registry);
@@ -371,6 +415,8 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
         {
             typeDef.assertComplete();
+
+            addTypeExtensions(registry, typeDef);
         }
 
         // publish new registry

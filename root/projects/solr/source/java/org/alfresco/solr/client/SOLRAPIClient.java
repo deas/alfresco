@@ -422,7 +422,14 @@ public class SOLRAPIClient
             maxTxnCommitTime = json.getLong("maxTxnCommitTime");
         }
 
-        return new Transactions(transactions, maxTxnCommitTime);
+        Long maxTxnIdOnServer = null;
+        if(json.has("maxTxnId"))
+        {
+            maxTxnIdOnServer = json.getLong("maxTxnId");
+        }
+
+        
+        return new Transactions(transactions, maxTxnCommitTime, maxTxnIdOnServer);
     }
   
     

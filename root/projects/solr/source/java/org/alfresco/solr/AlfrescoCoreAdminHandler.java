@@ -653,18 +653,34 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     {
                         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
                         long lastIndexCommitTime = tracker.getLastIndexedCommitTime();
-                        long lastTxOnServer = tracker.getLastTxOnServer();
+                        long lastIndexedId = tracker.getLastIndexedId();
+                        long lastTxCommitTimeOnServer = tracker.getLastTxCommitTimeOnServer();
+                        long lastTxIdOnServer = tracker.getLastTxIdOnServer();
                         Date lastIndexCommitDate = new Date(lastIndexCommitTime);
-                        Date lastTxOnServerDate = new Date(lastTxOnServer);
+                        Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
+                        
+                        long remainingTimeMillis =  (long)((lastTxIdOnServer-lastIndexedId) *  (tracker.getTrackerStats().getMeanTxIndexTime()));
+                        Date now = new Date();
+                        Date end = new Date(now.getTime()+remainingTimeMillis);
+                        Duration remaining = new Duration(now, end);
                         
                         Duration lag = new Duration(lastIndexCommitDate, lastTxOnServerDate);
                         coreSummary.add("Last Index Commit Time", lastIndexCommitTime);
                         coreSummary.add("Last Index Commit Date", lastIndexCommitDate);
-                        coreSummary.add("Lag", (lastTxOnServer-lastIndexCommitTime)/1000 +" s");
+                        coreSummary.add("Lag", (lastTxCommitTimeOnServer-lastIndexCommitTime)/1000 +" s");
                         coreSummary.add("Duration", lag.toString());
                         coreSummary.add("Active", tracker.isRunning());
-                        coreSummary.add("Timestamp for last TX on server", lastTxOnServer);
+                        coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
                         coreSummary.add("Date for last TX on server", lastTxOnServerDate);
+                        coreSummary.add("Id for last TX on server", lastTxIdOnServer);
+                        coreSummary.add("Id for last TX in index", lastIndexedId);
+                        coreSummary.add("Approx transactions remaining", lastTxIdOnServer-lastIndexedId);
+                        coreSummary.add("Approx indexing time remaining", remaining.largestComponentformattedString());
+                        coreSummary.add("Model sync times (ms)", tracker.getTrackerStats().getModelTimes());
+                        coreSummary.add("Acl tx index time (ms)", tracker.getTrackerStats().getAclTxTimes());
+                        coreSummary.add("Tx index time (ms)", tracker.getTrackerStats().getTxTimes());
+                        coreSummary.add("Docs/Tx", tracker.getTrackerStats().getTxDocs());
+                        coreSummary.add("Doc Transformation time (ms)", tracker.getTrackerStats().getDocTransformationTimes());
                         
                         report.add(cname, coreSummary);
                     }
@@ -685,18 +701,34 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         {
                             NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
                             long lastIndexCommitTime = tracker.getLastIndexedCommitTime();
-                            long lastTxOnServer = tracker.getLastTxOnServer();
+                            long lastIndexedId = tracker.getLastIndexedId();
+                            long lastTxCommitTimeOnServer = tracker.getLastTxCommitTimeOnServer();
+                            long lastTxIdOnServer = tracker.getLastTxIdOnServer();
                             Date lastIndexCommitDate = new Date(lastIndexCommitTime);
-                            Date lastTxOnServerDate = new Date(lastTxOnServer);
+                            Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
+                            
+                            long remainingTimeMillis =  (long)((lastTxIdOnServer-lastIndexedId) *  (tracker.getTrackerStats().getMeanTxIndexTime()));
+                            Date now = new Date();
+                            Date end = new Date(now.getTime()+remainingTimeMillis);
+                            Duration remaining = new Duration(now, end);
                             
                             Duration lag = new Duration(lastIndexCommitDate, lastTxOnServerDate);
                             coreSummary.add("Last Index Commit Time", lastIndexCommitTime);
                             coreSummary.add("Last Index Commit Date", lastIndexCommitDate);
-                            coreSummary.add("Lag", (lastTxOnServer-lastIndexCommitTime)/1000 +" s");
+                            coreSummary.add("Lag", (lastTxCommitTimeOnServer-lastIndexCommitTime)/1000 +" s");
                             coreSummary.add("Duration", lag.toString());
                             coreSummary.add("Active", tracker.isRunning());
-                            coreSummary.add("Timestamp for last TX on server", lastTxOnServer);
+                            coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
                             coreSummary.add("Date for last TX on server", lastTxOnServerDate);
+                            coreSummary.add("Id for last TX on server", lastTxIdOnServer);
+                            coreSummary.add("Id for last TX in index", lastIndexedId);
+                            coreSummary.add("Approx transactions remaining", lastTxIdOnServer-lastIndexedId);
+                            coreSummary.add("Approx indexing time remaining", remaining.largestComponentformattedString());
+                            coreSummary.add("Model sync times (ms)", tracker.getTrackerStats().getModelTimes());
+                            coreSummary.add("Acl tx index time (ms)", tracker.getTrackerStats().getAclTxTimes());
+                            coreSummary.add("Tx index time (ms)", tracker.getTrackerStats().getTxTimes());
+                            coreSummary.add("Docs/Tx", tracker.getTrackerStats().getTxDocs());
+                            coreSummary.add("Doc Transformation time (ms)", tracker.getTrackerStats().getDocTransformationTimes());
                             
                             report.add(coreName, coreSummary);
                         }

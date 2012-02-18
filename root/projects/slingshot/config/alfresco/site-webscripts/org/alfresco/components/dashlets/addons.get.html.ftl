@@ -8,7 +8,10 @@
    {
       componentId: "${instance.object.id}",
       feedURL: "${uri}",
-      limit: <#if limit?number != DISPLAY_ITEMS>"${limit}"<#else>"all"</#if>
+      limit: <#if limit?number != DISPLAY_ITEMS>"${limit}"<#else>"all"</#if>,
+      target: "${target}",
+      titleElSuffix: "-title",
+      targetElSuffix: "-scrollableList"
    }).setMessages(${messages});
    new Alfresco.widget.DashletResizer("${el}", "${instance.object.id}");
 
@@ -43,17 +46,7 @@
    <div class="toolbar">
       <div>${msg("label.body")} <a href="${msg("label.addonsLink")}" target="${target}">${msg("label.addonsText")}</a></div>
    </div>
-   <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-      <div class="dashlet-padding" id="${el}-scrollableList">
-      
-      
-   <#if items?? && items?size &gt; 0>
-      <#list items as item>
-         <#if item_index &lt; limit?number><@feedLib.renderItem item=item target=target/><#else><#break></#if>
-      </#list>
-   <#elseif !error?exists>
-         <h3>${msg("label.noItems")}</h3>
-   </#if>
-      </div>
+   <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if> id="${el}-scrollableList">
+      <h3>${msg("label.loading")}</h3>
    </div>
 </div>

@@ -595,7 +595,7 @@
          
          <!-- copy config files -->
          <fileset dir="${dir.project.core.src.java}" 
-                  includes="log4j.properties" />
+                  includes="log4j.properties,logging.properties" />
          <fileset dir="${dir.project.datamodel.config}" 
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}" 

@@ -291,7 +291,7 @@
                                  end: parseISO8601(event.endAt.iso8601),
                                  allDay: (event.allday === "true") ? true : false,
                                  location: $html(event.where),
-                                 uri: "/calendar/event/" + me.options.siteId + "/" + $html(event.name) + "?date=" + event.startAt.iso8601.split("T")[0]
+                                 uri: "/calendar/event/" + me.options.siteId + "/" + $html(event.name) + "?date=" + event.startAt.iso8601.split("T")[0],
                                  description: $html(event.description),
                                  title: $html(event.title),
                                  where: $html(event.where)
