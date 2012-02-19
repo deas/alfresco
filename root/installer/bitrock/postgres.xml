@@ -481,12 +481,12 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
 <!-- Bundled PostgresSQL Subcomponent -->
 <folder>
             <description>Program Files</description>
-            <destination>${installdir}</destination>
+            <destination>${installdir}/postgresql</destination>
             <name>programfiles</name>
             <platforms>all</platforms>
             <distributionFileList>
-                <distributionDirectory>
-                    <origin>${postgres_distribution_folder}</origin>
+                <distributionDirectory allowWildcards="1">
+                    <origin>${postgres_distribution_folder}/*</origin>
                 </distributionDirectory>
             </distributionFileList>
             <actionList>
