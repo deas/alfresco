@@ -8,6 +8,12 @@
       <span id="${el}-title-span"></span>
    </div>
    <div class="bd">
+      <div id="${el}-file-selection-controls" class="browse-wrapper">
+         <div class="center dnd-file-selection-control">
+            <input id="${el}-file-selection-button-overlay" type="button" value="${msg("button.selectFiles")}" tabindex="0"/>
+         </div>
+      </div>
+   
       <div id="${el}-filelist-table" class="fileUpload-filelist-table"></div>
 
       <div class="status-wrapper">
@@ -71,6 +77,7 @@
          </div>
       </div>
          <div class="bdft">
+            <input id="${el}-upload-button" type="button" value="${msg("button.upload")}" tabindex="0"/>
             <input id="${el}-cancelOk-button" type="button" value="${msg("button.cancel")}" tabindex="0"/>
          </div>
    </div>

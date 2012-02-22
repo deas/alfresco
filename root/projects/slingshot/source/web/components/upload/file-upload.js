@@ -104,7 +104,16 @@
           * @type string
           * @default "Alfresco.HtmlUpload"
           */
-         htmlUploader: "Alfresco.HtmlUpload"
+         htmlUploader: "Alfresco.HtmlUpload",
+         
+         /**
+          * Class name of Drag-and-drop Uploader - also supports HTML5 file selection upload
+          * 
+          * @property dndUploader
+          * @type string
+          * @default "Alfresco.DNDUpload"
+          */
+         dndUploader: "Alfresco.DNDUpload"
       },
       
       /**
@@ -225,10 +234,26 @@
                this.hasRequiredFlashPlayer = this.canAccessSession;
             }
 
+            // Check to see whether the browser supports the HTML5 file upload API...
+            this.browserSupportsHTML5 = (window.File && window.FileList);
+            
             // Create the appropriate uploader component
-            var uploadType = this.hasRequiredFlashPlayer ? this.options.flashUploader : this.options.htmlUploader,
-               uploadInstance = Alfresco.util.ComponentManager.findFirst(uploadType);
-
+            var uploadType;
+            if (this.hasRequiredFlashPlayer)
+            {
+               uploadType = this.options.flashUploader;
+            }
+            else if (this.browserSupportsHTML5)
+            {
+               uploadType = this.options.dndUploader;
+            }
+            else
+            {
+               uploadType = this.options.htmlUploader;
+            }
+            var uploadInstance = Alfresco.util.ComponentManager.findFirst(uploadType);
+            
+            
             if (uploadInstance)
             {
                this.uploader = uploadInstance;
@@ -245,10 +270,17 @@
          // If flash isn't installed multi upload mode isn't supported
          if (!this.hasRequiredFlashPlayer && this.showConfig.mode == this.MODE_MULTI_UPLOAD)
          {
-            this.showConfig.mode = this.MODE_SINGLE_UPLOAD;
+            if (this.browserSupportsHTML5)
+            {
+               // The browser supports HTML5 upload - so we're going to use that instead of Flash
+            }
+            else 
+            {
+               this.showConfig.mode = this.MODE_SINGLE_UPLOAD;
+            }
          }
 
-         if (this.hasRequiredFlashPlayer)
+         if (this.hasRequiredFlashPlayer || this.browserSupportsHTML5)
          {
             this.showConfig.uploadURL = this.showConfig.flashUploadURL;
          }

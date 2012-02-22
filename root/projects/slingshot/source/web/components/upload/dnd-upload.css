@@ -343,3 +343,26 @@
    padding: 0 2px 0 4px;
    vertical-align: text-bottom;
 }
+
+.dnd-file-selection-control
+{
+   height: 25px;
+}
+
+.dnd-file-selection-button
+{
+   opacity: 0;
+   top: 0;
+   left: 0;
+   position: absolute;
+}
+
+.dnd-file-selection-button-overlay
+{
+   padding: 0 50px !important;
+}
+
+.dnd-file-selection-button-overlay-wrapper
+{
+   position: relative;
+}
