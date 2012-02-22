@@ -76,7 +76,7 @@
             <#if profile.jobTitle?? && profile.jobTitle?length!=0><div class="fieldlabel">${profile.jobTitle?html}</div></#if>
             <#if profile.organization?? && profile.organization?length!=0><div class="fieldlabel">${profile.organization?html}</div></#if>
             <#if profile.location?? && profile.location?length!=0><div class="fieldlabel">${profile.location?html}</div></#if>
-            <#if profile.properties.userStatus?? && profile.properties.userStatus?length!=0><div class="fieldlabel"><div class="user-status">${profile.properties.userStatus?html} <span class="time">(${userStatusRelativeTime})</span></div></div></#if>
+            <#if profile.properties.userStatus?? && profile.properties.userStatus?length!=0><div class="fieldlabel"><div class="user-status">${profile.properties.userStatus?html} <span class="time">(<span class="relativeTime">${profile.properties.userStatusTime}</span>)</span></div></div></#if>
          </div>
          <#if biohtml?? && biohtml?length!=0>
          <div class="biorow">
@@ -289,3 +289,10 @@
 <#macro immutablefield field>
 <#if profile.nativeUser.isImmutableProperty(field)>disabled="true"</#if>
 </#macro>
+<script type="text/javascript">//<![CDATA[
+(function()
+{
+   Alfresco.util.renderRelativeTime("${el}-body")
+})();
+//]]>
+</script>

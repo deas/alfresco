@@ -49,10 +49,6 @@ function main()
          {
             member = memberships[i];
             userStatus = member.authority.userStatus;
-            if (typeof userStatus != "undefined" && userStatus.length > 0)
-            {
-               member.authority.userStatusRelativeTime = AlfrescoUtil.relativeTime(member.authority.userStatusTime.iso8601);
-            }
          }
          memberships.sort(sortByName);
       }

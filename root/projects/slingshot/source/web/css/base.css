@@ -960,7 +960,7 @@ div.user-status
    padding-left: 20px;
 }
 
-div.user-status span
+div.user-status span.time
 {
    color: #808080;
    font-size: 93%;

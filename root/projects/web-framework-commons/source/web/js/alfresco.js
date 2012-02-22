@@ -936,6 +936,24 @@ Alfresco.util.toExplodedJSONDate = function(date)
 };
 
 /**
+ * Render relative dates on the client
+ *
+ * Converts all ISO8601 dates within the specified container to relative dates.
+ * (indicated by <span class="relativeTime">{date.iso8601}</span>)
+ *
+ * @method Alfresco.util.renderRelativeTime
+ * @param id {String} ID of HTML element containing
+ *
+ */
+Alfresco.util.renderRelativeTime = function(id)
+{
+   YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", id , function()
+   {
+      this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+   })
+}
+
+/**
  * Generate a relative time between two Date objects.
  * 
  * @method Alfresco.util.relativeTime

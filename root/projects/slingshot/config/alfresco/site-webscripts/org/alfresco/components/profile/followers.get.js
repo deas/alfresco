@@ -22,10 +22,6 @@ function main()
       for (var i=0,person; i<peopleCount; i++)
       {
          person = people.people[i];
-         if (typeof person.userStatusTime != "undefined")
-         {
-            person.userStatusRelativeTime = AlfrescoUtil.relativeTime(person.userStatusTime.iso8601);
-         }
       }
       model.data = people;
       model.numPeople = peopleCount;

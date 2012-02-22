@@ -19,18 +19,8 @@ function main()
    if (result.status == 200)
    {
       var people = eval('(' + result + ')');
-      var peopleCount = people.people.length;
-      // convert status update times to relative time messages
-      for (var i=0; i<peopleCount; i++)
-      {
-         person = people.people[i];
-         if (typeof person.userStatusTime != "undefined")
-         {
-            person.userStatusRelativeTime = AlfrescoUtil.relativeTime(person.userStatusTime.iso8601);
-         }
-      }
       model.data = people;
-      model.numPeople = peopleCount;
+      model.numPeople = people.people.length;
    }
    
    var result = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/private");

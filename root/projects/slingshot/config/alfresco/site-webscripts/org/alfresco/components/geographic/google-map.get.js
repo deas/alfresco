@@ -11,13 +11,7 @@ function main()
    if (documentDetails)
    {
       var properties = documentDetails.item.node.properties,
-         dTO = properties["exif:dateTimeOriginal"],
          eT = properties["exif:exposureTime"];
-
-      if (dTO)
-      {
-         properties["exif:dateTimeOriginal"].relativeTime = AlfrescoUtil.relativeTime(dTO.iso8601);
-      }
       if (eT)
       {
          if (parseInt(eT * 1000, 10) > 0)

@@ -25,7 +25,7 @@
       <div id="${id}-exif" class="exif hidden">
          <table cellpadding="0" cellspacing="0" width="100%">
             <tbody>
-            <#list ["dateTimeOriginal.relativeTime", "pixelXDimension", "pixelYDimension", "exposureTime", "fNumber", "flash", "focalLength",
+            <#list ["pixelXDimension", "pixelYDimension", "exposureTime", "fNumber", "flash", "focalLength",
                "isoSpeedRatings", "manufacturer", "model", "software", "orientation", "xResolution", "yResolution", "resolutionUnit"] as name>
                <@exif props name />
             </#list>

@@ -34,12 +34,6 @@ function main()
       model.biohtml = stringUtils.replaceLineBreaks(bio);
    }
    
-   // if there's a usrStatusTime, then convert to a relative time
-   if (model.profile.properties.userStatusTime != null)
-   {
-      model.userStatusRelativeTime = AlfrescoUtil.relativeTime(model.profile.properties.userStatusTime);
-   }
-   
    // editable if request profile is for the current user
    model.isEditable = (profileId == null || profileId == user.name);
    

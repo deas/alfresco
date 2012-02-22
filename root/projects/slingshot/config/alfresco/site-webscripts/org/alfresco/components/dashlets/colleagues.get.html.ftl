@@ -61,7 +61,7 @@
             <h3><a href="${url.context}/page/user/${m.authority.userName?url}/profile" class="theme-color-1">${m.authority.firstName?html} <#if m.authority.lastName??>${m.authority.lastName?html}</#if></a></h3>
             <div>${msg("role." + m.role)}</div>
    <#if m.authority.userStatus??>
-            <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(${(m.authority.userStatusRelativeTime!"")?html})</span></div>
+            <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(<span class="relativeTime">${(m.authority.userStatusTime.iso8601!"")?html}</span>)</span></div>
    </#if>
          </div>
          <div class="clear"></div>
@@ -69,3 +69,10 @@
 </#list>
    </div>
 </div>
+<script type="text/javascript">//<![CDATA[
+(function()
+{
+   Alfresco.util.renderRelativeTime("${args.htmlid}")
+})();
+//]]>
+</script>
