@@ -125,7 +125,8 @@ public abstract class VtiWebDavAction implements VtiAction
     {
         public VtiWebDavHelper(ServiceRegistry serviceRegistry, AuthenticationService authenticationService)
         {
-            super(serviceRegistry, authenticationService);
+            // TODO: LockStore collaborator required by WebDAVHelper
+            super(serviceRegistry, null, authenticationService);
         }
     };
 

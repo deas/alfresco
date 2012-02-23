@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.model.WebDAVModel;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoMethodHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiDocumentHepler;
@@ -297,9 +296,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                     
                         getLockService().lock(result, LockType.WRITE_LOCK, timeout);
 
-                        getNodeService().setProperty(result, WebDAVModel.PROP_OPAQUE_LOCK_TOKEN, lockToken);
-                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_DEPTH, "0");
-                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_SCOPE, WebDAV.XML_EXCLUSIVE);
+                        // TODO: LockStore replaces use of these properties.
+//                        getNodeService().setProperty(result, WebDAVModel.PROP_OPAQUE_LOCK_TOKEN, lockToken);
+//                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_DEPTH, "0");
+//                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_SCOPE, WebDAV.XML_EXCLUSIVE);
                         
                         return result;
                     }
