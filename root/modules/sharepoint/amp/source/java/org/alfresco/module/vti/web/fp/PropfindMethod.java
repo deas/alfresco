@@ -581,21 +581,28 @@ public class PropfindMethod extends WebDAVMethod
 
         // Output the lock status response
 
-
-        if (lockInfo.isLocked())
+        lockInfo.getRWLock().readLock().lock();
+        try
         {
-            generateLockDiscoveryXML(xml, nodeInfo, lockInfo);
-        }
-        else
-        {
-            xml.startElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY, getDAVHelper().getNullAttributes());
-            xml.endElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY);
-
-            if (isDir)
+            if (lockInfo.isLocked())
             {
-                xml.startElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK, getDAVHelper().getNullAttributes());
-                xml.endElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK);
+                generateLockDiscoveryXML(xml, nodeInfo, lockInfo);
             }
+            else
+            {
+                xml.startElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY, getDAVHelper().getNullAttributes());
+                xml.endElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY);
+                
+                if (isDir)
+                {
+                    xml.startElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK, getDAVHelper().getNullAttributes());
+                    xml.endElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK);
+                }
+            }            
+        }
+        finally
+        {            
+            lockInfo.getRWLock().readLock().unlock();
         }
     }
     
