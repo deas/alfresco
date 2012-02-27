@@ -280,7 +280,6 @@
        * Closes the panel.
        *
        * @method onCancelButtonClick
-       * @param event {object} a Button "click" event
        */
       onCancelButtonClick: function SP_onCancelButtonClick()
       {
@@ -588,7 +587,8 @@
             if (limit !== null) {
                   
                // should the URL length be deducted?
-               if (this.widgets.statusUpdateUrlCheckbox.checked) {
+               if (this.widgets.statusUpdateUrlCheckbox.checked)
+               {
                   // get URL length
                   var urlLength = parseInt(Dom.getAttribute(this.widgets.statusUpdateUrlCheckbox, "rel"), 10)
                   // deduct from count
@@ -637,7 +637,8 @@
                   
                   this.showTruncationMsg(truncationChannels)
                   
-               } else {
+               } else
+               {
                   
                   // hide and reset the truncation message
                   this.resetTruncationMsg();
@@ -650,17 +651,30 @@
             else 
             {
                // hide count if there's nothing selected.
-               this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = "";  
+               this.hideStatusUpdateCount();
             }
          } 
          else 
          {
             // hide count if there's nothing selected.
-            this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = this.widgets.statusUpdateCountMsg = "";
+            this.hideStatusUpdateCount();
          }            
          
       },
-      
+
+      /**
+       *
+       * Hides the Count of the Status Update Message.
+       *
+       * @method hideStatusUpdateCount
+       */
+      hideStatusUpdateCount: function SP_hideStatusUpdateCount()
+      {
+         // The content is recreated if needed again, so we can just throw it away.
+         // Remove content from the 3 message elements - the actual count, the count message and the information about the URL.
+         this.widgets.statusUpdateCount.innerHTML = this.widgets.statusUpdateCountURL.innerHTML = this.widgets.statusUpdateCountMsg.innerHTML = "";
+      },
+
       /**
        * 
        * Shows the truncation message
