@@ -27,6 +27,12 @@
             <!-- Pick the mode: "production" or "development" -->
             <mode>production</mode>
          </autowire>
+
+         <!-- Allows extension modules with <auto-deploy> set to true to be automatically deployed -->
+         <module-deployment>
+            <mode>manual</mode>
+            <enable-auto-deploy-modules>true</enable-auto-deploy-modules>
+         </module-deployment>
       </web-framework>
    </config>
 
