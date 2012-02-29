@@ -163,7 +163,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-3.1.0.jar" sourcepath="src/urlrewritefilter-3.1.0-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/junit-4.8.1.jar" sourcepath="src/junit-4.8.1-src.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
@@ -236,5 +235,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.6.0.jar" sourcepath="src/chemistry-opencmis-test-tck-0.6.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.6.0.jar" sourcepath="src/chemistry-opencmis-commons-api-0.6.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hazelcast-1.9.4.6.jar" sourcepath="src/hazelcast-1.9.4.6-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-dep-4.10.jar" sourcepath="src/junit-4.10-src.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
