@@ -26,7 +26,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.transaction-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/json.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/devenv/org.springframework.test-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.test-sources-3.0.5.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jta.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="/3rd Party/src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mybatis-spring-1.0.1.jar" sourcepath="/3rd Party/src/mybatis-spring-1.0.1-sources.jar"/>
@@ -48,5 +47,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mybatis-3.0.4-patched.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.10.jar" sourcepath="/3rd Party/src/junit-4.10-src.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
