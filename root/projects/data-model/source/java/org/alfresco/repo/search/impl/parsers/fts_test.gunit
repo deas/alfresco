@@ -23,6 +23,7 @@ ftsQuery:
 "test\:txt\:woof" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM test\\:txt\\:woof))))"
 "+\++" -> "(DISJUNCTION (CONJUNCTION (MANDATORY (TERM \\++))))"
 ".txt" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM . txt))))"
+"*.txt" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM * . txt))))"
 ".txt.doc.banana" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM . txt . doc . banana))))"
 "quick * fox" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PROXIMITY quick PROXIMITY fox))))"
 //"*.txt" -> ""

@@ -39,7 +39,8 @@
                               </#list>
                            </#if>
                            <#assign descArgs = descArgs + ")">
-                           <p class="welcome-details-column-info-text">${descArgs?eval}</p>
+                           <#assign displayText = descArgs?replace("{", "'{'")?replace("}", "'}'")?eval>
+                           <p class="welcome-details-column-info-text">${displayText?replace("%7B", "{")}</p>
                         </div>
                         <div class="welcome-height-adjuster" style="height:0;">&nbsp;</div>
                      </div>

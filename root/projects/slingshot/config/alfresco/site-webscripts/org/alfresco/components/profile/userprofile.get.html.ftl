@@ -135,7 +135,7 @@
               (profile.companyAddress3?? && profile.companyAddress3?length!=0) ||
               (profile.companyPostcode?? && profile.companyPostcode?length!=0)>
          <div class="row">
-            <span class="fieldlabelright">${msg("label.address")}:</span>
+            <span class="fieldlabelright">${msg("label.companyaddress")}:</span>
             <span class="fieldvalue"><#if profile.companyAddress1?? && profile.companyAddress1?length!=0>${profile.companyAddress1?html}<br /></#if>
                <#if profile.companyAddress2?? && profile.companyAddress2?length!=0>${profile.companyAddress2?html}<br /></#if>
                <#if profile.companyAddress3?? && profile.companyAddress3?length!=0>${profile.companyAddress3?html}<br /></#if>
@@ -145,19 +145,19 @@
          </#if>
          <#if profile.companyTelephone?? && profile.companyTelephone?length!=0>
          <div class="row">
-            <span class="fieldlabelright">${msg("label.telephone")}:</span>
+            <span class="fieldlabelright">${msg("label.companytelephone")}:</span>
             <span class="fieldvalue">${profile.companyTelephone?html}</span>
          </div>
          </#if>
          <#if profile.companyFax?? && profile.companyFax?length!=0>
          <div class="row">
-            <span class="fieldlabelright">${msg("label.fax")}:</span>
+            <span class="fieldlabelright">${msg("label.companyfax")}:</span>
             <span class="fieldvalue">${profile.companyFax?html}</span>
          </div>
          </#if>
          <#if profile.companyEmail?? && profile.companyEmail?length!=0>
          <div class="row">
-            <span class="fieldlabelright">${msg("label.email")}:</span>
+            <span class="fieldlabelright">${msg("label.companyemail")}:</span>
             <span class="fieldvalue">${profile.companyEmail?html}</span>
          </div>
          </#if>
@@ -245,7 +245,7 @@
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-organization" value="" <@immutablefield field="organization" /> /></span>
       </div>
       <div class="row">
-         <span class="label"><label for="${el}-input-companyaddress1">${msg("label.address")}:</label></span>
+         <span class="label"><label for="${el}-input-companyaddress1">${msg("label.companyaddress")}:</label></span>
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-companyaddress1" value="" <@immutablefield field="companyaddress1" /> /></span>
       </div>
       <div class="row">
@@ -257,19 +257,19 @@
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-companyaddress3" value="" <@immutablefield field="companyaddress3" /> /></span>
       </div>
       <div class="row">
-         <span class="label"><label for="${el}-input-companypostcode">${msg("label.postcode")}:</label></span>
+         <span class="label"><label for="${el}-input-companypostcode">${msg("label.companypostcode")}:</label></span>
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-companypostcode" value="" <@immutablefield field="companypostcode" /> /></span>
       </div>
       <div class="row">
-         <span class="label"><label for="${el}-input-companytelephone">${msg("label.telephone")}:</label></span>
+         <span class="label"><label for="${el}-input-companytelephone">${msg("label.companytelephone")}:</label></span>
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-companytelephone" value="" <@immutablefield field="companytelephone" /> /></span>
       </div>
       <div class="row">
-         <span class="label"><label for="${el}-input-companyfax">${msg("label.fax")}:</label></span>
+         <span class="label"><label for="${el}-input-companyfax">${msg("label.companyfax")}:</label></span>
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-companyfax" value="" <@immutablefield field="companyfax" /> /></span>
       </div>
       <div class="row">
-         <span class="label"><label for="${el}-input-companyemail">${msg("label.email")}:</label></span>
+         <span class="label"><label for="${el}-input-companyemail">${msg("label.companyemail")}:</label></span>
          <span class="input"><input type="text" maxlength="256" size="30" id="${el}-input-companyemail" value="" <@immutablefield field="companyemail" /> /></span>
       </div>
       

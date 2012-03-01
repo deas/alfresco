@@ -918,7 +918,7 @@ public class FTSQueryParser
         String functionName = FTSWildTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
         functionArguments.put(larg.getName(), larg);
@@ -945,7 +945,7 @@ public class FTSQueryParser
         String functionName = FTSWildTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
@@ -972,7 +972,7 @@ public class FTSQueryParser
         String functionName = FTSPrefixTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
         functionArguments.put(larg.getName(), larg);
@@ -999,7 +999,7 @@ public class FTSQueryParser
         String functionName = FTSPrefixTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChild(0)));
+        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);

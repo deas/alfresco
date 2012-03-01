@@ -86,6 +86,25 @@
          var fromDate = new Date();
          fromDate.setMonth(toDate.getMonth() - 1);
          
+         if (Dom.get(this.valueHtmlId).value)
+         {
+            var fullDate = Dom.get(this.valueHtmlId).value.split("|");
+            if (fullDate[0])
+            {
+               var fromDateText = fullDate[0].split("T")[0];
+               fromDateText = fromDateText.split("-");
+               Dom.get(this.id + "-date-from").value = fromDateText[2] + "/" + fromDateText[1] + "/" + fromDateText[0];
+               this.currentFromDate = fullDate[0];
+            }
+            if (fullDate[1])
+            {
+               var toDateText = fullDate[1].split("T")[0];
+               toDateText = toDateText.split("-");
+               Dom.get(this.id + "-date-to").value = toDateText[2] + "/" + toDateText[1] + "/" + toDateText[0];
+               this.currentToDate = fullDate[1];
+            }
+         }
+ 
          // construct the pickers
          var page = (fromDate.getMonth() + 1) + "/" + fromDate.getFullYear();
          var selected = (fromDate.getMonth() + 1) + "/" + fromDate.getDate() + "/" + fromDate.getFullYear();   

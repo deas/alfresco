@@ -4815,10 +4815,11 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
 
     synchronized (fileCache) {
 
-      //	Check the file cache, file may already be open
+      //  Check the file cache, file may already be open
 
       file = fileCache.findFile(fileId, sess);
-      if (file == null) {
+
+      if (file == null || (file.getGrantedAccess() == NetworkFile.READONLY && readOnly == false)) {
 
         //	Get the path for the file
 
@@ -4828,19 +4829,24 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
 
         try {
 
-          //	Get the disk interface from the connection
+        	// Close the existing file, if switching from read-only to writeable access
+      	  
+        	if ( file != null)
+        		file.closeFile();
+        	
+        	//	Get the disk interface from the connection
 
-          DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
+        	DiskInterface disk = (DiskInterface) conn.getSharedDevice().getInterface();
 
-          //	Open the network file
+        	//	Open the network file
 
-          FileOpenParams params = new FileOpenParams(path, FileAction.OpenIfExists, ((readOnly) ? (AccessMode.ReadOnly) : (AccessMode.ReadWrite)), 0, 0);
-          file = disk.openFile(sess, conn, params);
+        	FileOpenParams params = new FileOpenParams(path, FileAction.OpenIfExists, ((readOnly) ? (AccessMode.ReadOnly) : (AccessMode.ReadWrite)), 0, 0);
+        	file = disk.openFile(sess, conn, params);
 
-          //	Add the file to the active file cache
+        	//	Add the file to the active file cache
 
-          if (file != null)
-            fileCache.addFile(file, conn, sess);
+        	if (file != null)
+        		fileCache.addFile(file, conn, sess);
         }
         catch (AccessDeniedException ex) {
           if ( hasDebug())
@@ -4849,6 +4855,9 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
         catch (Exception ex) {
           Debug.println(ex);
         }
+      }
+      else if ( file.getGrantedAccess() == NetworkFile.READONLY && readOnly == false) {
+    	  
       }
     }
 

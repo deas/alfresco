@@ -87,6 +87,10 @@ public interface ContentModel
     static final QName ASPECT_ROOT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "aspect_root");
     static final QName TYPE_STOREROOT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "store_root");
 
+    // for internal use only: see ALF-13066 / ALF-12358
+    static final QName TYPE_LOST_AND_FOUND = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "lost_found");
+    static final QName ASSOC_LOST_AND_FOUND = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "lost_found");
+    
     // descriptor properties
     static final QName PROP_SYS_NAME = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "name");
     static final QName PROP_SYS_VERSION_MAJOR = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "versionMajor");

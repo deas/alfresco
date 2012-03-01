@@ -335,6 +335,15 @@
       _currentStatus: "",
       
       /**
+       * Keeps track of if the user has clicked in the status box. The first time they click the current status should be
+       * cleared, but the second time they click it shouldn't be (this is to allow editing within the status box).
+       * 
+       * @property _clickedStatusOnce
+       * @type boolean
+       */
+      _clickedStatusOnce: false,
+      
+      /**
        * My Status handlers
        */
       
@@ -348,6 +357,14 @@
          this.widgets.statusBox = Dom.get(this.id + "-statusText");
          this.widgets.statusTime = Dom.get(this.id + "-statusTime");
          this._currentStatus = this.widgets.statusBox.value; // Store the loaded value.
+         
+         // Always reset the status when the menu is opened/closed. This ensures that entered
+         // but non-posted status is not shown in the menu
+         this.widgets.userMenu = Dom.get(this.id + "-user_user");
+         Event.addListener(this.widgets.userMenu, "click", function() {
+            this.widgets.statusBox.value = this._currentStatus;
+         }, null, this);
+         
          
          var statusISOTime = this.widgets.statusTime.attributes.title.value;
          if (statusISOTime !== "")
@@ -394,7 +411,15 @@
          var _this = this;
          YAHOO.util.Event.addListener(this.id + "-statusText", "click", function(e)
          {
-            Dom.get(_this.id + "-statusText").value = "";
+            if (_this._clickedStatusOnce)
+            {
+               // Don't clear if already clicked
+            }
+            else
+            {
+               _this._clickedStatusOnce = true;
+               Dom.get(_this.id + "-statusText").value = "";
+            }
          });
          
          // When the user clicks away from the status box, reset the previous status if they have not entered a value...
@@ -406,6 +431,8 @@
                // If the user has not entered any data then reset the status...
                textBox.value = _this._currentStatus;
             }
+            
+            _this._clickedStatusOnce = false;
          });
          
          this.widgets.submitStatus = new YAHOO.widget.Button(this.id + "-submitStatus");
@@ -441,6 +468,7 @@
        */
       submitStatus: function Header_submitStatus()
       {
+         this._clickedStatusOnce = false;
          Alfresco.util.Ajax.jsonPost(
          {
             url: Alfresco.constants.URL_SERVICECONTEXT + "/components/profile/userstatus",

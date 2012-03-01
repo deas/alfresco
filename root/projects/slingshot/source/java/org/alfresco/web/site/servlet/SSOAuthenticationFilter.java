@@ -674,7 +674,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             // Ensure we do not proxy over the Session ID from the browser request:
             // If Alfresco and SURF app are deployed into the same app-server and user is
             // user same browser instance to access both apps then we could get wrong session ID!
-            headers.put("Cookie", "");
+            headers.put("Cookie", null);
         }
 
         // ALF-12278: Prevent the copying over of headers specific to a POST request on to the touch GET request

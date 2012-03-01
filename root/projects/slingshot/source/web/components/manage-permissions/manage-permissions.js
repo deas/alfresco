@@ -817,7 +817,7 @@
             original = this.permissions.original;
          
          perm.role = p_oMenuItem.value;
-         perm.modified = (p_index <= original.length && perm.role !== original[p_index].role);
+         perm.modified = (p_index <= original.length && original[p_index] != null && perm.role !== original[p_index].role);
       },
 
       /**

@@ -28,6 +28,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.alfresco.error.AlfrescoRuntimeException;
+import org.springframework.extensions.surf.exception.PlatformRuntimeException;
+
 /**
  * Provides <b>thread safe</b> means of obtaining a cached date formatter.
  * <p>
@@ -285,6 +288,20 @@ public class CachingDateFormat extends SimpleDateFormat
     
     public static Pair<Date, Integer> lenientParse(String text, int minimumResolution) throws ParseException
     {
+        try
+        {
+             Date parsed = ISO8601DateFormat.parse(text);
+             return new Pair<Date, Integer>(parsed, Calendar.MILLISECOND);
+        }
+        catch(PlatformRuntimeException e)
+        {
+            
+        }
+        catch(AlfrescoRuntimeException e)
+        {
+            
+        }
+        
         SimpleDateFormatAndResolution[] formatters = getLenientFormatters();
         for(SimpleDateFormatAndResolution formatter : formatters)
         {

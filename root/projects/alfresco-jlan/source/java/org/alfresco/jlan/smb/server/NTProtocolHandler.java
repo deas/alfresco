@@ -5035,6 +5035,13 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTObjectNotFound, SMBStatus.DOSFileNotFound, SMBStatus.ErrDos);
 		}
+	    catch (PermissionDeniedException ex) {
+
+	        // Not allowed to rename the file/directory
+
+	        m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNetworkAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+	        return;
+	    }
 		catch (AccessDeniedException ex) {
 
 			// Not allowed to change file attributes/settings

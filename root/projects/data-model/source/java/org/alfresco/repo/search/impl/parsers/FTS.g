@@ -808,12 +808,15 @@ identifier
                         ID
         ; 
 
-ftsWord
+ftsWord :
+          ftsWordBase ((DOT | COMMA ) ftsWordBase)*
+        | (DOT | COMMA) ftsWordBase ((DOT | COMMA) ftsWordBase)*
+        ;
+        
+ftsWordBase
         :
-          (ID | FTSWORD) ((DOT | COMMA ) (ID|FTSWORD))*
-        | (DOT | COMMA) (ID|FTSWORD) ((DOT | COMMA) (ID|FTSWORD))*
-        //| FTSWORD ((DOT | COMMA) FTSWORD)*
-        //| (DOT| COMMA) FTSWORD ((DOT | COMMA) FTSWORD)*
+          ID
+        | FTSWORD
         | FTSPRE 
         | FTSWILD 
         | NOT

@@ -53,6 +53,12 @@
          <properties></properties>
       </component>
 
+      <!-- Categories -->
+      <component>
+         <region-id>categories</region-id>
+         <url>/components/documentlibrary/categories</url>
+      </component>
+      
       <!-- Tags -->
       <component>
          <region-id>tags</region-id>

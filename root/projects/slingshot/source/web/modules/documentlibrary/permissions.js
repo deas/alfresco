@@ -150,11 +150,54 @@
          }
          else
          {
-            // Show the dialog
-            this._showDialog();
+            // Load the latest permissions for the document
+            Alfresco.util.Ajax.jsonRequest(
+            {
+               url: Alfresco.constants.URL_SERVICECONTEXT + "/components/document-details/document-permissions",
+               dataObj:
+               {
+                  nodeRef: this.options.files.node.nodeRef,
+                  site: this.options.siteId,
+                  format: "json"
+               },
+               successCallback:
+               {
+                  fn: this.onDataRefresh,
+                  scope: this
+               },
+               failureMessage: "Could not refresh permissions",
+               execScripts: true
+            });
          }
       },
-
+      
+      /**
+       * Event callback when permissions are refreshed
+       *
+       * @method onDataRefresh
+       * @param response {object} Server response from refresh permissions XHR request
+       */
+      onDataRefresh: function DLP_onDataRefresh(response)
+      {
+         this.setOptions(
+         {
+            siteId: response.json.siteId,
+            files:
+            {
+               displayName: this.options.displayName,
+               node:
+               {
+                  nodeRef: response.json.nodeRef,
+                  permissions:
+                  {
+                     roles: response.json.roles
+                  }
+               }
+            }
+         })
+         this._showDialog();
+      },
+      
       /**
        * Event callback when dialog template has been loaded
        *

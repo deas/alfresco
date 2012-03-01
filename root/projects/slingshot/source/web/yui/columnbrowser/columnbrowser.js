@@ -491,12 +491,12 @@ YAHOO.namespace('extension');
          /**
           * @attribute requestTimeout
           * @description The time in milliseconds to wait before a conenction attempt is dropped.
-          * @default 5000
+          * @default 30000
           * @type Number
           */
          columnBrowser.setAttributeConfig("requestTimeout", {
             validator : JS.isNumber,
-            value     : attrs.requestTimeout || 5000
+            value     : attrs.requestTimeout || 30000
          });
 
          /**

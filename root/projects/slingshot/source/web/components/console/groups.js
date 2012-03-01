@@ -1841,7 +1841,7 @@
                      Alfresco.util.PopupManager.displayPrompt(
                      {
                         title: parent._msg("message.failure"),
-                        text: parent._msg("message.update-failure", o.json.message)
+                        text: parent._msg("message.update-failure", o.json.message ? o.json.message : "")
                      });
                   },
                   scope: this
@@ -2154,7 +2154,7 @@
                      Alfresco.util.PopupManager.displayPrompt(
                      {
                         title: this._msg("message.failure"),
-                        text: this._msg(failureMessage, o.json.message)
+                        text: this._msg(failureMessage, o.json.message ? o.json.message : "")
                      });
                   }
                },

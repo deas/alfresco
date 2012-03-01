@@ -362,7 +362,7 @@
             if (doclib)
             {
                // Select the right element for showing the published message & let them know where the publish history is.
-               balloonElement = Dom.get(doclib.id);
+               balloonElement = Selector.query("input[value="+this.showConfig.nodeRef+"]", document.getElementById(doclib.id), true);
                balloonHTML += "<div class='tracking'>" + trackingText + "</div>";
             }
             else

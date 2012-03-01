@@ -324,10 +324,10 @@
        */
       onCreateChannel: function consoleChannels_onCreateChannel(event, args)
       {
-         var channelEl = Event.getTarget(event)
+         var channelEl = Event.getTarget(event),
             channelType = Dom.getAttribute(channelEl, "rel"),
             newChannelURL = Alfresco.constants.PROXY_URI + "api/publishing/channels", 
-            channelName = this.newChannelName(YAHOO.lang.trim(channelEl.innerHTML));
+            channelName = this.newChannelName(YAHOO.lang.trim(channelEl.innerHTML)),
             params = "?channelType=" + channelType + "&channelName=" + channelName;
 
          Alfresco.util.Ajax.request(
@@ -532,7 +532,7 @@
       {
          // Register insitu editors
          var iEd;
-         for (i = 0, j = this.insituEditors.length; i < j; i++)
+         for (var i = 0, j = this.insituEditors.length; i < j; i++)
          {
             iEd = this.insituEditors[i];
             Alfresco.util.createInsituEditor(iEd.context, iEd.params, iEd.callback);
@@ -841,19 +841,10 @@
          // If this wasn't a reauth call, let the user know a new channel has been created:
          if (!this.isWaiting.reauth) 
          {
-            var balloon = Alfresco.util.createBalloon(this.id,
+            Alfresco.util.PopupManager.displayMessage(
             {
-               text: this.msg("channelAdmin.createChannel.success"),
-               width: "20em"
+               text: this.msg("channelAdmin.createChannel.success")
             });
-            
-            balloon.show();
-            
-            // hide the balloon after 10 seconds.
-            YAHOO.lang.later(10000, this, function()
-            {
-               balloon.hide();
-            })
          }
          
          // We're no longer waiting for authentication to complete:

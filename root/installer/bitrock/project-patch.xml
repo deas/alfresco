@@ -205,7 +205,7 @@
 		<showProgressDialog title="Starting servers ..." >
 		    <actionList>
 			<waitForPort port="${application_server_port}" timeout="10000" />
-			<findFile baseDirectory="${application_server_directory}/logs" variable="windowsTomcatLogFile" pattern="stderr_*" >
+			<findFile baseDirectory="${application_server_directory}/logs" variable="windowsTomcatLogFile" pattern="*stderr*" >
 			    <ruleList>
 				<platformTest type="windows" />
 			    </ruleList>

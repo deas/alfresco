@@ -154,19 +154,19 @@
             <span id="${el}-view-companyname" class="field-value"></span>
          </div>
          <div class="field-row">
-            <span class="field-label-right">${msg("label.address")}:</span>
+            <span class="field-label-right">${msg("label.companyaddress")}:</span>
             <span id="${el}-view-companyaddress" class="field-value"></span>
          </div>
          <div class="field-row">
-            <span class="field-label-right">${msg("label.telephone")}:</span>
+            <span class="field-label-right">${msg("label.companytelephone")}:</span>
             <span id="${el}-view-companytelephone" class="field-value"></span>
          </div>
          <div class="field-row">
-            <span class="field-label-right">${msg("label.fax")}:</span>
+            <span class="field-label-right">${msg("label.companyfax")}:</span>
             <span id="${el}-view-companyfax" class="field-value"></span>
          </div>
          <div class="field-row">
-            <span class="field-label-right">${msg("label.email")}:</span>
+            <span class="field-label-right">${msg("label.companyemail")}:</span>
             <span id="${el}-view-companyemail" class="field-value"></span>
          </div>
          

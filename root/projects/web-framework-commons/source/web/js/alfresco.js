@@ -5621,6 +5621,12 @@ Alfresco.util.Ajax = function()
             }
          }
 
+         // Add a noCache parameter to the URL to ensure that XHR requests are always made to the
+         // server. This is added to tackle a specific problem in IE where 304 responses are assumed
+         // for XHR requests. This has intentionally not been conditionally added just for IE as there
+         // is no reason why we shouldn't always get fresh data on XHR requests.
+         c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + "noCache=" + new Date().getTime();
+         
          // Make the request
          YAHOO.util.Connect.asyncRequest (c.method, c.url, callback, c.dataStr);
       },
@@ -7769,9 +7775,9 @@ Alfresco.util.RENDERLOOPSIZE = 25;
       refresh: function Base_refresh(webscript)
       {
          var url = Alfresco.util.combinePaths(Alfresco.constants.URL_SERVICECONTEXT, YAHOO.lang.substitute(webscript, this.options, function(p_key, p_value, p_meta)
-         {
-            return typeof p_value === "boolean" ? p_value.toString() : p_value;
-         }));
+         {
+            return typeof p_value === "boolean" ? p_value.toString() : p_value;
+         }));
          url += (url.indexOf("?") == -1 ? "?" : "&") + "htmlid=" + this.id;
          Alfresco.util.Ajax.request(
          {
@@ -7803,7 +7809,7 @@ Alfresco.util.RENDERLOOPSIZE = 25;
 
          // Remove this instance of this component before a new one is created
          Alfresco.util.ComponentManager.unregister(this);
-         window.setTimeout(result[1], 0);         
+         window.setTimeout(result[1], 0);
       }
    };
 })();

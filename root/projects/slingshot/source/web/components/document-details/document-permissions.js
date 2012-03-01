@@ -90,7 +90,7 @@
       },
 
       /**
-       * Called when the onManagePermissionsClick link has been lickced, will display the manage permissions dialog.
+       * Called when the onManagePermissionsClick link has been clicked, will display the manage permissions dialog.
        *
        * @method onManagePermissionsClick
        */

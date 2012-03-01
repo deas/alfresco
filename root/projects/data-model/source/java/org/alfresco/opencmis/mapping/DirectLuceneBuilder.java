@@ -167,4 +167,39 @@ public class DirectLuceneBuilder extends AbstractSimpleLuceneBuilder
         return pd.getDataType();
     }
 
+    @Override
+    protected String getRangeMax()
+    {
+        if(getInDataType().getName().equals(DataTypeDefinition.DATE))
+        {
+            return "MAX";
+        }
+        else if(getInDataType().getName().equals(DataTypeDefinition.DATETIME))
+        {
+            return "MAX";
+        }
+        else
+        {
+            return super.getRangeMax();
+        }
+    }
+    
+    
+    @Override
+    protected String getRangeMin()
+    {
+        if(getInDataType().getName().equals(DataTypeDefinition.DATE))
+        {
+            return "MIN";
+        }
+        else if(getInDataType().getName().equals(DataTypeDefinition.DATETIME))
+        {
+            return "MIN";
+        }
+        else
+        {
+            return super.getRangeMin();
+        }
+    }
+    
 }

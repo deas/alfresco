@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2010 Alfresco Software Limited.
+ * Copyright (C) 2006-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -112,12 +112,15 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 	// Kerberos realm and KDC address
 
 	private String m_krbRealm;
-	private String m_krbKDC;
 
 	// Login configuration entry name
 
 	private String m_loginEntryName = LoginConfigEntry;
 
+	// Enable ticket cracking code, required for Java5 JVMs
+	
+	private boolean m_enableTicketCracking;
+	
 	// Server login context
 
 	private LoginContext m_loginContext;
@@ -155,33 +158,23 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
         	
         	System.setProperty( "sun.security.jgss.debug", "true");
         	System.setProperty( "sun.security.krb5.debug", "true");
+        	
+        	System.setProperty("com.ibm.security.jgss.debug", "all");
         }
         
         // Access the CIFS server configuration
         
         CIFSConfigSection cifsConfig = (CIFSConfigSection) config.getConfigSection(CIFSConfigSection.SectionName);
         
-		// Check if Kerberos is enabled, get the Kerberos KDC address
+		// Check if Kerberos is enabled, get the Kerberos realm
 
-		ConfigElement kdcAddress = params.getChild("KDC");
+		ConfigElement krbRealm = params.getChild("Realm");
+		
+		if ( krbRealm != null && krbRealm.getValue() != null && krbRealm.getValue().length() > 0) {
 
-		if ( kdcAddress != null && kdcAddress.getValue() != null && kdcAddress.getValue().length() > 0) {
+			// Set the Kerberos realm
 
-			// Set the Kerberos KDC address
-
-			m_krbKDC = kdcAddress.getValue();
-
-			// Get the Kerberos realm
-
-			ConfigElement krbRealm = params.getChild("Realm");
-			if ( krbRealm != null && krbRealm.getValue() != null && krbRealm.getValue().length() > 0) {
-
-				// Set the Kerberos realm
-
-				m_krbRealm = krbRealm.getValue();
-			}
-			else
-				throw new InvalidConfigurationException("Kerberos realm not specified");
+			m_krbRealm = krbRealm.getValue();
 
 			// Get the CIFS service account password
 
@@ -341,7 +334,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 				// Create the Oid list for the SPNEGO NegTokenInit
 
-				Vector mechTypes = new Vector();
+				Vector<Oid> mechTypes = new Vector<Oid>();
 
 				mechTypes.add(OID.NTLMSSP);
 
@@ -385,6 +378,17 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 		ConfigElement disallowNTLMv1 = params.getChild("disallowNTLMv1");
 
 		m_acceptNTLMv1 = disallowNTLMv1 != null ? false : true;
+		
+		// Check if ticket cracking should be enabled
+		
+		ConfigElement enableTktCracking = params.getChild( "enableTicketCracking");
+		
+		m_enableTicketCracking = enableTktCracking != null ? true : false;
+
+		// Debug
+
+		if ( Debug.EnableInfo && hasDebug() && m_enableTicketCracking == true)
+			Debug.println("[SMB] Kerberos ticket cracking enabled");
 	}
 
 	/**
@@ -917,7 +921,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 			String domain = sess.getSMBServer().getServerName();
 
-			List tList = new ArrayList();
+			List<TargetInfo> tList = new ArrayList<TargetInfo>();
 
 			tList.add(new TargetInfo(NTLM.TargetDomain, domain));
 			tList.add(new TargetInfo(NTLM.TargetServer, sess.getServerName()));
@@ -1224,7 +1228,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
         	KrbAuthContext krbAuthCtx = null;
         	
-        	if ( krbApReq.hasMutualAuthentication())
+        	if ( krbApReq.hasMutualAuthentication() && m_enableTicketCracking == true)
         	{
         		// Allocate the Kerberos authentication and parse the AP-REQ
         		
