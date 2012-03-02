@@ -4441,7 +4441,10 @@ Alfresco.util.YUILoaderHelper = function()
          yuiLoader = new YAHOO.util.YUILoader(
          {
             base: Alfresco.constants.URL_RESCONTEXT + "yui/",
-            filter: Alfresco.constants.DEBUG ? "DEBUG" : "",
+            filter: Alfresco.constants.DEBUG ? "DEBUG" : {
+              'searchExp': "-min\\.js",
+              'replaceStr': "-min.js?v=" +YAHOO.VERSION
+            },
             loadOptional: false,
             skin: {},
             onSuccess: Alfresco.util.YUILoaderHelper.onLoaderComplete,

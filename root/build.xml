@@ -780,6 +780,10 @@
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/datatable/datatable-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/history/history-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/treeview/treeview-min.js" />
+		 <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/cookie/cookie-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/uploader/uploader-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/calendar/calendar-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/resize/resize-min.js" />
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 

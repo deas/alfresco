@@ -10,12 +10,8 @@
 
 <#-- Global flags retrieved from web-framework-config-application -->
 <#assign DEBUG=(globalConfig("client-debug", "false") = "true")>
-   <#assign AUTOLOGGING=(globalConfig("client-debug-autologging", "false") = "true")>
+<#assign AUTOLOGGING=(globalConfig("client-debug-autologging", "false") = "true")>
 
-<#-- JavaScript minimisation via YUI Compressor -->
-<#macro script type src>
-   <script type="${type}" src="${DEBUG?string(src, src?replace(".js", "-min.js"))}"></script>
-</#macro>
 
 <#-- allow theme to be specified in url args - helps debugging themes -->
 <#if page?? && page.url.templateArgs.theme?? && page.url.templateArgs.theme?length != 0>

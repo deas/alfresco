@@ -1,9 +1,4 @@
-<#assign templateStylesheets = []>
-
-<#macro link rel type href>
-   <#assign templateStylesheets = templateStylesheets + [href]>
-</#macro>
-
+<#-- Renders stylesheets gathered by the <@link> template directive -->
 <#macro renderStylesheets>
    <style type="text/css" media="screen">
    <#list templateStylesheets as href>
@@ -21,7 +16,7 @@
       <@link rel="stylesheet" type="text/css" href="${url.context}/yui/assets/skins/default/skin.css" />
       <@link rel="stylesheet" type="text/css" href="${url.context}/res/fdk/form-console.css" />
 
-      <script type="text/javascript" src="${url.context}/js/log4javascript.v1.4.1.js"></script>
+      <script type="text/javascript" src="${url.context}/js/log4javascript.v1.4.1.js"></script>\
       <script type="text/javascript" src="${url.context}/yui/yahoo/yahoo-debug.js"></script>
       <script type="text/javascript" src="${url.context}/yui/event/event-debug.js"></script>
       <script type="text/javascript" src="${url.context}/yui/dom/dom-debug.js"></script>
@@ -41,6 +36,8 @@
       <script type="text/javascript" src="${url.context}/js/bubbling.v2.1.js"></script>
       <script type="text/javascript" src="${url.context}/service/messages.js?locale=en_US"></script>
       <script type="text/javascript" src="${url.context}/js/alfresco.js"></script>
+      <script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce/tiny_mce.js"></script>
+      <script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce.js"></script>
       <script type="text/javascript" src="${url.context}/js/forms-runtime.js"></script>
       <script type="text/javascript" src="${url.context}/res/fdk/fdk.js"></script>
       

@@ -60,6 +60,12 @@
              <mode>manual</mode>
          </module-deployment>
 
+         <!--
+            Stops cached client side resources from being stale after a release by adding a checksum to the url
+            for resources requested using <@script> & <@link> tags
+         -->
+         <use-checksum-dependencies>true</use-checksum-dependencies>
+
       </web-framework>
 
    </config>

@@ -1,11 +1,9 @@
 <#include "../component.head.inc">
 <#-- Stylesheets gathered and rendered using @import to workaround IEBug KB262161 -->
-<#assign templateStylesheets = []>
-<#macro link rel type href>
-   <#assign templateStylesheets = templateStylesheets + [href]>
-</#macro>
+
 <#--
    RESOURCES
+   - <@script> & <@link> macros are now directives to improve resource handling
 -->
 <@markup id="favicons">
 <#if !PORTLET>
@@ -26,35 +24,38 @@
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/yui/assets/skin.css" />
    </#if>
    <#if DEBUG>
-   <script type="text/javascript" src="${url.context}/res/js/log4javascript.v1.4.1.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/yahoo/yahoo-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/event/event-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/dom/dom-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/dragdrop/dragdrop-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/animation/animation-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/logger/logger-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/connection/connection-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/element/element-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/get/get-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/yuiloader/yuiloader-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/button/button-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/container/container-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/menu/menu-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/json/json-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/selector/selector-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/datasource/datasource-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/autocomplete/autocomplete-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/paginator/paginator-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/datatable/datatable-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/history/history-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/treeview/treeview-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/autocomplete/autocomplete-debug.js"></script>
-   <script type="text/javascript" src="${url.context}/res/yui/yui-patch.js"></script>
+   <@script type="text/javascript" src="${url.context}/res/js/log4javascript.v1.4.1.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/yahoo/yahoo.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/event/event.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/dom/dom.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/dragdrop/dragdrop.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/animation/animation.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/logger/logger.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/connection/connection.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/element/element.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/get/get.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/yuiloader/yuiloader.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/button/button.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/container/container.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/menu/menu.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/json/json.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/selector/selector.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/datasource/datasource.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/autocomplete/autocomplete.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/paginator/paginator.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/datatable/datatable.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/history/history.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/treeview/treeview.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/cookie/cookie.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/uploader/uploader.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/calendar/calendar.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/resize/resize.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/yui/yui-patch.js"></@script>
    <script type="text/javascript">//<![CDATA[
       YAHOO.util.Event.throwErrors = true;
    //]]></script>
    <#else>
-   <script type="text/javascript" src="${url.context}/res/js/yui-common.js"></script>
+   <@script type="text/javascript" src="${url.context}/res/js/yui-common.js"></@script>
    </#if>
    <@script type="text/javascript" src="${url.context}/res/js/bubbling.v2.1.js"></@script>
    <script type="text/javascript">//<![CDATA[
@@ -67,7 +68,7 @@
 
 <@markup id="messages">
    <!-- Common i18n msg properties -->
-   <script type="text/javascript" src="${url.context}/service/messages.js?locale=${locale}"></script>
+   <@generateMessages type="text/javascript" src="${url.context}/service/messages.js" locale="${locale}"/>
 </@markup>
 
 <@markup id="alfrescoConstants">
@@ -106,7 +107,7 @@
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/yui-layout.css" />
    <@script type="text/javascript" src="${url.context}/res/js/flash/AC_OETags.js"></@script>
    <@script type="text/javascript" src="${url.context}/res/js/alfresco.js"></@script>
-   <script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce/tiny_mce${DEBUG?string("_src", "")}.js"></script>
+   <script type="text/javascript" src="<@checksumResource src="${url.context}/res/modules/editors/tiny_mce/tiny_mce.js" parameter="checksum"/>"></script>
    <@script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce.js"></@script>
    <@script type="text/javascript" src="${url.context}/res/modules/editors/yui_editor.js"></@script>
    <@script type="text/javascript" src="${url.context}/res/js/forms-runtime.js"></@script>
@@ -144,15 +145,15 @@
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/presentation.css" />
 </@>
 
-   <#if (templateStylesheets?size > 0)>
-   <!-- Common stylesheets gathered to workaround IEBug KB262161 -->
-   <style type="text/css" media="screen">
-      <#list templateStylesheets as href>
-      @import "${href}";
-      </#list>
-   </style>
-   </#if>
-
 <@markup id="resources">
    <#-- Use this "markup id" to add in a extension's resources -->
 </@>
+
+<!-- Gathered stylesheets from Resources component -->
+<#if (templateStylesheets?? && templateStylesheets?size > 0)>
+<style type="text/css" media="screen">
+   <#list templateStylesheets as href>
+   @import "${href}";
+   </#list>
+</style>
+</#if>

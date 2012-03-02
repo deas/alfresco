@@ -11,16 +11,10 @@
 <#assign PORTLET=(context.attributes.portletHost!false)>
 <#--
    UTILITY METHODS
+   - <@script> & <@link> macros are now directives to improve resource handling
 -->
-<#-- Javascript import that brings in minified version in debug mode. -->
-<#macro script type src>
-   <script type="${type}" src="${DEBUG?string(src, src?replace(".js", "-min.js"))}"></script>
-</#macro>
-<#-- Stylesheets gathered and rendered using @import to workaround IEBug KB262161 -->
-<#assign templateStylesheets = []>
-<#macro link rel type href>
-   <#assign templateStylesheets = templateStylesheets + [href]>
-</#macro>
+
+
 <#--
    TEMPLATE MACROS
 -->
@@ -44,15 +38,13 @@
 
    <!-- Template Resources (nested content from < @templateHeader > call) -->
    <#nested>
+
    <@markup id="resources">
    <!-- Additional template resources -->
    </@markup>
 
-   <!-- Component Resources (from .get.head.ftl files) -->
-   ${head}
-
-   <#if (templateStylesheets?size > 0)>
-   <!-- Template & Component Resources' stylesheets gathered to workaround IEBug KB262161 -->
+   <!-- Template Resources' stylesheets gathered to workaround IEBug KB262161 -->
+   <#if (templateStylesheets?? && templateStylesheets?size > 0)>
    <style type="text/css" media="screen">
       <#list templateStylesheets as href>
       @import "${href}";
@@ -60,16 +52,20 @@
    </style>
    </#if>
 
+   <!-- Component Resources (from .get.head.ftl files) -->
+   ${head}
+
+
    <@markup id="ieStylesheets">
    <!-- MSIE CSS fix overrides -->
-   <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie6.css" /><![endif]-->
-   <!--[if IE 7]><link rel="stylesheet" type="text/css" href="${url.context}/res/css/ie7.css" /><![endif]-->
-   </@>
+   <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/ie6.css"/>'/><![endif]-->
+   <!--[if IE 7]><link rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/ie7.css"/>'/><![endif]-->
+   </@markup>
 
    <@markup id="ipadStylesheets">
    <!-- iPad CSS overrides -->
-   <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href="${url.context}/res/css/ipad.css"/>
-   </@>
+   <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/ipad.css"/>'/>
+   </@markup>
 <#if !PORTLET>
 </head>
 </#if>

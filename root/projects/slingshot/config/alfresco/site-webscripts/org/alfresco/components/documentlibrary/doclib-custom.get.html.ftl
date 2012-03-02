@@ -5,14 +5,12 @@
 <#if dependencies??>
    <#if dependencies.css??>
       <#list dependencies.css as cssFile>
-         <#assign src = page.url.context + "/res/" + cssFile>
-<link rel="stylesheet" type="text/css" href="${src?replace("/res//", "/res/")}" />
+<@link rel="stylesheet" type="text/css" href="${page.url.context}/res${cssFile}" />
       </#list>
    </#if>
    <#if dependencies.js??>
       <#list dependencies.js as jsFile>
-         <#assign src = page.url.context + "/res/" + jsFile>
-<script type="text/javascript" src="${src?replace("/res//", "/res/")}"></script>
+<@script type="text/javascript" src="${page.url.context}/res${jsFile}"></@script>
       </#list>
    </#if>
 </#if>

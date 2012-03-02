@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /*
- * There is an Enterprise overlay for this file
- */
+* There is an Enterprise overlay for this file
+*/
 
 package org.alfresco.web.scripts;
 
@@ -42,18 +42,18 @@ import org.springframework.extensions.webscripts.json.JSONWriter;
  * <code>
  * var msg = Alfresco.messages["messageid"];
  * </code>
- * 
+ *
  * @author Kevin Roast
  */
 public class MessagesWebScript extends org.springframework.extensions.webscripts.MessagesWebScript
 {
     /**
      * Generate the message for a given locale.
-     * 
+     *
      * @param locale    Java locale format
-     * 
+     *
      * @return messages as JSON string
-     * 
+     *
      * @throws IOException
      */
     @Override
@@ -79,14 +79,35 @@ public class MessagesWebScript extends org.springframework.extensions.webscripts
             throw new WebScriptException("Error building messages response.", jsonErr);
         }
         writer.write(";\r\n");
-        
+
         // community logo
         final String serverPath = req.getServerPath();
         final int schemaIndex = serverPath.indexOf(':');
         writer.write("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
         writer.write(serverPath.substring(0, schemaIndex));
         writer.write("://www.alfresco.com/assets/images/logos/community-4.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
-        
+
         return writer.toString();
+    }
+
+    @Override
+    protected String getMessagesPrefix(WebScriptRequest req, WebScriptResponse res, String locale) throws IOException
+    {
+        return "if (typeof Alfresco == \"undefined\" || !Alfresco) {var Alfresco = {};}\r\nAlfresco.messages = Alfresco.messages || {global: null, scope: {}}\r\nAlfresco.messages.global = ";
+    }
+
+    @Override
+    protected String getMessagesSuffix(WebScriptRequest req, WebScriptResponse res, String locale) throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(";\r\n");
+
+        // community logo
+        final String serverPath = req.getServerPath();
+        final int schemaIndex = serverPath.indexOf(':');
+        sb.append("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
+        sb.append(serverPath.substring(0, schemaIndex));
+        sb.append("://www.alfresco.com/assets/images/logos/community-3.4-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
+        return sb.toString();
     }
 }
