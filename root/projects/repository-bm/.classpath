@@ -24,6 +24,5 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-net-2.2.jar" sourcepath="/3rd Party/src/commons-net-2.2-src.zip"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/junit-4.8.1.jar" sourcepath="C:/Users/Nick/.m2/repository/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
