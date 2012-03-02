@@ -39,7 +39,10 @@ public class VirtualCircuitList {
   //  Default and maximum number of virtual circuits
 
   public static final int DefaultCircuits = 4;
-  public static final int MaxCircuits     = 16;
+  public static final int DefMaxCircuits  = 16;
+  
+  public static final int MinCircuits	  = 4;
+  public static final int MaxCircuits     = 2000;
 
   //  UIDs are 16bit values
   
@@ -50,11 +53,40 @@ public class VirtualCircuitList {
   private Map<Integer, VirtualCircuit> m_vcircuits;
   private int m_UID = 1;
   
+  // Maximum allowed virtual circuits
+  
+  private int m_maxVC = MaxCircuits;
+  
   /**
    * Default constructor
    */
   public VirtualCircuitList() {
     
+  }
+  
+  /**
+   * Class constructor
+   * 
+   * @param maxVC int
+   */
+  public VirtualCircuitList( int maxVC) {
+
+	  // Save the maxmimum virtual circuits value
+	  
+	  m_maxVC = maxVC;
+	  
+	  // Allocate the virtual circuit table
+	  
+	  m_vcircuits = new HashMap<Integer, VirtualCircuit>( getMaximumVirtualCircuits());
+  }
+  
+  /**
+   * Return the maximum virtual circuits allowed
+   * 
+   * @return int
+   */
+  public final int getMaximumVirtualCircuits() {
+	  return m_maxVC;
   }
   
   /**
@@ -77,7 +109,7 @@ public class VirtualCircuitList {
     
     //  Check if the virtual circuit table is full
     
-    if ( m_vcircuits.size() == MaxCircuits)
+    if ( m_vcircuits.size() == getMaximumVirtualCircuits())
       return VirtualCircuit.InvalidUID;
 
     //  Find a free slot in the circuit table
@@ -205,6 +237,8 @@ public class VirtualCircuitList {
     
     str.append("[VCs=");
     str.append( getCircuitCount());
+    str.append( "/");
+    str.append( getMaximumVirtualCircuits());
     str.append( "]");
     
     return str.toString();

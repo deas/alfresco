@@ -72,6 +72,7 @@ import org.alfresco.jlan.smb.Dialect;
 import org.alfresco.jlan.smb.DialectSelector;
 import org.alfresco.jlan.smb.server.CIFSConfigSection;
 import org.alfresco.jlan.smb.server.SMBSrvSession;
+import org.alfresco.jlan.smb.server.VirtualCircuitList;
 import org.alfresco.jlan.smb.util.DriveMapping;
 import org.alfresco.jlan.smb.util.DriveMappingList;
 import org.alfresco.jlan.util.IPAddress;
@@ -690,6 +691,36 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 		
 		if ( findChildNode( "disableNIO", smb.getChildNodes()) != null)
 			cifsConfig.setDisableNIOCode( true);
+		
+		// Check if a maximum virtual circuits per session limit has been specified
+		
+		elem = findChildNode("virtualCircuits", smb.getChildNodes());
+		if ( elem != null) {
+			
+			// Parse and validate the maximum virtual circuits value
+			
+			String maxVCVal = elem.getAttribute( "maxPerSession");
+			
+			if ( maxVCVal != null && maxVCVal.length() > 0) {
+				try {
+					
+					// Parse the value, and range check
+					
+					int maxVC = Integer.parseInt( maxVCVal);
+					
+					if ( maxVC < VirtualCircuitList.MinCircuits || maxVC > VirtualCircuitList.MaxCircuits)
+						throw new InvalidConfigurationException("Maximum virtual circuits value out of range, valid range " + VirtualCircuitList.MinCircuits + " - " +
+								VirtualCircuitList.MaxCircuits);
+					
+					// Set the maximum virtual circuits per session
+					
+					cifsConfig.setMaximumVirtualCircuits( maxVC);
+				}
+				catch (NumberFormatException ex) {
+					throw new InvalidConfigurationException("Invalid maximum virtual circuits value, " + maxVCVal);
+				}
+			}
+		}
 		
 		// Check if an authenticator has been specified
 

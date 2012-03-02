@@ -81,6 +81,7 @@ public class ConfigId {
 	public static final int SMBAuthenticator 	= GroupSMB + 26;
 	public static final int SMBDisableNIO		= GroupSMB + 27;
 	public static final int SMBSocketTimeout	= GroupSMB + 28;
+	public static final int SMBMaxVirtualCircuit= GroupSMB + 29;
 
 	// FTP server variables
 

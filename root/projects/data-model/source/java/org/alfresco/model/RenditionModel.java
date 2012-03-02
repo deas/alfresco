@@ -32,4 +32,9 @@ public interface RenditionModel
     
     static final QName ASPECT_RENDITIONED = QName.createQName(NamespaceService.RENDITION_MODEL_1_0_URI, "renditioned");
     static final QName ASSOC_RENDITION = QName.createQName(NamespaceService.RENDITION_MODEL_1_0_URI, "rendition");
+    
+    /**
+     * @since 4.0.1
+     */
+    static final QName ASPECT_PREVENT_RENDITIONS = QName.createQName(NamespaceService.RENDITION_MODEL_1_0_URI, "preventRenditions");
 }

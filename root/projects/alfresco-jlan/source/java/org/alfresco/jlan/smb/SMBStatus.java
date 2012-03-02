@@ -253,6 +253,7 @@ public final class SMBStatus {
 	public static final int NTNetworkAccessDenied	= 0xC00000CA;
 	public static final int NTBadDeviceType 		= 0xC00000CB;
 	public static final int NTBadNetName 			= 0xC00000CC;
+	public static final int NTTooManySessions		= 0xC00000CE;
 	public static final int NTRequestNotAccepted 	= 0xC00000D0;
 	public static final int NTPipeEmpty           	= 0xC00000D9;
 	public static final int NTNoSuchDomain 			= 0xC00000DF;

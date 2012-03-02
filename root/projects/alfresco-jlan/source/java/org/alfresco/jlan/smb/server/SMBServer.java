@@ -220,6 +220,10 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 
 			m_sessions = new SrvSessionList();
 			
+			// Set the maximum virtual circuits per session
+			
+			SMBSrvSession.getFactory().setMaximumVirtualCircuits( m_cifsConfig.getMaximumVirtualCircuits());
+			
 			// Get the core server configuration
 			
 			m_coreConfig = (CoreServerConfigSection) getConfiguration().getConfigSection( CoreServerConfigSection.SectionName);
@@ -736,6 +740,8 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 				break;
 
 			// Changes that affect new sessions only
+			//
+			// Enable/dsiable debug output
 
 			case ConfigId.SMBSessionDebug:
 				sts = ConfigurationListener.StsNewSessionsOnly;
@@ -745,6 +751,16 @@ public class SMBServer extends NetworkFileServer implements Runnable, Configurat
 				}
 				break;
 
+			// Maximum virtual circuits per session
+				
+			case ConfigId.SMBMaxVirtualCircuit:
+				sts = ConfigurationListener.StsNewSessionsOnly;
+				if ( newVal instanceof Integer) {
+					Integer maxVC = (Integer) newVal;
+					SMBSrvSession.getFactory().setMaximumVirtualCircuits( maxVC);
+				}
+				break;
+				
 			// Changes that require a restart
 
 			case ConfigId.SMBHostName:

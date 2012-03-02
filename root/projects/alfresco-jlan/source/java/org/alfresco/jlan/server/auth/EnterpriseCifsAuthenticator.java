@@ -811,7 +811,7 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 				// Failed to allocate a UID
 
-				throw new SMBSrvException(SMBStatus.NTLogonFailure, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+				throw new SMBSrvException(SMBStatus.NTTooManySessions, SMBStatus.SRVTooManyUIDs, SMBStatus.ErrSrv);
 			}
 			else if ( Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE)) {
 

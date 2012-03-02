@@ -698,6 +698,9 @@ public final class SMBErrorText {
 			case SMBStatus.NTBadNetName:
 				errtext = "Bad network name";
 				break;
+			case SMBStatus.NTTooManySessions:
+				errtext = "Too many sessions/virtual circuits";
+				break;
 			case SMBStatus.NTBufferTooSmall:
 				errtext = "Buffer too small";
 				break;

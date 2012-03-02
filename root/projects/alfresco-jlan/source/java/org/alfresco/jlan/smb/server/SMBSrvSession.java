@@ -188,8 +188,9 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * 
 	 * @param handler Packet handler used to send/receive SMBs
 	 * @param srv Server that this session is associated with.
+	 * @param maxVC Maximum virtual circuits allowed on this session.
 	 */
-	protected SMBSrvSession(PacketHandler handler, SMBServer srv) {
+	protected SMBSrvSession(PacketHandler handler, SMBServer srv, int maxVC) {
 		super(-1, srv, handler.isProtocolName(), null);
 
 		// Set the packet handler
@@ -210,10 +211,10 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 			if ( handler.hasClientName())
 				m_callerNBName = handler.getClientName();
 		}
-
-		// Allocate the virtual circuit list
-
-		m_vcircuits = new VirtualCircuitList();
+		
+		// Initialize the virtual circuit list
+		
+		setMaximumVirtualCircuits( maxVC);
 	}
 
 	/**
@@ -256,8 +257,13 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 * @param vc VirtualCircuit
 	 * @return int
 	 */
-	public final int addVirtualCircuit(VirtualCircuit vc) {
+	public synchronized final int addVirtualCircuit(VirtualCircuit vc) {
 
+		// Check if the virtual circuit list has been allocated
+		
+		if ( m_vcircuits == null)
+			m_vcircuits = new VirtualCircuitList();
+		
 		// Add the new virtual circuit
 
 		return m_vcircuits.addCircuit(vc);
@@ -271,6 +277,11 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	 */
 	public final VirtualCircuit findVirtualCircuit(int uid) {
 
+		// Check if the virtual circuit list has been allocated
+		
+		if ( m_vcircuits == null)
+			m_vcircuits = new VirtualCircuitList();
+		
 		// Find the virtual circuit with the specified UID
 
 		VirtualCircuit vc = m_vcircuits.findCircuit(uid);
@@ -299,7 +310,8 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 
 		// Remove the virtual circuit with the specified UID
 
-		m_vcircuits.removeCircuit(uid, this);
+		if ( m_vcircuits != null)
+			m_vcircuits.removeCircuit(uid, this);
 	}
 
 	/**
@@ -603,6 +615,15 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 	
 	/**
+	 * Return the maximum virtual circuits allowed on this session
+	 * 
+	 * @return int
+	 */
+	public final int getMaximumVirtualCircuits() {
+		return (m_vcircuits != null) ? m_vcircuits.getMaximumVirtualCircuits() : 0;
+	}
+	
+	/**
 	 * Hangup the session.
 	 * 
 	 * @param reason java.lang.String Reason the session is being closed.
@@ -758,6 +779,24 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 		m_state = state;
 	}
 
+	/**
+	 * Set the maximum virtual circuits allowed for this session
+	 * 
+	 * @param maxVC int
+	 */
+	public synchronized final void setMaximumVirtualCircuits( int maxVC) {
+		
+		// Can only set the virtual circuit limit before the virtual circuit list has been allocated
+		// to the session
+		
+		if ( m_vcircuits != null)
+			throw new RuntimeException( "Virtual circuit list is already allocated");
+		
+		// Create the virtual circuit list with the required limit
+		
+		m_vcircuits = new VirtualCircuitList( maxVC);
+	}
+	
 	/**
 	 * Process the NetBIOS session request message, either accept the session request and send back
 	 * a NetBIOS accept or reject the session and send back a NetBIOS reject and hangup the session.

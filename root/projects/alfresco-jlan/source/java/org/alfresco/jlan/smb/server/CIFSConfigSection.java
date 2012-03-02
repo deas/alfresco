@@ -149,6 +149,10 @@ public class CIFSConfigSection extends ConfigSection {
   
   private int m_clientSocketTimeout = DefSessionTimeout;
   
+  // Per session virtual circuit limit
+  
+  private int m_virtualCircuitLimit = VirtualCircuitList.DefMaxCircuits;
+  
   //--------------------------------------------------------------------------------
   //  Win32 NetBIOS configuration
   //
@@ -561,6 +565,15 @@ public class CIFSConfigSection extends ConfigSection {
 	  return m_clientSocketTimeout;
   }
 
+  /**
+   * Return the maximum virtual circuits per session
+   * 
+   * @return int
+   */
+  public final int getMaximumVirtualCircuits() {
+	  return m_virtualCircuitLimit;
+  }
+  
   /**
    * Check if native code calls are disabled
    * 
@@ -1403,7 +1416,7 @@ public class CIFSConfigSection extends ConfigSection {
   }
 
   /**
-   * et the client socket timeout, in milliseconds
+   * Set the client socket timeout, in milliseconds
    * 
    * @param tmo int
    * @return int
@@ -1429,6 +1442,26 @@ public class CIFSConfigSection extends ConfigSection {
    */
   public final void setNativeCodeDisabled(boolean noNative) {
 	  m_disableNativeCode = noNative;
+  }
+  
+  /**
+   * Set the maximum virtual circuits per session
+   * 
+   * @param maxVC int
+   * @return int
+   * @exception InvalidConfigurationException 
+   */
+  public final int setMaximumVirtualCircuits(int maxVC)
+  	throws InvalidConfigurationException {
+			        
+	  //  Inform listeners, validate the configuration change
+
+	  int sts = fireConfigurationChange(ConfigId.SMBMaxVirtualCircuit, new Integer(maxVC));
+	  m_virtualCircuitLimit = maxVC;
+		    
+	  //  Return the change status
+    
+	  return sts;
   }
   
   /**
