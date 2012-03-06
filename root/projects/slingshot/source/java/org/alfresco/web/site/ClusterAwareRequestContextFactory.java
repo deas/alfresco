@@ -40,6 +40,8 @@ public class ClusterAwareRequestContextFactory extends ServletRequestContextFact
     @Override
     protected ServletRequestContext buildServletRequestContext(LinkBuilder linkBuilder)
     {
+        // NOTE: set the ConfigService manually to avoid changing bean config for 3.4.9/4.0.1 onwards
+        setConfigService(this.webFrameworkServiceRegistry.getConfigService());
         return new ClusterAwareRequestContext(clusterObjectPersister, webFrameworkServiceRegistry, frameworkUtils, linkBuilder);
     }
 }

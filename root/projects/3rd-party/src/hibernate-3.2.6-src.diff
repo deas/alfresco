@@ -1,7 +1,7 @@
 Index: src/org/hibernate/action/AmalgamatedCleanupAction.java
 ===================================================================
 --- src/org/hibernate/action/AmalgamatedCleanupAction.java	(revision 0)
-+++ src/org/hibernate/action/AmalgamatedCleanupAction.java	(revision 0)
++++ src/org/hibernate/action/AmalgamatedCleanupAction.java	(working copy)
 @@ -0,0 +1,139 @@
 +package org.hibernate.action;
 +
@@ -146,7 +146,17 @@ Index: src/org/hibernate/action/BulkOperationCleanupAction.java
 ===================================================================
 --- src/org/hibernate/action/BulkOperationCleanupAction.java	(revision 15795)
 +++ src/org/hibernate/action/BulkOperationCleanupAction.java	(working copy)
-@@ -148,4 +148,20 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ // $Id$
+ package org.hibernate.action;
+ 
+@@ -148,4 +154,20 @@
  			}
  		}
  	}
@@ -171,7 +181,17 @@ Index: src/org/hibernate/action/CollectionAction.java
 ===================================================================
 --- src/org/hibernate/action/CollectionAction.java	(revision 15795)
 +++ src/org/hibernate/action/CollectionAction.java	(working copy)
-@@ -66,6 +66,16 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.action;
+ 
+@@ -66,6 +72,16 @@
  	public boolean hasAfterTransactionCompletion() {
  		return persister.hasCache();
  	}
@@ -188,7 +208,7 @@ Index: src/org/hibernate/action/CollectionAction.java
  
  	public Serializable[] getPropertySpaces() {
  		return persister.getCollectionSpaces();
-@@ -142,6 +152,16 @@
+@@ -142,6 +158,16 @@
  					.compare( key, action.key, session.getEntityMode() );
  		}
  	}
@@ -209,7 +229,17 @@ Index: src/org/hibernate/action/EntityAction.java
 ===================================================================
 --- src/org/hibernate/action/EntityAction.java	(revision 15795)
 +++ src/org/hibernate/action/EntityAction.java	(working copy)
-@@ -42,7 +42,12 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.action;
+ 
+@@ -42,7 +48,12 @@
  		this.persister = persister;
  	}
  
@@ -223,7 +253,7 @@ Index: src/org/hibernate/action/EntityAction.java
  
  	/**
  	 * entity name accessor
-@@ -132,5 +137,11 @@
+@@ -132,5 +143,11 @@
  		ois.defaultReadObject();
  		persister = session.getFactory().getEntityPersister( entityName );
  	}
@@ -239,7 +269,17 @@ Index: src/org/hibernate/action/EntityDeleteAction.java
 ===================================================================
 --- src/org/hibernate/action/EntityDeleteAction.java	(revision 15795)
 +++ src/org/hibernate/action/EntityDeleteAction.java	(working copy)
-@@ -163,7 +163,7 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.action;
+ 
+@@ -163,7 +169,7 @@
  		postCommitDelete();
  	}
  
@@ -252,7 +292,17 @@ Index: src/org/hibernate/action/EntityIdentityInsertAction.java
 ===================================================================
 --- src/org/hibernate/action/EntityIdentityInsertAction.java	(revision 15795)
 +++ src/org/hibernate/action/EntityIdentityInsertAction.java	(working copy)
-@@ -141,7 +141,7 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.action;
+ 
+@@ -141,7 +147,7 @@
  		return hasPostCommitEventListeners();
  	}
  
@@ -278,7 +328,17 @@ Index: src/org/hibernate/action/EntityUpdateAction.java
 ===================================================================
 --- src/org/hibernate/action/EntityUpdateAction.java	(revision 15795)
 +++ src/org/hibernate/action/EntityUpdateAction.java	(working copy)
-@@ -251,7 +251,7 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.action;
+ 
+@@ -251,7 +257,7 @@
  		postCommitUpdate();
  	}
  
@@ -291,7 +351,17 @@ Index: src/org/hibernate/action/Executable.java
 ===================================================================
 --- src/org/hibernate/action/Executable.java	(revision 15795)
 +++ src/org/hibernate/action/Executable.java	(working copy)
-@@ -6,34 +6,43 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.action;
+ 
+@@ -6,34 +12,43 @@
  import java.io.Serializable;
  
  /**
@@ -539,7 +609,17 @@ Index: src/org/hibernate/cfg/Configuration.java
 ===================================================================
 --- src/org/hibernate/cfg/Configuration.java	(revision 15795)
 +++ src/org/hibernate/cfg/Configuration.java	(working copy)
-@@ -996,8 +996,8 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ //$Id$
+ package org.hibernate.cfg;
+ 
+@@ -996,8 +1002,8 @@
  
  				TableMetadata tableInfo = databaseMetadata.getTableMetadata(
  						table.getName(),
@@ -554,34 +634,297 @@ Index: src/org/hibernate/dialect/DialectFactory.java
 ===================================================================
 --- src/org/hibernate/dialect/DialectFactory.java	(revision 15795)
 +++ src/org/hibernate/dialect/DialectFactory.java	(working copy)
-@@ -35,10 +35,12 @@
- 	public static Dialect buildDialect(Properties props, String databaseName, int databaseMajorVersion)
- 	        throws HibernateException {
- 		String dialectName = props.getProperty( Environment.DIALECT );
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ // $Id$
+ package org.hibernate.dialect;
+ 
+@@ -7,150 +13,168 @@
+ 
+ import org.hibernate.HibernateException;
+ import org.hibernate.cfg.Environment;
++import org.hibernate.dialect.Dialect;
+ import org.hibernate.util.ReflectHelper;
+ 
+ /**
+  * A factory for generating Dialect instances.
+  *
+  * @author Steve Ebersole
++ * @author Alfresco
+  */
+ public class DialectFactory {
+ 
+-	/**
+-	 * Builds an appropriate Dialect instance.
+-	 * <p/>
+-	 * If a dialect is explicitly named in the incoming properties, it is used. Otherwise, the database name and version
+-	 * (obtained from connection metadata) are used to make the dertemination.
+-	 * <p/>
+-	 * An exception is thrown if a dialect was not explicitly set and the database name is not known.
+-	 *
+-	 * @param props The configuration properties.
+-	 * @param databaseName The name of the database product (obtained from metadata).
+-	 * @param databaseMajorVersion The major version of the database product (obtained from metadata).
+-	 *
+-	 * @return The appropriate dialect.
+-	 *
+-	 * @throws HibernateException No dialect specified and database name not known.
+-	 */
+-	public static Dialect buildDialect(Properties props, String databaseName, int databaseMajorVersion)
+-	        throws HibernateException {
+-		String dialectName = props.getProperty( Environment.DIALECT );
 -		if ( dialectName == null ) {
-+		if ( dialectName == null || dialectName.length() == 0) {
- 			return determineDialect( databaseName, databaseMajorVersion );
- 		}
- 		else {
+-			return determineDialect( databaseName, databaseMajorVersion );
+-		}
+-		else {
+-			return buildDialect( dialectName );
+-		}
+-	}
++    /**
++     * Builds an appropriate Dialect instance.
++     * <p/>
++     * If a dialect is explicitly named in the incoming properties, it is used. Otherwise, the database name and version
++     * (obtained from connection metadata) are used to make the dertemination.
++     * <p/>
++     * An exception is thrown if a dialect was not explicitly set and the database name is not known.
++     *
++     * @param props The configuration properties.
++     * @param databaseName The name of the database product (obtained from metadata).
++     * @param databaseMajorVersion The major version of the database product (obtained from metadata).
++     *
++     * @return The appropriate dialect.
++     *
++     * @throws HibernateException No dialect specified and database name not known.
++     */
++    public static Dialect buildDialect(Properties props, String databaseName, int databaseMajorVersion)
++            throws HibernateException {
++        String dialectName = props.getProperty( Environment.DIALECT );
++        if ( dialectName == null || dialectName.length() == 0) {
++            return determineDialect( databaseName, databaseMajorVersion );
++        }
++        else {
 +            // Push the dialect onto the system properties
 +            System.setProperty(Environment.DIALECT, dialectName);
- 			return buildDialect( dialectName );
- 		}
- 	}
-@@ -63,6 +65,8 @@
- 		}
++            return buildDialect( dialectName );
++        }
++    }
  
- 		String dialectName = mapper.getDialectClass( databaseMajorVersion );
+-	/**
+-	 * Determine the appropriate Dialect to use given the database product name
+-	 * and major version.
+-	 *
+-	 * @param databaseName The name of the database product (obtained from metadata).
+-	 * @param databaseMajorVersion The major version of the database product (obtained from metadata).
+-	 *
+-	 * @return An appropriate dialect instance.
+-	 */
+-	public static Dialect determineDialect(String databaseName, int databaseMajorVersion) {
+-		if ( databaseName == null ) {
+-			throw new HibernateException( "Hibernate Dialect must be explicitly set" );
+-		}
++    /**
++     * Determine the appropriate Dialect to use given the database product name
++     * and major version.
++     *
++     * @param databaseName The name of the database product (obtained from metadata).
++     * @param databaseMajorVersion The major version of the database product (obtained from metadata).
++     *
++     * @return An appropriate dialect instance.
++     */
++    public static Dialect determineDialect(String databaseName, int databaseMajorVersion) {
++        if ( databaseName == null ) {
++            throw new HibernateException( "Hibernate Dialect must be explicitly set" );
++        }
+ 
+-		DatabaseDialectMapper mapper = ( DatabaseDialectMapper ) MAPPERS.get( databaseName );
+-		if ( mapper == null ) {
+-			throw new HibernateException( "Hibernate Dialect must be explicitly set for database: " + databaseName );
+-		}
++        DatabaseDialectMapper mapper = ( DatabaseDialectMapper ) MAPPERS.get( databaseName );
++        if ( mapper == null ) {
++            throw new HibernateException( "Hibernate Dialect must be explicitly set for database: " + databaseName );
++        }
+ 
+-		String dialectName = mapper.getDialectClass( databaseMajorVersion );
+-		return buildDialect( dialectName );
+-	}
++        String dialectName = mapper.getDialectClass( databaseMajorVersion );
 +        // Push the dialect onto the system properties
 +        System.setProperty(Environment.DIALECT, dialectName);
- 		return buildDialect( dialectName );
- 	}
++        return buildDialect( dialectName );
++    }
  
-@@ -152,5 +156,13 @@
- 			        }
- 		        }
- 		);
-+        
+-	/**
+-	 * Returns a dialect instance given the name of the class to use.
+-	 *
+-	 * @param dialectName The name of the dialect class.
+-	 *
+-	 * @return The dialect instance.
+-	 */
+-	public static Dialect buildDialect(String dialectName) {
+-		try {
+-			return ( Dialect ) ReflectHelper.classForName( dialectName ).newInstance();
+-		}
+-		catch ( ClassNotFoundException cnfe ) {
+-			throw new HibernateException( "Dialect class not found: " + dialectName );
+-		}
+-		catch ( Exception e ) {
+-			throw new HibernateException( "Could not instantiate dialect class", e );
+-		}
+-	}
++    /**
++     * Returns a dialect instance given the name of the class to use.
++     *
++     * @param dialectName The name of the dialect class.
++     *
++     * @return The dialect instance.
++     */
++    public static Dialect buildDialect(String dialectName) {
++        try {
++            return ( Dialect ) ReflectHelper.classForName( dialectName ).newInstance();
++        }
++        catch ( ClassNotFoundException cnfe ) {
++            throw new HibernateException( "Dialect class not found: " + dialectName );
++        }
++        catch ( Exception e ) {
++            throw new HibernateException( "Could not instantiate dialect class", e );
++        }
++    }
+ 
+-	/**
+-	 * For a given database product name, instances of
+-	 * DatabaseDialectMapper know which Dialect to use for different versions.
+-	 */
+-	public static interface DatabaseDialectMapper {
+-		public String getDialectClass(int majorVersion);
+-	}
++    /**
++     * For a given database product name, instances of
++     * DatabaseDialectMapper know which Dialect to use for different versions.
++     */
++    public static interface DatabaseDialectMapper {
++        public String getDialectClass(int majorVersion);
++    }
+ 
+-	/**
+-	 * A simple DatabaseDialectMapper for dialects which are independent
+-	 * of the underlying database product version.
+-	 */
+-	public static class VersionInsensitiveMapper implements DatabaseDialectMapper {
+-		private String dialectClassName;
++    /**
++     * A simple DatabaseDialectMapper for dialects which are independent
++     * of the underlying database product version.
++     */
++    public static class VersionInsensitiveMapper implements DatabaseDialectMapper {
++        private String dialectClassName;
+ 
+-		public VersionInsensitiveMapper(String dialectClassName) {
+-			this.dialectClassName = dialectClassName;
+-		}
++        public VersionInsensitiveMapper(String dialectClassName) {
++            this.dialectClassName = dialectClassName;
++        }
+ 
+-		public String getDialectClass(int majorVersion) {
+-			return dialectClassName;
+-		}
+-	}
++        public String getDialectClass(int majorVersion) {
++            return dialectClassName;
++        }
++    }
+ 
+ 	// TODO : this is the stuff it'd be nice to move to a properties file or some other easily user-editable place
+ 	private static final Map MAPPERS = new HashMap();
+-	static {
+-		// detectors...
+-		MAPPERS.put( "HSQL Database Engine", new VersionInsensitiveMapper( "org.hibernate.dialect.HSQLDialect" ) );
+-		MAPPERS.put( "H2", new VersionInsensitiveMapper( "org.hibernate.dialect.H2Dialect" ) );
+-		MAPPERS.put( "MySQL", new VersionInsensitiveMapper( "org.hibernate.dialect.MySQLDialect" ) );
+-		MAPPERS.put( "PostgreSQL", new VersionInsensitiveMapper( "org.hibernate.dialect.PostgreSQLDialect" ) );
+-		MAPPERS.put( "Apache Derby", new VersionInsensitiveMapper( "org.hibernate.dialect.DerbyDialect" ) );
++    static {
++        // detectors...
++        MAPPERS.put( "HSQL Database Engine", new VersionInsensitiveMapper( "org.hibernate.dialect.HSQLDialect" ) );
++        MAPPERS.put( "H2", new VersionInsensitiveMapper( "org.hibernate.dialect.H2Dialect" ) );
++        MAPPERS.put( "MySQL", new VersionInsensitiveMapper( "org.hibernate.dialect.MySQLDialect" ) );
++        MAPPERS.put( "PostgreSQL", new VersionInsensitiveMapper( "org.hibernate.dialect.PostgreSQLDialect" ) );
++        MAPPERS.put( "Apache Derby", new VersionInsensitiveMapper( "org.hibernate.dialect.DerbyDialect" ) );
+ 
+-		MAPPERS.put( "Ingres", new VersionInsensitiveMapper( "org.hibernate.dialect.IngresDialect" ) );
+-		MAPPERS.put( "ingres", new VersionInsensitiveMapper( "org.hibernate.dialect.IngresDialect" ) );
+-		MAPPERS.put( "INGRES", new VersionInsensitiveMapper( "org.hibernate.dialect.IngresDialect" ) );
++        MAPPERS.put( "Ingres", new VersionInsensitiveMapper( "org.hibernate.dialect.IngresDialect" ) );
++        MAPPERS.put( "ingres", new VersionInsensitiveMapper( "org.hibernate.dialect.IngresDialect" ) );
++        MAPPERS.put( "INGRES", new VersionInsensitiveMapper( "org.hibernate.dialect.IngresDialect" ) );
+ 
+-		MAPPERS.put( "Microsoft SQL Server Database", new VersionInsensitiveMapper( "org.hibernate.dialect.SQLServerDialect" ) );
+-		MAPPERS.put( "Microsoft SQL Server", new VersionInsensitiveMapper( "org.hibernate.dialect.SQLServerDialect" ) );
+-		MAPPERS.put( "Sybase SQL Server", new VersionInsensitiveMapper( "org.hibernate.dialect.SybaseDialect" ) );
+-		MAPPERS.put( "Adaptive Server Enterprise", new VersionInsensitiveMapper( "org.hibernate.dialect.SybaseDialect" ) );
++        MAPPERS.put( "Microsoft SQL Server Database", new VersionInsensitiveMapper( "org.hibernate.dialect.SQLServerDialect" ) );
++        MAPPERS.put( "Microsoft SQL Server", new VersionInsensitiveMapper( "org.hibernate.dialect.SQLServerDialect" ) );
++        MAPPERS.put( "Sybase SQL Server", new VersionInsensitiveMapper( "org.hibernate.dialect.SybaseDialect" ) );
++        MAPPERS.put( "Adaptive Server Enterprise", new VersionInsensitiveMapper( "org.hibernate.dialect.SybaseDialect" ) );
+ 
+-		MAPPERS.put( "Informix Dynamic Server", new VersionInsensitiveMapper( "org.hibernate.dialect.InformixDialect" ) );
++        MAPPERS.put( "Informix Dynamic Server", new VersionInsensitiveMapper( "org.hibernate.dialect.InformixDialect" ) );
+ 
+-		// thanks goodness for "universal" databases...
+-		MAPPERS.put( "DB2/NT", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
+-		MAPPERS.put( "DB2/LINUX", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
+-		MAPPERS.put( "DB2/6000", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
+-		MAPPERS.put( "DB2/HPUX", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
+-		MAPPERS.put( "DB2/SUN", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
+-		MAPPERS.put( "DB2/LINUX390", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
+-		MAPPERS.put( "DB2/AIX64", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/NT", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/LINUX", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/6000", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/HPUX", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/SUN", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/LINUX390", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2/AIX64", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
++        MAPPERS.put( "DB2",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/NT",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/NT64",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2 UDP",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/LINUX",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/LINUX390",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/LINUXZ64",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/400 SQL",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/6000",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2 UDB iSeries",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/AIX64",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/HPUX",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/HP64",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/SUN",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/SUN64",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/PTX",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/2",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
++        MAPPERS.put( "DB2/LINUXX8664",new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ));
+ 
+-		MAPPERS.put(
+-		        "Oracle",
+-		        new DatabaseDialectMapper() {
+-			        public String getDialectClass(int majorVersion) {
+-						switch ( majorVersion ) {
+-							case 8: return Oracle8iDialect.class.getName();
+-							case 9: return Oracle9iDialect.class.getName();
+-							case 10: return Oracle10gDialect.class.getName();
+-							default: throw new HibernateException( "unknown Oracle major version [" + majorVersion + "]" );
+-						}
+-			        }
+-		        }
+-		);
+-	}
 +        MAPPERS.put( "MySQL", new VersionInsensitiveMapper( "org.hibernate.dialect.MySQLInnoDBDialect" ) );
 +        MAPPERS.put( "DB2/NT64", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
 +        MAPPERS.put( "DB2/LINUX", new VersionInsensitiveMapper( "org.hibernate.dialect.DB2Dialect" ) );
@@ -589,13 +932,23 @@ Index: src/org/hibernate/dialect/DialectFactory.java
 +        MAPPERS.put( "Microsoft SQL Server", new VersionInsensitiveMapper( "org.alfresco.repo.domain.hibernate.dialect.AlfrescoSQLServerDialect" ) );
 +        MAPPERS.put( "Sybase SQL Server", new VersionInsensitiveMapper( "org.alfresco.repo.domain.hibernate.dialect.AlfrescoSybaseAnywhereDialect" ) );
 +        MAPPERS.put( "Oracle", new VersionInsensitiveMapper( "org.alfresco.repo.domain.hibernate.dialect.AlfrescoOracle9Dialect" ) );
- 	}
++    }
  }
 Index: src/org/hibernate/engine/ActionQueue.java
 ===================================================================
 --- src/org/hibernate/engine/ActionQueue.java	(revision 15795)
 +++ src/org/hibernate/engine/ActionQueue.java	(working copy)
-@@ -40,6 +40,7 @@
+@@ -21,6 +21,9 @@
+  * 51 Franklin Street, Fifth Floor
+  * Boston, MA  02110-1301  USA
+  *
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
+  */
+ package org.hibernate.engine;
+ 
+@@ -40,6 +43,7 @@
  
  import org.hibernate.AssertionFailure;
  import org.hibernate.HibernateException;
@@ -603,7 +956,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  import org.hibernate.action.BulkOperationCleanupAction;
  import org.hibernate.action.CollectionRecreateAction;
  import org.hibernate.action.CollectionRemoveAction;
-@@ -62,7 +63,9 @@
+@@ -62,7 +66,9 @@
   * @author Steve Ebersole
   */
  public class ActionQueue {
@@ -613,7 +966,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  	private static final Log log = LogFactory.getLog( ActionQueue.class );
  	private static final int INIT_QUEUE_LIST_SIZE = 5;
  
-@@ -84,6 +87,8 @@
+@@ -84,6 +90,8 @@
  
  	private ArrayList executions;
  
@@ -622,7 +975,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  	/**
  	 * Constructs an action queue bound to the given session.
  	 *
-@@ -94,6 +99,16 @@
+@@ -94,6 +102,16 @@
  		init();
  	}
  
@@ -639,7 +992,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  	private void init() {
  		insertions = new ArrayList( INIT_QUEUE_LIST_SIZE );
  		deletions = new ArrayList( INIT_QUEUE_LIST_SIZE );
-@@ -146,7 +161,7 @@
+@@ -146,7 +164,7 @@
  
  	public void addAction(BulkOperationCleanupAction cleanupAction) {
  		// Add these directly to the executions queue
@@ -648,7 +1001,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  	}
  
  	/**
-@@ -212,6 +227,34 @@
+@@ -212,6 +230,34 @@
  			}
  		}
  		executions.clear();
@@ -683,7 +1036,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  	}
  
  	/**
-@@ -269,7 +312,7 @@
+@@ -269,7 +315,7 @@
  	public void execute(Executable executable) {
  		final boolean lockQueryCache = session.getFactory().getSettings().isQueryCacheEnabled();
  		if ( executable.hasAfterTransactionCompletion() || lockQueryCache ) {
@@ -692,7 +1045,7 @@ Index: src/org/hibernate/engine/ActionQueue.java
  		}
  		if ( lockQueryCache ) {
  			session.getFactory()
-@@ -279,6 +322,46 @@
+@@ -279,6 +325,46 @@
  		executable.execute();
  	}
  
@@ -743,7 +1096,17 @@ Index: src/org/hibernate/jdbc/BorrowedConnectionProxy.java
 ===================================================================
 --- src/org/hibernate/jdbc/BorrowedConnectionProxy.java	(revision 15795)
 +++ src/org/hibernate/jdbc/BorrowedConnectionProxy.java	(working copy)
-@@ -65,7 +65,7 @@
+@@ -1,3 +1,9 @@
++/*
++ * 2010 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
++ */
++
+ package org.hibernate.jdbc;
+ 
+ import org.hibernate.HibernateException;
+@@ -65,7 +71,7 @@
  	public static Connection generateProxy(ConnectionManager connectionManager) {
  		BorrowedConnectionProxy handler = new BorrowedConnectionProxy( connectionManager );
  		return ( Connection ) Proxy.newProxyInstance(

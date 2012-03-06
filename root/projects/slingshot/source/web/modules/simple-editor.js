@@ -175,6 +175,13 @@ Alfresco.util.createImageEditor = function(id, options)
                    label = selectedItem.name;
                var link = Alfresco.util.siteURL("document-details?nodeRef=" + nodeRef);
                var html = '<a href="' + link + '">' + label + '</a> ';
+
+               // If IE8 focus on the editor so that content can be inserted. This is only
+               // required for IE8 and solves ALF-11433.
+               if (YAHOO.env.ua.ie == 8)
+               {
+                  editor.focus();
+               }
                
                // Insert the link into the editor...
                ed.execCommand('mceInsertContent', false, html);

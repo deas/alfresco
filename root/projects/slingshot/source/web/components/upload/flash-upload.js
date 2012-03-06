@@ -358,6 +358,14 @@
       fileItemTemplates: null,
 
       /**
+       * Backs up the page title to protect against Flash changing it when a file is selected.
+       * 
+       * @property _iePageTitleBackup
+       * @type String
+       */
+      _iePageTitleBackup: null,
+   
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Initial History Manager event registration
        *
@@ -365,6 +373,9 @@
        */
       onReady: function FlashUpload_onReady()
       {
+         // Backup the page title...
+         this._iePageTitleBackup = document.title;
+         
          // Tell the YUI class where the swf is
          YAHOO.widget.Uploader.SWFURL = this.swf;
 
@@ -514,7 +525,7 @@
                text: this.msg("label.noFlash")
             });
          }
-
+         
          // Merge the supplied config with default config and check mandatory properties
          this.suppliedConfig = config;
          this.showConfig = YAHOO.lang.merge(this.defaultShowConfig, config);
@@ -563,6 +574,13 @@
          {
             Dom.addClass(swfWrapper, "button-fix");
          }
+         
+         // Reset the page title if IE because the file select will have changed it...
+         if (YAHOO.env.ua.ie)
+         {
+            document.title = this._iePageTitleBackup;
+         }
+
       },
 
       /**
@@ -689,6 +707,12 @@
        */
       onFileSelect: function FlashUpload_onFileSelect(event)
       {
+         // Reset the page title if IE because the file select will have changed it...
+         if (YAHOO.env.ua.ie)
+         {
+            document.title = this._iePageTitleBackup;
+         }
+         
          // Disable upload button until all files have been rendered and added
          this.widgets.uploadButton.set("disabled", true);
 

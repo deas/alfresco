@@ -501,16 +501,33 @@
          }
          
          this.options.currentValue = selItemsAsNodeRefs.join(',');
-         YAHOO.Bubbling.fire("onDocumentsSelected",
+         
+         // This is an IE8 specific workaround that has been added to address ALF-11433
+         // We need to defer firing the event until after the document-picker panel has
+         // been hidden in case this event is being listened to by TinyMCE so that focus
+         // can be set on the editor. The event is now fired at the end of the method.
+         if (YAHOO.env.ua.ie != 8)
          {
-            items: selItems
-         });
+            YAHOO.Bubbling.fire("onDocumentsSelected",
+            {
+               items: selItems
+            });
+         }
          Alfresco.util.setVar('DocumentPickerSelection', selItems);
          
          this.widgets.panel.hide();
          Dom.setAttribute(this.widgets.showPicker, "disabled", false);
          this.resetSelection();
          Event.preventDefault(e);
+         
+         // Fire the event if IE8
+         if (YAHOO.env.ua.ie == 8)
+         {
+            YAHOO.Bubbling.fire("onDocumentsSelected",
+            {
+               items: selItems
+            });
+         }
       },
 
       /**
