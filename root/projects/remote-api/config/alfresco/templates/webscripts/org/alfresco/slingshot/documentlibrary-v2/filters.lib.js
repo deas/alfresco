@@ -22,6 +22,13 @@ var Filters =
       "fm:topic",
       "fm:post"
    ],
+   /**
+    * Aspects that we want to suppress from the resultset
+    */
+   IGNORED_ASPECTS:
+   [
+      "rn:hiddenRendition"
+   ],
 
    /**
     * Encode a path with ISO9075 encoding
@@ -98,7 +105,7 @@ var Filters =
          filterQuery = "";
 
       // Common types and aspects to filter from the UI - known subtypes of cm:content and cm:folder
-      var filterQueryDefaults = ' -TYPE:"' + Filters.IGNORED_TYPES.join('" -TYPE:"') + '"';
+      var filterQueryDefaults = ' -TYPE:"' + Filters.IGNORED_TYPES.join('" -TYPE:"') + '"  -ASPECT:"' + Filters.IGNORED_ASPECTS.join('" -ASPECT:"') + '"';
 
       switch (String(filter))
       {
