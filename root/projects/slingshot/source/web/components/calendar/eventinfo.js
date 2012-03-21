@@ -948,7 +948,7 @@
                else
                {
                   toDate = Alfresco.CalendarHelper.getDateFromField(domEl);
-                  document.getElementsByName('to')[0].value = toISO8601(toDate);
+                  document.getElementsByName('endAt')[0].value = toISO8601(toDate);
                }
             }
             o.oCalendarMenu.hide();
