@@ -105,7 +105,8 @@
    </#if>
 <#if item.type = "user">
 <li class="user-menuitem HEADER-MARKER">
-   <a class="avatar" ${attrHref} tabindex="0"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${user.name?url}" alt="avatar" /></a>
+   <#assign avatarNodeRef>${user.properties["avatar"]!"avatar"}</#assign>
+   <a class="avatar" ${attrHref} tabindex="0"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${avatarNodeRef?string?replace('://','/')}" alt="avatar" /></a>
    <span class="user-status">
       <textarea id="${id}-statusText" tabindex="0">${userStatus?html}</textarea>
       <div id="${id}-statusTime" class="user-status-time" title="${userStatusTime?html}"></div>

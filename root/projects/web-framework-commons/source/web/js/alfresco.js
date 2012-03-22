@@ -9152,3 +9152,32 @@ Alfresco.util.toggleClass = function(element, className)
       YUIDom.addClass(element, className);
    }
 };
+
+/**
+ * Generates a URL to retrieve a thumbnail based on the node and thumbnail name supplied. 
+ * 
+ * @method generateThumbnailUrl
+ */
+Alfresco.util.generateThumbnailUrl = function(jsNode, thumbnailName)
+{
+   var url,
+       nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef;;
+   if (jsNode.properties["cm:lastThumbnailModification"])
+   {
+      var thumbnailModData = jsNode.properties["cm:lastThumbnailModification"];
+      for (var i = 0; i < thumbnailModData.length; i++)
+      {
+         if (thumbnailModData[i].indexOf("doclib") != -1)   
+         {
+            url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true&lastModified=" + thumbnailModData[i];
+            break;
+         }
+      }
+   }
+   else
+   {
+      url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true";
+   }
+   return url;
+};
+

@@ -320,6 +320,10 @@ public interface ContentModel
     static final QName PROP_CONTENT_PROPERTY_NAME = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "contentPropertyName");
     static final QName PROP_AUTOMATIC_UPDATE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "automaticUpdate");
     
+    // Thumbnail modification handling
+    public static final QName ASPECT_THUMBNAIL_MODIFICATION = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "thumbnailModification");
+    public static final QName PROP_LAST_THUMBNAIL_MODIFICATION_DATA = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "lastThumbnailModification"); 
+    
     // The below content entities can be used to manage 'failed' thumbnails. These are thumbnails that execute and fail with an
     // exception that likely means a reattempt will fail. The failedThumbnailSource aspect can be used to mark a node as
     // having tried and failed to use a particular thumbnail definition. This can then be checked and reattempts at that thumbnail

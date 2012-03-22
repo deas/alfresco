@@ -2040,7 +2040,12 @@ Alfresco.Share.userAvatar = function(userName, size)
                 * Detailed View
                 */
                columnWidth = 100;
-               desc = '<span class="thumbnail"><a href="' + docDetailsUrl + '"><img src="' + Alfresco.constants.PROXY_URI + 'api/node/' + nodeRef.uri + '/content/thumbnails/doclib?c=queue&ph=true" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+               var url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib?c=queue&ph=true";
+               if (record.lastThumbnailModification)
+               {
+                  url = url + "&lastModified=" + record.lastThumbnailModification;
+               }
+               desc = '<span class="thumbnail"><a href="' + docDetailsUrl + '"><img src="' + url + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
             }
          }
 

@@ -71,6 +71,8 @@
        */
       options:
       {
+         thumbnailModification: [],
+         
          /**
           * Noderef to the content to display
           *
@@ -325,7 +327,17 @@
          var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
                noCache = "noCache=" + new Date().getTime(),
                force = "c=force";
-         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + noCache + "&" + force
+         
+         // Check to see if last modification data is available for the thumbnail...
+         for (var i = 0; i < this.options.thumbnailModification.length; i++)
+         {
+            if (this.options.thumbnailModification[i].indexOf(thumbnail) != -1)
+            {
+               noCache = "lastModified=" + this.options.thumbnailModification[i];
+               break;
+            }
+         }
+         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + force + "&" + noCache
       },
 
       /**

@@ -363,7 +363,7 @@
             {
                case "document":
                   imageUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + oRecord.getData("nodeRef").replace(":/", "");
-                  imageUrl += "/content/thumbnails/doclib?c=queue&ph=true";
+                  imageUrl += "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + Alfresco.util.encodeHTML(oRecord.getData("modifiedOn"));
                   break;
                
                case "folder":

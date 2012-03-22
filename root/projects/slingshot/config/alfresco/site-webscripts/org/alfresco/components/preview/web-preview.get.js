@@ -60,6 +60,12 @@ function getDocumentNode(nodeRef, defaultValue)
       {
          node.size = "0";
       }
+      node.thumbnailModifications = metadata.properties[mcns + "lastThumbnailModification"];
+      if (node.thumbnailModifications == null)
+      {
+         node.thumbnailModifications = [];
+      }
+      
       node.thumbnails = AlfrescoUtil.getThumbnails(nodeRef);
       return node;
    }
@@ -79,7 +85,7 @@ function main()
    if (documentNode)
    {
       // Populate model with data from node and config
-      model.node = documentNode
+      model.node = documentNode;
       var pluginConditions = getPluginConditions(new XML(config.script));
       model.pluginConditionsJSON = jsonUtils.toJSONString(pluginConditions);
    }

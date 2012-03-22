@@ -55,7 +55,8 @@
 <#list memberships as m>
       <div class="detail-list-item">
          <div class="avatar">
-            <img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${m.authority.userName?url}" alt="Avatar" />
+            <#assign avatarNodeRef>${m.authority.avatarNode!"avatar"}</#assign>
+            <img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${avatarNodeRef?string?replace('://','/')}" alt="Avatar" />
          </div>
          <div class="person">
             <h3><a href="${url.context}/page/user/${m.authority.userName?url}/profile" class="theme-color-1">${m.authority.firstName?html} <#if m.authority.lastName??>${m.authority.lastName?html}</#if></a></h3>

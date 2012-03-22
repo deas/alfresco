@@ -40,6 +40,7 @@ function main()
                },
                title: summary.title || "title.generic",
                userName: activity.postUserId,
+               userAvatar: activity.postUserAvatar || "avatar",
                fullName: fullName,
                itemPage: itemPageUrl(activity, summary),
                sitePage: sitePageUrl(activity, summary),

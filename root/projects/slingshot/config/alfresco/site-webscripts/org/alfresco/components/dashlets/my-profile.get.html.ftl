@@ -33,7 +33,8 @@
    <div class="body profile">
       <div class="photorow">
          <div class="photo">
-            <img  class="photoimg" src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${user.name?url}" alt="avatar" />
+            <#assign avatarNodeRef>${user.properties["avatar"]!"avatar"}</#assign>
+            <img  class="photoimg" src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${avatarNodeRef?string?replace('://','/')}" alt="avatar" />
          </div>
 <#escape x as x?html>
          <div class="namelabel"><a href="${url.context}/page/user/${user.name?url}/profile" class="theme-color-1">${user.properties["firstName"]!""} ${user.properties["lastName"]!""}</a></div>

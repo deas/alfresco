@@ -26,7 +26,7 @@
       <#assign detail = msg(activity.type, itemLink, userLink, activity.custom0?html, activity.custom1?html, siteLink, secondUserLink)>
       <#if mode = "user" && !activity.suppressSite><#assign detail = msg("in.site", detail, siteLink)></#if>
       <div class="activity">
-         <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userName?url}/thumbnail/avatar32" alt="${activity.fullName?html}" /></div>
+         <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userAvatar?string?replace('://','/')}/thumbnail/avatar32" alt="${activity.fullName?html}" /></div>
          <div class="content">
             <span class="detail">${detail}</span><br />
             <span class="time relativeTime" title="${activity.date.isoDate}">${activity.date.isoDate}</span>

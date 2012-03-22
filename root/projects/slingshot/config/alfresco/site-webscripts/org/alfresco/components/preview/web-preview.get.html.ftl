@@ -4,6 +4,7 @@
    <script type="text/javascript">//<![CDATA[
    new Alfresco.WebPreview("${el}").setOptions(
    {
+      thumbnailModification: [<#list node.thumbnailModifications as t>"${t}"<#if (t_has_next)>, </#if></#list>],
       nodeRef: "${nodeRef}",
       name: "${node.name?js_string}",
       mimeType: "${node.mimeType}",

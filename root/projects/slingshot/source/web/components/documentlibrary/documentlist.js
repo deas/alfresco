@@ -639,7 +639,7 @@
       var jsNode = record.jsNode,
          nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef;
 
-      return Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib?c=queue&ph=true";
+      return Alfresco.util.generateThumbnailUrl(jsNode, "doclib");
    };
 
    /**
