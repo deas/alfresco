@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.web.VtiAction;
+import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVMethod;
 import org.alfresco.repo.webdav.WebDAVServerException;
@@ -52,6 +53,8 @@ public abstract class VtiWebDavAction implements VtiAction
 
     protected AuthenticationService authenticationService;
 
+    protected TenantService tenantService;
+    
     private static Log logger = LogFactory.getLog(VtiWebDavAction.class);
 
     /**
@@ -66,7 +69,7 @@ public abstract class VtiWebDavAction implements VtiAction
     {
         if (webDavHelper == null)
         {
-            webDavHelper = new VtiWebDavHelper(serviceRegistry, authenticationService);
+            webDavHelper = new VtiWebDavHelper(serviceRegistry, authenticationService, tenantService);
         }
 
         WebDAVMethod method = getWebDAVMethod();
@@ -121,12 +124,23 @@ public abstract class VtiWebDavAction implements VtiAction
         this.authenticationService = authenticationService;
     }
 
+    /**
+     * Sets the TenantService used by this class.
+     * 
+     * @param tenantService {@link TenantService}
+     */
+    public void setTenantService(TenantService tenantService)
+    {
+        this.tenantService = tenantService;
+    }
+
+
     protected class VtiWebDavHelper extends WebDAVHelper
     {
-        public VtiWebDavHelper(ServiceRegistry serviceRegistry, AuthenticationService authenticationService)
+        public VtiWebDavHelper(ServiceRegistry serviceRegistry, AuthenticationService authenticationService, TenantService tenantService)
         {
             // TODO: LockStore collaborator required by WebDAVHelper
-            super(serviceRegistry, null, authenticationService);
+            super(serviceRegistry, null, authenticationService, tenantService);
         }
     };
 
