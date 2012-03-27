@@ -57,7 +57,7 @@ public class MoveMethod extends org.alfresco.repo.webdav.MoveMethod
      * @see org.alfresco.repo.webdav.WebDAVMethod#getPath()
      */
     @Override
-    protected String getPath()
+    public String getPath()
     {
        return AbstractMethod.getPathWithoutContext(alfrescoContext, m_request);
     }
