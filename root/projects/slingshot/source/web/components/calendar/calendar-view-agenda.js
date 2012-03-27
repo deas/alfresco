@@ -127,7 +127,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          html = this.truncate(data); //run truncation
       
       // write to DOM
-      elCell.innerHTML = $html(html);
+      elCell.innerHTML = html;
    },
 
    /**
@@ -573,7 +573,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       var showMore = this.msg("agenda.truncate.show-more"),
          ellipsis = this.msg("agenda.truncate.ellipsis"),
          truncateTo = parseInt(length) || parseInt(this.options.truncateLength) || 100, // use default and ensure int.
-         text = event.description,
+         text = $html(event.description),
          result = text,
          resultReplace = "";
       
@@ -598,10 +598,10 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
    {
       var event = this.getEventObj(el),
          containerEl = el.parentNode,
-         text = event.description,
+         text = $html(event.description),
          showLess = '<a href="' + event.uri + '" rel="' + el.rel + '" class="showLess">' + this.msg("agenda.truncate.show-less") + '</a>';
       
-      containerEl.innerHTML = $html(text) + " " + showLess; 
+      containerEl.innerHTML = text + " " + showLess;
    },
    
    collapseDescription: function CalendarAgendaView_collapseDescription(el)
@@ -609,7 +609,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       var event = this.getEventObj(el),
          containerEl = el.parentNode
       
-      containerEl.innerHTML = $html(this.truncate(event));
+      containerEl.innerHTML = this.truncate(event);
    }
 }, true);
 })();
