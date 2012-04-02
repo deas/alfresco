@@ -81,6 +81,8 @@
             <mode>manual</mode>
             <enable-auto-deploy-modules>true</enable-auto-deploy-modules>
          </module-deployment>
+         <use-checksum-dependencies>true</use-checksum-dependencies>
+         <generate-css-data-images>false</generate-css-data-images>
       </web-framework>
    </config>
 
