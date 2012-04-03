@@ -43,6 +43,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -115,6 +116,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     private ConnectorService connectorService;
     private String endpoint;
     private ServletContext servletContext;
+    private String userHeader;
     
     // Kerberos settings
     //
@@ -185,6 +187,16 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
 
         // Save the endpoint, activating the filter
         this.endpoint = endpoint;
+        
+        // Obtain the userHeader (if configured) from the alfresco connector
+        try
+        {
+            userHeader = connectorService.getConnector(endpoint).getConnectorSession().getParameter(SlingshotAlfrescoConnector.CS_PARAM_USER_HEADER);
+        }
+        catch (ConnectorServiceException e)
+        {
+            logger.error("Expected to find a connector for the endpoint "+endpoint, e);
+        }
 
         // retrieve the optional kerberos configuration
         KerberosConfigElement krbConfig = (KerberosConfigElement) configService.getConfig("Kerberos").getConfigElement(
@@ -283,6 +295,37 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         if (logger.isInfoEnabled())
             logger.info("SSOAuthenticationFilter initialised.");
     }
+    
+    /**
+     * Wraps an {@link HttpServletRequest} if an HTTP header has been configured for
+     * use by an external SSO system to provide the name of an authenticated user.
+     * The wrapper's {@link #getRemoteUser} returns the value of the header but will
+     * defaults to the wrapped method's value if the header is not set.
+     * @param sreq original {@code ServletRequest}
+     * @return either the original {@code sreq} or a wrapped {@code HttpServletRequest}
+     */
+    private ServletRequest wrapHeaderAuthenticatedRequest(ServletRequest sreq)
+    {
+        if (userHeader != null &&
+            sreq instanceof HttpServletRequest)
+        {
+            final HttpServletRequest req = (HttpServletRequest)sreq;
+            sreq = new HttpServletRequestWrapper(req)
+            {
+                @Override
+                public String getRemoteUser()
+                {
+                    String remoteUser = req.getHeader(userHeader);
+                    if (remoteUser == null)
+                    {
+                        remoteUser = super.getRemoteUser();
+                    }
+                    return remoteUser;
+                }
+            };
+        }
+        return sreq;
+    }
 
     /**
      * Run the filter
@@ -300,6 +343,11 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         NDC.remove();
         NDC.push(Thread.currentThread().getName());
         final boolean debug = logger.isDebugEnabled();
+        
+        // Wrap externally authenticated requests that provide the user in an HTTP header
+        // with one that returns the correct name from getRemoteUser(). For use in our own
+        // calls to this method and any chained filters.
+        sreq = wrapHeaderAuthenticatedRequest(sreq);
         
         // Bypass the filter if we don't have an endpoint with external auth enabled
         if (this.endpoint == null)

@@ -300,6 +300,10 @@
         Remove the keystore section if not required i.e. for NTLM.
         
         NOTE: For Kerberos SSO rename the "KerberosDisabled" condition above to "Kerberos"
+        
+        NOTE: For external SSO, switch the endpoint connector to "AlfrescoHeader" and set
+              the userHeader to the name of the HTTP header that the external SSO
+              uses to provide the authenticated user name.
    -->
    <!--
    <config evaluator="string-compare" condition="Remote">
@@ -314,9 +318,17 @@
             <id>alfrescoCookie</id>
             <name>Alfresco Connector</name>
             <description>Connects to an Alfresco instance using cookie-based authentication</description>
-            <class>org.springframework.extensions.webscripts.connector.AlfrescoConnector</class>
+            <class>org.alfresco.web.site.servlet.SlingshotAlfrescoConnector</class>
          </connector>
          
+         <connector>
+            <id>alfrescoHeader</id>
+            <name>Alfresco Connector</name>
+            <description>Connects to an Alfresco instance using header and cookie-based authentication</description>
+            <class>org.alfresco.web.site.servlet.SlingshotAlfrescoConnector</class>
+            <userHeader>SsoUserHeader</userHeader>
+         </connector>
+
          <endpoint>
             <id>alfresco</id>
             <name>Alfresco - user access</name>
