@@ -409,6 +409,9 @@
             <extension display="JAR">jar</extension>
             <extension display="EAR">ear</extension>
          </mimetype>
+         <mimetype mimetype="application/vnd.android.package-archive" display="Android Package">
+            <extension>apk</extension>
+         </mimetype>
 
          <mimetype mimetype="image/vnd.dwg" display="AutoCAD Drawing">
             <extension>dwg</extension>
