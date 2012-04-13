@@ -2119,7 +2119,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
             }
             
-            while ((tracker.inNew < lastNew))
+            while (tracker.inNew < lastNew)
             {
                 if (targetHasDeletions)
                 {
@@ -2139,6 +2139,29 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                 }
                 
+            }
+            
+            // skip and check remaining nulls in the source
+            
+            while(tracker.inOld < lastOld)
+            {
+                if (deleted.get(tracker.inOld))
+                {
+                    if(tracker.earlyDeletes > 0)
+                    {
+                        tracker.earlyDeletes--;
+                    }
+                    // nothing to move
+                    tracker.inOld++;
+                }
+                else
+                { 
+                    if(tracker.earlyDeletes > 0)
+                    {
+                        throw new IllegalStateException("Early deletes should have been cleared");
+                    }
+                    tracker.inOld++;
+                }
             }
             
             if((tracker.inNew != lastNew) || (tracker.inOld != lastOld))

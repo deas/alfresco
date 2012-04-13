@@ -47,9 +47,9 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
-import org.saxpath.SAXPathException;
+import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.saxpath.base.XPathReader;
 
-import com.werken.saxpath.XPathReader;
 
 /**
  * Extensions to the standard lucene query parser.

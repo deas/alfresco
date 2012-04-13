@@ -85,6 +85,21 @@ public interface OpLockManager {
 	public void releaseOpLock(String path);
 	
 	/**
+	 * Change an oplock type
+	 * 
+	 * @param oplock OpLockDetails
+	 * @param newTyp int
+	 */
+	public void changeOpLockType(OpLockDetails oplock, int newTyp);
+	
+	/**
+	 * Cancel an oplock break timer
+	 * 
+	 * @param path String
+	 */
+	public void cancelOplockTimer( String path);
+	
+	/**
 	 * Check for expired oplock break requests
 	 * 
 	 * @return int

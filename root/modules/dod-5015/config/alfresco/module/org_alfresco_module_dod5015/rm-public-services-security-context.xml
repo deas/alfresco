@@ -365,8 +365,8 @@
                 org.alfresco.service.cmr.repository.NodeService.getAspects=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0 
                 org.alfresco.service.cmr.repository.NodeService.deleteNode=ACL_NODE.0.sys:base.DeleteNode,RM.Delete.0
                 org.alfresco.service.cmr.repository.NodeService.addChild=ACL_NODE.0.sys:base.CreateChildren,ACL_NODE.1.sys:base.ReadProperties,RM.Create.0.1.2
-                org.alfresco.service.cmr.repository.NodeService.removeChild=ACL_NODE.0.sys:base.DeleteChildren,ACL_NODE.1.sys:base.DeleteNode,RM.Delete.0.1
-                org.alfresco.service.cmr.repository.NodeService.removeChildAssociation=ACL_PARENT.0.sys:base.DeleteChildren,ACL_NODE.0.sys:base.DeleteNode,RM.Delete.0 
+                org.alfresco.service.cmr.repository.NodeService.removeChild=ACL_NODE.0.sys:base.DeleteChildren,ACL_PRI_CHILD_ASSOC_ON_CHILD.0.1.sys:base.DeleteNode,RM.Delete.0.1
+                org.alfresco.service.cmr.repository.NodeService.removeChildAssociation=ACL_PARENT.0.sys:base.DeleteChildren,ACL_PRI_CHILD_ASSOC_ON_CHILD.0.sys:base.DeleteNode,RM.Delete.0
                 org.alfresco.service.cmr.repository.NodeService.getProperties=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0,AFTER_RM.FilterProperty
                 org.alfresco.service.cmr.repository.NodeService.getProperty=ACL_NODE.0.sys:base.ReadProperties,RM.Read.0,RM.ReadProperty.0.1 
                 org.alfresco.service.cmr.repository.NodeService.setProperties=ACL_NODE.0.sys:base.WriteProperties,RM.UpdateProperties.0.1

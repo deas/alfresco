@@ -111,7 +111,7 @@ public class RuntimeExec
     private String[] processProperties;
     private File processDirectory;
     private Set<Integer> errCodes;
-    private Timer timer = new Timer();
+    private Timer timer = new Timer(true);
 
     /**
      * Default constructor.  Initialize this instance by setting individual properties.

@@ -40,6 +40,7 @@ import org.springframework.extensions.surf.mvc.AbstractWebFrameworkInterceptor;
 import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
+import org.springframework.extensions.webscripts.connector.ConnectorContext;
 import org.springframework.extensions.webscripts.connector.Response;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.WebRequest;
@@ -80,7 +81,9 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                         // initiate a call to retrieve the edition and restrictions from the repository
                         RequestContext rc = ThreadLocalRequestContext.getRequestContext();
                         Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco");
-                        Response response = conn.call("/api/admin/restrictions?guest=true");
+                        ConnectorContext ctx = new ConnectorContext();
+                        ctx.setExceptionOnError(false);
+                        Response response = conn.call("/api/admin/restrictions?guest=true", ctx);
                         if (response.getStatus().getCode() == Status.STATUS_UNAUTHORIZED)
                         {
                             // if this occurs we may be running a multi-tennant repository or guest auth is disabled

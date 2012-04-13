@@ -903,8 +903,29 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 			
 			// Check if we found a local oplock, if not then must be owned by another node
 			
-			if ( oplock == null)
+			if ( oplock == null) {
 				oplock = fstate.getOpLock();
+				
+				if ( oplock instanceof RemoteOpLockDetails) {
+					RemoteOpLockDetails remoteOplock = (RemoteOpLockDetails) oplock;
+					ClusterNode clNode = m_nodes.findNode( remoteOplock.getOwnerName());
+					
+					if ( clNode.isLocalNode()) {
+						oplock = null;
+						
+						// Cleanup the near cache oplock
+						
+						HazelCastClusterFileState hcState = getStateFromNearCache( fstate.getPath());
+						if ( hcState != null)
+							hcState.clearOpLock();
+
+						// DEBUG
+						
+						if ( hasDebugLevel( DebugOplock))
+							Debug.println("Local oplock out of sync, cleared near cache for " + fstate);
+					}
+				}
+			}
 		}
 		
 		// Return the oplock details
@@ -1468,6 +1489,114 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 	}
 
 	/**
+	 * Change an oplock type
+	 * 
+	 * @param oplock OpLockDetails
+	 * @param newTyp
+	 */
+	public void changeOpLockType( OpLockDetails oplock, int newTyp) {
+
+		// DEBUG
+		
+		if ( hasDebugLevel( DebugOplock))
+			Debug.println("Change oplock type to=" + OpLock.getTypeAsString(newTyp) + " for oplock=" + oplock);
+		
+		// Run the file access checks via the node that owns the file state
+
+		String normPath = FileState.normalizePath( oplock.getPath(), isCaseSensitive());
+		
+		ExecutorService execService = m_hazelCastInstance.getExecutorService();
+		Callable<Integer> callable = new ChangeOpLockTypeTask( getClusterName(), normPath, newTyp, hasTaskDebug(), hasTaskTiming());
+		FutureTask<Integer> changeOpLockTask = new DistributedTask<Integer>( callable, oplock.getPath());
+		
+		execService.execute( changeOpLockTask);
+		
+		try {
+			
+			// Wait for the remote task to complete, get the returned oplock type
+			
+			Integer newOplockType = (Integer) changeOpLockTask.get();
+			
+			// Check that the update was successful
+			
+			if ( newOplockType.intValue() == newTyp) {
+				
+				// Check if this node owns the oplock
+				
+				PerNodeState perNode = m_perNodeCache.get( normPath);
+				
+				if ( perNode != null && perNode.hasOpLock()) {
+				
+					// Get the local oplock
+					
+					LocalOpLockDetails localOpLock = perNode.getOpLock();
+
+					// Update the local oplock type
+
+					localOpLock.setLockType( newTyp);
+				}
+				
+				// Check if the near cache has a copy of the oplock
+				
+				if ( hasNearCache()) {
+					
+					// Check if we have the state cached in the near-cache
+					
+					HazelCastClusterFileState hcState = getStateFromNearCache( normPath);
+					if ( hcState != null) {
+						
+						// Check if the near cache copy has the oplock details
+						
+						if ( hcState.hasOpLock()) {
+							
+							// Update the near cache oplock details
+							
+							hcState.getOpLock().setLockType( newTyp);
+
+							// DEBUG
+							
+							if ( hasDebugLevel( DebugNearCache))
+								Debug.println("Near-cache updated oplock type to=" + OpLock.getTypeAsString( newTyp) + ", nearState=" + hcState);
+						}
+						else {
+							
+							// Out of sync near cache state, mark it as invalid
+							
+							hcState.setStateValid( false);
+
+							// DEBUG
+							
+							if ( hasDebugLevel( DebugNearCache))
+								Debug.println("Near-cache no oplock, marked as invalid, nearState=" + hcState);
+						}
+					}
+				}
+				
+				// Inform all nodes of the oplock type change
+				
+				OpLockMessage oplockMsg = new OpLockMessage( ClusterMessage.AllNodes, ClusterMessageType.OplockTypeChange, normPath);
+				m_clusterTopic.publish( oplockMsg);
+			}
+			else {
+
+				// DEBUG
+			
+				if ( hasDebugLevel( DebugOplock))
+					Debug.println("Failed to change oplock type, no oplock on file state, path=" + oplock.getPath());
+			}
+		}
+		catch ( Exception ex) {
+			
+			// DEBUG
+			
+			if ( hasDebugLevel( DebugOplock)) {
+				Debug.println("Error changing oplock type to=" + OpLock.getTypeAsString(newTyp) + ", for oplock=" + oplock);
+				Debug.println( ex);
+			}
+		}
+	}
+	
+	/**
 	 * Cluster member added
 	 * 
 	 * @param membershipEvent MembershipEvent
@@ -1828,9 +1957,10 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 			
 			accessToken = (HazelCastAccessToken) grantAccessTask.get();
 			
-			// Set the associated path for the access toekn
+			// Set the associated path for the access token, and mark as not released
 			
 			accessToken.setNetworkFilePath( params.getPath());
+			accessToken.setReleased( false);
 			
 			// Check if an oplock was also granted during the file access check
 			
@@ -1870,22 +2000,22 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 							Debug.println( "Added oplock to near-cache (via grant access) state=" + hcState);
 					}
 				}
-				else if ( hasNearCache()) {
+			}
+			else if ( hasNearCache()) {
 					
-					// Check if the file state is in the near-cache
+				// Check if the file state is in the near-cache
 					
-					HazelCastClusterFileState hcState = getStateFromNearCache( fstate.getPath());
-					if ( hcState != null) {
+				HazelCastClusterFileState hcState = getStateFromNearCache( fstate.getPath());
+				if ( hcState != null) {
 						
-						// Update the file open count
+					// Update the file open count
 						
-						hcState.incrementOpenCount();
+					hcState.incrementOpenCount();
 
-						// DEBUG
+					// DEBUG
 						
-						if ( hasDebugLevel( DebugNearCache))
-							Debug.println( "Update near-cache open count state=" + hcState);
-					}
+					if ( hasDebugLevel( DebugNearCache))
+						Debug.println( "Update near-cache open count state=" + hcState);
 				}
 			}
 			
@@ -1966,6 +2096,11 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 		
 		if ( hasDebugLevel( DebugFileAccess))
 			Debug.println("Release file access for state=" + fstate + ", token=" + token);
+		
+		// Remove the near cached details
+		
+		if ( hasNearCache())
+			m_nearCache.remove( fstate.getPath());
 		
 		// Run the file access checks via the node that owns the file state
 		
@@ -2568,6 +2703,12 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 					procOpLockBreakNotify(( OpLockMessage) msg); 
 					break;
 					
+				// Oplock type changed
+					
+				case ClusterMessageType.OplockTypeChange:
+					procOpLockTypeChange(( OpLockMessage) msg);
+					break;
+					
 				// File state update
 				
 				case ClusterMessageType.FileStateUpdate:
@@ -2580,7 +2721,7 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 					procFileStateRename(( StateRenameMessage) msg);
 					break;
 					
-				// File data update in progrss/completed
+				// File data update in progress/completed
 					
 				case ClusterMessageType.DataUpdate:
 					procDataUpdate(( DataUpdateMessage) msg);
@@ -2640,8 +2781,17 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 					Debug.println("Oplock break failed, ex=" + ex);
 			}
 		}
-		else if ( hasDebugLevel( DebugClusterMessage | DebugOplock))
+		else if ( hasDebugLevel( DebugClusterMessage | DebugOplock)) {
+			
+			// Send back an oplock break response to the requestor, oplock already released
+		
+			OpLockMessage oplockMsg = new OpLockMessage( msg.getFromNode(), ClusterMessageType.OpLockBreakNotify, msg.getPath());
+			m_clusterTopic.publish( oplockMsg);
+
+			// DEBUG
+			
 			Debug.println("No oplock on path=" + msg.getPath());
+		}
 	}
 
 	/**
@@ -2656,15 +2806,83 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 		if ( hasDebugLevel( DebugClusterMessage | DebugOplock))
 			Debug.println("Process oplock break notify msg=" + msg);
 
+		// Check if the path has a state in the near cache, invalidate it
+
+		if ( hasNearCache()) {
+			
+			// Check if we have the state cached in the near-cache
+			
+			HazelCastClusterFileState hcState = getStateFromNearCache( msg.getPath());
+			if ( hcState != null) {
+		
+				// Invalidate the near-cache entry
+				
+				hcState.setStateValid( false);
+			}
+		}
+		
 		// Check if the path has a pending oplock break
 		
 		PerNodeState perNode = m_perNodeCache.get( msg.getPath());
 		
 		if ( perNode != null && perNode.hasDeferredSessions()) {
 
+			// Cancel the oplock timer for this oplock
+			
+			m_oplockManager.cancelOplockTimer( msg.getPath());
+			
 			// Requeue the deferred request(s) to the thread pool, oplock released
 			
 			perNode.requeueDeferredRequests();
+		}
+	}
+
+	/**
+	 * Process a remote oplock type change message
+	 * 
+	 * @param msg OpLockMessage
+	 */
+	protected void procOpLockTypeChange( OpLockMessage msg) {
+		
+		// DEBUG
+		
+		if ( hasDebugLevel( DebugClusterMessage | DebugOplock))
+			Debug.println("Process oplock change type msg=" + msg);
+
+		// Check if the update came from the local node
+		
+		if ( msg.isFromLocalNode( m_localNode) == false) {
+
+			// Check if the path has a state in the near cache, invalidate it
+
+			if ( hasNearCache()) {
+				
+				// Check if we have the state cached in the near-cache
+				
+				HazelCastClusterFileState hcState = getStateFromNearCache( msg.getPath());
+				if ( hcState != null) {
+			
+					// Invalidate the near-cache entry
+					
+					hcState.setStateValid( false);
+				}
+			}
+			
+			// Check if there are any local sessions waiting on an oplock break/type change
+			
+			PerNodeState perNode = m_perNodeCache.get( msg.getPath());
+			
+			if ( perNode != null && perNode.hasDeferredSessions()) {
+
+				// Cancel the oplock timer for this oplock
+				
+				m_oplockManager.cancelOplockTimer( msg.getPath());
+				
+				// Requeue the deferred request(s) to the thread pool, oplock released
+				
+				perNode.requeueDeferredRequests();
+			}
+			
 		}
 	}
 
@@ -3249,7 +3467,7 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 		// Check if the near-cache is enabled
 		
 		HazelCastClusterFileState hcState = null;
-		
+		 
 		if ( hasNearCache()) {
 
 			// See if we have a local copy of the file state, and it is valid
@@ -3260,7 +3478,7 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 				
 				// If the locally cached state is valid then update the hit counter
 				
-				if ( hcState.isStateValid()) {
+				if ( hcState.isStateValid() && hcState.hasExpired( System.currentTimeMillis()) == false) {
 					
 					// Update the cache hit counter
 					

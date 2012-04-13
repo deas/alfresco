@@ -36,6 +36,7 @@ public class ClusterMessageType {
 	public final static int FileStateUpdate		= 3;
 	public final static int RenameState			= 4;
 	public final static int DataUpdate			= 5;
+	public final static int OplockTypeChange	= 6;
 	
 	/**
 	 * Return a message type as a string
@@ -64,6 +65,9 @@ public class ClusterMessageType {
 				break;
 			case DataUpdate:
 				typStr = "DataUpdate";
+				break;
+			case OplockTypeChange:
+				typStr = "OplockTypeChange";
 				break;
 		}
 		

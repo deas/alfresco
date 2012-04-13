@@ -162,6 +162,11 @@ function doclibCommon()
 {
    var preferences = DocumentList.getPreferences();
    model.preferences = preferences;
+   if (model.preferences.simpleView != null && model.preferences.simpleView === true || model.preferences.simpleView === false)
+   {
+      model.preferences.viewRendererName = (model.preferences.simpleView ? "simple" : "detailed");
+   }
+   model.viewRendererNames = ["simple", "detailed"];
    model.repositoryUrl = DocumentList.getConfigValue("DocumentLibrary", "repository-url", null);
    model.replicationUrlMappingJSON = DocumentList.getReplicationUrlMappingJSON();
    model.rootNode = DocumentList.getConfigValue("RepositoryLibrary", "root-node", "alfresco://company/home");

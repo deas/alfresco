@@ -29,7 +29,9 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      formatDate = Alfresco.util.formatDate,
+      fromISO8601 = Alfresco.util.fromISO8601;
 
    /**
     * DocumentMetadata constructor.
@@ -121,8 +123,13 @@
        */
       onFormLoaded: function DocumentMetadata_onFormLoaded(response)
       {
-         var formEl = Dom.get(this.id + "-formContainer");
+         var formEl = Dom.get(this.id + "-formContainer"),
+            me = this;
          formEl.innerHTML = response.serverResponse.responseText;
+         Dom.getElementsByClassName("viewmode-value-date", "span", formEl, function()
+         {
+            this.innerHTML = formatDate(fromISO8601(Dom.getAttribute(this, "data-date-iso8601")), me.msg("date-format.default"))
+         });
       }
    });
 

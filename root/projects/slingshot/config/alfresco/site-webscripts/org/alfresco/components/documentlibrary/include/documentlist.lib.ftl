@@ -112,43 +112,51 @@
          <div id="${id}-paginator" class="paginator"></div>
       </div>
       <div class="yui-u align-right">
-         <div id="${id}-simpleDetailed" class="simple-detailed yui-buttongroup inline">
-            <#-- Don't insert linefeeds between these <input> tags -->
-            <input id="${id}-simpleView" type="radio" name="simpleDetailed" title="${msg("button.view.simple")}" value="" /><input id="${id}-detailedView" type="radio" name="simpleDetailed" title="${msg("button.view.detailed")}" value="" />
-         </div>
-         <div class="show-folders">
-            <span id="${id}-showFolders-button" class="yui-button yui-checkbox-button">
-               <span class="first-child">
-                  <button name="doclist-showFolders-button"></button>
-               </span>
-            </span>
-            <span class="separator">&nbsp;</span>
-         </div>
-         <div class="sort-field">
-            <span id="${id}-sortField-button" class="yui-button yui-push-button">
-               <span class="first-child">
-                  <button name="doclist-sortField-button"></button>
-               </span>
-            </span>
-            <span class="separator">&nbsp;</span>
-            <select id="${id}-sortField-menu">
-            <#list sortOptions as sort>
-               <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
-            </#list>
-            </select>
-         </div>
-         <div class="sort-direction">
-            <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
-               <span class="first-child">
-                  <button name="doclist-sortAscending-button"></button>
-               </span>
-            </span>
-         </div>
+      	 <@markup id="documentListViewRendererSelect">
+         	<div id="${id}-simpleDetailed" class="simple-detailed yui-buttongroup inline">
+	            <#-- Don't insert linefeeds between these <input> tags -->
+	            <#if viewRendererNames??><#list viewRendererNames as viewRendererName><input id="${id}-${viewRendererName}View" type="radio" name="simpleDetailed" title="${msg("button.view." + viewRendererName)}" value="" /></#list></#if>
+         	</div>
+         </@>
+         <@markup id="documentListShowFolders">
+	         <div class="show-folders">
+	            <span id="${id}-showFolders-button" class="yui-button yui-checkbox-button">
+	               <span class="first-child">
+	                  <button name="doclist-showFolders-button"></button>
+	               </span>
+	            </span>
+	            <span class="separator">&nbsp;</span>
+	         </div>
+         </@>
+         <@markup id="documentListSortSelect">
+	         <div class="sort-field">
+	            <span id="${id}-sortField-button" class="yui-button yui-push-button">
+	               <span class="first-child">
+	                  <button name="doclist-sortField-button"></button>
+	               </span>
+	            </span>
+	            <span class="separator">&nbsp;</span>
+	            <select id="${id}-sortField-menu">
+	            <#list sortOptions as sort>
+	               <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
+	            </#list>
+	            </select>
+	         </div>
+	         <div class="sort-direction">
+	            <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
+	               <span class="first-child">
+	                  <button name="doclist-sortAscending-button"></button>
+	               </span>
+	            </span>
+	         </div>
+         </@>
       </div>
    </div>
 
    <#-- Main Panel: Document List -->
+   <@markup id="documentListContainer">
    <div id="${id}-documents" class="documents"></div>
+   </@>
 
    <#-- Bottom Bar: Paginator -->
    <div id="${id}-doclistBarBottom" class="yui-gc doclist-bar doclist-bar-bottom flat-button">

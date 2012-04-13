@@ -53,7 +53,8 @@ public class CoreWatcherJob implements Job
                 if (core.getSolrConfig().getBool("alfresco/track", false))
                 {
                     log.info("Starting to track " + core.getName());
-                    adminHandler.getTrackers().put(core.getName(), new CoreTracker(adminHandler, core));
+                    adminHandler.getTrackers().put(core.getName(), new MultiThreadedCoreTracker(adminHandler, core));
+                    // adminHandler.getTrackers().put(core.getName(), new CoreTracker(adminHandler, core));
                 }
             }
         }

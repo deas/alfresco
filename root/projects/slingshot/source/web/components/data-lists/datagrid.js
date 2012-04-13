@@ -1216,10 +1216,17 @@
       {
          var items = [],
             recordSet = this.widgets.dataTable.getRecordSet(),
-            aPageRecords = this.widgets.paginator.getPageRecords(),
-            startRecord = aPageRecords[0],
-            endRecord = aPageRecords[1],
-            record;
+            aPageRecords = this.widgets.paginator.getPageRecords();
+
+         // if there are no page records, there are no items to select
+         if (!aPageRecords)
+         {
+               return;
+         }
+
+         var startRecord = aPageRecords[0],
+             endRecord = aPageRecords[1],
+             record;
          
          for (var i = startRecord; i <= endRecord; i++)
          {
@@ -1249,47 +1256,52 @@
          var recordSet = this.widgets.dataTable.getRecordSet(),
             checks = Selector.query('input[type="checkbox"]', this.widgets.dataTable.getTbodyEl()),
             aPageRecords = this.widgets.paginator.getPageRecords(),
-            startRecord = aPageRecords[0],
+            startRecord,
             len = checks.length,
             record, i, fnCheck;
-
-         switch (p_selectType)
-         {
-            case "selectAll":
-               fnCheck = function(assetType, isChecked)
-               {
-                  return true;
-               };
-               break;
-            
-            case "selectNone":
-               fnCheck = function(assetType, isChecked)
-               {
-                  return false;
-               };
-               break;
-
-            case "selectInvert":
-               fnCheck = function(assetType, isChecked)
-               {
-                  return !isChecked;
-               };
-               break;
-
-            default:
-               fnCheck = function(assetType, isChecked)
-               {
-                  return isChecked;
-               };
-         }
-
-         for (i = 0; i < len; i++)
-         {
-            record = recordSet.getRecord(i + startRecord);
-            this.selectedItems[record.getData("nodeRef")] = checks[i].checked = fnCheck(record.getData("type"), checks[i].checked);
-         }
          
-         Bubbling.fire("selectedItemsChanged");
+         if (aPageRecords)
+         {
+            startRecord = aPageRecords[0];
+   
+            switch (p_selectType)
+            {
+               case "selectAll":
+                  fnCheck = function(assetType, isChecked)
+                  {
+                     return true;
+                  };
+                  break;
+               
+               case "selectNone":
+                  fnCheck = function(assetType, isChecked)
+                  {
+                     return false;
+                  };
+                  break;
+   
+               case "selectInvert":
+                  fnCheck = function(assetType, isChecked)
+                  {
+                     return !isChecked;
+                  };
+                  break;
+   
+               default:
+                  fnCheck = function(assetType, isChecked)
+                  {
+                     return isChecked;
+                  };
+            }
+   
+            for (i = 0; i < len; i++)
+            {
+               record = recordSet.getRecord(i + startRecord);
+               this.selectedItems[record.getData("nodeRef")] = checks[i].checked = fnCheck(record.getData("type"), checks[i].checked);
+            }
+            
+            Bubbling.fire("selectedItemsChanged");
+         }
       },
 
 

@@ -3,6 +3,15 @@
 
 <beans>
 
-	<import resource="classpath:alfresco/module/org.alfresco.module.quickr/context/*-context.xml"/>
+   <import resource="classpath:alfresco/module/org.alfresco.module.quickr/context/*-context.xml"/>
+
+   <!-- Bootstrap the web client customisations -->
+   <bean id="org_alfresco_module_Quickr_configBootstrap" class="org.alfresco.web.config.WebClientConfigBootstrap" init-method="init">
+      <property name="configs">
+         <list>
+            <value>classpath:alfresco/module/org.alfresco.module.quickr/ui/web-client-config-quickr.xml</value>
+         </list>
+      </property>
+   </bean>
 	
 </beans>

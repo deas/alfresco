@@ -68,8 +68,9 @@ public class OplockBreakTest extends Test {
 		 * Oplock break callback
 		 * 
 		 * @param cifsFile CIFSFile
+		 * @return int
 		 */
-		public void oplockBreak( CIFSFile cifsFile) {
+		public int oplockBreak( CIFSFile cifsFile) {
 			
 			// DEBUG
 			
@@ -86,6 +87,10 @@ public class OplockBreakTest extends Test {
 			}
 			catch (Exception ex) {
 			}
+			
+			// Return the oplock break response
+			
+			return OpLock.TypeNone;
 		}
 		
 		/**

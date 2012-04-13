@@ -88,6 +88,9 @@ public final class AccessMode {
 	public static final int NTFileWriteCheck	= NTWrite + NTAppend + NTWriteEA + NTWriteAttrib + NTWriteDAC + NTWriteOwner;
 	public static final int NTFileReadCheck		= NTRead + NTReadEA + NTReadAttrib + NTReadControl;
 	
+	public static final int NTReadAttributesOnly	= NTReadEA + NTReadAttrib + NTReadControl;
+	public static final int NTWriteAttribtuesOnly	= NTWriteEA + NTWriteAttrib + NTWriteDAC + NTWriteOwner;
+			
   /**
    * Return the file access mode from the specified flags value.
    *

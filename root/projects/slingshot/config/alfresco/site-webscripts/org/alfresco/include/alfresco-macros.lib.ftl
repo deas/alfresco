@@ -59,7 +59,7 @@
       <#return span>
    </#if>
 
-   <#local userid=user.name>
+   <#local userid=userName>
    <#local userprofilepage = userprofilepage?replace("{", "$" + "{")?interpret/>
    <#local userprofilepage><@userprofilepage/></#local>
    <#local link><a href="${url.context + "/page" + userprofilepage}" ${linkAttr}>${displayLabel}</a></#local>

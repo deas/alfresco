@@ -198,6 +198,10 @@
       <property name="extensionName" value="evaluatorHelper"/>
    </bean>
 
+   <bean id="slingshot.scriptprocessor.resolverHelper" parent="baseScriptExtension" class="org.alfresco.web.scripts.ResolverHelper">
+      <property name="extensionName" value="resolverHelper"/>
+   </bean>
+
    <bean id="slingshot.templateprocessor.mimetypesQuery" parent="baseTemplateExtension" class="org.alfresco.web.scripts.MimetypesQuery">
       <property name="extensionName">
          <value>mimetypes</value>

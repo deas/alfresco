@@ -74,6 +74,13 @@
     </initializationActionList>
 
     <preInstallationActionList>
+	<showWarning>
+	    <text>Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected.</text>
+	    <ruleList>
+		<compareValues value1="${machine_total_memory}" logic="less" value2="1024"/>
+	    </ruleList>
+	</showWarning>
+
         <actionGroup>
         <actionList>
 

@@ -47,9 +47,9 @@ import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
 import org.alfresco.module.vti.web.VtiEncodingUtils;
 import org.alfresco.repo.version.VersionModel;
+import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.lock.NodeLockedException;
 import org.alfresco.service.cmr.model.FileExistsException;
@@ -90,7 +90,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     private PermissionService permissionService;
     private AuthenticationService authenticationService;
     private VersionService versionService;
-    private LockService lockService;
+    private WebDAVLockService webDAVLockService;
     private ContentService contentService;
     private TransactionService transactionService;
     private MimetypeService mimetypeService;
@@ -122,11 +122,12 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     /**
      * Set lock service
      * 
-     * @param lockService the lock service to set ({@link LockService})
+     * @param webDAVLockService
+     *            the lock service to set
      */
-    public void setLockService(LockService lockService)
+    public void setWebDAVLockService(WebDAVLockService webDAVLockService)
     {
-        this.lockService = lockService;
+        this.webDAVLockService = webDAVLockService;
     }
 
     /**
@@ -294,9 +295,9 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
      * 
      * @return LockService lock service
      */
-    public LockService getLockService()
+    public WebDAVLockService getLockService()
     {
-        return lockService;
+        return webDAVLockService;
     }
 
     /**

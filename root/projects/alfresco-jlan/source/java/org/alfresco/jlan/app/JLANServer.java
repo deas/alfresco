@@ -355,6 +355,10 @@ public class JLANServer implements ServerListener {
 						m_shutdown = true;
 					else if ( inChar == 'r' || inChar == 'R')
 						m_restart = true;
+					else if ( inChar == 'g' || inChar == 'G') {
+						Debug.println( "Running garbage collection ...");
+						System.gc();
+					}
 					else if ( inChar == -1) {
 						
 						// Sleep for a short while

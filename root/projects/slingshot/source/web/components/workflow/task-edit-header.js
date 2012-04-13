@@ -174,7 +174,24 @@
 
          // Display actions and create yui buttons
          Selector.query("h1 span", this.id, true).innerHTML = $html(task.title);
-         
+
+         // ALF-13115 fix, inform user that this task has been completed
+         if (!task.isEditable)
+         {
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: this.msg("message.task.completed"),
+               displayTime: 2
+            });
+
+            YAHOO.lang.later(2000, this, function()
+            {
+               // Take the user to his dashboard
+               window.location = window.location.protocol + "//" + window.location.host + 
+                                 Alfresco.constants.URL_PAGECONTEXT + "user/" + Alfresco.constants.USERNAME + "/dashboard";
+            }, []);
+         }
+
          if (task.isReassignable)
          {
             // Task is reassignable

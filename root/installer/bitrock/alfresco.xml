@@ -247,6 +247,20 @@ ${alfresco_readme_path}
                                 <platformTest type="unix"/>
                             </ruleList>
 			</substitution>
+			<substitution>
+                            <pattern>@@BITROCK_PDF2SWF_LANGUAGEDIR@@</pattern>
+                            <value>${installdir.dos.unix}/swftools/japanese</value>
+                            <ruleList>
+                                <platformTest type="windows"/>
+                            </ruleList>
+                        </substitution>
+			<substitution>
+                            <pattern>@@BITROCK_PDF2SWF_LANGUAGEDIR@@</pattern>
+                            <value>${installdir.unix}/common/japanese</value>
+                            <ruleList>
+                                <platformTest type="unix"/>
+                            </ruleList>
+			</substitution>
 		        <substitution>
                             <pattern>@@BITROCK_MYSQL_PORT@@</pattern>
                             <value>${database_port}</value>

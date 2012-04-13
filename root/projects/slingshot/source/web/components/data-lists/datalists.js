@@ -174,6 +174,10 @@
                      scrollTo: true
                   });
                }
+               else
+               {
+                  YAHOO.Bubbling.fire("hideFilter");
+               }
                
                if (this.dataListsLength === 0 || window.location.hash === "#new")
                {

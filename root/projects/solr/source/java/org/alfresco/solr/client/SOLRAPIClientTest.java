@@ -19,10 +19,14 @@
 package org.alfresco.solr.client;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.AlgorithmParameters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,17 +46,33 @@ import org.alfresco.encryption.KeyProvider;
 import org.alfresco.encryption.KeyResourceLoader;
 import org.alfresco.encryption.KeyStoreParameters;
 import org.alfresco.encryption.MACUtils.MACInput;
+import org.alfresco.encryption.ssl.SSLEncryptionParameters;
+import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.httpclient.AlfrescoHttpClient;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.httpclient.EncryptionService;
+import org.alfresco.httpclient.HttpClientFactory;
+import org.alfresco.httpclient.HttpClientFactory.SecureCommsType;
 import org.alfresco.httpclient.MD5EncryptionParameters;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
+import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.opencmis.mapping.RuntimePropertyLuceneBuilderMapping;
+import org.alfresco.repo.cache.MemoryCache;
+import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAO;
+import org.alfresco.repo.dictionary.DictionaryDAOImpl;
+import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
+import org.alfresco.repo.dictionary.DictionaryNamespaceComponent;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.dictionary.NamespaceDAO;
+import org.alfresco.repo.dictionary.NamespaceDAOImpl;
+import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
+import org.alfresco.repo.tenant.SingleTServiceImpl;
+import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.util.Pair;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -63,28 +83,37 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 
 /**
- * Tests {@link SOLRAPIClient}
- * 
- * Note: need to make sure that source/solr/instance is on the run classpath.
- * 
- * Note: doesn't currently work, need to change to use SSL.
+ * Tests {@link SOLRAPIClient} Note: need to make sure that source/solr/instance is on the run classpath. Note: doesn't
+ * currently work, need to change to use SSL.
  * 
  * @since 4.0
  */
 public class SOLRAPIClientTest extends TestCase
 {
     private static Log logger = LogFactory.getLog(SOLRAPIClientTest.class);
-    
-    private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";
 
-    private EncryptionService invalidKeyEncryptionService;
+    // private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";
+
     private TamperWithEncryptionService tamperWithEncryptionService;
 
     private SOLRAPIClient client;
+
     private SOLRAPIClient invalidKeyClient;
+
     private SOLRAPIClient tamperWithClient;
 
-    private M2Model testModel;
+    private TenantService tenantService;
+
+    private NamespaceDAOImpl namespaceDAO;
+
+    private DictionaryDAOImpl dictionaryDAO;
+
+    private DictionaryComponent dictionaryComponent;
+
+    private CMISStrictDictionaryService cmisDictionaryService;
+
+
+    // private M2Model testModel;
 
     private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model)
     {
@@ -102,116 +131,167 @@ public class SOLRAPIClientTest extends TestCase
                 }
             }
 
-            AlfrescoSolrDataModel.getInstance("test").putModel(model);
+            dictionaryDAO.putModelIgnoringConstraints(model);
             loadedModels.add(modelName);
         }
     }
-    
+
     @Override
     public void setUp() throws Exception
     {
-        boolean inRepoContext = true;
-        List<String> bootstrapModels = new ArrayList<String>();
-        bootstrapModels.add("alfresco/model/dictionaryModel.xml");
-        if (inRepoContext)
+        if(client == null)
         {
-            bootstrapModels.add("alfresco/model/applicationModel.xml");
-            bootstrapModels.add("alfresco/model/blogIntegrationModel.xml");
-            bootstrapModels.add("alfresco/model/calendarModel.xml");
-            bootstrapModels.add("alfresco/model/contentModel.xml");
-            bootstrapModels.add("alfresco/model/datalistModel.xml");
-            bootstrapModels.add("alfresco/model/emailServerModel.xml");
-            bootstrapModels.add("alfresco/model/forumModel.xml");
-            bootstrapModels.add("alfresco/model/imapModel.xml");
-            bootstrapModels.add("alfresco/model/linksModel.xml");
-            bootstrapModels.add("alfresco/model/siteModel.xml");
-            bootstrapModels.add("alfresco/model/systemModel.xml");
-            bootstrapModels.add("alfresco/model/transferModel.xml");
-            bootstrapModels.add("alfresco/model/wcmAppModel.xml");
-            bootstrapModels.add("alfresco/model/wcmModel.xml");
-            
-            //bootstrapModels.add("org/alfresco/repo/security/authentication/userModel.xml");
-            //bootstrapModels.add("org/alfresco/repo/action/actionModel.xml");
-            //bootstrapModels.add("org/alfresco/repo/rule/ruleModel.xml");
-            //bootstrapModels.add("org/alfresco/repo/version/version_model.xml");  
+            tenantService = new SingleTServiceImpl();
+            namespaceDAO = new NamespaceDAOImpl();
+            namespaceDAO.setTenantService(tenantService);
+            namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
+
+            dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
+            dictionaryDAO.setTenantService(tenantService);
+            dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+            // TODO: use config ....
+            dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
+            dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
+
+            dictionaryComponent = new DictionaryComponent();
+            dictionaryComponent.setDictionaryDAO(dictionaryDAO);
+
+            // cmis dictionary
+            CMISMapping cmisMapping = new CMISMapping();
+            DictionaryNamespaceComponent namespaceService = new DictionaryNamespaceComponent();
+            namespaceService.setNamespaceDAO(namespaceDAO);
+            cmisMapping.setNamespaceService(namespaceService);
+            cmisMapping.setDictionaryService(dictionaryComponent);
+            cmisMapping.afterPropertiesSet();
+
+            cmisDictionaryService = new CMISStrictDictionaryService();
+            cmisDictionaryService.setCmisMapping(cmisMapping);
+            cmisDictionaryService.setDictionaryService(dictionaryComponent);
+            cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
+            cmisDictionaryService.setTenantService(tenantService);
+
+            RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
+            luceneBuilderMapping.setDictionaryService(dictionaryComponent);
+            luceneBuilderMapping.setCmisDictionaryService(cmisDictionaryService);
+            cmisDictionaryService.setPropertyLuceneBuilderMapping(luceneBuilderMapping);
+
+            luceneBuilderMapping.afterPropertiesSet();
+
+            // Load the key store from the classpath
+            ClasspathKeyResourceLoader keyResourceLoader = new ClasspathKeyResourceLoader();
+            client = new SOLRAPIClient(getRepoClient(keyResourceLoader), dictionaryComponent, namespaceDAO);
+            trackModels();
         }
-        else
-        {
-            bootstrapModels.add(TEST_MODEL);
-        }
+    }
+
+    private void trackModels() throws AuthenticationException, IOException, JSONException
+    {
+
+        List<AlfrescoModelDiff> modelDiffs = client.getModelsDiff(Collections.<AlfrescoModel> emptyList());
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
-        for (String bootstrapModel : bootstrapModels)
+
+        for (AlfrescoModelDiff modelDiff : modelDiffs)
         {
-            logger.debug("Loading ..."+bootstrapModel);
-            InputStream modelStream = getClass().getClassLoader().getResourceAsStream(bootstrapModel);
-            M2Model model = M2Model.createModel(modelStream);
-            for (M2Namespace namespace : model.getNamespaces())
+            switch (modelDiff.getType())
             {
-                modelMap.put(namespace.getUri(), model);
+            case CHANGED:
+                AlfrescoModel changedModel = client.getModel(modelDiff.getModelName());
+                for (M2Namespace namespace : changedModel.getModel().getNamespaces())
+                {
+                    modelMap.put(namespace.getUri(), changedModel.getModel());
+                }
+                break;
+            case NEW:
+                AlfrescoModel newModel = client.getModel(modelDiff.getModelName());
+                for (M2Namespace namespace : newModel.getModel().getNamespaces())
+                {
+                    modelMap.put(namespace.getUri(), newModel.getModel());
+                }
+                break;
+            case REMOVED:
+                // At the moment we do not unload models - I can see no side effects ....
+                // However search is used to check for references to indexed properties or types
+                // This will be partially broken anyway due to eventual consistency
+                // A model should only be unloaded if there are no data dependencies
+                // Should have been on the de-lucene list.
+                break;
             }
         }
 
-        // Load the models ensuring that they are loaded in the correct order
         HashSet<String> loadedModels = new HashSet<String>();
         for (M2Model model : modelMap.values())
         {
             loadModel(modelMap, loadedModels, model);
         }
-        
-        AlfrescoSolrDataModel model = AlfrescoSolrDataModel.getInstance("test");
-        // dummy implementation - don't know how to hook into SOLR-side namespace stuff
-        NamespaceDAO namespaceDAO = new TestNamespaceDAO();
+        if (modelDiffs.size() > 0)
+        {
+            afterInitModels();
+        }
 
-        // Load the key store from the classpath
-        ClasspathKeyResourceLoader keyResourceLoader = new ClasspathKeyResourceLoader();
-
-        // note small message timeout - 2s
-        KeyStoreParameters keyStoreParameters = new KeyStoreParameters("test", "JCEKS", null,
-        		"keystore-passwords.properties", "org/alfresco/solr/client/.keystore");
-        MD5EncryptionParameters encryptionParameters = new MD5EncryptionParameters("DESede/CBC/PKCS5Padding", Long.valueOf(2*1000), "HmacSHA1");
-
-    	//MD5HttpClientFactory httpClientFactory = new MD5HttpClientFactory();
-//        HttpClientFactory httpClientFactory = new HttpClientFactory(SecureComm);
-//
-//        invalidKeyEncryptionService = new EncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
-//        AlfrescoHttpClient repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, invalidKeyEncryptionService);
-//        //SecureHttpClient repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, invalidKeyEncryptionService);
-//        invalidKeyClient = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
-//
-//        keyStoreParameters.setLocation("org/alfresco/solr/client/.keystore");
-//        tamperWithEncryptionService = new TamperWithEncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
-//        repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, tamperWithEncryptionService);
-////        repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, tamperWithEncryptionService);
-//        tamperWithClient = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
-//        
-//        encryptionParameters.setMessageTimeout(30*1000);
-//        keyStoreParameters.setLocation("workspace-SpacesStore/conf/.keystore");
-//        EncryptionService encryptionService = new EncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
-//        repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, encryptionService);
-        //repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, encryptionService);
-//        client = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
-        client = new SOLRAPIClient(null, model.getDictionaryService(), namespaceDAO);
-
-        InputStream modelStream = getClass().getClassLoader().getResourceAsStream("org/alfresco/solr/client/testModel.xml");
-        testModel = M2Model.createModel(modelStream);
     }
-    
+
+    public void afterInitModels()
+    {
+        cmisDictionaryService.afterDictionaryInit();
+    }
+
+    protected AlfrescoHttpClient getRepoClient(ClasspathKeyResourceLoader keyResourceLoader)
+    {
+        // TODO i18n
+        KeyStoreParameters keyStoreParameters = new KeyStoreParameters("SSL Key Store", "JCEKS", null, "ssl-keystore-passwords.properties", "ssl.repo.client.keystore");
+        KeyStoreParameters trustStoreParameters = new KeyStoreParameters("SSL Trust Store", "JCEKS", null, "ssl-truststore-passwords.properties", "ssl.repo.client.truststore");
+        SSLEncryptionParameters sslEncryptionParameters = new SSLEncryptionParameters(keyStoreParameters, trustStoreParameters);
+
+        HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType("https"), sslEncryptionParameters, keyResourceLoader, null, null, "localhost", 8080,
+                8443, 40, 40);
+        // TODO need to make port configurable depending on secure comms, or just make redirects
+        // work
+        AlfrescoHttpClient repoClient = httpClientFactory.getRepoClient("localhost", 8443);
+        return repoClient;
+    }
+
+    public ClassLoader getResourceClassLoader()
+    {
+
+        File f = new File("woof", "alfrescoResources");
+        if (f.canRead() && f.isDirectory())
+        {
+
+            URL[] urls = new URL[1];
+
+            try
+            {
+                URL url = f.toURI().normalize().toURL();
+                urls[0] = url;
+            }
+            catch (MalformedURLException e)
+            {
+                throw new AlfrescoRuntimeException("Failed to add resources to classpath ", e);
+            }
+
+            return URLClassLoader.newInstance(urls, this.getClass().getClassLoader());
+        }
+        else
+        {
+            return this.getClass().getClassLoader();
+        }
+    }
+
     private class ClasspathKeyResourceLoader implements KeyResourceLoader
     {
-		@Override
-    	public InputStream getKeyStore(String location)
-    	throws FileNotFoundException
-    	{
-    		return getClass().getClassLoader().getResourceAsStream(location);
-    	}
+        @Override
+        public InputStream getKeyStore(String location) throws FileNotFoundException
+        {
+            return getClass().getClassLoader().getResourceAsStream(location);
+        }
 
-		@Override
-		public Properties loadKeyMetaData(String location) throws IOException
-		{
-			Properties p = new Properties();
-			p.load(getClass().getClassLoader().getResourceAsStream(location));
-			return p;
-		}
+        @Override
+        public Properties loadKeyMetaData(String location) throws IOException
+        {
+            Properties p = new Properties();
+            p.load(getClass().getClassLoader().getResourceAsStream(location));
+            return p;
+        }
     }
 
     /**
@@ -219,32 +299,32 @@ public class SOLRAPIClientTest extends TestCase
      */
     public void testGetAcls() throws Exception
     {
-        List<AclChangeSet> aclChangeSets = null;
-        
+        AclChangeSets aclChangeSets = null;
+
         aclChangeSets = client.getAclChangeSets(null, null, null, null, 50);
-        assertTrue("Too many results", aclChangeSets.size() <= 50);
-        if (aclChangeSets.size() < 2)
+        assertTrue("Too many results", aclChangeSets.getAclChangeSets().size() <= 50);
+        if (aclChangeSets.getAclChangeSets().size() < 2)
         {
-            return;             // Not enough data
+            return; // Not enough data
         }
         AclChangeSet aclChangeSetCheck = null;
-        AclChangeSet aclChangeSet0 = aclChangeSets.get(0);
-        AclChangeSet aclChangeSet1 = aclChangeSets.get(1);
+        AclChangeSet aclChangeSet0 = aclChangeSets.getAclChangeSets().get(0);
+        AclChangeSet aclChangeSet1 = aclChangeSets.getAclChangeSets().get(1);
         long id0 = aclChangeSet0.getId();
         long commitTimeMs0 = aclChangeSet0.getCommitTimeMs();
         // Now query for the next ID
         Long nextId = id0 + 1;
         aclChangeSets = client.getAclChangeSets(commitTimeMs0, nextId, null, null, 1);
-        assertEquals(1, aclChangeSets.size());
-        aclChangeSetCheck = aclChangeSets.get(0);
+        assertEquals(1, aclChangeSets.getAclChangeSets().size());
+        aclChangeSetCheck = aclChangeSets.getAclChangeSets().get(0);
         assertEquals(aclChangeSet1, aclChangeSetCheck);
-        
+
         Map<Long, AclChangeSet> aclChangeSetsById = new HashMap<Long, AclChangeSet>();
-        for (AclChangeSet aclChangeSet : aclChangeSets)
+        for (AclChangeSet aclChangeSet : aclChangeSets.getAclChangeSets())
         {
             aclChangeSetsById.put(aclChangeSet.getId(), aclChangeSet);
         }
-        
+
         Set<Long> aclIdUniqueCheck = new HashSet<Long>(1000);
         // Now do a large walk-through of the ACLs
         Long minAclChangeSetId = null;
@@ -252,7 +332,7 @@ public class SOLRAPIClientTest extends TestCase
         for (int i = 0; i < 100; i++)
         {
             aclChangeSets = client.getAclChangeSets(fromCommitTimeMs, minAclChangeSetId, null, null, 10);
-            if (aclChangeSets.size() == 0)
+            if (aclChangeSets.getAclChangeSets().size() == 0)
             {
                 break;
             }
@@ -260,10 +340,10 @@ public class SOLRAPIClientTest extends TestCase
             Long nextAclId = null;
             while (true)
             {
-                List<Acl> acls = client.getAcls(aclChangeSets, nextAclId, 1000);
+                List<Acl> acls = client.getAcls(aclChangeSets.getAclChangeSets(), nextAclId, 512);
                 if (acls.size() == 0)
                 {
-                    break;                  // Run out of ACLs
+                    break; // Run out of ACLs
                 }
                 Set<Long> aclIds = new HashSet<Long>(1000);
                 for (Acl acl : acls)
@@ -292,12 +372,12 @@ public class SOLRAPIClientTest extends TestCase
                 assertTrue("Some ACL IDs were not covered: " + aclIds, aclIds.size() == 0);
             }
             // March in time
-            AclChangeSet lastAclChangeSet = aclChangeSets.get(aclChangeSets.size() - 1);
+            AclChangeSet lastAclChangeSet = aclChangeSets.getAclChangeSets().get(aclChangeSets.getAclChangeSets().size() - 1);
             fromCommitTimeMs = lastAclChangeSet.getCommitTimeMs();
             minAclChangeSetId = lastAclChangeSet.getId() + 1;
         }
     }
-    
+
     public void testGetTransactions() throws Exception
     {
         // get transactions starting from txn id 1298288417234l
@@ -306,7 +386,7 @@ public class SOLRAPIClientTest extends TestCase
         // get transactions starting from transaction 426
         transactions = client.getTransactions(null, Long.valueOf(1), null, null, 5);
         List<Long> transactionIds = new ArrayList<Long>(transactions.getTransactions().size());
-        for(Transaction info : transactions.getTransactions())
+        for (Transaction info : transactions.getTransactions())
         {
             logger.debug(info);
             transactionIds.add(Long.valueOf(info.getId()));
@@ -316,7 +396,7 @@ public class SOLRAPIClientTest extends TestCase
         GetNodesParameters params = new GetNodesParameters();
         params.setTransactionIds(transactionIds);
         List<Node> nodes = client.getNodes(params, 5);
-        for(Node info : nodes)
+        for (Node info : nodes)
         {
             logger.debug(info);
         }
@@ -327,21 +407,21 @@ public class SOLRAPIClientTest extends TestCase
         params.setFromNodeId(nodes.get(nodes.size() - 1).getId());
         nodes = client.getNodes(params, 3);
         List<Long> nodeIds = new ArrayList<Long>(nodes.size());
-        for(Node info : nodes)
+        for (Node info : nodes)
         {
             logger.debug(info);
             nodeIds.add(info.getId());
         }
-        
+
         NodeMetaDataParameters metaParams = new NodeMetaDataParameters();
         metaParams.setNodeIds(nodeIds);
         List<NodeMetaData> metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
     }
-    
+
     public void testMetaData() throws AuthenticationException, IOException, JSONException
     {
         NodeMetaDataParameters metaParams = new NodeMetaDataParameters();
@@ -349,27 +429,27 @@ public class SOLRAPIClientTest extends TestCase
         nodeIds.add(1l);
         metaParams.setNodeIds(nodeIds);
         List<NodeMetaData> metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
-        
+
         metaParams = new NodeMetaDataParameters();
         nodeIds = new ArrayList<Long>(1);
         nodeIds.add(9l);
         metaParams.setNodeIds(nodeIds);
         metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
-        
+
         metaParams = new NodeMetaDataParameters();
         nodeIds = new ArrayList<Long>(1);
         nodeIds.add(19l);
         metaParams.setNodeIds(nodeIds);
         metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
@@ -381,22 +461,22 @@ public class SOLRAPIClientTest extends TestCase
         nodeIds.add(49437l);
         metaParams.setNodeIds(nodeIds);
         metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
-        
+
         // content with tags
         metaParams = new NodeMetaDataParameters();
         nodeIds = new ArrayList<Long>(1);
         nodeIds.add(49431l);
         metaParams.setNodeIds(nodeIds);
         metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
-            MultiPropertyValue multi = (MultiPropertyValue)info.getProperties().get(QName.createQName("{http://www.alfresco.org/model/content/1.0}taggable"));
-            for(PropertyValue propValue : multi.getValues())
+            MultiPropertyValue multi = (MultiPropertyValue) info.getProperties().get(QName.createQName("{http://www.alfresco.org/model/content/1.0}taggable"));
+            for (PropertyValue propValue : multi.getValues())
             {
                 logger.debug("multi property values = " + propValue);
             }
@@ -408,18 +488,18 @@ public class SOLRAPIClientTest extends TestCase
         nodeIds.add(117630l);
         metaParams.setNodeIds(nodeIds);
         metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
-        
+
         // content with accented characters in title properties
         metaParams = new NodeMetaDataParameters();
         nodeIds = new ArrayList<Long>(1);
         nodeIds.add(117678l);
         metaParams.setNodeIds(nodeIds);
         metadata = client.getNodesMetaData(metaParams, 3);
-        for(NodeMetaData info : metadata)
+        for (NodeMetaData info : metadata)
         {
             logger.debug(info);
         }
@@ -427,126 +507,103 @@ public class SOLRAPIClientTest extends TestCase
 
     public void testGetModel() throws AuthenticationException, IOException, JSONException
     {
-    	AlfrescoModel alfModel = client.getModel(QName.createQName("http://www.alfresco.org/model/content/1.0", "contentmodel"));
-    	M2Model model = alfModel.getModel();
-    	assertNotNull(model);
-    	assertEquals("Returned model has incorrect name", "cm:contentmodel", model.getName());
-    	assertNotNull(alfModel.getChecksum());
+        AlfrescoModel alfModel = client.getModel(QName.createQName("http://www.alfresco.org/model/content/1.0", "contentmodel"));
+        M2Model model = alfModel.getModel();
+        assertNotNull(model);
+        assertEquals("Returned model has incorrect name", "cm:contentmodel", model.getName());
+        assertNotNull(alfModel.getChecksum());
     }
-    
+
     public void testGetModelDiffs() throws AuthenticationException, IOException, JSONException
     {
-    	List<AlfrescoModelDiff> diffs = client.getModelsDiff(Collections.EMPTY_LIST);
-    	assertTrue(diffs.size() > 0);
+        List<AlfrescoModelDiff> diffs = client.getModelsDiff(Collections.<AlfrescoModel> emptyList());
+        assertTrue(diffs.size() > 0);
     }
 
-    public void testMAC() throws IOException, JSONException
-    {
-    	// dodyClient has a secret key that is not the same as the repository's. This
-    	// should fail with a 401
-    	try
-    	{
-    		Transactions transactions = invalidKeyClient.getTransactions(1298288417234l, null, null, null, 5);
-    	}
-    	catch(AuthenticationException e)
-    	{
-    		assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
-    	}
+//    public void testMAC() throws IOException, JSONException
+//    {
+//        // dodyClient has a secret key that is not the same as the repository's. This
+//        // should fail with a 401
+//        try
+//        {
+//            Transactions transactions = invalidKeyClient.getTransactions(1298288417234l, null, null, null, 5);
+//        }
+//        catch (AuthenticationException e)
+//        {
+//            assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
+//        }
+//
+//        try
+//        {
+//            tamperWithEncryptionService.setOverrideTimestamp(true);
+//            Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, null, null, 5);
+//        }
+//        catch (AuthenticationException e)
+//        {
+//            assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
+//        }
+//        finally
+//        {
+//            tamperWithEncryptionService.setOverrideTimestamp(false);
+//        }
+//
+//        try
+//        {
+//            tamperWithEncryptionService.setOverrideMAC(true);
+//            Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, null, null, 5);
+//        }
+//        catch (AuthenticationException e)
+//        {
+//            assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
+//        }
+//        finally
+//        {
+//            tamperWithEncryptionService.setOverrideMAC(false);
+//        }
+//    }
 
-    	try
-    	{
-        	tamperWithEncryptionService.setOverrideTimestamp(true);
-        	Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, null, null, 5);
-    	}
-    	catch(AuthenticationException e)
-    	{
-    		assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
-    	}
-    	finally
-    	{
-    		tamperWithEncryptionService.setOverrideTimestamp(false);    		
-    	}
-    	
-    	try
-    	{
-    		tamperWithEncryptionService.setOverrideMAC(true);
-    		Transactions transactions = tamperWithClient.getTransactions(1298288417234l, null, null, null, 5);
-    	}
-    	catch(AuthenticationException e)
-    	{
-    		assertEquals("Should have caught unathorised request", e.getMethod().getStatusCode(), HttpStatus.SC_UNAUTHORIZED);
-    	}
-    	finally
-    	{
-    		tamperWithEncryptionService.setOverrideMAC(false);    		
-    	}
-    }
-    
     private void outputTextContent(SOLRAPIClient.GetTextContentResponse response) throws IOException
     {
         InputStream in = response.getContent();
-        if(in != null)
+        if (in != null)
         {
             logger.debug("Text content:");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line = null;
-            while((line = reader.readLine()) != null)
+            while ((line = reader.readLine()) != null)
             {
                 logger.debug(line);
             }
         }
     }
-/*
-    public void testGetTextContent()
-    {
-        try
-        {
-            SOLRAPIClient.GetTextContentResponse response = client.getTextContent(Long.valueOf(35617l), null, null);
-            logger.debug("Status = " + response.getStatus());
-            logger.debug("Transform Status = " + response.getTransformStatus());
-            logger.debug("Transform Exception = " + response.getTransformException());
-            logger.debug("Request took " + response.getRequestDuration() + " ms");
-            outputTextContent(response);
 
-            // test cache
-            Long modifiedSince = System.currentTimeMillis();
-            response = client.getTextContent(Long.valueOf(35617l), null, modifiedSince);
-            logger.debug("Status = " + response.getStatus());
-            logger.debug("Transform Status = " + response.getTransformStatus());
-            logger.debug("Transform Exception = " + response.getTransformException());
-            logger.debug("Request took " + response.getRequestDuration() + " ms");
-            
-            response = client.getTextContent(Long.valueOf(35618l), null, null);
-            logger.debug("Status = " + response.getStatus());
-            logger.debug("Transform Status = " + response.getTransformStatus());
-            logger.debug("Transform Exception = " + response.getTransformException());
-            logger.debug("Request took " + response.getRequestDuration() + " ms");
-            outputTextContent(response);
-            
-            response = client.getTextContent(Long.valueOf(35619l), null, null);
-            logger.debug("Status = " + response.getStatus());
-            logger.debug("Transform Status = " + response.getTransformStatus());
-            logger.debug("Transform Exception = " + response.getTransformException());
-            logger.debug("Request took " + response.getRequestDuration() + " ms");
-            outputTextContent(response);
-            
-            response = client.getTextContent(Long.valueOf(35620l), null, null);
-            logger.debug("Status = " + response.getStatus());
-            logger.debug("Transform Status = " + response.getTransformStatus());
-            logger.debug("Transform Exception = " + response.getTransformException());
-            logger.debug("Request took " + response.getRequestDuration() + " ms");
-            outputTextContent(response);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-*/
+    /*
+     * public void testGetTextContent() { try { SOLRAPIClient.GetTextContentResponse response =
+     * client.getTextContent(Long.valueOf(35617l), null, null); logger.debug("Status = " + response.getStatus());
+     * logger.debug("Transform Status = " + response.getTransformStatus()); logger.debug("Transform Exception = " +
+     * response.getTransformException()); logger.debug("Request took " + response.getRequestDuration() + " ms");
+     * outputTextContent(response); // test cache Long modifiedSince = System.currentTimeMillis(); response =
+     * client.getTextContent(Long.valueOf(35617l), null, modifiedSince); logger.debug("Status = " +
+     * response.getStatus()); logger.debug("Transform Status = " + response.getTransformStatus());
+     * logger.debug("Transform Exception = " + response.getTransformException()); logger.debug("Request took " +
+     * response.getRequestDuration() + " ms"); response = client.getTextContent(Long.valueOf(35618l), null, null);
+     * logger.debug("Status = " + response.getStatus()); logger.debug("Transform Status = " +
+     * response.getTransformStatus()); logger.debug("Transform Exception = " + response.getTransformException());
+     * logger.debug("Request took " + response.getRequestDuration() + " ms"); outputTextContent(response); response =
+     * client.getTextContent(Long.valueOf(35619l), null, null); logger.debug("Status = " + response.getStatus());
+     * logger.debug("Transform Status = " + response.getTransformStatus()); logger.debug("Transform Exception = " +
+     * response.getTransformException()); logger.debug("Request took " + response.getRequestDuration() + " ms");
+     * outputTextContent(response); response = client.getTextContent(Long.valueOf(35620l), null, null);
+     * logger.debug("Status = " + response.getStatus()); logger.debug("Transform Status = " +
+     * response.getTransformStatus()); logger.debug("Transform Exception = " + response.getTransformException());
+     * logger.debug("Request took " + response.getRequestDuration() + " ms"); outputTextContent(response); }
+     * catch(Exception e) { e.printStackTrace(); } }
+     */
     private class TestNamespaceDAO implements NamespaceDAO
     {
         private Map<String, String> prefixMappings = new HashMap<String, String>(10);
+
         private Map<String, List<String>> prefixReverseMappings = new HashMap<String, List<String>>(10);
 
         TestNamespaceDAO()
@@ -555,16 +612,16 @@ public class SOLRAPIClientTest extends TestCase
             prefixMappings.put(NamespaceService.SYSTEM_MODEL_PREFIX, NamespaceService.SYSTEM_MODEL_1_0_URI);
             prefixMappings.put(NamespaceService.DEFAULT_PREFIX, NamespaceService.DEFAULT_URI);
             prefixMappings.put(NamespaceService.DICTIONARY_MODEL_PREFIX, NamespaceService.DICTIONARY_MODEL_1_0_URI);
-            prefixMappings.put(NamespaceService.APP_MODEL_PREFIX, NamespaceService.APP_MODEL_1_0_URI);            
-            prefixMappings.put("ver", "http://www.alfresco.org/model/versionstore/1.0");            
+            prefixMappings.put(NamespaceService.APP_MODEL_PREFIX, NamespaceService.APP_MODEL_1_0_URI);
+            prefixMappings.put("ver", "http://www.alfresco.org/model/versionstore/1.0");
             prefixMappings.put("ver2", "http://www.alfresco.org/model/versionstore/2.0");
-            
+
             prefixReverseMappings.put(NamespaceService.CONTENT_MODEL_1_0_URI, Arrays.asList(NamespaceService.CONTENT_MODEL_PREFIX));
             prefixReverseMappings.put(NamespaceService.SYSTEM_MODEL_PREFIX, Arrays.asList(NamespaceService.SYSTEM_MODEL_1_0_URI));
             prefixReverseMappings.put(NamespaceService.DEFAULT_PREFIX, Arrays.asList(NamespaceService.DEFAULT_URI));
             prefixReverseMappings.put(NamespaceService.DICTIONARY_MODEL_PREFIX, Arrays.asList(NamespaceService.DICTIONARY_MODEL_1_0_URI));
-            prefixReverseMappings.put(NamespaceService.APP_MODEL_PREFIX, Arrays.asList(NamespaceService.APP_MODEL_1_0_URI));            
-            prefixReverseMappings.put("ver", Arrays.asList("http://www.alfresco.org/model/versionstore/1.0"));            
+            prefixReverseMappings.put(NamespaceService.APP_MODEL_PREFIX, Arrays.asList(NamespaceService.APP_MODEL_1_0_URI));
+            prefixReverseMappings.put("ver", Arrays.asList("http://www.alfresco.org/model/versionstore/1.0"));
             prefixReverseMappings.put("ver2", Arrays.asList("http://www.alfresco.org/model/versionstore/2.0"));
         }
 
@@ -635,89 +692,88 @@ public class SOLRAPIClientTest extends TestCase
 
     /**
      * Overrides request encryption to create dodgy MAC and timestamp on requests
-     *
      */
     private static class TestEncryptionUtils extends DefaultEncryptionUtils
     {
-    	private boolean overrideMAC = false;
-    	private boolean overrideTimestamp = false;
+        private boolean overrideMAC = false;
 
-    	public void setOverrideMAC(boolean overrideMAC)
-		{
-			this.overrideMAC = overrideMAC;
-		}
+        private boolean overrideTimestamp = false;
 
-		public void setOverrideTimestamp(boolean overrideTimestamp)
-		{
-			this.overrideTimestamp = overrideTimestamp;
-		}
+        public void setOverrideMAC(boolean overrideMAC)
+        {
+            this.overrideMAC = overrideMAC;
+        }
 
-		@Override
+        public void setOverrideTimestamp(boolean overrideTimestamp)
+        {
+            this.overrideTimestamp = overrideTimestamp;
+        }
+
+        @Override
         public void setRequestAuthentication(HttpMethod method, byte[] message) throws IOException
         {
-        	if(method instanceof PostMethod)
-        	{
-    	        // encrypt body
-    	        Pair<byte[], AlgorithmParameters> encrypted = encryptor.encrypt(KeyProvider.ALIAS_SOLR, null, message);
-    	        setRequestAlgorithmParameters(method, encrypted.getSecond());
+            if (method instanceof PostMethod)
+            {
+                // encrypt body
+                Pair<byte[], AlgorithmParameters> encrypted = encryptor.encrypt(KeyProvider.ALIAS_SOLR, null, message);
+                setRequestAlgorithmParameters(method, encrypted.getSecond());
 
-    	        ((PostMethod)method).setRequestEntity(new ByteArrayRequestEntity(encrypted.getFirst(), "application/octet-stream"));
-        	}
+                ((PostMethod) method).setRequestEntity(new ByteArrayRequestEntity(encrypted.getFirst(), "application/octet-stream"));
+            }
 
-    	    long requestTimestamp = System.currentTimeMillis();
-    	
-    	    // add MAC header
-    	    byte[] mac = macUtils.generateMAC(KeyProvider.ALIAS_SOLR,
-    	    		new MACInput(message, requestTimestamp, getLocalIPAddress()));
-    	
-    		if(logger.isDebugEnabled())
-    		{
-    			logger.debug("Setting MAC " + mac + " on HTTP request " + method.getPath());
-    			logger.debug("Setting timestamp " + requestTimestamp + " on HTTP request " + method.getPath());
-    		}
-    	    
-    		if(overrideMAC)
-    		{
-    			mac[0] += (byte)1;
-    		}
-    	    setRequestMac(method, mac);
+            long requestTimestamp = System.currentTimeMillis();
 
-    	    if(overrideTimestamp)
-    	    {
-    	    	requestTimestamp += 60000;
-    	    }
-    	    // prevent replays
-    	    setRequestTimestamp(method, requestTimestamp);
-        }    	
+            // add MAC header
+            byte[] mac = macUtils.generateMAC(KeyProvider.ALIAS_SOLR, new MACInput(message, requestTimestamp, getLocalIPAddress()));
+
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Setting MAC " + mac + " on HTTP request " + method.getPath());
+                logger.debug("Setting timestamp " + requestTimestamp + " on HTTP request " + method.getPath());
+            }
+
+            if (overrideMAC)
+            {
+                mac[0] += (byte) 1;
+            }
+            setRequestMac(method, mac);
+
+            if (overrideTimestamp)
+            {
+                requestTimestamp += 60000;
+            }
+            // prevent replays
+            setRequestTimestamp(method, requestTimestamp);
+        }
     }
-    
+
     private static class TamperWithEncryptionService extends EncryptionService
     {
-    	TamperWithEncryptionService(String alfrescoHost, int alfrescoPort, KeyResourceLoader keyResourceLoader,
-    			KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters)
-    	{
-    		super(alfrescoHost, alfrescoPort, keyResourceLoader, keyStoreParameters, encryptionParameters);
-    	}
+        TamperWithEncryptionService(String alfrescoHost, int alfrescoPort, KeyResourceLoader keyResourceLoader, KeyStoreParameters keyStoreParameters,
+                MD5EncryptionParameters encryptionParameters)
+                {
+            super(alfrescoHost, alfrescoPort, keyResourceLoader, keyStoreParameters, encryptionParameters);
+                }
 
-    	@Override
-    	protected void setupEncryptionUtils()
-    	{
-    		encryptionUtils = new TestEncryptionUtils();
-    		TestEncryptionUtils testEncryptionUtils = (TestEncryptionUtils)encryptionUtils;
-    		testEncryptionUtils.setEncryptor(getEncryptor());
-    		testEncryptionUtils.setMacUtils(getMacUtils());
-    		testEncryptionUtils.setMessageTimeout(encryptionParameters.getMessageTimeout());
-    		testEncryptionUtils.setRemoteIP(alfrescoHost);
-    	}
-    	
-    	public void setOverrideTimestamp(boolean overrideTimestamp)
-		{
-    		((TestEncryptionUtils)encryptionUtils).setOverrideTimestamp(overrideTimestamp);
-		}
+        @Override
+        protected void setupEncryptionUtils()
+        {
+            encryptionUtils = new TestEncryptionUtils();
+            TestEncryptionUtils testEncryptionUtils = (TestEncryptionUtils) encryptionUtils;
+            testEncryptionUtils.setEncryptor(getEncryptor());
+            testEncryptionUtils.setMacUtils(getMacUtils());
+            testEncryptionUtils.setMessageTimeout(encryptionParameters.getMessageTimeout());
+            testEncryptionUtils.setRemoteIP(alfrescoHost);
+        }
 
-    	public void setOverrideMAC(boolean overrideMAC)
-		{
-    		((TestEncryptionUtils)encryptionUtils).setOverrideMAC(overrideMAC);
-		}
+        public void setOverrideTimestamp(boolean overrideTimestamp)
+        {
+            ((TestEncryptionUtils) encryptionUtils).setOverrideTimestamp(overrideTimestamp);
+        }
+
+        public void setOverrideMAC(boolean overrideMAC)
+        {
+            ((TestEncryptionUtils) encryptionUtils).setOverrideMAC(overrideMAC);
+        }
     }
 }

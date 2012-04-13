@@ -33,6 +33,7 @@ public class OpLock {
 	public static final int TypeNone 		= 0;
 	public static final int TypeExclusive	= 1;
 	public static final int TypeBatch		= 2;
+	public static final int TypeLevelII		= 3;
 	
 	/**
 	 * Return the oplock type as a string
@@ -52,6 +53,9 @@ public class OpLock {
 				break;
 			case TypeExclusive:
 				typStr = "Exclusive";
+				break;
+			case TypeLevelII:
+				typStr = "LevelII";
 				break;
 		}
 		

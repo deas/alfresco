@@ -39,9 +39,9 @@ import java.util.Map;
  * </p>
  *
  * <p>
- * Note! If we are outside a side (i.e. a "global" page: i.e. the "Repository browser", A users dashboard or the
- * "My Workflows" page the evaluator will return <code>true</code>. In other words this evaluator will only use the
- * parameters if we are inside a site.
+ * Note! If we are outside a side (i.e. a "global/non-site-page"  page: i.e. the "Repository browser", A users dashboard or the
+ * "My Workflows" page the evaluator will return <code>true</code> by default. To change this behaviour you can set
+ * {@code<applyForNonSites>} to false, which means the evaluator will return true ONLY when inside a site.
  * </p>
  * <p>
  * Note! The regexp is expressed without using the surrounding // characters.
@@ -59,7 +59,7 @@ import java.util.Map;
  * }</pre>
  *
  * <p>
- * Will return true if we are outside a site OR inside a site with a sitePreset id of "rm-site-dashboard".
+ * Will return true if we are inside a site with a sitePreset id of "rm-site-dashboard".
  * </p>
  *
  * <p>
@@ -74,7 +74,7 @@ import java.util.Map;
  * }</pre>
  *
  * <p>
- * Will return true if we are outside a site OR inside a site with a site id of "rm" or "photos".
+ * Will return true if we are inside a site with a site id of "rm" or "photos".
  * </p>
  *
  * @author ewinlof
@@ -86,6 +86,7 @@ public class SlingshotSiteModuleEvaluator implements ExtensionModuleEvaluator
     /* Evaluator parameters */
     public static final String SITE_PRESET_FILTER = "sitePresets";
     public static final String SITE_FILTER = "sites";
+    public static final String APPLY_FOR_NON_SITES = "applyForNonSites";
 
     protected SlingshotEvaluatorUtil util = null;
 
@@ -128,10 +129,13 @@ public class SlingshotSiteModuleEvaluator implements ExtensionModuleEvaluator
             {
                 return false;
             }
+
+            // SITE PASSED BOTH SITE ID & SITE PRESET FILTERS
+            return true;
         }
 
-        // No filter stopped the evaluation from passing
-        return true;
+        // We are not inside a site, see if we shall apply the module anyhow
+        return util.getEvaluatorParam(params, APPLY_FOR_NON_SITES, "true").equals("true");
     }
 
 }

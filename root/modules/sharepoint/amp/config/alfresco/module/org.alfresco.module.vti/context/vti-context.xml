@@ -31,18 +31,34 @@
         <property name="filter">
             <ref bean="vtiFilter"/>
         </property>
-	     <property name="hashSessionIdManager">
+		<property name="hashSessionIdManager">
             <ref bean="hashSessionIdManager"/>
         </property>
-    	  <property name="sessionCookieName">
+        <property name="hashSessionManager">
+            <ref bean="hashSessionManager"/>
+        </property>
+        <property name="webDAVSessionListener">
+            <ref bean="webDAVSessionListener"/>
+        </property>
+        <property name="sessionCookieName">
             <value>${vti.server.sessionCookieName}</value>
         </property>
     </bean>
 
     <bean id="hashSessionIdManager" class="org.mortbay.jetty.servlet.HashSessionIdManager">
-    	 <property name="workerName">
-          <value>${vti.server.sessionIdManager.workerName}</value>
+    	<property name="workerName">
+             <value>${vti.server.sessionIdManager.workerName}</value>
        </property>
+    </bean>
+
+    <bean id="hashSessionManager" class="org.mortbay.jetty.servlet.HashSessionManager">
+        <property name="maxInactiveInterval">
+            <value>${vti.server.session.maxInactiveInterval}</value>
+        </property>
+    </bean>
+
+    <bean id="webDAVSessionListener" class="org.alfresco.repo.webdav.WebDAVSessionListener">
+        <property name="webDAVLockService" ref="webDAVLockService" />
     </bean>
 
     <!-- Use this Connector for plain text (non-SSL) communications -->

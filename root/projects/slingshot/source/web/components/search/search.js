@@ -803,17 +803,14 @@
          if (searchQuery.length !== 0)
          {
             // if we have a query (already encoded), then apply it
-            // other options such as tag, terms, all sites, repo etc. are trumped
+            // most other options such as tag, terms are trumped
             url += "&q=" + searchQuery;
          }
-         else
+         else if (searchTag.length !== 0)
          {
-            if (searchTag.length !== 0)
-            {
-               url += "&tag=" + encodeURIComponent(searchTag);
-            }
-            url += "&a=" + searchAllSites + "&r=" + searchRepository;
+            url += "&tag=" + encodeURIComponent(searchTag);
          }
+         url += "&a=" + searchAllSites + "&r=" + searchRepository;
          window.location = url;
       },
 

@@ -450,8 +450,22 @@ public class MimetypeMap implements MimetypeService
           type = detector.detect( inp, metadata );
           logger.debug(reader + " detected by Tika as being " + type.toString());
        } catch(Exception e) {
-          logger.warn("Error identifying content type of problem document", e);
-          return null;
+    	   logger.warn("Error identifying content type of problem document", e);
+    	   return null;
+       } 
+       finally 
+       {
+    	   if (inp != null) 
+    	   {
+    		   try
+    		   {
+    			   inp.close();
+    		   }
+    		   catch (Exception e)
+    		   {
+    			   //noop
+    		   }
+    	   }
        }
        return type;
     }

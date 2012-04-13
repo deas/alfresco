@@ -1,0 +1,46 @@
+Index: src/com/sun/pdfview/PDFFile.java
+===================================================================
+--- src/com/sun/pdfview/PDFFile.java	(revision 140)
++++ src/com/sun/pdfview/PDFFile.java	(working copy)
+@@ -42,6 +42,7 @@
+ 
+     public final static int             NUL_CHAR = 0;
+     public final static int             FF_CHAR = 12;
++    private static final String OxFFFFFFFF = Long.toString(0xFFFFFFFFL);
+ 
+     private String versionString = "1.1";
+     private int majorVersion = 1;
+@@ -1189,10 +1190,14 @@
+                 // upgrade
+                 if (xrefEntries[objNum] == null) {
+                     PDFXrefEntry entry;
+-                    final byte entryType = refline[17];
++                    String offsetStr = new String(refline, 0, 10);
++                    // Handle a not so uncommon xref table encoding error, by overriding the
++                    // entryType as free ('f') when the original int offset is -1 (0xFFFFFFFF)
++                    // and has been encoded in error as 4294967295. 
++					final byte entryType = OxFFFFFFFF.equals(offsetStr) ? (byte)'f' : refline[17];
+                     if (entryType == 'n') {
+                         // active entry
+-                        int offset = Integer.parseInt(new String(refline, 0, 10));
++						int offset = Integer.parseInt(offsetStr);
+                         int generation = Integer.parseInt(new String(refline, 11, 5));
+                         final PDFXref ref = new PDFXref(objNum, generation);
+                         entry = PDFXrefEntry.toBodyObject(generation, offset);
+@@ -1669,8 +1674,14 @@
+             }
+         }
+ 
+-        if (parser != null && !parser.isFinished()) {
+-            parser.go(wait);
++        if (parser != null) {
++        	if (!parser.isFinished()) {
++        		parser.go(wait);
++        	}
++        	if (wait && parser.getStatus() == Watchable.ERROR) {
++                System.out.println("PDFRenderer: An error took place. Returning a null page");
++                return null;
++        	}	
+         }
+ 
+         return page;

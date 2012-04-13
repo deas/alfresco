@@ -30,6 +30,7 @@ import org.alfresco.module.vti.metadata.dic.VtiType;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.web.VtiEncodingUtils;
 import org.alfresco.module.vti.web.VtiFilter;
+import org.alfresco.repo.webdav.WebDAVLockService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLDecoder;
@@ -74,7 +75,9 @@ public abstract class AbstractMethod implements VtiMethod
         {
             try
             {
+                WebDAVLockService.setCurrentSession(request.getSession());
                 response.setContentType(VtiFilter.CONTENT_TYPE_HTML);
+
                 doExecute(request, response);
             }
             catch (VtiMethodException e)

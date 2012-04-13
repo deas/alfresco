@@ -690,3 +690,6 @@ msgstr "The installation directory must be a path containing only letters, numbe
 
 msgid "Show next steps"
 msgstr "Show next steps"
+
+msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
+msgstr "Alfresco recommends at least 1024MB of memory. ${machine_total_memory}MB detected."

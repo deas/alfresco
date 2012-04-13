@@ -181,6 +181,10 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         }
         else if ( Debug.EnableInfo && hasDebug())
         	Debug.println("** File close, file=" + file.getFullName() + ", openCount=" + fstate.getOpenCount());
+        
+        // Clear the access token
+        
+        file.setAccessToken( null);
       }
 
       //  Release any locks on the file owned by this session

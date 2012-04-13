@@ -79,7 +79,9 @@ public class TestConfiguration {
 									   				{ "perfFilesPerFolder", "org.alfresco.jlan.test.cluster.PerfFilesPerFolderTest"},
 									   				{ "perfFolderTree",		"org.alfresco.jlan.test.cluster.PerfFolderTreeTest"},
 									   				{ "perfDataTransfer",	"org.alfresco.jlan.test.cluster.PerfDataTransferTest"},
-									   				{ "oplockLeak",			"org.alfresco.jlan.test.cluster.OplockLeakTest"}
+									   				{ "oplockLeak",			"org.alfresco.jlan.test.cluster.OplockLeakTest"},
+									   				{ "oplockLevelII",		"org.alfresco.jlan.test.cluster.OplockBreakLevelIITest"},
+									   				{ "attributesOnlyOplock","org.alfresco.jlan.test.cluster.AttributesOnlyOplockGrantTest"}
 	};
 
 	// List of remote servers

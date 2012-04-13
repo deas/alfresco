@@ -19,6 +19,8 @@
 
 package org.alfresco.jlan.client;
 
+import org.alfresco.jlan.smb.OpLock;
+
 /**
  * Oplock Break Callback Adapter Class
  *
@@ -30,9 +32,10 @@ public class OplockAdapter implements OplockInterface {
 	 * Oplock break requested on a file
 	 * 
 	 * @param file CIFSFile
+	 * @return int
 	 */
-	public void oplockBreak(CIFSFile file) {
-		
+	public int oplockBreak(CIFSFile file) {
+		return OpLock.TypeNone;
 	}
 	
 	/**

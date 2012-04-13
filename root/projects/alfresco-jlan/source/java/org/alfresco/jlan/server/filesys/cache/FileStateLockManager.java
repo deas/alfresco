@@ -386,6 +386,55 @@ public class FileStateLockManager implements LockManager, OpLockManager, Runnabl
 	}
 	
 	/**
+	 * Change an oplock type
+	 * 
+	 * @param oplock OpLockDetails
+	 * @param newTyp int
+	 */
+	public void changeOpLockType(OpLockDetails oplock, int newTyp) {
+		
+		// Change the oplock type via the state cache
+		
+		m_stateCache.changeOpLockType(oplock, newTyp);
+		
+		// Remove from the pending oplock break queue
+		
+		synchronized ( m_oplockQueue) {
+			
+			// Remove any active oplock break from the queue
+			
+			if ( m_oplockQueue.remove( oplock.getPath()) != null) {
+			
+				// Check if there are deferred CIFS request(s) pending for this oplock
+				
+				if ( oplock.hasDeferredSessions()) {
+	
+					// Requeue the deferred request(s) to the thread pool for processing
+					
+					oplock.requeueDeferredRequests();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Cancel an oplock break timer
+	 * 
+	 * @param path String
+	 */
+	public void cancelOplockTimer( String path) {
+	
+		// Remove from the pending oplock break queue
+		
+		synchronized ( m_oplockQueue) {
+			
+			// Remove any active oplock break from the queue
+			
+			m_oplockQueue.remove( path);
+		}
+	}
+	
+	/**
 	 * Check for expired oplock break requests
 	 * 
 	 * @return int

@@ -30,8 +30,8 @@ import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.repo.webdav.WebDAV;
+import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
-import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -57,7 +57,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
     private VtiPathHelper pathHelper;
     private CheckOutCheckInService checkOutCheckInService;
-    private LockService lockService;
+    private WebDAVLockService webDAVlockService;
     private TransactionService transactionService;
     private NodeService nodeService;
     private VersionService versionService;
@@ -73,9 +73,9 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
         this.checkOutCheckInService = checkOutCheckInService;
     }
 
-    public void setLockService(LockService lockService)
+    public void setWebDAVLockService(WebDAVLockService webDAVlockService)
     {
-        this.lockService = lockService;
+        this.webDAVlockService = webDAVlockService;
     }
 
     public void setTransactionService(TransactionService transactionService)
@@ -136,7 +136,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     NodeRef originalNode = checkOutCheckInService.cancelCheckout(workingCopy);
                     if (lockAfterSucess)
                     {
-                        lockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                        webDAVlockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_24_HOURS);
                     }
                     return originalNode;
 
@@ -202,7 +202,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     {
                        if (lockAfterSucess)
                        {
-                          lockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                          webDAVlockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_24_HOURS);
                        }
                     }
                     else
@@ -253,7 +253,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     
                     if (lockAfterSucess)
                     {
-                        lockService.lock(workingCopy, LockType.WRITE_LOCK, WebDAV.TIMEOUT_INFINITY);
+                        webDAVlockService.lock(workingCopy, LockType.WRITE_LOCK, WebDAV.TIMEOUT_24_HOURS);
                     }
 
                     return workingCopy;

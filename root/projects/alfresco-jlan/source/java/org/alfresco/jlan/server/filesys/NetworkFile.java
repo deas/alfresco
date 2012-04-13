@@ -39,9 +39,10 @@ public abstract class NetworkFile {
 
 	// Granted file access types
 
-	public static final int READONLY = 0;
-	public static final int WRITEONLY = 1;
-	public static final int READWRITE = 2;
+	public static final int ATTRIBUTESONLY	= 0;
+	public static final int READONLY 		= 1;
+	public static final int WRITEONLY 		= 2;
+	public static final int READWRITE 		= 3;
 
 	// File status flags
 
@@ -263,6 +264,9 @@ public abstract class NetworkFile {
 	        case WRITEONLY:
 	            accStr = "WriteOnly";
 	            break;
+	        case ATTRIBUTESONLY:
+	        	accStr = "AttributesOnly";
+	        	break;
 	    }
 	    
 	    return accStr;

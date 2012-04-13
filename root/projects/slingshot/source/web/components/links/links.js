@@ -532,16 +532,22 @@
          var onRowMouseover = function Links_onRowMouseover(e)
          {
             me.widgets.dataTable.selectRow(e.target);
-            e.target.cells[2].childNodes[0].style.visibility = "visible";
-            e.target.cells[2].childNodes[0].style.width = "100px";
-            e.target.cells[2].style.borderLeft = "1px solid #999";
+            if (e.target.cells && e.target.cells.length > 1)
+            {
+               e.target.cells[2].childNodes[0].style.visibility = "visible";
+               e.target.cells[2].childNodes[0].style.width = "100px";
+               e.target.cells[2].style.borderLeft = "1px solid #999";
+            }
          };
 
          var onRowMouseout = function Links_onRowMouseout(e)
          {
             me.widgets.dataTable.unselectRow(e.target);
-            e.target.cells[2].childNodes[0].style.visibility = "hidden";
-            e.target.cells[2].style.borderLeft = "1px solid #FFF";
+            if (e.target.cells && e.target.cells.length > 1)
+            {
+               e.target.cells[2].childNodes[0].style.visibility = "hidden";
+               e.target.cells[2].style.borderLeft = "1px solid #FFF";
+            }
          };
 
          this.widgets.dataTable.subscribe("rowMouseoverEvent", onRowMouseover);
@@ -1154,7 +1160,14 @@
       {
          if (this.busy)
          {
-            this.widgets.busyMessage.destroy();
+            if (this.widgets.busyMessage.destroyWithAnimationsStop != undefined)
+            {
+               this.widgets.busyMessage.destroyWithAnimationsStop();
+            }
+            else
+            {
+               this.widgets.busyMessage.destroy();
+            }
             this.busy = false;
             return true;
          }

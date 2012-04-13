@@ -48,6 +48,7 @@
             <platforms>linux linux-x64 osx</platforms>
             <distributionFileList>
                 <distributionDirectory origin="${swftools_distribution_folder}/bin"/>
+                <distributionDirectory origin="${swftools_distribution_folder}/japanese"/>
 <!--                <distributionDirectory origin="swftools/share"/>-->
             </distributionFileList>
             <actionList>

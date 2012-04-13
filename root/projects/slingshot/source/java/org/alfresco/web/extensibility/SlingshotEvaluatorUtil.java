@@ -119,6 +119,17 @@ public class SlingshotEvaluatorUtil {
         {
             site = context.getParameter(SITE);
         }
+        if (site == null)
+        {
+            String[] pathNames = context.getUri().substring(context.getContextPath().length()).split("/");
+            for (int i = 0; i < pathNames.length; i++) {
+                if (pathNames[i].equals(SITE) && (i + 1 < pathNames.length))
+                {
+                    site = pathNames[i + 1];
+                    break;
+                }
+            }
+        }
         return site;
     }
 

@@ -51,11 +51,11 @@ public class InMemoryTicketComponentImpl implements TicketComponent
     private Duration validDuration;
 
     private boolean oneOff;
-    
+
     private String guid;
 
     private SimpleCache<String, Ticket> ticketsCache; // Can't use Ticket as it's private
-    
+
     private ExpiryMode expiryMode = ExpiryMode.AFTER_FIXED_TIME;
 
     /**
@@ -93,7 +93,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
 
     public String validateTicket(String ticketString) throws AuthenticationException
     {
-        String ticketKey = getTicketKey(ticketString); 
+        String ticketKey = getTicketKey(ticketString);
         Ticket ticket = ticketsCache.get(ticketKey);
         if (ticket == null)
         {
@@ -146,7 +146,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         {
             throw new AuthenticationException(ticketString + " is an invalid ticket format");
         }
-       
+
         String key = ticketString.substring(GRANTED_AUTHORITY_TICKET_PREFIX.length());
         return key;
     }
@@ -156,78 +156,83 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         String key = ticketString.substring(GRANTED_AUTHORITY_TICKET_PREFIX.length());
         ticketsCache.remove(key);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.alfresco.repo.security.authentication.TicketComponent#getUsersWithTickets(boolean)
      */
-    public Set<String> getUsersWithTickets(boolean nonExpiredOnly) 
+    public Set<String> getUsersWithTickets(boolean nonExpiredOnly)
     {
-    	Set<String> users = new HashSet<String>();
-    	for (String key : ticketsCache.getKeys())
+        Set<String> users = new HashSet<String>();
+        for (String key : ticketsCache.getKeys())
         {
-    		Ticket ticket = ticketsCache.get(key);
-    		if (ticket != null)
-    		{
-        		if ((nonExpiredOnly == false) || (ticket.getNewEntry() != null))
-        		{
-        			users.add(ticket.getUserName());
-        		}
-    		}
+            Ticket ticket = ticketsCache.get(key);
+            if (ticket != null)
+            {
+                if ((nonExpiredOnly == false) || (ticket.getNewEntry() != null))
+                {
+                    users.add(ticket.getUserName());
+                }
+            }
         }
-    	return users;
+        return users;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.alfresco.repo.security.authentication.TicketComponent#countTickets(boolean)
      */
     public int countTickets(boolean nonExpiredOnly)
     {
-    	if (nonExpiredOnly)
-    	{
-    		int count = 0;
-    		for (String key : ticketsCache.getKeys())
+        if (nonExpiredOnly)
+        {
+            int count = 0;
+            for (String key : ticketsCache.getKeys())
             {
-    			Ticket ticket = ticketsCache.get(key);
-    			if (ticket != null && ticket.getNewEntry() != null)
-    			{
-    				count++;
-    			}
+                Ticket ticket = ticketsCache.get(key);
+                if (ticket != null && ticket.getNewEntry() != null)
+                {
+                    count++;
+                }
             }
-    		return count;
-    	}
-    	else
-    	{
-    		return ticketsCache.getKeys().size();
-    	}
+            return count;
+        }
+        else
+        {
+            return ticketsCache.getKeys().size();
+        }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.alfresco.repo.security.authentication.TicketComponent#invalidateTickets(boolean)
      */
     public int invalidateTickets(boolean expiredOnly)
     {
-    	int count = 0;
-    	if (! expiredOnly)
-    	{
-    		count = ticketsCache.getKeys().size();
-    		ticketsCache.clear();
-    	}
-    	else
-    	{
-	    	for (String key : ticketsCache.getKeys())
-	        {
-	    		Ticket ticket = ticketsCache.get(key);
-	    		if (ticket == null || ticket.getNewEntry() == null)
-	    		{
-	    			count++;
-	    			ticketsCache.remove(key);
-	    		}
-	        }
-    	}
-    	return count;
+        int count = 0;
+        if (!expiredOnly)
+        {
+            count = ticketsCache.getKeys().size();
+            ticketsCache.clear();
+        }
+        else
+        {
+            Set<String> toRemove = new HashSet<String>();
+            for (String key : ticketsCache.getKeys())
+            {
+                Ticket ticket = ticketsCache.get(key);
+                if (ticket == null || ticket.getNewEntry() == null)
+                {
+                    count++;
+                    toRemove.add(key);
+                }
+            }
+            for (String id : toRemove)
+            {
+                ticketsCache.remove(id);
+            }
+        }
+        return count;
     }
 
     public void invalidateTicketByUser(String userName)
@@ -253,7 +258,6 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             ticketsCache.remove(id);
         }
     }
-
 
     @Override
     public int hashCode()
@@ -283,8 +287,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             return false;
         return true;
     }
-    
-    
+
     /**
      * Ticket
      * 
@@ -359,31 +362,31 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         {
             switch (expires)
             {
-                case AFTER_FIXED_TIME:
-                    if ((expiryDate != null) && (expiryDate.compareTo(new Date()) < 0))
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        return this;
-                    }
-                    
-                case AFTER_INACTIVITY:
-                    Date now = new Date();
-                    if ((expiryDate != null) && (expiryDate.compareTo(now) < 0))
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        return new Ticket(expires, Duration.add(now, validDuration), userName, validDuration, ticketId);
-                    }
-                    
-                case DO_NOT_EXPIRE:
-                default:
+            case AFTER_FIXED_TIME:
+                if ((expiryDate != null) && (expiryDate.compareTo(new Date()) < 0))
+                {
+                    return null;
+                }
+                else
+                {
                     return this;
-            }            
+                }
+
+            case AFTER_INACTIVITY:
+                Date now = new Date();
+                if ((expiryDate != null) && (expiryDate.compareTo(now) < 0))
+                {
+                    return null;
+                }
+                else
+                {
+                    return new Ticket(expires, Duration.add(now, validDuration), userName, validDuration, ticketId);
+                }
+
+            case DO_NOT_EXPIRE:
+            default:
+                return this;
+            }
         }
 
         public boolean equals(Object o)
@@ -447,9 +450,9 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         this.ticketsExpire = ticketsExpire;
     }
 
-    
     /**
      * How should tickets expire.
+     * 
      * @param exipryMode
      */
     public void setExpiryMode(String expiryMode)

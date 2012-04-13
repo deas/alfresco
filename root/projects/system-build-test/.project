@@ -3,6 +3,13 @@
 	<name>SystemBuildTest</name>
 	<comment></comment>
 	<projects>
+		<project>Core</project>
+		<project>DataModel</project>
+		<project>Remote API</project>
+		<project>RepoBM</project>
+		<project>SOLR</project>
+		<project>Web Service Client</project>
+		<project>Web-Client</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

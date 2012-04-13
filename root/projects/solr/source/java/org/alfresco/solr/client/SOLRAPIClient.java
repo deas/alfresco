@@ -114,7 +114,7 @@ public class SOLRAPIClient
      * @param maxResults                    the maximum number of results (a reasonable value only)
      * @return                              the ACL ChangeSets in order of commit time and ID
      */
-    public List<AclChangeSet> getAclChangeSets(Long fromCommitTime, Long minAclChangeSetId, Long toCommitTime, Long maxAclChangeSetId, int maxResults)
+    public AclChangeSets getAclChangeSets(Long fromCommitTime, Long minAclChangeSetId, Long toCommitTime, Long maxAclChangeSetId, int maxResults)
              throws AuthenticationException, IOException, JSONException
     {
         StringBuilder url = new StringBuilder(GET_ACL_CHANGESETS_URL);
@@ -180,8 +180,22 @@ public class SOLRAPIClient
             AclChangeSet aclChangeSet = new AclChangeSet(aclChangeSetId, commitTimeMs, aclCount);
             aclChangeSets.add(aclChangeSet);
         }
+        
+        
+        Long maxChangeSetCommitTime = null;
+        if(json.has("maxChangeSetCommitTime"))
+        {
+            maxChangeSetCommitTime = json.getLong("maxChangeSetCommitTime");
+        }
+
+        Long maxChangeSetIdOnServer = null;
+        if(json.has("maxChangeSetId"))
+        {
+            maxChangeSetIdOnServer = json.getLong("maxChangeSetId");
+        }
+        
         // Done
-        return aclChangeSets;
+        return new AclChangeSets(aclChangeSets, maxChangeSetCommitTime, maxChangeSetIdOnServer);
     }
     
     /**

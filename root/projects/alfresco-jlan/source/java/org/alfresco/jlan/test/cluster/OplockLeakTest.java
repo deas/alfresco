@@ -28,7 +28,6 @@ import org.alfresco.jlan.client.DiskSession;
 import org.alfresco.jlan.client.OplockAdapter;
 import org.alfresco.jlan.client.SMBFile;
 import org.alfresco.jlan.debug.Debug;
-import org.alfresco.jlan.server.filesys.AccessDeniedException;
 import org.alfresco.jlan.server.filesys.AccessMode;
 import org.alfresco.jlan.server.filesys.FileAction;
 import org.alfresco.jlan.server.filesys.FileAttribute;
@@ -71,16 +70,21 @@ public class OplockLeakTest extends Test {
 		 * Oplock break callback
 		 * 
 		 * @param cifsFile CIFSFile
+		 * @return int
 		 */
-		public void oplockBreak( CIFSFile cifsFile) {
+		public int oplockBreak( CIFSFile cifsFile) {
 			
 			// DEBUG
 			
 			testLog( m_log, "Oplock break on file " + cifsFile.getFileName());
 		
-			// Set teh break received flag
+			// Set the break received flag
 			
 			m_oplockBreak = true;
+			
+			// Return the oplock break response
+			
+			return OpLock.TypeNone;
 		}
 		
 		/**

@@ -451,6 +451,19 @@ public abstract class FileStateCache {
 	}
 
 	/**
+	 * Change an oplock type
+	 * 
+	 * @param oplock OpLockDetails
+	 * @param newTyp
+	 */
+	public void changeOpLockType( OpLockDetails oplock, int newTyp) {
+
+		// Set the new oplock type
+		
+		oplock.setLockType( newTyp);
+	}
+	
+	/**
 	 * Create a lock object, use the standard FileLock object.
 	 * 
 	 * @param file NetworkFile

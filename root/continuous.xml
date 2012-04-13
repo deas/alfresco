@@ -811,7 +811,7 @@
                      prefix="bin" 
                      mode="755"/>
          <!-- Only DLLs and JARs from assemble area -->
-         <tarfileset dir="${dir.continuous.assemble}/commands"
+         <tarfileset dir="${dir.continuous.assemble.commands}"
                      prefix="bin" 
                      includes="**/*.dll,**/*.jar"/>
       </tar>

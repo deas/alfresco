@@ -20,12 +20,14 @@
             <span class="incomplete-warning"><img src="${url.context}/res/components/form/images/warning-16.png" title="${msg("form.field.incomplete")}" /><span>
          </#if>
          <span class="viewmode-label">${field.label?html}:</span>
-         <span class="viewmode-value">
          <#if field.value == "">
+            <span class="viewmode-value">
             ${msg("form.control.novalue")}
          <#elseif !multiValued>
+            <span class="viewmode-value viewmode-value-date" data-date-iso8601="${field.value}">
             ${xmldate(field.value)?string(viewFormat)}
          <#else>
+            <span class="viewmode-value">
             <#list field.value?split(",") as dateEl>
                ${xmldate(dateEl)?string(viewFormat)}<#if dateEl_has_next>,</#if>
             </#list>

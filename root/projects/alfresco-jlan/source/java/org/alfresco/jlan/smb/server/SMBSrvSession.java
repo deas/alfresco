@@ -332,19 +332,15 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	    // Debug
 	    try
 	    {
-
+	    	// DEBUG
+	    	
 	        if ( Debug.EnableInfo && hasDebug(DBG_STATE))
 	            debugPrintln("Cleanup session, vcircuits=" + m_vcircuits.getCircuitCount() + ", changeNotify="
 	                    + getNotifyChangeCount());
 
-	        // Close the virtual circuits
-
-			// Enumerate the virtual circuits and close all circuits
-				// Get the UID for the current circuit
-				// Close the virtual circuit
-					// DEBUG
 			// Clear the virtual circuit list
-	  m_vcircuits.clearCircuitList(this);
+	  
+	        m_vcircuits.clearCircuitList(this);
 
 	        // Check if there are active change notification requests
 

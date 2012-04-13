@@ -732,12 +732,14 @@
       {
          // only highlight if we got actions to show
          var record = this.widgets.dataTable.getRecord(oArgs.target.id);
-         var permissions = record.getData('permissions');
-         if (!(permissions.edit || permissions["delete"]))
+         if (record)
          {
-            return;
+            var permissions = record.getData('permissions');
+            if (!(permissions.edit || permissions["delete"]))
+            {
+               return;
+            }
          }
-         
          var elem = Dom.getElementsByClassName('topic', null, oArgs.target, null);
          Dom.addClass(elem, 'over');
       },
@@ -880,7 +882,14 @@
       {
          if (this.busy)
          {
-            this.widgets.busyMessage.destroy();
+            if (this.widgets.busyMessage.destroyWithAnimationsStop != undefined)
+            {
+               this.widgets.busyMessage.destroyWithAnimationsStop();
+            }
+            else
+            {
+               this.widgets.busyMessage.destroy();
+            }
             this.busy = false;
             return true;
          }

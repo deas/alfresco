@@ -2,7 +2,20 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 
 <beans>
-   
+
+   <!--                                            -->
+   <!-- Document Library Doclist Data URl Resolver -->
+   <!--                                            -->
+
+   <bean id="resolver.doclib.doclistDataUrl" class="org.alfresco.web.resolver.doclib.DefaultDoclistDataUrlResolver" />
+
+
+   <!--                                            -->
+   <!-- Document Library Doclist Action Group Resolver -->
+   <!--                                            -->
+
+   <bean id="resolver.doclib.actionGroup" class="org.alfresco.web.resolver.doclib.DefaultDoclistActionGroupResolver" />
+
    <!--                                    -->
    <!-- Document Library Status Evaluators -->
    <!--                                    -->

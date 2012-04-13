@@ -37,7 +37,7 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 
 	// Serialization id
 	
-	private static final long serialVersionUID = 4L;
+	private static final long serialVersionUID = 5L;
 
 	//	Cluster node that owns the token
 	
@@ -56,14 +56,19 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 	
 	private String m_path;
 	
+	// Attributes only file access
+	
+	private boolean m_attribOnly;
+	
 	// Access token has been released
 	
-	private boolean m_released;
+	private transient boolean m_released = false;
 	
 	/**
 	 * Default constructor
 	 */
 	public HazelCastAccessToken() {
+		setReleased( true);
 	}
 	
 	/**
@@ -167,12 +172,39 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 	}
 	
 	/**
+	 * Return the associated network file path
+	 * 
+	 * @return String
+	 */
+	public final String getNetworkFilePath() {
+		return m_path;
+	}
+	
+	/**
 	 * Set the associated network file path
 	 * 
 	 * @param path String
 	 */
 	public final void setNetworkFilePath( String path) {
 		m_path = path;
+	}
+	
+	/**
+	 * Check if the access token is on attributes only file open
+	 * 
+	 * @return boolean
+	 */
+	public final boolean isAttributesOnly() {
+		return m_attribOnly;
+	}
+	
+	/**
+	 * Set/clear the attributes only flag
+	 * 
+	 * @param attrOnly boolean
+	 */
+	public final void setAttributesOnly( boolean attrOnly) {
+		m_attribOnly = attrOnly;
 	}
 	
 	/**
@@ -195,11 +227,15 @@ public class HazelCastAccessToken implements Serializable, FileAccessToken {
 			str.append( ",opavail=");
 			str.append( isOplockAvailable());
 		}
+		
+		if ( isAttributesOnly())
+			str.append( ",AttribOnly");
+		
 		if ( isReleased())
 			str.append( ",Released");
 		else {
 			str.append( ",File=");
-			str.append ( m_path);
+			str.append ( getNetworkFilePath());
 		}
 		str.append( "]");
 		

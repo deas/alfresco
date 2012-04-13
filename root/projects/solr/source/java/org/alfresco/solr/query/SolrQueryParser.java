@@ -46,9 +46,8 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
-import org.saxpath.SAXPathException;
-
-import com.werken.saxpath.XPathReader;
+import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.saxpath.base.XPathReader;
 
 /**
  * @author Andy

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -51,8 +51,8 @@
       PREF_SORT_ASCENDING = PREFERENCES_DOCLIST + ".sortAscending",
       PREF_SORT_FIELD = PREFERENCES_DOCLIST + ".sortField",
       PREF_SHOW_FOLDERS = PREFERENCES_DOCLIST + ".showFolders",
-      PREF_SIMPLE_VIEW = PREFERENCES_DOCLIST + ".simpleView";
-   
+      PREF_SIMPLE_VIEW = PREFERENCES_DOCLIST + ".simpleView",           // deprecated
+      PREF_VIEW_RENDERER = PREFERENCES_DOCLIST + ".viewRendererName";   // viewRender was previously simpleView
    
    /**
     * Document Library Drag and Drop object declaration.
@@ -436,6 +436,111 @@
       }
    });
 
+   /**
+    * ViewRenderer constructor.
+    *
+    * @param name {String} The name of the viewRenderer
+    * @return {Alfresco.DocumentListViewRenderer} The new ViewRenderer instance
+    * @constructor
+    */
+   Alfresco.DocumentListViewRenderer = function(name)
+   {
+      /*
+       * Initialise prototype properties
+       */
+      this.name = name;
+      this.parentElementIdSuffix = "-documents";
+      this.actionsCssClassName = this.name;
+      this.actionsColumnWidth = 200;
+      this.thumbnailColumnWidth = 100;
+      this.buttonElementIdSuffix = "-" + this.name + "View";
+      this.buttonCssClass = this.name + "-view";
+      
+      return this;
+   };
+   
+   Alfresco.DocumentListViewRenderer.prototype =
+   {
+
+      /**
+       * Performs any setup needed immediately after registration
+       *
+       * @method setupRenderer
+       * @param scope {object} The DocumentList object
+       */
+      setupRenderer: function DL_VR_setupRenderer(scope)
+      {
+         Dom.addClass(scope.id + this.buttonElementIdSuffix, this.buttonCssClass);
+      },
+   
+      /**
+       * Render the view using the given scope (documentList), request and response.
+       *
+       * @method renderView
+       * @param scope {object} The DocumentList object
+       * @param sRequest {string} Original request
+       * @param oResponse {object} Response object
+       * @param oPayload {MIXED} (optional) Additional argument(s)
+       */
+      renderView: function DL_VR_renderView(scope, sRequest, oResponse, oPayload)
+      {
+         YAHOO.util.Dom.setStyle(scope.id + this.parentElementIdSuffix, 'display', '');
+         scope.widgets.dataTable.onDataReturnInitializeTable.call(scope.widgets.dataTable, sRequest, oResponse, oPayload);
+      },
+   
+      /**
+       * Performs any teardown or visual changes to deselect this view in the interface
+       *
+       * @method destroyView
+       * @param scope {object} The DocumentList object
+       * @param sRequest {string} Original request
+       * @param oResponse {object} Response object
+       * @param oPayload {MIXED} (optional) Additional argument(s)
+       */
+      destroyView: function DL_VR_destroyView(scope, sRequest, oResponse, oPayload)
+      {
+         YAHOO.util.Dom.setStyle(scope.id + this.parentElementIdSuffix, 'display', 'none');
+      },
+   
+      /**
+       * Render the thumbnail cell
+       *
+       * @method renderCellThumbnail
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellThumbnail: function DL_VR_renderCellThumbnail(scope, elCell, oRecord, oColumn, oData)
+      {
+         var record = oRecord.getData(),
+            node = record.jsNode,
+            properties = node.properties,
+            name = record.displayName,
+            isContainer = node.isContainer,
+            isLink = node.isLink,
+            extn = name.substring(name.lastIndexOf(".")),
+            imgId = node.nodeRef.nodeRef; // DD added
+         
+         var containerTarget; // This will only get set if thumbnail represents a container
+         
+         oColumn.width = this.thumbnailColumnWidth;
+         Dom.setStyle(elCell, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+      
+         if (isContainer || (isLink && node.linkedNode.isContainer))
+         {
+            elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
+            containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
+         }
+         else
+         {
+            elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+         }
+         var dnd = new Alfresco.DnD(imgId, scope);
+      }
+   };
    
    /**
     * DocumentList constructor.
@@ -477,6 +582,7 @@
       this.dragEventRefCount = 0;
       this.actionsView = "browse";
       this.renderers = {};
+      this.viewRenderers = {};
       this.dataSourceUrl = $combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/doclist/");
 
       /**
@@ -495,6 +601,7 @@
       YAHOO.Bubbling.on("folderRenamed", this.onFileRenamed, this);
       YAHOO.Bubbling.on("highlightFile", this.onHighlightFile, this);
       YAHOO.Bubbling.on("registerRenderer", this.onRegisterRenderer, this);
+      YAHOO.Bubbling.on("registerViewRenderer", this.onRegisterViewRenderer, this);
       YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
       // File actions which may be part of a multi-file action set
       YAHOO.Bubbling.on("fileCopied", this.onFileAction, this);
@@ -598,7 +705,7 @@
       var jsNode = record.jsNode,
          html;
 
-      if (jsNode.isLink && $isValueSet(scope.options.siteId) && record.location.site.name !== scope.options.siteId)
+      if (jsNode.isLink && $isValueSet(scope.options.siteId) && record.location.site && record.location.site.name !== scope.options.siteId)
       {
          if (jsNode.isContainer)
          {
@@ -632,14 +739,16 @@
     *
     * @method generateThumbnailUrl
     * @param record {object} File record
+    * @param renditionName {string} the named thumbnail rendition to grab, default is doclib
     * @return {string} URL to thumbnail
     */
-   Alfresco.DocumentList.generateThumbnailUrl = function DL_generateThumbnailUrl(record)
+   Alfresco.DocumentList.generateThumbnailUrl = function DL_generateThumbnailUrl(record, renditionName)
    {
       var jsNode = record.jsNode,
          nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef;
-
-      return Alfresco.util.generateThumbnailUrl(jsNode, "doclib");
+      if (renditionName == null)
+         renditionName = "doclib";
+      return Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib?c=queue&ph=true";
    };
 
    /**
@@ -766,14 +875,35 @@
           * @type boolean
           */
          showFolders: false,
-
+         
          /**
           * Flag indicating whether the list shows a detailed view or a simple one.
           *
           * @property simpleView
           * @type boolean
+          * @deprecated use viewRendererName instead
           */
-         simpleView: false,
+         simpleView: null,
+
+         /**
+          * Indicates which viewRenderer to use when displaying the content set.
+          * 
+          * Similar to the previous boolean switch called simpleView.
+          *
+          * @property viewRendererName
+          * @type string
+          * @default "detailed"
+          */
+         viewRendererName: "detailed",
+         
+         /**
+          * An array containing the order of the viewRenderer keys
+          *
+          * @property viewRendererNames
+          * @type array
+          * @default ["simple", "detailed"]
+          */
+         viewRendererNames: [ "simple", "detailed" ],
 
          /**
           * Flag indicating whether pagination is available or not.
@@ -1113,6 +1243,15 @@
        * @type object
        */
       renderers: null,
+      
+      /**
+       * Registered view renderers.
+       * Register new renderers via registerviewRenderer() or "registerViewRenderer" bubbling event
+       *
+       * @property viewRenderers
+       * @type array
+       */
+      viewRenderers: null,
 
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -1128,6 +1267,24 @@
          // Detect whether or not HTML5 drag and drop is supported...
          this.dragAndDropEnabled = this.dragAndDropAllowed && ('draggable' in document.createElement('span')) && YAHOO.env.ua.mobile === null;
 
+         // If the viewRenderer in the user preference is no longer available, use detailed
+         // Also determine the index value of the selected viewRenderer from viewRendererNames
+         var isViewRendererAvailable = false;
+         var selectedViewRendererIndex = 1;
+         for (var i = 0, ii = this.options.viewRendererNames.length; i < ii; i++)
+         {
+            if (this.options.viewRendererNames[i] === this.options.viewRendererName)
+            {
+               isViewRendererAvailable = true;
+               selectedViewRendererIndex = i;
+               break;
+            }
+         }
+         if (!isViewRendererAvailable)
+         {
+            this.options.viewRendererName = this.options.viewRendererNames[1];
+         }
+         
          // Set-up default metadata renderers
          this._setupMetadataRenderers();
 
@@ -1186,15 +1343,13 @@
             this.dynamicControls.push(this.widgets.showFolders);
          }
 
-         // Detailed/Simple List button
-         this.widgets.simpleDetailed = new YAHOO.widget.ButtonGroup(this.id + "-simpleDetailed");
-         if (this.widgets.simpleDetailed !== null)
+         // ViewRenderer Select List button, HTML id not renamed yet for backwards compatibility
+         this.widgets.viewRendererSelect = new YAHOO.widget.ButtonGroup(this.id + "-simpleDetailed");
+         if (this.widgets.viewRendererSelect !== null)
          {
-            this.widgets.simpleDetailed.check(this.options.simpleView ? 0 : 1);
-            this.widgets.simpleDetailed.on("checkedButtonChange", this.onSimpleDetailed, this.widgets.simpleDetailed, this);
-            Dom.addClass(this.id + "-simpleView", "simple-view");
-            Dom.addClass(this.id + "-detailedView", "detailed-view");
-            this.dynamicControls.push(this.widgets.simpleDetailed);
+            this.widgets.viewRendererSelect.check(selectedViewRendererIndex);
+            this.widgets.viewRendererSelect.on("checkedButtonChange", this.onViewRendererSelect, this.widgets.viewRendererSelect, this);
+            this.dynamicControls.push(this.widgets.viewRendererSelect);
          }
 
          // File Select menu button
@@ -1207,6 +1362,9 @@
          {
             this.dynamicControls.push(this.widgets.fileSelect);
          }
+         
+         // Set-up default view renderers
+         this._setupViewRenderers();
 
          // Services
          this.services.preferences = new Alfresco.service.Preferences();
@@ -1322,6 +1480,12 @@
             Alfresco.logger.error(this.name + ": Couldn't initialize HistoryManager.", e);
             this.onHistoryManagerReady();
          }
+         
+         YAHOO.Bubbling.fire("postDocumentListOnReady",
+         {
+             scope: this,
+             eventGroup: this.id
+         });
       },
 
       /**
@@ -1468,64 +1632,10 @@
           */
          return function DL_renderCellThumbnail(elCell, oRecord, oColumn, oData)
          {
-            var record = oRecord.getData(),
-               node = record.jsNode,
-               properties = node.properties,
-               name = record.displayName,
-               isContainer = node.isContainer,
-               isLink = node.isLink,
-               extn = name.substring(name.lastIndexOf(".")),
-               imgId = node.nodeRef.nodeRef; // DD added
-
-            
-            var containerTarget; // This will only get set if thumbnail represents a container
-            
-            if (scope.options.simpleView)
+            if (typeof scope.viewRenderers[scope.options.viewRendererName] === "object")
             {
-               /**
-                * Simple View
-                */
-               oColumn.width = 40;
-               Dom.setStyle(elCell, "width", oColumn.width + "px");
-               Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-               if (isContainer)
-               {
-                  elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
-                  containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
-               }
-               else
-               {
-                  var id = scope.id + '-preview-' + oRecord.getId();
-                  elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
-
-                  // Preview tooltip
-                  scope.previewTooltips.push(id);
-               }
+               scope.viewRenderers[scope.options.viewRendererName].renderCellThumbnail(scope, elCell, oRecord, oColumn, oData);
             }
-            else
-            {
-               /**
-                * Detailed View
-                */
-               oColumn.width = 100;
-               Dom.setStyle(elCell, "width", oColumn.width + "px");
-               Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-               if (isContainer)
-               {
-                  elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
-                  containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
-               }
-               else
-               {
-                  elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
-               }
-            }
-            
-
-            var dnd = new Alfresco.DnD(imgId, scope);
-            
          };
       },
 
@@ -1613,7 +1723,7 @@
                   for (i = 0, j = metadataTemplate.banners.length; i < j; i++)
                   {
                      banner = metadataTemplate.banners[i];
-                     if (!$isValueSet(banner.view) || banner.view == (scope.options.simpleView ? "simple" : "detailed"))
+                     if (!$isValueSet(banner.view) || banner.view == scope.options.viewRendererName)
                      {
                         html = YAHOO.lang.substitute(banner.template, scope.renderers, fnRenderBanner);
                         if ($isValueSet(html))
@@ -1733,7 +1843,7 @@
                   for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
                   {
                      line = metadataTemplate.lines[i];
-                     if (!$isValueSet(line.view) || line.view == (scope.options.simpleView ? "simple" : "detailed"))
+                     if (!$isValueSet(line.view) || line.view == scope.options.viewRendererName)
                      {
                         html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
                         if ($isValueSet(html))
@@ -1769,19 +1879,9 @@
           */
          return function DL_renderCellActions(elCell, oRecord, oColumn, oData)
          {
-            if (scope.options.simpleView)
+            if (typeof scope.viewRenderers[scope.options.viewRendererName] === "object")
             {
-               /**
-                * Simple View
-                */
-                oColumn.width = 80;
-            }
-            else
-            {
-               /**
-                * Detailed View
-                */
-                oColumn.width = 200;
+               oColumn.width = scope.viewRenderers[scope.options.viewRendererName].actionsColumnWidth;
             }
             Dom.setStyle(elCell, "width", oColumn.width + "px");
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
@@ -1810,7 +1910,27 @@
             Alfresco.logger.error("DL_onRegisterRenderer: Custom renderer registion invalid: " + obj);
          }
       },
-
+      
+      /**
+       * Register a view renderer via Bubbling event
+       *
+       * @method onRegisterViewRenderer
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (property name, rendering function)
+       */
+      onRegisterViewRenderer: function DL_onRegisterViewRenderer(layer, args)
+      {
+         var obj = args[1];
+         if (obj && $isValueSet(obj.renderer))
+         {
+            this.registerViewRenderer(obj.renderer);
+         }
+         else
+         {
+            Alfresco.logger.error("DL_onRegisterViewRenderer: Custom view renderer registion invalid: " + obj);
+         }
+      },
+      
       /**
        * Register a metadata renderer
        *
@@ -1824,6 +1944,24 @@
          if ($isValueSet(propertyName) && $isValueSet(renderer))
          {
             this.renderers[propertyName] = renderer;
+            return true;
+         }
+         return false;
+      },
+      
+      /**
+       * Register a view renderer and call its setupRenderer method
+       *
+       * @method registerViewRenderer
+       * @param renderer {object} Rendering object
+       * @return {boolean} Success status of registration
+       */
+      registerViewRenderer: function DL_registerViewRenderer(renderer)
+      {
+         if ($isValueSet(renderer))
+         {
+            this.viewRenderers[renderer.name] = renderer;
+            this.viewRenderers[renderer.name].setupRenderer(this);
             return true;
          }
          return false;
@@ -1856,7 +1994,7 @@
                html = "";
 
             /* Google Docs Integration */
-            if ($isValueSet(record.workingCopy.googleDocUrl))
+            if (record.workingCopy && $isValueSet(record.workingCopy.googleDocUrl))
             {
                if (bannerUser.userName === Alfresco.constants.USERNAME)
                {
@@ -1870,7 +2008,7 @@
             /* Regular Working Copy handling */
             else
             {
-               if (bannerUser.userName === Alfresco.constants.USERNAME)
+               if (record.workingCopy && bannerUser.userName === Alfresco.constants.USERNAME)
                {
                   html = this.msg("details.banner." + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
                }
@@ -2050,6 +2188,53 @@
 
             return html;
          });
+      },
+      
+      /**
+       * Configure standard view renderers
+       *
+       * @method _setupViewRenderers
+       */
+      _setupViewRenderers: function DL__setupViewRenderers()
+      {
+         var simpleViewRenderer = new Alfresco.DocumentListViewRenderer("simple");
+         simpleViewRenderer.actionsColumnWidth = 80;
+         simpleViewRenderer.renderCellThumbnail = function _renderCellThumbnail(scope, elCell, oRecord, oColumn, oData)
+         {
+            var record = oRecord.getData(),
+               node = record.jsNode,
+               properties = node.properties,
+               name = record.displayName,
+               isContainer = node.isContainer,
+               isLink = node.isLink,
+               extn = name.substring(name.lastIndexOf(".")),
+               imgId = node.nodeRef.nodeRef; // DD added
+            
+            var containerTarget; // This will only get set if thumbnail represents a container
+            
+            oColumn.width = 40;
+            Dom.setStyle(elCell, "width", oColumn.width + "px");
+            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+   
+            if (isContainer)
+            {
+               elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
+               containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
+            }
+            else
+            {
+               var id = scope.id + '-preview-' + oRecord.getId();
+               elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+   
+               // Preview tooltip
+               scope.previewTooltips.push(id);
+            }
+            var dnd = new Alfresco.DnD(imgId, scope);
+         };
+         
+         this.registerViewRenderer(simpleViewRenderer);
+         this.registerViewRenderer(new Alfresco.DocumentListViewRenderer("detailed"));
+         
       },
 
       /**
@@ -3180,16 +3365,23 @@
       },
 
       /**
-       * Show/Hide detailed list buttongroup click handler
+       * Select viewRenderer list buttongroup click handler
        *
-       * @method onSimpleDetailed
+       * @method onViewRendererSelect
        * @param e {object} DomEvent
        * @param p_obj {object} Object passed back from addListener method
        */
-      onSimpleDetailed: function DL_onSimpleDetailed(e, p_obj)
+      onViewRendererSelect: function DL_onViewRendererSelect(e, p_obj)
       {
-         this.options.simpleView = e.newValue.index === 0;
-         this.services.preferences.set(PREF_SIMPLE_VIEW, this.options.simpleView);
+         // Get the name of the viewRenderer from the order array as YUI button likes to work with an index
+         this.options.viewRendererName = this.options.viewRendererNames[e.newValue.index];
+         this.services.preferences.set(PREF_VIEW_RENDERER, this.options.viewRendererName);
+         // Clear out deprecated simpleView preference if it exists
+         if (this.options.simpleView != null)
+         {
+            this.services.preferences.set(PREF_SIMPLE_VIEW, null);
+            this.options.simpleView = null;
+         }
          YAHOO.Bubbling.fire("metadataRefresh");
          if (e)
          {
@@ -3253,11 +3445,16 @@
 
             // Simple or detailed view
             Dom.addClass(actionsEl, "action-set");
-            Dom.addClass(actionsEl, this.options.simpleView ? "simple" : "detailed");
+            var viewType = "simple";
+            if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
+            {
+               viewType = this.viewRenderers[this.options.viewRendererName].actionsCssClassName;
+            }
+            Dom.addClass(actionsEl, viewType);
 
             // Need the "More >" container?
             actionsSel = YAHOO.util.Selector.query("div", actionsEl);
-            if (actionsSel.length > this.options.actionsSplitAt + (this.options.simpleView ? 0 : 1))
+            if (actionsSel.length > this.options.actionsSplitAt + (this.options.viewRendererName == "simple" ? 0 : 1))
             {
                var moreContainer = Dom.get(this.id + "-moreActions").cloneNode(true),
                   containerDivs = YAHOO.util.Selector.query("div", moreContainer);
@@ -4198,7 +4395,13 @@
             }
             delete successFilter.doclistFirstTimeNav;
             YAHOO.Bubbling.fire("filterChanged", successFilter);
-            this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
+            
+            // Call destroy view on all viewRenderers then renderView on the selected view
+            for (var i = 0, ii = this.options.viewRendererNames.length; i < ii; i++)
+            {
+               this.viewRenderers[this.options.viewRendererNames[i]].destroyView(this, sRequest, oResponse, oPayload);
+            }
+            this.viewRenderers[this.options.viewRendererName].renderView(this, sRequest, oResponse, oPayload);
          };
 
          var failureHandler = function DL__uDL_failureHandler(sRequest, oResponse)

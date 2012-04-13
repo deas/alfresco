@@ -858,6 +858,10 @@ public class DataBuffer {
 		// Set the new buffer to be the main buffer
 
 		m_data = newBuf;
+		
+		// Set the new buffer end position
+		
+		m_endpos = m_data.length;
 	}
 
 	/**

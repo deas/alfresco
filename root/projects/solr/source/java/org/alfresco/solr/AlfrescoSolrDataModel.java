@@ -19,23 +19,18 @@
 package org.alfresco.solr;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.script.CompiledScript;
-
-import org.alfresco.cmis.CMISScope;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
@@ -43,26 +38,24 @@ import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.opencmis.mapping.RuntimePropertyLuceneBuilderMapping;
 import org.alfresco.opencmis.search.CMISQueryOptions;
+import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
-import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
+import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.DictionaryNamespaceComponent;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
-import org.alfresco.repo.dictionary.M2Property;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
-import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
-import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.parsers.AlfrescoFunctionEvaluationContext;
 import org.alfresco.repo.search.impl.parsers.FTSParser;
 import org.alfresco.repo.search.impl.parsers.FTSQueryParser;
@@ -72,7 +65,6 @@ import org.alfresco.repo.search.impl.querymodel.QueryModelFactory;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions.Connective;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilder;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContextImpl;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryModelFactory;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
@@ -83,7 +75,6 @@ import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchParameters;
-import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.client.AlfrescoModel;
@@ -105,17 +96,11 @@ import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
-import org.apache.solr.common.SolrException;
-import org.apache.solr.common.util.FileUtils;
-import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.Sorting;
-import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Andy TODO: Dual tokenisation support?
@@ -181,6 +166,8 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_INACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK, Store.YES, Index.NO, TermVector.NO, false);
 
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_READER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
@@ -439,11 +426,42 @@ public class AlfrescoSolrDataModel
 
     private PropertyDefinition getPropertyDefinition(String fieldName)
     {
-        QName rawPropertyName = QName.createQName(fieldName.substring(1));
+        QName rawPropertyName = QName.createQName(expandFieldName(fieldName).substring(1));
         QName propertyQName = QName.createQName(rawPropertyName.getNamespaceURI(), ISO9075.decode(rawPropertyName.getLocalName()));
         return getPropertyDefinition(propertyQName);
     }
 
+    String expandFieldName(String fieldName)
+    {
+        String expandedFieldName = fieldName;
+        if(fieldName.startsWith("@"))
+        {
+            expandedFieldName = expandAttributeFieldName(fieldName);
+        }
+        return expandedFieldName;
+    }
+    
+    String expandAttributeFieldName(String field)
+    {
+        String fieldName = field;
+        // Check for any prefixes and expand to the full uri
+        if (field.charAt(1) != '{')
+        {
+            int colonPosition = field.indexOf(':');
+            if (colonPosition == -1)
+            {
+                // use the default namespace
+                fieldName = "@{" + getNamespaceDAO().getNamespaceURI("") + "}" + field.substring(1);
+            }
+            else
+            {
+                // find the prefix
+                fieldName = "@{" + getNamespaceDAO().getNamespaceURI(field.substring(1, colonPosition)) + "}" + field.substring(colonPosition + 1);
+            }
+        }
+        return fieldName;
+    }
+    
     /**
      * @param field
      * @return
@@ -1093,7 +1111,7 @@ public class AlfrescoSolrDataModel
             {
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    return Sorting.getStringSortField(field.getName() + ".sort", reverse, field.sortMissingLast(), field.sortMissingFirst());
+                    return Sorting.getStringSortField(expandFieldName(field.getName()) + ".sort", reverse, field.sortMissingLast(), field.sortMissingFirst());
                 }
                 else
                 {
@@ -1106,7 +1124,7 @@ public class AlfrescoSolrDataModel
 
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    return new SortField(field.getName() + ".sort", new TextSortFieldComparatorSource(), reverse);
+                    return new SortField(expandFieldName(field.getName()) + ".sort", new TextSortFieldComparatorSource(), reverse);
                 }
                 else
                 {
@@ -1117,7 +1135,7 @@ public class AlfrescoSolrDataModel
             {
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    return new SortField(field.getName() + ".sort", new MLTextSortFieldComparatorSource(), reverse);
+                    return new SortField(expandFieldName(field.getName()) + ".sort", new MLTextSortFieldComparatorSource(), reverse);
                 }
                 else
                 {
@@ -1126,7 +1144,7 @@ public class AlfrescoSolrDataModel
             }
             else
             {
-                return Sorting.getStringSortField(field.getName(), reverse, field.sortMissingLast(), field.sortMissingFirst());
+                return Sorting.getStringSortField(expandFieldName(field.getName()), reverse, field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 

@@ -95,8 +95,20 @@ public class GrantFileAccessTask extends RemoteStateTask<FileAccessToken> {
 		int grantedOplock = OpLock.TypeNone;
 		boolean oplockNotAvailable = false;
 		String noshrReason = null;
+		boolean attribsOnly = false;
 		
-		if ( fState.getOpenCount() > 0) {
+		if ( m_params.isAttributesOnlyAccess()) {
+			
+			// File attributes/metadata access only
+			
+			attribsOnly = true;
+
+			// DEBUG
+			
+			if ( hasDebug())
+				Debug.println( "Attributes only access for " + fState); 
+		}
+		else if ( fState.getOpenCount() > 0) {
 
 			// Get the current primary owner details, the owner node name/port
 			
@@ -183,7 +195,7 @@ public class GrantFileAccessTask extends RemoteStateTask<FileAccessToken> {
 		
 		if ( nosharing == true)
 			throw new FileSharingException( "File sharing violation, reason " + noshrReason);
-		else {
+		else if ( attribsOnly == false) {
 			
 			// Update the file sharing mode, process id and primary owner details, if this is the first file open
 			
@@ -226,8 +238,18 @@ public class GrantFileAccessTask extends RemoteStateTask<FileAccessToken> {
 				fState.setFileStatusInternal( m_params.getFileStatus(), FileState.ReasonNone);
 		}
 	
-		// Return an access token
+		// Return an access token, mark the local copy as released
 		
-		return new HazelCastAccessToken( m_params.getOwnerName(), m_params.getProcessId(), grantedOplock, oplockNotAvailable);
+		HazelCastAccessToken hcToken = new HazelCastAccessToken( m_params.getOwnerName(), m_params.getProcessId(), grantedOplock, oplockNotAvailable);
+		hcToken.setReleased( true);
+		
+		// Check if the file open is attributes only, mark the token so that the file open count
+		// is not decremented when the file is closed
+		
+		hcToken.setAttributesOnly( attribsOnly);
+
+		// Return the file access token
+		
+		return hcToken;
 	}
 }

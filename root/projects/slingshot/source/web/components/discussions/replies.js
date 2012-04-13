@@ -713,7 +713,14 @@
       onFormSubmitSuccess: function TopicReplies_onFormSubmitSuccess(response, obj)
       {
          // remove wait message
-         this.widgets.feedbackMessage.destroy();
+         if (this.widgets.feedbackMessage.destroyWithAnimationsStop != undefined)
+         {
+            this.widgets.feedbackMessage.destroyWithAnimationsStop();
+         }
+         else
+         {
+            this.widgets.feedbackMessage.destroy();
+         }
          
          var data, parentElem;
           

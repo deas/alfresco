@@ -309,6 +309,7 @@
             updateFilename: displayName,
             updateVersion: this.options.workingCopyVersion || current.label,
             overwrite: true,
+            suppressRefreshEvent: true,
             filter: [
                {
                   description: this.msg("label.filter-description", displayName),
@@ -334,30 +335,34 @@
          if (complete.failed.length == 0 && complete.successful.length > 0)
          {
             // No activities in Repository mode
-            if (this.options.siteId == null || this.options.siteId.length == 0)
+            if (this.options.siteId != null && this.options.siteId.length != 0)
             {
-               return;
+               try
+               {
+                  Alfresco.util.Ajax.jsonPost(
+                  {
+                     url: Alfresco.constants.PROXY_URI + "slingshot/doclib/activity",
+                     dataObj:
+                     {
+                        fileName: complete.successful[0].fileName,
+                        nodeRef: complete.successful[0].nodeRef,
+                        site: this.options.siteId,
+                        type: "file-updated",
+                        page: "document-details"
+                     }
+                  });
+               }
+               catch (e)
+               {
+                  // Ignore, not important enough to bother user about
+               }
             }
 
-            try
+            // ALF-13561 fix, refresh page using correct nodeRef
+            YAHOO.lang.later(0, this, function()
             {
-               Alfresco.util.Ajax.jsonPost(
-               {
-                  url: Alfresco.constants.PROXY_URI + "slingshot/doclib/activity",
-                  dataObj:
-                  {
-                     fileName: complete.successful[0].fileName,
-                     nodeRef: complete.successful[0].nodeRef,
-                     site: this.options.siteId,
-                     type: "file-updated",
-                     page: "document-details"
-                  }
-               });
-            }
-            catch (e)
-            {
-               // Ignore, not important enough to bother user about
-            }
+               window.location = window.location.href.split("?")[0] + "?nodeRef=" + complete.successful[0].nodeRef;
+            });
          }
       },
 

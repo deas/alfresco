@@ -7,56 +7,53 @@
 /**
  * Customisable areas
  */
-var DocList_Custom =
+var DocList_Custom = (function()
 {
-   /**
-    * Overridable function to calculate correct action group based on node details
-    *
-    * @method calculateActionGroupId
-    * @param record {Object} Record object representing a node, as returned from data webscript
-    * @param view {String} Current page view, currently "details" or "browse"
-    * @return {String} Action Group Id
-    */
-   calculateActionGroupId: function calculateActionGroupId(record, view)
-   {
-      // Default calculation
-      var actionGroupId = (record.node.isContainer ? "folder-" : "document-") + (record.node.isLink ? "link-" : "") + (view == "details" ? "details" : "browse");
+   var doclistActionGroupResolver = null;
+   var doclistDataUrlResolver = null;
 
-      if (logger.isLoggingEnabled())
-         logger.log("[SURF-DOCLIST] ActionGroupId = '" + actionGroupId + "' for nodeRef " + record.node.nodeRef);
-
-      return actionGroupId;
-   },
-
-   /**
-    * Overridable function to calculate the remote data URL
-    *
-    * The returned URL will be used as the parameter for remote.call()
-    *
-    * @method calculateRemoteDataURL
-    * @return {String} Remote Data URL
-    */
-   calculateRemoteDataURL: function calculateRemoteDataURL()
-   {
-      var webscript = url.templateArgs.webscript,
-         params = url.templateArgs.params,
-         dataUrl = "/slingshot/doclib2/" + webscript + "/" + encodeURI(params),
-         argsArray = [];
-
-      // Need to reconstruct and encode original args
-      if (args.length > 0)
+   return {
+      /**
+       * Overridable function to calculate correct action group based on node details.
+       * Its also possible to instead override the "resolver.doclib.actionGroupResolver" bean OR
+       * to change the resolver bean by configuring "DocLibActions actionGroupResolver".
+       *
+       * @method calculateActionGroupId
+       * @param item {Object} Record object representing a node, as returned from data webscript
+       * @param view {String} Current page view, currently "details" or "browse"
+       * @param itemJSON {String} item object as a json string
+       * @return {String} Action Group Id
+       */
+      calculateActionGroupId: function calculateActionGroupId(item, view, itemJSON)
       {
-         for (arg in args)
+         // Default group calculation
+         if (!doclistActionGroupResolver)
          {
-            argsArray.push(arg + "=" + encodeURIComponent(args[arg].replace(/%25/g,"%2525")));
+            doclistActionGroupResolver = resolverHelper.getDoclistActionGroupResolver(config.scoped["DocLibActions"]["actionGroupResolver"].value)
          }
-         
-         dataUrl += "?" + argsArray.join("&");
+         return (doclistActionGroupResolver.resolve(itemJSON, view) + "");
+      },
+
+      /**
+       * Overridable function to calculate the remote data URL.
+       * The returned URL will be used as the parameter for remote.call()
+       *
+       * Its also possible to instead override the "resolver.doclib.doclistDataUrl" bean OR
+       * to change the resolver bean by configuring "DocumentLibrary doclist data-url-resolver".
+       *
+       * @method calculateRemoteDataURL
+       * @return {String} Remote Data URL
+       */
+      calculateRemoteDataURL: function calculateRemoteDataURL()
+      {
+         if (!doclistDataUrlResolver)
+         {
+            doclistDataUrlResolver = resolverHelper.getDoclistDataUrlResolver(config.scoped["DocumentLibrary"]["doclist"].childrenMap["data-url-resolver"].get(0).value)
+         }
+         return (doclistDataUrlResolver.resolve(url.templateArgs.webscript, url.templateArgs.params, args) + "");
       }
-      
-      return dataUrl;
-   } 
-};
+   };
+})();
 
 var this_DocList = this;
 
@@ -161,7 +158,7 @@ var DocList =
 
          if (options.actions)
          {
-            var actionGroupId = DocList_Custom.calculateActionGroupId(item, p_view),
+            var actionGroupId = DocList_Custom.calculateActionGroupId(item, p_view, itemJSON),
                actions = DocList.getGroupActions(actionGroupId, allActions),
                nodeActions = [];
 

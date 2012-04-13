@@ -25,6 +25,7 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.repo.webdav.WebDAVSessionListener;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +33,7 @@ import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.FilterHolder;
+import org.mortbay.jetty.servlet.HashSessionManager;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.HashSessionIdManager;
 import org.springframework.context.ApplicationEvent;
@@ -52,6 +54,8 @@ public class VtiServer extends AbstractLifecycleBean
     private Filter filter;
     private String sessionCookieName;
     private HashSessionIdManager hashSessionIdManager;
+    private HashSessionManager hashSessionManager;
+    private WebDAVSessionListener webDAVSessionListener;
     
     /**
      * Set the HTTP connector
@@ -104,7 +108,26 @@ public class VtiServer extends AbstractLifecycleBean
     {
          this.sessionCookieName = sessionCookieName;
     }
+    
+    /**
+     * Set the HashSessionManager
+     *
+     * @param hashSessionManager
+     */
+    public void setHashSessionManager(HashSessionManager hashSessionManager)
+    {
+        this.hashSessionManager = hashSessionManager;
+    }
 
+    /**
+     * Set the WebDAVSessionListener
+     * 
+     * @param webDAVSessionListener
+     */
+    public void setWebDAVSessionListener(WebDAVSessionListener webDAVSessionListener)
+    {
+        this.webDAVSessionListener = webDAVSessionListener;
+    }
 
     /**
      * Method checks that all mandatory fiedls are set.
@@ -145,9 +168,10 @@ public class VtiServer extends AbstractLifecycleBean
       Context context = new Context(server, "/", Context.SESSIONS);
       context.addServlet(new ServletHolder(servlet), "/*");
       context.addFilter(new FilterHolder(filter), "/*", 1);
-      
-      context.getSessionHandler().getSessionManager().setSessionCookie(sessionCookieName);
-      
+
+      hashSessionManager.addEventListener(webDAVSessionListener);
+      hashSessionManager.setSessionCookie(sessionCookieName);
+      context.getSessionHandler().setSessionManager(hashSessionManager);
       try 
       {
          server.start();

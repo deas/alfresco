@@ -69,7 +69,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ConstantScoreRangeQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -77,11 +76,12 @@ import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardTermEnum;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.regex.RegexQuery;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
-import org.saxpath.SAXPathException;
+import org.jaxen.saxpath.SAXPathException;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -154,6 +154,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_PRIMARYASSOCQNAME = "PRIMARYASSOCQNAME";
     public static final String FIELD_LID = "LID";
     public static final String FIELD_TENANT = "TENANT";
+    public static final String FIELD_EXCEPTION_MESSAGE = "EXCEPTIONMESSAGE";
+    public static final String FIELD_EXCEPTION_STACK = "EXCEPTIONSTACK";
 
     private static Log s_logger = LogFactory.getLog(AbstractLuceneQueryParser.class);
 

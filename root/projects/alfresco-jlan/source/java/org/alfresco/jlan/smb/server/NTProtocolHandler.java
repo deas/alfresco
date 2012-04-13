@@ -2042,7 +2042,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Debug
 
 			if ( Debug.EnableDbg && m_sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
-				Debug.println("Oplock break, file=" + netFile);
+				Debug.println("Oplock break, flags=0x" + Integer.toHexString( lockType) + " file=" + netFile);
 				
 			// Access the oplock manager via the filesystem
 			
@@ -2077,14 +2077,30 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					return;
 				}
 				
-				// Release the oplock
+				// Check if the oplock should be released or converted to a shared Level II oplock
 				
-				oplockMgr.releaseOpLock( oplock.getPath());
-				
-				// DEBUG
-				
-				if ( Debug.EnableDbg && m_sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
-					Debug.println("  Oplock released, oplock=" + oplock);
+				if ( LockingAndX.hasLevelIIOplock( lockType) == false) {
+					
+					// Release the oplock
+					
+					oplockMgr.releaseOpLock( oplock.getPath());
+					
+					// DEBUG
+					
+					if ( Debug.EnableDbg && m_sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
+						Debug.println("  Oplock released, oplock=" + oplock);
+				}
+				else {
+					
+					// Change the oplock type to a LevelII
+					
+					oplockMgr.changeOpLockType( oplock, OpLock.TypeLevelII);
+					
+					// DEBUG
+					
+					if ( Debug.EnableDbg && m_sess.hasDebug(SMBSrvSession.DBG_OPLOCK))
+						Debug.println("  Oplock converted to LevelII, oplock=" + oplock);
+				}
 			}
 			else {
 				
@@ -5787,7 +5803,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		int fid;
 		NetworkFile netFile = null;
 		int respAction = 0;
-		LocalOpLockDetails oplock = null;
+		OpLockDetails oplock = null;
 
 		try {
 
@@ -6023,7 +6039,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			
 			// If the file has been granted an oplock then update the file id, needed for the oplock break
 			
-			if ( oplock != null && oplock.getLockType() != OpLock.TypeNone)
+			if ( oplock != null && (oplock.getLockType() != OpLock.TypeNone && oplock.getLockType() != OpLock.TypeLevelII))
 				oplock.setOwnerFileId( fid);
 			
 			// DEBUG
@@ -7781,11 +7797,11 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				return;
 			}
 			
-			// Check if the file has an oplock
+			// Check if the file has an oplock, and it is not a shared level II oplock
 			
 			OpLockDetails oplock = oplockMgr.getOpLockDetails( params.getFullPath());
 			
-			if ( oplock != null) {
+			if ( oplock != null && oplock.getLockType() != OpLock.TypeLevelII) {
 
 				// DEBUG
 				
@@ -7897,7 +7913,8 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					
 					// Check if the open is not accessing the file data, ie. accessing attributes only
 					
-					if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0)
+					if (( params.getAccessMode() & (AccessMode.NTRead + AccessMode.NTWrite + AccessMode.NTAppend)) == 0 &&
+							(params.getAccessMode() & (AccessMode.NTGenericRead + AccessMode.NTGenericWrite + AccessMode.NTGenericExecute)) == 0)
 						return;
 
 					// Check if the oplock has a failed break timeout, do not send another break request to the client, fail the open
@@ -7964,7 +7981,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			}
 		}
 		
-		// Returning without an exception indicates that there is no oplock on the file, so the
+		// Returning without an exception indicates that there is no oplock on the file, or a shared oplock, so the
 		// file open request can continue
 	}
 	
@@ -7980,16 +7997,16 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 	 * @param netFile NetworkFile
 	 * @return LocalOpLockDetails
 	 */
-	private final LocalOpLockDetails grantOpLock(SMBSrvSession sess, SMBSrvPacket pkt, DiskInterface disk, TreeConnection tree, FileOpenParams params, NetworkFile netFile) {
+	private final OpLockDetails grantOpLock(SMBSrvSession sess, SMBSrvPacket pkt, DiskInterface disk, TreeConnection tree, FileOpenParams params, NetworkFile netFile) {
 		
-		// Check if the client requested an oplock, or the file open is on a folder
+		// Check if the file open is on a folder
 		
-		if ( netFile.isDirectory() || (params.requestBatchOpLock() == false && params.requestExclusiveOpLock() == false))
+		if ( netFile.isDirectory())
 			return null;
 		
 		// Check if the filesystem supports oplocks
 		
-		LocalOpLockDetails oplock = null;
+		OpLockDetails oplock = null;
 		
 		if ( disk instanceof OpLockInterface) {
 			
@@ -8003,14 +8020,22 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			
 			if ( oplockMgr != null) {
 				
+				// Check if there is a shared level II oplock on the file
+				
+				oplock = oplockMgr.getOpLockDetails( params.getPath());
+				if ( oplock != null && oplock.getLockType() == OpLock.TypeLevelII)
+					return oplock;
+				
 				// Get the oplock type
 				
 				int oplockTyp = OpLock.TypeNone;
 				
 				if ( params.requestBatchOpLock())
 					oplockTyp = OpLock.TypeBatch;
-				else
+				else if ( params.requestExclusiveOpLock())
 					oplockTyp = OpLock.TypeExclusive;
+				else
+					return null;
 					
 				// Create the oplock details
 				

@@ -31,7 +31,7 @@
       theme_advanced_buttons2_add: "separator,forecolor",
       theme_advanced_buttons3_add_before: "tablecontrols,separator",
       theme_advanced_disable: "styleselect",
-      extended_valid_elements: "a[href|target|name],font[face|size|color|style],span[class|align|style],meta[*]"
+      extended_valid_elements: "a[href|target|name],font[face|size|color|style],span[id|class|align|style],meta[*]"
    <#elseif appearance == "webeditor">
       width:'',
       plugins: "fullscreen",

@@ -323,8 +323,8 @@
          -->
     <filterCache
       class="solr.FastLRUCache"
-      size="512"
-      initialSize="512"
+      size="${solr.filterCache.size:512}"
+      initialSize="${solr.filterCache.initialSize:512}"
       autowarmCount="0"/>
 
     <!-- Cache used to hold field values that are quickly accessible
@@ -343,16 +343,16 @@
          of documents requested.  -->
     <queryResultCache
       class="solr.LRUCache"
-      size="512"
-      initialSize="512"
+      size="${solr.queryResultCache.size:512}"
+      initialSize="${solr.queryResultCache.initialSize:512}"
       autowarmCount="0"/>
 
   <!-- documentCache caches Lucene Document objects (the stored fields for each document).
        Since Lucene internal document ids are transient, this cache will not be autowarmed.  -->
     <documentCache
       class="solr.LRUCache"
-      size="512"
-      initialSize="512"
+      size="${solr.documentCache.size:512}"
+      initialSize="${solr.documentCache.initialSize:512}"
       autowarmCount="0"/>
 
     <!-- If true, stored fields that are not requested will be loaded lazily.
@@ -408,7 +408,7 @@
 
     <!-- Maximum number of documents to cache for any entry in the
          queryResultCache. -->
-    <queryResultMaxDocsCached>200</queryResultMaxDocsCached>
+    <queryResultMaxDocsCached>${solr.queryResultMaxDocsCached:200}</queryResultMaxDocsCached>
 
     <!-- a newSearcher event is fired whenever a new searcher is being prepared
       and there is a current searcher handling requests (aka registered).

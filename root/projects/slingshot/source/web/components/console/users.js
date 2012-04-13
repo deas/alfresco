@@ -106,6 +106,7 @@
                if (!res.json.data.creationAllowed)
                {
                   parent.widgets.newuserButton.set("disabled", true);
+                  parent.widgets.uploadUsersButton.set("disabled", true);
                }
             };
             

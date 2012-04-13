@@ -67,6 +67,9 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
             } else if (cmisMapping.isValidCmisPolicy(parentQName))
             {
                 typeDef.setParentTypeId(cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, parentQName));
+            } else
+            {
+                throw new IllegalStateException("The CMIS type model should ignore aspects that inherit from excluded aspects");
             }
         }
 

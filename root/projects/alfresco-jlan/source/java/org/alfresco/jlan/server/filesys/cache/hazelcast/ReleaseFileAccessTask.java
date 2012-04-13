@@ -87,25 +87,35 @@ public class ReleaseFileAccessTask extends RemoteStateTask<Integer> {
 		if ( hasDebug())
 			Debug.println( "ReleaseFileAccessTask: Release token=" + m_token + " path " + fState);
 		
-		// Decrement the file open count, if the count is now zero then reset the sharing mode
+		// Get the current file open count
 		
-		int openCount = fState.decrementOpenCount();
-		
-		if ( openCount == 0) {
-			
-			// Reset the sharing mode and clear the primary owner, no current file opens
-		
-			fState.setSharedAccess( SharingMode.READWRITEDELETE);
-			fState.setPrimaryOwner( null);
-		}
+		int openCount = fState.getOpenCount();
 		
 		// Release the oplock
 		
 		if ( m_token instanceof HazelCastAccessToken) {
+
+			HazelCastAccessToken hcToken = (HazelCastAccessToken) m_token;
+
+			// Decrement the file open count, unless the token is from an attributes only file open
+			
+			if ( hcToken.isAttributesOnly() == false) {
+				
+				// Decrement the file open count
+			
+				openCount = fState.decrementOpenCount();
+			
+				if ( openCount == 0) {
+					
+					// Reset the sharing mode and clear the primary owner, no current file opens
+				
+					fState.setSharedAccess( SharingMode.READWRITEDELETE);
+					fState.setPrimaryOwner( null);
+				}
+			}
 			
 			// Check if the token indicates an oplock was granted during the file open
 			
-			HazelCastAccessToken hcToken = (HazelCastAccessToken) m_token;
 			if ( fState.hasOpLock() && hcToken.getOpLockType() != OpLock.TypeNone) {
 				
 				// Release the remote oplock
@@ -123,8 +133,13 @@ public class ReleaseFileAccessTask extends RemoteStateTask<Integer> {
 				if ( hasDebug())
 					Debug.println( "Cleared remote oplock during token release");
 			}
+
+			// This is a copy of the access token, mark it as released
+			
+			hcToken.setReleased( true);
 		}
-		// Return an access token
+		
+		// Return the new file open count
 		
 		return new Integer( openCount);
 	}

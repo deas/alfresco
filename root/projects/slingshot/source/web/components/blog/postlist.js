@@ -1112,7 +1112,14 @@
       {
          if (this.busy)
          {
-            this.widgets.busyMessage.destroy();
+            if (this.widgets.busyMessage.destroyWithAnimationsStop != undefined)
+            {
+               this.widgets.busyMessage.destroyWithAnimationsStop();
+            }
+            else
+            {
+               this.widgets.busyMessage.destroy();
+            }
             this.busy = false;
             return true;
          }

@@ -1932,6 +1932,8 @@ public final class CIFSDiskSession extends DiskSession {
 					// Find the oplocked file
 					
 					CIFSFile cifsFile = m_oplockFiles.get( new Integer( fileId));
+					int breakToOpLock = OpLock.TypeNone;
+					
 					if ( cifsFile != null) {
 						
 						// Check if the file has an oplock callback interface
@@ -1940,7 +1942,7 @@ public final class CIFSDiskSession extends DiskSession {
 
 							// Call the oplock interface
 							
-							cifsFile.getOplockInterface().oplockBreak( cifsFile);
+							breakToOpLock = cifsFile.getOplockInterface().oplockBreak( cifsFile);
 						}
 						else {
 							
@@ -1969,7 +1971,14 @@ public final class CIFSDiskSession extends DiskSession {
 						respPkt.setAndXCommand( PacketType.NoChainedCommand);
 						respPkt.setParameter(1, 0);							// AndX offset
 						respPkt.setParameter(2, fileId);
-						respPkt.setParameter(3, LockingAndX.OplockBreak);
+						
+						// Break the oplock, or break to a level II shared oplock
+						
+						if ( breakToOpLock == OpLock.TypeLevelII)
+							respPkt.setParameter(3, LockingAndX.OplockBreak + LockingAndX.Level2OpLock);
+						else
+							respPkt.setParameter(3, LockingAndX.OplockBreak);
+							
 						respPkt.setParameterLong(4, 0);						// timeout
 						respPkt.setParameter(6, 0);							// number of unlocks
 						respPkt.setParameter(7, 0);							// number of locks
@@ -1982,9 +1991,9 @@ public final class CIFSDiskSession extends DiskSession {
 						
 						respPkt.SendSMB( this);
 						
-						// Clear the oplock on the file
+						// Set the new oplock type on the file
 						
-						cifsFile.setOplockType( OpLock.TypeNone);
+						cifsFile.setOplockType( breakToOpLock);
 						cifsFile.setOplockInterface( null);
 					}
 				}
@@ -2199,6 +2208,8 @@ public final class CIFSDiskSession extends DiskSession {
 			oplockTyp = OpLock.TypeBatch;
 		else if ( oplockTyp == WinNT.GrantedOplockExclusive)
 			oplockTyp = OpLock.TypeExclusive;
+		else if ( oplockTyp == WinNT.GrantedOplockLevelII)
+			oplockTyp = OpLock.TypeLevelII;
 		else
 			oplockTyp = OpLock.TypeNone;
 		

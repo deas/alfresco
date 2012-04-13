@@ -517,12 +517,12 @@ public class VtiPathHelper extends AbstractLifecycleBean
         try
         {
             Serializable listName = 
-                nodeService.getProperty(new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, listId), ContentModel.PROP_NAME);
+                nodeService.getProperty(new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, listId.toLowerCase()), ContentModel.PROP_NAME);
             return (String)listName;
         }
         catch (Exception e) 
         {
-            throw new VtiHandlerException(VtiHandlerException.BAD_URL); 
+            throw new VtiHandlerException(VtiHandlerException.BAD_URL, e); 
         }
     }
     

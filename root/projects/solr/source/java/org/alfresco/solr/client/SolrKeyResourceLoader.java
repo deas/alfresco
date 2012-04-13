@@ -51,7 +51,9 @@ public class SolrKeyResourceLoader implements KeyResourceLoader
 	public Properties loadKeyMetaData(String location) throws IOException
 	{
 		Properties p = new Properties();
-		p.load(loader.openResource(location));
+		InputStream stream = loader.openResource(location);
+		p.load(stream);
+		stream.close();
 		return p;
 	}
 }

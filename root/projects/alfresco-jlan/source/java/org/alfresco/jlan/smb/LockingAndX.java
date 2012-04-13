@@ -80,6 +80,15 @@ public class LockingAndX {
 	}
 
 	/**
+	 * Check if the LevelII oplock flag is set
+	 * 
+	 * @return boolean
+	 */
+	public final static boolean hasLevelIIOplock( int flags) {
+		return (flags & Level2OpLock) != 0 ? true : false;
+	}
+	
+	/**
 	 * Check if the change type flag is set
 	 *
 	 * @param flags int

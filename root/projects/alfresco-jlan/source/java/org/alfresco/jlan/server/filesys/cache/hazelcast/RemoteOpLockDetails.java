@@ -307,6 +307,15 @@ public class RemoteOpLockDetails extends OpLockDetailsAdapter implements Seriali
 	}
 	
 	/**
+	 * Set the lock type
+	 * 
+	 * @param lockTyp int
+	 */
+	public void setLockType( int lockTyp) {
+		m_lockType = lockTyp;
+	}
+	
+	/**
 	 * Return the remote oplock as a string
 	 * 
 	 * @return String

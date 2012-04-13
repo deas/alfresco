@@ -35,6 +35,7 @@ import org.alfresco.module.vti.web.ws.VtiEndpoint;
 import org.alfresco.module.vti.web.ws.VtiSoapException;
 import org.alfresco.module.vti.web.ws.VtiSoapRequest;
 import org.alfresco.module.vti.web.ws.VtiSoapResponse;
+import org.alfresco.repo.webdav.WebDAVLockService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -57,7 +58,7 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
     private Map<String, VtiEndpoint> endpointsMapping; 
     
     private final static Log logger = LogFactory.getLog(VtiSoapAction.class);
-    
+
     /**
      * <p>Process Web service request, dispatch among set of VtiEndpoints. 
      * Select and invoke a realization of {@link VtiEndpoint} to perform the
@@ -75,7 +76,9 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
         {
             try
             {
+                WebDAVLockService.setCurrentSession(soapRequest.getSession());
                 soapResponse.setContentType(VtiFilter.CONTENT_TYPE_XML);
+
                 endpoint.execute(soapRequest, soapResponse);
             }
             catch (Exception e)

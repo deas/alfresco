@@ -1507,12 +1507,12 @@
                <show id="imwf:inviteeUserName" />
                <show id="imwf:resourceName" />
                <show id="bpm:priority" />
-               <show id="bpm:comment" />
+               <show id="imwf:reviewComments" />
                <show id="transitions" />
             </field-visibility>
             <appearance>
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               <field id="bpm:comment" label-id="workflow.field.comment" set="response">
+               <field id="imwf:reviewComments" label-id="workflow.field.comment" set="response">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl" />
                </field>
                <field id="transitions" set="response" />

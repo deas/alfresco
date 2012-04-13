@@ -157,6 +157,14 @@ public class OpLockDetailsAdapter implements OpLockDetails {
 	}
 	
 	/**
+	 * Set the owner file id
+	 * 
+	 * @param fileId int
+	 */
+	public void setOwnerFileId(int fileId) {
+	}
+	
+	/**
 	 * Request an oplock break
 	 * 
 	 * @exception IOException
@@ -171,5 +179,6 @@ public class OpLockDetailsAdapter implements OpLockDetails {
 	 * @param lockTyp int
 	 */
 	public void setLockType( int lockTyp) {
+		throw new RuntimeException( "OplockDetailsAdapter.setLockType() needs override");
 	}
 }

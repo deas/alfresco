@@ -239,6 +239,14 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
         {
             return new VerbatimAnalyser(false);
         }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE))
+        {
+            return new VerbatimAnalyser(false);
+        }
+        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK))
+        {
+            return new VerbatimAnalyser(false);
+        }
         // type dependent analysis
         else if (fieldName.startsWith("@"))
 

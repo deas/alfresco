@@ -128,6 +128,13 @@ public interface OpLockDetails {
 	public void setOplockBreakFailed();
 	
 	/**
+	 * Set the owner file id
+	 * 
+	 * @param fileId int
+	 */
+	public void setOwnerFileId(int fileId);
+	
+	/**
 	 * Request an oplock break
 	 * 
 	 * @exception IOException

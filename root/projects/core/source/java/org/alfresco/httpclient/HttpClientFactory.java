@@ -110,7 +110,7 @@ public class HttpClientFactory
     }
 
     public HttpClientFactory(SecureCommsType secureCommsType, SSLEncryptionParameters sslEncryptionParameters, KeyResourceLoader keyResourceLoader,
-    		KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters, String host, int port, int sslPort)
+    		KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters, String host, int port, int sslPort, int maxTotalConnections, int maxHostConnections)
     {
     	this.secureCommsType = secureCommsType;
     	this.sslEncryptionParameters = sslEncryptionParameters;
@@ -120,6 +120,8 @@ public class HttpClientFactory
     	this.host = host;
     	this.port = port;
     	this.sslPort = sslPort;
+    	this.maxTotalConnections = maxTotalConnections;
+    	this.maxHostConnections = maxHostConnections;
     	init();
     }
 

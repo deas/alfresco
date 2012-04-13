@@ -25,6 +25,7 @@ import junit.framework.TestSuite;
 
 import org.alfresco.repo.cmis.rest.test.CmisRelationshipSystemTest;
 import org.alfresco.repo.web.scripts.activities.SiteActivitySystemTest;
+import org.alfresco.solr.client.SOLRAPIClientTest;
 import org.alfresco.webservice.test.AccessControlServiceSystemTest;
 import org.alfresco.webservice.test.ActionServiceSystemTest;
 import org.alfresco.webservice.test.AdministrationServiceSystemTest;
@@ -75,6 +76,9 @@ public class MiscSystemTestSuite extends TestSuite
         // cmis
         // TODO Work out why this is failing
         // suite.addTest(new JUnit4TestAdapter(CmisRelationshipSystemTest.class));
+        
+        // SOLR
+        suite.addTestSuite(SOLRAPIClientTest.class);
         
         // stop (embedded) Jetty
         suite.addTestSuite(RepoJettyStopTest.class);

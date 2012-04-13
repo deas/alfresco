@@ -800,7 +800,12 @@ Alfresco.util.formatDate = function(date)
 {
    if (YAHOO.lang.isString(date))
    {
-      arguments[0] = Alfresco.util.fromISO8601(date)
+      // if we've got a date as an ISO8601 string, convert to date Object before proceeding - otherwise pass it through
+      var dateObj = Alfresco.util.fromISO8601(date);
+      if (dateObj)
+      {
+         arguments[0] = dateObj;
+      }
    }
    try
    {
@@ -3427,6 +3432,9 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
  */
 Alfresco.util.findEventClass = function(p_eventTarget, p_tagName)
 {
+   if (!p_eventTarget)
+      return null;
+   
    var src = p_eventTarget.element;
    var tagName = (p_tagName || "span").toLowerCase();
 
@@ -4799,6 +4807,26 @@ Alfresco.util.PopupManager = function()
          // Construct the YUI Dialog that will display the message
          var message = new YAHOO.widget.Dialog("message", dialogConfig);
 
+         // This method allows to stop animanions before destroy to avoid NPE
+         message.destroyWithAnimationsStop = function()
+         {
+            if (message._fadingIn || message._fadingOut)
+            {
+               if(message._cachedEffects && message._cachedEffects.length > 0)
+               {
+                  for(var i = 0; i < message._cachedEffects.length; i++)
+                  {
+                     var effect = message._cachedEffects[i];
+                     if (effect.animIn)
+                        effect.animIn.stop();
+                     if (effect.animOut)
+                        effect.animOut.stop();
+                  }
+               }
+            }
+            message.destroy();
+         }
+
          // Set the message that should be displayed
          var bd =  "<span class='" + c.spanClass + "'>" + (c.noEscape ? c.text : $html(c.text)) + "</span>";
          message.setBody(bd);
@@ -5626,9 +5654,11 @@ Alfresco.util.Ajax = function()
 
          // Add a noCache parameter to the URL to ensure that XHR requests are always made to the
          // server. This is added to tackle a specific problem in IE where 304 responses are assumed
-         // for XHR requests. This has intentionally not been conditionally added just for IE as there
-         // is no reason why we shouldn't always get fresh data on XHR requests.
-         c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + "noCache=" + new Date().getTime();
+         // for XHR requests. This has intentionally been conditionally added just for IE8 and below
+         if (YAHOO.env.ua.ie < 9)
+         {
+            c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + "noCache=" + new Date().getTime();
+         }
          
          // Make the request
          YAHOO.util.Connect.asyncRequest (c.method, c.url, callback, c.dataStr);
@@ -6240,9 +6270,30 @@ Alfresco.util.Anim = function()
          if (el)
          {
             // Set outColor to existing backgroundColor
+            // Fix for ALF-12308 Stack specific: Script error when reply on a topic
+            // ColorAnim.parseColor() returns null for rgba(0, 0, 0, 0).
+            // Also IE and FF return "transparent" which cannot be parsed as well.
+            //debugger;
+            var rgbaRegexp = /^rgba\((\d+), (\d+), (\d+), (\d+)\)$/i,
+                transparent = /^transparent$/i,
+                outColor = YUIDom.getStyle(el, "backgroundColor");
+            if (rgbaRegexp.test(outColor))
+            {
+               var rgba = rgbaRegexp.exec(outColor);
+               // Check wether it's black
+               if (rgba[1] == 0 && rgba[2] == 0 && rgba[3] == 0 && rgba[4] == 0)
+                  outColor = "#fff";
+               else
+                  outColor = "rgb(" + rgba[1] + ", " + rgba[2] + ", " + rgba[3] + ")";
+            }
+            else if (transparent.test(outColor))
+            {
+               outColor = "#fff";
+            }
+            
             var attr = YAHOO.lang.merge(this.pulseAttributes,
             {
-               outColor: YUIDom.getStyle(el, "backgroundColor")
+               outColor: outColor
             });
             if (typeof p_attributes == "object")
             {
@@ -7843,6 +7894,7 @@ Alfresco.util.RENDERLOOPSIZE = 25;
       // Decoupled event listeners
       YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
       YAHOO.Bubbling.on("deactivateAllControls", this.onDeactivateAllControls, this);
+      YAHOO.Bubbling.on("hideFilter", this.onHideFilter, this);
       
       return this;
    };
@@ -7973,6 +8025,15 @@ Alfresco.util.RENDERLOOPSIZE = 25;
        * BUBBLING LIBRARY EVENT HANDLERS FOR PAGE EVENTS
        * Disconnected event handlers for inter-component event notification
        */
+
+      onHideFilter: function() 
+      {
+         var filters = YUISelector.query("a", this.id);
+         for (var i = 0, ii = filters.length; i < ii; i++)
+         {
+            YUIDom.addClass(filters[i], "hidden");
+         }
+      },
 
       /**
        * Fired when the currently active filter has changed

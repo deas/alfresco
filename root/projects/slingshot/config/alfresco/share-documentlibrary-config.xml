@@ -9,6 +9,16 @@
    
    <!-- Document Library config section -->
    <config evaluator="string-compare" condition="DocumentLibrary">
+
+      <!-- Document List -->
+      <doclist>
+         <!--
+            Bean that implements DoclistDataUrlResolver interface to resolve which url that the surf-doclist webscript
+            shall use when asking the repository for nodes.
+          -->
+         <data-url-resolver>resolver.doclib.doclistDataUrl</data-url-resolver>
+      </doclist>
+
       <tree>
          <!--
             Whether the folder Tree component should enumerate child folders or not.
@@ -323,7 +333,7 @@
       -->
       <dependencies />
    </config>
-   
+
    <!-- Document Library Actions config section -->
    <config evaluator="string-compare" condition="DocLibActions">
 
@@ -642,6 +652,12 @@
          </action>
 
       </actions>
+
+
+      <!--
+         Action Group resolver - decides which action group id to use for a node
+      -->
+      <actionGroupResolver>resolver.doclib.actionGroup</actionGroupResolver>
 
       <!--
          Action Group definitions

@@ -28,10 +28,10 @@ import org.alfresco.repo.search.impl.lucene.query.SelfAxisStructuredFieldPositio
 import org.alfresco.repo.search.impl.lucene.query.StructuredFieldPosition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
-import org.saxpath.Axis;
-import org.saxpath.Operator;
-import org.saxpath.SAXPathException;
-import org.saxpath.XPathHandler;
+import org.jaxen.saxpath.Axis;
+import org.jaxen.saxpath.Operator;
+import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.saxpath.XPathHandler;
 /**
  * XPATH handler for lucene - currently only does basic paths
  * 
