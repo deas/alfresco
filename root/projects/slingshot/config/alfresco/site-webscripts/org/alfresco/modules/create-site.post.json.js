@@ -28,6 +28,16 @@ function main()
       }
       else if (repoJSON.status.code)
       {
+         // AccessDeniedException handler
+         for (var i in repoJSON.callstack)
+         {
+            if (repoJSON.callstack[i].indexOf("net.sf.acegisecurity.AccessDeniedException") != -1)
+            {
+               status.setCode(403, repoJSON.message);
+               return;
+            }
+         }
+         // Default error handler
          status.setCode(repoJSON.status.code, repoJSON.message);
       }
    }

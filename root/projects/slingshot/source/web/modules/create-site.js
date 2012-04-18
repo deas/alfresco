@@ -419,6 +419,11 @@
             // Workaround for ALF-1276 - we'll assume an HTTP 500 is "site already exists"
             text = Alfresco.util.message("error.duplicateShortName", this.name);
          }
+         else if (response.serverResponse.status === 403)
+         {
+            // User does not have permissions to create the site
+            text = Alfresco.util.message("error.noPermissions", this.name);
+         }
          else if (response.json.message)
          {
             var tmp = Alfresco.util.message(response.json.message, this.name);
