@@ -567,7 +567,16 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
     {
         if (fieldName.startsWith("@") && !fieldName.endsWith(".mimetype"))
         {
-            QName propertyQName = QName.createQName(fieldName.substring(1));
+            QName propertyQName;
+            if(fieldName.endsWith(".__"))
+            {
+                propertyQName = QName.createQName(fieldName.substring(1, fieldName.length()-3));
+            }
+            else
+            {
+                propertyQName = QName.createQName(fieldName.substring(1));
+            }
+          
             PropertyDefinition propertyDef = dictionaryService.getProperty(propertyQName);
             if (propertyDef != null)
             {

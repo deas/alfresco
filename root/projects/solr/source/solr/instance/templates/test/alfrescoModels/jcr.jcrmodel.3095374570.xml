@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.alfresco.org/model/dictionary/1.0" name="jcr:jcrmodel">
+    <description>JCR Model Definitions</description>
+    <version>1.0</version>
+    <imports>
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+    </imports>
+    <namespaces>
+        <namespace uri="http://www.jcp.org/jcr/1.0" prefix="jcr"/>
+        <namespace uri="http://www.jcp.org/jcr/nt/1.0" prefix="nt"/>
+        <namespace uri="http://www.jcp.org/jcr/mix/1.0" prefix="mix"/>
+        <namespace uri="http://www.jcp.org/jcr/sv/1.0" prefix="sv"/>
+        <namespace uri="http://www.w3.org/XML/1998/namespace" prefix="xml"/>
+    </namespaces>
+    <data-types/>
+    <constraints/>
+    <types>
+        <type name="nt:base">
+            <parent>sys:base</parent>
+            <properties>
+                <property name="jcr:primaryType">
+                    <type>d:qname</type>
+                    <protected>true</protected>
+                    <mandatory enforced="true">true</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="jcr:mixinTypes">
+                    <type>d:qname</type>
+                    <protected>true</protected>
+                    <mandatory>false</mandatory>
+                    <multiple>true</multiple>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="nt:hierarchyNode">
+            <parent>nt:base</parent>
+            <properties>
+                <property name="jcr:created">
+                    <type>d:date</type>
+                    <protected>true</protected>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="nt:file">
+            <parent>nt:hierarchyNode</parent>
+            <properties/>
+            <associations>
+                <child-association name="jcr:content">
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>nt:base</class>
+                        <mandatory enforced="true">true</mandatory>
+                        <many>false</many>
+                    </target>
+                    <child-name>jcr:content</child-name>
+                    <duplicate>false</duplicate>
+                </child-association>
+            </associations>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="nt:folder">
+            <parent>nt:hierarchyNode</parent>
+            <properties/>
+            <associations>
+                <child-association name="jcr:contains">
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>nt:hierarchyNode</class>
+                        <mandatory enforced="false">false</mandatory>
+                        <many>true</many>
+                    </target>
+                    <duplicate>false</duplicate>
+                </child-association>
+            </associations>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="nt:resource">
+            <parent>nt:base</parent>
+            <properties>
+                <property name="jcr:encoding">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="jcr:mimeType">
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="jcr:data">
+                    <type>d:content</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                    </index>
+                </property>
+                <property name="jcr:lastModified">
+                    <type>d:date</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects>
+                <aspect>mix:referenceable</aspect>
+            </mandatory-aspects>
+        </type>
+    </types>
+    <aspects>
+        <aspect name="mix:referenceable">
+            <properties>
+                <property name="jcr:uuid">
+                    <type>d:text</type>
+                    <protected>true</protected>
+                    <mandatory>true</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+        <aspect name="mix:lockable">
+            <properties>
+                <property name="jcr:lockOwner">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="jcr:lockIsDeep">
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+    </aspects>
+</model>

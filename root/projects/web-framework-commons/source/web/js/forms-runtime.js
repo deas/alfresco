@@ -457,6 +457,18 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             // to the handler and make the scope of the handler this form.
             Event.addListener(field, when, this._validationEventFired, validation, this);
             
+            // YAHOO doesn't seem to process the propertychange via the addListener so we need to take 
+            // matters into our own hands. Listening for the "propertychange" event is required so that
+            // the forms runtime can validate when autocomplete is used in IE.
+            if (YAHOO.env.ua.ie > 0 && when == "propertychange")
+            {
+               var _this = this;
+               field.attachEvent("onpropertychange", function(e) {
+                  _this._validationEventFired(e, validation)
+               }); 
+            }
+            
+            
             if (Alfresco.logger.isDebugEnabled())
                Alfresco.logger.debug("Added field validation for field: " + fieldId +
                                      ", using handler: " + 

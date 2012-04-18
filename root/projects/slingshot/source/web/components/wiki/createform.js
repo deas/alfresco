@@ -151,12 +151,17 @@
 
          // Add validation to the rich text editor
          this.widgets.validateOnZero = 0;
-         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';         
+         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
          this.widgets.editor.subscribe(keyUpIdentifier, function (e)
          {
             this.widgets.validateOnZero++;
             YAHOO.lang.later(1000, this, this.validateAfterEditorChange);
          }, this, true);
+         var _this = this;
+         this.widgets.editor.getEditor().onSetContent.add(function(ed, e) {
+            _this.widgets.validateOnZero++;
+            YAHOO.lang.later(1000, _this, _this.validateAfterEditorChange);
+         });
          
          // Create the form that does the validation/submit
          this.widgets.form = new Alfresco.forms.Form(this.id + "-form");

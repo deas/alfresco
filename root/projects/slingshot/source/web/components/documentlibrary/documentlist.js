@@ -1254,6 +1254,16 @@
       viewRenderers: null,
 
       /**
+       * Indicates whether or not the current user has permission to upload documents. This is initialised to 
+       * false and will remain that way until it is updated by the _setupDataSource function.
+       * 
+       * @property _userCanUpload
+       * @type boolean
+       * @default false
+       */
+      _userCanUpload: false, 
+      
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Initial History Manager event registration
        *
@@ -2351,7 +2361,7 @@
             Dom.setStyle(this.id + "-doclistBarBottom", "display", "block");
          }
       },
-
+      
       /**
        * DataSource set-up and event registration
        *
@@ -2438,9 +2448,9 @@
 
             if (permissions)
             {
-               var userCanUpload = me.doclistMetadata.parent.permissions.user.CreateChildren && YAHOO.env.ua.mobile === null;
+               me._userCanUpload = me.doclistMetadata.parent.permissions.user.CreateChildren && YAHOO.env.ua.mobile === null;
 
-               if (userCanUpload && me.dragAndDropEnabled)
+               if (me._userCanUpload && me.dragAndDropEnabled)
                {
                   Dom.addClass(container, "docListInstructionsWithDND");
                }
@@ -2450,7 +2460,7 @@
                }
 
                // Work out what to display based on the boolean values calculated earlier...
-               if (empty && !userCanUpload)
+               if (empty && !me._userCanUpload)
                {
                   // If folder is empty, there are no hidden folders and the user cannot upload, then show the no items info...
                   template = Dom.get(me.id + "-no-items-template");
@@ -2472,7 +2482,7 @@
                   }
                   container.appendChild(templateInstance);
                }
-               else if (empty && userCanUpload && me.dragAndDropEnabled)
+               else if (empty && me._userCanUpload && me.dragAndDropEnabled)
                {
                   // ...or, if the folder is empty, there are no hidden folders, the user can upload AND the browser supports
                   // the DND process, show the HTML5 DND instructions...
@@ -2481,7 +2491,7 @@
                   Dom.removeClass(templateInstance, "hidden");
                   container.appendChild(templateInstance);
                }
-               else if (empty && userCanUpload && !me.dragAndDropEnabled)
+               else if (empty && me._userCanUpload && !me.dragAndDropEnabled)
                {
                   // ...but if the folder is empty, there are no hidden folders, the user can upload BUT the browser does
                   // NOT support the DND process then just show the standard upload instructions...
@@ -2492,7 +2502,7 @@
                   container.appendChild(templateInstance);
                }
 
-               if (empty && userCanUpload && me.dragAndDropEnabled)
+               if (empty && me._userCanUpload && me.dragAndDropEnabled)
                {
                   // Clone the other options node...
                   template = Dom.get(me.id + "-other-options-template");
@@ -2500,7 +2510,7 @@
                   Dom.removeClass(templateInstance, "hidden");
                   container.appendChild(templateInstance);
 
-                  if (empty && userCanUpload)
+                  if (empty && me._userCanUpload)
                   {
                      if (me.dragAndDropEnabled)
                      {
@@ -2794,7 +2804,7 @@
       /**
        * Removes HTML5 drag and drop listeners from the document list.
        *
-       * @method _addDragAndDrop
+       * @method _removeDragAndDrop
        */
       _removeDragAndDrop: function DL__removeDragAndDrop()
       {
@@ -2812,7 +2822,7 @@
             }
             catch(exception)
             {
-               Alfresco.logger.error("_addDragAndDrop: The following exception occurred: ", exception);
+               Alfresco.logger.error("_removeDragAndDrop: The following exception occurred: ", exception);
             }
          }
       },
@@ -2824,7 +2834,7 @@
        */
       _addDragAndDrop: function DL__addDragAndDrop()
       {
-         if (this.dragAndDropEnabled)
+         if (this._userCanUpload && this.dragAndDropEnabled)
          {
             // Make the entire DocumentList available for dropping files for uploading onto.
             try

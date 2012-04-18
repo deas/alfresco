@@ -955,6 +955,7 @@ public class CoreTracker implements CloseHook
                     Node node = new Node();
                     node.setId(nodeId);
                     node.setStatus(SolrApiNodeStatus.UNKNOWN);
+                    node.setTxnId(Long.MAX_VALUE);
 
                     indexNode(node, solrIndexSearcher, true);
                     requiresCommit = true;
@@ -994,6 +995,7 @@ public class CoreTracker implements CloseHook
                     Node node = new Node();
                     node.setId(nodeId);
                     node.setStatus(SolrApiNodeStatus.UNKNOWN);
+                    node.setTxnId(Long.MAX_VALUE);
 
                     indexNode(node, solrIndexSearcher, false);
                     requiresCommit = true;

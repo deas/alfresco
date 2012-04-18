@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.alfresco.org/model/dictionary/1.0" name="wcm:wcmmodel">
+    <description>WCM Specific Types</description>
+    <author>Alfresco</author>
+    <published>2006-10-06</published>
+    <version>1.0</version>
+    <imports>
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+    </imports>
+    <namespaces>
+        <namespace uri="http://www.alfresco.org/model/wcmmodel/1.0" prefix="wcm"/>
+    </namespaces>
+    <data-types/>
+    <constraints/>
+    <types>
+        <type name="wcm:avmcontent">
+            <title>AVM Content</title>
+            <parent>cm:content</parent>
+            <properties/>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="wcm:avmplaincontent">
+            <title>AVM Plain content</title>
+            <parent>wcm:avmcontent</parent>
+            <properties/>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="wcm:avmlayeredcontent">
+            <title>AVM Layered Content</title>
+            <parent>cm:content</parent>
+            <properties>
+                <property name="wcm:avmfileindirection">
+                    <title>File Layer Indirection</title>
+                    <type>d:noderef</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="wcm:avmfolder">
+            <title>AVM Folder</title>
+            <parent>cm:folder</parent>
+            <properties/>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="wcm:avmplainfolder">
+            <title>AVM Plain Folder</title>
+            <parent>wcm:avmfolder</parent>
+            <properties/>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="wcm:avmlayeredfolder">
+            <title>AVM Layered Folder</title>
+            <parent>wcm:avmfolder</parent>
+            <properties>
+                <property name="wcm:avmdirindirection">
+                    <title>Directory Layer Indirection</title>
+                    <type>d:noderef</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+    </types>
+    <aspects>
+        <aspect name="wcm:reverted">
+            <title>Contains a reference to the node that this node was reverted from.</title>
+            <properties>
+                <property name="wcm:revertedid">
+                    <title>The id of the node this was reverted from.</title>
+                    <type>d:long</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+    </aspects>
+</model>

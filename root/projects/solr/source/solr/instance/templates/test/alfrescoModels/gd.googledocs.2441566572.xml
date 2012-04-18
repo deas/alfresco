@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.alfresco.org/model/dictionary/1.0" name="gd:googledocs">
+    <description>Google Docs Model</description>
+    <author>unknown</author>
+    <version>1.0</version>
+    <imports>
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+    </imports>
+    <namespaces>
+        <namespace uri="http://www.alfresco.org/model/googledocs/1.0" prefix="gd"/>
+    </namespaces>
+    <data-types/>
+    <constraints/>
+    <types/>
+    <aspects>
+        <aspect name="gd:googleEditable">
+            <title>Google Editable</title>
+            <properties>
+                <property name="gd:googleEditable">
+                    <title>Property who's only purpose is to allow the marker aspect to be automatically added.</title>
+                    <type>d:boolean</type>
+                    <protected>true</protected>
+                    <mandatory>false</mandatory>
+                    <default>true</default>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+        <aspect name="gd:googleResource">
+            <title>Google Document</title>
+            <properties>
+                <property name="gd:url">
+                    <title>GoogleDocs URL</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="gd:resourceId">
+                    <title>GoogleDocs id</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="gd:resourceType">
+                    <title>GoogleDocs Type</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+    </aspects>
+</model>

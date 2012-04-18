@@ -530,6 +530,15 @@ public class FileInfo {
 	public final boolean isSystem() {
 		return (m_attr & FileAttribute.System) != 0 ? true : false;
 	}
+	
+	/**
+     * Return the temporary attribute status.
+     * 
+     * @return true if the file is a temporary file, else false.
+     */
+    public final boolean isTemporary() {
+        return (m_attr & FileAttribute.NTTemporary) != 0 ? true : false;
+    }
 
 	/**
 	 * Return the archived attribute status

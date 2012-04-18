@@ -216,7 +216,14 @@
             for (var c = 0; c < this.options.fieldConstraints.length; c++)
             {
                var fc = this.options.fieldConstraints[c];
-               this.formsRuntime.addValidation(fc.fieldId, fc.handler, fc.params, fc.event, fc.message);
+               
+               // Check the number of events for the handler...
+               var events = fc.event.split(",");
+               for (var e = 0; e < events.length; e++)
+               {
+                  var trimmedEvent = events[e].replace(" ", "");
+                  this.formsRuntime.addValidation(fc.fieldId, fc.handler, fc.params, trimmedEvent, fc.message);
+               }
             }
 
             // fire event to inform any listening components that the form is about to be initialised

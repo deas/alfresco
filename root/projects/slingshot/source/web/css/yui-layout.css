@@ -207,3 +207,10 @@
    margin: 0;
    padding: 0;
 }
+
+/* ALF-13227 fix, counter act previous selectors for Wiki */
+
+.rich-content ul
+{
+   padding: 1em;
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.content.encoding.ContentCharsetFinder;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.FileContentReader;
@@ -200,6 +199,14 @@ public class MimetypeMap implements MimetypeService
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public ConfigService getConfigService()
+    {
+        return configService;
+    }
+
+    /**
      * @param configService         the config service to use to read mimetypes from
      */
     public void setConfigService(ConfigService configService)
@@ -275,28 +282,44 @@ public class MimetypeMap implements MimetypeService
             }
             // we store it as lowercase
             mimetype = mimetype.toLowerCase();
-            if (this.mimetypes.contains(mimetype))
+            boolean replacement = this.mimetypes.contains(mimetype);
+            if (!replacement)
             {
-                throw new AlfrescoRuntimeException("Duplicate mimetype definition: " + mimetype);
+                this.mimetypes.add(mimetype);
             }
-            this.mimetypes.add(mimetype);
             // add to map of mimetype displays
             String mimetypeDisplay = mimetypeElement.getAttribute(ATTR_DISPLAY);
             if (mimetypeDisplay != null && mimetypeDisplay.length() > 0)
             {
-                this.displaysByMimetype.put(mimetype, mimetypeDisplay);
+                String prev = this.displaysByMimetype.put(mimetype, mimetypeDisplay);
+                if (replacement && prev != null && !mimetypeDisplay.equals(prev))
+                {
+                    logger.warn("Replacing "+mimetype+" "+ATTR_DISPLAY+" value '"+prev+"' with '"+mimetypeDisplay+"'");
+                }
             }
 
             // Check if it is a text format
             String isTextStr = mimetypeElement.getAttribute(ATTR_TEXT);
-            boolean isText = Boolean.parseBoolean(isTextStr);
-            if (isText || mimetype.startsWith(PREFIX_TEXT))
+            boolean isText = Boolean.parseBoolean(isTextStr) || mimetype.startsWith(PREFIX_TEXT);
+            boolean prevIsText = replacement ? this.textMimetypes.contains(mimetype) : !isText;
+            if (isText != prevIsText)
             {
-                this.textMimetypes.add(mimetype);
+                if (isText)
+                {
+                    this.textMimetypes.add(mimetype);
+                }
+                else if (replacement)
+                {
+                    this.textMimetypes.remove(mimetype);
+                }
+                if (replacement)
+                {
+                    logger.warn("Replacing "+mimetype+" "+ATTR_TEXT+" value "+
+                            (prevIsText ? "'true' with 'false'" : "'false' with 'true'"));
+                }
             }
             
             // get all the extensions
-            boolean isFirst = true;
             List<ConfigElement> extensions = mimetypeElement.getChildren();
             for (ConfigElement extensionElement : extensions)
             {
@@ -312,24 +335,36 @@ public class MimetypeMap implements MimetypeService
                 this.mimetypesByExtension.put(extension, mimetype);
                 // add to map of extension displays
                 String extensionDisplay = extensionElement.getAttribute(ATTR_DISPLAY);
-                if (extensionDisplay != null && extensionDisplay.length() > 0)
+                String prev = this.displaysByExtension.get(extension);
+                // if no display defined for the extension - use the mimetype's display
+                if ((prev == null) &&
+                    (extensionDisplay == null || extensionDisplay.length() == 0) &&
+                    (mimetypeDisplay != null && mimetypeDisplay.length() > 0))
+                {
+                    extensionDisplay = mimetypeDisplay;
+                }
+                if (extensionDisplay != null)
                 {
                     this.displaysByExtension.put(extension, extensionDisplay);
+                    if (prev != null && !extensionDisplay.equals(prev))
+                    {
+                        logger.warn("Replacing " + mimetype + " extension " + ATTR_DISPLAY + " value '"
+                                + prev + "' with '" + extensionDisplay + "'");
+                    }
                 }
-                else if (mimetypeDisplay != null && mimetypeDisplay.length() > 0)
-                {
-                    // no display defined for the extension - use the mimetype's display
-                    this.displaysByExtension.put(extension, mimetypeDisplay);
-                }
-                // add to map of extensions by mimetype if it is the default or first extension
+                
+                // add to map of extensions by mimetype if it is the default or first extension (prevExtension == null)
+                String prevExtension = this.extensionsByMimetype.get(mimetype);
                 String isDefaultStr = extensionElement.getAttribute(ATTR_DEFAULT);
-                boolean isDefault = Boolean.parseBoolean(isDefaultStr);
-                if (isDefault || isFirst)
+                boolean isDefault = Boolean.parseBoolean(isDefaultStr) || prevExtension == null;
+                if (isDefault)
                 {
                     this.extensionsByMimetype.put(mimetype, extension);
+                    if (prevExtension != null && !extension.equals(prevExtension))
+                    {
+                        logger.warn("Replacing "+mimetype+" default extension '"+prevExtension+"' with '"+extension+"'");
+                    }
                 }
-                // Loop again
-                isFirst = false;
             }
             // check that there were extensions defined
             if (extensions.size() == 0)

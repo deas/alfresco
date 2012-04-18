@@ -39,6 +39,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.search.impl.lucene.LuceneAnalyser;
+import org.alfresco.service.namespace.NamespaceService;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
@@ -207,6 +208,7 @@ public class AlfrescoDataType extends FieldType
         {
             AlfrescoSolrDataModel.getInstance(id).afterInitModels();
         }
+        AlfrescoSolrDataModel.getInstance(id).getNamespaceDAO().addPrefix("", NamespaceService.CONTENT_MODEL_1_0_URI);
         AlfrescoSolrDataModel.getInstance(id).setAlfrescoDataType(this);
         super.init(schema, args);
     }

@@ -4,7 +4,7 @@
       new Alfresco.FolderLinks("${el}").setOptions(
       {
          nodeRef: "${nodeRef?js_string}",
-         siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
+         siteId: <#if site??>"${site?js_string}"<#else>null</#if>
       }).setMessages(${messages});
    //]]></script>
 
