@@ -34,7 +34,14 @@
       </#if>
          </span>
       </span>
-   </#if>   
+   </#if>
+   <#if user.isAdmin && !userIsSiteManager>
+      <span class="yui-button yui-link-button">
+         <span class="first-child">
+            <a id="${args.htmlid}-become-manager-link" href="#">${msg("link.become-manager")}</a>
+         </span>
+      </span>
+   </#if>
    <#assign siteDashboardUrl = page.url.context + "/page/site/" + page.url.templateArgs.site + "/dashboard">
    <#if userIsSiteManager && (page.url.uri == siteDashboardUrl || "customise-site-dashboard" == activePage) >
       <#assign linkClass><#if "customise-site-dashboard" == activePage>class="active-page"</#if></#assign>

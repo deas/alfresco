@@ -5654,8 +5654,8 @@ Alfresco.util.Ajax = function()
 
          // Add a noCache parameter to the URL to ensure that XHR requests are always made to the
          // server. This is added to tackle a specific problem in IE where 304 responses are assumed
-         // for XHR requests. This has intentionally been conditionally added just for IE8 and below
-         if (YAHOO.env.ua.ie < 9)
+         // for XHR requests. This has intentionally been conditionally added just for IE
+         if (YAHOO.env.ua.ie > 0)
          {
             c.url += (c.url.indexOf("?") == -1 ? "?" : "&") + "noCache=" + new Date().getTime();
          }

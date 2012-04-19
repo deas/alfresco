@@ -102,6 +102,12 @@
             this.requestJoinSite();
             Event.stopEvent(e);
          }, this, true);
+         
+         Event.on(Dom.get(this.id + "-become-manager-link"), "click", function(e)
+         {
+            this.becomeSiteManager();
+            Event.stopEvent(e);
+         }, this, true);
 
          // Create More menu
          this.widgets.more = new YAHOO.widget.Button(this.id + "-more",
@@ -246,7 +252,82 @@
             displayTime: 0
          });
       },
+      
+      /**
+       * Called when the admin clicks on the -become-manager-link button
+       *
+       * @method becomeSiteManager
+       */
+      becomeSiteManager: function CollaborationTitle_becomeSiteManager()
+      {
+         // Call site service to remove user from this site
+         Alfresco.util.Ajax.jsonPut(
+         {
+            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(this.options.site) + "/memberships",
+            method: "POST",
+            dataObj:
+            {
+               role: "SiteManager",
+               person:
+               {
+                  userName: this.options.user
+               }
+            },
+            successCallback:
+            {
+               fn: this._becomeSiteManagerSuccess,
+               scope: this
+            },
+            failureCallback:
+            {
+               fn: this._failureCallback,
+               obj: this.msg("message.become-manager-failure", this.options.user, this.options.siteTitle),
+               scope: this
+            }
+         });
+         
+         // Let the user know something is happening
+         this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
+         {
+            text: this.msg("message.become-manager", this.options.siteTitle),
+            spanClass: "wait",
+            displayTime: 0
+         });
+      },
 
+      /**
+       * Callback handler used when the current user (who should be a member of the admin group) has requested
+       * to become a manager of the current site.
+       * 
+       * @method _becomeSiteManagerSuccess
+       * @param response {object}
+       */
+      _becomeSiteManagerSuccess: function CollaborationTitle__becomeSiteManagerSuccess(response)
+      {
+         if (this.widgets.feedbackMessage)
+         {
+            this.widgets.feedbackMessage.destroy();
+            this.widgets.feedbackMessage = null;
+         }
+
+         Alfresco.util.PopupManager.displayPrompt(
+         {
+            title: this.msg("message.success"),
+            text: this.msg("message.become-manager-success"),
+            buttons: [
+            {
+               text: this.msg("button.ok"),
+               handler: function error_onOk()
+               {
+                  this.destroy();
+                  // Redirect the user back to the site dashboard
+                  window.location.reload(true);
+               },
+               isDefault: true
+            }]
+         });
+      },
+      
       /**
        * Callback handler used when the current user successfully has requested to join the current site
        *

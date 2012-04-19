@@ -79,6 +79,9 @@
                </#list>
          </select>
          <@formLib.renderFieldHelp field=field />
+         <#if field.control.params.mode?? && isValidMode(field.control.params.mode?upper_case)>
+            <input id="${fieldHtmlId}-mode" type="hidden" name="${field.name}-mode" value="${field.control.params.mode?upper_case}" />
+         </#if>
       <#else>
          <div id="${fieldHtmlId}" class="missing-options">${msg("form.control.selectone.missing-options")}</div>
       </#if>
@@ -94,3 +97,6 @@
    <#return false>
 </#function>
 
+<#function isValidMode modeValue>
+   <#return modeValue == "OR" || modeValue == "AND">
+</#function>
