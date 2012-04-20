@@ -36,6 +36,7 @@ import org.alfresco.module.vti.web.ws.VtiSoapException;
 import org.alfresco.module.vti.web.ws.VtiSoapRequest;
 import org.alfresco.module.vti.web.ws.VtiSoapResponse;
 import org.alfresco.repo.webdav.WebDAVLockService;
+import org.alfresco.repo.webdav.WebDAVLockServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -54,7 +55,7 @@ import org.dom4j.QName;
 */
 public class VtiSoapAction extends VtiUtilBase implements VtiAction
 {
-
+    private WebDAVLockService lockService;
     private Map<String, VtiEndpoint> endpointsMapping; 
     
     private final static Log logger = LogFactory.getLog(VtiSoapAction.class);
@@ -76,7 +77,7 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
         {
             try
             {
-                WebDAVLockService.setCurrentSession(soapRequest.getSession());
+                getLockService().setCurrentSession(soapRequest.getSession());
                 soapResponse.setContentType(VtiFilter.CONTENT_TYPE_XML);
 
                 endpoint.execute(soapRequest, soapResponse);
@@ -253,5 +254,25 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
                }
             }
         }
+    }
+
+    /**
+     * Access the WebDAVLockService.
+     * 
+     * @return the lockService
+     */
+    protected WebDAVLockService getLockService()
+    {
+        return this.lockService;
+    }
+
+    /**
+     * Provide the WebDAVLockService.
+     * 
+     * @param lockService the lockService to set
+     */
+    public void setLockService(WebDAVLockService lockService)
+    {
+        this.lockService = lockService;
     }
 }

@@ -292,14 +292,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                         
                         
                         int timeout = Integer.parseInt(lockTimeOut.substring(WebDAV.SECOND.length()));
-                        String lockToken = WebDAV.makeLockToken(result, getUserName());
-                    
-                        getLockService().lock(result, LockType.WRITE_LOCK, timeout);
-
-                        // TODO: LockStore replaces use of these properties.
-//                        getNodeService().setProperty(result, WebDAVModel.PROP_OPAQUE_LOCK_TOKEN, lockToken);
-//                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_DEPTH, "0");
-//                        getNodeService().setProperty(result, WebDAVModel.PROP_LOCK_SCOPE, WebDAV.XML_EXCLUSIVE);
+                        getLockService().lock(result, getUserName(), timeout);
                         
                         return result;
                     }

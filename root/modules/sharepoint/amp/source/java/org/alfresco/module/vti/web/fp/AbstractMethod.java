@@ -46,7 +46,7 @@ public abstract class AbstractMethod implements VtiMethod
     private final static Log logger = LogFactory.getLog(AbstractMethod.class);
 
     protected MethodHandler vtiHandler;
-
+    private WebDAVLockService lockService;
     private final static String MAGIC_STRING_IRRECOVERABLE_ERROR = "*-*-* :-| :^| :-/  :-( 8-( *-*-*";
 
     /**
@@ -75,7 +75,7 @@ public abstract class AbstractMethod implements VtiMethod
         {
             try
             {
-                WebDAVLockService.setCurrentSession(request.getSession());
+                getLockService().setCurrentSession(request.getSession());
                 response.setContentType(VtiFilter.CONTENT_TYPE_HTML);
 
                 doExecute(request, response);
@@ -188,5 +188,25 @@ public abstract class AbstractMethod implements VtiMethod
        }
 
        return path;
+    }
+
+    /**
+     * Access to the WebDAVLockService.
+     * 
+     * @return the lockService
+     */
+    protected WebDAVLockService getLockService()
+    {
+        return this.lockService;
+    }
+
+    /**
+     * Provides instances of this class with the WebDAVLockService.
+     * 
+     * @param lockService the lockService to set
+     */
+    public void setLockService(WebDAVLockService lockService)
+    {
+        this.lockService = lockService;
     }
 }

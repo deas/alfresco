@@ -1299,7 +1299,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 }
                 else
                 {
-                    getLockService().lock(documentFileInfo.getNodeRef(), LockType.WRITE_LOCK, VtiUtils.toAlfrescoLockTimeout(timeout));
+                    getLockService().lock(documentFileInfo.getNodeRef(), getUserName(), VtiUtils.toAlfrescoLockTimeout(timeout));
                     // refresh file info
                     checkedoutDocumentFileInfo = getFileFolderService().getFileInfo(documentFileInfo.getNodeRef());
                     if (logger.isDebugEnabled())

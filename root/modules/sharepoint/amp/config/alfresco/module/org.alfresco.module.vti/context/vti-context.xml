@@ -381,6 +381,7 @@
     </bean>
 
     <bean id="vtiSoapAction" class="org.alfresco.module.vti.web.actions.VtiSoapAction">
+        <property name="lockService" ref="webDAVLockService"/>
         <property name="endpointsMapping">
             <map>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/WebUrlFromPageUrl">
@@ -501,6 +502,7 @@
         <property name="vtiHandler">
             <ref bean="vtiHandler"/>
         </property>
+        <property name="lockService" ref="webDAVLockService"/>
     </bean>
 
     <bean id="server_version_method" class="org.alfresco.module.vti.web.fp.ServerVersionMethod" parent="abstractVtiMethod">

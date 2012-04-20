@@ -26,6 +26,7 @@ import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
@@ -136,7 +137,8 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     NodeRef originalNode = checkOutCheckInService.cancelCheckout(workingCopy);
                     if (lockAfterSucess)
                     {
-                        webDAVlockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_24_HOURS);
+                        String userName = AuthenticationUtil.getFullyAuthenticatedUser();
+                        webDAVlockService.lock(originalNode, userName, WebDAV.TIMEOUT_24_HOURS);
                     }
                     return originalNode;
 
@@ -202,7 +204,8 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     {
                        if (lockAfterSucess)
                        {
-                          webDAVlockService.lock(originalNode, LockType.WRITE_LOCK, WebDAV.TIMEOUT_24_HOURS);
+                          String userName = AuthenticationUtil.getFullyAuthenticatedUser();
+                          webDAVlockService.lock(originalNode, userName, WebDAV.TIMEOUT_24_HOURS);
                        }
                     }
                     else
@@ -253,7 +256,8 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     
                     if (lockAfterSucess)
                     {
-                        webDAVlockService.lock(workingCopy, LockType.WRITE_LOCK, WebDAV.TIMEOUT_24_HOURS);
+                        String userName = AuthenticationUtil.getFullyAuthenticatedUser();
+                        webDAVlockService.lock(workingCopy, userName, WebDAV.TIMEOUT_24_HOURS);
                     }
 
                     return workingCopy;

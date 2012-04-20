@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.metadata.dic.DocumentStatus;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.webdav.LockInfo;
 import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.lock.LockStatus;
@@ -80,14 +81,14 @@ public class VtiDocumentHepler
     {
         DocumentStatus status = DocumentStatus.NORMAL;
 
-        LockStatus lockStatus = webDAVLockService.getLockStatus(nodeRef);
+        LockInfo lockInfo = webDAVLockService.getLockInfo(nodeRef);
 
-        if (lockStatus.equals(LockStatus.LOCKED) || lockStatus.equals(LockStatus.LOCK_OWNER))
+        if (lockInfo.equals(LockStatus.LOCKED) || lockInfo.equals(LockStatus.LOCK_OWNER))
         {
             if (LockType.valueOf((String) nodeService.getProperty(nodeRef, ContentModel.PROP_LOCK_TYPE)).equals(LockType.WRITE_LOCK) == true)
             {
                 // short-term checkout
-                if (lockStatus.equals(LockStatus.LOCKED))
+                if (lockInfo.equals(LockStatus.LOCKED))
                 {
                     status = DocumentStatus.SHORT_CHECKOUT;
                 }
@@ -133,11 +134,12 @@ public class VtiDocumentHepler
      */
     public boolean isShortCheckedout(NodeRef nodeRef)
     {
-        LockStatus lockStatus = webDAVLockService.getLockStatus(nodeRef);
+        LockInfo lockInfo = webDAVLockService.getLockInfo(nodeRef);
 
         boolean isShortCheckedout = false;
 
-        if (lockStatus.equals(LockStatus.LOCKED) || lockStatus.equals(LockStatus.LOCK_OWNER))
+        String userName = AuthenticationUtil.getFullyAuthenticatedUser();
+        if (lockInfo.isLocked() || lockInfo.getOwner().equals(userName));
         {
             if (LockType.valueOf((String) nodeService.getProperty(nodeRef, ContentModel.PROP_LOCK_TYPE)).equals(LockType.WRITE_LOCK) == true)
             {
