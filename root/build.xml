@@ -604,6 +604,9 @@
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}" 
                   excludes="**/extension/**" />
+         <!-- include MT context by default (pre-configured but not enabled until at least one tenant is created) --> 
+         <fileset dir="${dir.project.repository.config}" 
+                  includes="**/extension/mt/mt-*context.xml"/>
          <!-- NOTE: include dev-context.xml to allow developer overrides -->
          <fileset dir="${dir.project.repository.config}" 
                   includes="**/extension/dev-context.xml"/>

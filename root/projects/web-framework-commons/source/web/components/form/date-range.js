@@ -108,7 +108,7 @@
          // construct the pickers
          var page = (fromDate.getMonth() + 1) + "/" + fromDate.getFullYear();
          var selected = (fromDate.getMonth() + 1) + "/" + fromDate.getDate() + "/" + fromDate.getFullYear();   
-         this.widgets.calendarFrom = new YAHOO.widget.Calendar(this.id + "-from", this.id + "-from", { title:this.msg("form.control.date-picker.choose"), close:true });
+         this.widgets.calendarFrom = new YAHOO.widget.Calendar(this.id + "-from", this.id + "-from", { title:this.msg("form.control.date-picker.choose"), close:true, navigator:true });
          this.widgets.calendarFrom.cfg.setProperty("pagedate", page);
          this.widgets.calendarFrom.cfg.setProperty("selected", selected);
          this.widgets.calendarFrom.hideEvent.subscribe(function()
@@ -122,7 +122,7 @@
 
          page = (toDate.getMonth() + 1) + "/" + toDate.getFullYear();
          selected = (toDate.getMonth() + 1) + "/" + toDate.getDate() + "/" + toDate.getFullYear();   
-         this.widgets.calendarTo = new YAHOO.widget.Calendar(this.id + "-to", this.id + "-to", { title:this.msg("form.control.date-picker.choose"), close:true });
+         this.widgets.calendarTo = new YAHOO.widget.Calendar(this.id + "-to", this.id + "-to", { title:this.msg("form.control.date-picker.choose"), close:true, navigator:true });
          this.widgets.calendarTo.cfg.setProperty("pagedate", page);
          this.widgets.calendarTo.cfg.setProperty("selected", selected);
          this.widgets.calendarTo.hideEvent.subscribe(function()

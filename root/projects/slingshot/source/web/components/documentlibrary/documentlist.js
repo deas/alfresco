@@ -1774,7 +1774,7 @@
                else
                {
                   // Insitu editing for title (filename)
-                  if (jsNode.hasPermission("Write") && !jsNode.isLocked)
+                  if (jsNode.hasPermission("Write") && !jsNode.isLocked && !jsNode.hasAspect("cm:workingcopy"))
                   {
                      scope.insituEditors.push(
                      {
