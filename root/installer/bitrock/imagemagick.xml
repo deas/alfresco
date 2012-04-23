@@ -116,10 +116,10 @@ set MAGICK_CONFIGURE_PATH=${imagemagick_root_directory.dos}\config
     <folderList>
         <folder>
             <name>imagemagickWindows</name>
-            <destination>${installdir}</destination>
+            <destination>${imagemagick_root_directory}</destination>
             <platforms>windows</platforms>
             <distributionFileList>
-                <distributionDirectory origin="${imagemagick_distribution_folder_windows}"/>
+                <distributionDirectory allowWildcards="1" origin="${imagemagick_distribution_folder_windows}/*"/>
             </distributionFileList>
         </folder>
         <folder>
