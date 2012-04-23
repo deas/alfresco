@@ -119,7 +119,7 @@
     <bean id="checkOutCheckInServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoCheckOutCheckInServiceHandler">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="checkOutCheckInService" ref="CheckoutCheckinService"/>
-        <property name="lockService" ref="LockService" />
+        <property name="webDAVLockService" ref="webDAVLockService" />
         <property name="transactionService" ref="transactionService" />
         <property name="nodeService" ref="NodeService"/>
         <property name="versionService" ref="VersionService"/>
@@ -133,7 +133,7 @@
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
         <property name="authenticationService" ref="AuthenticationService" />
         <property name="versionService" ref="VersionService" />
-        <property name="lockService" ref="LockService" />
+        <property name="webDAVLockService" ref="webDAVLockService" />
         <property name="contentService" ref="ContentService" />
         <property name="transactionService" ref="transactionService" />
         <property name="mimetypeService" ref="MimetypeService" />
@@ -147,7 +147,7 @@
 
     <bean id="vtiDocumentHelper" class="org.alfresco.module.vti.handler.alfresco.VtiDocumentHepler">
         <property name="nodeService" ref="NodeService" />
-        <property name="lockService" ref="LockService" />
+        <property name="webDAVLockService" ref="webDAVLockService" />
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
     </bean>
 
