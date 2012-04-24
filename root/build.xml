@@ -231,6 +231,7 @@
          <!-- Model (Multilingual and File Folder) Tests -->
          <exclude name="**/org/alfresco/repo/model/**/*Test.java" />
          <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
+         <include name="**/org/alfresco/repo/model/filefolder/HiddenAspectTest.java" />
          <!-- Publishing Tests -->
          <exclude name="**/org/alfresco/repo/publishing/**/*Test.java" />
          <!-- Version Tests -->
