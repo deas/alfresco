@@ -18,14 +18,18 @@
  */
 package org.alfresco.web.scripts;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.Header;
 import org.springframework.extensions.webscripts.connector.HttpMethod;
 import org.springframework.extensions.webscripts.connector.RemoteClient;
+import org.springframework.extensions.webscripts.ui.common.StringUtils;
 
 /**
  * Override the Spring WebScripts impl of RemoteClient to provide additional security
@@ -39,19 +43,69 @@ public class SlingshotRemoteClient extends RemoteClient
     private static final Pattern CONTENT_PATTERN = Pattern.compile(".*/api/(node|path)/content/workspace/SpacesStore/.*");
     
     @Override
-    protected void processContentType(URL url, HttpServletResponse res, Header contentType)
+    protected void copyResponseStreamOutput(URL url, HttpServletResponse res, OutputStream out,
+            org.apache.commons.httpclient.HttpMethod method, String contentType, int bufferSize) throws IOException
     {
+        boolean process = false;
         if (res != null && getRequestMethod() == HttpMethod.GET)
         {
             // found a GET request that might be a security risk
-            final String strContentType = contentType.getValue();
-            if (strContentType.startsWith("text/html") || strContentType.startsWith("application/xhtml+xml"))
+            if (contentType != null && (contentType.startsWith("text/html") || contentType.startsWith("application/xhtml+xml")))
             {
                 //  match appropriate content URIs 
                 if (CONTENT_PATTERN.matcher(url.getPath()).matches())
                 {
-                    // rewrite content type header for security
-                    res.setHeader(HEADER_CONTENT_TYPE, "text/plain; charset=utf-8");
+                    // found content we need to process in-memory and perform HTML stripping on
+                    process = true;
+                }
+            }
+        }
+        if (!process)
+        {
+            super.copyResponseStreamOutput(url, res, out, method, contentType, bufferSize);
+        }
+        else
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
+            final InputStream input = method.getResponseBodyAsStream();
+            if (input != null)
+            {
+                // get data into our byte buffer for processing
+                try
+                {
+                    final byte[] buffer = new byte[bufferSize];
+                    int read = input.read(buffer);
+                    while (read != -1)
+                    {
+                        bos.write(buffer, 0, read);
+                        read = input.read(buffer);
+                    }
+                }
+                finally
+                {
+                    input.close();
+                }
+                
+                // convert to appropriate string format
+                String encoding = null;
+                int csi = contentType.indexOf(CHARSETEQUALS);
+                if (csi != -1)
+                {
+                    encoding = contentType.substring(csi + CHARSETEQUALS.length());
+                }
+                String content = encoding != null ? new String(bos.toByteArray(), encoding) : new String(bos.toByteArray());
+                
+                // process with HTML stripper
+                content = StringUtils.stripUnsafeHTMLTags(content, false);
+                
+                // push the modified response to the real outputstream
+                try
+                {
+                    out.write(encoding != null ? content.getBytes(encoding) : content.getBytes());
+                }
+                finally
+                {
+                    out.close();
                 }
             }
         }
