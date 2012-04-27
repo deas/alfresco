@@ -13,8 +13,6 @@
    UTILITY METHODS
    - <@script> & <@link> macros are now directives to improve resource handling
 -->
-
-
 <#--
    TEMPLATE MACROS
 -->
@@ -34,27 +32,44 @@
    <title><@region id="head-title" scope="global" chromeless="true"/></title>
    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 </#if>
+   <#-- This MUST be placed before the <@outputJavaScript> directive to ensure that the Alfresco namespace
+        gets setup before any of the other Alfresco JavaScript dependencies try to make use of it. -->
+   <@markup id="messages">
+      <#-- Common i18n msg properties -->
+      <@generateMessages type="text/javascript" src="${url.context}/service/messages.js" locale="${locale}"/>
+   </@markup>
+   
+   <#-- This is where the JavaScript and CSS dependencies will initially be added through the use of the 
+        <@script> and <@link> directives. The JavaScript can be moved through the use 
+        of the <@relocateJavaScript> directive (i.e. to move it to the end of the page). These directives 
+        must be placed before directives that add dependencies to them otherwise those resources will
+        be placed in the output of the ${head} variable (i.e. this applied to all usage of those directives
+        in *.head.ftl files) -->
+   <@outputJavaScript/>
+   <@outputCSS/>
+   
+   <#-- Common Resources -->
    <@region id="head-resources" scope="global" chromeless="true"/>
-
-   <!-- Template Resources (nested content from < @templateHeader > call) -->
+   
+   <#-- Template Resources (nested content from < @templateHeader > call) -->
    <#nested>
-
+   
    <@markup id="resources">
-   <!-- Additional template resources -->
+   <#-- Additional template resources -->
    </@markup>
 
-   <!-- Template Resources' stylesheets gathered to workaround IEBug KB262161 -->
    <#if (templateStylesheets?? && templateStylesheets?size > 0)>
-   <style type="text/css" media="screen">
-      <#list templateStylesheets as href>
-      @import "${href}";
-      </#list>
-   </style>
+      <!-- Template & Component Resources' stylesheets gathered to workaround IEBug KB262161 -->
+      <style type="text/css" media="screen">
+         <#list templateStylesheets as href>
+            @import "${href}";
+         </#list>
+      </style>
    </#if>
 
-   <!-- Component Resources (from .get.head.ftl files) -->
+   <#-- Component Resources from .get.head.ftl files or from dependency directives processed before the
+        <@outputJavaScript> and <@outputCSS> directives. -->
    ${head}
-
 
    <@markup id="ieStylesheets">
    <!-- MSIE CSS fix overrides -->
@@ -99,6 +114,8 @@
    </div>
 <#-- This function call MUST come after all other component includes. -->
    <div id="alfresco-yuiloader"></div>
+   <#-- <@relocateJavaScript/> -->
+   
    <#-- In portlet mode, Share doesn't own the <body> tag -->
    <script type="text/javascript">//<![CDATA[
       Alfresco.util.YUILoaderHelper.loadComponents(true);

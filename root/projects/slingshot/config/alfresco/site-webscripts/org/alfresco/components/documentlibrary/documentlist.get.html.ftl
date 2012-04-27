@@ -1,26 +1,28 @@
 <#include "include/documentlist.lib.ftl" />
-<@documentlistTemplate>
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.DocumentList("${args.htmlid}").setOptions(
-   {
-      <#if repositoryUrl??>repositoryUrl: "${repositoryUrl}",</#if>
-      siteId: "${page.url.templateArgs.site!""}",
-      containerId: "${template.properties.container!"documentLibrary"}",
-      rootNode: "${rootNode!"null"}",
-      usePagination: ${(args.pagination!false)?string},
-      sortAscending: ${(preferences.sortAscending!true)?string},
-      sortField: "${(preferences.sortField!"cm:name")?js_string}",
-      showFolders: ${(preferences.showFolders!true)?string},
-      simpleView: <#if preferences.simpleView??>${preferences.simpleView?string}<#else>null</#if>,
-      viewRendererName: "${(preferences.viewRendererName!"detailed")?js_string}",
-      viewRendererNames: <#if viewRendererNames??>[<#list viewRendererNames as viewRendererName>"${viewRendererName}"<#if viewRendererName_has_next>, </#if></#list>]<#else>["simple", "detailed"]</#if>,
-      highlightFile: "${(page.url.args["file"]!"")?js_string}",
-      replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
-      repositoryBrowsing: ${(rootNode??)?string},
-      useTitle: ${(useTitle!true)?string},
-      userIsSiteManager: ${(userIsSiteManager!false)?string}
-   }).setMessages(
-      ${messages}
-   );
-//]]></script>
+<#include "../form/form.dependencies.inc">
+
+<@markup id="cssDependencies" >
+   <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/documentlist.css" group="documentlibrary"/>
+</@>
+
+<@markup id="jsDependencies">
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/documentlist.js" group="documentlibrary"/>
+</@>
+
+<@markup id="preInstantiationJs">
+</@>
+
+<@markup id="widgetInstantiation">
+   <@createWebScriptWidgets group="documentlibrary"/>
+</@>
+
+<@markup id="postInstantiationJs">
+</@>
+
+<@markup id="html">
+   <div id="${htmlid!""}">
+      <@documentlistTemplate/>
+   </div>
 </@>

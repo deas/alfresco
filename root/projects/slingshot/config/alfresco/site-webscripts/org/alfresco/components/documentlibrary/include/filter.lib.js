@@ -20,6 +20,15 @@ function main()
    }
    
    model.filters = filters;
+
+   model.webScriptWidgets = [];
+   var docListFilter = {};
+   docListFilter.name = "Alfresco.component.BaseFilter";
+   docListFilter.instantiationArguments = [ "Alfresco.DocListFilter", "\"" + args.htmlid + "\""];
+   docListFilter.assignToVariable = "filter"
+   docListFilter.provideOptions = false;
+   docListFilter.provideMessages = false;
+   model.webScriptWidgets.push(docListFilter);
 }
 
 main();

@@ -1,15 +1,26 @@
 <#include "include/toolbar.lib.ftl" />
-<@toolbarTemplate>
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.RepositoryDocListToolbar("${args.htmlid?js_string}").setOptions(
-   {
-      rootNode: "${rootNode!"null"}",
-      hideNavBar: ${(preferences.hideNavBar!false)?string},
-      googleDocsEnabled: ${(googleDocsEnabled!false)?string},
-      repositoryBrowsing: ${(rootNode??)?string},
-      useTitle: ${((args.useTitle!config.scoped["DocumentLibrary"]["use-title"].value)!"true")?js_string}
-   }).setMessages(
-      ${messages}
-   );
-//]]></script>
+
+<@markup id="cssDependencies" >
+   <#-- CSS Dependencies -->
+</@>
+
+<@markup id="jsDependencies">
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/repo-toolbar.js" group="documentlibrary"/>
+</@>
+
+<@markup id="preInstantiationJs">
+</@>
+
+<@markup id="widgetInstantiation">
+   <@createWebScriptWidgets group="documentlibrary"/>
+</@>
+
+<@markup id="postInstantiationJs">
+</@>
+
+<@markup id="html">
+   <div id="${htmlid!""}">
+      <@toolbarTemplate/>
+   </div>
 </@>
