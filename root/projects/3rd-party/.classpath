@@ -132,7 +132,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-api-1.0.0.jar" sourcepath="src/spring-webscripts-api-1.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/abdera/axiom-impl-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/abdera/axiom-api-1.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons/commons-compress-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-compress-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-io-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-juh-3.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-jurt-3.1.0.jar"/>
