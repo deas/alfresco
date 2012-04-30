@@ -2449,7 +2449,16 @@
             if (permissions)
             {
                me._userCanUpload = me.doclistMetadata.parent.permissions.user.CreateChildren && YAHOO.env.ua.mobile === null;
-
+               
+               // Only allow drag and drop behaviour if the filter is changed to an actual
+               // path (if the filter is anything else such as tags then there won't be a specific
+               // location to upload to!)...
+               me._removeDragAndDrop();
+               if (me.currentFilter.filterId === "path")
+               {
+                  me._addDragAndDrop();
+               }
+               
                if (me._userCanUpload && me.dragAndDropEnabled)
                {
                   Dom.addClass(container, "docListInstructionsWithDND");
