@@ -1,13 +1,13 @@
 <@markup id="cssDependencies" >
    <#-- CSS Dependencies -->
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/tree.css" group="documentlibrary"/>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/categories.css" group="documentlibrary"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/tree.css" group="documentlibrary_deps"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/categories.css" group="documentlibrary_deps"/>
 </@>
 
 <@markup id="jsDependencies">
    <#-- JavaScript Dependencies -->
-   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/tree.js" group="documentlibrary"/>
-   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/categories.js" group="documentlibrary"/>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/tree.js" group="documentlibrary_deps"/>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/categories.js" group="documentlibrary_deps"/>
 </@>
 
 <@markup id="preInstantiationJs">

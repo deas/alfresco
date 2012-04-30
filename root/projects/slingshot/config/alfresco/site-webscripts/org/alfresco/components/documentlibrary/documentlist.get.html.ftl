@@ -3,12 +3,12 @@
 
 <@markup id="cssDependencies" >
    <#-- CSS Dependencies -->
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/documentlist.css" group="documentlibrary"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/documentlist.css" group="documentlibrary_deps"/>
 </@>
 
 <@markup id="jsDependencies">
    <#-- JavaScript Dependencies -->
-   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/documentlist.js" group="documentlibrary"/>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/documentlist.js" group="documentlibrary_deps"/>
 </@>
 
 <@markup id="preInstantiationJs">

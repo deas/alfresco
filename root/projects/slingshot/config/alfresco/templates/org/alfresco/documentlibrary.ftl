@@ -5,7 +5,7 @@
    <script type="text/javascript">//<![CDATA[
       new Alfresco.widget.Resizer("DocumentLibrary");
    //]]></script>
-   <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="documentlibrary"></@script>
+   <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="documentlibrary_deps"></@script>
 </@>
 
 <@templateBody>

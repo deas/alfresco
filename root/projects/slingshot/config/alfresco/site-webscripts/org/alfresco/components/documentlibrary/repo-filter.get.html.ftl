@@ -6,7 +6,7 @@
 
 <@markup id="jsDependencies">
    <#-- JavaScript Dependencies -->
-   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/repo-toolbar.js" group="documentlibrary"/>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/repo-toolbar.js" group="documentlibrary_deps"/>
 </@>
 
 <@markup id="preInstantiationJs">
