@@ -375,7 +375,7 @@
          var historyColumnDefinitions =
          [
             { key: "name", label: this.msg("column.type"), formatter: this.bind(this.renderCellType) },
-            { key: "owner", label: this.msg("column.completedBy"), formatter: this.bind(this.renderCellOwner) },
+            { key: "owner", label: this.msg("column.completedBy"), formatter: this.bind(this.renderCellCompletedBy) },
             { key: "id", label: this.msg("column.dateCompleted"), formatter: this.bind(this.renderCellDateCompleted) },
             { key: "state", label: this.msg("column.outcome"), formatter: this.bind(this.renderCellOutcome) },
             { key: "properties", label: this.msg("column.comment"), formatter: this.bind(this.renderCellComment) }
@@ -457,6 +457,31 @@
          else {
             elCell.innerHTML = this.msg("label.none");
          }
+      },
+      
+      /**
+       * Render task completer (= owner) as link when the task actually has been Completed (eg. not the case when
+       * parallel tasks aren't actually completed due to loop-stop was condition met). 
+       *
+       * @method renderCellOwner
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellCompletedBy: function WorkflowForm_renderCellCompletedBy(elCell, oRecord, oColumn, oData)
+      {
+    	  var status = oRecord.getData("properties").bpm_status;
+    	 
+    	  // Value based on list 'bpm:allowedStatus' in bpmModel.xml 
+    	  if(status != null && status != "Completed") 
+    	  {
+    		  elCell.innerHTML = this.msg("label.none");
+    	  }
+    	  else
+    	  {
+    		  this.renderCellOwner(elCell, oRecord, oColumn, oData);
+    	  }
       },
 
       /**
