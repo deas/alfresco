@@ -761,10 +761,11 @@
          this.widgets.panel.show();
       }
    };
+   
+   Alfresco.module.getSocialPublishingInstance = function()
+   {
+      var instanceId = "alfresco-socialPublishing-instance";
+      return Alfresco.util.ComponentManager.get(instanceId) || new Alfresco.module.socialPublishing(instanceId);
+   };
 })();
 
-Alfresco.module.getSocialPublishingInstance = function()
-{
-   var instanceId = "alfresco-socialPublishing-instance";
-   return Alfresco.util.ComponentManager.get(instanceId) || new Alfresco.module.socialPublishing(instanceId);
-}

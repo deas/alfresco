@@ -49,7 +49,7 @@
    <@script type="text/javascript" src="${url.context}/res/yui/calendar/calendar.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/yui/resize/resize.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/yui/yui-patch.js" group="template-common"/>
-   <@inlineJavaScript>
+   <@inlineJavaScript group="template-common">
       YAHOO.util.Event.throwErrors = true;
    </@>
    <#else>
