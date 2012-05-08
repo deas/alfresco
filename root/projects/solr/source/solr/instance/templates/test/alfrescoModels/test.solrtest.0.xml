@@ -32,7 +32,17 @@
                     <index enabled="true">
                         <atomic>true</atomic>
                         <stored>true</stored>
-                        <tokenised>true</tokenised>
+                        <tokenised>both</tokenised>
+                    </index>
+                </property>
+                <property name="test:createdTime">
+                    <type>d:datetime</type>
+                    <mandatory>true</mandatory>
+                    <multiple>false</multiple>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>true</stored>
+                        <tokenised>both</tokenised>
                     </index>
                 </property>
                 <property name="test:orderDouble">
@@ -75,7 +85,7 @@
                         <tokenised>true</tokenised>
                     </index>
                 </property>
-				<property name="test:orderText">
+		<property name="test:orderText">
                     <type>d:text</type>
                     <mandatory>true</mandatory>
                     <multiple>false</multiple>
@@ -85,7 +95,27 @@
                         <tokenised>both</tokenised>
                     </index>
                 </property>
-				<property name="test:orderMLText">
+	        <property name="test:orderLocalisedText">
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <multiple>false</multiple>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>true</stored>
+                        <tokenised>both</tokenised>
+                    </index>
+                </property>
+		<property name="test:orderMLText">
+                    <type>d:mltext</type>
+                    <mandatory>true</mandatory>
+                    <multiple>false</multiple>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>true</stored>
+                        <tokenised>both</tokenised>
+                    </index>
+                </property>
+                <property name="test:orderLocalisedMLText">
                     <type>d:mltext</type>
                     <mandatory>true</mandatory>
                     <multiple>false</multiple>

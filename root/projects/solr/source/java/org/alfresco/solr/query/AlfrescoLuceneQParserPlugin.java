@@ -31,6 +31,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.Operator;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.ContextAwareQuery;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -100,7 +101,8 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
             
             AbstractLuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(searchParameters, indexReader);
             Query query = lqp.parse(qstr);
-            return query;
+            ContextAwareQuery contextAwareQuery = new ContextAwareQuery(query, searchParameters);
+            return contextAwareQuery;
         }
     }
 

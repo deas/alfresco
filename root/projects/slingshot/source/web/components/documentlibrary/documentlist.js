@@ -450,11 +450,15 @@
        */
       this.name = name;
       this.parentElementIdSuffix = "-documents";
+      this.rowClassName = "yui-dt-rec";
       this.actionsCssClassName = this.name;
       this.actionsColumnWidth = 200;
+      this.actionsSplitAtModifier = 1;
       this.thumbnailColumnWidth = 100;
       this.buttonElementIdSuffix = "-" + this.name + "View";
       this.buttonCssClass = this.name + "-view";
+      this.metadataBannerViewName = this.name;
+      this.metadataLineViewName = this.name;
       
       return this;
    };
@@ -501,7 +505,64 @@
       {
          YAHOO.util.Dom.setStyle(scope.id + this.parentElementIdSuffix, 'display', 'none');
       },
-   
+
+      /**
+       * Selector custom datacell formatter
+       *
+       * @method renderCellSelected
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellSelected: function DL_VR_renderCellSelected(scope, elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+         
+         var jsNode = oRecord.getData("jsNode"),
+            nodeRef = jsNode.nodeRef;
+         
+         elCell.innerHTML = '<input id="checkbox-' + oRecord.getId() + '" type="checkbox" name="fileChecked" value="'+ nodeRef + '"' + (scope.selectedFiles[nodeRef] ? ' checked="checked">' : '>');
+      },
+      
+      /**
+       * Status custom datacell formatter
+       *
+       * @method renderCellStatus
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellStatus: function DL_VR_renderCellStatus(scope, elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+         var record = oRecord.getData(),
+            node = record.jsNode,
+            indicators = record.indicators,
+            indicator, label, desc = "";
+
+         if (indicators && indicators.length > 0)
+         {
+            for (var i = 0, ii = indicators.length; i < ii; i++)
+            {
+               indicator = indicators[i];
+               // Note: deliberate bypass of scope.msg() function
+               label = Alfresco.util.message(indicator.label, scope.name, indicator.labelParams);
+               label = Alfresco.util.substituteDotNotation(label, record);
+
+               desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" /></div>';
+            }
+         }
+
+         elCell.innerHTML = desc;
+      },
+      
       /**
        * Render the thumbnail cell
        *
@@ -539,7 +600,746 @@
             elCell.innerHTML = '<span class="thumbnail">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
          }
          var dnd = new Alfresco.DnD(imgId, scope);
+      },
+      
+      /**
+       * Description/detail custom datacell formatter
+       *
+       * @method renderCellDescription
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellDescription: function DL_VR_renderCellDescription(scope, elCell, oRecord, oColumn, oData)
+      {
+         var desc = "", i, j,
+            record = oRecord.getData(),
+            jsNode = record.jsNode,
+            properties = jsNode.properties,
+            isContainer = jsNode.isContainer,
+            isLink = jsNode.isLink,
+            title = "",
+            titleHTML = "",
+            version = "",
+            canComment = jsNode.permissions.user.CreateChildren;
+
+         if (jsNode.isLink)
+         {
+            // Link handling
+            oRecord.setData("displayName", scope.msg("details.link-to", record.location.file));
+         }
+         else if (properties.title && properties.title !== record.displayName && scope.options.useTitle)
+         {
+            // Use title property if it's available. Supressed for links.
+            titleHTML = '<span class="title">(' + $html(properties.title) + ')</span>';
+         }
+
+         // Version display
+         if ($isValueSet(record.version) && !jsNode.isContainer && !jsNode.isLink)
+         {
+            version = '<span class="document-version">' + $html(record.version) + '</span>';
+         }
+
+         /**
+          *  Render using metadata template
+          */
+         record._filenameId = Alfresco.util.generateDomId();
+
+         var metadataTemplate = record.metadataTemplate;
+         if (metadataTemplate)
+         {
+            /* Banner */
+            if (YAHOO.lang.isArray(metadataTemplate.banners))
+            {
+               var fnRenderBanner = function fnRenderBanner_substitute(p_key, p_value, p_meta)
+               {
+                  var label = (p_meta !== null ? scope.msg(p_meta) + ': ': ''),
+                     value = "";
+                      
+                  // render value from properties or custom renderer
+                  if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                  {
+                     value = scope.renderers[p_key].call(scope, record, label);
+                  }
+                  else
+                  {
+                     if (jsNode.hasProperty(p_key))
+                     {
+                        value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                     }
+                  }
+
+                  return value;
+               };
+
+               var html, banner;
+               for (i = 0, j = metadataTemplate.banners.length; i < j; i++)
+               {
+                  banner = metadataTemplate.banners[i];
+                  if (!$isValueSet(banner.view) || banner.view == this.metadataBannerViewName)
+                  {
+                     html = YAHOO.lang.substitute(banner.template, scope.renderers, fnRenderBanner);
+                     if ($isValueSet(html))
+                     {
+                        desc += '<div class="info-banner">' + html + '</div>';
+                     }
+                  }
+               }
+            }
+
+            /* Title */
+            if (YAHOO.lang.isString(metadataTemplate.title))
+            {
+               var fnRenderTitle = function fnRenderTitle_substitute(p_key, p_value, p_meta)
+               {
+                  var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
+                     value = "";
+                      
+                  // render value from properties or custom renderer
+                  if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                  {
+                     value = scope.renderers[p_key].call(scope, record, label);
+                  }
+                  else
+                  {
+                     if (jsNode.hasProperty(p_key))
+                     {
+                        value = '<div class="filename">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
+                        value += label + $html(jsNode.properties[p_key]) + '</a></span></div>';
+                     }
+                  }
+
+                  return value;
+               };
+
+               desc += YAHOO.lang.substitute(metadataTemplate.title, scope.renderers, fnRenderTitle);
+            }
+            else
+            {
+               // Insitu editing for title (filename)
+               if (jsNode.hasPermission("Write") && !jsNode.isLocked && !jsNode.hasAspect("cm:workingcopy"))
+               {
+                  scope.insituEditors.push(
+                  {
+                     context: record._filenameId,
+                     params:
+                     {
+                        type: "textBox",
+                        nodeRef: jsNode.nodeRef.toString(),
+                        name: "prop_cm_name",
+                        value: record.fileName,
+                        fnSelect: function fnSelect(elInput, value)
+                        {
+                           // If the file has an extension, omit it from the edit selection
+                           var extnPos = value.lastIndexOf(Alfresco.util.getFileExtension(value)) - 1;
+                           if (extnPos > 0)
+                           {
+                              Alfresco.util.selectText(elInput, 0, extnPos);
+                           }
+                           else
+                           {
+                              elInput.select();
+                           }
+                        },
+                        validations: [
+                        {
+                           type: Alfresco.forms.validation.nodeName,
+                           when: "keyup",
+                           message: scope.msg("validation-hint.nodeName")
+                        },
+                        {
+                           type: Alfresco.forms.validation.length,
+                           args: { min: 1, max: 255, crop: true },
+                           when: "keyup",
+                           message: scope.msg("validation-hint.length.min.max", 1, 255)
+                        }],
+                        title: scope.msg("tip.insitu-rename"),
+                        errorMessage: scope.msg("message.insitu-edit.name.failure")
+                     },
+                     callback:
+                     {
+                        fn: scope._insituCallback,
+                        scope: scope,
+                        obj: record
+                     }
+                  });
+               }
+
+               desc += '<h3 class="filename"><span id="' + record._filenameId + '">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
+               desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
+            }
+
+            if (YAHOO.lang.isArray(metadataTemplate.lines))
+            {
+               var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
+               {
+                  var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
+                     value = "";
+                      
+                  // render value from properties or custom renderer
+                  if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
+                  {
+                     value = scope.renderers[p_key].call(scope, record, label);
+                  }
+                  else
+                  {
+                     if (jsNode.hasProperty(p_key))
+                     {
+                        value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                     }
+                  }
+
+                  return value;
+               };
+
+               var html, line;
+               for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
+               {
+                  line = metadataTemplate.lines[i];
+                  if (!$isValueSet(line.view) || line.view == this.metadataLineViewName)
+                  {
+                     html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
+                     if ($isValueSet(html))
+                     {
+                        desc += '<div class="detail">' + html + '</div>';
+                     }
+                  }
+               }
+            }
+         }
+
+         elCell.innerHTML = desc;
+      },
+      
+      /**
+       * Actions custom datacell formatter
+       *
+       * @method renderCellActions
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellActions: function DL_VR_renderCellActions(scope, elCell, oRecord, oColumn, oData)
+      {
+         oColumn.width = this.actionsColumnWidth;
+         Dom.setStyle(elCell, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+         Dom.addClass(elCell.parentNode, oRecord.getData("type"));
+
+         elCell.innerHTML = '<div id="' + scope.id + '-actions-' + oRecord.getId() + '" class="hidden"></div>';
+      },
+      
+      /**
+       * Get the dataTable record identifier, i.e. yui-recXX, from the given row element.
+       *
+       * @method getDataTableRecordIdFromRowElement
+       * @param scope {object} The DocumentList object
+       * @param rowElement {HTMLElement} row element.
+       * @return {String} the dataTable recordId
+       */
+      getDataTableRecordIdFromRowElement: function DL_VR_getDataTableRecordIdFromRowElement(scope, rowElement)
+      {
+         if (scope != null && rowElement != null)
+         {
+            var element = rowElement;
+            if (!Dom.hasClass(rowElement, this.rowClassName))
+            {
+               element = Dom.getAncestorByClassName(rowElement, this.rowClassName);
+            }
+            return element.id;
+         }
+      },
+      
+      /**
+       * Get the row element from the given dataTable record.
+       *
+       * @method getRowElementFromDataTableRecordId
+       * @param scope {object} The DocumentList object
+       * @param oRecord {object}
+       * @return {HTMLElement} row element
+       */
+      getRowElementFromDataTableRecord: function DL_VR_getRowElementFromDataTableRecordId(scope, oRecord)
+      {
+         if (scope != null && oRecord != null)
+         {
+            return scope.widgets.dataTable.getTrEl(oRecord);
+         }
+      },
+      
+      /**
+       * Get the row's selection element, i.e. checkbox, from the given dataTable record.
+       *
+       * @method getRowSelectElementFromDataTableRecord
+       * @param scope {object} The DocumentList object
+       * @param oRecord {object}
+       * @return {HTMLElement} row element
+       */
+      getRowSelectElementFromDataTableRecord: function DL_VR_getRowSelectElementFromDataTableRecord(scope, oRecord)
+      {
+         if (scope != null && oRecord != null)
+         {
+            return Dom.get("checkbox-" + oRecord.getId());
+         }
+      },
+      
+      /**
+       * Custom event handler to highlight row.
+       *
+       * @method onEventHighlightRow
+       * @param scope {object} The DocumentList object
+       * @param oArgs.event {HTMLEvent} Event object.
+       * @param oArgs.target {HTMLElement} Target element.
+       * @param rowElement {HTMLElement} row element, optionally force a target other than event's
+       */
+      onEventHighlightRow: function DL_VR_onEventHighlightRow(scope, oArgs, rowElement)
+      {
+         // Call through to get the row highlighted by YUI
+         scope.widgets.dataTable.onEventHighlightRow.call(scope.widgets.dataTable, oArgs);
+         
+         var targetElement;
+         if (rowElement)
+         {
+            targetElement = rowElement;
+         }
+         else
+         {
+            targetElement = oArgs.target;
+         }
+
+         // elActions is the element id of the active table cell where we'll inject the actions
+         var elActions = Dom.get(scope.id + "-actions-" + targetElement.id);
+
+         // Inject the correct action elements into the actionsId element
+         if (elActions && elActions.firstChild === null)
+         {
+            // Retrieve the actionSet for this record
+            var oRecord = scope.widgets.dataTable.getRecord(this.getDataTableRecordIdFromRowElement(scope, targetElement)),
+               record = oRecord.getData(),
+               jsNode = record.jsNode,
+               actions = record.actions,
+               actionsEl = document.createElement("div"),
+               actionHTML = "",
+               actionsSel;
+
+            record.actionParams = {};
+            for (var i = 0, ii = actions.length; i < ii; i++)
+            {
+               actionHTML += scope.renderAction(actions[i], record);
+            }
+
+            // Token replacement - action Urls
+            actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, scope.getActionUrls(record));
+
+            // Simple or detailed view
+            Dom.addClass(actionsEl, "action-set");
+            Dom.addClass(actionsEl, this.actionsCssClassName);
+
+            // Need the "More >" container?
+            actionsSel = YAHOO.util.Selector.query("div", actionsEl);
+            if (actionsSel.length > scope.options.actionsSplitAt + this.actionsSplitAtModifier)
+            {
+               var moreContainer = Dom.get(scope.id + "-moreActions").cloneNode(true),
+                  containerDivs = YAHOO.util.Selector.query("div", moreContainer);
+
+               // Insert the two necessary DIVs before the third action item
+               Dom.insertBefore(containerDivs[0], actionsSel[scope.options.actionsSplitAt]);
+               Dom.insertBefore(containerDivs[1], actionsSel[scope.options.actionsSplitAt]);
+
+               // Now make action items three onwards children of the 2nd DIV
+               var index, moreActions = actionsSel.slice(scope.options.actionsSplitAt);
+               for (index in moreActions)
+               {
+                  if (moreActions.hasOwnProperty(index))
+                  {
+                     containerDivs[1].appendChild(moreActions[index]);
+                  }
+               }
+            }
+
+            elActions.appendChild(actionsEl);
+         }
+
+         if (scope.showingMoreActions)
+         {
+            scope.deferredActionsMenu = elActions;
+         }
+         else if (!Dom.hasClass(document.body, "masked"))
+         {
+            scope.currentActionsMenu = elActions;
+            // Show the actions
+            Dom.removeClass(elActions, "hidden");
+            scope.deferredActionsMenu = null;
+         }
+      },
+
+      /**
+       * Custom event handler to unhighlight row.
+       *
+       * @method onEventUnhighlightRow
+       * @param scope {object} The DocumentList object
+       * @param oArgs.event {HTMLEvent} Event object.
+       * @param oArgs.target {HTMLElement} Target element.
+       * @param rowElement {HTMLElement} row element, optionally force a target other than event's
+       */
+      onEventUnhighlightRow: function DL_VR_onEventUnhighlightRow(scope, oArgs, rowElement)
+      {
+         // Call through to get the row unhighlighted by YUI
+         scope.widgets.dataTable.onEventUnhighlightRow.call(scope.widgets.dataTable, oArgs);
+         
+         var targetElement;
+         if (rowElement)
+         {
+            targetElement = rowElement;
+         }
+         else
+         {
+            targetElement = oArgs.target;
+         }
+
+         var elActions = Dom.get(scope.id + "-actions-" + (targetElement.id));
+
+         // Don't hide unless the More Actions drop-down is showing, or a dialog mask is present
+         if ((elActions && !scope.showingMoreActions) || Dom.hasClass(document.body, "masked"))
+         {
+            // Just hide the action links, rather than removing them from the DOM
+            Dom.addClass(elActions, "hidden");
+            scope.deferredActionsMenu = null;
+         }
+      },
+
+      /**
+       * Show more actions pop-up.
+       *
+       * @method onActionShowMore
+       * @param scope {object} The DocumentList object
+       * @param record {object} Object literal representing file or folder to be actioned
+       * @param elMore {element} DOM Element of "More Actions" link
+       */
+      onActionShowMore: function DL_VR_onActionShowMore(scope, record, elMore)
+      {
+         // Fix "More Actions" hover style
+         Dom.addClass(elMore.firstChild, "highlighted");
+
+         // Get the pop-up div, sibling of the "More Actions" link
+         var elMoreActions = Dom.getNextSibling(elMore);
+         Dom.removeClass(elMoreActions, "hidden");
+         scope.showingMoreActions = true;
+
+         // Hide pop-up timer function
+         var fnHidePopup = function DL_oASM_fnHidePopup()
+         {
+            // Need to rely on the "elMoreActions" enclosed variable, as MSIE doesn't support
+            // parameter passing for timer functions.
+            Event.removeListener(elMoreActions, "mouseover");
+            Event.removeListener(elMoreActions, "mouseout");
+            Dom.removeClass(elMore.firstChild, "highlighted");
+            Dom.addClass(elMoreActions, "hidden");
+            scope.showingMoreActions = false;
+            if (scope.deferredActionsMenu !== null)
+            {
+               Dom.addClass(scope.currentActionsMenu, "hidden");
+               scope.currentActionsMenu = scope.deferredActionsMenu;
+               scope.deferredActionsMenu = null;
+               Dom.removeClass(scope.currentActionsMenu, "hidden");
+            }
+         };
+
+         // Initial after-click hide timer - 4x the mouseOut timer delay
+         if (elMoreActions.hideTimerId)
+         {
+            window.clearTimeout(elMoreActions.hideTimerId);
+         }
+         elMoreActions.hideTimerId = window.setTimeout(fnHidePopup, scope.options.actionsPopupTimeout * 4);
+
+         // Mouse over handler
+         var onMouseOver = function DLSM_onMouseOver(e, obj)
+         {
+            // Clear any existing hide timer
+            if (obj.hideTimerId)
+            {
+               window.clearTimeout(obj.hideTimerId);
+               obj.hideTimerId = null;
+            }
+         };
+
+         // Mouse out handler
+         var onMouseOut = function DLSM_onMouseOut(e, obj)
+         {
+            var elTarget = Event.getTarget(e);
+            var related = elTarget.relatedTarget;
+
+            // In some cases we should ignore this mouseout event
+            if ((related !== obj) && (!Dom.isAncestor(obj, related)))
+            {
+               if (obj.hideTimerId)
+               {
+                  window.clearTimeout(obj.hideTimerId);
+               }
+               obj.hideTimerId = window.setTimeout(fnHidePopup, scope.options.actionsPopupTimeout);
+            }
+         };
+
+         Event.on(elMoreActions, "mouseover", onMouseOver, elMoreActions);
+         Event.on(elMoreActions, "mouseout", onMouseOut, elMoreActions);
+      },
+      
+      /**
+       * File or folder renamed event handler
+       *
+       * @method onFileRenamed
+       * @param scope {object} The DocumentList object
+       * @param layer {object} Event fired
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onFileRenamed: function DL_VR_onFileRenamed(scope, layer, args)
+      {
+         var obj = args[1];
+         if (obj && (obj.file !== null))
+         {
+            var recordFound = scope._findRecordByParameter(obj.file.node.nodeRef, "nodeRef");
+            if (recordFound !== null)
+            {
+               scope.widgets.dataTable.updateRow(recordFound, obj.file);
+               var el = scope.widgets.dataTable.getTrEl(recordFound);
+               Alfresco.util.Anim.pulse(el);
+            }
+         }
+      },
+      
+      /**
+       * Highlight file event handler
+       * Used when a component (including the DocList itself on loading) wants to scroll to and highlight a file
+       *
+       * @method onHighlightFile
+       * @param scope {object} The DocumentList object
+       * @param layer {object} Event fired (unused)
+       * @param args {array} Event parameters (filename to be highlighted)
+       */
+      onHighlightFile: function DL_VR_onHighlightFile(scope, layer, args)
+      {
+         var obj = args[1];
+         if ((obj !== null) && ($isValueSet(obj.fileName)))
+         {
+            Alfresco.logger.debug("DL_VR_onHighlightFile: ", obj.fileName);
+            var recordFound = scope._findRecordByParameter(obj.fileName, "displayName");
+            if (recordFound !== null)
+            {
+               // Scroll the record into view and highlight it
+               var el = this.getRowElementFromDataTableRecord(scope, recordFound),
+                  yPos = Dom.getY(el);
+
+               if (YAHOO.env.ua.ie > 0)
+               {
+                  yPos = yPos - (document.body.clientHeight / 3);
+               }
+               else
+               {
+                  yPos = yPos - (window.innerHeight / 3);
+               }
+               window.scrollTo(0, yPos);
+               Alfresco.util.Anim.pulse(el);
+               scope.options.highlightFile = null;
+
+               // Select the file
+               var rowSelectEl = this.getRowSelectElementFromDataTableRecord(scope, recordFound);
+               rowSelectEl.checked = true;
+               scope.selectedFiles[recordFound.getData("nodeRef")] = true;
+               YAHOO.Bubbling.fire("selectedFilesChanged");
+            }
+         }
+      },
+      
+      /**
+       * Sets the given message HTML as the text string of the YUI datatable
+       *
+       * @method _setEmptyDataSourceMessage
+       * @param scope {object} The DocumentList object
+       * @param messageHtml {string} the message HTML
+       */
+      _setEmptyDataSourceMessage: function DL_VR_setEmptyDataSourceMessage(scope, messageHtml)
+      {
+         scope.widgets.dataTable.set("MSG_EMPTY", messageHtml);
+      },
+      
+      /**
+       * Constructs the display of upload indicators and instructions for empty spaces.
+       *
+       * @method renderEmptyDataSourceHtml
+       * @param scope {object} The DocumentList object
+       * @param permissions {object} the current user's permissions
+       */
+      renderEmptyDataSourceHtml: function DL_VR_renderEmptyDataSourceHtml(scope, permissions)
+      {
+         var me = scope;
+         
+         // Work out the current status of the document list (this will be used to determine what user assistance
+         // is provided if the doc list is empty, or appears as empty)...
+         var itemCounts = me.doclistMetadata.itemCounts,
+            empty = (itemCounts.documents === 0  && itemCounts.folders === 0),
+            hiddenFolders = (itemCounts.documents === 0 && !me.options.showFolders && itemCounts.folders > 0);
+
+         // Define a re-usable function for seting IDs...
+         //   Get the children of the supplied node and append "-instance" to any child nodes that have an
+         // "id" attribute in the template. This ensures that the clone has a unique ID within the
+         // page and can be accurately targeted later (i.e. to add event listeners to).
+         var updateIDs = function DL_updateIDs(node)
+         {
+            var children = Dom.getChildren(node);
+            for (var i = 0, ii = children.length; i < ii; i++)
+            {
+               if (children[i].id !== null && children[i].id !== "")
+               {
+                  children[i].id += "-instance";
+               }
+            }
+         };
+
+         // In documentlist.lib.ftl there are a number of DOM structures that are not displayed, these can
+         // cloned to display the relevant information to the user based on content, display options, site
+         // ownership and access rights. All of theses DOM "snippets" need to be added to a main container
+         // which controls the overall display (of borders, etc).
+         var template = Dom.get(me.id + "-main-template"),
+            main = template.cloneNode(true),
+            container = Dom.getFirstChild(main),
+            templateInstance = null,
+            elements = null;
+
+         if (permissions)
+         {
+            me._userCanUpload = me.doclistMetadata.parent.permissions.user.CreateChildren && YAHOO.env.ua.mobile === null;
+            
+            // Only allow drag and drop behaviour if the filter is changed to an actual
+            // path (if the filter is anything else such as tags then there won't be a specific
+            // location to upload to!)...
+            me._removeDragAndDrop();
+            if (me.currentFilter.filterId === "path")
+            {
+               me._addDragAndDrop();
+            }
+            
+            if (me._userCanUpload && me.dragAndDropEnabled)
+            {
+               Dom.addClass(container, "docListInstructionsWithDND");
+            }
+            else
+            {
+               Dom.addClass(container, "docListInstructions");
+            }
+
+            // Work out what to display based on the boolean values calculated earlier...
+            if (empty && !me._userCanUpload)
+            {
+               // If folder is empty, there are no hidden folders and the user cannot upload, then show the no items info...
+               template = Dom.get(me.id + "-no-items-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               container.appendChild(templateInstance);
+            }
+            else if (hiddenFolders)
+            {
+               // ...or, if there are hidden subfolders then show the option to reveal them...
+               template = Dom.get(me.id + "-hidden-subfolders-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               updateIDs(templateInstance);
+               elements = Dom.getElementsByClassName("docListLinkedInstruction", "a", templateInstance);
+               if (elements.length == 1)
+               {
+                  elements[0].innerHTML = me.msg("show.folders", itemCounts.folders);
+               }
+               container.appendChild(templateInstance);
+            }
+            else if (empty && me._userCanUpload && me.dragAndDropEnabled)
+            {
+               // ...or, if the folder is empty, there are no hidden folders, the user can upload AND the browser supports
+               // the DND process, show the HTML5 DND instructions...
+               template = Dom.get(me.id + "-dnd-instructions-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               container.appendChild(templateInstance);
+            }
+            else if (empty && me._userCanUpload && !me.dragAndDropEnabled)
+            {
+               // ...but if the folder is empty, there are no hidden folders, the user can upload BUT the browser does
+               // NOT support the DND process then just show the standard upload instructions...
+               template = Dom.get(me.id + "-upload-instructions-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               updateIDs(templateInstance);
+               container.appendChild(templateInstance);
+            }
+
+            if (empty && me._userCanUpload && me.dragAndDropEnabled)
+            {
+               // Clone the other options node...
+               template = Dom.get(me.id + "-other-options-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               container.appendChild(templateInstance);
+
+               if (empty && me._userCanUpload)
+               {
+                  if (me.dragAndDropEnabled)
+                  {
+                     // Show the standard upload other options node...
+                     template = Dom.get(me.id + "-standard-upload-template");
+                     templateInstance = template.cloneNode(true);
+                     Dom.removeClass(templateInstance, "hidden");
+                     updateIDs(templateInstance);
+                     container.appendChild(templateInstance);
+                  }
+                  
+                  // Show the New Folder other options node...
+                  template = Dom.get(me.id + "-new-folder-template");
+                  templateInstance = template.cloneNode(true);
+                  Dom.removeClass(templateInstance, "hidden");
+                  updateIDs(templateInstance);
+                  container.appendChild(templateInstance);
+               }
+            }
+         }
+         else
+         {
+            Dom.addClass(container, "docListInstructions");
+
+            // Work out what to display based on the boolean values calculated earlier...
+            if (hiddenFolders)
+            {
+               // If there are hidden subfolders then show the option to reveal them...
+               template = Dom.get(me.id + "-hidden-subfolders-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               updateIDs(templateInstance);
+               elements = Dom.getElementsByClassName("docListLinkedInstruction", "a", templateInstance);
+               if (elements.length == 1)
+               {
+                  elements[0].innerHTML = me.msg("show.folders", itemCounts.folders);
+               }
+               container.appendChild(templateInstance);
+            }
+            else
+            {
+               // Show the no items info...
+               template = Dom.get(me.id + "-no-items-template");
+               templateInstance = template.cloneNode(true);
+               Dom.removeClass(templateInstance, "hidden");
+               container.appendChild(templateInstance);
+            }
+         }
+
+         // Add a node in with a style of "clear" set to both to ensure that the main div is given
+         // a height to accomodate the floated content...
+         var clearingNode = document.createElement("div");
+         Dom.setStyle(clearingNode, "clear", "both");
+         container.appendChild(clearingNode);
+
+         this._setEmptyDataSourceMessage(me, main.innerHTML);
       }
+      
    };
    
    /**
@@ -1386,20 +2186,6 @@
          // DataTable set-up and event registration
          this._setupDataTable();
 
-         // Tooltip for thumbnail in Simple View
-         this.widgets.previewTooltip = new YAHOO.widget.Tooltip(this.id + "-previewTooltip",
-         {
-            width: "108px"
-         });
-         this.widgets.previewTooltip.contextTriggerEvent.subscribe(function(type, args)
-         {
-            var context = args[0],
-               oRecord = me.widgets.dataTable.getRecord(context.id),
-               record = oRecord.getData();
-
-            this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" />');
-         });
-
          // Hook action events
          var fnActionHandler = function DL_fnActionHandler(layer, args)
          {
@@ -1409,7 +2195,12 @@
                if (typeof me[owner.title] === "function")
                {
                   args[1].stop = true;
-                  var record = me.widgets.dataTable.getRecord(args[1].target.offsetParent).getData();
+                  var elIdentifier = args[1].target;
+                  if (typeof me.viewRenderers[me.options.viewRendererName] === "object")
+                  {
+                     elIdentifier = me.viewRenderers[me.options.viewRendererName].getDataTableRecordIdFromRowElement(me, args[1].target);
+                  }
+                  var record = me.widgets.dataTable.getRecord(elIdentifier).getData();
                   me[owner.title].call(me, record, owner);
                }
             }
@@ -1567,13 +2358,10 @@
           */
          return function DL_renderCellSelected(elCell, oRecord, oColumn, oData)
          {
-            Dom.setStyle(elCell, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-            
-            var jsNode = oRecord.getData("jsNode"),
-               nodeRef = jsNode.nodeRef;
-            
-            elCell.innerHTML = '<input id="checkbox-' + oRecord.getId() + '" type="checkbox" name="fileChecked" value="'+ nodeRef + '"' + (scope.selectedFiles[nodeRef] ? ' checked="checked">' : '>');
+            if (typeof scope.viewRenderers[scope.options.viewRendererName] === "object")
+            {
+               scope.viewRenderers[scope.options.viewRendererName].renderCellSelected(scope, elCell, oRecord, oColumn, oData);
+            }
          };
       },
 
@@ -1597,28 +2385,10 @@
           */
          return function DL_renderCellStatus(elCell, oRecord, oColumn, oData)
          {
-            Dom.setStyle(elCell, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-            var record = oRecord.getData(),
-               node = record.jsNode,
-               indicators = record.indicators,
-               indicator, label, desc = "";
-
-            if (indicators && indicators.length > 0)
+            if (typeof scope.viewRenderers[scope.options.viewRendererName] === "object")
             {
-               for (var i = 0, ii = indicators.length; i < ii; i++)
-               {
-                  indicator = indicators[i];
-                  // Note: deliberate bypass of scope.msg() function
-                  label = Alfresco.util.message(indicator.label, scope.name, indicator.labelParams);
-                  label = Alfresco.util.substituteDotNotation(label, record);
-
-                  desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" /></div>';
-               }
+               scope.viewRenderers[scope.options.viewRendererName].renderCellStatus(scope, elCell, oRecord, oColumn, oData);
             }
-
-            elCell.innerHTML = desc;
          };
       },
 
@@ -1669,203 +2439,10 @@
           */
          return function DL_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
-            var desc = "", i, j,
-               record = oRecord.getData(),
-               jsNode = record.jsNode,
-               properties = jsNode.properties,
-               isContainer = jsNode.isContainer,
-               isLink = jsNode.isLink,
-               title = "",
-               titleHTML = "",
-               version = "",
-               canComment = jsNode.permissions.user.CreateChildren;
-
-            if (jsNode.isLink)
+            if (typeof scope.viewRenderers[scope.options.viewRendererName] === "object")
             {
-               // Link handling
-               oRecord.setData("displayName", scope.msg("details.link-to", record.location.file));
+               scope.viewRenderers[scope.options.viewRendererName].renderCellDescription(scope, elCell, oRecord, oColumn, oData);
             }
-            else if (properties.title && properties.title !== record.displayName && scope.options.useTitle)
-            {
-               // Use title property if it's available. Supressed for links.
-               titleHTML = '<span class="title">(' + $html(properties.title) + ')</span>';
-            }
-
-            // Version display
-            if ($isValueSet(record.version) && !jsNode.isContainer && !jsNode.isLink)
-            {
-               version = '<span class="document-version">' + $html(record.version) + '</span>';
-            }
-
-            /**
-             *  Render using metadata template
-             */
-            record._filenameId = Alfresco.util.generateDomId();
-
-            var metadataTemplate = record.metadataTemplate;
-            if (metadataTemplate)
-            {
-               /* Banner */
-               if (YAHOO.lang.isArray(metadataTemplate.banners))
-               {
-                  var fnRenderBanner = function fnRenderBanner_substitute(p_key, p_value, p_meta)
-                  {
-                     var label = (p_meta !== null ? scope.msg(p_meta) + ': ': ''),
-                        value = "";
-                         
-                     // render value from properties or custom renderer
-                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
-                     {
-                        value = scope.renderers[p_key].call(scope, record, label);
-                     }
-                     else
-                     {
-                        if (jsNode.hasProperty(p_key))
-                        {
-                           value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
-                        }
-                     }
-
-                     return value;
-                  };
-
-                  var html, banner;
-                  for (i = 0, j = metadataTemplate.banners.length; i < j; i++)
-                  {
-                     banner = metadataTemplate.banners[i];
-                     if (!$isValueSet(banner.view) || banner.view == scope.options.viewRendererName)
-                     {
-                        html = YAHOO.lang.substitute(banner.template, scope.renderers, fnRenderBanner);
-                        if ($isValueSet(html))
-                        {
-                           desc += '<div class="info-banner">' + html + '</div>';
-                        }
-                     }
-                  }
-               }
-
-               /* Title */
-               if (YAHOO.lang.isString(metadataTemplate.title))
-               {
-                  var fnRenderTitle = function fnRenderTitle_substitute(p_key, p_value, p_meta)
-                  {
-                     var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
-                        value = "";
-                         
-                     // render value from properties or custom renderer
-                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
-                     {
-                        value = scope.renderers[p_key].call(scope, record, label);
-                     }
-                     else
-                     {
-                        if (jsNode.hasProperty(p_key))
-                        {
-                           value = '<div class="filename">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
-                           value += label + $html(jsNode.properties[p_key]) + '</a></span></div>';
-                        }
-                     }
-
-                     return value;
-                  };
-
-                  desc += YAHOO.lang.substitute(metadataTemplate.title, scope.renderers, fnRenderTitle);
-               }
-               else
-               {
-                  // Insitu editing for title (filename)
-                  if (jsNode.hasPermission("Write") && !jsNode.isLocked && !jsNode.hasAspect("cm:workingcopy"))
-                  {
-                     scope.insituEditors.push(
-                     {
-                        context: record._filenameId,
-                        params:
-                        {
-                           type: "textBox",
-                           nodeRef: jsNode.nodeRef.toString(),
-                           name: "prop_cm_name",
-                           value: record.fileName,
-                           fnSelect: function fnSelect(elInput, value)
-                           {
-                              // If the file has an extension, omit it from the edit selection
-                              var extnPos = value.lastIndexOf(Alfresco.util.getFileExtension(value)) - 1;
-                              if (extnPos > 0)
-                              {
-                                 Alfresco.util.selectText(elInput, 0, extnPos);
-                              }
-                              else
-                              {
-                                 elInput.select();
-                              }
-                           },
-                           validations: [
-                           {
-                              type: Alfresco.forms.validation.nodeName,
-                              when: "keyup",
-                              message: scope.msg("validation-hint.nodeName")
-                           },
-                           {
-                              type: Alfresco.forms.validation.length,
-                              args: { min: 1, max: 255, crop: true },
-                              when: "keyup",
-                              message: scope.msg("validation-hint.length.min.max", 1, 255)
-                           }],
-                           title: scope.msg("tip.insitu-rename"),
-                           errorMessage: scope.msg("message.insitu-edit.name.failure")
-                        },
-                        callback:
-                        {
-                           fn: scope._insituCallback,
-                           scope: scope,
-                           obj: record
-                        }
-                     });
-                  }
-
-                  desc += '<h3 class="filename"><span id="' + record._filenameId + '">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
-                  desc += $html(record.displayName) + '</a></span>' + titleHTML + version + '</h3>';
-               }
-
-               if (YAHOO.lang.isArray(metadataTemplate.lines))
-               {
-                  var fnRenderTemplate = function fnRenderTemplate_substitute(p_key, p_value, p_meta)
-                  {
-                     var label = (p_meta !== null ? '<em>' + scope.msg(p_meta) + '</em>: ': ''),
-                        value = "";
-                         
-                     // render value from properties or custom renderer
-                     if (scope.renderers.hasOwnProperty(p_key) && typeof scope.renderers[p_key] === "function")
-                     {
-                        value = scope.renderers[p_key].call(scope, record, label);
-                     }
-                     else
-                     {
-                        if (jsNode.hasProperty(p_key))
-                        {
-                           value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
-                        }
-                     }
-
-                     return value;
-                  };
-
-                  var html, line;
-                  for (i = 0, j = metadataTemplate.lines.length; i < j; i++)
-                  {
-                     line = metadataTemplate.lines[i];
-                     if (!$isValueSet(line.view) || line.view == scope.options.viewRendererName)
-                     {
-                        html = YAHOO.lang.substitute(line.template, scope.renderers, fnRenderTemplate);
-                        if ($isValueSet(html))
-                        {
-                           desc += '<div class="detail">' + html + '</div>';
-                        }
-                     }
-                  }
-               }
-            }
-
-            elCell.innerHTML = desc;
          };
       },
 
@@ -1891,13 +2468,8 @@
          {
             if (typeof scope.viewRenderers[scope.options.viewRendererName] === "object")
             {
-               oColumn.width = scope.viewRenderers[scope.options.viewRendererName].actionsColumnWidth;
+               scope.viewRenderers[scope.options.viewRendererName].renderCellActions(scope, elCell, oRecord, oColumn, oData);
             }
-            Dom.setStyle(elCell, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-            Dom.addClass(elCell.parentNode, oRecord.getData("type"));
-
-            elCell.innerHTML = '<div id="' + scope.id + '-actions-' + oRecord.getId() + '" class="hidden"></div>';
          };
       },
 
@@ -2209,6 +2781,7 @@
       {
          var simpleViewRenderer = new Alfresco.DocumentListViewRenderer("simple");
          simpleViewRenderer.actionsColumnWidth = 80;
+         simpleViewRenderer.actionsSplitAtModifier = 0;
          simpleViewRenderer.renderCellThumbnail = function _renderCellThumbnail(scope, elCell, oRecord, oColumn, oData)
          {
             var record = oRecord.getData(),
@@ -2241,10 +2814,32 @@
             }
             var dnd = new Alfresco.DnD(imgId, scope);
          };
+         simpleViewRenderer.setupRenderer = function _setupRenderer(scope)
+         {
+            Dom.addClass(scope.id + this.buttonElementIdSuffix, this.buttonCssClass);
+            // Tooltip for thumbnail in Simple View
+            scope.widgets.previewTooltip = new YAHOO.widget.Tooltip(scope.id + "-previewTooltip",
+            {
+               width: "108px"
+            });
+            scope.widgets.previewTooltip.contextTriggerEvent.subscribe(function(type, args)
+            {
+               var context = args[0],
+                  oRecord = scope.widgets.dataTable.getRecord(context.id),
+                  record = oRecord.getData();
+
+               this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" />');
+            });
+         };
          
          this.registerViewRenderer(simpleViewRenderer);
          this.registerViewRenderer(new Alfresco.DocumentListViewRenderer("detailed"));
          
+         YAHOO.Bubbling.fire("postSetupViewRenderers",
+         {
+             scope: this,
+             eventGroup: this.id
+         });
       },
 
       /**
@@ -2414,169 +3009,10 @@
                }
             }
 
-            // Work out the current status of the document list (this will be used to determine what user assistance
-            // is provided if the doc list is empty, or appears as empty)...
-            var itemCounts = me.doclistMetadata.itemCounts,
-               empty = (itemCounts.documents === 0  && itemCounts.folders === 0),
-               hiddenFolders = (itemCounts.documents === 0 && !me.options.showFolders && itemCounts.folders > 0);
-
-            // Define a re-usable function for seting IDs...
-            //   Get the children of the supplied node and append "-instance" to any child nodes that have an
-            // "id" attribute in the template. This ensures that the clone has a unique ID within the
-            // page and can be accurately targeted later (i.e. to add event listeners to).
-            var updateIDs = function DL_updateIDs(node)
+            if (typeof me.viewRenderers[me.options.viewRendererName] === "object")
             {
-               var children = Dom.getChildren(node);
-               for (var i = 0, ii = children.length; i < ii; i++)
-               {
-                  if (children[i].id !== null && children[i].id !== "")
-                  {
-                     children[i].id += "-instance";
-                  }
-               }
-            };
-
-            // In documentlist.lib.ftl there are a number of DOM structures that are not displayed, these can
-            // cloned to display the relevant information to the user based on content, display options, site
-            // ownership and access rights. All of theses DOM "snippets" need to be added to a main container
-            // which controls the overall display (of borders, etc).
-            var template = Dom.get(me.id + "-main-template"),
-               main = template.cloneNode(true),
-               container = Dom.getFirstChild(main),
-               templateInstance = null,
-               elements = null;
-
-            if (permissions)
-            {
-               me._userCanUpload = me.doclistMetadata.parent.permissions.user.CreateChildren && YAHOO.env.ua.mobile === null;
-               
-               // Only allow drag and drop behaviour if the filter is changed to an actual
-               // path (if the filter is anything else such as tags then there won't be a specific
-               // location to upload to!)...
-               me._removeDragAndDrop();
-               if (me.currentFilter.filterId === "path")
-               {
-                  me._addDragAndDrop();
-               }
-               
-               if (me._userCanUpload && me.dragAndDropEnabled)
-               {
-                  Dom.addClass(container, "docListInstructionsWithDND");
-               }
-               else
-               {
-                  Dom.addClass(container, "docListInstructions");
-               }
-
-               // Work out what to display based on the boolean values calculated earlier...
-               if (empty && !me._userCanUpload)
-               {
-                  // If folder is empty, there are no hidden folders and the user cannot upload, then show the no items info...
-                  template = Dom.get(me.id + "-no-items-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  container.appendChild(templateInstance);
-               }
-               else if (hiddenFolders)
-               {
-                  // ...or, if there are hidden subfolders then show the option to reveal them...
-                  template = Dom.get(me.id + "-hidden-subfolders-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  updateIDs(templateInstance);
-                  elements = Dom.getElementsByClassName("docListLinkedInstruction", "a", templateInstance);
-                  if (elements.length == 1)
-                  {
-                     elements[0].innerHTML = me.msg("show.folders", itemCounts.folders);
-                  }
-                  container.appendChild(templateInstance);
-               }
-               else if (empty && me._userCanUpload && me.dragAndDropEnabled)
-               {
-                  // ...or, if the folder is empty, there are no hidden folders, the user can upload AND the browser supports
-                  // the DND process, show the HTML5 DND instructions...
-                  template = Dom.get(me.id + "-dnd-instructions-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  container.appendChild(templateInstance);
-               }
-               else if (empty && me._userCanUpload && !me.dragAndDropEnabled)
-               {
-                  // ...but if the folder is empty, there are no hidden folders, the user can upload BUT the browser does
-                  // NOT support the DND process then just show the standard upload instructions...
-                  template = Dom.get(me.id + "-upload-instructions-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  updateIDs(templateInstance);
-                  container.appendChild(templateInstance);
-               }
-
-               if (empty && me._userCanUpload && me.dragAndDropEnabled)
-               {
-                  // Clone the other options node...
-                  template = Dom.get(me.id + "-other-options-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  container.appendChild(templateInstance);
-
-                  if (empty && me._userCanUpload)
-                  {
-                     if (me.dragAndDropEnabled)
-                     {
-                        // Show the standard upload other options node...
-                        template = Dom.get(me.id + "-standard-upload-template");
-                        templateInstance = template.cloneNode(true);
-                        Dom.removeClass(templateInstance, "hidden");
-                        updateIDs(templateInstance);
-                        container.appendChild(templateInstance);
-                     }
-                     
-                     // Show the New Folder other options node...
-                     template = Dom.get(me.id + "-new-folder-template");
-                     templateInstance = template.cloneNode(true);
-                     Dom.removeClass(templateInstance, "hidden");
-                     updateIDs(templateInstance);
-                     container.appendChild(templateInstance);
-                  }
-               }
+               me.viewRenderers[me.options.viewRendererName].renderEmptyDataSourceHtml(me, permissions);
             }
-            else
-            {
-               Dom.addClass(container, "docListInstructions");
-
-               // Work out what to display based on the boolean values calculated earlier...
-               if (hiddenFolders)
-               {
-                  // If there are hidden subfolders then show the option to reveal them...
-                  template = Dom.get(me.id + "-hidden-subfolders-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  updateIDs(templateInstance);
-                  elements = Dom.getElementsByClassName("docListLinkedInstruction", "a", templateInstance);
-                  if (elements.length == 1)
-                  {
-                     elements[0].innerHTML = me.msg("show.folders", itemCounts.folders);
-                  }
-                  container.appendChild(templateInstance);
-               }
-               else
-               {
-                  // Show the no items info...
-                  template = Dom.get(me.id + "-no-items-template");
-                  templateInstance = template.cloneNode(true);
-                  Dom.removeClass(templateInstance, "hidden");
-                  container.appendChild(templateInstance);
-               }
-            }
-
-            // Add a node in with a style of "clear" set to both to ensure that the main div is given
-            // a height to accomodate the floated content...
-            var clearingNode = document.createElement("div");
-            Dom.setStyle(clearingNode, "clear", "both");
-            container.appendChild(clearingNode);
-
-            // Finally set the innerHTML of the main node as the text string of the YUI datatable
-            me.widgets.dataTable.set("MSG_EMPTY", main.innerHTML);
 
             return oParsedResponse;
          };
@@ -3237,8 +3673,13 @@
        */
       selectFiles: function DL_selectFiles(p_selectType)
       {
+         var containerElement;
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
+         {
+            containerElement = Dom.get(this.id + this.viewRenderers[this.options.viewRendererName].parentElementIdSuffix);
+         }
          var oRecordSet = this.widgets.dataTable.getRecordSet(),
-            checks = YAHOO.util.Selector.query('input[type="checkbox"]', this.widgets.dataTable.getTbodyEl()),
+            checks = YAHOO.util.Selector.query('input[type="checkbox"]', containerElement),
             len = checks.length,
             oRecord, record, i, fnCheck;
 
@@ -3435,77 +3876,9 @@
        */
       onEventHighlightRow: function DL_onEventHighlightRow(oArgs)
       {
-         // Call through to get the row highlighted by YUI
-         this.widgets.dataTable.onEventHighlightRow.call(this.widgets.dataTable, oArgs);
-
-         // elActions is the element id of the active table cell where we'll inject the actions
-         var elActions = Dom.get(this.id + "-actions-" + oArgs.target.id);
-
-         // Inject the correct action elements into the actionsId element
-         if (elActions && elActions.firstChild === null)
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
          {
-            // Retrieve the actionSet for this record
-            var oRecord = this.widgets.dataTable.getRecord(oArgs.target.id),
-               record = oRecord.getData(),
-               jsNode = record.jsNode,
-               actions = record.actions,
-               actionsEl = document.createElement("div"),
-               actionHTML = "",
-               actionsSel;
-
-            record.actionParams = {};
-            for (var i = 0, ii = actions.length; i < ii; i++)
-            {
-               actionHTML += this.renderAction(actions[i], record);
-            }
-
-            // Token replacement - action Urls
-            actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, this.getActionUrls(record));
-
-            // Simple or detailed view
-            Dom.addClass(actionsEl, "action-set");
-            var viewType = "simple";
-            if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
-            {
-               viewType = this.viewRenderers[this.options.viewRendererName].actionsCssClassName;
-            }
-            Dom.addClass(actionsEl, viewType);
-
-            // Need the "More >" container?
-            actionsSel = YAHOO.util.Selector.query("div", actionsEl);
-            if (actionsSel.length > this.options.actionsSplitAt + (this.options.viewRendererName == "simple" ? 0 : 1))
-            {
-               var moreContainer = Dom.get(this.id + "-moreActions").cloneNode(true),
-                  containerDivs = YAHOO.util.Selector.query("div", moreContainer);
-
-               // Insert the two necessary DIVs before the third action item
-               Dom.insertBefore(containerDivs[0], actionsSel[this.options.actionsSplitAt]);
-               Dom.insertBefore(containerDivs[1], actionsSel[this.options.actionsSplitAt]);
-
-               // Now make action items three onwards children of the 2nd DIV
-               var index, moreActions = actionsSel.slice(this.options.actionsSplitAt);
-               for (index in moreActions)
-               {
-                  if (moreActions.hasOwnProperty(index))
-                  {
-                     containerDivs[1].appendChild(moreActions[index]);
-                  }
-               }
-            }
-
-            elActions.appendChild(actionsEl);
-         }
-
-         if (this.showingMoreActions)
-         {
-            this.deferredActionsMenu = elActions;
-         }
-         else if (!Dom.hasClass(document.body, "masked"))
-         {
-            this.currentActionsMenu = elActions;
-            // Show the actions
-            Dom.removeClass(elActions, "hidden");
-            this.deferredActionsMenu = null;
+            this.viewRenderers[this.options.viewRendererName].onEventHighlightRow(this, oArgs);
          }
       },
 
@@ -3518,17 +3891,9 @@
        */
       onEventUnhighlightRow: function DL_onEventUnhighlightRow(oArgs)
       {
-         // Call through to get the row unhighlighted by YUI
-         this.widgets.dataTable.onEventUnhighlightRow.call(this.widgets.dataTable, oArgs);
-
-         var elActions = Dom.get(this.id + "-actions-" + (oArgs.target.id));
-
-         // Don't hide unless the More Actions drop-down is showing, or a dialog mask is present
-         if ((elActions && !this.showingMoreActions) || Dom.hasClass(document.body, "masked"))
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
          {
-            // Just hide the action links, rather than removing them from the DOM
-            Dom.addClass(elActions, "hidden");
-            this.deferredActionsMenu = null;
+            this.viewRenderers[this.options.viewRendererName].onEventUnhighlightRow(this, oArgs);
          }
       },
 
@@ -3547,72 +3912,10 @@
        */
       onActionShowMore: function DL_onActionShowMore(record, elMore)
       {
-         var me = this;
-
-         // Fix "More Actions" hover style
-         Dom.addClass(elMore.firstChild, "highlighted");
-
-         // Get the pop-up div, sibling of the "More Actions" link
-         var elMoreActions = Dom.getNextSibling(elMore);
-         Dom.removeClass(elMoreActions, "hidden");
-         me.showingMoreActions = true;
-
-         // Hide pop-up timer function
-         var fnHidePopup = function DL_oASM_fnHidePopup()
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
          {
-            // Need to rely on the "elMoreActions" enclosed variable, as MSIE doesn't support
-            // parameter passing for timer functions.
-            Event.removeListener(elMoreActions, "mouseover");
-            Event.removeListener(elMoreActions, "mouseout");
-            Dom.removeClass(elMore.firstChild, "highlighted");
-            Dom.addClass(elMoreActions, "hidden");
-            me.showingMoreActions = false;
-            if (me.deferredActionsMenu !== null)
-            {
-               Dom.addClass(me.currentActionsMenu, "hidden");
-               me.currentActionsMenu = me.deferredActionsMenu;
-               me.deferredActionsMenu = null;
-               Dom.removeClass(me.currentActionsMenu, "hidden");
-            }
-         };
-
-         // Initial after-click hide timer - 4x the mouseOut timer delay
-         if (elMoreActions.hideTimerId)
-         {
-            window.clearTimeout(elMoreActions.hideTimerId);
+            this.viewRenderers[this.options.viewRendererName].onActionShowMore(this, record, elMore);
          }
-         elMoreActions.hideTimerId = window.setTimeout(fnHidePopup, me.options.actionsPopupTimeout * 4);
-
-         // Mouse over handler
-         var onMouseOver = function DLSM_onMouseOver(e, obj)
-         {
-            // Clear any existing hide timer
-            if (obj.hideTimerId)
-            {
-               window.clearTimeout(obj.hideTimerId);
-               obj.hideTimerId = null;
-            }
-         };
-
-         // Mouse out handler
-         var onMouseOut = function DLSM_onMouseOut(e, obj)
-         {
-            var elTarget = Event.getTarget(e);
-            var related = elTarget.relatedTarget;
-
-            // In some cases we should ignore this mouseout event
-            if ((related !== obj) && (!Dom.isAncestor(obj, related)))
-            {
-               if (obj.hideTimerId)
-               {
-                  window.clearTimeout(obj.hideTimerId);
-               }
-               obj.hideTimerId = window.setTimeout(fnHidePopup, me.options.actionsPopupTimeout);
-            }
-         };
-
-         Event.on(elMoreActions, "mouseover", onMouseOver, elMoreActions);
-         Event.on(elMoreActions, "mouseout", onMouseOut, elMoreActions);
       },
 
       /**
@@ -3921,16 +4224,9 @@
        */
       onFileRenamed: function DL_onFileRenamed(layer, args)
       {
-         var obj = args[1];
-         if (obj && (obj.file !== null))
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
          {
-            var recordFound = this._findRecordByParameter(obj.file.node.nodeRef, "nodeRef");
-            if (recordFound !== null)
-            {
-               this.widgets.dataTable.updateRow(recordFound, obj.file);
-               var el = this.widgets.dataTable.getTrEl(recordFound);
-               Alfresco.util.Anim.pulse(el);
-            }
+            this.viewRenderers[this.options.viewRendererName].onFileRenamed(this, layer, args);
          }
       },
 
@@ -4053,34 +4349,9 @@
        */
       onHighlightFile: function DL_onHighlightFile(layer, args)
       {
-         var obj = args[1];
-         if ((obj !== null) && ($isValueSet(obj.fileName)))
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
          {
-            Alfresco.logger.debug("DL_onHighlightFile: ", obj.fileName);
-            var recordFound = this._findRecordByParameter(obj.fileName, "displayName");
-            if (recordFound !== null)
-            {
-               // Scroll the record into view and highlight it
-               var el = this.widgets.dataTable.getTrEl(recordFound),
-                  yPos = Dom.getY(el);
-
-               if (YAHOO.env.ua.ie > 0)
-               {
-                  yPos = yPos - (document.body.clientHeight / 3);
-               }
-               else
-               {
-                  yPos = yPos - (window.innerHeight / 3);
-               }
-               window.scrollTo(0, yPos);
-               Alfresco.util.Anim.pulse(el);
-               this.options.highlightFile = null;
-
-               // Select the file
-               Dom.get("checkbox-" + recordFound.getId()).checked = true;
-               this.selectedFiles[recordFound.getData("nodeRef")] = true;
-               YAHOO.Bubbling.fire("selectedFilesChanged");
-            }
+            this.viewRenderers[this.options.viewRendererName].onHighlightFile(this, layer, args);
          }
       },
 
@@ -4151,7 +4422,12 @@
        */
       onLikes: function DL_onLikes(row)
       {
-         var oRecord = this.widgets.dataTable.getRecord(row),
+         var elIdentifier = row;
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
+         {
+            elIdentifier = this.viewRenderers[this.options.viewRendererName].getDataTableRecordIdFromRowElement(this, row);
+         }
+         var oRecord = this.widgets.dataTable.getRecord(elIdentifier),
             record = oRecord.getData(),
             nodeRef = record.jsNode.nodeRef,
             likes = record.likes;
@@ -4242,7 +4518,12 @@
        */
       onFavourite: function DL_onFavourite(row)
       {
-         var oRecord = this.widgets.dataTable.getRecord(row),
+         var elIdentifier = row;
+         if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
+         {
+            elIdentifier = this.viewRenderers[this.options.viewRendererName].getDataTableRecordIdFromRowElement(this, row);
+         }
+         var oRecord = this.widgets.dataTable.getRecord(elIdentifier),
             record = oRecord.getData(),
             node = record.node,
             nodeRef = node.nodeRef;

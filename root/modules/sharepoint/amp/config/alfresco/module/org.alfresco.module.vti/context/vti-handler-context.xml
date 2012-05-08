@@ -164,9 +164,8 @@
         <property name="personService" ref="PersonService" />
         <property name="dictionaryService" ref="DictionaryService" />
         <property name="tenantService" ref="tenantService" />
-        <property name="sysAdminParams">
-            <ref bean="sysAdminParams" />
-        </property>
+        <property name="sysAdminParams" ref="sysAdminParams" />
+        <property name="singletonCache" ref="immutableSingletonCache"/>
     </bean>
 
     <bean id="handlerExceptionAdvice" class="org.alfresco.module.vti.handler.alfresco.AlfrescoVtiMethodHandlerThrowsAdvice" />

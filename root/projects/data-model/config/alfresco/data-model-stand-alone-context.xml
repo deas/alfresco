@@ -148,12 +148,14 @@
         <property name="dictionaryService"         ref="dictionaryService" />
         <property name="cmisDictionaryService"     ref="OpenCMISDictionaryService" />
     </bean>
-
+    
+    <bean name="immutableSingletonCache" class="org.alfresco.repo.cache.MemoryCache" />
+    
     <bean id="OpenCMISDictionaryService" class="org.alfresco.opencmis.dictionary.CMISStrictDictionaryService" >
         <property name="cmisMapping"                  ref="OpenCMISMapping" />
         <property name="dictionaryService"            ref="dictionaryService" />
         <property name="dictionaryDAO"                ref="dictionaryDAO" />
-        <property name="tenantService"                ref="tenantService" />
+        <property name="singletonCache"               ref="immutableSingletonCache"/>
         <property name="propertyLuceneBuilderMapping" ref="OpenCMISPropertyLuceneBuilderMapping" />
         <!-- NOTE: The stand-alone dictionary service does not require the runtime access to property values
              <property name="propertyAccessorMapping"      ref="OpenCMISPropertyAccessorMapping" /> -->

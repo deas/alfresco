@@ -20,7 +20,7 @@
                <label for="${args.htmlid}-title">${msg("label.title")}:</label>
             </div>
             <div class="yui-u">
-               <input type="text" maxlength="256" size="75" id="${args.htmlid}-title" name="pageTitle"/>
+               <input type="text" maxlength="100" size="75" id="${args.htmlid}-title" name="pageTitle"/>
             </div>
          </div>
    

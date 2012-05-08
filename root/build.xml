@@ -10,6 +10,7 @@
 
    <import file="${alfresco.basedir}/macros.xml" />
    <import file="${alfresco.basedir}/projects.xml" />
+   <import file="${alfresco.basedir}/maven.xml" />
 
    <!-- For support of the script tag, we have to choose between -->
    <!-- supporting Java 1.5 or Ant 1.6, and we've opted for -->
@@ -1044,6 +1045,21 @@
    <!-- ****************** Testing targets ******************* -->
    <!-- ****************************************************** -->
 
+   <target name="test-minimal" 
+           description="Runs a minimal set of unit tests for all the projects" 
+           depends="clean, 
+                    incremental, 
+                    test-core,
+                    test-datamodel, 
+                    test-mbeans,
+                    test-deployment, 
+                    test-remoteapi,
+                    test-wdrdeployment,
+                    test-catalinavirtual,
+                    test-webframeworkcommons, 
+                    test-webclient, 
+                    test-webserviceclient" />
+
    <target name="test" 
            description="Runs unit tests for all the projects" 
            depends="clean, 
@@ -1052,7 +1068,7 @@
                     test-datamodel, 
                     test-mbeans,
                     test-deployment, 
-                    test-repository, 
+                    test-repository,
                     test-remoteapi,
                     test-wdrdeployment,
                     test-catalinavirtual,

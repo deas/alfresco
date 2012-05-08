@@ -453,6 +453,8 @@ public class FileInfo {
 	/**
 	 * Determine if the inode change date/time details are available.
 	 * 
+	 * Wireshark says this is the "last write" data/time.
+	 * 
 	 * @return boolean
 	 */
 	public boolean hasChangeDateTime() {

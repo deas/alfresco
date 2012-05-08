@@ -218,6 +218,21 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
         query.setQnameField(FIELD_PRIMARYASSOCTYPEQNAME);
         return query;
     }
+    
+    
+    protected Query createPrimaryAssocQNameQuery(String queryText) throws SAXPathException
+    {
+        XPathReader reader = new XPathReader();
+        LuceneXPathHandler handler = new LuceneXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse("//" + queryText);
+        PathQuery query = handler.getQuery();
+        query.setPathField(FIELD_PATH);
+        query.setQnameField(FIELD_PRIMARYASSOCQNAME);
+        return query;
+    }
 
     protected Query createQNameQuery(String queryText) throws SAXPathException
     {

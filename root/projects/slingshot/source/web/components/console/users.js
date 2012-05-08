@@ -1918,8 +1918,7 @@
             {
                fn: function(res)
                {
-                  var json = Alfresco.util.parseJSON(res.serverResponse.responseText);
-                  if (json.status.code === 409)
+                  if (res.serverResponse.status === 409)
                   {
                      // username already exists
                      Alfresco.util.PopupManager.displayPrompt(
@@ -1931,10 +1930,11 @@
                   else
                   {
                      // generic error
+                     var json = Alfresco.util.parseJSON(res.serverResponse.responseText);
                      Alfresco.util.PopupManager.displayPrompt(
                      {
                         title: this._msg("message.failure"),
-                        text: this._msg("message.create-failure", json.message)
+                        text: this._msg("message.create-failure", json ? json.message : res.serverResponse.statusText)
                      });
                   }
                },

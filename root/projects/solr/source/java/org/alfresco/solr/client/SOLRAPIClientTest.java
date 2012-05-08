@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -75,7 +75,6 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
@@ -168,7 +167,6 @@ public class SOLRAPIClientTest extends TestCase
             cmisDictionaryService.setCmisMapping(cmisMapping);
             cmisDictionaryService.setDictionaryService(dictionaryComponent);
             cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
-            cmisDictionaryService.setTenantService(tenantService);
 
             RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
             luceneBuilderMapping.setDictionaryService(dictionaryComponent);

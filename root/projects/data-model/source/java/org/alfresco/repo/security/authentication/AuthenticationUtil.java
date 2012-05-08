@@ -635,6 +635,11 @@ public class AuthenticationUtil implements InitializingBean
     
     private static String[] splitUserTenant(String userName)
     {
-        return userName.split(TenantService.SEPARATOR);
+        int idx = userName.lastIndexOf(TenantService.SEPARATOR);
+        if ((idx > 0) && (idx < (userName.length()-1)))
+        {
+            return new String[] {userName.substring(0, idx), userName.substring(idx+1)};
+        }
+        return new String[] {userName};
     }
 }

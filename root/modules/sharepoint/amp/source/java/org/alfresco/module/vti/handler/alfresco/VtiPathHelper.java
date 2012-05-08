@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -27,13 +27,13 @@ import java.util.List;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.repo.admin.SysAdminParams;
+import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.security.authentication.AuthenticationComponent;
 import org.alfresco.repo.security.authentication.AuthenticationException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.tenant.TenantService;
-import org.alfresco.repo.webdav.MTNodesCache;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -75,7 +75,8 @@ public class VtiPathHelper extends AbstractLifecycleBean
 
     private AuthenticationComponent authenticationComponent;
 
-    private MTNodesCache rootNodes;
+    private SimpleCache<String, NodeRef> singletonCache; // eg. for vtiRootNodeRef
+    private static final String KEY_VTI_ROOT_NODEREF = "key.vtiRoot.noderef";
     
     private String rootPath;
     private String storePath;
@@ -563,14 +564,6 @@ public class VtiPathHelper extends AbstractLifecycleBean
      */
     protected void onBootstrap(ApplicationEvent event)
     {
-        AuthenticationUtil.runAs(new RunAsWork<String>()
-        {
-            public String doWork() throws Exception
-            {
-                rootNodes = new MTNodesCache(new StoreRef(storePath), rootPath, nodeService, searchService, namespaceService, tenantService);
-                return null;
-            }
-        }, authenticationComponent.getSystemUserName());
     }
 
     /**
@@ -603,7 +596,15 @@ public class VtiPathHelper extends AbstractLifecycleBean
      */
     public NodeRef getRootNodeRef()
     {
-        return rootNodes.getNodeForCurrentTenant();
+        NodeRef rootNodeRef = singletonCache.get(KEY_VTI_ROOT_NODEREF);
+        
+        if (rootNodeRef == null)
+        {
+            rootNodeRef = tenantService.getRootNode(nodeService, searchService, namespaceService, rootPath, new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "dummy"));
+            singletonCache.put(KEY_VTI_ROOT_NODEREF, rootNodeRef);
+        }
+        
+        return rootNodeRef;
     }
 
     public String getRootPath()
@@ -640,5 +641,9 @@ public class VtiPathHelper extends AbstractLifecycleBean
     {
         this.dictionaryService = dictionaryService;
     }
-
+    
+    public void setSingletonCache(SimpleCache<String, NodeRef> singletonCache)
+    {
+        this.singletonCache = singletonCache;
+    }
 }

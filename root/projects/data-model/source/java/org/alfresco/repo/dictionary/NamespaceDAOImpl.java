@@ -30,6 +30,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.cache.SimpleCache;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.namespace.NamespaceException;
 import org.apache.commons.logging.Log;
@@ -213,7 +215,7 @@ public class NamespaceDAOImpl implements NamespaceDAO
             
             // Get non-tenant-specific URIs (and filter out, if overridden)
             List<String> urisFiltered = new ArrayList<String>();
-            for(String uri : getUrisCtx(""))
+            for(String uri : getUrisCtx(TenantService.DEFAULT_DOMAIN))
             {
                 if (domainUris.contains(uri))
                 {
@@ -247,7 +249,7 @@ public class NamespaceDAOImpl implements NamespaceDAO
             
             // Get non-tenant-specific URIs (and filter out, if overridden)
             List<String> prefixesFiltered = new ArrayList<String>();
-            for(String prefix : getPrefixesCtx("").keySet())
+            for(String prefix : getPrefixesCtx(TenantService.DEFAULT_DOMAIN).keySet())
             {
                 if (domainPrefixes.contains(prefix))
                 {
@@ -330,7 +332,7 @@ public class NamespaceDAOImpl implements NamespaceDAO
             else
             {
                 // try with default (non-tenant-specific) prefix
-                return getPrefixesCtx("").get(prefix);
+                return getPrefixesCtx(TenantService.DEFAULT_DOMAIN).get(prefix);
             }
         }
     }
@@ -367,15 +369,15 @@ public class NamespaceDAOImpl implements NamespaceDAO
                 }
             }
             
-            // check non-domain prefixes           
+            // check non-domain prefixes
             Collection<String> uriPrefixes = new ArrayList<String>();
-            for (String key : getPrefixesCtx("").keySet())
+            for (String key : getPrefixesCtx(TenantService.DEFAULT_DOMAIN).keySet())
             {
-                String uri = getPrefixesCtx("").get(key);
+                String uri = getPrefixesCtx(TenantService.DEFAULT_DOMAIN).get(key);
                 if ((uri != null) && (uri.equals(URI)))
                 {
                     if (domainUriPrefixes != null)
-                    {                          
+                    {
                         if (domainUriPrefixes.contains(key))
                         {
                             // overridden, hence skip this default prefix
@@ -533,7 +535,21 @@ public class NamespaceDAOImpl implements NamespaceDAO
      */
     private List<String> getUrisCtx(String tenantDomain)
     {
-        return getNamespaceRegistry(tenantDomain).getUrisCache();
+        if ((! AuthenticationUtil.isMtEnabled()) || (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN)))
+        {
+            return getNamespaceRegistry(tenantDomain).getUrisCache();
+        }
+        else
+        {
+            // ALF-6029
+            return AuthenticationUtil.runAs(new RunAsWork<List<String>>()
+            {
+                public List<String> doWork()
+                {
+                    return getNamespaceRegistry(TenantService.DEFAULT_DOMAIN).getUrisCache();
+                }
+            }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+        }
     }
     
     /**
@@ -554,7 +570,21 @@ public class NamespaceDAOImpl implements NamespaceDAO
      */
     private Map<String, String> getPrefixesCtx(String tenantDomain)
     {
-        return getNamespaceRegistry(tenantDomain).getPrefixesCache();
+        if ((! AuthenticationUtil.isMtEnabled()) || (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN)))
+        {
+            return getNamespaceRegistry(tenantDomain).getPrefixesCache();
+        }
+        else
+        {
+            // ALF-6029
+            return AuthenticationUtil.runAs(new RunAsWork<Map<String, String>>()
+            {
+                public Map<String, String> doWork()
+                {
+                    return getNamespaceRegistry(TenantService.DEFAULT_DOMAIN).getPrefixesCache();
+                }
+            }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+        }
     }
     
     /**

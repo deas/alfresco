@@ -35,10 +35,18 @@
 
          <mimetype mimetype="image/vnd.adobe.premiere" display="Adobe Premiere">
             <extension default="true">ppj</extension>
+            <extension>prproj</extension>
          </mimetype>
 
          <mimetype mimetype="audio/vnd.adobe.soundbooth" display="Adobe SoundBooth">
             <extension default="true">asnd</extension>
+         </mimetype>
+
+         <mimetype mimetype="application/vnd.adobe.aftereffects.project" display="Adobe AfterEffects Project">
+            <extension default="true">aep</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.adobe.aftereffects.template" display="Adobe AfterEffects Template">
+            <extension default="true">aet</extension>
          </mimetype>
 
          <mimetype mimetype="application/framemaker" display="Adobe FrameMaker">
@@ -77,7 +85,7 @@
             <extension>htm</extension>
             <extension>shtml</extension>
             <extension>body</extension>
-            <extension display="xsd">xsd</extension>
+            <extension display="XSD">xsd</extension>
          </mimetype>
          <mimetype mimetype="text/mediawiki" text="true" display="MediaWiki Markup">
             <extension display="MediaWiki Markup" default="true">mw</extension>
@@ -433,42 +441,88 @@
          <mimetype mimetype="application/vnd.ms-outlook" display="Microsoft Outlook Message">
             <extension>msg</extension>
          </mimetype>
+         <mimetype mimetype="application/msword" display="Microsoft Word">
+            <extension display="Microsoft Word 97-2003 Document" default="true">doc</extension>
+            <extension display="Microsoft Word 97-2003 Template">dot</extension>
+         </mimetype>
 
-         <!-- Microsoft Office -->
+         <mimetype mimetype="application/vnd.ms-powerpoint" display="Microsoft PowerPoint">
+            <extension display="PowerPoint Presentation">ppt</extension>
+            <extension display="PowerPoint Slide Show">pps</extension>
+            <extension display="PowerPoint Template" >pot</extension>
+            <extension display="PowerPoint Add-in">ppa</extension>
+         </mimetype>
+
          <mimetype mimetype="application/vnd.ms-excel" display="Microsoft Excel">
             <extension display="Excel Spreadsheet" default="true">xls</extension>
             <extension display="Excel Template">xlt</extension>
             <extension display="Excel Macro">xlm</extension>
          </mimetype>
-         <mimetype mimetype="application/msword" display="Microsoft Word">
-            <extension default="true">doc</extension>
-            <extension>dot</extension>
-         </mimetype>
-         <mimetype mimetype="application/vnd.ms-powerpoint" display="Microsoft PowerPoint">
-            <extension>ppt</extension>
-            <extension>pps</extension>
-            <extension>pot</extension>
-         </mimetype>
-         
-         <!-- Microsoft Office Open XML -->
+	 
+	 
+         <!--  Microsoft Office 2007 / 2010 -->
          <mimetype mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document" display="Microsoft Word 2007">
             <extension>docx</extension>
          </mimetype>
+         <mimetype mimetype="application/vnd.ms-word.document.macroenabled.12" display="Microsoft Word 2007 macro-enabled document">
+            <extension>docm</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.template" display="Microsoft Word 2007 template">
+            <extension>dotx</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-word.template.macroenabled.12" display="Microsoft Word 2007 macro-enabled document template">
+            <extension>dotm</extension>
+         </mimetype>
+
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation" display="Microsoft PowerPoint 2007 presentation">
+            <extension>pptx</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-powerpoint.presentation.macroenabled.12" display="Microsoft PowerPoint 2007 macro-enabled presentation">
+            <extension>pptm</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.slideshow" display="Microsoft PowerPoint 2007 slide show">
+            <extension>ppsx</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-powerpoint.slideshow.macroenabled.12" display="Microsoft PowerPoint 2007 macro-enabled slide show">
+            <extension>ppsm</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.template" display="Microsoft PowerPoint 2007 template">
+            <extension>potx</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-powerpoint.template.macroenabled.12" display="Microsoft PowerPoint 2007 macro-enabled presentation template">
+            <extension>potm</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-powerpoint.addin.macroenabled.12" display="Microsoft PowerPoint 2007 add-in">
+            <extension>ppam</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.slide" display="Microsoft PowerPoint 2007 slide">
+            <extension>sldx</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-powerpoint.slide.macroEnabled.12" display="Microsoft PowerPoint 2007 macro-enabled slide">
+            <extension>sldm</extension>
+         </mimetype>
+
          <mimetype mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" display="Microsoft Excel 2007">
             <extension>xlsx</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation" display="Microsoft PowerPoint 2007">
-            <extension>pptx</extension>
-         </mimetype>
-         <mimetype mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.template" display="Microsoft Excel Template 2007">
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.template" display="Microsoft Excel template 2007">
             <extension>xltx</extension>
          </mimetype>         
-         <mimetype mimetype="application/vnd.ms-excel.template.macroEnabled.12" display="Microsoft Excel Macro">
-            <extension>xltm</extension>
-         </mimetype>         
-         <mimetype mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.template" display="Microsoft Word Template 2007">
-            <extension>dotx</extension>
+         <mimetype mimetype="application/vnd.ms-excel.sheet.macroenabled.12" display="Microsoft Excel 2007 macro-enabled workbook">
+            <extension>xlsm</extension>
          </mimetype>
+         <mimetype mimetype="application/vnd.ms-excel.template.macroenabled.12" display="Microsoft Excel 2007 macro-enabled workbook template">
+            <extension>xltm</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-excel.addin.macroenabled.12" display="Microsoft Excel 2007 add-in">
+            <extension>xlam</extension>
+         </mimetype>
+         <mimetype mimetype="application/vnd.ms-excel.sheet.binary.macroenabled.12" display="Microsoft Excel 2007 binary workbook">
+            <extension>xlsb</extension>
+         </mimetype>
+
+
+
          <mimetype mimetype="application/x-zip" display="Adobe Flex Project File">
             <extension default="true">fxp</extension>
          </mimetype>

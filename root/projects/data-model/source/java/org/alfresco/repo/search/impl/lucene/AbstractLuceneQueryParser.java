@@ -122,6 +122,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_QNAME = "QNAME";
     public static final String FIELD_PRIMARYPARENT = "PRIMARYPARENT";
     public static final String FIELD_PARENT = "PARENT";
+    /**
+     * @deprecated This is basically unused - you want TXID
+     */
+    @Deprecated
     public static final String FIELD_TX = "TX";
     public static final String FIELD_ISNODE = "ISNODE";
     public static final String FIELD_ISCONTAINER = "ISCONTAINER";
@@ -827,6 +831,14 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 return createTransactionQuery(queryText);
             }
+            else if (field.equals(FIELD_INTXID))
+            {
+                return createInTxIdQuery(queryText);
+            }
+            else if (field.equals(FIELD_INACLTXID))
+            {
+                return createInAclTxIdQuery(queryText);
+            }
             else if (field.equals(FIELD_PARENT))
             {
                 return createParentQuery(queryText);
@@ -838,6 +850,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             else if (field.equals(FIELD_QNAME))
             {
                 return createQNameQuery(queryText);
+            }
+            else if (field.equals(FIELD_PRIMARYASSOCQNAME))
+            {
+                return createPrimaryAssocQNameQuery(queryText);
             }
             else if (field.equals(FIELD_PRIMARYASSOCTYPEQNAME))
             {
@@ -1226,9 +1242,21 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     protected abstract Query createAssocTypeQNameQuery(String queryText) throws SAXPathException;
 
     protected abstract Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException;
+    
+    protected abstract Query createPrimaryAssocQNameQuery(String queryText) throws SAXPathException;
 
     protected abstract Query createQNameQuery(String queryText) throws SAXPathException;
 
+    protected Query createInTxIdQuery(String queryText) throws ParseException
+    {      
+        return getFieldQueryImpl(FIELD_INTXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+    
+    protected Query createInAclTxIdQuery(String queryText) throws ParseException
+    {      
+        return getFieldQueryImpl(FIELD_INACLTXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+    
     protected Query createTransactionQuery(String queryText)
     {
         return createTermQuery(FIELD_TX, queryText);

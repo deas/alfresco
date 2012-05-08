@@ -1,0 +1,462 @@
+<!--  
+    | maven.xml files
+    | _______________
+    | The maven.xml scripts are NOT maven1 build files,  while they are Ant scripts used to deploy Alfresco artifacts 
+    | to a Maven repository (by default maven.alfresco.com).
+    |
+    | This file deploys main Community artifacts to a Maven repository. 
+    |  
+    | Accepted properties:
+    | ____________________
+    | -DisRelease=[true|false] ==> Switches between a RELEASE and SNAPSHOT deployment (default: SNAPSHOT) 
+    | -Dmaven.custom.label=customLabel ==> Adds a suffix to artifacts, e.g. for branch deployment
+    |
+    | Usage:
+    | ______
+    | The 'maven-deploy' target by default deploys a SNAPSHOT to the snapshot repo, otherwise deploys a release if the build is invoked with
+    |
+    | -Dmaven.isRelease=true
+    |
+    | This script deploys Community packages and depends already on all required build targets to produce artifacts:
+    |
+    | NOTE: maven-deploy assumes artifacts have already been build. Use the maven-build-deploy target instead to build and deploy in a single execution. 
+    |
+    | - For a Community SNAPSHOT deploy you can run it with: ant -f continuous.xml maven-deploy
+    | - For a Community RELEASE deploy you can run it with: ant -f continuous.xml maven-deploy -Dmaven.isRelease=true
+    | 
+    | Branch releases:
+    | ________________
+    | It's also possible to use a custom suffix to label special artifacts (e.g. deployed from a branch), by passing the following property -Dmaven.custom.label=mylabel
+    | to the build command line. This will append this suffix to the version of all deployed artifacts.
+    | 
+    | Prerequisites:
+    | ______________
+    | - Does NOT need Maven installed. Will download Maven 2.1.10 embedded
+    | - export ANT_OPTS="-Xms1G -Xmx1G -XX:MaxPermSize=512m" otherwise you'll get OOM/PermGen
+    | - check the "maven-prerequisites" target in root/maven.xml to see which standard build targets maven-deploy depends to
+    | - need to add server credentials to standard Maven ~/.m2/settings.xml (if not configured in BINARIES)
+    |
+    -->
+<project name="maven" xmlns:artifact="antlib:org.apache.maven.artifact.ant" >
+
+    <dirname property="alfresco.basedir" file="${ant.file.alfresco}"/>
+    <!-- 
+        | Allows to deploy custom labeled artifacts (e.g. from a branch). 
+        | By default no custom label is specified. 
+        | Specify one by passing the command line switch: -Dmaven.custom.label=mybranch 
+        | Artifacts will be deployed with that custom label appended
+        --> 
+    <target name="configure-custom-version" if="maven.custom.label">
+       <property name="maven.version.suffix" value="-${maven.custom.label}"/>
+    </target>
+
+    <target name="configure-empty-custom-version" unless="maven.custom.label">
+        <property name="maven.version.suffix" value=""/>
+    </target>
+
+    <!-- Configures for SNAPSHOT deployment in case it's not a release -->
+    <target name="configure-snapshot-deployment" unless="maven.isRelease" depends="configure-custom-version,configure-empty-custom-version">
+    	<echo>Configuring Maven Snapshot deployment</echo>
+    	<property name="maven.repo.url" value="${maven.repository.snapshots.url}" />
+        <property name="maven.repo.id" value="${maven.repository.snapshots.id}"/>
+        <property name="maven.version.number" value="${version.number}${maven.version.suffix}-SNAPSHOT"/>
+    	<echo>Configured Snapshot deployment of Alfresco ${file.name.edition} ${version.number} to ${maven.repo.url} as ${maven.group.id} alfresco-* ${maven.version.number} artifacts</echo>
+    </target>
+
+    <!-- Configures for release deployment in case it's a release ==> -DisRelease=true -->
+    <target name="configure-release-deployment" if="maven.isRelease" depends="configure-custom-version,configure-empty-custom-version">
+    	<echo>Configuring Maven Release deployment</echo>
+    	<property name="maven.repo.url" value="${maven.repository.url}" />
+        <property name="maven.repo.id" value="${maven.repository.id}"/>
+        <property name="maven.version.number" value="${version.number}${maven.version.suffix}"/>
+    	<echo>Configured Release deployment of Alfresco ${file.name.edition} ${version.number} to ${maven.repo.url} as ${maven.group.id} alfresco-* ${maven.version.number}</echo>
+    </target>
+	
+    <!-- Aggregator target putting together all configs/tasks needed for maven-deploy -->
+	<target name="maven-env-prerequisites">
+        <!-- Defining the maven ant tasks at runtime -->
+        <path id="maven-ant-tasks.classpath" path="${dir.project.3rdparty.lib}/maven-ant-tasks-2.1.3.jar" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+        <!-- Configuring the settings location -->
+        <property name="maven.settings.file" value="${dir.name.binaries}/build-classpath/settings.xml"/>
+        <echo>Deploying to Maven as a release: ${env.bamboo_deploy_as_release}</echo>
+        <condition property="maven.isRelease">
+            <istrue value="${env.bamboo_deploy_as_release}"/>
+        </condition>
+    </target>
+
+    <!--
+        | Deploys projects/*/build/dist JARs/WARs/ZIPs to a Maven repository configured via properties.
+        | NOTE: This goal assumes the artifacts have already been built at an earlier stage. Use maven-build-deploy to build and deploy at once.
+        | See beginning of this file for full usage instructions. 
+        -->
+    <target name="maven-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-env-prerequisites,configure-snapshot-deployment, configure-release-deployment, maven-deploy-webclient, maven-deploy-slingshot, maven-deploy-solr, maven-deploy-amps, maven-deploy-extras" /> 
+
+    <target name="maven-deploy-webclient" description="Deploys Alfresco Explorer related JARs/WARs to a Maven repository" depends="maven-deploy-webclient-jars, maven-deploy-webclient-webapp" />
+
+    <target name="maven-deploy-slingshot" description="Deploys Alfresco Share related JARs/WARs to a Maven repository" depends="maven-deploy-slingshot-jars, maven-deploy-slingshot-webapp" />
+
+    <target name="maven-deploy-solr" description="Deploys Solr related JARs/WARs to a Maven repository" depends="maven-deploy-solr-jars, maven-deploy-solr-webapp" />
+
+    <target name="maven-deploy-amps" description="Deploys additional Alfresco AMPs to a Maven repository">
+        <!-- SPP -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.module.spp.dist}/${file.name.amp.spp}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-spp"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=amp"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+        </artifact:mvn>
+        <!-- FDK Repo AMP -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.fdk.repo.dist}/${file.name.amp.fdk}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-fdk-repo"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=amp"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- WCM Quickstart Repo -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.module.wcmquickstart.dist}/${file.name.amp.wcmquickstart}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-wcm-quickstart-repo"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=amp"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>        	            
+        </artifact:mvn>
+        <!-- WCM Quickstart Share -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.module.wcmquickstart-share.dist}/${file.name.amp.wcmquickstart-share}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-wcm-quickstart-share"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=amp"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+    <target name="maven-deploy-extras" description="Deploys additional Alfresco JARs/WARs/ZIPs to a Maven repository">
+        <!-- WCM Quickstart webapp -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-wcm-quickstart"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=war"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Web Service Client -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-web-service-client-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-web-service-client"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Web Editor JAR -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webeditor.dist}/${file.name.jar.webeditor}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-webeditor"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Web Editor taglib -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webeditor.dist}/${file.name.jar.webeditor.taglib}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-webeditor-taglib"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Web Editor plugin -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webeditorplugin.dist}/${file.name.jar.webeditor.plugin}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-webeditor-plugin"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+    <target name="maven-deploy-webclient-jars" description="Deploys Alfresco Explorer related JARs to a Maven repository">
+        <!-- Core -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.core.dist}/${file.name.jar.core}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-core-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-core"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Datamodel -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.datamodel.dist}/${file.name.jar.datamodel}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-datamodel-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-data-model"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Deployment -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.deployment.dist}/${file.name.jar.deployment}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-deployment-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-deployment-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-deployment"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- JLAN Embed -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.jlan.dist}/${file.name.jar.jlan}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-jlan-embed"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Mbeans -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.mbeans.dist}/${file.name.jar.mbeans}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-mbeans"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>    	
+        <!-- Remote API -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-remote-api-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-remote-api-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-remote-api"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>     
+        <!-- Repository -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.repository.dist}/${file.name.jar.repository}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-repository-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-repository-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-repository"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>     
+        <!-- WDR Deployment -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.wdrdeployment.dist}/${file.name.jar.wdrdeployment}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-wdr-deployment"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- Web Client -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webclient.dist}/${file.name.jar.webclient}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-web-client-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-web-client"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>     
+        <!-- Web Framework Commons -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-web-framework-commons"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>     
+    </target>
+            
+    <target name="maven-deploy-webclient-webapp" description="Deploys Alfresco Explorer related WAR to a Maven repository">
+        <echo message="Starting deployment of ${dir.project.webclient.dist}/${file.name.war.webclient} to ${maven.repo.url}"/>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.webclient.dist}/${file.name.war.webclient}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=${dir.name.deploy.webclient}"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=war"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+    <target name="maven-deploy-slingshot-jars" description="Deploys Alfresco Share related JARs to a Maven repository">
+        <!-- Share JAR -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.slingshot.dist}/${file.name.jar.slingshot}"/>
+            <arg value="-Dsources=${dir.continuous.assemble.sdk}/src/alfresco-share-src.zip"/>
+            <arg value="-Djavadoc=${dir.continuous.assemble.sdk}/doc/alfresco-share-doc.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-share"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+        <!-- FDK Client JAR  -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.fdk.client.dist}/${file.name.jar.fdk}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-fdk-client"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+    <target name="maven-deploy-slingshot-webapp" description="Deploys Alfresco Share related WAR to a Maven repository">
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.slingshot.dist}/${file.name.war.slingshot}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=${dir.name.deploy.slingshot}"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=war"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+    <target name="maven-deploy-solr-jars" description="Deploys Solr related JARs to a Maven repository">
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.project.solr.dist}/${file.name.jar.solr}"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-solr-integration"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+    <target name="maven-deploy-solr-webapp" description="Deploys Solr related webapp to a Maven Repository">
+        <echo message="Starting deployment of ${dir.continuous.dist}/${file.name.dist.solr}.zip to ${maven.repo.url}"/>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.continuous.dist}/${file.name.dist.solr}.zip"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-solr"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=zip"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
+    </target>
+
+</project>

@@ -2,9 +2,9 @@
 <#assign el=args.htmlid?js_string>
 <script type="text/javascript">//<![CDATA[
 new Alfresco.component.WorkflowDetailsActions("${el}").setOptions(
-   {
-      forwardUrl: "${siteURL("my-tasks")}"
-   }).setMessages(
+{
+   submitUrl: "${siteURL("my-tasks")}"
+}).setMessages(
    ${messages}
 );
 //]]></script>

@@ -86,6 +86,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_FTSREF);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_DBID);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_TAG);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ACLID);
@@ -102,6 +103,8 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_ANCESTOR);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE);
         EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_LID);
+        EXPOSED_FIELDS.add(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC);
     }
 
     /**

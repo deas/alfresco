@@ -64,6 +64,15 @@
         <booleanParameter name="openoffice_installed_as_service" ask="0" default="1" />
     </parameterList>
     <readyToInstallActionList>
+        <getUniqueWindowsServiceName>
+	    <serviceName>${product_shortname}OpenOffice</serviceName>
+            <displayName>${product_fullname} OpenOffice Service</displayName>
+            <selectedServiceNameVariable>OpenOfficeUniqueServiceName</selectedServiceNameVariable>
+            <selectedDisplayNameVariable>OpenOfficeUniqueDisplayName</selectedDisplayNameVariable>
+            <ruleList>
+                <platformTest type="windows" />
+            </ruleList>
+        </getUniqueWindowsServiceName>
         <setInstallerVariable name="openoffice_execute_abort_action_list" value="1"/>
         <setInstallerVariable name="openoffice_directory" value="${installdir}/openoffice"/>
         <setInstallerVariable name="openoffice_directory" value="${installdir}/openoffice.app">
@@ -130,8 +139,21 @@
     <postInstallationActionList>
         <actionGroup>
             <actionList>
+		<substitute>
+		    <files>${installdir}/${ctlscript_unix}</files>
+		    <type>exact</type>
+		    <substitutionList>
+			<substitution>
+			    <pattern>$INSTALLDIR/openoffice/</pattern>
+			    <value>$INSTALLDIR/openoffice.app/</value>
+			</substitution>
+		    </substitutionList>
+		    <ruleList>
+			<platformTest type="osx" />
+		    </ruleList>
+		</substitute>
                 <substitute>
-                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc</files>
+                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${openoffice_directory}/Contents/MacOS/soffice.bin</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
@@ -184,12 +206,6 @@
                         <platformTest type="windows"/>
                     </ruleList>
                 </substitute>
-                <getUniqueWindowsServiceName>
-                    <serviceName>${product_shortname}OpenOffice</serviceName>
-                    <displayName>${product_fullname} OpenOffice Service</displayName>
-                    <selectedServiceNameVariable>OpenOfficeUniqueServiceName</selectedServiceNameVariable>
-                    <selectedDisplayNameVariable>OpenOfficeUniqueDisplayName</selectedDisplayNameVariable>
-                </getUniqueWindowsServiceName>
                 <substitute>
                     <files>${openoffice_directory}/scripts/servicerun.bat;${openoffice_directory}/scripts/serviceinstall.bat</files>
                     <substitutionList>

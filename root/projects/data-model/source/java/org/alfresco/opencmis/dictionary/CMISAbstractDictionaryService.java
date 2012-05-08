@@ -23,13 +23,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.dictionary.DictionaryDAO;
 import org.alfresco.repo.dictionary.DictionaryListener;
-import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -62,7 +61,6 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     // service dependencies
     private DictionaryDAO dictionaryDAO;
     protected DictionaryService dictionaryService;
-    protected TenantService tenantService;
     protected CMISMapping cmisMapping;
     protected PropertyAccessorMapping accessorMapping;
     protected PropertyLuceneBuilderMapping luceneBuilderMapping;
@@ -117,25 +115,22 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         this.dictionaryDAO = dictionaryDAO;
     }
 
-    /**
-     * Set the tenant Service
-     * 
-     * @param tenantService
-     */
-    public void setTenantService(TenantService tenantService)
+    public void setSingletonCache(SimpleCache<String, DictionaryRegistry> singletonCache)
     {
-        this.tenantService = tenantService;
+        this.singletonCache = singletonCache;
     }
-
-    /** CMIS Dictionary Registry (tenant-aware) */
-    private Map<String, DictionaryRegistry> registryMap = new ConcurrentHashMap<String, DictionaryRegistry>(4);
-
+    
+    // note: cache is tenant-aware (if using EhCacheAdapter shared cache)
+    
+    private SimpleCache<String, DictionaryRegistry> singletonCache; // eg. for openCmisDictionaryRegistry
+    private final String KEY_OPENCMIS_DICTIONARY_REGISTRY = "key.openCmisDictionaryRegistry";
+    
     /**
      * CMIS Dictionary registry
      * 
      * Index of CMIS Type Definitions
      */
-    /* package */class DictionaryRegistry
+    public class DictionaryRegistry
     {
         // Type Definitions Index
         Map<QName, TypeDefinitionWrapper> typeDefsByQName = new HashMap<QName, TypeDefinitionWrapper>();
@@ -223,12 +218,11 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
 
     private DictionaryRegistry getRegistry()
     {
-        String tenantDomain = tenantService.getCurrentUserDomain();
-        DictionaryRegistry registry = registryMap.get(tenantDomain);
+        DictionaryRegistry registry = singletonCache.get(KEY_OPENCMIS_DICTIONARY_REGISTRY);
         if (registry == null)
         {
             init();
-            registry = registryMap.get(tenantDomain);
+            registry = singletonCache.get(KEY_OPENCMIS_DICTIONARY_REGISTRY);
         }
         return registry;
     }
@@ -420,7 +414,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         }
 
         // publish new registry
-        registryMap.put(tenantService.getCurrentUserDomain(), registry);
+        singletonCache.put(KEY_OPENCMIS_DICTIONARY_REGISTRY, registry);
 
         if (logger.isInfoEnabled())
             logger.info("Initialized CMIS Dictionary. Types:" + registry.typeDefsByTypeId.size() + ", Base Types:"
@@ -454,7 +448,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      */
     public void afterDictionaryDestroy()
     {
-        registryMap.remove(tenantService.getCurrentUserDomain());
+        singletonCache.remove(KEY_OPENCMIS_DICTIONARY_REGISTRY);
     }
 
     /*

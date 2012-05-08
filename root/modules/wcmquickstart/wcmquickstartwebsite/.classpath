@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.beans-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.10.jar" sourcepath="/3rd Party/src/junit-4.10-src.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

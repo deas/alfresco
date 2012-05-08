@@ -145,18 +145,18 @@
       
       /**
        * Handler called when the metadata update operation failed
-       *
+       * 
        * @method onCreateContentFailure
        * @param response The response from the submission
        */
       onCreateContentFailure: function CreateContentMgr_onCreateContentFailure(response)
       {
          var errorMsg = this.msg("create-content-mgr.create.failed");
-         if (response.json.message)
+         if (response.json && response.json.message)
          {
             errorMsg = errorMsg + ": " + response.json.message;
-         }  
-            
+         }
+         
          Alfresco.util.PopupManager.displayPrompt(
          {
             title: this.msg("message.failure"),

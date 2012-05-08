@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,9 +19,6 @@
 package org.alfresco.service.namespace;
 
 import org.alfresco.service.Auditable;
-import org.alfresco.service.PublicService;
-
-
 
 /**
  * Namespace Service.
@@ -104,6 +101,12 @@ public interface NamespaceService extends NamespacePrefixResolver
 
     /** Alfresco Forums Prefix */
     static final String FORUMS_MODEL_PREFIX = "fm";
+    
+    /** Alfresco Links URI */
+    static final String LINKS_MODEL_1_0_URI = "http://www.alfresco.org/model/linksmodel/1.0";
+
+    /** Alfresco Links Prefix */
+    static final String LINKS_MODEL_PREFIX = "lnk";
     
     /** Rendition Model URI */
     static final String RENDITION_MODEL_1_0_URI = "http://www.alfresco.org/model/rendition/1.0";

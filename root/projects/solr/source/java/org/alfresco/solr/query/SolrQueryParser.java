@@ -68,6 +68,17 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#createDbidQuery(java.lang.String)
+     */
+    @Override
+    protected Query createDbidQuery(String queryText) throws ParseException
+    {
+        Query query = super.createDbidQuery(queryText);
+        return new SolrCachingAuxDocQuery(query);
+    }
+
     @Override
     protected Query createPathQuery(String queryText, boolean withRepeats) throws SAXPathException
     {
@@ -91,6 +102,19 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         reader.setXPathHandler(handler);
         reader.parse("//" + queryText);
         SolrPathQuery pathQuery = handler.getQuery();
+        return new SolrCachingPathQuery(pathQuery);
+    }
+
+    protected Query createPrimaryAssocQNameQuery(String queryText) throws SAXPathException
+    {
+        XPathReader reader = new XPathReader();
+        SolrXPathHandler handler = new SolrXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse("//" + queryText);
+        SolrPathQuery pathQuery = handler.getQuery();
+        pathQuery.setPathField(FIELD_PRIMARYASSOCQNAME);
         return new SolrCachingPathQuery(pathQuery);
     }
 
@@ -231,7 +255,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                 {
                     booleanQuery.add(subQuery, Occur.SHOULD);
                 }
-               
+
             }
             else
             {
@@ -260,7 +284,8 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
     protected void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode)
     {
-        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), getFixedFunctionQueryText(queryText, locale, tokenisationMode, IndexTokenisationMode.FALSE)));
+        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), getFixedFunctionQueryText(
+                queryText, locale, tokenisationMode, IndexTokenisationMode.FALSE)));
         booleanQuery.add(subQuery, Occur.SHOULD);
 
         if (booleanQuery.getClauses().length == 0)
@@ -268,15 +293,16 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
             booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
         }
     }
-    
-    private String getFixedFunctionQueryText(String queryText, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
+
+    private String getFixedFunctionQueryText(String queryText, Locale locale, IndexTokenisationMode actualIndexTokenisationMode,
+            IndexTokenisationMode preferredIndexTokenisationMode)
     {
         StringBuilder builder = new StringBuilder(queryText.length() + 10);
         if (locale.toString().length() > 0)
         {
             builder.append("{").append(locale.toString()).append("}");
         }
-         builder.append(queryText);
+        builder.append(queryText);
 
         return builder.toString();
     }
@@ -651,13 +677,13 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         addMLTextOrTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
-    private void addMLTextOrTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, 
-            IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
+    private void addMLTextOrTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
+            BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
     {
         try
         {
             String fieldName = getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.TRUE);
-            
+
             StringBuilder builder = new StringBuilder(first.length() + 10);
             builder.append("\u0000").append(locale.toString()).append("\u0000").append(first);
             TokenStream source = getAnalyzer().tokenStream(fieldName, new StringReader(builder.toString()), AnalysisMode.TOKENISE);

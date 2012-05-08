@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.org_alfresco_module_wcmquickstart.publish.PublishService;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.contextparser.ContextParserService;
 import org.alfresco.repo.content.ContentServicePolicies;
 import org.alfresco.repo.content.MimetypeMap;
@@ -82,6 +83,7 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
 
     private PolicyComponent policyComponent;
     private BehaviourFilter behaviourFilter;
+    private PublishService publishService;
     private NodeService nodeService;
     private ContentService contentService;
     private DictionaryService dictionaryService;
@@ -127,6 +129,17 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
     public void setBehaviourFilter(BehaviourFilter behaviourFilter)
     {
         this.behaviourFilter = behaviourFilter;
+    }
+
+    /**
+     * Set the publish service
+     * 
+     * @param publishService
+     *            publish service
+     */
+    public void setPublishService(PublishService publishService)
+    {
+        this.publishService = publishService;
     }
 
     /**
@@ -283,6 +296,9 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
         // Register the association behaviours
         policyComponent.bindClassBehaviour(NodeServicePolicies.OnCreateNodePolicy.QNAME, WebSiteModel.TYPE_SECTION,
                 new JavaBehaviour(this, "onCreateNode"));
+        
+        policyComponent.bindClassBehaviour(NodeServicePolicies.BeforeDeleteNodePolicy.QNAME, WebSiteModel.TYPE_SECTION,
+                new JavaBehaviour(this, "beforeDeleteNode"));
 
         policyComponent.bindClassBehaviour(ContentServicePolicies.OnContentPropertyUpdatePolicy.QNAME,
                 WebSiteModel.TYPE_SECTION, new JavaBehaviour(this, "onContentPropertyUpdate"));
@@ -542,6 +558,18 @@ public class SectionType extends TransactionListenerAdapter implements WebSiteMo
         processCreateNode(childAssocRef.getChildRef());
         recordAffectedChild(childAssocRef);
     }
+
+    /**
+     * Before delete node behaviour
+     * 
+     * @param nodeRef
+     *            the section node reference
+     */
+    public void beforeDeleteNode(NodeRef nodeRef)
+    {
+        // Enqueue nodes
+        publishService.enqueueRemovedNodes(nodeRef);
+    } 
 
     /**
      * On creation of a section node

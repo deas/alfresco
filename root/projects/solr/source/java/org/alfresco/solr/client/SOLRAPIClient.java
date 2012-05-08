@@ -917,7 +917,7 @@ public class SOLRAPIClient
         return nodes;
     }
     
-    public GetTextContentResponse getTextContent(Long nodeId, QName propertyName, Long modifiedSince) throws AuthenticationException, IOException
+    public GetTextContentResponse getTextContent(Long nodeId, QName propertyQName, Long modifiedSince) throws AuthenticationException, IOException
     {
         StringBuilder url = new StringBuilder(GET_CONTENT);
         
@@ -933,7 +933,7 @@ public class SOLRAPIClient
         {
             throw new NullPointerException();
         }
-        if(propertyName != null)
+        if(propertyQName != null)
         {
             if(args.length() == 0)
             {
@@ -943,10 +943,10 @@ public class SOLRAPIClient
             {
                 args.append("&");
             }
-            args.append("propertyName");
+            args.append("propertyQName");
             args.append("=");
             URLCodec encoder = new URLCodec();
-            args.append(encoder.encode(propertyName.toString(), "UTF-8"));
+            args.append(encoder.encode(propertyQName.toString(), "UTF-8"));
         }
        
         url.append(args);

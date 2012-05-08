@@ -86,6 +86,15 @@
                     distribute,
                     generate-checksums" />
    
+   <target name="continuous-minimal" 
+           description="Performs a full clean, runs minimal tests"
+           depends="clean-continuous, 
+                    clean, 
+                    -reset-database,
+                    set-build-number,
+                    init-test,
+                    test-minimal" />
+
    <target name="continuous-without-distribute" 
            description="Performs a full clean and runs all tests but does not generate any distribution files"
            depends="clean-continuous, 
@@ -207,6 +216,12 @@
          <fileset dir="${dir.continuous.dist}"/>
       </checksum>
    </target>
+
+   <!-- Aggregator target putting together all build targets to build artifacts prior to maven-deploy --> 
+    <target name="maven-build-prerequisites" depends="set-build-number, incremental, distribute-core, distribute-amps, distribute-fdk, distribute-sdk"/>
+
+	<!-- Builds all necessary artifacts and delegates deployment to the Maven repository to the maven-deploy target. -->
+	<target name="maven-build-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-build-prerequisites, maven-deploy, revert-changes" />
 
    <!-- **************************************************** -->
    <!-- ** Database targets (for internal script use only)** -->

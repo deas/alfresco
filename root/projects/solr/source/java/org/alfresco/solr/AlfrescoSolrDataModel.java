@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2011 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -108,7 +108,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
 public class AlfrescoSolrDataModel
 {
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
-    
+
     private static HashMap<String, AlfrescoSolrDataModel> models = new HashMap<String, AlfrescoSolrDataModel>();
 
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -172,7 +172,7 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_READER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_OWNER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        
+
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
 
         addAdditionalContentField(".size", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
@@ -287,7 +287,7 @@ public class AlfrescoSolrDataModel
         cmisDictionaryService.setCmisMapping(cmisMapping);
         cmisDictionaryService.setDictionaryService(dictionaryComponent);
         cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
-        cmisDictionaryService.setTenantService(tenantService);
+        cmisDictionaryService.setSingletonCache(new MemoryCache<String, CMISStrictDictionaryService.DictionaryRegistry>());
 
         RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
         luceneBuilderMapping.setDictionaryService(dictionaryComponent);
@@ -311,7 +311,7 @@ public class AlfrescoSolrDataModel
     {
         return namespaceDAO;
     }
-    
+
     public boolean isStoreAll()
     {
         return storeAll;
@@ -332,11 +332,11 @@ public class AlfrescoSolrDataModel
 
     public boolean isIndexedOrStored(QName propertyQName)
     {
-        if(storeAll)
+        if (storeAll)
         {
             return true;
         }
-        
+
         String fieldName = AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString();
 
         PropertyDefinition propertyDefinition = getPropertyDefinition(fieldName);
@@ -344,14 +344,14 @@ public class AlfrescoSolrDataModel
         {
             if (propertyDefinition.isIndexed())
             {
-               return true;
+                return true;
             }
-            if(propertyDefinition.isStoredInIndex())
+            if (propertyDefinition.isStoredInIndex())
             {
                 return true;
             }
             return false;
-            
+
         }
         else
         {
@@ -359,7 +359,7 @@ public class AlfrescoSolrDataModel
             return true;
         }
     }
-    
+
     /**
      * @param field
      * @return
@@ -434,13 +434,26 @@ public class AlfrescoSolrDataModel
     String expandFieldName(String fieldName)
     {
         String expandedFieldName = fieldName;
-        if(fieldName.startsWith("@"))
+        if (fieldName.startsWith("@"))
         {
             expandedFieldName = expandAttributeFieldName(fieldName);
         }
+        else if (fieldName.startsWith("{"))
+        {
+            expandedFieldName = expandFieldName("@" + fieldName);
+        }
+        else if (fieldName.contains(":"))
+        {
+            expandedFieldName = expandFieldName("@" + fieldName);
+        }
+        else if (nonDictionaryFields.get(fieldName) == null)
+        {
+            expandedFieldName = expandFieldName("@" + fieldName);
+        }
         return expandedFieldName;
+
     }
-    
+
     String expandAttributeFieldName(String field)
     {
         String fieldName = field;
@@ -461,7 +474,7 @@ public class AlfrescoSolrDataModel
         }
         return fieldName;
     }
-    
+
     /**
      * @param field
      * @return
@@ -952,7 +965,6 @@ public class AlfrescoSolrDataModel
     // xmlWriter.endElement("", "field", "field");
     // }
 
-   
     public AbstractLuceneQueryParser getLuceneQueryParser(SearchParameters searchParameters, IndexReader indexReader)
     {
         SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
@@ -1154,6 +1166,34 @@ public class AlfrescoSolrDataModel
             return Sorting.getStringSortField(field.getName(), reverse, field.sortMissingLast(), field.sortMissingFirst());
         }
 
+        for (String additionalContentFieldEnding : additionalContentFields.keySet())
+        {
+            if (field.getName().endsWith(additionalContentFieldEnding)
+                    && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))) != null))
+            {
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))), reverse, field.sortMissingLast(), field.sortMissingFirst());
+            }
+        }
+
+        for (String additionalTextFieldEnding : additionalTextFields.keySet())
+        {
+            if (field.getName().endsWith(additionalTextFieldEnding)
+                    && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))) != null))
+            {
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))), reverse, field.sortMissingLast(), field.sortMissingFirst());
+            }
+        }
+
+        for (String additionalMlTextFieldEnding : additionalMlTextFields.keySet())
+        {
+            if (field.getName().endsWith(additionalMlTextFieldEnding)
+                    && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))) != null))
+            {
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))), reverse, field.sortMissingLast(), field.sortMissingFirst());
+            }
+        }
+        
+        
         return Sorting.getStringSortField(field.getName(), reverse, field.sortMissingLast(), field.sortMissingFirst());
 
     }
@@ -1489,15 +1529,15 @@ public class AlfrescoSolrDataModel
     public PropertyDefinition getPropertyDefinition(QName propertyQName)
     {
         PropertyDefinition propertyDef = getDictionaryService().getProperty(propertyQName);
-        if((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_AUTHOR)))
+        if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_AUTHOR)))
         {
             return new PropertyDefinitionWrapper(propertyDef);
         }
-        else if((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_CREATOR)))
+        else if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_CREATOR)))
         {
             return new PropertyDefinitionWrapper(propertyDef);
         }
-        else if((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_MODIFIER)))
+        else if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_MODIFIER)))
         {
             return new PropertyDefinitionWrapper(propertyDef);
         }
