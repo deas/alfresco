@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/datalists/parse-args.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/datalists/parse-args.lib.js">
 
 /**
  * Copyright (C) 2005-2010 Alfresco Software Limited.

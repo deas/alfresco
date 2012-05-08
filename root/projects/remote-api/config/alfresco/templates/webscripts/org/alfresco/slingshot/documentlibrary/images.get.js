@@ -1,5 +1,5 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/filters.lib.js">
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/parse-args.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/filters.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/parse-args.lib.js">
 
 /**
  * Main entry point: Create collection of images in the given space (and its subspaces)

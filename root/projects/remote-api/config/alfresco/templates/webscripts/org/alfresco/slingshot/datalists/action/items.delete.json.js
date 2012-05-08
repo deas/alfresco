@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/datalists/action/action.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/datalists/action/action.lib.js">
 
 /**
  * Copyright (C) 2005-2010 Alfresco Software Limited.

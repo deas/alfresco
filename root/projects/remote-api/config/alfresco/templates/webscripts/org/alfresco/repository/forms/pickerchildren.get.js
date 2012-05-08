@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/repository/forms/pickerresults.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/repository/forms/pickerresults.lib.js">
 
 function main()
 {

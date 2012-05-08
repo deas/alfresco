@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/documentlibrary/data/surf-doclist.lib.js">
+<import resource="classpath:alfresco/site-webscripts/org/alfresco/components/documentlibrary/data/surf-doclist.lib.js">
 
 var this_AlfrescoUtil = this;
 

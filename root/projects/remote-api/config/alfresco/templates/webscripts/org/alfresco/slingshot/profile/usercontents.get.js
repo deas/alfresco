@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/search/search.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/search/search.lib.js">
 
 var maxResults = (args.maxResults !== undefined) ? parseInt(args.maxResults, 10) : DEFAULT_MAX_RESULTS;
 

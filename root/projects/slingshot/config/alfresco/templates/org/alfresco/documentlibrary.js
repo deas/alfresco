@@ -9,8 +9,8 @@
  * file for that anymore.
  *
  * If you have a reference to this file, i.e.
- * <import resource="classpath:/alfresco/templates/org/alfresco/documentlibrary.js">
+ * <import resource="classpath:alfresco/templates/org/alfresco/documentlibrary.js">
  *
  * Please change that to point to the follwing file instead:
- * <import resource="classpath:/alfresco/templates/org/alfresco/documentlibrary.deprecated.js">
+ * <import resource="classpath:alfresco/templates/org/alfresco/documentlibrary.deprecated.js">
  */

@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/parse-args.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/parse-args.lib.js">
 
 /**
  * Entry point for rmpermissions POST data webscript.

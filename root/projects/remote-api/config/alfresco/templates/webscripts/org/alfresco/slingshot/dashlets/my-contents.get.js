@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/search/search.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/search/search.lib.js">
 
 /**
  * Fetches all posts of the given blog

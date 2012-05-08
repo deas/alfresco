@@ -1,6 +1,6 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/datalists/evaluator.lib.js">
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/datalists/filters.lib.js">
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/datalists/parse-args.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/datalists/evaluator.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/datalists/filters.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/datalists/parse-args.lib.js">
 
 const REQUEST_MAX = 1000;
 

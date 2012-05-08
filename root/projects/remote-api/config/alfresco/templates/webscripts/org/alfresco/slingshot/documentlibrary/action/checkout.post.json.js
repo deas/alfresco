@@ -1,4 +1,4 @@
-<import resource="classpath:/alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/action/action.lib.js">
+<import resource="classpath:alfresco/templates/webscripts/org/alfresco/slingshot/documentlibrary/action/action.lib.js">
 
 /**
  * Checkout file action
