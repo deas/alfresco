@@ -26,8 +26,8 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.webdav.LockInfo;
 import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
+import org.alfresco.service.cmr.lock.LockService;
 import org.alfresco.service.cmr.lock.LockStatus;
-import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 
@@ -41,6 +41,7 @@ public class VtiDocumentHepler
     private NodeService nodeService;
     private CheckOutCheckInService checkOutCheckInService;
     private WebDAVLockService webDAVLockService;
+    private LockService lockService;
 
     /**
      * Set node service
@@ -72,6 +73,15 @@ public class VtiDocumentHepler
     }
 
     /**
+     * 
+     * @param lockService the lockService to set
+     */
+    public void setLockService(LockService lockService)
+    {
+        this.lockService = lockService;
+    }
+
+    /**
      * Returns document status for node reference
      * 
      * @param nodeRef node reference ({@link NodeRef})
@@ -82,44 +92,39 @@ public class VtiDocumentHepler
         DocumentStatus status = DocumentStatus.NORMAL;
 
         LockInfo lockInfo = webDAVLockService.getLockInfo(nodeRef);
+        LockStatus lockStatus = lockService.getLockStatus(nodeRef);
+        NodeRef workingCopyNodeRef = checkOutCheckInService.getWorkingCopy(nodeRef);
 
-        if (lockInfo.equals(LockStatus.LOCKED) || lockInfo.equals(LockStatus.LOCK_OWNER))
+        if (isShortCheckedout(nodeRef))
         {
-            if (LockType.valueOf((String) nodeService.getProperty(nodeRef, ContentModel.PROP_LOCK_TYPE)).equals(LockType.WRITE_LOCK) == true)
+            if (workingCopyNodeRef == null)
             {
                 // short-term checkout
-                if (lockInfo.equals(LockStatus.LOCKED))
+                if (lockInfo.getOwner().equals(AuthenticationUtil.getFullyAuthenticatedUser()))
                 {
-                    status = DocumentStatus.SHORT_CHECKOUT;
+                    status = DocumentStatus.SHORT_CHECKOUT_OWNER;
                 }
                 else
                 {
-                    status = DocumentStatus.SHORT_CHECKOUT_OWNER;
+                    status = DocumentStatus.SHORT_CHECKOUT;
                 }
             }
             else
             {
-                NodeRef workingCopyNodeRef = checkOutCheckInService.getWorkingCopy(nodeRef);
-
-                // checks for long-term checkout
-                if (workingCopyNodeRef != null)
-                {
-                    // long-term checkout
-                    String ownerUsername = (String) nodeService.getProperty(workingCopyNodeRef, ContentModel.PROP_WORKING_COPY_OWNER);
-                    if (ownerUsername.equals(AuthenticationUtil.getFullyAuthenticatedUser()))
-                    {
-                        status = DocumentStatus.LONG_CHECKOUT_OWNER;
-                    }
-                    else
-                    {
-                        status = DocumentStatus.LONG_CHECKOUT;
-                    }
-                }
-                else
-                {
-                    // just readonly document
-                    status = DocumentStatus.READONLY;
-                }
+                // long-term checkout
+                status = isWorkingCopyOwner(workingCopyNodeRef) ? DocumentStatus.LONG_CHECKOUT_OWNER : DocumentStatus.LONG_CHECKOUT;
+            }
+        }
+        else if(lockStatus.equals(LockStatus.LOCKED) || lockStatus.equals(LockStatus.LOCK_OWNER))
+        {
+            if (workingCopyNodeRef != null)            
+            {
+                // long-term checkout
+                status = isWorkingCopyOwner(workingCopyNodeRef) ? DocumentStatus.LONG_CHECKOUT_OWNER : DocumentStatus.LONG_CHECKOUT;
+            }
+            else
+            {
+                status = DocumentStatus.READONLY;
             }
         }
 
@@ -136,18 +141,7 @@ public class VtiDocumentHepler
     {
         LockInfo lockInfo = webDAVLockService.getLockInfo(nodeRef);
 
-        boolean isShortCheckedout = false;
-
-        String userName = AuthenticationUtil.getFullyAuthenticatedUser();
-        if (lockInfo.isLocked() || lockInfo.getOwner().equals(userName));
-        {
-            if (LockType.valueOf((String) nodeService.getProperty(nodeRef, ContentModel.PROP_LOCK_TYPE)).equals(LockType.WRITE_LOCK) == true)
-            {
-                isShortCheckedout = true;
-            }
-        }
-
-        return isShortCheckedout;
+        return lockInfo != null && lockInfo.isLocked() && !lockInfo.isExpired();
     }
 
     /**
@@ -261,5 +255,15 @@ public class VtiDocumentHepler
         }
 
         return false;
+    }
+
+    /*
+     * Tests whether the current user is owner of working copy
+     */
+    private boolean isWorkingCopyOwner(NodeRef workingCopy)
+    {
+        String ownerUsername = (String) nodeService.getProperty(workingCopy, ContentModel.PROP_WORKING_COPY_OWNER);
+
+        return ownerUsername.equals(AuthenticationUtil.getFullyAuthenticatedUser());
     }
 }

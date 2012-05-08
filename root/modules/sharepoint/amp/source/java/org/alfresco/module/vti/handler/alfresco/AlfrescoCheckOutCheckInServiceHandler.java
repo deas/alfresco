@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
-import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
@@ -33,7 +32,6 @@ import org.alfresco.repo.version.VersionModel;
 import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
-import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -135,6 +133,10 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     }
 
                     NodeRef originalNode = checkOutCheckInService.cancelCheckout(workingCopy);
+                    // ALF-13028, cancel checkout doesn't remove in-memory lock from node
+                    // do it separately
+                    webDAVlockService.unlock(originalNode);
+
                     if (lockAfterSucess)
                     {
                         String userName = AuthenticationUtil.getFullyAuthenticatedUser();
@@ -200,6 +202,10 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
                     // Checkin the new version
                     NodeRef originalNode = checkOutCheckInService.checkin(workingCopy, versionProperties);
+                    // ALF-13028, checkin doesn't remove in-memory lock from node
+                    // do it separately
+                    webDAVlockService.unlock(workingCopy);
+
                     if (originalNode != null)
                     {
                        if (lockAfterSucess)

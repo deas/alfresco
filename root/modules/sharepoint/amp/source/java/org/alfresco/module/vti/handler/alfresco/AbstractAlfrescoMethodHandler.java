@@ -33,7 +33,6 @@ import javax.transaction.UserTransaction;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.module.vti.handler.alfresco.AlfrescoMethodHandler;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfo;
 import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
 import org.alfresco.module.vti.metadata.dic.DocumentStatus;
@@ -47,10 +46,10 @@ import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.Document;
 import org.alfresco.module.vti.web.VtiEncodingUtils;
 import org.alfresco.repo.version.VersionModel;
+import org.alfresco.repo.webdav.LockInfo;
 import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.lock.LockType;
 import org.alfresco.service.cmr.lock.NodeLockedException;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -1167,10 +1166,12 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 if (isShortCheckedout)
                 {
                     docMetaInfo.setSourcecontroltimecheckedout(VtiUtils.formatDate(new Date()));
-                    docMetaInfo.setSourcecontrolcheckedoutby((String) originalProps.get(ContentModel.PROP_LOCK_OWNER));
-                    if (originalProps.get(ContentModel.PROP_EXPIRY_DATE) != null)
+                    // ALF-13028 fix, look for LockInfo for locked node
+                    LockInfo lockInfo = getLockService().getLockInfo(originalFileInfo.getNodeRef());
+                    docMetaInfo.setSourcecontrolcheckedoutby(lockInfo.getOwner());
+                    if (lockInfo.getExpires() != null)
                     {
-                        docMetaInfo.setSourcecontrollockexpires(VtiUtils.formatDate((Date) originalProps.get(ContentModel.PROP_EXPIRY_DATE)));
+                        docMetaInfo.setSourcecontrollockexpires(VtiUtils.formatDate(lockInfo.getExpires()));
                     }
                     else
                     {
@@ -1284,12 +1285,6 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
 
                 if (timeout == 0)
                 {
-                    // clearing short-term checkout if necessary
-                    if (VtiDocumentHepler.isShortCheckedout(documentStatus))
-                    {
-                        getLockService().unlock(documentFileInfo.getNodeRef());
-                    }
-
                     NodeRef workingCopyNodeRef = getCheckOutCheckInService().checkout(documentFileInfo.getNodeRef());
                     checkedoutDocumentFileInfo = getFileFolderService().getFileInfo(workingCopyNodeRef);
                     if (logger.isDebugEnabled())

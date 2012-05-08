@@ -36,7 +36,6 @@ import org.alfresco.module.vti.web.ws.VtiSoapException;
 import org.alfresco.module.vti.web.ws.VtiSoapRequest;
 import org.alfresco.module.vti.web.ws.VtiSoapResponse;
 import org.alfresco.repo.webdav.WebDAVLockService;
-import org.alfresco.repo.webdav.WebDAVLockServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;

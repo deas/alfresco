@@ -149,6 +149,7 @@
         <property name="nodeService" ref="NodeService" />
         <property name="webDAVLockService" ref="webDAVLockService" />
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
+        <property name="lockService" ref="LockService" />
     </bean>
 
     <bean id="vtiPathHelper" class="org.alfresco.module.vti.handler.alfresco.VtiPathHelper">
