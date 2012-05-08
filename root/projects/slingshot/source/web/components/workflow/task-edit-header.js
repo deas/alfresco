@@ -36,7 +36,8 @@
     * Alfresco Slingshot aliases
     */
     var $html = Alfresco.util.encodeHTML,
-       $hasEventInterest = Alfresco.util.hasEventInterest;
+       $hasEventInterest = Alfresco.util.hasEventInterest,
+       $siteURL = Alfresco.util.siteURL;
 
    /**
     * TaskEditHeader constructor.
@@ -186,9 +187,18 @@
 
             YAHOO.lang.later(2000, this, function()
             {
-               // Take the user to his dashboard
-               window.location = window.location.protocol + "//" + window.location.host + 
-                                 Alfresco.constants.URL_PAGECONTEXT + "user/" + Alfresco.constants.USERNAME + "/dashboard";
+            	var referrerValue = Alfresco.util.getQueryStringParameter('referrer');
+            	
+            	// Check referrer and fall back to user dashboard if unavailable.
+            	if(referrerValue) {
+            		if(referrerValue == 'tasks') {
+            			document.location.href = $siteURL("my-tasks");
+            		} else if(referrerValue='workflows') {
+            			document.location.href = $siteURL("my-workflows");
+            		}
+            	} else {
+            		document.location.href = this.getSiteDefaultUrl() || Alfresco.constants.URL_CONTEXT;
+            	}
             }, []);
          }
 
