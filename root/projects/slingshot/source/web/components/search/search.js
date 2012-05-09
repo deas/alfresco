@@ -53,7 +53,7 @@
       return this;
    };
    
-   YAHOO.extend(Alfresco.Search, Alfresco.component.Base,
+   YAHOO.extend(Alfresco.Search, Alfresco.component.SearchBase,
    {
       /**
        * Object container for initialization options
@@ -354,66 +354,7 @@
             Dom.setStyle(elCell, "height", oColumn.height + "px");
             Dom.addClass(elCell, "thumbnail-cell");
             
-            var url = me._getBrowseUrlForRecord(oRecord);
-            var imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/generic-result.png';
-            
-            // use the preview image for a document type
-            var dataType = oRecord.getData("type");
-            switch (dataType)
-            {
-               case "document":
-                  imageUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + oRecord.getData("nodeRef").replace(":/", "");
-                  imageUrl += "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + Alfresco.util.encodeHTML(oRecord.getData("modifiedOn"));
-                  break;
-               
-               case "folder":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/folder.png';
-                  break;
-               
-               case "blogpost":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/blog-post.png';
-                  break;
-               
-               case "forumpost":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/topic-post.png';
-                  break;
-               
-               case "calendarevent":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/calendar-event.png';
-                  break;
-               
-               case "wikipage":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/wiki-page.png';
-                  break;
-                  
-               case "link":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/link.png';
-                  break;
-               
-               case "datalist":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/datalist.png';
-                  break;
-               
-               case "datalistitem":
-                  imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/datalistitem.png';
-                  break;
-            }
-            
-            // Render the cell
-            var name = oRecord.getData("displayName");
-            var htmlName = $html(name);
-            var html = '<span><a href="' + url + '"><img src="' + imageUrl + '" alt="' + htmlName + '" title="' + htmlName + '" /></a></span>';
-            if (dataType === "document")
-            {
-               var viewUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/content/" + oRecord.getData("nodeRef").replace(":/", "") + "/" + oRecord.getData("name");
-               html = '<div class="action-overlay">' + 
-                      '<a href="' + encodeURI(viewUrl) + '" target="_blank"><img title="' + $html(me.msg("label.viewinbrowser")) +
-                      '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/search/images/view-in-browser-16.png" width="16" height="16"/></a>' +
-                      '<a href="' + encodeURI(viewUrl + "?a=true") + '" style="padding-left:4px" target="_blank"><img title="' + $html(me.msg("label.download")) +
-                      '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/search/images/download-16.png" width="16" height="16"/></a>' + 
-                      '</div>' + html;
-            }
-            elCell.innerHTML = html;
+            elCell.innerHTML = me.buildThumbnailHtmlByRecord(oRecord);
          };
 
          /**
@@ -455,24 +396,7 @@
             // detailed information, includes site etc. type specific
             desc += '<div class="details">';
             var type = oRecord.getData("type");
-            switch (type)
-            {
-               case "document":
-               case "folder":
-               case "blogpost":
-               case "forumpost":
-               case "calendarevent":
-               case "wikipage":
-               case "datalist":
-               case "datalistitem":
-               case "link":
-                  desc += me.msg("label." + type);
-                  break;
-               
-               default:
-                  desc += me.msg("label.unknown");
-                  break;
-            }
+            desc += me.buildTextForType(type);
             
             // link to the site and other meta-data details
             if (site)
@@ -494,27 +418,8 @@
             desc += '</div>';
             
             // folder path (if any)
-            if (type === "document" || type === "folder")
-            {
-               var path = oRecord.getData("path");
-               if (site)
-               {
-                  if (path === null || path === undefined)
-                  {
-                     path = "";
-                  }
-                  desc += '<div class="details">' + me.msg("message.infolderpath") +
-                          ': <a href="' + me._getBrowseUrlForFolderPath(path, site) + '">' + $html('/' + path) + '</a></div>';
-               }
-               else
-               {
-                  if (path)
-                  {
-                     desc += '<div class="details">' + me.msg("message.infolderpath") +
-                          ': <a href="' + me._getBrowseUrlForFolderPath(path) + '">' + $html(path) + '</a></div>';
-                  }
-               }
-            }
+            var path = oRecord.getData("path");
+            desc += me.buildPath(type, path, site);
             
             // tags (if any)
             var tags = oRecord.getData("tags");
@@ -618,90 +523,7 @@
        */
       _getBrowseUrlForRecord: function Search__getBrowseUrlForRecord(record)
       {
-         var url = null;
-         
-         var name = record.getData("name"),
-             type = record.getData("type"),
-             site = record.getData("site"),
-             path = record.getData("path");
-         
-         switch (type)
-         {
-            case "document":
-            {
-               url = "document-details?nodeRef=" + record.getData("nodeRef");
-               break;
-            }
-            
-            case "folder":
-            {
-               if (path !== null)
-               {
-                  if (site)
-                  {
-                     url = "documentlibrary?path=" + encodeURIComponent(this._buildSpaceNamePath(path.split("/"), name));
-                  }
-                  else
-                  {
-                     url = "repository?path=" + encodeURIComponent(this._buildSpaceNamePath(path.split("/").slice(2), name));
-                  }
-               }
-               break;
-            }
-            
-            case "blogpost":
-            {
-               url = "blog-postview?postId=" + name;
-               break;
-            }
-            
-            case "forumpost":
-            {
-               url = "discussions-topicview?topicId=" + name;
-               break;
-            }
-            
-            case "calendarevent":
-            {
-               url = record.getData("container") + "?date=" + Alfresco.util.formatDate(record.getData("modifiedOn"), "yyyy-mm-dd");
-               break;
-            }
-            
-            case "wikipage":
-            {
-               url = "wiki-page?title=" + name;
-               break;
-            }
-            
-            case "link":
-            {
-               url = "links-view?linkId=" + name;
-               break;
-            }
-            
-            case "datalist":
-            case "datalistitem":
-            {
-               url = "data-lists?list=" + name;
-               break;
-            }
-         }
-         
-         if (url !== null)
-         {
-            // browse urls always go to a page. We assume that the url contains the page name and all
-            // parameters. Add the absolute path and the optional site param
-            if (site)
-            {
-               url = Alfresco.constants.URL_PAGECONTEXT + "site/" + site.shortName + "/" + url;
-            }
-            else
-            {
-               url = Alfresco.constants.URL_PAGECONTEXT + url;
-            }
-         }
-         
-         return (url !== null ? url : '#');
+        return this.getBrowseUrlForRecord(record);
       },
       
       /**
@@ -712,21 +534,12 @@
        */
       _getBrowseUrlForFolderPath: function Search__getBrowseUrlForFolderPath(path, site)
       {
-         var url = null;
-         if (site)
-         {
-            url = Alfresco.constants.URL_PAGECONTEXT + "site/" + site.shortName + "/documentlibrary?path=" + encodeURIComponent('/' + path);
-         }
-         else
-         {
-            url = Alfresco.constants.URL_PAGECONTEXT + "repository?path=" + encodeURIComponent('/' + path.split('/').slice(2).join('/'));
-         }
-         return url;
+        return this.getBrowseUrlForFolderPath(path, site);
       },
       
       _buildSpaceNamePath: function Search__buildSpaceNamePath(pathParts, name)
       {
-         return (pathParts.length !== 0 ? ("/" + pathParts.join("/")) : "") + "/" + name;
+        return this.buildSpaceNamePath(pathParts, name);
       },
 
       /**
