@@ -1,9 +1,11 @@
 <@markup id="cssDependencies" >
    <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/tree.css" group="documentlibrary"/>
 </@>
 
 <@markup id="jsDependencies">
    <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/tree.js" group="documentlibrary"/>
    <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/repo-tree.js" group="documentlibrary"/>
 </@>
 

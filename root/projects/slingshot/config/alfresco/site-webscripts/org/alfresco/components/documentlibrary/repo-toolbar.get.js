@@ -1,3 +1,5 @@
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/documentlibrary/include/toolbar.lib.js">
+
 model.webScriptWidgets = [];
 
 var useTitle = "true";
