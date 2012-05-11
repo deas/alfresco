@@ -1,4 +1,5 @@
 <#assign viewFormat>${msg("form.control.date-picker.view.date.format")}</#assign>
+<#assign defaultDate><#if (field.control.params.defaultFrom?? || field.control.params.defaultTo??)>${field.control.params.defaultFrom!""}|${field.control.params.defaultTo!""}</#if></#assign>
 
 <div class="form-field">
    <#assign controlId = fieldHtmlId + "-cntrl">
@@ -14,7 +15,7 @@
    
    <label for="${controlId}">${field.label?html}:</label>
    
-   <input id="${fieldHtmlId}" type="hidden" name="${field.name}-date-range" value="" />
+   <input id="${fieldHtmlId}" type="hidden" name="${field.name}-date-range" value="${defaultDate}" />
    
    <div id="${controlId}" style="width:24em">
       <div class="yui-g">
