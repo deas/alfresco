@@ -1160,6 +1160,11 @@ public class AlfrescoSolrDataModel
             }
         }
 
+        if(field.getName().equals("ID"))
+        {
+            return Sorting.getStringSortField("LID", reverse, field.sortMissingLast(), field.sortMissingFirst());
+        }
+        
         NonDictionaryField nonDDField = nonDictionaryFields.get(field.getName());
         if (nonDDField != null)
         {

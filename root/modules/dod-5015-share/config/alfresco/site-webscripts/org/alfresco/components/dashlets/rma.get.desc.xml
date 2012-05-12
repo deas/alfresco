@@ -1,6 +1,0 @@
-<webscript>
-   <shortname>Records Management Config</shortname>
-   <description>Records Management site configuration and helper component</description>
-   <family>user-dashlet</family>
-   <url>/components/dashlets/rma</url>
-</webscript>

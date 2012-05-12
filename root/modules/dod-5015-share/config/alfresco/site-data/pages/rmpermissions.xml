@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Records Permissions</title>
-   <title-id>page.rmPermissions.title</title-id>
-   <description>Page for managing Records Permissions</description>
-   <description-id>page.rmPermissions.description</description-id>
-   <template-instance>rmpermissions</template-instance>
-   <authentication>user</authentication>
-</page>

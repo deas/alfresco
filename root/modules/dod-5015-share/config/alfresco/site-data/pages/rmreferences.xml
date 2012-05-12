@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Records References</title>
-   <title-id>page.rmReferences.title</title-id>
-   <description>Records References page</description>
-   <description-id>page.rmReferences.description</description-id>
-   <template-instance>rmreferences</template-instance>
-   <authentication>user</authentication>
-</page>

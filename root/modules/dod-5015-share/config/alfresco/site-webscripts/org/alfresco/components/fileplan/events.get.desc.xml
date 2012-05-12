@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Disposition Scedule Events</shortname>
-  <description>Component for viewing nd completing events in the disposition schedule</description>
-  <url>/components/fileplan/events</url>
-</webscript>

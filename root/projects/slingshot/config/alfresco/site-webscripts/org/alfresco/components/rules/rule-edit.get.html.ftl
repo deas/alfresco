@@ -33,13 +33,13 @@
                ${msg("label.title")}:
                <span class="mandatory-indicator">*</span>
             </label>
-            <input id="${el}-title" type="text" title="${msg("label.title")}" value="" name="title"/>
+            <input id="${el}-title" type="text" title="${msg("label.title")}" value="" name="title" maxlength="1024"/>
          </div>
          <div class="form-field description">
             <label for="${el}-description">
                ${msg("label.description")}:
             </label>
-            <textarea id="${el}-description" type="text" title="${msg("label.description")}" value="" name="description"></textarea>
+            <textarea id="${el}-description" type="text" title="${msg("label.description")}" value="" name="description" maxlength="1024"></textarea>
          </div>
 
          <h2>${msg("header.defineRule")}</h2>

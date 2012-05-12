@@ -478,6 +478,7 @@
             </permissions>
             <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
             <evaluator>evaluator.doclib.action.inlineEdit</evaluator>
+            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator> 
          </action>
 
          <!-- Edit online -->
@@ -488,6 +489,7 @@
             </permissions>
             <!-- vti module check, mimetype check, userAgent check -->
             <evaluator>evaluator.doclib.action.onlineEdit</evaluator>
+            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
          </action>
 
          <!-- Edit offline -->
@@ -585,6 +587,7 @@
                <permission allow="true">CancelCheckOut</permission>
             </permissions>
             <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
+            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator> 
          </action>
 
          <!-- Manage folder rules -->

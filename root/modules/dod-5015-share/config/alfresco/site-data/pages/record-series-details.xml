@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Record Series Details</title>
-   <title-id>page.recordSeriesDetails.title</title-id>
-   <description>Record Series Details page for Records Management</description>
-   <description-id>page.recordSeriesDetails.description</description-id>
-   <template-instance>record-series-details</template-instance>
-   <authentication>user</authentication>
-</page>

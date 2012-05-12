@@ -1,1 +1,0 @@
-<#include "edit-metadata-mgr.get.html.ftl">

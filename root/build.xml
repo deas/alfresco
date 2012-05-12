@@ -460,8 +460,6 @@
    <target name="clean-modules"
            description="Cleans all modules"
            depends="clean-spp,
-                    clean-dod5015,
-                    clean-dod5015-share,
                     clean-wcmquickstart,
                     clean-wcmquickstart-share,
                     clean-wcmquickstart-clientapi,
@@ -1259,49 +1257,6 @@
          <arg line="${context}" />
       </java> 
    </target> 
-
-   <!-- ****************************************************** -->
-   <!-- ************** DOD5015 Exploded targets ************** -->
-   <!-- ****************************************************** -->
-
-   <target name="incremental-dod5015-repo-exploded"
-           depends="init,
-                    deploy-dod5015-repo-exploded">
-   </target>
-
-   <target name="deploy-dod5015-repo-exploded"
-           depends="init,
-                    package-dod5015-jar">
-      <!-- copy jar -->
-      <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/lib"
-            file="${dir.module.dod5015.dist}/${file.name.jar.dod5015}" />
-      <!-- copy web scripts, etc. -->
-      <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/classes" verbose="${copy.verbose}" overwrite="yes">
-         <fileset dir="${dir.module.dod5015.config}">
-            <include name="**/*.*" />
-         </fileset>
-      </copy>
-   </target>
-
-   <target name="incremental-dod5015-share-exploded"
-           depends="init,
-                    deploy-dod5015-share-exploded,
-                    minimize-slingshot-deployed-javascript">
-   </target>
-   
-   <target name="deploy-dod5015-share-exploded"
-           depends="init">
-      <!-- copy all source files -->
-      <copy todir="${dir.deploy.tomcat.application.slingshot}" verbose="${copy.verbose}">
-         <fileset dir="${dir.modules}/dod-5015-share/source/web" />
-      </copy>
-      <!-- copy web scripts, etc. -->
-      <copy todir="${dir.deploy.tomcat.application.slingshot}/WEB-INF/classes" verbose="${copy.verbose}" overwrite="yes">
-         <fileset dir="${dir.modules}/dod-5015-share/config">
-            <include name="**/*.*" />
-         </fileset>
-      </copy>
-   </target>
 
    <!--- Stub targets get overridden in other build scripts -->
    <target name="distribute-extras" description="Build distribution targets for enterprise projects" />

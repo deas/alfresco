@@ -175,49 +175,52 @@
             {
                // Get the property name and content proeprty name
                propertyName = ruleConfig.parameterValues["property"];
-               if (ruleConfig.parameterValues["content-property"])
+               if (propertyName)
                {
-                  contentPropertyName = propertyName + ":" + ruleConfig.parameterValues["content-property"];
-               }
-               else
-               {
-                  contentPropertyName = null;
-               }
+                  if (ruleConfig.parameterValues["content-property"])
+                  {
+                     contentPropertyName = propertyName + ":" + ruleConfig.parameterValues["content-property"];
+                  }
+                  else
+                  {
+                     contentPropertyName = null;
+                  }
 
-               // See if we already have the property in this.options.properties
-               foundProperty = false;
-               foundContentProperty = false;
-               for (var j = 0, jl = properties.length; j < jl; j++)
-               {
-                  if (properties[j].name == propertyName)
+                  // See if we already have the property in this.options.properties
+                  foundProperty = false;
+                  foundContentProperty = false;
+                  for (var j = 0, jl = properties.length; j < jl; j++)
                   {
-                     foundProperty = true;
+                     if (properties[j].name == propertyName)
+                     {
+                        foundProperty = true;
+                     }
+                     if (properties[j].name == contentPropertyName)
+                     {
+                        foundContentProperty = true;
+                     }
                   }
-                  if (properties[j].name == contentPropertyName)
+                  if (foundContentProperty || (!contentPropertyName && foundProperty))
                   {
-                     foundContentProperty = true;
+                     // ...yes we had it, don't load it again
                   }
-               }
-               if (foundContentProperty || (!contentPropertyName && foundProperty))
-               {
-                  // ...yes we had it, don't load it again
-               }
-               else
-               {
-                  // ... we did NOT have the property, make sure we load it
-                  propertiesToLoad.push(propertyName);
-                  var instructions = propertyInstructions[propertyName];
-                  if (!instructions)
+                  else
                   {
-                     instructions = [];
-                     propertyInstructions[propertyName] = instructions;
+                     // ... we did NOT have the property, make sure we load it
+                     propertiesToLoad.push(propertyName);
+                     var instructions = propertyInstructions[propertyName];
+                     if (!instructions)
+                     {
+                        instructions = [];
+                        propertyInstructions[propertyName] = instructions;
+                     }
+
+                     /**
+                      * We can only load "Normal" proeprties, therefore save instructions so we can create a
+                      * content proeprty based on the normal property after load
+                      */
+                     instructions.push(contentPropertyName ? contentPropertyName : propertyName);
                   }
-                  
-                  /**
-                   * We can only load "Normal" proeprties, therefore save instructions so we can create a
-                   * content proeprty based on the normal property after load
-                   */
-                  instructions.push(contentPropertyName ? contentPropertyName : propertyName);
                }
             }
          }

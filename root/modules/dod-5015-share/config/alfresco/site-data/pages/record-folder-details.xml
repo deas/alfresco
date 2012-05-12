@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Record Folder Details</title>
-   <title-id>page.recordFolderDetails.title</title-id>
-   <description>Record Folder Details Page for Records Management</description>
-   <description-id>page.recordFolderDetails.description</description-id>
-   <template-instance>record-folder-details</template-instance>
-   <authentication>user</authentication>
-</page>
