@@ -105,6 +105,8 @@ public class HttpClientFactory
 
     private int maxHostConnections = 40;
 
+    private int connectionTimeout = 0;
+    
     public HttpClientFactory()
     {
     }
@@ -216,6 +218,17 @@ public class HttpClientFactory
         this.maxHostConnections = maxHostConnections;
     }
 
+    /**
+     * Attempts to connect to a server will timeout after this period (millis).
+     * Default is zero (the timeout is not used).
+     * 
+     * @param connectionTimeout time in millis.
+     */
+    public void setConnectionTimeout(int connectionTimeout)
+    {
+        this.connectionTimeout = connectionTimeout;
+    }
+
     protected HttpClient constructHttpClient()
 	{
         MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
@@ -226,6 +239,7 @@ public class HttpClientFactory
         HttpConnectionManagerParams connectionManagerParams = httpClient.getHttpConnectionManager().getParams();
         connectionManagerParams.setMaxTotalConnections(maxTotalConnections);
         connectionManagerParams.setDefaultMaxConnectionsPerHost(maxHostConnections);
+        connectionManagerParams.setConnectionTimeout(connectionTimeout);
 
         return httpClient;
 	}
