@@ -29,7 +29,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.text.Collator;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -97,7 +96,6 @@ import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
-import org.apache.solr.handler.CSVRequestHandler;
 import org.apache.solr.handler.admin.CoreAdminHandler;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequestBase;
@@ -127,6 +125,70 @@ import org.xml.sax.SAXException;
  */
 public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
+    private static final String CMIS_TEST_NAMESPACE = "http://www.alfresco.org/test/cmis-query-test";
+
+    
+    
+    QName typeThatRequiresEncoding = QName.createQName(CMIS_TEST_NAMESPACE, "type-that-requires-encoding");
+    
+    QName aspectThatRequiresEncoding = QName.createQName(CMIS_TEST_NAMESPACE, "aspect-that-requires-encoding");
+    
+    QName propertyThatRequiresEncoding = QName.createQName(CMIS_TEST_NAMESPACE, "property-that-requires-encoding");
+    
+    QName extendedContent = QName.createQName(CMIS_TEST_NAMESPACE, "extendedContent");
+
+    QName singleTextBoth = QName.createQName(CMIS_TEST_NAMESPACE, "singleTextBoth");
+
+    QName singleTextUntokenised = QName.createQName(CMIS_TEST_NAMESPACE, "singleTextUntokenised");
+
+    QName singleTextTokenised = QName.createQName(CMIS_TEST_NAMESPACE, "singleTextTokenised");
+
+    QName multipleTextBoth = QName.createQName(CMIS_TEST_NAMESPACE, "multipleTextBoth");
+
+    QName multipleTextUntokenised = QName.createQName(CMIS_TEST_NAMESPACE, "multipleTextUntokenised");
+
+    QName multipleTextTokenised = QName.createQName(CMIS_TEST_NAMESPACE, "multipleTextTokenised");
+
+    QName singleMLTextBoth = QName.createQName(CMIS_TEST_NAMESPACE, "singleMLTextBoth");
+
+    QName singleMLTextUntokenised = QName.createQName(CMIS_TEST_NAMESPACE, "singleMLTextUntokenised");
+
+    QName singleMLTextTokenised = QName.createQName(CMIS_TEST_NAMESPACE, "singleMLTextTokenised");
+
+    QName multipleMLTextBoth = QName.createQName(CMIS_TEST_NAMESPACE, "multipleMLTextBoth");
+
+    QName multipleMLTextUntokenised = QName.createQName(CMIS_TEST_NAMESPACE, "multipleMLTextUntokenised");
+
+    QName multipleMLTextTokenised = QName.createQName(CMIS_TEST_NAMESPACE, "multipleMLTextTokenised");
+
+    QName singleFloat = QName.createQName(CMIS_TEST_NAMESPACE, "singleFloat");
+
+    QName multipleFloat = QName.createQName(CMIS_TEST_NAMESPACE, "multipleFloat");
+
+    QName singleDouble = QName.createQName(CMIS_TEST_NAMESPACE, "singleDouble");
+
+    QName multipleDouble = QName.createQName(CMIS_TEST_NAMESPACE, "multipleDouble");
+
+    QName singleInteger = QName.createQName(CMIS_TEST_NAMESPACE, "singleInteger");
+
+    QName multipleInteger = QName.createQName(CMIS_TEST_NAMESPACE, "multipleInteger");
+
+    QName singleLong = QName.createQName(CMIS_TEST_NAMESPACE, "singleLong");
+
+    QName multipleLong = QName.createQName(CMIS_TEST_NAMESPACE, "multipleLong");
+
+    QName singleBoolean = QName.createQName(CMIS_TEST_NAMESPACE, "singleBoolean");
+
+    QName multipleBoolean = QName.createQName(CMIS_TEST_NAMESPACE, "multipleBoolean");
+
+    QName singleDate = QName.createQName(CMIS_TEST_NAMESPACE, "singleDate");
+
+    QName multipleDate = QName.createQName(CMIS_TEST_NAMESPACE, "multipleDate");
+
+    QName singleDatetime = QName.createQName(CMIS_TEST_NAMESPACE, "singleDatetime");
+
+    QName multipleDatetime = QName.createQName(CMIS_TEST_NAMESPACE, "multipleDatetime");
+    
     private String createGUID()
     {
         synchronized (this)
@@ -224,6 +286,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
     private String[] orderLocaliseMLText_es = new String[] { "radio", "ráfaga", "rana", "rápido", "rastrillo", "arroz", "campo", "chihuahua", "ciudad", "limonada", "llaves",
             "luna", "", "", "", "" };
+
 
     /**
      * 
@@ -939,6 +1002,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             SolrResourceLoader loader = core.getSchema().getResourceLoader();
             String id = loader.getInstanceDir();
             AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
+            dataModel.setCMDefaultUri();
             // add data
 
             // Root
@@ -1225,7 +1289,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             testAFTSandSort(rsp, core, dataModel);
             testCMIS(rsp, core, dataModel);
 
-            int count = 0;
             long start = System.nanoTime();
             for (int i = 0; i < 100; i++)
             {
@@ -1348,6 +1411,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
      * @param req
      * @param rsp
      */
+    @SuppressWarnings("unused")
     private void runCmisTests(SolrQueryRequest req, SolrQueryResponse rsp)
     {
 
@@ -1391,6 +1455,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             SolrResourceLoader loader = core.getSchema().getResourceLoader();
             String id = loader.getInstanceDir();
             AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(id);
+            dataModel.setCMDefaultUri();
             // add data
 
             // Root
@@ -1902,7 +1967,23 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             checkFTSConnectives(rsp, core, dataModel);
             checkLikeEscaping(rsp, core, dataModel);
             
+            addTypeTestData(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date00);
+            check_D_text(rsp, core, dataModel);
+            check_locale(rsp, core, dataModel);
+            check_D_mltext(rsp, core, dataModel);
+            check_D_float(rsp, core, dataModel);
+            check_D_double(rsp, core, dataModel);
+            check_D_int(rsp, core, dataModel);
+            check_D_long(rsp, core, dataModel);
+            check_D_date(rsp, core, dataModel, date00);
+            check_D_datetime(rsp, core, dataModel, date00);
+            check_D_boolean(rsp, core, dataModel);
+            check_contains_syntax(rsp, core, dataModel);
 
+            
+            addTypeSortTestData(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date00);
+            check_order(rsp, core, dataModel);
+            
             // remove core
 
             if (remove)
@@ -1948,8 +2029,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS Basic", report);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT * from cmis:folder", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * from cmis:document", 11, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * from cmis:folder", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * from cmis:document", 11, null, null, null, null, null, (String) null);
 
     }
 
@@ -1959,14 +2040,12 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("cmis:parentId", report);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId =  '" + base.toString() + "'", 4, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId <> '" + base.toString() + "'", 7, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId IN     ('" + base.toString() + "')", 4, null, null, null, null, null,
-                null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId NOT IN ('" + base.toString() + "')", 7, null, null, null, null, null,
-                null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId =  '" + base.toString() + "'", 4, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId <> '" + base.toString() + "'", 7, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId IN     ('" + base.toString() + "')", 4, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId NOT IN ('" + base.toString() + "')", 7, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:parentId FROM cmis:folder WHERE cmis:parentId IS     NULL", 0, null, null, null, null, null, (String) null);
 
     }
 
@@ -1977,53 +2056,53 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         rsp.add("cmis:contentStreamFileName", report);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'Alfresco Tutorial'", 1, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'AA%'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'BB_'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'CC\\\\'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'DD\\''", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'EE.aa'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'FF.EE'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'GG*GG'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'HH?HH'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'aa'", 1, null, null, null, null, null,
-                null);
+                (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName =  'Alfresco Tutorial'", 1, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName <> 'Alfresco Tutorial'", 10, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName <  'Alfresco Tutorial'", 1, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName <= 'Alfresco Tutorial'", 2, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName >  'Alfresco Tutorial'", 9, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName >= 'Alfresco Tutorial'", 10, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName IN     ('Alfresco Tutorial')", 1, null,
-                null, null, null, null, null);
+                null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName NOT IN ('Alfresco Tutorial')", 10, null,
-                null, null, null, null, null);
+                null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName     LIKE 'Alfresco Tutorial'", 1, null,
-                null, null, null, null, null);
+                null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName NOT LIKE 'Alfresco Tutorial'", 10, null,
-                null, null, null, null, null);
+                null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName IS NOT NULL", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document WHERE cmis:contentStreamFileName IS     NULL", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
     }
 
     private void checkCmisContentStreamMimeType(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2033,32 +2112,32 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         rsp.add("cmis:contentStreamMimeType", report);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType =  'text/plain'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType <> 'text/plain'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType <  'text/plain'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType <= 'text/plain'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType >  'text/plain'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType >= 'text/plain'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType IN     ('text/plain')", 11, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType NOT IN ('text/plain')", 0, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType     LIKE 'text/plain'", 11, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType NOT LIKE 'text/plain'", 0, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType IS NOT NULL", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamMimeType FROM cmis:document WHERE cmis:contentStreamMimeType IS     NULL", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
     }
 
     private void checkCmisContentStreamLength(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2067,30 +2146,30 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("cmis:contentStreamLength", report);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength =  750", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength =  750", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength <> 750", 11, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength <  750", 11, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength <= 750", 11, null, null, null, null, null,
-                null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength >  750", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength >= 750", 0, null, null, null, null, null, null);
+                (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength >  750", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength >= 750", 0, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength IN     (750)", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength NOT IN (750)", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength     LIKE '750'", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength NOT LIKE '750'", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength IS NOT NULL", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamLength FROM cmis:document WHERE cmis:contentStreamLength IS     NULL", 0, null, null, null, null, null,
-                null);
+                (String) null);
     }
 
     private void checkCmisName(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2101,39 +2180,39 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         // FOLDER
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name =  'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name <> 'Folder 1'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name <  'Folder 1'", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name <= 'Folder 1'", 3, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name >  'Folder 1'", 8, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name >= 'Folder 1'", 9, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name =  'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name <> 'Folder 1'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name <  'Folder 1'", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name <= 'Folder 1'", 3, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name >  'Folder 1'", 8, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name >= 'Folder 1'", 9, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name IN     ('Folder 1')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name NOT IN ('Folder 1')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name IN     ('Folder 1')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name NOT IN ('Folder 1')", 10, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name     LIKE 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name NOT LIKE 'Folder 1'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name     LIKE 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name NOT LIKE 'Folder 1'", 10, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder WHERE cmis:name IS     NULL", 0, null, null, null, null, null, (String) null);
 
         // DOCUMENT
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name =  'Alfresco Tutorial'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name <> 'Alfresco Tutorial'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name <  'Alfresco Tutorial'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name <= 'Alfresco Tutorial'", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name >  'Alfresco Tutorial'", 9, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name >= 'Alfresco Tutorial'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name =  'Alfresco Tutorial'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name <> 'Alfresco Tutorial'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name <  'Alfresco Tutorial'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name <= 'Alfresco Tutorial'", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name >  'Alfresco Tutorial'", 9, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name >= 'Alfresco Tutorial'", 10, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN     ('Alfresco Tutorial')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name NOT IN ('Alfresco Tutorial')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN     ('Alfresco Tutorial')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name NOT IN ('Alfresco Tutorial')", 10, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutorial'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name NOT LIKE 'Alfresco Tutorial'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutorial'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name NOT LIKE 'Alfresco Tutorial'", 10, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IS     NULL", 0, null, null, null, null, null, (String) null);
 
     }
 
@@ -2149,31 +2228,31 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         TimeZone.setDefault(null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate = TIMESTAMP '" + sDate + "'", 1, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate = TIMESTAMP '" + sDate2 + "'", 1, null,
-                null, null, null, null, null);
+                null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate =  '" + sDate + "'", 1, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <> '" + sDate + "'", 10, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <  '" + sDate + "'", 10, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <= '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate >  '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate >= '" + sDate + "'", 1, null, null, null,
-                null, null, null);
+                null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IN     ('" + sDate + "')", 1, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate NOT IN ('" + sDate + "')", 10, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IS NOT NULL", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IS     NULL", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
 
         Date date = Duration.subtract(lastModificationDate, new Duration("P1D"));
         Calendar yesterday = Calendar.getInstance();
@@ -2182,27 +2261,27 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         sDate = ISO8601DateFormat.format(yesterday.getTime());
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate =  '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <> '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <  '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <= '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate >  '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate >= '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IN     ('" + sDate + "')", 0, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate NOT IN ('" + sDate + "')", 11, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IS NOT NULL", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IS     NULL", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
         ;
 
         date = Duration.add(date, new Duration("P2D"));
@@ -2212,27 +2291,27 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         sDate = ISO8601DateFormat.format(tomorrow.getTime());
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate =  '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <> '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <  '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate <= '" + sDate + "'", 11, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate >  '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate >= '" + sDate + "'", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IN     ('" + sDate + "')", 0, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate NOT IN ('" + sDate + "')", 11, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IS NOT NULL", 11, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:document WHERE cmis:lastModificationDate IS     NULL", 0, null, null, null, null,
-                null, null);
+                null, (String) null);
         ;
 
     }
@@ -2243,25 +2322,25 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("cmis:lastModifiedBy", report);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy =  'System'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy <> 'System'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy <  'System'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy <= 'System'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy >  'System'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy >= 'System'", 11, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy =  'System'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy <> 'System'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy <  'System'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy <= 'System'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy >  'System'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy >= 'System'", 11, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy IN     ('System')", 11, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy NOT IN ('System')", 0, null, null, null, null, null,
-                null);
+                (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy     LIKE 'System'", 11, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy NOT LIKE 'System'", 0, null, null, null, null, null,
-                null);
+                (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:document WHERE cmis:lastModifiedBy IS     NULL", 0, null, null, null, null, null, (String) null);
 
     }
 
@@ -2277,23 +2356,23 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         TimeZone.setDefault(null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate = TIMESTAMP '" + sDate + "'", 1, null, null, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate = TIMESTAMP '" + sDate2 + "'", 1, null, null, null, null,
-                null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate =  '" + sDate + "'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <> '" + sDate + "'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <  '" + sDate + "'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <= '" + sDate + "'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >  '" + sDate + "'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >= '" + sDate + "'", 1, null, null, null, null, null, null);
+                null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate =  '" + sDate + "'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <> '" + sDate + "'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <  '" + sDate + "'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <= '" + sDate + "'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >  '" + sDate + "'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >= '" + sDate + "'", 1, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IN     ('" + sDate + "')", 1, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate NOT IN ('" + sDate + "')", 10, null, null, null, null, null,
-                null);
+                (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS     NULL", 0, null, null, null, null, null, (String) null);
 
         Date date = Duration.subtract(lastModificationDate, new Duration("P1D"));
         Calendar yesterday = Calendar.getInstance();
@@ -2301,20 +2380,20 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         yesterday.set(Calendar.MILLISECOND, yesterday.getMinimum(Calendar.MILLISECOND));
         sDate = ISO8601DateFormat.format(yesterday.getTime());
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate =  '" + sDate + "'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <> '" + sDate + "'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <  '" + sDate + "'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <= '" + sDate + "'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >  '" + sDate + "'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >= '" + sDate + "'", 11, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate =  '" + sDate + "'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <> '" + sDate + "'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <  '" + sDate + "'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <= '" + sDate + "'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >  '" + sDate + "'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >= '" + sDate + "'", 11, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IN     ('" + sDate + "')", 0, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate NOT IN ('" + sDate + "')", 11, null, null, null, null, null,
-                null);
+                (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS     NULL", 0, null, null, null, null, null, (String) null);
         ;
 
         date = Duration.add(date, new Duration("P2D"));
@@ -2323,20 +2402,20 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         tomorrow.set(Calendar.MILLISECOND, tomorrow.getMinimum(Calendar.MILLISECOND));
         sDate = ISO8601DateFormat.format(tomorrow.getTime());
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate =  '" + sDate + "'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <> '" + sDate + "'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <  '" + sDate + "'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <= '" + sDate + "'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >  '" + sDate + "'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >= '" + sDate + "'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate =  '" + sDate + "'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <> '" + sDate + "'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <  '" + sDate + "'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate <= '" + sDate + "'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >  '" + sDate + "'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate >= '" + sDate + "'", 0, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IN     ('" + sDate + "')", 0, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate NOT IN ('" + sDate + "')", 11, null, null, null, null, null,
-                null);
+                (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:document WHERE cmis:creationDate IS     NULL", 0, null, null, null, null, null, (String) null);
         ;
 
     }
@@ -2347,21 +2426,21 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("cmis:createdBy", report);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy =  'System'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy <> 'System'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy <  'System'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy <= 'System'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy >  'System'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy >= 'System'", 11, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy =  'System'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy <> 'System'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy <  'System'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy <= 'System'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy >  'System'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy >= 'System'", 11, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy IN     ('System')", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy NOT IN ('System')", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy IN     ('System')", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy NOT IN ('System')", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy     LIKE 'System'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy NOT LIKE 'System'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy     LIKE 'System'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy NOT LIKE 'System'", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:document WHERE cmis:createdBy IS     NULL", 0, null, null, null, null, null, (String) null);
 
     }
 
@@ -2373,28 +2452,28 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         // Doc
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId =  'cmis:document'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId <> 'cmis:document'", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId =  'cmis:document'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId <> 'cmis:document'", 1, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId IN     ('cmis:document')", 10, null, null, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId NOT IN ('cmis:document')", 1, null, null, null, null, null,
-                null);
+                (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId IS     NULL", 0, null, null, null, null, null, (String) null);
 
         // Folder
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId =  'cmis:folder'", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId <> 'cmis:folder'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId =  'cmis:folder'", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId <> 'cmis:folder'", 0, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IN     ('cmis:folder')", 11, null, null, null, null, null,
-                null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId NOT IN ('cmis:folder')", 0, null, null, null, null, null, null);
+                (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId NOT IN ('cmis:folder')", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IS     NULL", 0, null, null, null, null, null, (String) null);
         
     }
 
@@ -2404,52 +2483,52 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("cmis:objectId", report);
    
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId =  '" + folderId + "'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId <> '" + folderId + "'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId =  '" + folderId + "'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId <> '" + folderId + "'", 10, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IN     ('" + folderId + "')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId  NOT IN('" + folderId + "')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IN     ('" + folderId + "')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId  NOT IN('" + folderId + "')", 10, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_FOLDER('" + folderId + "')", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_TREE  ('" + folderId + "')", 6, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_FOLDER('" + folderId + "')", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_TREE  ('" + folderId + "')", 6, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, (String) null);
         
         // ignore folder versions
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId =  '" + folderId + ";1.0'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId <> '" + folderId + ";1.0'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId =  '" + folderId + ";1.0'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId <> '" + folderId + ";1.0'", 10, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IN     ('" + folderId + ";1.0')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId  NOT IN('" + folderId + ";1.0')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IN     ('" + folderId + ";1.0')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId  NOT IN('" + folderId + ";1.0')", 10, null, null, null, null, null, (String) null);
         
-        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_FOLDER('" + folderId + ";1.0')", 2, null, null, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_TREE  ('" + folderId + ";1.0')", 6, null, null, null, null, null, null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_FOLDER('" + folderId + ";1.0')", 2, null, null, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_TREE  ('" + folderId + ";1.0')", 6, null, null, null, null, null, (String) null);
         
        // Docs
         
         String id = docId;
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId =  '" + id + "'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId <> '" + id + "'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId =  '" + id + "'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId <> '" + id + "'", 10, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IN     ('" + id + "')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId  NOT IN('" + id + "')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IN     ('" + id + "')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId  NOT IN('" + id + "')", 10, null, null, null, null, null, (String) null);
       
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, (String) null);
         
         id = docId +";1.0";
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId =  '" + id + "'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId <> '" + id + "'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId =  '" + id + "'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId <> '" + id + "'", 10, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IN     ('" + id + "')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId  NOT IN('" + id + "')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IN     ('" + id + "')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId  NOT IN('" + id + "')", 10, null, null, null, null, null, (String) null);
       
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, (String) null);
     }
     
     private void checkCmisOrderby(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2458,72 +2537,72 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS Order by", report);
    
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectTypeId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectTypeId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY F.cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY F.cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE(), cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY SEARCH_SCORE", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP ASC", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP DESC", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE(), cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY SEARCH_SCORE", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP ASC", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP DESC", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
         // other
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document ORDER BY cmis:name ASC", 11, null, new int[]{22, 14, 23, 13, 15, 16, 17, 18, 19, 20, 21}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document ORDER BY cmis:name DESC", 11, null, new int[]{21, 20, 19, 18, 17, 16, 15, 13, 23, 14, 22}, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document ORDER BY cmis:name ASC", 11, null, new int[]{22, 14, 23, 13, 15, 16, 17, 18, 19, 20, 21}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document ORDER BY cmis:name DESC", 11, null, new int[]{21, 20, 19, 18, 17, 16, 15, 13, 23, 14, 22}, null, null, null, (String) null);
         
-        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:versionLabel FROM cmis:document ORDER BY cmis:versionLabel ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:versionLabel FROM cmis:document ORDER BY cmis:versionLabel DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:versionLabel FROM cmis:document ORDER BY cmis:versionLabel ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:versionLabel FROM cmis:document ORDER BY cmis:versionLabel DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document ORDER BY cmis:contentStreamFileName ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document ORDER BY cmis:contentStreamFileName DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document ORDER BY cmis:contentStreamFileName ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document ORDER BY cmis:contentStreamFileName DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         
-        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name = 'compan home' ORDER BY SCORE() DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY MEEEP DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId, cmis:parentId FROM cmis:folder WHERE CONTAINS('cmis:name:*') ORDER BY cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY cmis:notThere DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder as F WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY F.cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);
-        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder F WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY F.cmis:notThere DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, null);   
+        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name = 'compan home' ORDER BY SCORE() DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY MEEEP DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId, cmis:parentId FROM cmis:folder WHERE CONTAINS('cmis:name:*') ORDER BY cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY cmis:notThere DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder as F WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY F.cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
+        //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder F WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY F.cmis:notThere DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);   
     }
     
     private void checkCmisUpperAndLower(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2532,22 +2611,22 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Upper and Lower", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'FOLDER 1'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'folder 1'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'FOLDER 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'folder 1'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'FOLDER 1'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'Folder 1'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'Folder 1'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'FOLDER 1'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'folder 1'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'FOLDER 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'folder 1'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'FOLDER 1'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'Folder 1'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'Folder 1'", 0, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <> 'FOLDER 1'", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <> 'FOLDER 1'", 10, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <= 'FOLDER 1'", 3, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <  'FOLDER 1'", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) >= 'FOLDER 1'", 9, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) >  'FOLDER 1'", 8, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <= 'FOLDER 1'", 3, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <  'FOLDER 1'", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) >= 'FOLDER 1'", 9, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) >  'FOLDER 1'", 8, null, null, null, null, null, (String) null);
         
     }
     
@@ -2557,30 +2636,30 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Text predicates", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 9'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 9\\''", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND NOT cmis:name = 'Folder 1'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND 'Folder 1' = ANY cmis:name", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND NOT cmis:name <> 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name <> 'Folder 1'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name <  'Folder 1'", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name <= 'Folder 1'", 3, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name >  'Folder 1'", 8, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name >= 'Folder 1'", 9, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name IN ('Folder 1', '1')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT IN ('Folder 1', 'Folder 9\\'')", 9, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND ANY cmis:name IN ('Folder 1', 'Folder 9\\'')", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND ANY cmis:name NOT IN ('2', '3')", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'Fol%'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ 1'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ %'", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ %'", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 9'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 9\\''", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND NOT cmis:name = 'Folder 1'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND 'Folder 1' = ANY cmis:name", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND NOT cmis:name <> 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name <> 'Folder 1'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name <  'Folder 1'", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name <= 'Folder 1'", 3, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name >  'Folder 1'", 8, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name >= 'Folder 1'", 9, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name IN ('Folder 1', '1')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT IN ('Folder 1', 'Folder 9\\'')", 9, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND ANY cmis:name IN ('Folder 1', 'Folder 9\\'')", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND ANY cmis:name NOT IN ('2', '3')", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'Fol%'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ 1'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ %'", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ %'", 1, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ _'", 9, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ _'", 2, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ _'", 9, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ _'", 2, null, null, null, null, null, (String) null);
     }
     
     private void checkCmisSimpleConjunction(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2589,8 +2668,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Simple conjunction", report);
         
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder'", 0, null, null, null, null, null, (String) null);
     }
     
     private void checkCmisSimpleDisjunction(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2599,9 +2678,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Simple disjunction", report);
         
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 2'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1' OR cmis:name = 'Folder 2'", 2, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 2'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1' OR cmis:name = 'Folder 2'", 2, null, null, null, null, null, (String) null);
     }
     
     private void checkCmisExists(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2610,10 +2689,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Exists", report);
         
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NULL", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:document WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:document WHERE cmis:name IS NULL", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NULL", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:document WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:document WHERE cmis:name IS NULL", 0, null, null, null, null, null, (String) null);
     }
     
     
@@ -2623,13 +2702,13 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("In Tree", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + id + "')", 6, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder F WHERE IN_TREE(F, '" + id + "')", 6, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + id + "')", 6, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder F WHERE IN_TREE(F, '" + id + "')", 6, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId WHERE IN_TREE(D, '" + id + "')", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId WHERE IN_TREE(D, '" + id + "')", 1, null, null, null, null, null, (String) null);
     
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('woof://woof/woof')", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('woof://woof/woof;woof')", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('woof://woof/woof')", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('woof://woof/woof;woof')", 0, null, null, null, null, null, (String) null);
     
     }
     
@@ -2639,13 +2718,13 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("In Folder", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('" + id + "')", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder F WHERE IN_FOLDER(F, '" + id + "')", 2, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('" + id + "')", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder F WHERE IN_FOLDER(F, '" + id + "')", 2, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId WHERE IN_FOLDER(D, '" + id + "')", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId WHERE IN_FOLDER(D, '" + id + "')", 1, null, null, null, null, null, (String) null);
        
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('woof://woof/woof')", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('woof://woof/woof;woof')", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('woof://woof/woof')", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('woof://woof/woof;woof')", 0, null, null, null, null, null, (String) null);
     
     }
     
@@ -2655,15 +2734,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("FTS", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT SCORE()as ONE, SCORE()as TWO, D.* FROM cmis:document D WHERE CONTAINS('\\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick\\'')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick\\'')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS(D, 'cmis:name:\\'Tutorial\\'')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name as BOO FROM cmis:document D WHERE CONTAINS('BOO:\\'Tutorial\\'')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('TEXT:\\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('ALL:\\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('d:content:\\'zebra\\'')", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT SCORE()as ONE, SCORE()as TWO, D.* FROM cmis:document D WHERE CONTAINS('\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS(D, 'cmis:name:\\'Tutorial\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name as BOO FROM cmis:document D WHERE CONTAINS('BOO:\\'Tutorial\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('TEXT:\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('ALL:\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('d:content:\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
     
     }
     
@@ -2675,7 +2754,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 0, null, null, null, null, null, "{!afts}|AUTHORITY:guest");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 3, null, null, null, null, null, "{!afts}|AUTHORITY:cmis");
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 11, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|OWNER:andy");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|AUTHORITY:andy");
        
@@ -2687,9 +2766,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Date formatting", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-12-12T12:12:12.012Z'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-012-12T12:12:12.012Z'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-2-12T12:12:12.012Z'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-12-12T12:12:12.012Z'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-012-12T12:12:12.012Z'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-2-12T12:12:12.012Z'", 0, null, null, null, null, null, (String) null);
     }
     
     private void checkAspectJoin(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -2698,22 +2777,22 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Aspect Join", report);
         
-        testQueryByHandler(report, core, "/cmis",  "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId  ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, '\\'jumped\\'') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable where cm:owner = 'andy'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable where cm:owner = 'bob'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.*, T.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId JOIN cm:titled AS T ON T.cmis:objectId = D.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cm:ownable O JOIN cmis:document D ON D.cmis:objectId = O.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT D.*, F.* FROM cmis:folder F JOIN cmis:document D ON D.cmis:objectId = F.cmis:objectId", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT O.*, T.* FROM cm:ownable O JOIN cm:titled T ON O.cmis:objectId = T.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "sElEcT o.*, T.* fRoM cm:ownable o JoIn cm:titled T oN o.cmis:objectId = T.cmis:objectId", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId )", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId  JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId  )", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, '\\'jumped\\'') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, 'jumped') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis",  "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId  ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, '\\'jumped\\'') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable where cm:owner = 'andy'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable where cm:owner = 'bob'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.*, T.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId JOIN cm:titled AS T ON T.cmis:objectId = D.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cm:ownable O JOIN cmis:document D ON D.cmis:objectId = O.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT D.*, F.* FROM cmis:folder F JOIN cmis:document D ON D.cmis:objectId = F.cmis:objectId", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT O.*, T.* FROM cm:ownable O JOIN cm:titled T ON O.cmis:objectId = T.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "sElEcT o.*, T.* fRoM cm:ownable o JoIn cm:titled T oN o.cmis:objectId = T.cmis:objectId", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId )", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId  JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId  )", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, '\\'jumped\\'') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, 'jumped') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, (String) null);
         
     }
     
@@ -2723,12 +2802,12 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("FTS Connectives", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' OR \\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' or \\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' \\'zebra\\'')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' and \\'zebra\\'')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' or \\'zebra\\'')", 10, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\'  \\'zebra\\'')", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' OR \\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' or \\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' \\'zebra\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' and \\'zebra\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' or \\'zebra\\'')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\'  \\'zebra\\'')", 1, null, null, null, null, null, (String) null);
         
         // TODO: set default OR
     }
@@ -2739,36 +2818,1099 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Like Escaping", report);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutorial'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutoria_'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T_______'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T______\\_'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T%'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco%'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T\\%'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'GG*GG'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '__*__'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '%*%'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'HH?HH'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '__?__'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '%?%'", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutorial'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutoria_'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T_______'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T______\\_'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T\\%'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'GG*GG'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '__*__'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '%*%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'HH?HH'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '__?__'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '%?%'", 1, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'AA%'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'AA\\%'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'A%'", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'a%'", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'A\\%'", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'BB_'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'BB\\_'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B__'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B_\\_'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B\\_\\_'", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'AA%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'AA\\%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'A%'", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'a%'", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'A\\%'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'BB_'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'BB\\_'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B__'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B_\\_'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B\\_\\_'", 0, null, null, null, null, null, (String) null);
         
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'CC\\\\'", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'DD\\''", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'CC\\\\'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'DD\\''", 1, null, null, null, null, null, (String) null);
     }
     
+    @SuppressWarnings("unused")
+    private void addTypeTestData(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1) throws IOException
+    {
+        HashMap<QName, PropertyValue> content00Properties = new HashMap<QName, PropertyValue>();
+        MLTextPropertyValue desc00 = new MLTextPropertyValue();
+        desc00.addValue(Locale.ENGLISH, "Test One");
+        desc00.addValue(Locale.US, "Test 1");
+        content00Properties.put(ContentModel.PROP_DESCRIPTION, desc00);
+        content00Properties.put(ContentModel.PROP_TITLE, desc00);
+        content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Test One"));
+        content00Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1)));
+        
+        StringPropertyValue single = new StringPropertyValue("Un tokenised");
+        content00Properties.put(singleTextUntokenised, single);
+        content00Properties.put(singleTextTokenised, single);
+        content00Properties.put(singleTextBoth, single);
+        MultiPropertyValue multi = new MultiPropertyValue();
+        multi.addValue(single);
+        multi.addValue(new StringPropertyValue("two parts"));
+        content00Properties.put(multipleTextUntokenised, multi);
+        content00Properties.put(multipleTextTokenised, multi);
+        content00Properties.put(multipleTextBoth, multi);
+        content00Properties.put(singleMLTextUntokenised,  makeMLText());
+        content00Properties.put(singleMLTextTokenised,  makeMLText());
+        content00Properties.put(singleMLTextBoth,  makeMLText());
+        content00Properties.put(multipleMLTextUntokenised, makeMLTextMVP());
+        content00Properties.put(multipleMLTextTokenised, makeMLTextMVP());
+        content00Properties.put(multipleMLTextBoth, makeMLTextMVP());
+        StringPropertyValue one = new StringPropertyValue("1");
+        StringPropertyValue two = new StringPropertyValue("2");
+        MultiPropertyValue multiDec = new MultiPropertyValue();
+        multiDec.addValue(one);
+        multiDec.addValue(new StringPropertyValue("1.1"));
+        content00Properties.put(singleFloat, one);
+        content00Properties.put(multipleFloat, multiDec);
+        content00Properties.put(singleDouble, one);
+        content00Properties.put(multipleDouble, multiDec);
+        MultiPropertyValue multiInt = new MultiPropertyValue();
+        multiInt.addValue(one);
+        multiInt.addValue(two);
+        content00Properties.put(singleInteger, one);
+        content00Properties.put(multipleInteger, multiInt);
+        content00Properties.put(singleLong, one);
+        content00Properties.put(multipleLong, multiInt);
+        
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date1);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        Date date0 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        Date date2 = cal.getTime();
+        StringPropertyValue d0 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date0));
+        StringPropertyValue d1 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1));
+        StringPropertyValue d2 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date2));
+        MultiPropertyValue multiDate = new MultiPropertyValue();
+        multiDate.addValue(d1);
+        multiDate.addValue(d2);
+        content00Properties.put(singleDate, d1);
+        content00Properties.put(multipleDate, multiDate);
+        content00Properties.put(singleDatetime, d1);
+        content00Properties.put(multipleDatetime, multiDate);
+        
+        StringPropertyValue bTrue = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, true));
+        StringPropertyValue bFalse = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, false));
+        MultiPropertyValue multiBool = new MultiPropertyValue();
+        multiBool.addValue(bTrue);
+        multiBool.addValue(bFalse);
+        
+        content00Properties.put(singleBoolean, bTrue);
+        content00Properties.put(multipleBoolean, multiBool);
+        
+        NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
+        QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Test One");
+        ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
+        addNode(core, dataModel, 1, 100, 1, extendedContent, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, null, "andy", new ChildAssociationRef[] { content00CAR },
+                new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
+                        + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+    }
+    
+    private void addTypeSortTestData(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1) throws IOException
+    {
+        addSortableNull(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date1, "start", 0);
+        for (int i = 0; i < 10; i++)
+        {
+            addSortableNode(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date1, i);
+            if (i == 5)
+            {
+                addSortableNull(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date1, "mid", 1);
+            }
+        }
+
+        addSortableNull(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date1, "end", 2);
+    }
+    
+    
+    private void addSortableNull(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1, String id, int offset) throws IOException
+    {
+        HashMap<QName, PropertyValue> content00Properties = new HashMap<QName, PropertyValue>();
+        MLTextPropertyValue desc00 = new MLTextPropertyValue();
+        desc00.addValue(Locale.ENGLISH, "Test null");
+        content00Properties.put(ContentModel.PROP_DESCRIPTION, desc00);
+        content00Properties.put(ContentModel.PROP_TITLE, desc00);
+        content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Test null"));
+        content00Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1)));
+       
+        NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
+        QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Test null");
+        ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
+        addNode(core, dataModel, 1, 200+offset, 1, extendedContent, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, null, "andy", new ChildAssociationRef[] { content00CAR },
+                new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
+                        + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+    }
+    
+    
+
+    private static String[] orderable = new String[] { "zero loons", "one banana", "two apples", "three fruit", "four lemurs", "five rats", "six badgers", "seven cards",
+            "eight cabbages", "nine zebras", "ten lemons" };
+
+    @SuppressWarnings("unused")
+    private void addSortableNode(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1, int position) throws IOException
+    {
+        HashMap<QName, PropertyValue> content00Properties = new HashMap<QName, PropertyValue>();
+        MLTextPropertyValue desc00 = new MLTextPropertyValue();
+        desc00.addValue(Locale.ENGLISH, "Test "+position);
+        content00Properties.put(ContentModel.PROP_DESCRIPTION, desc00);
+        content00Properties.put(ContentModel.PROP_TITLE, desc00);
+        content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Test "+position));
+        content00Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1)));
+        
+        StringPropertyValue single = new StringPropertyValue(orderable[position]);
+        content00Properties.put(singleTextUntokenised, single);
+        content00Properties.put(singleTextTokenised, single);
+        content00Properties.put(singleTextBoth, single);
+        MultiPropertyValue multi = new MultiPropertyValue();
+        multi.addValue(single);
+        multi.addValue(new StringPropertyValue(orderable[position + 1]));
+        content00Properties.put(multipleTextUntokenised, multi);
+        content00Properties.put(multipleTextTokenised, multi);
+        content00Properties.put(multipleTextBoth, multi);
+        content00Properties.put(singleMLTextUntokenised,  makeMLText(position));
+        content00Properties.put(singleMLTextTokenised,  makeMLText(position));
+        content00Properties.put(singleMLTextBoth,  makeMLText(position));
+        content00Properties.put(multipleMLTextUntokenised, makeMLTextMVP(position));
+        content00Properties.put(multipleMLTextTokenised, makeMLTextMVP(position));
+        content00Properties.put(multipleMLTextBoth, makeMLTextMVP());
+        StringPropertyValue one = new StringPropertyValue(""+(1.1*position));
+        StringPropertyValue two = new StringPropertyValue(""+(2.2*position));
+        MultiPropertyValue multiDec = new MultiPropertyValue();
+        multiDec.addValue(one);
+        multiDec.addValue(two);
+        content00Properties.put(singleFloat, one);
+        content00Properties.put(multipleFloat, multiDec);
+        content00Properties.put(singleDouble, one);
+        content00Properties.put(multipleDouble, multiDec);
+        one = new StringPropertyValue(""+(1*position));
+        two = new StringPropertyValue(""+(2*position));
+        MultiPropertyValue multiInt = new MultiPropertyValue();
+        multiInt.addValue(one);
+        multiInt.addValue(two);
+        content00Properties.put(singleInteger, one);
+        content00Properties.put(multipleInteger, multiInt);
+        content00Properties.put(singleLong, one);
+        content00Properties.put(multipleLong, multiInt);
+        
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date1);
+        cal.add(Calendar.DAY_OF_MONTH, position);
+        
+        Date newdate1 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        Date date0 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        Date date2 = cal.getTime();
+        StringPropertyValue d0 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date0));
+        StringPropertyValue d1 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, newdate1));
+        StringPropertyValue d2 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date2));
+        MultiPropertyValue multiDate = new MultiPropertyValue();
+        multiDate.addValue(d1);
+        multiDate.addValue(d2);
+        content00Properties.put(singleDate, d1);
+        content00Properties.put(multipleDate, multiDate);
+        content00Properties.put(singleDatetime, d1);
+        content00Properties.put(multipleDatetime, multiDate);
+        
+        StringPropertyValue b = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, position % 2 == 0 ? true : false));
+        StringPropertyValue bTrue = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, true));
+        StringPropertyValue bFalse = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, false));
+        MultiPropertyValue multiBool = new MultiPropertyValue();
+        multiBool.addValue(bTrue);
+        multiBool.addValue(bFalse);
+        
+        content00Properties.put(singleBoolean, b);
+        content00Properties.put(multipleBoolean, multiBool);
+        
+        NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
+        QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Test "+position);
+        ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
+        addNode(core, dataModel, 1, 1000+position, 1, extendedContent, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, null, "andy", new ChildAssociationRef[] { content00CAR },
+                new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
+                        + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+    }
+
+    
+    private void check_D_text(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:text", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 12, null, null, null, null, null, (String) null);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth <> 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth NOT LIKE 't__eni%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+        //
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth < 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth < 'Un tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth < 'V'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth < 'U'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth <= 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth <= 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth <= 'V'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth <= 'U'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth > 'tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth > 'Un tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth > 'V'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth > 'U'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'V'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'U'", 1, null, null, null, null, null, (String) null);
+        
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised <> 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised NOT LIKE 't__eni%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+        //
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised < 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised < 'Un tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised < 'V'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised < 'U'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised <= 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised <= 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised <= 'V'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised <= 'U'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised > 'tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised > 'Un tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised > 'V'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised > 'U'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'tokenised'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'V'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'U'", 1, null, null, null, null, null, (String) null);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised = 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised <> 'tokenized'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised LIKE 'to%sed'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised NOT LIKE 'Ut__eniz%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
+      
+        // d:text single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias <> 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias NOT LIKE 't__eni%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+       
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias <> 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias NOT LIKE 't__eni%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias IN ('Un tokenised', 'Monkey')",  1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+       
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias = 'tokenised'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias <> 'tokenized'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias LIKE 'to%sed'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'Ut__eniz%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
+      
+        // d:text multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'Un tokenised' =  ANY cmistest:multipleTextBoth ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleTextBoth IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleTextBoth NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'Un tokenised' =  ANY cmistest:multipleTextUntokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleTextUntokenised IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleTextUntokenised NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'tokenised' =  ANY cmistest:multipleTextTokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleTextTokenised IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleTextTokenised NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
+
+        // d:text multiple by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleTextBoth as alias FROM cmistest:extendedContent WHERE 'Un tokenised' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleTextBoth as alias FROM cmistest:extendedContent WHERE ANY alias IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleTextBoth as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleTextUntokenised alias FROM cmistest:extendedContent WHERE 'Un tokenised' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleTextUntokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleTextUntokenised alias FROM cmistest:extendedContent WHERE ANY alias NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:multipleTextTokenised alias FROM cmistest:extendedContent T WHERE 'tokenised' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:multipleTextTokenised alias FROM cmistest:extendedContent T WHERE ANY alias IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:multipleTextTokenised alias FROM cmistest:extendedContent T WHERE ANY alias NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
+    }
+    
+    private void check_locale(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("CMIS locale", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'AAAA BBBB'", 1, null, null, Locale.ENGLISH, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'AAAA BBBB'", 1, null, null, Locale.FRENCH, null, null, (String) null);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'CCCC DDDD'", 1, null, null, Locale.ENGLISH, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'CCCC DDDD'", 1, null, null, Locale.FRENCH, null, null, (String) null);
+        
+    }
+    
+    
+    private void check_D_mltext(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:mltext", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
+        // d:mltext single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'AAAA BBBB'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'AAAA'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = '%AAAA'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = '%AAA'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'BBBB'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'CCCC DDDD'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth <> 'EEEE FFFF'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth LIKE 'AAA_ B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth LIKE 'CCC_ D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth NOT LIKE 'B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth NOT LIKE 'D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised = 'AAAA BBBB'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised = 'CCCC DDDD'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised <> 'EEEE FFFF'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised LIKE 'AAA_ B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised LIKE 'CCC_ D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised NOT LIKE 'B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised NOT LIKE 'D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextUntokenised NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised = 'AAAA'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised = 'BBBB'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised = 'CCCC'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised = 'DDDD'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised <> 'EEEE'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised LIKE 'A%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised LIKE '_B__'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised LIKE '%C'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised LIKE 'D%D'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised NOT LIKE 'CCCC_'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised IN ('AAAA', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised IN ('BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised IN ('CCCC', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised IN ('DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextTokenised NOT IN ('EEEE')", 1, null, null, null, null, null, (String) null);
+
+        // d:mltext single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias = 'AAAA BBBB'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias = 'AAAA'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias = 'BBBB'", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias = 'CCCC DDDD'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias <> 'EEEE FFFF'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias LIKE 'AAA_ B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias LIKE 'CCC_ D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextBoth as alias FROM cmistest:extendedContent WHERE alias NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias = 'AAAA BBBB'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias = 'CCCC DDDD'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias <> 'EEEE FFFF'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias LIKE 'AAA_ B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias LIKE 'CCC_ D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'B%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'D%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextUntokenised as alias FROM cmistest:extendedContent WHERE alias NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias = 'AAAA'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias = 'BBBB'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias = 'CCCC'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias = 'DDDD'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias <> 'EEEE'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias LIKE 'A%'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias LIKE '_B__'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias LIKE '%C'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias LIKE 'D%D'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'CCCC_'", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias IN ('AAAA', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias IN ('BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias IN ('CCCC', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias IN ('DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleMLTextTokenised as alias FROM cmistest:extendedContent WHERE alias NOT IN ('EEEE')", 1, null, null, null, null, null, (String) null);
+
+        // d:mltext multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'AAAA BBBB' =  ANY cmistest:multipleMLTextBoth ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'CCCC DDDD' =  ANY cmistest:multipleMLTextBoth ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextBoth IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextBoth IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextBoth NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'AAAA BBBB' =  ANY cmistest:multipleMLTextUntokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'CCCC DDDD' =  ANY cmistest:multipleMLTextUntokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextUntokenised IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextUntokenised IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextUntokenised NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'AAAA' =  ANY cmistest:multipleMLTextTokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'BBBB' =  ANY cmistest:multipleMLTextTokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'CCCC' =  ANY cmistest:multipleMLTextTokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'DDDD' =  ANY cmistest:multipleMLTextTokenised ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextTokenised IN ('AAAA', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextTokenised IN ('BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextTokenised IN ('CCCC', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextTokenised IN ('DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleMLTextTokenised NOT IN ('EEEE')", 1, null, null, null, null, null, (String) null);
+
+        // d:mltext multiple by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextBoth alias FROM cmistest:extendedContent WHERE 'AAAA BBBB' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextBoth alias FROM cmistest:extendedContent WHERE 'CCCC DDDD' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextBoth alias FROM cmistest:extendedContent WHERE ANY alias IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextBoth alias FROM cmistest:extendedContent WHERE ANY alias IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextBoth alias FROM cmistest:extendedContent WHERE ANY alias NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+        ;
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextUntokenised alias FROM cmistest:extendedContent WHERE 'AAAA BBBB' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextUntokenised alias FROM cmistest:extendedContent WHERE 'CCCC DDDD' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextUntokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('AAAA BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextUntokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('CCCC DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextUntokenised alias FROM cmistest:extendedContent WHERE ANY alias NOT IN ('EEEE FFFF')", 1, null, null, null, null, null, (String) null);
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE 'AAAA' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE 'BBBB' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE 'CCCC' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE 'DDDD' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('AAAA', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('BBBB', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('CCCC', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE ANY alias IN ('DDDD', 'Monkey')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleMLTextTokenised alias FROM cmistest:extendedContent WHERE ANY alias NOT IN ('EEEE')", 1, null, null, null, null, null, (String) null);
+    }
+
+    private void check_D_float(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:float", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+        
+        // d:float single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat = 1.1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat <> 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat < 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat <= 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat > 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat >= 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat NOT IN (1.1)", 1, null, null, null, null, null, (String) null);
+
+        // d:float single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias = 1.1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias <> 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias < 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias <= 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias > 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias >= 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias NOT IN (1.1)", 1, null, null, null, null, null, (String) null);
+        
+        // d:float multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1' =  ANY cmistest:multipleFloat ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1.1' =  ANY cmistest:multipleFloat ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleFloat IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleFloat IN (1.1, 2.2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleFloat NOT IN (1.1, 2.2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleFloat NOT IN (1.3, 2.3)", 1, null, null, null, null, null, (String) null);
+
+        // d:float multiple by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE '1.1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE ANY alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE ANY alias IN (1.1, 2.2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.1, 2.2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.3, 2.3)", 1, null, null, null, null, null, (String) null);
+    }
+    
+    private void check_D_double(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:double", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+        
+        // d:double single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble = 1.1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble <> 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble < 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble <= 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble > 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble >= 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble NOT IN (1.1)", 1, null, null, null, null, null, (String) null);
+
+        // d:double single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias = 1.1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias <> 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias < 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias <= 1.1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias > 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias >= 0.9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDouble alias FROM cmistest:extendedContent WHERE alias NOT IN (1.1)", 1, null, null, null, null, null, (String) null);
+
+        // d:double multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1' =  ANY cmistest:multipleDouble ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1.1' =  ANY cmistest:multipleDouble ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDouble IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDouble IN (1.1, 2.2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDouble NOT IN (1.1, 2.2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDouble NOT IN (1.3, 2.3)", 1, null, null, null, null, null, (String) null);
+
+        // d:double multiple by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE '1.1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE ANY alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE ANY alias IN (1.1, 2.2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.1, 2.2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.3, 2.3)", 1, null, null, null, null, null, (String) null);
+    }
+    
+    private void check_D_int(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:int", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+        
+        // d:int single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger = 2", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger <> 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger < 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger <= 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger > 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger >= 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger NOT IN (2)", 1, null, null, null, null, null, (String) null);
+
+        // d:int single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias = 2", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias <> 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias < 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias <= 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias > 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias >= 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleInteger alias FROM cmistest:extendedContent WHERE alias NOT IN (2)", 1, null, null, null, null, null, (String) null);
+
+        // d:int multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1' =  ANY cmistest:multipleInteger ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '2' =  ANY cmistest:multipleInteger ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleInteger IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleInteger IN (2, 3)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleInteger NOT IN (1, 2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleInteger NOT IN (2, 3)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleInteger NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
+
+        // d:int multiple by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE '2' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias IN (2, 3)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1, 2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (2, 3)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
+    }
+    
+    private void check_D_long(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:long", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+        
+        // d:long single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong = 2", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong <> 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong < 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong <= 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong > 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong >= 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong NOT IN (2)", 1, null, null, null, null, null, (String) null);
+
+        // d:long single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias = 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias = 2", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias <> 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias <> 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias < 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias < 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias <= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias <= 2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias > 1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias > 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias >= 1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias >= 0", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleLong as alias FROM cmistest:extendedContent WHERE alias NOT IN (2)", 1, null, null, null, null, null, (String) null);
+
+        // d:long multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1' =  ANY cmistest:multipleLong ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '2' =  ANY cmistest:multipleLong ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleLong IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleLong IN (2, 3)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleLong NOT IN (1, 2)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleLong NOT IN (2, 3)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleLong NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
+
+        // d:long multiple by alias
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE '2' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias IN (2, 3)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1, 2)",0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (2, 3)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
+    }
+    
+    private void check_D_date(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, Date date1) throws IOException
+    {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date1);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        Date date0 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        Date date2 = cal.getTime();
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:date", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+    
+        // d:date single
+
+        String d0 = ISO8601DateFormat.format(date0);
+        String d1 = ISO8601DateFormat.format(date1);
+        String d2 = ISO8601DateFormat.format(date2);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate = TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate = TIMESTAMP '" + d2 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate <> TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate <> TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate < TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate < TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate <= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate <= TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate > TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate > TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate >= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate >= TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate IN (TIMESTAMP '" + d0 + "' ,TIMESTAMP '" + d1 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate NOT IN (TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+
+        // d:date single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias = TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias = TIMESTAMP '" + d2 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias <> TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias <> TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias < TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias < TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias <= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias <= TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias > TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias > TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias >= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias >= TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias IN (TIMESTAMP '" + d0 + "' ,TIMESTAMP '" + d1 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDate as alias FROM cmistest:extendedContent WHERE alias NOT IN (TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+
+        // d:date multiple
+
+     
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE TIMESTAMP '" + d1 + "' =  ANY cmistest:multipleDate ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE TIMESTAMP '" + d2 + "' =  ANY cmistest:multipleDate ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDate IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDate IN (TIMESTAMP '" + d2 + "', TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDate NOT IN (TIMESTAMP '" + d0 + "', TIMESTAMP '" + d1 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDate NOT IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDate NOT IN (TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+
+        // d:date multiple by alias
+
+      
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE TIMESTAMP '" + d1 + "' =  ANY alias ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE TIMESTAMP '" + d2 + "' =  ANY alias ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias IN (TIMESTAMP '" + d2 + "', TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d0 + "', TIMESTAMP '" + d1 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+
+    }
+    
+    private void check_D_datetime(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, Date date1) throws IOException
+    {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date1);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        Date date0 = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        Date date2 = cal.getTime();
+        
+        
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:datetime", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+       
+        String d0 = ISO8601DateFormat.format(date0);
+        String d1 = ISO8601DateFormat.format(date1);
+        String d2 = ISO8601DateFormat.format(date2);
+        
+        // d:datetime single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime = TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime = TIMESTAMP '" + d2 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime <> TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime <> TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime < TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime < TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime <= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime <= TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime > TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime > TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime >= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime >= TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime IN (TIMESTAMP '" + d0 + "' ,TIMESTAMP '" + d1 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime NOT IN (TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+
+        // d:datetime single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias = TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias = TIMESTAMP '" + d2 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias <> TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias <> TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias < TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias < TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias <= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias <= TIMESTAMP '" + d2 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias > TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias > TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias >= TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias >= TIMESTAMP '" + d0 + "'", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias IN (TIMESTAMP '" + d0 + "' ,TIMESTAMP '" + d1 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleDatetime alias FROM cmistest:extendedContent WHERE alias NOT IN (TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+
+        // d:date multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE TIMESTAMP '" + d1 + "' =  ANY cmistest:multipleDatetime ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE TIMESTAMP '" + d2 + "' =  ANY cmistest:multipleDatetime ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDatetime IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDatetime IN (TIMESTAMP '" + d2 + "', TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDatetime NOT IN (TIMESTAMP '" + d0 + "', TIMESTAMP '" + d1 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDatetime NOT IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDatetime NOT IN (TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+
+        // d:date multiple by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE TIMESTAMP '" + d1 + "' =  ANY alias ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE TIMESTAMP '" + d2 + "' =  ANY alias ", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE ANY alias IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE ANY alias IN (TIMESTAMP '" + d2 + "', TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d0 + "', TIMESTAMP '" + d1 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 0, null, null, null, null, null, (String) null); 
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDatetime alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
+
+    }
+
+    private void check_D_boolean(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("d:boolean", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+        
+        // d:boolean single
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleBoolean = TRUE", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleBoolean = true", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleBoolean = FALSE", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleBoolean = false", 0, null, null, null, null, null, (String) null);
+        // not strictly compliant...
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleBoolean = TRue", 1, null, null, null, null, null, (String) null);
+        // d:boolean single by alias
+
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleBoolean alias FROM cmistest:extendedContent WHERE alias = TRUE", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleBoolean alias FROM cmistest:extendedContent WHERE alias = true", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleBoolean alias FROM cmistest:extendedContent WHERE alias = FALSE", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleBoolean alias FROM cmistest:extendedContent WHERE alias = false", 0, null, null, null, null, null, (String) null);
+        // not strictly compliant...
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleBoolean alias FROM cmistest:extendedContent WHERE alias = TRue", 1, null, null, null, null, null, (String) null);
+
+        // d:boolean multiple
+
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1' =  ANY cmistest:multipleBoolean ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '2' =  ANY cmistest:multipleBoolean ", 1, null, null, null, null, null, (String) null);
+
+        // d:boolean multiple by alias
+   
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleBoolean as alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleBoolean as alias FROM cmistest:extendedContent WHERE '2' =  ANY alias ", 1, null, null, null, null, null, (String) null);
+    }
+
+    private void check_contains_syntax(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("CMIS contains syntax", report);
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
+        
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-quick')", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick brown fox')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick one')", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick -one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-quick one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-quick -one')", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('fox brown quick')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR one')", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR -one')", 11, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-quick OR -one')", 12, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick brown fox\\'')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'fox brown quick\\'')", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick brown fox\\' one')", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick brown fox\\' -one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-\\'quick brown fox\\' one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-\\'quick brown fox\\' -one')", 10, null, null, null, null, null, (String) null);
+
+        // escaping
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE CONTAINS('cmis:name:\\'Folder 9\\\\\\'\\'')", 1, null, null, null, null, null, (String) null);
+
+        // precedence
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR brown one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR brown AND one')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR (brown AND one)')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('(quick OR brown) AND one')", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR brown OR one')", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR brown one')", 1, null, null, null, null, null, (String) null);
+    }
+    
+    
+    
+    private void check_order(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    {
+
+        NamedList<Object> report = new SimpleOrderedMap<Object>();
+        rsp.add("CMIS order", report);
+        
+        int[] asc = new int[] {200, 201, 202, 1008, 1005, 1004, 1009, 1001, 1007, 1006, 1003, 1002, 100, 1000}; 
+        int[] desc = new int[]{1000, 100, 1002, 1003, 1006, 1007, 1001, 1009, 1004, 1005, 1008, 200, 201, 202};
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleTextUntokenised", asc, desc);
+        //checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleTextTokenised");
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleTextBoth", asc, desc);
+        
+        //testOrderablePropertyFail("test:multipleTextUntokenised");
+        //testOrderablePropertyFail("test:multipleTextTokenised");
+        //testOrderablePropertyFail("test:multipleTextBoth");
+        
+        asc = new int[] {200, 201, 202, 1009, 100, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008}; 
+        desc = new int[]{1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 1009, 200, 201, 202};
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleMLTextUntokenised", asc, desc);
+        //testOrderablePropertyFail("cmistest:singleMLTextTokenised");
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleMLTextBoth", asc, desc);
+        
+        // testOrderablePropertyFail("cmistest:multipleMLTextUntokenised");
+        // testOrderablePropertyFail("cmistest:multipleMLTextTokenised");
+        // testOrderablePropertyFail("cmistest:multipleMLTextBoth");
+        
+        asc = new int[] {200, 201, 202, 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009}; 
+        desc = new int[]{1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 200, 201, 202};
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleFloat", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleFloat");
+        
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDouble", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleDouble");
+
+        asc = new int[] {200, 201, 202, 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009}; 
+        desc = new int[]{1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 100, 1001, 1000, 200, 201, 202};
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleInteger", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleInteger");
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleLong", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleLong");
+        
+        asc = new int[] {200, 201, 202, 100, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009}; 
+        desc = new int[]{1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 200, 201, 202};
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDate", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleDate");
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDatetime", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleDatetime");
+        
+        asc = new int[] {200, 201, 202, 1001, 1003, 1005, 1007, 1009, 100, 1000, 1002, 1004, 1006, 1008}; 
+        desc = new int[]{100, 1000, 1002, 1004, 1006, 1008, 1001, 1003, 1005, 1007, 1009, 200, 201, 202};
+        
+        checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleBoolean", asc, desc);
+        //testOrderablePropertyFail("cmistest:multipleBoolean");
+        
+        
+    }
+        
+    
+    private void checkOrderableProperty(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, NamedList<Object> report, String propertyQueryName, int[] asc, int[] desc) throws IOException
+    {
+        testQueryByHandler(report, core, "/cmis", "SELECT " + propertyQueryName + " FROM cmistest:extendedContent ORDER BY " + propertyQueryName + " ASC", 14, null, asc, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT " + propertyQueryName + " FROM cmistest:extendedContent ORDER BY " + propertyQueryName + " DESC", 14, null, desc, null, null, null, (String) null);
+    }
+    
+    
+    private static String[] mlOrderable_en = new String[] { "AAAA BBBB", "EEEE FFFF", "II", "KK", "MM", "OO", "QQ", "SS", "UU", "AA", "CC" };
+
+    private static String[] mlOrderable_fr = new String[] { "CCCC DDDD", "GGGG HHHH", "JJ", "LL", "NN", "PP", "RR", "TT", "VV", "BB", "DD" };
+
+    private MLTextPropertyValue makeMLText()
+    {
+        return makeMLText(0);
+    }
+
+    private MLTextPropertyValue makeMLText(int position)
+    {
+        MLTextPropertyValue ml = new MLTextPropertyValue();
+        ml.addValue(Locale.ENGLISH, mlOrderable_en[position]);
+        ml.addValue(Locale.FRENCH, mlOrderable_fr[position]);
+        return ml;
+    }
+    
+    private MultiPropertyValue makeMLTextMVP()
+    {
+        return makeMLTextMVP(0);
+    }
+
+    private MultiPropertyValue makeMLTextMVP(int position)
+    {
+        MLTextPropertyValue m1 = new MLTextPropertyValue();
+        m1.addValue(Locale.ENGLISH, mlOrderable_en[position]);
+        MLTextPropertyValue m2 = new MLTextPropertyValue();
+        m2.addValue(Locale.FRENCH, mlOrderable_fr[position]);
+        MultiPropertyValue answer = new MultiPropertyValue();
+        answer.addValue(m1);
+        answer.addValue(m2);
+        return answer;
+    }
     
     /**
      * @param rsp
@@ -2781,228 +3923,228 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("AFS", report);
 
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy and dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-lazy and -dog", 15, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy and -dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "|lazy and |dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "|eager and |dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "|lazy and |wolf", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "|eager and |wolf", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-lazy or -dog", 15, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-lazy or -wolf", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -wolf", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy and not dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy not dog", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy and !dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy !dog", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy and -dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy -dog", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm_content:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "=cm_content:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "~cm_content:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:big OR cm:content:lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:big AND cm:content:lazy", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "{http://www.alfresco.org/model/content/1.0}content:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "=lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm:content:big OR @cm:content:lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm:content:big AND @cm:content:lazy", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@{http://www.alfresco.org/model/content/1.0}content:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "~@cm:content:big OR ~@cm:content:lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown * quick", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown * dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown * dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(0) dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(1) dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(2) dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(3) dog", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(4) dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(5) dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "brown *(6) dog", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(\"lazy\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy and -dog)", 15, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy and dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and -dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(|lazy and |dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(|eager and |dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(|lazy and |wolf)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(|eager and |wolf)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy or -dog)", 15, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(-eager or -dog)", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy or -wolf)", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(-eager or -wolf)", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and not dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy not dog)", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and !dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy !dog)", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and -dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(lazy -dog)", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm_content:(\"lazy\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(big OR lazy)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(big AND lazy)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "{http://www.alfresco.org/model/content/1.0}content:(\"lazy\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(=lazy)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm:content:(big) OR @cm:content:(lazy)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm:content:(big) AND @cm:content:(lazy)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@{http://www.alfresco.org/model/content/1.0}content:(\"lazy\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm:content:(~big OR ~lazy)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown * quick)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown * dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown * dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(0) dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(1) dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(2) dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(3) dog)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(4) dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(5) dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(6) dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm_content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm:content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@cm_content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "@{http://www.alfresco.org/model/content/1.0}content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "{http://www.alfresco.org/model/content/1.0}content.mimetype:\"text/plain\"", 1, null, null, null, null, null, null);
-        // testQueryByHandler(report, core, "/afts", "brown..dog", 1, null, null);
-        // testQueryByHandler(report, core, "/afts", "TEXT:brown..dog", 1, null, null);
-        // testQueryByHandler(report, core, "/afts", "cm:content:brown..dog", 1, null, null);
-        // testQueryByHandler(report, core, "/afts", "", 1, null, null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy and dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-lazy and -dog", 15, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy and -dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "|lazy and |dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "|eager and |dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "|lazy and |wolf", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "|eager and |wolf", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-lazy or -dog", 15, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-lazy or -wolf", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -wolf", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy and not dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy not dog", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy and !dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy !dog", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy and -dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy -dog", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm_content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "=cm_content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "~cm_content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:big OR cm:content:lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:big AND cm:content:lazy", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "{http://www.alfresco.org/model/content/1.0}content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "=lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm:content:big OR @cm:content:lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm:content:big AND @cm:content:lazy", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@{http://www.alfresco.org/model/content/1.0}content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "~@cm:content:big OR ~@cm:content:lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown * quick", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown * dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown * dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(0) dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(1) dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(2) dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(3) dog", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(4) dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(5) dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "brown *(6) dog", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(\"lazy\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy and -dog)", 15, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy and dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and -dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(|lazy and |dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(|eager and |dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(|lazy and |wolf)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(|eager and |wolf)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy or -dog)", 15, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(-eager or -dog)", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(-lazy or -wolf)", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(-eager or -wolf)", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and not dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy not dog)", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and !dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy !dog)", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy and -dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(lazy -dog)", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm_content:(\"lazy\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(big OR lazy)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(big AND lazy)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "{http://www.alfresco.org/model/content/1.0}content:(\"lazy\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(=lazy)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm:content:(big) OR @cm:content:(lazy)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm:content:(big) AND @cm:content:(lazy)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@{http://www.alfresco.org/model/content/1.0}content:(\"lazy\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm:content:(~big OR ~lazy)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown * quick)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown * dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown * dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(0) dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(1) dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(2) dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(3) dog)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(4) dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(5) dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(6) dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm_content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm:content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@cm_content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "@{http://www.alfresco.org/model/content/1.0}content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "{http://www.alfresco.org/model/content/1.0}content.mimetype:\"text/plain\"", 1, null, null, null, null, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "brown..dog", 1, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "TEXT:brown..dog", 1, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "cm:content:brown..dog", 1, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "", 1, null, (String) null);
 
         QName qname = QName.createQName(TEST_NAMESPACE, "float\\-ista");
-        testQueryByHandler(report, core, "/afts", qname + ":3.40", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":3..4", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":3..3.39", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":3..3.40", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":3.41..3.9", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":3.40..3.9", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", qname + ":3.40", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":3..4", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":3..3.39", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":3..3.40", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":3.41..3.9", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":3.40..3.9", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 4]", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 3.39]", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 3.4]", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":[3.41 TO 4]", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":[3.4 TO 4]", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 3.4>", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":<3.4 TO 4]", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":<3.4 TO 3.4>", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 4]", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 3.39]", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 3.4]", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":[3.41 TO 4]", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":[3.4 TO 4]", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":[3 TO 3.4>", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":<3.4 TO 4]", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":<3.4 TO 3.4>", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", qname + ":(3.40)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(3..4)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(3..3.39)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(3..3.40)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(3.41..3.9)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(3.40..3.9)", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", qname + ":(3.40)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(3..4)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(3..3.39)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(3..3.40)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(3.41..3.9)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(3.40..3.9)", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 4])", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 3.39])", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 3.4])", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":([3.41 TO 4])", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":([3.4 TO 4])", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 3.4>)", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(<3.4 TO 4])", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", qname + ":(<3.4 TO 3.4>)", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 4])", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 3.39])", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 3.4])", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":([3.41 TO 4])", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":([3.4 TO 4])", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":([3 TO 3.4>)", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(<3.4 TO 4])", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", qname + ":(<3.4 TO 3.4>)", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "test:float_x002D_ista:3.40", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "test:float_x002D_ista:3.40", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "laz*", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "l*y", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "l??y", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "?az?", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "*zy", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "laz*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "l*y", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "l??y", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "?az?", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "*zy", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"laz*\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"l*y\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"l??y\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"?az?\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"*zy\"", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"laz*\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"l*y\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"l??y\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"?az?\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"*zy\"", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "cm:content:lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:laz*", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:l*y", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:l??y", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:?az?", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:*zy", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "cm:content:lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:laz*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:l*y", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:l??y", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:?az?", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:*zy", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "cm:content:\"lazy\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:\"laz*\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:\"l*y\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:\"l??y\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:\"?az?\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:\"*zy\"", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "cm:content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:\"laz*\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:\"l*y\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:\"l??y\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:\"?az?\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:\"*zy\"", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "cm:content:(lazy)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(laz*)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(l*y)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(l??y)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(?az?)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(*zy)", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(lazy)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(laz*)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(l*y)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(l??y)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(?az?)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(*zy)", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "cm:content:(\"lazy\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(\"laz*\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(\"l*y\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(\"l??y\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(\"?az?\")", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:(\"*zy\")", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(\"lazy\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(\"laz*\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(\"l*y\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(\"l??y\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(\"?az?\")", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:(\"*zy\")", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "lazy^2 dog^4.2", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "lazy^2 dog^4.2", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "lazy~0.7", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:laxy~0.7", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "laxy~0.7", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "=laxy~0.7", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "~laxy~0.7", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "lazy~0.7", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:laxy~0.7", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "laxy~0.7", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "=laxy~0.7", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "~laxy~0.7", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "\"quick fox\"~0", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"quick fox\"~1", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"quick fox\"~2", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"quick fox\"~3", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "\"quick fox\"~0", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"quick fox\"~1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"quick fox\"~2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"quick fox\"~3", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "\"fox quick\"~0", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"fox quick\"~1", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"fox quick\"~2", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"fox quick\"~3", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "\"fox quick\"~0", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"fox quick\"~1", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"fox quick\"~2", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"fox quick\"~3", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "lazy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-lazy", 15, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy -lazy", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy^20 -lazy", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "lazy^20 -lazy^20", 16, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "lazy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-lazy", 15, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy -lazy", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy^20 -lazy", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "lazy^20 -lazy^20", 16, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "cm:content:lazy", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "cm:content:lazy", 1, null, null, null, null, null, (String) null);
 
-        // testQueryByHandler(report, core, "/afts", "ANDY:lazy", 1, null, null);
+        // testQueryByHandler(report, core, "/afts", "ANDY:lazy", 1, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "content:lazy", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "content:lazy", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "+PATH:\"/app:company_home/st:sites/cm:rmtestnew1/cm:documentLibrary//*\"", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "+PATH:\"/app:company_home/st:sites/cm:rmtestnew1/cm:documentLibrary//*\"", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts",
                 "+PATH:\"/app:company_home/st:sites/cm:rmtestnew1/cm:documentLibrary//*\" -TYPE:\"{http://www.alfresco.org/model/content/1.0}thumbnail\"", 15, null, null, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/afts",
                 "+PATH:\"/app:company_home/st:sites/cm:rmtestnew1/cm:documentLibrary//*\" AND -TYPE:\"{http://www.alfresco.org/model/content/1.0}thumbnail\"", 0, null, null, null,
-                null, null, null);
+                null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "(brown *(6) dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(6) dog)", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "\"//.\"", 0, null, null, null, null, null, null);
-        // testQueryByHandler(report, core, "/afts", "PATH", "\"//.\"", 16, null, null);
-        testQueryByHandler(report, core, "/afts", "cm:content:brown", 1, null, null, null, null, null, null);
-        // testQueryByHandler(report, core, "/afts", "ANDY:brown", 1, null, null);
-        // testQueryByHandler(report, core, "/afts", "andy:brown", 1, null, null);
-        // testQueryByHandler(report, core, "/afts", "ANDY", "brown", 1, null, null);
-        // testQueryByHandler(report, core, "/afts", "andy", "brown", 1, null, null);
+        testQueryByHandler(report, core, "/afts", "(brown *(6) dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "TEXT:(brown *(6) dog)", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "\"//.\"", 0, null, null, null, null, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "PATH", "\"//.\"", 16, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "cm:content:brown", 1, null, null, null, null, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "ANDY:brown", 1, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "andy:brown", 1, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "ANDY", "brown", 1, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", "andy", "brown", 1, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", "modified:*", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "modified:[MIN TO NOW]", 2, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "modified:*", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "modified:[MIN TO NOW]", 2, null, null, null, null, null, (String) null);
 
     }
 
@@ -3011,114 +4153,114 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Sort", report);
 
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID asc", new int[] { 1, 10, 11, 12, 13, 14, 15, 16, 2, 3, 4, 5, 6, 7, 8, 9 }, null, null, null, null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID desc", new int[] { 9, 8, 7, 6, 5, 4, 3, 2, 16, 15, 14, 13, 12, 11, 10, 1 }, null, null, null, null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "_docid_ asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "_docid_ desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null,
-                null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score desc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, null);
+                (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score desc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdDate + " asc", new int[] { 1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdDate + " desc", new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdTime + " asc", new int[] { 1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdTime + " desc", new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_MODIFIED + " asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                16 }, null, null, null, null);
+                16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_MODIFIED + " desc", new int[] { 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                13, 14 }, null, null, null, null);
+                13, 14 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderDouble + " asc", new int[] { 1, 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderDouble + " desc", new int[] { 16, 14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderFloat + " asc", new int[] { 1, 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderFloat + " desc", new int[] { 16, 14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLong + " asc", new int[] { 1, 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLong + " desc", new int[] { 16, 14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderInt + " asc", new int[] { 1, 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderInt + " desc", new int[] { 16, 14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderText + " asc", new int[] { 1, 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null,
-                null, null, null);
+                null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderText + " desc", new int[] { 16, 14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null,
-                null, null, null);
+                null, null, (String) null);
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " asc", new int[] { 1, 10, 11, 2, 3, 4, 5, 13, 12, 6, 7, 8, 14, 15, 16, 9 },
-                Locale.ENGLISH, null, null, null);
+                Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " desc", new int[] { 9, 16, 15, 14, 8, 7, 6, 12, 13, 5, 4, 3, 2, 11, 10, 1 },
-                Locale.ENGLISH, null, null, null);
+                Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " asc", new int[] { 1, 10, 11, 2, 3, 4, 5, 13, 12, 6, 8, 7, 14, 15, 16, 9 },
-                Locale.FRENCH, null, null, null);
+                Locale.FRENCH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " desc", new int[] { 9, 16, 15, 14, 7, 8, 6, 12, 13, 5, 4, 3, 2, 11, 10, 1 },
-                Locale.FRENCH, null, null, null);
+                Locale.FRENCH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " asc", new int[] { 1, 10, 11, 2, 3, 4, 5, 13, 12, 6, 7, 8, 14, 15, 16, 9 },
-                Locale.GERMAN, null, null, null);
+                Locale.GERMAN, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " desc", new int[] { 9, 16, 15, 14, 8, 7, 6, 12, 13, 5, 4, 3, 2, 11, 10, 1 },
-                Locale.GERMAN, null, null, null);
+                Locale.GERMAN, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " asc", new int[] { 1, 11, 2, 3, 4, 5, 13, 6, 7, 8, 12, 14, 15, 16, 9, 10 },
-                new Locale("sv"), null, null, null);
+                new Locale("sv"), null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedText + " desc", new int[] { 10, 9, 16, 15, 14, 12, 8, 7, 6, 13, 5, 4, 3, 2, 11, 1 },
-                new Locale("sv"), null, null, null);
+                new Locale("sv"), null, null, (String) null);
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderMLText + " asc", new int[] { 1, 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 },
-                Locale.ENGLISH, null, null, null);
+                Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderMLText + " desc", new int[] { 16, 14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 },
-                Locale.ENGLISH, null, null, null);
+                Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderMLText + " asc", new int[] { 1, 14, 16, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15 },
-                Locale.FRENCH, null, null, null);
+                Locale.FRENCH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderMLText + " desc", new int[] { 15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 16, 14, 1 },
-                Locale.FRENCH, null, null, null);
+                Locale.FRENCH, null, null, (String) null);
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " asc", new int[] { 1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 },
-                Locale.ENGLISH, null, null, null);
+                Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " desc",
-                new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }, Locale.ENGLISH, null, null, null);
+                new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }, Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " asc", new int[] { 1, 16, 15, 14, 13, 12, 2, 3, 4, 5, 11, 10, 9, 8, 7, 6 },
-                Locale.FRENCH, null, null, null);
+                Locale.FRENCH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " desc",
-                new int[] { 6, 7, 8, 9, 10, 11, 5, 4, 3, 2, 12, 13, 14, 15, 16, 1 }, Locale.FRENCH, null, null, null);
+                new int[] { 6, 7, 8, 9, 10, 11, 5, 4, 3, 2, 12, 13, 14, 15, 16, 1 }, Locale.FRENCH, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " asc", new int[] { 1, 16, 15, 2, 3, 4, 5, 6, 7, 9, 8, 10, 12, 14, 11, 13 },
-                Locale.GERMAN, null, null, null);
+                Locale.GERMAN, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " desc",
-                new int[] { 13, 11, 14, 12, 10, 8, 9, 7, 6, 5, 4, 3, 2, 15, 16, 1 }, Locale.GERMAN, null, null, null);
+                new int[] { 13, 11, 14, 12, 10, 8, 9, 7, 6, 5, 4, 3, 2, 15, 16, 1 }, Locale.GERMAN, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " asc", new int[] { 1, 16, 15, 7, 14, 8, 9, 10, 11, 12, 13, 2, 3, 4, 5, 6 },
-                new Locale("es"), null, null, null);
+                new Locale("es"), null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " desc",
-                new int[] { 6, 5, 4, 3, 2, 13, 12, 11, 10, 9, 8, 14, 7, 15, 16, 1 }, new Locale("es"), null, null, null);
+                new int[] { 6, 5, 4, 3, 2, 13, 12, 11, 10, 9, 8, 14, 7, 15, 16, 1 }, new Locale("es"), null, null, (String) null);
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "cabbage desc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "PARENT desc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@PARENT:PARENT desc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null,
-                null, null);
+                null, (String) null);
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-                16, 15 }, null, null, null, null);
+                16, 15 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT + ".size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                13, 14, 16 }, null, null, null, null);
+                13, 14, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT + ".mimetype asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                14, 16, 15 }, null, null, null, null);
+                14, 16, 15 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT + ".mimetype desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-                12, 13, 14, 16 }, null, null, null, null);
+                12, 13, 14, 16 }, null, null, null, (String) null);
     }
 
     private void testCMIS(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS", report);
-        testQueryByHandler(report, core, "/cmis", "select * from cmis:document", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "select * from cmis:document D WHERE CONTAINS(D,'lazy')", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D JOIN cm:ownable O ON D.cmis:objectId = O.cmis:objectId", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/cmis", "select * from cmis:document", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "select * from cmis:document D WHERE CONTAINS(D,'lazy')", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D JOIN cm:ownable O ON D.cmis:objectId = O.cmis:objectId", 0, null, null, null, null, null, (String) null);
     }
 
     private void testAFTSandSort(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
@@ -3127,29 +4269,29 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         rsp.add("AFS and Sort", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT.toString() + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                13, 14, 16, 15 }, null, null, null, null);
+                13, 14, 16, 15 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT.toString() + ".size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-                12, 13, 14, 16 }, null, null, null, null);
+                12, 13, 14, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, ContentModel.PROP_CONTENT.toString() + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                14, 16, 15 }, null, null, null, null);
+                14, 16, 15 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, ContentModel.PROP_CONTENT.toString() + ".size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                13, 14, 16 }, null, null, null, null);
+                13, 14, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@cm:content.size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@cm:content.size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "cm:content.size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "cm:content.size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null,
-                null, null);
+                null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@content.size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@content.size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "content.size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null,
-                null);
+                (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "content.size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null, null,
-                null);
+                (String) null);
         // testQueryByHandler(report, core, "/afts", "-eager or -dog", 16,
         // "@"+ContentModel.PROP_NODE_UUID.toString()+" asc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4,
         // 3, 2, 1 });
@@ -3163,24 +4305,24 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         // ContentModel.PROP_NODE_UUID.toString()+" desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3,
         // 2, 1 });
         testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@" + ContentModel.PROP_NAME.toString() + " asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14,
-                4, 13, 3 }, null, null, null, null);
+                4, 13, 3 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@" + ContentModel.PROP_NAME.toString() + " desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16,
-                12, 9, 1 }, null, null, null, null);
+                12, 9, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, ContentModel.PROP_NAME.toString() + " asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13,
-                3 }, null, null, null, null);
+                3 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, ContentModel.PROP_NAME.toString() + " desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12,
-                9, 1 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@cm:name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, null);
+                9, 1 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@cm:name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@cm:name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null,
-                null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "cm:name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "cm:name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, null);
+                (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "cm:name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "cm:name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "@name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "name asc", new int[] { 1, 9, 12, 16, 6, 5, 15, 10, 2, 8, 7, 11, 14, 4, 13, 3 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "-eager or -dog", 16, "name desc", new int[] { 3, 13, 4, 14, 11, 7, 8, 2, 10, 15, 5, 6, 16, 12, 9, 1 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
     }
 
     /**
@@ -3198,6 +4340,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
      * @param dataModel
      * @throws IOException
      */
+    @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
     private void testQueryByHandler(NamedList report, SolrCore core, String handler, String query, int count, String sort, int[] sorted, Locale locale, Integer rows,
             Integer start, String... filters) throws IOException
     {
@@ -3794,140 +4937,140 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         for (int i = 1; i < 16; i++)
         {
-            testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":LEAF-" + i, 1, null, null, null, null, null, null);
-            testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":AUX-" + i, 1, null, null, null, null, null, null);
+            testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":LEAF-" + i, 1, null, null, null, null, null, (String) null);
+            testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":AUX-" + i, 1, null, null, null, null, null, (String) null);
         }
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":LEAF-*", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":AUX-*", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":ACL-*", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":ACLTX-*", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":TX-*", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":LEAF-*", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":AUX-*", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":ACL-*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":ACLTX-*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":TX-*", 1, null, null, null, null, null, (String) null);
 
         // LID is used internally via ID if a node ref is provided
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_LINKASPECT is not used for SOLR
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ANCESTOR + ":\"" + nodeRef + "\"", 10, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ANCESTOR + ":\"" + nodeRef + "\"", 10, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_ISCONTAINER is not used for SOLR
         // AbstractLuceneQueryParser.FIELD_ISCATEGORY is not used for SOLR
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:one\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:two\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:three\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:four\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:five\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:six\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:seven\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-0\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-1\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:nine\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:ten\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:fourteen\"", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:common\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:link\"", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:one\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:two\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:three\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:four\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:five\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:six\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:seven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-0\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-1\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:nine\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:ten\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:fourteen\"", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:common\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:link\"", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:one\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:two\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:three\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:four\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:five\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:six\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:seven\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-0\"", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-1\"", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:nine\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:ten\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:fourteen\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:common\"", 0, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:link\"", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:one\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:two\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:three\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:four\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:five\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:six\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:seven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-0\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-1\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:nine\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:ten\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:fourteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:common\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:link\"", 0, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_ISROOT is not used in SOLR
 
         testQueryByHandler(report, core, "/afts",
                 AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME + ":\"" + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 4, null, null,
-                null, null, null, null);
+                null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ISNODE + ":T", 16, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ISNODE + ":T", 16, null, null, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME
-                + ":\"" + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 5, null, null, null, null, null, null);
+                + ":\"" + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 5, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null, null, null, null, null, (String) null);
 
         // TYPE and ASPECT is covered in other tests
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":1", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":2", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":3", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":4", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":5", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":6", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":7", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":8", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":9", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":10", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":11", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":12", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":13", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":14", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":15", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":16", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":17", 0, null, null, null, null, null, null);
-        // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":*", 16, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":3", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":4", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":5", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":6", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":7", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":8", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":10", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":11", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":12", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":13", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":14", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":15", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":16", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":17", 0, null, null, null, null, null, (String) null);
+        // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":*", 16, null, null, (String) null);
         // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":[3 TO 4]", 2, null, null,
         // null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_TXID + ":1", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_TXID + ":1", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INTXID + ":1", 33, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INTXID + ":1", 33, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLTXID + ":1", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLTXID + ":1", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INACLTXID + ":1", 2, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INACLTXID + ":2", 0, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INACLTXID + ":1", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INACLTXID + ":2", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE
         // addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLID + ":1", 17, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_READER + ":\"GROUP_EVERYONE\"", 16, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":andy", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":bob", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":cid", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":dave", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":eoin", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":fred", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":gail", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":hal", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":ian", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":jake", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":kara", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":loon", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":mike", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":noodle", 1, null, null, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":ood", 1, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLID + ":1", 17, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_READER + ":\"GROUP_EVERYONE\"", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":andy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":bob", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":cid", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":dave", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":eoin", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":fred", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":gail", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":hal", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":ian", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":jake", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":kara", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":loon", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":mike", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":noodle", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":ood", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null, null, null, (String) null);
     }
 
     private void checkAuthorityFilter(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
@@ -3935,7 +5078,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Read Access", report);
 
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHORITY:andy");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHORITY:bob");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHORITY:cid");
@@ -3961,11 +5104,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Read Access", report);
 
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, 20, 0, null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6 }, null, 6, 0, null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 7, 8, 9, 10, 11, 12 }, null, 6, 6, null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 13, 14, 15, 16 }, null, 6, 12, null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, 20, 0, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6 }, null, 6, 0, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 7, 8, 9, 10, 11, 12 }, null, 6, 6, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 13, 14, 15, 16 }, null, 6, 12, (String) null);
     }
 
     private void checkMLText(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException

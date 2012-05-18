@@ -1435,13 +1435,18 @@
          {
             arrItems = this.options.currentValue;
          }
-
+         
+         // populate with previous if no value set
+         if (arrItems === "")
+         {
+            arrItems = Dom.get(this.currentValueHtmlId).value;
+         }
+         
          var onSuccess = function ObjectFinder__loadSelectedItems_onSuccess(response)
          {
             var items = response.json.data.items,
                item;
             this.selectedItems = {};
-            //this.singleSelectedItem = null; 
 
             for (var i = 0, il = items.length; i < il; i++)
             {

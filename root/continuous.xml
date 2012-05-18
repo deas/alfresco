@@ -85,15 +85,6 @@
                     -reset-database, 
                     distribute,
                     generate-checksums" />
-   
-   <target name="continuous-minimal" 
-           description="Performs a full clean, runs minimal tests"
-           depends="clean-continuous, 
-                    clean, 
-                    -reset-database,
-                    set-build-number,
-                    init-test,
-                    test-minimal" />
 
    <target name="continuous-without-distribute" 
            description="Performs a full clean and runs all tests but does not generate any distribution files"
@@ -966,7 +957,7 @@
       </copy>
       <!-- copy in a manifest file -->
       <copy tofile="${dir.continuous.assemble.mmt}/tmp-mmt-jar/META-INF/MANIFEST.MF" >
-         <fileset dir="${dir.project.repository}/source/meta-inf" 
+         <fileset dir="${dir.project.repository}/source/META-INF" 
                   includes="mmt-manifest.mf" />
       </copy>
       <!-- jar the main mmt classes -->
@@ -1081,7 +1072,7 @@
       </copy>
       <!-- copy in a manifest file -->
       <copy tofile="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar/META-INF/MANIFEST.MF" >
-         <fileset dir="${dir.project.repository}/source/meta-inf" 
+         <fileset dir="${dir.project.repository}/source/META-INF" 
                   includes="bm-remote-manifest.mf" />
       </copy>
       <!-- jar the main bm-remote classes -->

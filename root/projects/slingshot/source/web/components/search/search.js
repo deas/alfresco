@@ -148,6 +148,14 @@
          searchQuery: "",
          
          /**
+          * Search root node.
+          * @property searchRootNode
+          * @type string
+          * @default ""
+          */
+         searchRootNode: "",
+         
+         /**
           * Number of characters required for a search.
           *
           * @property minSearchTermLength
@@ -885,7 +893,7 @@
       _buildSearchParams: function Search__buildSearchParams(searchRepository, searchAllSites, searchTerm, searchTag, searchSort)
       {
          var site = searchAllSites ? "" : this.options.siteId;
-         var params = YAHOO.lang.substitute("site={site}&term={term}&tag={tag}&maxResults={maxResults}&sort={sort}&query={query}&repo={repo}",
+         var params = YAHOO.lang.substitute("site={site}&term={term}&tag={tag}&maxResults={maxResults}&sort={sort}&query={query}&repo={repo}&rootNode={rootNode}",
          {
             site: encodeURIComponent(site),
             repo: searchRepository.toString(),
@@ -893,6 +901,7 @@
             tag: encodeURIComponent(searchTag),
             sort: encodeURIComponent(searchSort),
             query: encodeURIComponent(this.options.searchQuery),
+            rootNode: encodeURIComponent(this.options.searchRootNode),
             maxResults: this.options.maxSearchResults + 1 // to calculate whether more results were available
          });
          

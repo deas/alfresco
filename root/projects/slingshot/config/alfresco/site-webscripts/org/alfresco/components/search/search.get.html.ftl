@@ -11,6 +11,7 @@
       initialSearchRepository: ${searchRepo?string},
       initialSort: "${searchSort?js_string}",
       searchQuery: "${searchQuery?js_string}",
+      searchRootNode: "${(config.scoped['RepositoryLibrary']['root-node']).value}",
       minSearchTermLength: ${args.minSearchTermLength!searchconfig.getChildValue('min-search-term-length')},
       maxSearchResults: ${args.maxSearchResults!searchconfig.getChildValue('max-search-results')}
    }).setMessages(

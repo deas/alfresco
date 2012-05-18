@@ -31,6 +31,7 @@ import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.EqualsHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -85,7 +86,7 @@ public class TaggableAspect implements WebSiteModel
             Map<QName, Serializable> after)
     {
         //When tags are updated on a webasset, copy their values into the ws:tags property for easy and fast access
-        if (nodeService.exists(nodeRef) && nodeService.hasAspect(nodeRef, ASPECT_WEBASSET))
+        if (nodeService.exists(nodeRef) && nodeService.hasAspect(nodeRef, ASPECT_WEBASSET) && !EqualsHelper.nullSafeEquals(before.get(ContentModel.PROP_TAGS), after.get(ContentModel.PROP_TAGS)) )
         {
             List<NodeRef> tagIds = (List<NodeRef>) after.get(ContentModel.PROP_TAGS);
             ArrayList<String> tags = new ArrayList<String>();

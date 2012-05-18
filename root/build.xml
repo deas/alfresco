@@ -192,7 +192,7 @@
          <include name="**/RepositoryStartupTest.java" />
       </patternset>
       <patternset id="files.tests.intermittent">
-         <include name="**/org/alfresco/wcm/WCMTestSuite.java" />
+         <include name="**/org/alfresco/wcm/WCMTestSuite.java" unless="minimal.testing" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
       </patternset>
@@ -270,6 +270,14 @@
          <!-- Messaging facade -->
          <exclude name="**/org/alfresco/repo/cluster/**/*Test.java"/> 
          <include name="**/org/alfresco/repo/cluster/BuildSafeTestSuite.java"/>
+         <!-- Excluding long tests -->
+         <exclude name="**/org/alfresco/deployment/impl/asr/AVMDeploymentTargetTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/deployment/impl/dmr/DMDeploymentTargetTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/enterprise/license/LicenseComponentTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/enterprise/repo/admin/indexcheck/IndexCheckServiceImplTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/RepositoryStartStopTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/repo/**/*.java" if="minimal.testing" />
+
          <!-- All other tests -->
          <include name="**/*Test.java" />
       </patternset>
@@ -1043,21 +1051,6 @@
    <!-- ****************** Testing targets ******************* -->
    <!-- ****************************************************** -->
 
-   <target name="test-minimal" 
-           description="Runs a minimal set of unit tests for all the projects" 
-           depends="clean, 
-                    incremental, 
-                    test-core,
-                    test-datamodel, 
-                    test-mbeans,
-                    test-deployment, 
-                    test-remoteapi,
-                    test-wdrdeployment,
-                    test-catalinavirtual,
-                    test-webframeworkcommons, 
-                    test-webclient, 
-                    test-webserviceclient" />
-
    <target name="test" 
            description="Runs unit tests for all the projects" 
            depends="clean, 
@@ -1262,10 +1255,7 @@
    <target name="distribute-extras" description="Build distribution targets for enterprise projects" />
 
    <target name="assemble-command-extras" description="Assemble commands" />
-	
-   <target name="sdk-extras" description="Community additions for the SDK" />
-	
-	
 
+   <target name="sdk-extras" description="Community additions for the SDK" />
 
 </project>

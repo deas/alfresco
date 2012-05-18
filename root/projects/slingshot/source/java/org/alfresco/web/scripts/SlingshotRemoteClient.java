@@ -101,7 +101,11 @@ public class SlingshotRemoteClient extends RemoteClient
                 // push the modified response to the real outputstream
                 try
                 {
-                    out.write(encoding != null ? content.getBytes(encoding) : content.getBytes());
+                    byte[] bytes = encoding != null ? content.getBytes(encoding) : content.getBytes();
+                    // rewrite size header as it wil have changed
+                    res.setContentLength(bytes.length);
+                    // output the bytes
+                    out.write(bytes);
                 }
                 finally
                 {

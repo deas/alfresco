@@ -666,6 +666,14 @@ public class AlfrescoSolrDataModel
     {
         cmisDictionaryService.afterDictionaryInit();
     }
+    
+    public void setCMDefaultUri()
+    {
+        if(AlfrescoSolrDataModel.getInstance(id).getNamespaceDAO().getURIs().contains(NamespaceService.CONTENT_MODEL_1_0_URI))
+        {
+            AlfrescoSolrDataModel.getInstance(id).getNamespaceDAO().addPrefix("", NamespaceService.CONTENT_MODEL_1_0_URI);
+        }
+    }
 
     private static class NonDictionaryField
     {
@@ -1160,11 +1168,11 @@ public class AlfrescoSolrDataModel
             }
         }
 
-        if(field.getName().equals("ID"))
+        if (field.getName().equals("ID"))
         {
             return Sorting.getStringSortField("LID", reverse, field.sortMissingLast(), field.sortMissingFirst());
         }
-        
+
         NonDictionaryField nonDDField = nonDictionaryFields.get(field.getName());
         if (nonDDField != null)
         {
@@ -1176,7 +1184,8 @@ public class AlfrescoSolrDataModel
             if (field.getName().endsWith(additionalContentFieldEnding)
                     && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))), reverse, field.sortMissingLast(), field.sortMissingFirst());
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))), reverse,
+                        field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 
@@ -1185,7 +1194,8 @@ public class AlfrescoSolrDataModel
             if (field.getName().endsWith(additionalTextFieldEnding)
                     && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))), reverse, field.sortMissingLast(), field.sortMissingFirst());
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))), reverse,
+                        field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 
@@ -1194,11 +1204,11 @@ public class AlfrescoSolrDataModel
             if (field.getName().endsWith(additionalMlTextFieldEnding)
                     && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))), reverse, field.sortMissingLast(), field.sortMissingFirst());
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))), reverse,
+                        field.sortMissingLast(), field.sortMissingFirst());
             }
         }
-        
-        
+
         return Sorting.getStringSortField(field.getName(), reverse, field.sortMissingLast(), field.sortMissingFirst());
 
     }

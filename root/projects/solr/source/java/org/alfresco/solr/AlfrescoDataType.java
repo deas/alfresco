@@ -208,7 +208,6 @@ public class AlfrescoDataType extends FieldType
         {
             AlfrescoSolrDataModel.getInstance(id).afterInitModels();
         }
-        AlfrescoSolrDataModel.getInstance(id).getNamespaceDAO().addPrefix("", NamespaceService.CONTENT_MODEL_1_0_URI);
         AlfrescoSolrDataModel.getInstance(id).setAlfrescoDataType(this);
         super.init(schema, args);
     }

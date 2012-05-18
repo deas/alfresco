@@ -92,7 +92,7 @@
             if (fullDate[0])
             {
                // Use Date.parse to support non ISO8601 date defaults
-               fullDate[0] = Alfresco.util.toISO8601(Date.parse(fullDate[0]));
+               fullDate[0] = Alfresco.util.toISO8601(Date.parse(fullDate[0])) || fullDate[0];
                var fromDateText = fullDate[0].split("T")[0];
                fromDateText = fromDateText.split("-");
                Dom.get(this.id + "-date-from").value = fromDateText[2] + "/" + fromDateText[1] + "/" + fromDateText[0];
@@ -101,7 +101,7 @@
             if (fullDate[1])
             {
                // Use Date.parse to support non ISO8601 date defaults
-               fullDate[1] = Alfresco.util.toISO8601(Date.parse(fullDate[1]))
+               fullDate[1] = Alfresco.util.toISO8601(Date.parse(fullDate[1])) || fullDate[1];
                var toDateText = fullDate[1].split("T")[0];
                toDateText = toDateText.split("-");
                Dom.get(this.id + "-date-to").value = toDateText[2] + "/" + toDateText[1] + "/" + toDateText[0];

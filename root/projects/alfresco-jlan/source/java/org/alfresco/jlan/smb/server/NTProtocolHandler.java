@@ -4765,6 +4765,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Set basic file information (dates/attributes)
 
 			case FileInfoLevel.SetBasicInfo:
+			case FileInfoLevel.NTFileBasicInfo:
 
 				// Create the file information template
 
@@ -4860,6 +4861,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Set end of file position for a file
 
 			case FileInfoLevel.SetEndOfFileInfo:
+			case FileInfoLevel.NTSetEndOfFileInfo:
 
 				// Get the new end of file position
 
@@ -4878,6 +4880,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 			// Set the allocation size for a file
 
 			case FileInfoLevel.SetAllocationInfo:
+			case FileInfoLevel.NTSetFileAllocationInfo:
 
 				// Get the new end of file position
 
@@ -4897,6 +4900,32 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			case FileInfoLevel.NTFileRenameInfo:
 
+				// Unpack the rename details
+
+				boolean overwrite = dataBuf.getByte() == 1 ? true : false;
+				dataBuf.skipBytes(3);
+
+				int rootFid = dataBuf.getInt();
+				int nameLen = dataBuf.getInt();
+				String newName = dataBuf.getString(nameLen, true);
+				
+				// Debug
+
+				if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_INFO))
+					m_sess.debugPrintln("  Set rename fid=" + fid + ", newName=" + newName + ", overwrite=" + overwrite
+							+ ", rootFID=" + rootFid);
+
+				// Check if the new path contains a directory, only rename of a stream on the same
+				// file is supported. Make sure the network file is not a folder.
+
+				if ( newName.indexOf(FileName.DOS_SEPERATOR_STR) != -1 || netFile.isDirectory()) {
+
+					// Return a not supported error status
+
+					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNotSupported, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+					return;
+				}
+
 				// Check if the virtual filesystem supports streams, and streams are enabled
 
 				boolean streams = false;
@@ -4909,52 +4938,68 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 					streams = ntfsStreams.hasStreamsEnabled(m_sess, conn);
 				}
 
-				// If streams are not supported or are not enabled then return an error status
+				// If streams are not supported or are not enabled then check for rename of a file/folder, or
+				// return an error status
 
 				if ( streams == false) {
 
-					// Return a not supported error status
+					// Check if this is a rename of a file rather than a stream
+					
+					if ( FileName.containsStreamName( newName) == false) {
+						
+						// Build the target file relative path
+						
+						String[] paths = FileName.splitPath( netFile.getFullName());
+						String newPath = null;
+						if ( paths[0] != null)
+							newPath = paths[0] + FileName.DOS_SEPERATOR_STR + newName;
+						else
+							newPath = FileName.DOS_SEPERATOR_STR + newName;
+						
+						// Check if the target file exists
+						
+						int fileSts = disk.fileExists( m_sess, conn, newPath);
+						
+						if ( fileSts == FileStatus.FileExists && overwrite == false) {
+							
+							// Return an error status, rename would overwrite an existing file
+							
+							m_sess.sendErrorResponseSMB(smbPkt, SMBStatus.NTAccessDenied, SMBStatus.DOSAccessDenied, SMBStatus.ErrDos);
+							return;
+						}
+						else {
+							
+							// Debug
 
-					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNotSupported, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
-					return;
+							if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_FILE))
+								m_sess.debugPrintln("Transact rename via standard rename from=" + netFile.getFullName() + " to=" + newPath);
+							
+							// Call the standard disk interface rename method to rename the file
+							
+							disk.renameFile( m_sess, conn, netFile.getFullName(), newPath);
+						}
+					}
+					else {
+						
+						// Return a not supported error status
+	
+						m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNotSupported, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
+						return;
+					}
 				}
-
-				// Get the overwrite flag
-
-				boolean overwrite = dataBuf.getByte() == 1 ? true : false;
-				dataBuf.skipBytes(3);
-
-				int rootFid = dataBuf.getInt();
-				int nameLen = dataBuf.getInt();
-				String newName = dataBuf.getString(nameLen, true);
-
-				// Debug
-
-				if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_INFO))
-					m_sess.debugPrintln("  Set rename fid=" + fid + ", newName=" + newName + ", overwrite=" + overwrite
-							+ ", rootFID=" + rootFid);
-
-				// Check if the new path contains a directory, only rename of a stream on the same
-				// file is supported
-
-				if ( newName.indexOf(FileName.DOS_SEPERATOR_STR) != -1) {
-
-					// Return a not supported error status
-
-					m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTNotSupported, SMBStatus.SRVNotSupported, SMBStatus.ErrSrv);
-					return;
+				else {
+					
+					// Debug
+	
+					if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_STREAMS))
+						m_sess.debugPrintln("Rename stream fid=" + fid + ", name=" + netFile.getFullNameStream() + ", newName="
+								+ newName + ", overwrite=" + overwrite);
+	
+					// Rename the stream
+	
+					NTFSStreamsInterface ntfsStreams = (NTFSStreamsInterface) disk;
+					ntfsStreams.renameStream(m_sess, conn, netFile.getFullNameStream(), newName, overwrite);
 				}
-
-				// Debug
-
-				if ( Debug.EnableInfo && m_sess.hasDebug(SMBSrvSession.DBG_STREAMS))
-					m_sess.debugPrintln("Rename stream fid=" + fid + ", name=" + netFile.getFullNameStream() + ", newName="
-							+ newName + ", overwrite=" + overwrite);
-
-				// Rename the stream
-
-				NTFSStreamsInterface ntfsStreams = (NTFSStreamsInterface) disk;
-				ntfsStreams.renameStream(m_sess, conn, netFile.getFullNameStream(), newName, overwrite);
 				break;
 
 			// Mark or unmark a file/directory for delete
@@ -4968,8 +5013,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				boolean delFlag = flag == 1 ? true : false;
 
 				// Call the filesystem driver set file information to see if the file can be marked
-				// for
-				// delete.
+				// for delete.
 
 				FileInfo delInfo = new FileInfo();
 				delInfo.setDeleteOnClose(delFlag);

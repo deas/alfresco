@@ -465,7 +465,8 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 	 */
 	public int getServerCapabilities() {
 		return Capability.Unicode + Capability.RemoteAPIs + Capability.NTSMBs + Capability.NTFind + Capability.NTStatus
-				+ Capability.LargeFiles + Capability.LargeRead + Capability.LargeWrite + Capability.ExtendedSecurity;
+				+ Capability.LargeFiles + Capability.LargeRead + Capability.LargeWrite + Capability.ExtendedSecurity
+				+ Capability.InfoPassthru + Capability.Level2Oplocks;
 	}
 
 	/**

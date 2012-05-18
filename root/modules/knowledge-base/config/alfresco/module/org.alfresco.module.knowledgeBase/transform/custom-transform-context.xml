@@ -47,7 +47,7 @@
    </bean>   
    <bean id="transformer.complex.OpenOffice.Pdf2swf"
         class="org.alfresco.repo.content.transform.ComplexContentTransformer"
-        parent="baseContentTransformer" >
+        parent="baseComplexContentTransformer" >
       <property name="transformers">
          <list>
             <ref bean="transformer.OpenOffice" />

@@ -1,6 +1,6 @@
 <%@ page session="false" %>
 <%
-  response.sendRedirect("page/site-index");
+  response.sendRedirect("page/");
 %>
 <html>
    <head>
