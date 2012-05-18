@@ -113,11 +113,8 @@ function main()
             };
       
             // Use Java regex matching as it performs better.
-            // Note: in earlier versions of Share (prior to Surf r1054) the regex was "^component-\\d+-\\d+$" (note the
-            //       double escaping of "d"). Please be careful when merging between branches otherwise the configured
-            //       dashlets will not be displayed in the customize page.
             var javaStr = new java.lang.String(regionId);
-            if (javaStr.matches(new java.lang.String("^component-\d+-\d+$")))
+            if (javaStr.matches(new java.lang.String("^component-\\d+-\\d+$")))
             {
                // Place it in correct column and in a temporary row literal
                var column = parseInt(regionId.substring(regionId.indexOf("-") + 1, regionId.lastIndexOf("-"))),
