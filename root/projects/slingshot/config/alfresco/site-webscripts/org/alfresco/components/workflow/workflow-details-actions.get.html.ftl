@@ -9,7 +9,10 @@ new Alfresco.component.WorkflowDetailsActions("${el}").setOptions(
 );
 //]]></script>
 <div id="${el}-body" class="form-manager workflow-details-actions">
-   <div class="actions hidden">
+   <div id="${el}-cancel-button" class="actions hidden">
       <button id="${el}-cancel">${msg("button.cancelWorkflow")}</button>
+   </div>
+   <div id="${el}-delete-button" class="actions hidden">
+      <button id="${el}-delete">${msg("button.deleteWorkflow")}</button>
    </div>
 </div>

@@ -46,34 +46,37 @@
    {
 
       /**
-       * Prompts the user if the workflow really should be cancelled
+       * Helper function, which is called by cancelWorkflow and deleteWorkflow
        *
        * @method _showDialog
        * @param workflowId {String} The workflow id
-       * @param workflowTitle {String} THe workflow title
+       * @param workflowTitle {String} The workflow title
+       * @param forced {Boolean} A flag to delete the workflow if set to true (otherwise the workflow will be cancelled)
+       * @param msgProps {object} Json object, which includes msg properties
        * @private
        */
-      cancelWorkflow: function WA_cancelWorkflow(workflowId, workflowTitle)
+      endWorkflow: function WA_endWorkflow(workflowId, workflowTitle, forced, msgProps)
       {
          var me = this,
-               wid = workflowId;
+            title = msgProps.title,
+            text = msgProps.text;
          Alfresco.util.PopupManager.displayPrompt(
          {
-            title: this.msg("workflow.cancel.title"),
-            text: this.msg("workflow.cancel.label", workflowTitle),
+            title: this.msg(title),
+            text: this.msg(text, workflowTitle),
             noEscape: true,
             buttons: [
                {
                   text: Alfresco.util.message("button.yes", this.name),
-                  handler: function WA_cancelWorkflow_yes()
+                  handler: function WA_endWorkflow_yes()
                   {
                      this.destroy();
-                     me._cancelWorkflow.call(me, wid);
+                     me._endWorkflow.call(me, workflowId, forced, msgProps);
                   }
                },
                {
                   text: Alfresco.util.message("button.no", this.name),
-                  handler: function WA_cancelWorkflow_no()
+                  handler: function WA_endWorkflow_no()
                   {
                      this.destroy();
                   },
@@ -83,18 +86,58 @@
       },
 
       /**
-       * Cancels the workflow
+       * Prompts the user if the workflow really should be deleted
        *
-       * @method _cancelWorkflow
+       * @method _showDialog
        * @param workflowId {String} The workflow id
+       * @param workflowTitle {String} The workflow title
        * @private
        */
-      _cancelWorkflow: function WA__cancelWorkflow(workflowId)
+      deleteWorkflow: function WA_deleteWorkflow(workflowId, workflowTitle)
+      {
+         var msgProps = {};
+         msgProps.title = "workflow.delete.title";
+         msgProps.text = "workflow.delete.label";
+         msgProps.feedback = "workflow.delete.feedback";
+         msgProps.success = "workflow.delete.success";
+         msgProps.failure = "workflow.delete.failure";
+         this.endWorkflow(workflowId, workflowTitle, true, msgProps);
+      },
+
+      /**
+       * Prompts the user if the workflow really should be cancelled
+       *
+       * @method _showDialog
+       * @param workflowId {String} The workflow id
+       * @param workflowTitle {String} The workflow title
+       * @private
+       */
+      cancelWorkflow: function WA_cancelWorkflow(workflowId, workflowTitle)
+      {
+         var msgProps = {};
+         msgProps.title = "workflow.cancel.title";
+         msgProps.text = "workflow.cancel.label";
+         msgProps.feedback = "workflow.cancel.feedback";
+         msgProps.success = "workflow.cancel.success";
+         msgProps.failure = "workflow.cancel.failure";
+         this.endWorkflow(workflowId, workflowTitle, false, msgProps);
+      },
+
+      /**
+       * Ends the workflow (either the workflow will be cancelled or deleted - depends on "forced" parameter)
+       *
+       * @method _endWorkflow
+       * @param workflowId {String} The workflow id
+       * @param forced {Boolean} A flag to delete the workflow if set to true (otherwise the workflow will be cancelled)
+       * @param msgProps {object} Json object, which includes msg properties
+       * @private
+       */
+      _endWorkflow: function WA__endWorkflow(workflowId, forced, msgProps)
       {
          var me = this;
          var feedbackMessage = Alfresco.util.PopupManager.displayMessage(
          {
-            text: this.msg("workflow.cancel.feedback"),
+            text: this.msg(msgProps.feedback),
             spanClass: "wait",
             displayTime: 0
          });
@@ -102,7 +145,7 @@
          // user has confirmed, perform the actual delete
          Alfresco.util.Ajax.jsonDelete(
          {
-            url: Alfresco.constants.PROXY_URI + "api/workflow-instances/" + workflowId,
+            url: Alfresco.constants.PROXY_URI + "api/workflow-instances/" + workflowId + "?forced=" + forced,
             successCallback:
             {
                fn: function(response, workflowId)
@@ -112,7 +155,7 @@
                   {
                      Alfresco.util.PopupManager.displayMessage(
                      {
-                        text: this.msg("workflow.cancel.success", this.name)
+                        text: this.msg(msgProps.success, this.name)
                      });
 
                      // Tell other components that the site has been deleted
@@ -128,7 +171,7 @@
                   {
                      Alfresco.util.PopupManager.displayMessage(
                      {
-                        text: Alfresco.util.message("workflow.cancel.failure", this.name)
+                        text: Alfresco.util.message(msgProps.failure, this.name)
                      });
                   }
                },
@@ -142,7 +185,7 @@
                   feedbackMessage.destroy();
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: Alfresco.util.message("workflow.cancel.failure", this.name)
+                     text: Alfresco.util.message(msgProps.failure, this.name)
                   });
                },
                scope: this

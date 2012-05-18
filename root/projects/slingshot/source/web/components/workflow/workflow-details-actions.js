@@ -91,10 +91,20 @@
       onWorkflowDetailedData: function TDH_onWorkflowDetailedData(layer, args)
       {
          this.workflow = args[1];
-         Alfresco.util.createYUIButton(this, "cancel", function WDA_onWorkflowDetailedData_onCancelButtonClick()
+         if (this.workflow.isActive)
          {
-            this.cancelWorkflow(this.workflow.id, this.workflow.title)
-         });
+            Alfresco.util.createYUIButton(this, "cancel", function WDA_onWorkflowDetailedData_onCancelButtonClick()
+            {
+               this.cancelWorkflow(this.workflow.id, this.workflow.title)
+            });
+         }
+         else
+         {
+            Alfresco.util.createYUIButton(this, "delete", function WDA_onWorkflowDetailedData_onDeleteButtonClick()
+            {
+               this.deleteWorkflow(this.workflow.id, this.workflow.title)
+            });
+         }
       },
 
       /**
@@ -106,7 +116,14 @@
       {
          if (this.workflow.initiator.userName == Alfresco.constants.USERNAME)
          {
-            Dom.removeClass(Selector.query(".actions", this.id), "hidden");
+            if (this.workflow.isActive)
+            {
+               Dom.removeClass(this.id + "-cancel-button", "hidden");
+            }
+            else
+            {
+               Dom.removeClass(this.id + "-delete-button", "hidden");
+            }
          }
       },
 
