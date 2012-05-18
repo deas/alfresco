@@ -49,14 +49,14 @@
    <@script type="text/javascript" src="${url.context}/res/yui/calendar/calendar.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/yui/resize/resize.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/yui/yui-patch.js" group="template-common"/>
-   <@inlineJavaScript group="template-common">
+   <@inlineScript group="template-common">
       YAHOO.util.Event.throwErrors = true;
    </@>
    <#else>
    <@script type="text/javascript" src="${url.context}/res/js/yui-common.js" group="template-common"/>
    </#if>
    <@script type="text/javascript" src="${url.context}/res/js/bubbling.v2.1.js" group="template-common"/>
-   <@inlineJavaScript group="template-common">
+   <@inlineScript group="template-common">
       YAHOO.Bubbling.unsubscribe = function(layer, handler, scope)
       {
          this.bubble[layer].unsubscribe(handler, scope);
@@ -65,7 +65,7 @@
 </@>
    
 <@markup id="alfrescoConstants">
-   <@inlineJavaScript group="template-common">
+   <@inlineScript group="template-common">
       <!-- Alfresco web framework constants -->
       Alfresco.constants = Alfresco.constants || {};
       Alfresco.constants.DEBUG = ${DEBUG?string};
@@ -107,7 +107,7 @@
 </@>
 
 <@markup id="shareConstants">
-   <@inlineJavaScript group="template-common">
+   <@inlineScript group="template-common">
       <!-- Share Constants -->
       Alfresco.service.Preferences.FAVOURITE_DOCUMENTS = "org.alfresco.share.documents.favourites";
       Alfresco.service.Preferences.FAVOURITE_FOLDERS = "org.alfresco.share.folders.favourites";

@@ -10,8 +10,8 @@
       </ul>
    </div>
    <#nested>
-   <@createWebScriptWidgets group="documentlibrary"/>
-   <@inlineJavaScript group="documentlibrary">
+   <@createWidgets group="documentlibrary"/>
+   <@inlineScript group="documentlibrary">
       <#-- JavaScript to be executed AFTER widget instantiation here -->
       filter.setFilterIds([${filterIds}]);
    </@>

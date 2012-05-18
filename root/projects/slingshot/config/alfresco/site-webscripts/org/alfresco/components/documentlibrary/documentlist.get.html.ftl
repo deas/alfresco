@@ -1,28 +1,28 @@
 <#include "include/documentlist.lib.ftl" />
 <#include "../form/form.dependencies.inc">
 
-<@markup id="cssDependencies" >
+<@markup id="css" >
    <#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/documentlist.css" group="documentlibrary"/>
 </@>
 
-<@markup id="jsDependencies">
+<@markup id="js">
    <#-- JavaScript Dependencies -->
    <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/documentlist.js" group="documentlibrary"/>
 </@>
 
-<@markup id="preInstantiationJs">
+<@markup id="pre">
 </@>
 
-<@markup id="widgetInstantiation">
-   <@createWebScriptWidgets group="documentlibrary"/>
+<@markup id="widgets">
+   <@createWidgets group="documentlibrary"/>
 </@>
 
-<@markup id="postInstantiationJs">
+<@markup id="post">
 </@>
 
 <@markup id="html">
-   <div id="${htmlid!""}">
+   <@uniqueIdDiv>
       <@documentlistTemplate/>
-   </div>
+   </@uniqueIdDiv>
 </@>
