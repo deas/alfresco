@@ -48,6 +48,10 @@ public class ClusterConfigSection extends ConfigSection {
 	  
 	  private HazelcastInstance m_hazelcastInstance;
 	  
+	  // Flag to indicate if the Hazelcast instance is from an external source
+	  
+	  private boolean m_externalHazelcast;
+	  
 	  /**
 	   * Class constructor
 	   * 
@@ -92,11 +96,37 @@ public class ClusterConfigSection extends ConfigSection {
 			  
 			Config hcConfig = new FileSystemXmlConfig( getConfigFile());
 			m_hazelcastInstance = Hazelcast.newHazelcastInstance( hcConfig);
+			
+			// Indicate we own the Hazelcast instance
+			
+			m_externalHazelcast = false;
 		  }
 
 		  // Return the Hazelcast instance
 		  
 		  return m_hazelcastInstance;
+	  }
+	  
+	  /**
+	   * Check if the Hazelcast instance being used is from an external source
+	   * 
+	   * @return boolean
+	   */
+	  public final boolean isExternalHazlecast() {
+		  return m_externalHazelcast;
+	  }
+	  
+	  /**
+	   * Set an external Hazelcast instance to be used
+	   * 
+	   * @param 
+	   */
+	  public final void setHazelcastInstance( HazelcastInstance hazelcast) {
+		  
+		  // Use an external Hazelcast instance rather than creating our own
+		  
+		  m_externalHazelcast = true;
+		  m_hazelcastInstance = hazelcast;
 	  }
 	  
 	  /**
@@ -108,10 +138,11 @@ public class ClusterConfigSection extends ConfigSection {
 		  
 		  if ( m_hazelcastInstance != null) {
 			  
-			  // Shutdown all Hazelcast instances in this JVM
+			  // Clear the Hazelcast instance, shut it down if we created it
 			  
 			  m_hazelcastInstance = null;
-			  Hazelcast.shutdownAll();
+			  if ( isExternalHazlecast() == false)
+				  Hazelcast.shutdownAll();
 		  }
 	  }
 }
