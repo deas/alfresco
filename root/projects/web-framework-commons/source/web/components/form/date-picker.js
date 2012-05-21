@@ -298,7 +298,18 @@
             {
                Dom.removeClass(this.id + "-time", "invalid");
             }
-            var isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
+            var isoValue = "";
+            
+            // Check if time should be submitted as well 
+            if (this.options.submitTime) 
+            {
+            	isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
+            }
+            else
+            {
+            	isoValue = Alfresco.util.toISO8601(selDate, {"selector":"date"});
+            }
+            
             Dom.get(this.currentValueHtmlId).value = isoValue;
             
             if (Alfresco.logger.isDebugEnabled())

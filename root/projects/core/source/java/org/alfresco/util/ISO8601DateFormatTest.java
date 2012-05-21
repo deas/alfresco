@@ -18,7 +18,9 @@
  */
 package org.alfresco.util;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -85,5 +87,65 @@ public class ISO8601DateFormatTest extends TestCase
        // Check with ms too
        date = ISO8601DateFormat.parse(testSydney + ".000", tz);
        assertEquals(testUTC, ISO8601DateFormat.format(date));
+    }
+    
+    public void testDayOnly()
+    {
+        Date date = null;
+        
+        // Test simple parsing
+        TimeZone tz = TimeZone.getTimeZone("Europe/London");
+        date = ISO8601DateFormat.parseDayOnly("2012-05-21", tz);
+        
+        Calendar cal = Calendar.getInstance(tz);
+        cal.setTime(date);
+        
+        // Check date and time component
+        assertEquals(2012, cal.get(Calendar.YEAR));
+        assertEquals(4, cal.get(Calendar.MONTH));
+        assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(0, cal.get(Calendar.HOUR));
+        assertEquals(0, cal.get(Calendar.MINUTE));
+        assertEquals(0, cal.get(Calendar.SECOND));
+        assertEquals(0, cal.get(Calendar.MILLISECOND));
+        
+        // Check time is ignored on full ISO8601-string
+        date = ISO8601DateFormat.parseDayOnly("2012-05-21T12:13:14Z", tz);
+        cal = Calendar.getInstance(tz);
+        cal.setTime(date);
+        
+        assertEquals(2012, cal.get(Calendar.YEAR));
+        assertEquals(4, cal.get(Calendar.MONTH));
+        assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(0, cal.get(Calendar.HOUR));
+        assertEquals(0, cal.get(Calendar.MINUTE));
+        assertEquals(0, cal.get(Calendar.SECOND));
+        assertEquals(0, cal.get(Calendar.MILLISECOND));
+        
+        // Check year signs
+        date = ISO8601DateFormat.parseDayOnly("+2012-05-21", tz);
+        cal = Calendar.getInstance(tz);
+        cal.setTime(date);
+        assertEquals(GregorianCalendar.AD, cal.get(Calendar.ERA));
+        
+        date = ISO8601DateFormat.parseDayOnly("-2012-05-21", tz);
+        cal = Calendar.getInstance(tz);
+        cal.setTime(date);
+        assertEquals(GregorianCalendar.BC, cal.get(Calendar.ERA));
+        
+        
+        // Check illegal format
+        try
+        {
+           ISO8601DateFormat.parseDayOnly("2011-02-0", tz);
+           fail("Exception expected on illegal format");
+        }
+        catch(AlfrescoRuntimeException e) {}
+        try
+        {
+           ISO8601DateFormat.parseDayOnly("201a-02-02", tz);
+           fail("Exception expected on illegal format");
+        }
+        catch(AlfrescoRuntimeException e) {}
     }
 }

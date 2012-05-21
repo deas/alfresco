@@ -255,6 +255,110 @@ public class ISO8601DateFormat
     }
     
     /**
+     * Checks whether or not the given ISO8601-formatted date-string contains a time-component
+     * instead of only the actual date.
+     * 
+     * @param isoDate
+     * @return true, if time is present.
+     */
+    public static boolean isTimeComponentDefined(String isoDate)
+    {
+    	boolean defined = false;
+    	
+    	if(isoDate != null && isoDate.length() > 11) 
+    	{
+    		// Find occurrence of T (sYYYY-MM-DDT..), sign is optional
+    		int expectedLocation = 10;
+    		if(isoDate.charAt(0) == '-' || isoDate.charAt(0) == '+') {
+    			// Sign is included before year
+    			expectedLocation++;
+    		}
+    		
+    		defined = isoDate.length() >= expectedLocation && isoDate.charAt(expectedLocation) == 'T';
+    	}
+    	
+    	return defined;
+    }
+    
+    /**
+     * Parses the given ISO8601-formatted date-string, not taking into account the time-component.
+     * The time-information for the will be reset to zero.
+     * 
+     * @param isoDate the day (formatted sYYYY-MM-DD) or a full date (sYYYY-MM-DDThh:mm:ss.sssTZD)
+     * @param timeZone the timezone to use
+     * @return the parsed date
+     * 
+     * @throws AlfrescoRuntimeException if the parsing failed.
+     */
+    public static Date parseDayOnly(String isoDate, TimeZone timezone)
+    {
+    	try
+    	{
+    		if(isoDate != null && isoDate.length() >= 10) 
+        	{   
+        		int offset = 0;
+        		
+        		// Sign can be included before year
+        		boolean bc = false;
+        		if(isoDate.charAt(0) == '-')
+        		{
+        			bc = true;
+        			offset++;
+        		}
+        		else if(isoDate.charAt(0) == '+')
+        		{
+        			offset++;
+        		}
+        		
+        		// Extract year
+                int year = Integer.parseInt(isoDate.substring(offset, offset += 4));
+                if (isoDate.charAt(offset) != '-')
+                {
+                    throw new IndexOutOfBoundsException("Expected - character but found " + isoDate.charAt(offset));
+                }
+                
+                // Extract month
+                int month = Integer.parseInt(isoDate.substring(offset += 1, offset += 2));
+                if (isoDate.charAt(offset) != '-')
+                {
+                    throw new IndexOutOfBoundsException("Expected - character but found " + isoDate.charAt(offset));
+                }
+
+                // Extract day
+                int day = Integer.parseInt(isoDate.substring(offset += 1, offset += 2));
+                
+                Calendar calendar = new GregorianCalendar(timezone);
+                calendar.setLenient(false);
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month - 1);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                if(bc)
+                {
+                	calendar.set(Calendar.ERA, GregorianCalendar.BC);
+                }
+                
+                return calendar.getTime();
+        	}
+    		else
+    		{
+    			throw new AlfrescoRuntimeException("String passed is too short " + isoDate);
+    		}
+    	}
+    	catch(IndexOutOfBoundsException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to parse date " + isoDate, e);
+        }
+        catch(NumberFormatException e)
+        {
+            throw new AlfrescoRuntimeException("Failed to parse date " + isoDate, e);
+        }
+    }
+        
+    /**
      * Helper to zero pad a number to specified length 
      */
     private static void padInt(StringBuilder buffer, int value, int length)

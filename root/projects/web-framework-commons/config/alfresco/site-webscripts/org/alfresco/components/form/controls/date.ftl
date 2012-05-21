@@ -1,4 +1,6 @@
-<#if field.control.params.showTime?? && field.control.params.showTime == "true"><#assign showTime=true><#else><#assign showTime=false></#if>
+<#if field.control.params.submitTime?? && field.control.params.submitTime == "false"><#assign submitTime=false><#else><#assign submitTime=true></#if>
+<#if field.control.params.showTime?? && field.control.params.showTime == "true"><#assign showTime=true><#assign submitTime=true><#else><#assign showTime=false></#if>
+
 <#if showTime><#assign viewFormat>${msg("form.control.date-picker.view.time.format")}</#assign><#else><#assign viewFormat>${msg("form.control.date-picker.view.date.format")}</#assign></#if>
 
 <#assign disabled=field.disabled>
@@ -52,6 +54,7 @@
                <#if form.mode == "view" || disabled>disabled: true,</#if>
                currentValue: "${field.value?js_string}",
                showTime: ${showTime?string},
+               submitTime: ${submitTime?string},
                mandatory: ${field.mandatory?string}
             }).setMessages(
                ${messages}
