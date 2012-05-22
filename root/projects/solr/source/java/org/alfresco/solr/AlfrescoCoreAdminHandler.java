@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -127,14 +128,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
     private static final String CMIS_TEST_NAMESPACE = "http://www.alfresco.org/test/cmis-query-test";
 
-    
-    
+
+
     QName typeThatRequiresEncoding = QName.createQName(CMIS_TEST_NAMESPACE, "type-that-requires-encoding");
-    
+
     QName aspectThatRequiresEncoding = QName.createQName(CMIS_TEST_NAMESPACE, "aspect-that-requires-encoding");
-    
+
     QName propertyThatRequiresEncoding = QName.createQName(CMIS_TEST_NAMESPACE, "property-that-requires-encoding");
-    
+
     QName extendedContent = QName.createQName(CMIS_TEST_NAMESPACE, "extendedContent");
 
     QName singleTextBoth = QName.createQName(CMIS_TEST_NAMESPACE, "singleTextBoth");
@@ -188,7 +189,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     QName singleDatetime = QName.createQName(CMIS_TEST_NAMESPACE, "singleDatetime");
 
     QName multipleDatetime = QName.createQName(CMIS_TEST_NAMESPACE, "multipleDatetime");
-    
+
     private String createGUID()
     {
         synchronized (this)
@@ -199,14 +200,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             }
             catch (InterruptedException e)
             {
-              
+
             }
         }
-        
+
         Long time = System.nanoTime();
         return "00000000-0000-"+((time/1000000000000L) % 10000L)+"-"+ ((time/100000000L) % 10000L)+"-"+(time % 100000000L);
     }
-    
+
     /**
      * 
      */
@@ -373,10 +374,22 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 runTests(req, rsp);
                 return false;
             }
-            if (a.equalsIgnoreCase("CMISTEST"))
+            else if (a.equalsIgnoreCase("CMISTEST"))
             {
                 runCmisTests(req, rsp);
                 return false;
+            }
+            else if (a.equalsIgnoreCase("newCore"))
+            {
+                return newCore(req, rsp);
+            }
+            else if (a.equalsIgnoreCase("updateCore"))
+            {
+                return updateCore(req, rsp);
+            }
+            else if (a.equalsIgnoreCase("removeCore"))
+            {
+                return removeCore(req, rsp);
             }
             else if (a.equalsIgnoreCase("CHECK"))
             {
@@ -1041,11 +1054,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             HashMap<QName, String> content04 = new HashMap<QName, String>();
             properties04.putAll(getOrderProperties());
             properties04.put(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic"), new StringPropertyValue(
-                    "TEXT THAT IS INDEXED STORED AND TOKENISED ATOMICALLY KEYONE"));
+            "TEXT THAT IS INDEXED STORED AND TOKENISED ATOMICALLY KEYONE"));
             properties04.put(QName.createQName(TEST_NAMESPACE, "text-indexed-unstored-tokenised-atomic"), new StringPropertyValue(
-                    "TEXT THAT IS INDEXED STORED AND TOKENISED ATOMICALLY KEYUNSTORED"));
+            "TEXT THAT IS INDEXED STORED AND TOKENISED ATOMICALLY KEYUNSTORED"));
             properties04.put(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-nonatomic"), new StringPropertyValue(
-                    "TEXT THAT IS INDEXED STORED AND TOKENISED BUT NOT ATOMICALLY KEYTWO"));
+            "TEXT THAT IS INDEXED STORED AND TOKENISED BUT NOT ATOMICALLY KEYTWO"));
             properties04.put(QName.createQName(TEST_NAMESPACE, "int-ista"), new StringPropertyValue("1"));
             properties04.put(QName.createQName(TEST_NAMESPACE, "long-ista"), new StringPropertyValue("2"));
             properties04.put(QName.createQName(TEST_NAMESPACE, "float-ista"), new StringPropertyValue("3.4"));
@@ -1057,7 +1070,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             properties04.put(QName.createQName(TEST_NAMESPACE, "date-ista"), new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, testDate)));
             properties04.put(QName.createQName(TEST_NAMESPACE, "datetime-ista"), new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, testDate)));
             properties04
-                    .put(QName.createQName(TEST_NAMESPACE, "boolean-ista"), new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, Boolean.valueOf(true))));
+            .put(QName.createQName(TEST_NAMESPACE, "boolean-ista"), new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, Boolean.valueOf(true))));
             properties04.put(QName.createQName(TEST_NAMESPACE, "qname-ista"),
                     new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, QName.createQName("{wibble}wobble"))));
             properties04.put(QName.createQName(TEST_NAMESPACE, "category-ista"),
@@ -1127,7 +1140,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n05QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "five");
             ChildAssociationRef n05CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n01NodeRef, n05QName, n05NodeRef, true, 0);
             addNode(core, dataModel, 1, 6, 1, testSuperType, null, getOrderProperties(), null, "eoin", new ChildAssociationRef[] { n05CAR }, new NodeRef[] { rootNodeRef,
-                    n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() }, n05NodeRef);
+                n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() }, n05NodeRef);
 
             // 6
 
@@ -1135,7 +1148,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n06QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "six");
             ChildAssociationRef n06CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n01NodeRef, n06QName, n06NodeRef, true, 0);
             addNode(core, dataModel, 1, 7, 1, testSuperType, null, getOrderProperties(), null, "fred", new ChildAssociationRef[] { n06CAR }, new NodeRef[] { rootNodeRef,
-                    n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n06QName.toString() }, n06NodeRef);
+                n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n06QName.toString() }, n06NodeRef);
 
             // 7
 
@@ -1143,7 +1156,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n07QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "seven");
             ChildAssociationRef n07CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n02NodeRef, n07QName, n07NodeRef, true, 0);
             addNode(core, dataModel, 1, 8, 1, testSuperType, null, getOrderProperties(), null, "gail", new ChildAssociationRef[] { n07CAR }, new NodeRef[] { rootNodeRef,
-                    n02NodeRef }, new String[] { "/" + n02QName.toString() + "/" + n07QName.toString() }, n07NodeRef);
+                n02NodeRef }, new String[] { "/" + n02QName.toString() + "/" + n07QName.toString() }, n07NodeRef);
 
             // 8
 
@@ -1156,8 +1169,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             ChildAssociationRef n08CAR_2 = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n02NodeRef, n08QName_2, n08NodeRef, true, 0);
 
             addNode(core, dataModel, 1, 9, 1, testSuperType, null, getOrderProperties(), null, "hal", new ChildAssociationRef[] { n08CAR_0, n08CAR_1, n08CAR_2 }, new NodeRef[] {
-                    rootNodeRef, rootNodeRef, n01NodeRef, rootNodeRef, n02NodeRef }, new String[] { "/" + n08QName_0, "/" + n01QName.toString() + "/" + n08QName_1.toString(),
-                    "/" + n02QName.toString() + "/" + n08QName_2.toString() }, n08NodeRef);
+                rootNodeRef, rootNodeRef, n01NodeRef, rootNodeRef, n02NodeRef }, new String[] { "/" + n08QName_0, "/" + n01QName.toString() + "/" + n08QName_1.toString(),
+                "/" + n02QName.toString() + "/" + n08QName_2.toString() }, n08NodeRef);
 
             // 9
 
@@ -1165,7 +1178,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n09QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "nine");
             ChildAssociationRef n09CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n05NodeRef, n09QName, n09NodeRef, true, 0);
             addNode(core, dataModel, 1, 10, 1, testSuperType, null, getOrderProperties(), null, "ian", new ChildAssociationRef[] { n09CAR }, new NodeRef[] { rootNodeRef,
-                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n09QName }, n09NodeRef);
+                n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n09QName }, n09NodeRef);
 
             // 10
 
@@ -1173,7 +1186,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n10QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "ten");
             ChildAssociationRef n10CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n05NodeRef, n10QName, n10NodeRef, true, 0);
             addNode(core, dataModel, 1, 11, 1, testSuperType, null, getOrderProperties(), null, "jake", new ChildAssociationRef[] { n10CAR }, new NodeRef[] { rootNodeRef,
-                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n10QName }, n10NodeRef);
+                n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n10QName }, n10NodeRef);
 
             // 11
 
@@ -1181,7 +1194,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n11QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "eleven");
             ChildAssociationRef n11CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n05NodeRef, n11QName, n11NodeRef, true, 0);
             addNode(core, dataModel, 1, 12, 1, testSuperType, null, getOrderProperties(), null, "kara", new ChildAssociationRef[] { n11CAR }, new NodeRef[] { rootNodeRef,
-                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n11QName }, n11NodeRef);
+                n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n11QName }, n11NodeRef);
 
             // 12
 
@@ -1189,7 +1202,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             QName n12QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "twelve");
             ChildAssociationRef n12CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n05NodeRef, n12QName, n12NodeRef, true, 0);
             addNode(core, dataModel, 1, 13, 1, testSuperType, null, getOrderProperties(), null, "loon", new ChildAssociationRef[] { n12CAR }, new NodeRef[] { rootNodeRef,
-                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName }, n12NodeRef);
+                n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName }, n12NodeRef);
 
             // 13
 
@@ -1199,8 +1212,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             ChildAssociationRef n13CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n12NodeRef, n13QName, n13NodeRef, true, 0);
             ChildAssociationRef n13CARLink = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, n02NodeRef, n13QName, n13NodeRef, false, 0);
             addNode(core, dataModel, 1, 14, 1, testSuperType, null, getOrderProperties(), null, "mike", new ChildAssociationRef[] { n13CAR, n13CARLink }, new NodeRef[] {
-                    rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, rootNodeRef, n02NodeRef }, new String[] {
-                    "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName + "/" + n13QName, "/" + n02QName.toString() + "/" + n13QNameLink }, n13NodeRef);
+                rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, rootNodeRef, n02NodeRef }, new String[] {
+                "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName + "/" + n13QName, "/" + n02QName.toString() + "/" + n13QNameLink }, n13NodeRef);
 
             // 14
 
@@ -1224,8 +1237,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             properties14.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 298L, "UTF-8", "text/plain"));
             content14.put(ContentModel.PROP_CONTENT,
                     "The quick brown fox jumped over the lazy dog and ate the Alfresco Tutorial, in pdf format, along with the following stop words;  a an and are"
-                            + " as at be but by for if in into is it no not of on or such that the their then there these they this to was will with: "
-                            + " and random charcters \u00E0\u00EA\u00EE\u00F0\u00F1\u00F6\u00FB\u00FF");
+                    + " as at be but by for if in into is it no not of on or such that the their then there these they this to was will with: "
+                    + " and random charcters \u00E0\u00EA\u00EE\u00F0\u00F1\u00F6\u00FB\u00FF");
             properties14.put(ContentModel.PROP_DESCRIPTION, desc1);
             properties14.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, explicitCreatedDate)));
             properties14.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, explicitCreatedDate)));
@@ -1243,10 +1256,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             addNode(core, dataModel, 1, 15, 1, ContentModel.TYPE_CONTENT, null, properties14, content14, "noodle", new ChildAssociationRef[] { n14CAR, n14CAR_1, n14CAR_2,
                     n14CAR_5, n14CAR_6, n14CAR_12, n14CAR_13 }, new NodeRef[] { rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, n13NodeRef },
                     new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName + "/" + n13QName + "/" + n14QName,
-                            "/" + n02QName.toString() + "/" + n13QNameLink + "/" + n14QName, "/" + n01QName + "/" + n14QNameCommon, "/" + n02QName + "/" + n14QNameCommon,
-                            "/" + n01QName + "/" + n05QName + "/" + n14QNameCommon, "/" + n01QName + "/" + n06QName + "/" + n14QNameCommon,
-                            "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n14QNameCommon,
-                            "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n13QName + "/" + n14QNameCommon }, n14NodeRef);
+                    "/" + n02QName.toString() + "/" + n13QNameLink + "/" + n14QName, "/" + n01QName + "/" + n14QNameCommon, "/" + n02QName + "/" + n14QNameCommon,
+                    "/" + n01QName + "/" + n05QName + "/" + n14QNameCommon, "/" + n01QName + "/" + n06QName + "/" + n14QNameCommon,
+                    "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n14QNameCommon,
+                    "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n13QName + "/" + n14QNameCommon }, n14NodeRef);
 
             // 15
 
@@ -1315,33 +1328,33 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 addNode(core, dataModel, 1, 5, 1, testType, new QName[] { testAspect }, properties04, content04, "dave", new ChildAssociationRef[] { n04CAR },
                         new NodeRef[] { rootNodeRef }, new String[] { "/" + n04QName.toString() }, n04NodeRef);
                 addNode(core, dataModel, 1, 6, 1, testSuperType, null, getOrderProperties(), null, "eoin", new ChildAssociationRef[] { n05CAR }, new NodeRef[] { rootNodeRef,
-                        n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() }, n05NodeRef);
+                    n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() }, n05NodeRef);
                 addNode(core, dataModel, 1, 7, 1, testSuperType, null, getOrderProperties(), null, "fred", new ChildAssociationRef[] { n06CAR }, new NodeRef[] { rootNodeRef,
-                        n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n06QName.toString() }, n06NodeRef);
+                    n01NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n06QName.toString() }, n06NodeRef);
                 addNode(core, dataModel, 1, 8, 1, testSuperType, null, getOrderProperties(), null, "gail", new ChildAssociationRef[] { n07CAR }, new NodeRef[] { rootNodeRef,
-                        n02NodeRef }, new String[] { "/" + n02QName.toString() + "/" + n07QName.toString() }, n07NodeRef);
+                    n02NodeRef }, new String[] { "/" + n02QName.toString() + "/" + n07QName.toString() }, n07NodeRef);
                 addNode(core, dataModel, 1, 9, 1, testSuperType, null, getOrderProperties(), null, "hal", new ChildAssociationRef[] { n08CAR_0, n08CAR_1, n08CAR_2 },
                         new NodeRef[] { rootNodeRef, rootNodeRef, n01NodeRef, rootNodeRef, n02NodeRef }, new String[] { "/" + n08QName_0,
-                                "/" + n01QName.toString() + "/" + n08QName_1.toString(), "/" + n02QName.toString() + "/" + n08QName_2.toString() }, n08NodeRef);
+                    "/" + n01QName.toString() + "/" + n08QName_1.toString(), "/" + n02QName.toString() + "/" + n08QName_2.toString() }, n08NodeRef);
                 addNode(core, dataModel, 1, 10, 1, testSuperType, null, getOrderProperties(), null, "ian", new ChildAssociationRef[] { n09CAR }, new NodeRef[] { rootNodeRef,
-                        n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n09QName }, n09NodeRef);
+                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n09QName }, n09NodeRef);
                 addNode(core, dataModel, 1, 11, 1, testSuperType, null, getOrderProperties(), null, "jake", new ChildAssociationRef[] { n10CAR }, new NodeRef[] { rootNodeRef,
-                        n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n10QName }, n10NodeRef);
+                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n10QName }, n10NodeRef);
                 addNode(core, dataModel, 1, 12, 1, testSuperType, null, getOrderProperties(), null, "kara", new ChildAssociationRef[] { n11CAR }, new NodeRef[] { rootNodeRef,
-                        n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n11QName }, n11NodeRef);
+                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n11QName }, n11NodeRef);
                 addNode(core, dataModel, 1, 13, 1, testSuperType, null, getOrderProperties(), null, "loon", new ChildAssociationRef[] { n12CAR }, new NodeRef[] { rootNodeRef,
-                        n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName }, n12NodeRef);
+                    n01NodeRef, n05NodeRef }, new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName }, n12NodeRef);
                 addNode(core, dataModel, 1, 14, 1, testSuperType, null, getOrderProperties(), null, "mike", new ChildAssociationRef[] { n13CAR, n13CARLink }, new NodeRef[] {
-                        rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, rootNodeRef, n02NodeRef }, new String[] {
-                        "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName + "/" + n13QName, "/" + n02QName.toString() + "/" + n13QNameLink }, n13NodeRef);
+                    rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, rootNodeRef, n02NodeRef }, new String[] {
+                    "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName + "/" + n13QName, "/" + n02QName.toString() + "/" + n13QNameLink }, n13NodeRef);
                 properties14.putAll(getOrderProperties());
                 addNode(core, dataModel, 1, 15, 1, ContentModel.TYPE_CONTENT, null, properties14, content14, "noodle", new ChildAssociationRef[] { n14CAR, n14CAR_1, n14CAR_2,
                         n14CAR_5, n14CAR_6, n14CAR_12, n14CAR_13 }, new NodeRef[] { rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, n13NodeRef },
                         new String[] { "/" + n01QName.toString() + "/" + n05QName.toString() + "/" + n12QName + "/" + n13QName + "/" + n14QName,
-                                "/" + n02QName.toString() + "/" + n13QNameLink + "/" + n14QName, "/" + n01QName + "/" + n14QNameCommon, "/" + n02QName + "/" + n14QNameCommon,
-                                "/" + n01QName + "/" + n05QName + "/" + n14QNameCommon, "/" + n01QName + "/" + n06QName + "/" + n14QNameCommon,
-                                "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n14QNameCommon,
-                                "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n13QName + "/" + n14QNameCommon }, n14NodeRef);
+                        "/" + n02QName.toString() + "/" + n13QNameLink + "/" + n14QName, "/" + n01QName + "/" + n14QNameCommon, "/" + n02QName + "/" + n14QNameCommon,
+                        "/" + n01QName + "/" + n05QName + "/" + n14QNameCommon, "/" + n01QName + "/" + n06QName + "/" + n14QNameCommon,
+                        "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n14QNameCommon,
+                        "/" + n01QName + "/" + n05QName + "/" + n12QName + "/" + n13QName + "/" + n14QNameCommon }, n14NodeRef);
                 properties14.putAll(getOrderProperties());
                 addNode(core, dataModel, 1, 16, 1, ContentModel.TYPE_THUMBNAIL, null, properties15, content15, "ood", new ChildAssociationRef[] { n15CAR }, new NodeRef[] {
                         rootNodeRef, n01NodeRef, n05NodeRef, n12NodeRef, n13NodeRef }, new String[] {
@@ -1406,6 +1419,214 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
 
     }
+
+    private boolean newCore(SolrQueryRequest req, SolrQueryResponse rsp)
+    {
+        try
+        {
+            String store = "";
+            SolrParams params = req.getParams();
+            if (params.get("storeRef") != null)
+            {
+                store = params.get("storeRef");
+            }
+
+            if((store == null) || (store.length() == 0))
+            {
+                return false;
+            }
+         
+            String templateName = "store";
+            if (params.get("template") != null)
+            {
+                templateName = params.get("template");
+            }
+            
+            StoreRef storeRef = new StoreRef(store);
+            String coreName = storeRef.getProtocol()+"-"+storeRef.getIdentifier();
+            if (params.get("coreName") != null)
+            {
+                coreName = params.get("coreName");
+            }
+
+            
+            
+            // copy core from template
+
+            File solrHome = new File(getCoreContainer().getSolrHome());
+            File templates = new File(solrHome, "templates");
+            File template = new File(templates, templateName);
+
+            File newCore = new File(solrHome, coreName);
+
+            copyDirectory(template, newCore, false);
+
+            // fix configuration properties
+
+            File config = new File(newCore, "conf/solrcore.properties");
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(config));
+            properties.setProperty("data.dir.root", newCore.getCanonicalPath());
+            properties.setProperty("data.dir.store", coreName);
+            properties.setProperty("alfresco.stores", store);
+            
+            for(Iterator<String> it = params.getParameterNamesIterator(); it.hasNext(); /**/)
+            {
+                String paramName = it.next();
+                if(paramName.startsWith("property."))
+                {
+                    properties.setProperty(paramName.substring("property.".length()), params.get(paramName));
+                }
+            }
+            
+            properties.store(new FileOutputStream(config), null);
+
+            // add core
+
+            CoreDescriptor dcore = new CoreDescriptor(coreContainer, coreName, newCore.toString());
+            dcore.setCoreProperties(null);
+            SolrCore core = coreContainer.create(dcore);
+            coreContainer.register(coreName, core, false);
+            rsp.add("core", core.getName());
+
+            
+            
+            return true;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        catch (ParserConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+        catch (SAXException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    private boolean updateCore(SolrQueryRequest req, SolrQueryResponse rsp)
+    {
+        try
+        {
+            String store = "";
+            SolrParams params = req.getParams();
+            if (params.get("storeRef") != null)
+            {
+                store = params.get("storeRef");
+            }
+
+            if((store == null) || (store.length() == 0))
+            {
+                return false;
+            }
+         
+            StoreRef storeRef = new StoreRef(store);
+            String coreName = storeRef.getProtocol()+"-"+storeRef.getIdentifier();
+            if (params.get("coreName") != null)
+            {
+                coreName = params.get("coreName");
+            }
+            
+            File solrHome = new File(getCoreContainer().getSolrHome());
+
+            File newCore = new File(solrHome, coreName);
+
+            // fix configuration properties
+
+            File config = new File(newCore, "conf/solrcore.properties");
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(config));
+         
+            for(Iterator<String> it = params.getParameterNamesIterator(); it.hasNext(); /**/)
+            {
+                String paramName = it.next();
+                if(paramName.startsWith("property."))
+                {
+                    properties.setProperty(paramName.substring("property.".length()), params.get(paramName));
+                }
+            }
+            
+            properties.store(new FileOutputStream(config), null);
+
+            coreContainer.reload(coreName);
+            
+            return false;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        catch (ParserConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+        catch (SAXException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    private boolean removeCore(SolrQueryRequest req, SolrQueryResponse rsp)
+    {
+        try
+        {
+            String store = "";
+            SolrParams params = req.getParams();
+            if (params.get("storeRef") != null)
+            {
+                store = params.get("storeRef");
+            }
+
+            if((store == null) || (store.length() == 0))
+            {
+                return false;
+            }
+            
+            StoreRef storeRef = new StoreRef(store);
+            String coreName = storeRef.getProtocol()+"-"+storeRef.getIdentifier();
+            if (params.get("coreName") != null)
+            {
+                coreName = params.get("coreName");
+            }
+
+            File solrHome = new File(getCoreContainer().getSolrHome());
+            File newCore = new File(solrHome, coreName);
+
+            // remove core
+
+            SolrCore done = coreContainer.remove(coreName);
+            if (done != null)
+            {
+                done.close();
+            }
+
+            deleteDirectory(newCore);
+            
+            return true;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    
+
 
     /**
      * @param req
@@ -1562,8 +1783,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { folder07CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() }, folder07NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() }, folder07NodeRef);
 
             HashMap<QName, PropertyValue> folder08Properties = new HashMap<QName, PropertyValue>();
             folder08Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Folder 8"));
@@ -1584,8 +1805,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { folder08CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef, folder07NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() + "/" + folder08QName.toString() }, folder08NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() + "/" + folder08QName.toString() }, folder08NodeRef);
 
             HashMap<QName, PropertyValue> folder09Properties = new HashMap<QName, PropertyValue>();
             folder09Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Folder 9'"));
@@ -1606,8 +1827,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { folder09CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef, folder07NodeRef, folder08NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() + "/" + folder08QName.toString() + "/" + folder09QName.toString() }, folder09NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() + "/" + folder08QName.toString() + "/" + folder09QName.toString() }, folder09NodeRef);
 
             // content
 
@@ -1629,14 +1850,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             HashMap<QName, String> content00Content = new HashMap<QName, String>();
             content00Content.put(ContentModel.PROP_CONTENT,
                     "The quick brown fox jumped over the lazy dog and ate the Alfresco Tutorial, in pdf format, along with the following stop words;  a an and are"
-                            + " as at be but by for if in into is it no not of on or such that the their then there these they this to was will with: "
-                            + " and random charcters \u00E0\u00EA\u00EE\u00F0\u00F1\u00F6\u00FB\u00FF");
+                    + " as at be but by for if in into is it no not of on or such that the their then there these they this to was will with: "
+                    + " and random charcters \u00E0\u00EA\u00EE\u00F0\u00F1\u00F6\u00FB\u00FF");
             NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
             QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Alfresco Tutorial");
             ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
             addNode(core, dataModel, 1, 13, 1, ContentModel.TYPE_CONTENT, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, content00Content, "andy", new ChildAssociationRef[] { content00CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
 
             HashMap<QName, PropertyValue> content01Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc01 = new MLTextPropertyValue();
@@ -1658,7 +1879,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             ChildAssociationRef content01CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder01NodeRef, content01QName, content01NodeRef, true, 0);
             addNode(core, dataModel, 1, 14, 1, ContentModel.TYPE_CONTENT, new QName[]{ContentModel.ASPECT_TITLED}, content01Properties, content01Content, "cmis", new ChildAssociationRef[] { content01CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder01NodeRef }, new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder01QName.toString() + "/" + content01QName.toString() }, content01NodeRef);
+                    + baseFolderQName.toString() + "/" + folder01QName.toString() + "/" + content01QName.toString() }, content01NodeRef);
 
             HashMap<QName, PropertyValue> content02Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc02 = new MLTextPropertyValue();
@@ -1680,7 +1901,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             ChildAssociationRef content02CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder02NodeRef, content02QName, content02NodeRef, true, 0);
             addNode(core, dataModel, 1, 15, 1, ContentModel.TYPE_CONTENT, new QName[] { ContentModel.ASPECT_TITLED }, content02Properties, content02Content, "cmis",
                     new ChildAssociationRef[] { content02CAR }, new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder02NodeRef }, new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder02QName.toString() + "/" + content02QName.toString() }, content02NodeRef);
+                    + baseFolderQName.toString() + "/" + folder02QName.toString() + "/" + content02QName.toString() }, content02NodeRef);
 
             HashMap<QName, PropertyValue> content03Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc03 = new MLTextPropertyValue();
@@ -1702,7 +1923,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             ChildAssociationRef content03CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder03NodeRef, content03QName, content03NodeRef, true, 0);
             addNode(core, dataModel, 1, 16, 1, ContentModel.TYPE_CONTENT, new QName[] { ContentModel.ASPECT_TITLED }, content03Properties, content03Content, "cmis",
                     new ChildAssociationRef[] { content03CAR }, new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder03NodeRef }, new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder03QName.toString() + "/" + content03QName.toString() }, content03NodeRef);
+                    + baseFolderQName.toString() + "/" + folder03QName.toString() + "/" + content03QName.toString() }, content03NodeRef);
 
             HashMap<QName, PropertyValue> content04Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc04 = new MLTextPropertyValue();
@@ -1724,7 +1945,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             ChildAssociationRef content04CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder04NodeRef, content04QName, content04NodeRef, true, 0);
             addNode(core, dataModel, 1, 17, 1, ContentModel.TYPE_CONTENT, new QName[] { ContentModel.ASPECT_TITLED }, content04Properties, content04Content, null,
                     new ChildAssociationRef[] { content04CAR }, new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder04NodeRef }, new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder04QName.toString() + "/" + content04QName.toString() }, content04NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder04QName.toString() + "/" + content04QName.toString() }, content04NodeRef);
 
             HashMap<QName, PropertyValue> content05Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc05 = new MLTextPropertyValue();
@@ -1783,8 +2004,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { content06CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + content06QName.toString() }, content06NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + content06QName.toString() }, content06NodeRef);
 
             HashMap<QName, PropertyValue> content07Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc07 = new MLTextPropertyValue();
@@ -1817,8 +2038,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { content07CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef, folder07NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() + "/" + content07QName.toString() }, content07NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() + "/" + content07QName.toString() }, content07NodeRef);
 
             HashMap<QName, PropertyValue> content08Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc08 = new MLTextPropertyValue();
@@ -1851,8 +2072,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { content08CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef, folder07NodeRef, folder08NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() + "/" + folder08QName.toString() + "/" + content08QName.toString() }, content08NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() + "/" + folder08QName.toString() + "/" + content08QName.toString() }, content08NodeRef);
 
             HashMap<QName, PropertyValue> content09Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc09 = new MLTextPropertyValue();
@@ -1886,8 +2107,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { content09CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef, folder07NodeRef, folder08NodeRef, folder09NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() + "/" + folder08QName.toString() + "/" + folder09QName.toString() + "/" + content09QName.toString() }, content09NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() + "/" + folder08QName.toString() + "/" + folder09QName.toString() + "/" + content09QName.toString() }, content09NodeRef);
 
             HashMap<QName, PropertyValue> content10Properties = new HashMap<QName, PropertyValue>();
             MLTextPropertyValue desc10 = new MLTextPropertyValue();
@@ -1921,8 +2142,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     new ChildAssociationRef[] { content10CAR },
                     new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef, folder05NodeRef, folder06NodeRef, folder07NodeRef, folder08NodeRef, folder09NodeRef },
                     new String[] { "/"
-                            + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
-                            + folder07QName.toString() + "/" + folder08QName.toString() + "/" + folder09QName.toString() + "/" + content10QName.toString() }, content10NodeRef);
+                    + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + folder05QName.toString() + "/" + folder06QName.toString() + "/"
+                    + folder07QName.toString() + "/" + folder08QName.toString() + "/" + folder09QName.toString() + "/" + content10QName.toString() }, content10NodeRef);
 
             checkCmisBasic(rsp, core, dataModel);
             // cmis:allowedChildObjectTypeIds
@@ -1950,9 +2171,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             checkCmisCreatedBy(rsp, core, dataModel);
             checkCmisObjectTypeId(rsp, core, dataModel);
             checkCmisObjecId(rsp, core, dataModel, folder00NodeRef.toString(), content00NodeRef.toString());
-            
+
             checkCmisOrderby(rsp, core, dataModel);
-            
+
             checkCmisUpperAndLower(rsp, core, dataModel);
             checkCmisTextPredicates(rsp, core, dataModel);
             checkCmisSimpleConjunction(rsp, core, dataModel);
@@ -1966,7 +2187,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             checkAspectJoin(rsp, core, dataModel);
             checkFTSConnectives(rsp, core, dataModel);
             checkLikeEscaping(rsp, core, dataModel);
-            
+
             addTypeTestData(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date00);
             check_D_text(rsp, core, dataModel);
             check_locale(rsp, core, dataModel);
@@ -1980,10 +2201,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             check_D_boolean(rsp, core, dataModel);
             check_contains_syntax(rsp, core, dataModel);
 
-            
+
             addTypeSortTestData(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date00);
             check_order(rsp, core, dataModel);
-            
+
             // remove core
 
             if (remove)
@@ -2451,7 +2672,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         rsp.add("cmis:objectTypeId", report);
 
         // Doc
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId =  'cmis:document'", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId <> 'cmis:document'", 1, null, null, null, null, null, (String) null);
 
@@ -2464,7 +2685,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:document WHERE cmis:objectTypeId IS     NULL", 0, null, null, null, null, null, (String) null);
 
         // Folder
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId =  'cmis:folder'", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId <> 'cmis:folder'", 0, null, null, null, null, null, (String) null);
 
@@ -2474,7 +2695,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IS NOT NULL", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:objectTypeId IS     NULL", 0, null, null, null, null, null, (String) null);
-        
+
     }
 
     private void checkCmisObjecId(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, String folderId, String docId) throws IOException
@@ -2482,120 +2703,120 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("cmis:objectId", report);
-   
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId =  '" + folderId + "'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId <> '" + folderId + "'", 10, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IN     ('" + folderId + "')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId  NOT IN('" + folderId + "')", 10, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_FOLDER('" + folderId + "')", 2, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_TREE  ('" + folderId + "')", 6, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, (String) null);
-        
+
         // ignore folder versions
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId =  '" + folderId + ";1.0'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId <> '" + folderId + ";1.0'", 10, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId IN     ('" + folderId + ";1.0')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE cmis:objectId  NOT IN('" + folderId + ";1.0')", 10, null, null, null, null, null, (String) null);
-        
+
         //testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_FOLDER('" + folderId + ";1.0')", 2, null, null, null, null, null, (String) null);
         //testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:folder WHERE IN_TREE  ('" + folderId + ";1.0')", 6, null, null, null, null, null, (String) null);
-        
-       // Docs
-        
+
+        // Docs
+
         String id = docId;
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId =  '" + id + "'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId <> '" + id + "'", 10, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IN     ('" + id + "')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId  NOT IN('" + id + "')", 10, null, null, null, null, null, (String) null);
-      
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, (String) null);
-        
+
         id = docId +";1.0";
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId =  '" + id + "'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId <> '" + id + "'", 10, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IN     ('" + id + "')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId  NOT IN('" + id + "')", 10, null, null, null, null, null, (String) null);
-      
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS NOT NULL", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectId FROM cmis:document WHERE cmis:objectId IS     NULL", 0, null, null, null, null, null, (String) null);
     }
-    
+
     private void checkCmisOrderby(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS Order by", report);
-   
+
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectTypeId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId Meep FROM cmis:folder ORDER BY Meep DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder F ORDER BY F.cmis:objectId DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY F.cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY cmis:objectId", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  F.cmis:objectId Meep FROM cmis:folder F ORDER BY Meep DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE(), cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY SEARCH_SCORE", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP ASC", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP DESC", 11, null, new int[]{13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         // other
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name DESC", 11, null, new int[]{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document ORDER BY cmis:name ASC", 11, null, new int[]{22, 14, 23, 13, 15, 16, 17, 18, 19, 20, 21}, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document ORDER BY cmis:name DESC", 11, null, new int[]{21, 20, 19, 18, 17, 16, 15, 13, 23, 14, 22}, null, null, null, (String) null);
-        
+
         //testQueryByHandler(report, core, "/cmis", "SELECT cmis:versionLabel FROM cmis:document ORDER BY cmis:versionLabel ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         //testQueryByHandler(report, core, "/cmis", "SELECT cmis:versionLabel FROM cmis:document ORDER BY cmis:versionLabel DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         //testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document ORDER BY cmis:contentStreamFileName ASC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         //testQueryByHandler(report, core, "/cmis", "SELECT cmis:contentStreamFileName FROM cmis:document ORDER BY cmis:contentStreamFileName DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
-        
+
         //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name = 'compan home' ORDER BY SCORE() DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY MEEEP DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
@@ -2604,13 +2825,13 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder as F WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY F.cmis:parentId DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);
         //testQueryByHandler(report, core, "/cmis", "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder F WHERE CONTAINS('cmis:name:*') AND cmis:name IN ('company', 'home') ORDER BY F.cmis:notThere DESC", 11, null, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}, null, null, null, (String) null);   
     }
-    
+
     private void checkCmisUpperAndLower(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Upper and Lower", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'FOLDER 1'", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name = 'folder 1'", 0, null, null, null, null, null, (String) null);
@@ -2620,22 +2841,22 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'FOLDER 1'", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) = 'Folder 1'", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Lower(cmis:name) = 'Folder 1'", 0, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <> 'FOLDER 1'", 10, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <= 'FOLDER 1'", 3, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) <  'FOLDER 1'", 2, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) >= 'FOLDER 1'", 9, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE Upper(cmis:name) >  'FOLDER 1'", 8, null, null, null, null, null, (String) null);
-        
+
     }
-    
+
     private void checkCmisTextPredicates(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Text predicates", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 9'", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 9\\''", 1, null, null, null, null, null, (String) null);
@@ -2657,83 +2878,83 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ 1'", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ %'", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ %'", 1, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name LIKE 'F_l_e_ _'", 9, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name NOT LIKE 'F_l_e_ _'", 2, null, null, null, null, null, (String) null);
     }
-    
+
     private void checkCmisSimpleConjunction(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Simple conjunction", report);
-        
+
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL AND cmis:name = 'Folder'", 0, null, null, null, null, null, (String) null);
     }
-    
+
     private void checkCmisSimpleDisjunction(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Simple disjunction", report);
-        
+
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 2'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name = 'Folder 1' OR cmis:name = 'Folder 2'", 2, null, null, null, null, null, (String) null);
     }
-    
+
     private void checkCmisExists(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Exists", report);
-        
+
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:folder WHERE cmis:name IS NULL", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:document WHERE cmis:name IS NOT NULL", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis","SELECT * FROM cmis:document WHERE cmis:name IS NULL", 0, null, null, null, null, null, (String) null);
     }
-    
-    
+
+
     private void checkInTree(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, String id) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("In Tree", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + id + "')", 6, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder F WHERE IN_TREE(F, '" + id + "')", 6, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId WHERE IN_TREE(D, '" + id + "')", 1, null, null, null, null, null, (String) null);
-    
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('woof://woof/woof')", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('woof://woof/woof;woof')", 0, null, null, null, null, null, (String) null);
-    
+
     }
-    
+
     private void checkInFolder(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, String id) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("In Folder", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('" + id + "')", 2, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder F WHERE IN_FOLDER(F, '" + id + "')", 2, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT D.*, O.* FROM cmis:document AS D JOIN cm:ownable AS O ON D.cmis:objectId = O.cmis:objectId WHERE IN_FOLDER(D, '" + id + "')", 1, null, null, null, null, null, (String) null);
-       
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('woof://woof/woof')", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:folder WHERE IN_FOLDER('woof://woof/woof;woof')", 0, null, null, null, null, null, (String) null);
-    
+
     }
-    
+
     private void checkFTS(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("FTS", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT SCORE()as ONE, SCORE()as TWO, D.* FROM cmis:document D WHERE CONTAINS('\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('\\'quick\\'')", 1, null, null, null, null, null, (String) null);
@@ -2743,40 +2964,40 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('TEXT:\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('ALL:\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D WHERE CONTAINS('d:content:\\'zebra\\'')", 10, null, null, null, null, null, (String) null);
-    
+
     }
-    
+
     private void checkAccessAs(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Access", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 0, null, null, null, null, null, "{!afts}|AUTHORITY:guest");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 3, null, null, null, null, null, "{!afts}|AUTHORITY:cmis");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|OWNER:andy");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|AUTHORITY:andy");
-       
+
     }
-    
+
     private void checkDateFormatting(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Date formatting", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-12-12T12:12:12.012Z'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-012-12T12:12:12.012Z'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:lockable L WHERE L.cm:expiryDate =  TIMESTAMP '2012-2-12T12:12:12.012Z'", 0, null, null, null, null, null, (String) null);
     }
-    
+
     private void checkAspectJoin(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Aspect Join", report);
-        
+
         testQueryByHandler(report, core, "/cmis",  "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId  ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, '\\'jumped\\'') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cm:ownable where cm:owner = 'andy'", 1, null, null, null, null, null, (String) null);
@@ -2793,31 +3014,31 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId  JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId  )", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, '\\'jumped\\'') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "select o.*, t.* from ( cm:ownable o join cm:titled t on o.cmis:objectId = t.cmis:objectId JOIN cmis:document AS D ON D.cmis:objectId = o.cmis:objectId ) where o.cm:owner = 'andy' and t.cm:title = 'Alfresco tutorial' and CONTAINS(D, 'jumped') and D.cmis:contentStreamLength <> 2", 1, null, null, null, null, null, (String) null);
-        
+
     }
-    
+
     private void checkFTSConnectives(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("FTS Connectives", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' OR \\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' or \\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' \\'zebra\\'')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' and \\'zebra\\'')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\' or \\'zebra\\'')", 10, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document where contains('\\'one\\'  \\'zebra\\'')", 1, null, null, null, null, null, (String) null);
-        
+
         // TODO: set default OR
     }
-    
+
     private void checkLikeEscaping(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Like Escaping", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutorial'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco Tutoria_'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'Alfresco T_______'", 1, null, null, null, null, null, (String) null);
@@ -2832,7 +3053,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'HH?HH'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '__?__'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE '%?%'", 1, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'AA%'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'AA\\%'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'A%'", 2, null, null, null, null, null, (String) null);
@@ -2843,11 +3064,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B__'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B_\\_'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'B\\_\\_'", 0, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'CC\\\\'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name     LIKE 'DD\\''", 1, null, null, null, null, null, (String) null);
     }
-    
+
     @SuppressWarnings("unused")
     private void addTypeTestData(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1) throws IOException
     {
@@ -2859,7 +3080,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(ContentModel.PROP_TITLE, desc00);
         content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Test One"));
         content00Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1)));
-        
+
         StringPropertyValue single = new StringPropertyValue("Un tokenised");
         content00Properties.put(singleTextUntokenised, single);
         content00Properties.put(singleTextTokenised, single);
@@ -2892,7 +3113,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(multipleInteger, multiInt);
         content00Properties.put(singleLong, one);
         content00Properties.put(multipleLong, multiInt);
-        
+
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date1);
         cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -2909,24 +3130,24 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(multipleDate, multiDate);
         content00Properties.put(singleDatetime, d1);
         content00Properties.put(multipleDatetime, multiDate);
-        
+
         StringPropertyValue bTrue = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, true));
         StringPropertyValue bFalse = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, false));
         MultiPropertyValue multiBool = new MultiPropertyValue();
         multiBool.addValue(bTrue);
         multiBool.addValue(bFalse);
-        
+
         content00Properties.put(singleBoolean, bTrue);
         content00Properties.put(multipleBoolean, multiBool);
-        
+
         NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
         QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Test One");
         ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
         addNode(core, dataModel, 1, 100, 1, extendedContent, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, null, "andy", new ChildAssociationRef[] { content00CAR },
                 new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
-                        + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+                + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
     }
-    
+
     private void addTypeSortTestData(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1) throws IOException
     {
         addSortableNull(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date1, "start", 0);
@@ -2941,8 +3162,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         addSortableNull(core, dataModel, folder00NodeRef, rootNodeRef, baseFolderNodeRef, baseFolderQName, folder00QName, date1, "end", 2);
     }
-    
-    
+
+
     private void addSortableNull(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1, String id, int offset) throws IOException
     {
         HashMap<QName, PropertyValue> content00Properties = new HashMap<QName, PropertyValue>();
@@ -2952,19 +3173,19 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(ContentModel.PROP_TITLE, desc00);
         content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Test null"));
         content00Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1)));
-       
+
         NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
         QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Test null");
         ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
         addNode(core, dataModel, 1, 200+offset, 1, extendedContent, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, null, "andy", new ChildAssociationRef[] { content00CAR },
                 new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
-                        + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+                + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
     }
-    
-    
+
+
 
     private static String[] orderable = new String[] { "zero loons", "one banana", "two apples", "three fruit", "four lemurs", "five rats", "six badgers", "seven cards",
-            "eight cabbages", "nine zebras", "ten lemons" };
+        "eight cabbages", "nine zebras", "ten lemons" };
 
     @SuppressWarnings("unused")
     private void addSortableNode(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef folder00NodeRef, NodeRef rootNodeRef, NodeRef baseFolderNodeRef, Object baseFolderQName, Object folder00QName, Date date1, int position) throws IOException
@@ -2976,7 +3197,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(ContentModel.PROP_TITLE, desc00);
         content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Test "+position));
         content00Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1)));
-        
+
         StringPropertyValue single = new StringPropertyValue(orderable[position]);
         content00Properties.put(singleTextUntokenised, single);
         content00Properties.put(singleTextTokenised, single);
@@ -3011,11 +3232,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(multipleInteger, multiInt);
         content00Properties.put(singleLong, one);
         content00Properties.put(multipleLong, multiInt);
-        
+
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date1);
         cal.add(Calendar.DAY_OF_MONTH, position);
-        
+
         Date newdate1 = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, -1);
         Date date0 = cal.getTime();
@@ -3031,37 +3252,37 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         content00Properties.put(multipleDate, multiDate);
         content00Properties.put(singleDatetime, d1);
         content00Properties.put(multipleDatetime, multiDate);
-        
+
         StringPropertyValue b = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, position % 2 == 0 ? true : false));
         StringPropertyValue bTrue = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, true));
         StringPropertyValue bFalse = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, false));
         MultiPropertyValue multiBool = new MultiPropertyValue();
         multiBool.addValue(bTrue);
         multiBool.addValue(bFalse);
-        
+
         content00Properties.put(singleBoolean, b);
         content00Properties.put(multipleBoolean, multiBool);
-        
+
         NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"),  createGUID());
         QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Test "+position);
         ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef, content00QName, content00NodeRef, true, 0);
         addNode(core, dataModel, 1, 1000+position, 1, extendedContent, new QName[]{ContentModel.ASPECT_OWNABLE, ContentModel.ASPECT_TITLED}, content00Properties, null, "andy", new ChildAssociationRef[] { content00CAR },
                 new NodeRef[] { baseFolderNodeRef, rootNodeRef, folder00NodeRef }, new String[] { "/"
-                        + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
+                + baseFolderQName.toString() + "/" + folder00QName.toString() + "/" + content00QName.toString() }, content00NodeRef);
     }
 
-    
+
     private void check_D_text(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:text", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 12, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth <> 'tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
@@ -3085,8 +3306,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'Un tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'V'", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextBoth >= 'U'", 1, null, null, null, null, null, (String) null);
-        
-        
+
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised <> 'tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
@@ -3110,14 +3331,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'Un tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'V'", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextUntokenised >= 'U'", 1, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised = 'tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised <> 'tokenized'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised LIKE 'to%sed'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised NOT LIKE 'Ut__eniz%'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleTextTokenised NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
-      
+
         // d:text single by alias
 
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
@@ -3126,21 +3347,21 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias NOT LIKE 't__eni%'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias IN ('Un tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextBoth as alias FROM cmistest:extendedContent as T WHERE alias NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
-       
+
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias = 'Un tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias <> 'tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias LIKE 'U_ to%sed'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias NOT LIKE 't__eni%'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias IN ('Un tokenised', 'Monkey')",  1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:singleTextUntokenised as alias FROM cmistest:extendedContent as T WHERE alias NOT IN ('Un tokenized')", 1, null, null, null, null, null, (String) null);
-       
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias = 'tokenised'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias <> 'tokenized'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias LIKE 'to%sed'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias NOT LIKE 'Ut__eniz%'", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleTextTokenised as alias FROM cmistest:extendedContent WHERE alias NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
-      
+
         // d:text multiple
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE 'Un tokenised' =  ANY cmistest:multipleTextBoth ", 1, null, null, null, null, null, (String) null);
@@ -3169,30 +3390,30 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:multipleTextTokenised alias FROM cmistest:extendedContent T WHERE ANY alias IN ('tokenised', 'Monkey')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT T.cmistest:multipleTextTokenised alias FROM cmistest:extendedContent T WHERE ANY alias NOT IN ('tokenized')", 1, null, null, null, null, null, (String) null);
     }
-    
+
     private void check_locale(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS locale", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'AAAA BBBB'", 1, null, null, Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'AAAA BBBB'", 1, null, null, Locale.FRENCH, null, null, (String) null);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'CCCC DDDD'", 1, null, null, Locale.ENGLISH, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleMLTextBoth = 'CCCC DDDD'", 1, null, null, Locale.FRENCH, null, null, (String) null);
-        
+
     }
-    
-    
+
+
     private void check_D_mltext(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:mltext", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);
         // d:mltext single
 
@@ -3334,9 +3555,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:float", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-        
+
         // d:float single
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleFloat = 1", 1, null, null, null, null, null, (String) null);
@@ -3370,7 +3591,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias >= 0.9", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:singleFloat as alias FROM cmistest:extendedContent WHERE alias NOT IN (1.1)", 1, null, null, null, null, null, (String) null);
-        
+
         // d:float multiple
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '1' =  ANY cmistest:multipleFloat ", 1, null, null, null, null, null, (String) null);
@@ -3389,15 +3610,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.1, 2.2)", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleFloat as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.3, 2.3)", 1, null, null, null, null, null, (String) null);
     }
-    
+
     private void check_D_double(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:double", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-        
+
         // d:double single
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDouble = 1", 1, null, null, null, null, null, (String) null);
@@ -3450,15 +3671,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.1, 2.2)", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDouble alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (1.3, 2.3)", 1, null, null, null, null, null, (String) null);
     }
-    
+
     private void check_D_int(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:int", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-        
+
         // d:int single
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleInteger = 1", 1, null, null, null, null, null, (String) null);
@@ -3513,15 +3734,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (2, 3)", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleInteger as alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
     }
-    
+
     private void check_D_long(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:long", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-        
+
         // d:long single
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleLong = 1", 1, null, null, null, null, null, (String) null);
@@ -3567,7 +3788,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleLong NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
 
         // d:long multiple by alias
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE '2' =  ANY alias ", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias IN (1, 2)", 1, null, null, null, null, null, (String) null);
@@ -3576,7 +3797,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (2, 3)", 0, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleLong alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (3, 4)", 1, null, null, null, null, null, (String) null);
     }
-    
+
     private void check_D_date(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, Date date1) throws IOException
     {
         GregorianCalendar cal = new GregorianCalendar();
@@ -3588,15 +3809,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:date", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-    
+
         // d:date single
 
         String d0 = ISO8601DateFormat.format(date0);
         String d1 = ISO8601DateFormat.format(date1);
         String d2 = ISO8601DateFormat.format(date2);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate = TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate = TIMESTAMP '" + d2 + "'", 0, null, null, null, null, null, (String) null); 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDate <> TIMESTAMP '" + d1 + "'", 0, null, null, null, null, null, (String) null); 
@@ -3631,7 +3852,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         // d:date multiple
 
-     
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE TIMESTAMP '" + d1 + "' =  ANY cmistest:multipleDate ", 1, null, null, null, null, null, (String) null); 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE TIMESTAMP '" + d2 + "' =  ANY cmistest:multipleDate ", 1, null, null, null, null, null, (String) null); 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE ANY cmistest:multipleDate IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
@@ -3642,7 +3863,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         // d:date multiple by alias
 
-      
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE TIMESTAMP '" + d1 + "' =  ANY alias ", 1, null, null, null, null, null, (String) null); 
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE TIMESTAMP '" + d2 + "' =  ANY alias ", 1, null, null, null, null, null, (String) null); 
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias IN (TIMESTAMP '" + d1 + "', TIMESTAMP '" + d2 + "')", 1, null, null, null, null, null, (String) null); 
@@ -3652,7 +3873,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleDate alias FROM cmistest:extendedContent WHERE ANY alias NOT IN (TIMESTAMP '" + d0 + "')", 1, null, null, null, null, null, (String) null); 
 
     }
-    
+
     private void check_D_datetime(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, Date date1) throws IOException
     {
         GregorianCalendar cal = new GregorianCalendar();
@@ -3661,17 +3882,17 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         Date date0 = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, 2);
         Date date2 = cal.getTime();
-        
-        
+
+
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:datetime", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-       
+
         String d0 = ISO8601DateFormat.format(date0);
         String d1 = ISO8601DateFormat.format(date1);
         String d2 = ISO8601DateFormat.format(date2);
-        
+
         // d:datetime single
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleDatetime = TIMESTAMP '" + d1 + "'", 1, null, null, null, null, null, (String) null); 
@@ -3733,9 +3954,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("d:boolean", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-        
+
         // d:boolean single
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE cmistest:singleBoolean = TRUE", 1, null, null, null, null, null, (String) null);
@@ -3759,7 +3980,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent WHERE '2' =  ANY cmistest:multipleBoolean ", 1, null, null, null, null, null, (String) null);
 
         // d:boolean multiple by alias
-   
+
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleBoolean as alias FROM cmistest:extendedContent WHERE '1' =  ANY alias ", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT cmistest:multipleBoolean as alias FROM cmistest:extendedContent WHERE '2' =  ANY alias ", 1, null, null, null, null, null, (String) null);
     }
@@ -3769,9 +3990,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS contains syntax", report);
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmistest:extendedContent", 1, null, null, null, null, null, (String) null);  
-        
+
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('one')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('-quick')", 11, null, null, null, null, null, (String) null);
@@ -3802,82 +4023,82 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR brown OR one')", 2, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document WHERE CONTAINS('quick OR brown one')", 1, null, null, null, null, null, (String) null);
     }
-    
-    
-    
+
+
+
     private void check_order(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("CMIS order", report);
-        
+
         int[] asc = new int[] {200, 201, 202, 1008, 1005, 1004, 1009, 1001, 1007, 1006, 1003, 1002, 100, 1000}; 
         int[] desc = new int[]{1000, 100, 1002, 1003, 1006, 1007, 1001, 1009, 1004, 1005, 1008, 200, 201, 202};
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleTextUntokenised", asc, desc);
         //checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleTextTokenised");
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleTextBoth", asc, desc);
-        
+
         //testOrderablePropertyFail("test:multipleTextUntokenised");
         //testOrderablePropertyFail("test:multipleTextTokenised");
         //testOrderablePropertyFail("test:multipleTextBoth");
-        
+
         asc = new int[] {200, 201, 202, 1009, 100, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008}; 
         desc = new int[]{1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 1009, 200, 201, 202};
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleMLTextUntokenised", asc, desc);
         //testOrderablePropertyFail("cmistest:singleMLTextTokenised");
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleMLTextBoth", asc, desc);
-        
+
         // testOrderablePropertyFail("cmistest:multipleMLTextUntokenised");
         // testOrderablePropertyFail("cmistest:multipleMLTextTokenised");
         // testOrderablePropertyFail("cmistest:multipleMLTextBoth");
-        
+
         asc = new int[] {200, 201, 202, 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009}; 
         desc = new int[]{1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 200, 201, 202};
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleFloat", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleFloat");
-        
-        
+
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDouble", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleDouble");
 
         asc = new int[] {200, 201, 202, 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009}; 
         desc = new int[]{1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 100, 1001, 1000, 200, 201, 202};
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleInteger", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleInteger");
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleLong", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleLong");
-        
+
         asc = new int[] {200, 201, 202, 100, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009}; 
         desc = new int[]{1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 200, 201, 202};
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDate", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleDate");
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDatetime", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleDatetime");
-        
+
         asc = new int[] {200, 201, 202, 1001, 1003, 1005, 1007, 1009, 100, 1000, 1002, 1004, 1006, 1008}; 
         desc = new int[]{100, 1000, 1002, 1004, 1006, 1008, 1001, 1003, 1005, 1007, 1009, 200, 201, 202};
-        
+
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleBoolean", asc, desc);
         //testOrderablePropertyFail("cmistest:multipleBoolean");
-        
-        
+
+
     }
-        
-    
+
+
     private void checkOrderableProperty(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, NamedList<Object> report, String propertyQueryName, int[] asc, int[] desc) throws IOException
     {
         testQueryByHandler(report, core, "/cmis", "SELECT " + propertyQueryName + " FROM cmistest:extendedContent ORDER BY " + propertyQueryName + " ASC", 14, null, asc, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT " + propertyQueryName + " FROM cmistest:extendedContent ORDER BY " + propertyQueryName + " DESC", 14, null, desc, null, null, null, (String) null);
     }
-    
-    
+
+
     private static String[] mlOrderable_en = new String[] { "AAAA BBBB", "EEEE FFFF", "II", "KK", "MM", "OO", "QQ", "SS", "UU", "AA", "CC" };
 
     private static String[] mlOrderable_fr = new String[] { "CCCC DDDD", "GGGG HHHH", "JJ", "LL", "NN", "PP", "RR", "TT", "VV", "BB", "DD" };
@@ -3894,7 +4115,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         ml.addValue(Locale.FRENCH, mlOrderable_fr[position]);
         return ml;
     }
-    
+
     private MultiPropertyValue makeMLTextMVP()
     {
         return makeMLTextMVP(0);
@@ -3911,7 +4132,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         answer.addValue(m2);
         return answer;
     }
-    
+
     /**
      * @param rsp
      * @param core
@@ -4343,7 +4564,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
     private void testQueryByHandler(NamedList report, SolrCore core, String handler, String query, int count, String sort, int[] sorted, Locale locale, Integer rows,
             Integer start, String... filters) throws IOException
-    {
+            {
         // TODO: report to rsp
 
         NamedList<Object> queryReport = new SimpleOrderedMap<Object>();
@@ -4469,7 +4690,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
 
         solrReq.close();
-    }
+            }
 
     /**
      * @param rsp
@@ -4479,7 +4700,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
      * @throws org.apache.lucene.queryParser.ParseException
      */
     private void testChildNameEscaping(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef) throws IOException,
-            org.apache.lucene.queryParser.ParseException
+    org.apache.lucene.queryParser.ParseException
     {
         String COMPLEX_LOCAL_NAME = "\u0020\u0060\u00ac\u00a6\u0021\"\u00a3\u0024\u0025\u005e\u0026\u002a\u0028\u0029\u002d\u005f\u003d\u002b\t\n\\\u0000\u005b\u005d\u007b\u007d\u003b\u0027\u0023\u003a\u0040\u007e\u002c\u002e\u002f\u003c\u003e\u003f\\u007c\u005f\u0078\u0054\u0036\u0035\u0041\u005f";
         String NUMERIC_LOCAL_NAME = "12Woof12";
@@ -4930,7 +5151,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     private void checkInternalFields(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, String nodeRef) throws IOException,
-            org.apache.lucene.queryParser.ParseException
+    org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Internal", report);
@@ -5196,7 +5417,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     private void checkPropertyTypes(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, Date testDate, String n01NodeRef) throws IOException,
-            org.apache.lucene.queryParser.ParseException
+    org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("PropertyTypes", report);
@@ -5339,8 +5560,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     report,
                     solrIndexSearcher,
                     "\\@"
-                            + SolrQueryParser.escape(qname.toString()) + ":\""
-                            + DefaultTypeConverter.INSTANCE.convert(String.class, new NodeRef(new StoreRef("proto", "id"), "CategoryId")) + "\"", 1);
+                    + SolrQueryParser.escape(qname.toString()) + ":\""
+                    + DefaultTypeConverter.INSTANCE.convert(String.class, new NodeRef(new StoreRef("proto", "id"), "CategoryId")) + "\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "noderef-ista");
             testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"" + n01NodeRef + "\"", 1);
@@ -5493,7 +5714,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
      */
     private void testQuery(AlfrescoSolrDataModel dataModel, NamedList<Object> report, SolrIndexSearcher solrIndexSearcher, String queryString, int count, Locale locale,
             String[] textAttributes, String[] allAttributes) throws org.apache.lucene.queryParser.ParseException, IOException
-    {
+            {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setQuery(queryString);
         if (locale != null)
@@ -5525,7 +5746,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             report.add("Passed: " + fixQueryString(queryString), docs.totalHits);
         }
-    }
+            }
 
     private String fixQueryString(String queryString)
     {
@@ -5533,14 +5754,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     private void testQuery(AlfrescoSolrDataModel dataModel, NamedList<Object> report, SolrIndexSearcher solrIndexSearcher, String queryString, int count)
-            throws org.apache.lucene.queryParser.ParseException, IOException
+    throws org.apache.lucene.queryParser.ParseException, IOException
     {
         testQuery(dataModel, report, solrIndexSearcher, queryString, count, null, null, null);
     }
 
     private NodeRef addNode(SolrCore core, AlfrescoSolrDataModel dataModel, int txid, int dbid, int aclid, QName type, QName[] aspects, Map<QName, PropertyValue> properties,
             Map<QName, String> content, String owner, ChildAssociationRef[] parentAssocs, NodeRef[] ancestors, String[] paths, NodeRef nodeRef) throws IOException
-    {
+            {
         AddUpdateCommand leafDocCmd = new AddUpdateCommand();
         leafDocCmd.overwriteCommitted = true;
         leafDocCmd.overwritePending = true;
@@ -5565,785 +5786,785 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
 
         return nodeRef;
-    }
+            }
 
     /**
      * @param i
      * @param j
      * @throws IOException
      */
-    private void addStoreRoot(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef, int txid, int dbid, int acltxid, int aclid) throws IOException
-    {
-        AddUpdateCommand leafDocCmd = new AddUpdateCommand();
-        leafDocCmd.overwriteCommitted = true;
-        leafDocCmd.overwritePending = true;
-        leafDocCmd.solrDoc = createLeafDocument(dataModel, txid, dbid, rootNodeRef, ContentModel.TYPE_STOREROOT, new QName[] { ContentModel.ASPECT_ROOT }, null, null);
-        leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-
-        AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-        auxDocCmd.overwriteCommitted = true;
-        auxDocCmd.overwritePending = true;
-        auxDocCmd.solrDoc = createAuxDocument(txid, dbid, aclid, new String[] { "/" }, "system", null, null);
-        auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-
-        if (leafDocCmd.doc != null)
-        {
-            core.getUpdateHandler().addDoc(leafDocCmd);
-        }
-        if (auxDocCmd.doc != null)
-        {
-            core.getUpdateHandler().addDoc(auxDocCmd);
-        }
-
-        AddUpdateCommand aclTxCmd = new AddUpdateCommand();
-        aclTxCmd.overwriteCommitted = true;
-        aclTxCmd.overwritePending = true;
-        SolrInputDocument aclTxSol = new SolrInputDocument();
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ID, "ACLTX-" + acltxid);
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ACLTXID, acltxid);
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, acltxid);
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
-        aclTxCmd.solrDoc = aclTxSol;
-        aclTxCmd.doc = CoreTracker.toDocument(aclTxCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-        core.getUpdateHandler().addDoc(aclTxCmd);
-
-        AddUpdateCommand aclCmd = new AddUpdateCommand();
-        aclCmd.overwriteCommitted = true;
-        aclCmd.overwritePending = true;
-        SolrInputDocument aclSol = new SolrInputDocument();
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclid);
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclid);
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, "" + acltxid);
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "GROUP_EVERYONE");
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "pig");
-        aclCmd.solrDoc = aclSol;
-        aclCmd.doc = CoreTracker.toDocument(aclCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-        core.getUpdateHandler().addDoc(aclCmd);
-
-        AddUpdateCommand txCmd = new AddUpdateCommand();
-        txCmd.overwriteCommitted = true;
-        txCmd.overwritePending = true;
-        SolrInputDocument input = new SolrInputDocument();
-        input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + txid);
-        input.addField(AbstractLuceneQueryParser.FIELD_TXID, txid);
-        input.addField(AbstractLuceneQueryParser.FIELD_INTXID, txid);
-        input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, (new Date()).getTime());
-        txCmd.solrDoc = input;
-        txCmd.doc = CoreTracker.toDocument(txCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-        core.getUpdateHandler().addDoc(txCmd);
-
-        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-    }
-
-    public SolrInputDocument createLeafDocument(AlfrescoSolrDataModel dataModel, int txid, int dbid, NodeRef nodeRef, QName type, QName[] aspects,
-            Map<QName, PropertyValue> properties, Map<QName, String> content) throws IOException
-    {
-        SolrInputDocument doc = new SolrInputDocument();
-        doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + dbid);
-        doc.addField(AbstractLuceneQueryParser.FIELD_DBID, "" + dbid);
-        doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeRef);
-        doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, "" + txid);
-
-        if (properties != null)
-        {
-            for (QName propertyQname : properties.keySet())
-            {
-                if (dataModel.isIndexedOrStored(propertyQname))
-                {
-                    PropertyValue value = properties.get(propertyQname);
-                    if (value != null)
-                    {
-                        if (value instanceof ContentPropertyValue)
-                        {
-                            addContentPropertyToDoc(doc, propertyQname, (ContentPropertyValue) value, content);
-
-                        }
-                        else if (value instanceof MLTextPropertyValue)
-                        {
-                            addMLTextPropertyToDoc(dataModel, doc, propertyQname, (MLTextPropertyValue) value);
-                        }
-                        else if (value instanceof MultiPropertyValue)
-                        {
-                            MultiPropertyValue typedValue = (MultiPropertyValue) value;
-                            for (PropertyValue singleValue : typedValue.getValues())
-                            {
-                                if (singleValue instanceof ContentPropertyValue)
-                                {
-                                    addContentPropertyToDoc(doc, propertyQname, (ContentPropertyValue) singleValue, content);
-                                }
-                                else if (singleValue instanceof MLTextPropertyValue)
-                                {
-                                    addMLTextPropertyToDoc(dataModel, doc, propertyQname, (MLTextPropertyValue) singleValue);
-
-                                }
-                                else if (singleValue instanceof StringPropertyValue)
-                                {
-                                    addStringPropertyToDoc(dataModel, doc, propertyQname, (StringPropertyValue) singleValue, properties);
-                                }
-                            }
-                        }
-                        else if (value instanceof StringPropertyValue)
-                        {
-                            addStringPropertyToDoc(dataModel, doc, propertyQname, (StringPropertyValue) value, properties);
-                        }
-
-                    }
-                }
-            }
-        }
-
-        doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, type);
-        if (aspects != null)
-        {
-            for (QName aspect : aspects)
-            {
-                doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect);
-            }
-        }
-        doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
-        doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
-        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
-
-        return doc;
-    }
-
-    private void addStringPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue,
-            Map<QName, PropertyValue> properties) throws IOException
-    {
-        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
-        if (propertyDefinition != null)
-        {
-            if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
-            {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
-            }
-            else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
-            {
-                Locale locale = null;
-
-                PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
-                if (localePropertyValue != null)
-                {
-                    locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, ((StringPropertyValue) localePropertyValue).getValue());
-                }
-
-                if (locale == null)
-                {
-                    locale = I18NUtil.getLocale();
-                }
-
-                StringBuilder builder;
-                builder = new StringBuilder();
-                builder.append("\u0000").append(locale.toString()).append("\u0000").append(stringPropertyValue.getValue());
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
-                }
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
-                }
-
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
-                }
-
-            }
-            else
-            {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
-            }
-
-        }
-        else
-        {
-            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
-        }
-    }
-
-    private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName, ContentPropertyValue contentPropertyValue, Map<QName, String> content) throws IOException
-    {
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
-
-        // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
-        // ".transformationStatus", response.getStatus());
-        // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
-        // ".transformationTime", response.getTransformDuration());
-        // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
-        // ".transformationException", response.getTransformException());
-
-        String value = "";
-        if (content != null)
-        {
-            value = content.get(propertyQName);
-            if (value == null)
-            {
-                value = "";
-            }
-        }
-        StringReader isr = new StringReader(value);
-        StringBuilder builder = new StringBuilder();
-        builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
-        StringReader prefix = new StringReader(builder.toString());
-        Reader multiReader = new MultiReader(prefix, isr);
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
-
-        isr = new StringReader(value);
-        builder = new StringBuilder();
-        builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
-        prefix = new StringReader(builder.toString());
-        multiReader = new MultiReader(prefix, isr);
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
-
-    }
-
-    private void addMLTextPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue) throws IOException
-    {
-        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
-        if (propertyDefinition != null)
-        {
-            StringBuilder sort = new StringBuilder();
-            for (Locale locale : mlTextPropertyValue.getLocales())
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.append("\u0000").append(locale.toString()).append("\u0000").append(mlTextPropertyValue.getValue(locale));
-
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
-                }
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
-                }
-
-                if (sort.length() > 0)
-                {
-                    sort.append("\u0000");
-                }
-                sort.append(builder.toString());
-            }
-
-            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-            {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
-            }
-        }
-        else
-        {
-            for (Locale locale : mlTextPropertyValue.getLocales())
-            {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
-            }
-        }
-
-    }
-
-    private SolrInputDocument createAuxDocument(int txid, int dbid, int aclid, String[] paths, String owner, ChildAssociationRef[] parentAssocs, NodeRef[] ancestors)
-    {
-        SolrInputDocument aux = new SolrInputDocument();
-        aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + dbid);
-        aux.addField(AbstractLuceneQueryParser.FIELD_DBID, "" + dbid);
-        aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, "" + aclid);
-        aux.addField(AbstractLuceneQueryParser.FIELD_INTXID, "" + txid);
-
-        if (paths != null)
-        {
-            for (String path : paths)
-            {
-                aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path);
-            }
-        }
-
-        if (owner != null)
-        {
-            aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, owner);
-        }
-        aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, "0");
-
-        StringBuilder qNameBuffer = new StringBuilder(64);
-        StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
-        if (parentAssocs != null)
-        {
-            for (ChildAssociationRef childAssocRef : parentAssocs)
-            {
-                if (qNameBuffer.length() > 0)
-                {
-                    qNameBuffer.append(";/");
-                    assocTypeQNameBuffer.append(";/");
-                }
-                qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
-                assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
-
-                if (childAssocRef.isPrimary())
-                {
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
-
-                }
-            }
-            aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-            aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
-        }
-        if (ancestors != null)
-        {
-            for (NodeRef ancestor : ancestors)
-            {
-                aux.addField(AbstractLuceneQueryParser.FIELD_ANCESTOR, ancestor.toString());
-            }
-        }
-        return aux;
-    }
-
-    public static SolrInputDocument createRootAclDocument()
-    {
-        SolrInputDocument doc = new SolrInputDocument();
-        doc.addField("ACLID", "1");
-        doc.addField("READER", "ROLE_ALL");
-        doc.addField("READER", "ROLE_JUST_ROOT");
-        doc.addField("ID", "ACL-1");
-        return doc;
-    }
-
-    /**
-     * @param cname
-     * @param detail
-     * @param hist
-     * @param values
-     * @param tracker
-     * @param report
-     */
-    private void addCoreSummary(String cname, boolean detail, boolean hist, boolean values, CoreTracker tracker, NamedList<Object> report)
-    {
-        NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
-        long lastIndexTxCommitTime = tracker.getLastIndexedTxCommitTime();
-        long lastIndexedTxId = tracker.getLastIndexedTxId();
-        long lastTxCommitTimeOnServer = tracker.getLastTxCommitTimeOnServer();
-        long lastTxIdOnServer = tracker.getLastTxIdOnServer();
-        Date lastIndexTxCommitDate = new Date(lastIndexTxCommitTime);
-        Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
-
-        long lastIndexChangeSetCommitTime = tracker.getLastIndexedChangeSetCommitTime();
-        long lastIndexedChangeSetId = tracker.getLastIndexedChangeSetId();
-        long lastChangeSetCommitTimeOnServer = tracker.getLastChangeSetCommitTimeOnServer();
-        long lastChangeSetIdOnServer = tracker.getLastChangeSetIdOnServer();
-        Date lastIndexChangeSetCommitDate = new Date(lastIndexChangeSetCommitTime);
-        Date lastChangeSetOnServerDate = new Date(lastChangeSetCommitTimeOnServer);
-
-        long remainingTxTimeMillis = (long) ((lastTxIdOnServer - lastIndexedTxId) * tracker.getTrackerStats().getMeanDocsPerTx() * tracker.getTrackerStats().getMeanNodeIndexTime() / tracker
-                .getTrackerStats().getNodeIndexingThreadCount());
-        Date now = new Date();
-        Date end = new Date(now.getTime() + remainingTxTimeMillis);
-        Duration remainingTx = new Duration(now, end);
-
-        long remainingChangeSetTimeMillis = (long) ((lastChangeSetIdOnServer - lastIndexedChangeSetId)
-                * tracker.getTrackerStats().getMeanAclsPerChangeSet() * tracker.getTrackerStats().getMeanAclIndexTime() / tracker.getTrackerStats().getNodeIndexingThreadCount());
-        now = new Date();
-        end = new Date(now.getTime() + remainingChangeSetTimeMillis);
-        Duration remainingChangeSet = new Duration(now, end);
-
-        Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
-        Duration changeSetLag = new Duration(lastIndexChangeSetCommitDate, lastChangeSetOnServerDate);
-
-        coreSummary.add("Active", tracker.isRunning());
-
-        // TX
-
-        coreSummary.add("Last Index TX Commit Time", lastIndexTxCommitTime);
-        coreSummary.add("Last Index TX Commit Date", lastIndexTxCommitDate);
-        coreSummary.add("TX Lag", (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000 + " s");
-        coreSummary.add("TX Duration", txLag.toString());
-        coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
-        coreSummary.add("Date for last TX on server", lastTxOnServerDate);
-        coreSummary.add("Id for last TX on server", lastTxIdOnServer);
-        coreSummary.add("Id for last TX in index", lastIndexedTxId);
-        coreSummary.add("Approx transactions remaining", lastTxIdOnServer - lastIndexedTxId);
-        coreSummary.add("Approx transaction indexing time remaining", remainingTx.largestComponentformattedString());
-
-        // Change set
-
-        coreSummary.add("Last Index Change Set Commit Time", lastIndexChangeSetCommitTime);
-        coreSummary.add("Last Index Change Set Commit Date", lastIndexChangeSetCommitDate);
-        coreSummary.add("Change Set Lag", (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000 + " s");
-        coreSummary.add("Change Set Duration", changeSetLag.toString());
-        coreSummary.add("Timestamp for last Change Set on server", lastChangeSetCommitTimeOnServer);
-        coreSummary.add("Date for last Change Set on server", lastChangeSetOnServerDate);
-        coreSummary.add("Id for last Change Set on server", lastChangeSetIdOnServer);
-        coreSummary.add("Id for last Change Set in index", lastIndexedChangeSetId);
-        coreSummary.add("Approx change sets remaining", lastChangeSetIdOnServer - lastIndexedChangeSetId);
-        coreSummary.add("Approx change set indexing time remaining", remainingChangeSet.largestComponentformattedString());
-
-        // Stats
-
-        coreSummary.add("Model sync times (ms)", tracker.getTrackerStats().getModelTimes().getNamedList(detail, hist, values));
-        coreSummary.add("Acl index time (ms)", tracker.getTrackerStats().getAclTimes().getNamedList(detail, hist, values));
-        coreSummary.add("Node index time (ms)", tracker.getTrackerStats().getNodeTimes().getNamedList(detail, hist, values));
-        coreSummary.add("Docs/Tx", tracker.getTrackerStats().getTxDocs().getNamedList(detail, hist, values));
-        coreSummary.add("Doc Transformation time (ms)", tracker.getTrackerStats().getDocTransformationTimes().getNamedList(detail, hist, values));
-
-        report.add(cname, coreSummary);
-    }
-
-    private NamedList<Object> buildAclTxReport(CoreTracker tracker, Long acltxid) throws AuthenticationException, IOException, JSONException
-    {
-        NamedList<Object> nr = new SimpleOrderedMap<Object>();
-        nr.add("TXID", acltxid);
-        nr.add("transaction", buildTrackerReport(tracker, 0l, 0l, acltxid, acltxid, null, null));
-        NamedList<Object> nodes = new SimpleOrderedMap<Object>();
-        // add node reports ....
-        List<Long> dbAclIds = tracker.getAclsForDbAclTransaction(acltxid);
-        for (Long aclid : dbAclIds)
-        {
-            nodes.add("ACLID " + aclid, buildAclReport(tracker, aclid));
-        }
-        nr.add("aclTxDbAclCount", dbAclIds.size());
-        nr.add("nodes", nodes);
-        return nr;
-    }
-
-    private NamedList<Object> buildAclReport(CoreTracker tracker, Long aclid) throws IOException, JSONException
-    {
-        AclReport aclReport = tracker.checkAcl(aclid);
-
-        NamedList<Object> nr = new SimpleOrderedMap<Object>();
-        nr.add("Acl Id", aclReport.getAclId());
-        nr.add("Acl doc in index", aclReport.getIndexAclDoc());
-        if (aclReport.getIndexAclDoc() != null)
-        {
-            nr.add("Acl tx in Index", aclReport.getIndexAclTx());
-        }
-
-        return nr;
-    }
-
-    private NamedList<Object> buildTxReport(CoreTracker tracker, Long txid) throws AuthenticationException, IOException, JSONException
-    {
-        NamedList<Object> nr = new SimpleOrderedMap<Object>();
-        nr.add("TXID", txid);
-        nr.add("transaction", buildTrackerReport(tracker, txid, txid, 0l, 0l, null, null));
-        NamedList<Object> nodes = new SimpleOrderedMap<Object>();
-        // add node reports ....
-        List<Node> dbNodes = tracker.getFullNodesForDbTransaction(txid);
-        for (Node node : dbNodes)
-        {
-            nodes.add("DBID " + node.getId(), buildNodeReport(tracker, node));
-        }
-
-        nr.add("txDbNodeCount", dbNodes.size());
-        nr.add("nodes", nodes);
-        return nr;
-    }
-
-    private NamedList<Object> buildNodeReport(CoreTracker tracker, Node node) throws IOException, JSONException
-    {
-        NodeReport nodeReport = tracker.checkNode(node);
-
-        NamedList<Object> nr = new SimpleOrderedMap<Object>();
-        nr.add("Node DBID", nodeReport.getDbid());
-        nr.add("DB TX", nodeReport.getDbTx());
-        nr.add("DB TX status", nodeReport.getDbNodeStatus().toString());
-        nr.add("Leaf doc in Index", nodeReport.getIndexLeafDoc());
-        nr.add("Aux doc in Index", nodeReport.getIndexAuxDoc());
-        if (nodeReport.getIndexLeafDoc() != null)
-        {
-            nr.add("Leaf tx in Index", nodeReport.getIndexLeafTx());
-        }
-        if (nodeReport.getIndexAuxDoc() != null)
-        {
-            nr.add("Aux tx in Index", nodeReport.getIndexAuxTx());
-        }
-        return nr;
-    }
-
-    private NamedList<Object> buildNodeReport(CoreTracker tracker, Long dbid) throws IOException, JSONException
-    {
-        NodeReport nodeReport = tracker.checkNode(dbid);
-
-        NamedList<Object> nr = new SimpleOrderedMap<Object>();
-        nr.add("Node DBID", nodeReport.getDbid());
-        nr.add("DB TX", nodeReport.getDbTx());
-        nr.add("DB TX status", nodeReport.getDbNodeStatus().toString());
-        nr.add("Leaf doc in Index", nodeReport.getIndexLeafDoc());
-        nr.add("Aux doc in Index", nodeReport.getIndexAuxDoc());
-        if (nodeReport.getIndexLeafDoc() != null)
-        {
-            nr.add("Leaf tx in Index", nodeReport.getIndexLeafTx());
-        }
-        if (nodeReport.getIndexAuxDoc() != null)
-        {
-            nr.add("Aux tx in Index", nodeReport.getIndexAuxTx());
-        }
-        return nr;
-    }
-
-    private NamedList<Object> buildTrackerReport(CoreTracker tracker, Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException,
-            JSONException, AuthenticationException
-    {
-        IndexHealthReport indexHealthReport = tracker.checkIndex(fromTx, toTx, fromAclTx, toAclTx, fromTime, toTime);
-
-        NamedList<Object> ihr = new SimpleOrderedMap<Object>();
-        ihr.add("DB transaction count", indexHealthReport.getDbTransactionCount());
-        ihr.add("DB acl transaction count", indexHealthReport.getDbAclTransactionCount());
-        ihr.add("Count of duplicated transactions in the index", indexHealthReport.getDuplicatedTxInIndex().cardinality());
-        if (indexHealthReport.getDuplicatedTxInIndex().cardinality() > 0)
-        {
-            ihr.add("First duplicate", indexHealthReport.getDuplicatedTxInIndex().nextSetBit(0L));
-        }
-        ihr.add("Count of duplicated acl transactions in the index", indexHealthReport.getDuplicatedAclTxInIndex().cardinality());
-        if (indexHealthReport.getDuplicatedAclTxInIndex().cardinality() > 0)
-        {
-            ihr.add("First duplicate acl tx", indexHealthReport.getDuplicatedAclTxInIndex().nextSetBit(0L));
-        }
-        ihr.add("Count of transactions in the index but not the DB", indexHealthReport.getTxInIndexButNotInDb().cardinality());
-        if (indexHealthReport.getTxInIndexButNotInDb().cardinality() > 0)
-        {
-            ihr.add("First transaction in the index but not the DB", indexHealthReport.getTxInIndexButNotInDb().nextSetBit(0L));
-        }
-        ihr.add("Count of acl transactions in the index but not the DB", indexHealthReport.getAclTxInIndexButNotInDb().cardinality());
-        if (indexHealthReport.getAclTxInIndexButNotInDb().cardinality() > 0)
-        {
-            ihr.add("First acl transaction in the index but not the DB", indexHealthReport.getAclTxInIndexButNotInDb().nextSetBit(0L));
-        }
-        ihr.add("Count of missing transactions from the Index", indexHealthReport.getMissingTxFromIndex().cardinality());
-        if (indexHealthReport.getMissingTxFromIndex().cardinality() > 0)
-        {
-            ihr.add("First transaction missing from the Index", indexHealthReport.getMissingTxFromIndex().nextSetBit(0L));
-        }
-        ihr.add("Count of missing acl transactions from the Index", indexHealthReport.getMissingAclTxFromIndex().cardinality());
-        if (indexHealthReport.getMissingAclTxFromIndex().cardinality() > 0)
-        {
-            ihr.add("First acl transaction missing from the Index", indexHealthReport.getMissingAclTxFromIndex().nextSetBit(0L));
-        }
-        ihr.add("Index transaction count", indexHealthReport.getTransactionDocsInIndex());
-        ihr.add("Index acl transaction count", indexHealthReport.getAclTransactionDocsInIndex());
-        ihr.add("Index unique transaction count", indexHealthReport.getTransactionDocsInIndex());
-        ihr.add("Index unique acl transaction count", indexHealthReport.getAclTransactionDocsInIndex());
-        ihr.add("Index leaf count", indexHealthReport.getLeafDocCountInIndex());
-        ihr.add("Count of duplicate leaves in the index", indexHealthReport.getDuplicatedLeafInIndex().cardinality());
-        if (indexHealthReport.getDuplicatedLeafInIndex().cardinality() > 0)
-        {
-            ihr.add("First duplicate leaf in the index", "LEAF-" + indexHealthReport.getDuplicatedLeafInIndex().nextSetBit(0L));
-        }
-        ihr.add("Last index commit time", indexHealthReport.getLastIndexedCommitTime());
-        Date lastDate = new Date(indexHealthReport.getLastIndexedCommitTime());
-        ihr.add("Last Index commit date", CachingDateFormat.getDateFormat().format(lastDate));
-        ihr.add("Last TX id before holes", indexHealthReport.getLastIndexedIdBeforeHoles());
-        return ihr;
-    }
-
-    /**
-     * Note files can alter due to background processes so file not found is Ok
-     * 
-     * @param srcDir
-     * @param destDir
-     * @param preserveFileDate
-     * @throws IOException
-     */
-    private void copyDirectory(File srcDir, File destDir, boolean preserveFileDate) throws IOException
-    {
-        if (destDir.exists())
-        {
-            throw new IOException("Destination should be created from clean");
-        }
-        else
-        {
-            if (!destDir.mkdirs())
-            {
-                throw new IOException("Destination '" + destDir + "' directory cannot be created");
-            }
-            if (preserveFileDate)
-            {
-                // OL if file not found so does not need to check
-                destDir.setLastModified(srcDir.lastModified());
-            }
-        }
-        if (!destDir.canWrite())
-        {
-            throw new IOException("No acces to destination directory" + destDir);
-        }
-
-        File[] files = srcDir.listFiles();
-        if (files != null)
-        {
-            for (int i = 0; i < files.length; i++)
-            {
-                File currentCopyTarget = new File(destDir, files[i].getName());
-                if (files[i].isDirectory())
-                {
-                    copyDirectory(files[i], currentCopyTarget, preserveFileDate);
-                }
-                else
-                {
-                    copyFile(files[i], currentCopyTarget, preserveFileDate);
-                }
-            }
-        }
-    }
-
-    private void copyFile(File srcFile, File destFile, boolean preserveFileDate) throws IOException
-    {
-        try
-        {
-            if (destFile.exists())
-            {
-                throw new IOException("File shoud not exist " + destFile);
-            }
-
-            FileInputStream input = new FileInputStream(srcFile);
-            try
-            {
-                FileOutputStream output = new FileOutputStream(destFile);
-                try
-                {
-                    copy(input, output);
-                }
-                finally
-                {
-                    try
-                    {
-                        output.close();
-                    }
-                    catch (IOException io)
-                    {
-
-                    }
-                }
-            }
-            finally
-            {
-                try
-                {
-                    input.close();
-                }
-                catch (IOException io)
-                {
-
-                }
-            }
-
-            // check copy
-            if (srcFile.length() != destFile.length())
-            {
-                throw new IOException("Failed to copy full from '" + srcFile + "' to '" + destFile + "'");
-            }
-            if (preserveFileDate)
-            {
-                destFile.setLastModified(srcFile.lastModified());
-            }
-        }
-        catch (FileNotFoundException fnfe)
-        {
-            fnfe.printStackTrace();
-        }
-    }
-
-    public int copy(InputStream input, OutputStream output) throws IOException
-    {
-        byte[] buffer = new byte[2048 * 4];
-        int count = 0;
-        int n = 0;
-        while ((n = input.read(buffer)) != -1)
-        {
-            output.write(buffer, 0, n);
-            count += n;
-        }
-        return count;
-    }
-
-    public void deleteDirectory(File directory) throws IOException
-    {
-        if (!directory.exists())
-        {
-            return;
-        }
-        if (!directory.isDirectory())
-        {
-            throw new IllegalArgumentException("Not a directory " + directory);
-        }
-
-        File[] files = directory.listFiles();
-        if (files == null)
-        {
-            throw new IOException("Failed to delete director - no access" + directory);
-        }
-
-        for (int i = 0; i < files.length; i++)
-        {
-            File file = files[i];
-
-            if (file.isDirectory())
-            {
-                deleteDirectory(file);
-            }
-            else
-            {
-                if (!file.delete())
-                {
-                    throw new IOException("Unable to delete file: " + file);
-                }
-            }
-        }
-
-        if (!directory.delete())
-        {
-            throw new IOException("Unable to delete directory " + directory);
-        }
-    }
-
-    class SolrServletRequest extends SolrQueryRequestBase
-    {
-        public SolrServletRequest(SolrCore core, HttpServletRequest req)
-        {
-            super(core, new MultiMapSolrParams(Collections.<String, String[]> emptyMap()));
-        }
-    }
-
-    public static void main(String[] args)
-    {
-        AlfrescoCoreAdminHandler handler = new AlfrescoCoreAdminHandler();
-        String[] toSort = handler.orderLocalisedNames;
-        Collator collator = Collator.getInstance(Locale.ENGLISH);
-        Arrays.sort(toSort, collator);
-        System.out.println(Locale.ENGLISH);
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-        collator = Collator.getInstance(Locale.FRENCH);
-        Arrays.sort(toSort, collator);
-        System.out.println(Locale.FRENCH);
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-        collator = Collator.getInstance(Locale.GERMAN);
-        Arrays.sort(toSort, collator);
-        System.out.println(Locale.GERMAN);
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-        collator = Collator.getInstance(new Locale("sv"));
-        Arrays.sort(toSort, collator);
-        System.out.println(new Locale("sv"));
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-    }
+     private void addStoreRoot(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef, int txid, int dbid, int acltxid, int aclid) throws IOException
+     {
+         AddUpdateCommand leafDocCmd = new AddUpdateCommand();
+         leafDocCmd.overwriteCommitted = true;
+         leafDocCmd.overwritePending = true;
+         leafDocCmd.solrDoc = createLeafDocument(dataModel, txid, dbid, rootNodeRef, ContentModel.TYPE_STOREROOT, new QName[] { ContentModel.ASPECT_ROOT }, null, null);
+         leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+
+         AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+         auxDocCmd.overwriteCommitted = true;
+         auxDocCmd.overwritePending = true;
+         auxDocCmd.solrDoc = createAuxDocument(txid, dbid, aclid, new String[] { "/" }, "system", null, null);
+         auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+
+         if (leafDocCmd.doc != null)
+         {
+             core.getUpdateHandler().addDoc(leafDocCmd);
+         }
+         if (auxDocCmd.doc != null)
+         {
+             core.getUpdateHandler().addDoc(auxDocCmd);
+         }
+
+         AddUpdateCommand aclTxCmd = new AddUpdateCommand();
+         aclTxCmd.overwriteCommitted = true;
+         aclTxCmd.overwritePending = true;
+         SolrInputDocument aclTxSol = new SolrInputDocument();
+         aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ID, "ACLTX-" + acltxid);
+         aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ACLTXID, acltxid);
+         aclTxSol.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, acltxid);
+         aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
+         aclTxCmd.solrDoc = aclTxSol;
+         aclTxCmd.doc = CoreTracker.toDocument(aclTxCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+         core.getUpdateHandler().addDoc(aclTxCmd);
+
+         AddUpdateCommand aclCmd = new AddUpdateCommand();
+         aclCmd.overwriteCommitted = true;
+         aclCmd.overwritePending = true;
+         SolrInputDocument aclSol = new SolrInputDocument();
+         aclSol.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclid);
+         aclSol.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclid);
+         aclSol.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, "" + acltxid);
+         aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "GROUP_EVERYONE");
+         aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "pig");
+         aclCmd.solrDoc = aclSol;
+         aclCmd.doc = CoreTracker.toDocument(aclCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+         core.getUpdateHandler().addDoc(aclCmd);
+
+         AddUpdateCommand txCmd = new AddUpdateCommand();
+         txCmd.overwriteCommitted = true;
+         txCmd.overwritePending = true;
+         SolrInputDocument input = new SolrInputDocument();
+         input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + txid);
+         input.addField(AbstractLuceneQueryParser.FIELD_TXID, txid);
+         input.addField(AbstractLuceneQueryParser.FIELD_INTXID, txid);
+         input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, (new Date()).getTime());
+         txCmd.solrDoc = input;
+         txCmd.doc = CoreTracker.toDocument(txCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+         core.getUpdateHandler().addDoc(txCmd);
+
+         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+     }
+
+     public SolrInputDocument createLeafDocument(AlfrescoSolrDataModel dataModel, int txid, int dbid, NodeRef nodeRef, QName type, QName[] aspects,
+             Map<QName, PropertyValue> properties, Map<QName, String> content) throws IOException
+             {
+         SolrInputDocument doc = new SolrInputDocument();
+         doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + dbid);
+         doc.addField(AbstractLuceneQueryParser.FIELD_DBID, "" + dbid);
+         doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeRef);
+         doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, "" + txid);
+
+         if (properties != null)
+         {
+             for (QName propertyQname : properties.keySet())
+             {
+                 if (dataModel.isIndexedOrStored(propertyQname))
+                 {
+                     PropertyValue value = properties.get(propertyQname);
+                     if (value != null)
+                     {
+                         if (value instanceof ContentPropertyValue)
+                         {
+                             addContentPropertyToDoc(doc, propertyQname, (ContentPropertyValue) value, content);
+
+                         }
+                         else if (value instanceof MLTextPropertyValue)
+                         {
+                             addMLTextPropertyToDoc(dataModel, doc, propertyQname, (MLTextPropertyValue) value);
+                         }
+                         else if (value instanceof MultiPropertyValue)
+                         {
+                             MultiPropertyValue typedValue = (MultiPropertyValue) value;
+                             for (PropertyValue singleValue : typedValue.getValues())
+                             {
+                                 if (singleValue instanceof ContentPropertyValue)
+                                 {
+                                     addContentPropertyToDoc(doc, propertyQname, (ContentPropertyValue) singleValue, content);
+                                 }
+                                 else if (singleValue instanceof MLTextPropertyValue)
+                                 {
+                                     addMLTextPropertyToDoc(dataModel, doc, propertyQname, (MLTextPropertyValue) singleValue);
+
+                                 }
+                                 else if (singleValue instanceof StringPropertyValue)
+                                 {
+                                     addStringPropertyToDoc(dataModel, doc, propertyQname, (StringPropertyValue) singleValue, properties);
+                                 }
+                             }
+                         }
+                         else if (value instanceof StringPropertyValue)
+                         {
+                             addStringPropertyToDoc(dataModel, doc, propertyQname, (StringPropertyValue) value, properties);
+                         }
+
+                     }
+                 }
+             }
+         }
+
+         doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, type);
+         if (aspects != null)
+         {
+             for (QName aspect : aspects)
+             {
+                 doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect);
+             }
+         }
+         doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
+         doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
+         doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+
+         return doc;
+             }
+
+     private void addStringPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue,
+             Map<QName, PropertyValue> properties) throws IOException
+             {
+         PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
+         if (propertyDefinition != null)
+         {
+             if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
+             {
+                 doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                 doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
+             }
+             else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+             {
+                 Locale locale = null;
+
+                 PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
+                 if (localePropertyValue != null)
+                 {
+                     locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, ((StringPropertyValue) localePropertyValue).getValue());
+                 }
+
+                 if (locale == null)
+                 {
+                     locale = I18NUtil.getLocale();
+                 }
+
+                 StringBuilder builder;
+                 builder = new StringBuilder();
+                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(stringPropertyValue.getValue());
+                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                 {
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                 }
+                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                 {
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                 }
+
+                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                 {
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
+                 }
+
+             }
+             else
+             {
+                 doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+             }
+
+         }
+         else
+         {
+             doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+         }
+             }
+
+     private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName, ContentPropertyValue contentPropertyValue, Map<QName, String> content) throws IOException
+     {
+         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
+         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
+         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
+         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
+
+         // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
+         // ".transformationStatus", response.getStatus());
+         // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
+         // ".transformationTime", response.getTransformDuration());
+         // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
+         // ".transformationException", response.getTransformException());
+
+         String value = "";
+         if (content != null)
+         {
+             value = content.get(propertyQName);
+             if (value == null)
+             {
+                 value = "";
+             }
+         }
+         StringReader isr = new StringReader(value);
+         StringBuilder builder = new StringBuilder();
+         builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
+         StringReader prefix = new StringReader(builder.toString());
+         Reader multiReader = new MultiReader(prefix, isr);
+         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
+
+         isr = new StringReader(value);
+         builder = new StringBuilder();
+         builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
+         prefix = new StringReader(builder.toString());
+         multiReader = new MultiReader(prefix, isr);
+         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
+
+     }
+
+     private void addMLTextPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName, MLTextPropertyValue mlTextPropertyValue) throws IOException
+     {
+         PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
+         if (propertyDefinition != null)
+         {
+             StringBuilder sort = new StringBuilder();
+             for (Locale locale : mlTextPropertyValue.getLocales())
+             {
+                 StringBuilder builder = new StringBuilder();
+                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(mlTextPropertyValue.getValue(locale));
+
+                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                 {
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                 }
+                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                 {
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                     doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                 }
+
+                 if (sort.length() > 0)
+                 {
+                     sort.append("\u0000");
+                 }
+                 sort.append(builder.toString());
+             }
+
+             if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+             {
+                 doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
+             }
+         }
+         else
+         {
+             for (Locale locale : mlTextPropertyValue.getLocales())
+             {
+                 doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
+             }
+         }
+
+     }
+
+     private SolrInputDocument createAuxDocument(int txid, int dbid, int aclid, String[] paths, String owner, ChildAssociationRef[] parentAssocs, NodeRef[] ancestors)
+     {
+         SolrInputDocument aux = new SolrInputDocument();
+         aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + dbid);
+         aux.addField(AbstractLuceneQueryParser.FIELD_DBID, "" + dbid);
+         aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, "" + aclid);
+         aux.addField(AbstractLuceneQueryParser.FIELD_INTXID, "" + txid);
+
+         if (paths != null)
+         {
+             for (String path : paths)
+             {
+                 aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path);
+             }
+         }
+
+         if (owner != null)
+         {
+             aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, owner);
+         }
+         aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, "0");
+
+         StringBuilder qNameBuffer = new StringBuilder(64);
+         StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
+         if (parentAssocs != null)
+         {
+             for (ChildAssociationRef childAssocRef : parentAssocs)
+             {
+                 if (qNameBuffer.length() > 0)
+                 {
+                     qNameBuffer.append(";/");
+                     assocTypeQNameBuffer.append(";/");
+                 }
+                 qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
+                 assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                 aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
+
+                 if (childAssocRef.isPrimary())
+                 {
+                     aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                     aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                     aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+
+                 }
+             }
+             aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+             aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
+         }
+         if (ancestors != null)
+         {
+             for (NodeRef ancestor : ancestors)
+             {
+                 aux.addField(AbstractLuceneQueryParser.FIELD_ANCESTOR, ancestor.toString());
+             }
+         }
+         return aux;
+     }
+
+     public static SolrInputDocument createRootAclDocument()
+     {
+         SolrInputDocument doc = new SolrInputDocument();
+         doc.addField("ACLID", "1");
+         doc.addField("READER", "ROLE_ALL");
+         doc.addField("READER", "ROLE_JUST_ROOT");
+         doc.addField("ID", "ACL-1");
+         return doc;
+     }
+
+     /**
+      * @param cname
+      * @param detail
+      * @param hist
+      * @param values
+      * @param tracker
+      * @param report
+      */
+     private void addCoreSummary(String cname, boolean detail, boolean hist, boolean values, CoreTracker tracker, NamedList<Object> report)
+     {
+         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
+         long lastIndexTxCommitTime = tracker.getLastIndexedTxCommitTime();
+         long lastIndexedTxId = tracker.getLastIndexedTxId();
+         long lastTxCommitTimeOnServer = tracker.getLastTxCommitTimeOnServer();
+         long lastTxIdOnServer = tracker.getLastTxIdOnServer();
+         Date lastIndexTxCommitDate = new Date(lastIndexTxCommitTime);
+         Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
+
+         long lastIndexChangeSetCommitTime = tracker.getLastIndexedChangeSetCommitTime();
+         long lastIndexedChangeSetId = tracker.getLastIndexedChangeSetId();
+         long lastChangeSetCommitTimeOnServer = tracker.getLastChangeSetCommitTimeOnServer();
+         long lastChangeSetIdOnServer = tracker.getLastChangeSetIdOnServer();
+         Date lastIndexChangeSetCommitDate = new Date(lastIndexChangeSetCommitTime);
+         Date lastChangeSetOnServerDate = new Date(lastChangeSetCommitTimeOnServer);
+
+         long remainingTxTimeMillis = (long) ((lastTxIdOnServer - lastIndexedTxId) * tracker.getTrackerStats().getMeanDocsPerTx() * tracker.getTrackerStats().getMeanNodeIndexTime() / tracker
+                 .getTrackerStats().getNodeIndexingThreadCount());
+         Date now = new Date();
+         Date end = new Date(now.getTime() + remainingTxTimeMillis);
+         Duration remainingTx = new Duration(now, end);
+
+         long remainingChangeSetTimeMillis = (long) ((lastChangeSetIdOnServer - lastIndexedChangeSetId)
+                 * tracker.getTrackerStats().getMeanAclsPerChangeSet() * tracker.getTrackerStats().getMeanAclIndexTime() / tracker.getTrackerStats().getNodeIndexingThreadCount());
+         now = new Date();
+         end = new Date(now.getTime() + remainingChangeSetTimeMillis);
+         Duration remainingChangeSet = new Duration(now, end);
+
+         Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
+         Duration changeSetLag = new Duration(lastIndexChangeSetCommitDate, lastChangeSetOnServerDate);
+
+         coreSummary.add("Active", tracker.isRunning());
+
+         // TX
+
+         coreSummary.add("Last Index TX Commit Time", lastIndexTxCommitTime);
+         coreSummary.add("Last Index TX Commit Date", lastIndexTxCommitDate);
+         coreSummary.add("TX Lag", (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000 + " s");
+         coreSummary.add("TX Duration", txLag.toString());
+         coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
+         coreSummary.add("Date for last TX on server", lastTxOnServerDate);
+         coreSummary.add("Id for last TX on server", lastTxIdOnServer);
+         coreSummary.add("Id for last TX in index", lastIndexedTxId);
+         coreSummary.add("Approx transactions remaining", lastTxIdOnServer - lastIndexedTxId);
+         coreSummary.add("Approx transaction indexing time remaining", remainingTx.largestComponentformattedString());
+
+         // Change set
+
+         coreSummary.add("Last Index Change Set Commit Time", lastIndexChangeSetCommitTime);
+         coreSummary.add("Last Index Change Set Commit Date", lastIndexChangeSetCommitDate);
+         coreSummary.add("Change Set Lag", (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000 + " s");
+         coreSummary.add("Change Set Duration", changeSetLag.toString());
+         coreSummary.add("Timestamp for last Change Set on server", lastChangeSetCommitTimeOnServer);
+         coreSummary.add("Date for last Change Set on server", lastChangeSetOnServerDate);
+         coreSummary.add("Id for last Change Set on server", lastChangeSetIdOnServer);
+         coreSummary.add("Id for last Change Set in index", lastIndexedChangeSetId);
+         coreSummary.add("Approx change sets remaining", lastChangeSetIdOnServer - lastIndexedChangeSetId);
+         coreSummary.add("Approx change set indexing time remaining", remainingChangeSet.largestComponentformattedString());
+
+         // Stats
+
+         coreSummary.add("Model sync times (ms)", tracker.getTrackerStats().getModelTimes().getNamedList(detail, hist, values));
+         coreSummary.add("Acl index time (ms)", tracker.getTrackerStats().getAclTimes().getNamedList(detail, hist, values));
+         coreSummary.add("Node index time (ms)", tracker.getTrackerStats().getNodeTimes().getNamedList(detail, hist, values));
+         coreSummary.add("Docs/Tx", tracker.getTrackerStats().getTxDocs().getNamedList(detail, hist, values));
+         coreSummary.add("Doc Transformation time (ms)", tracker.getTrackerStats().getDocTransformationTimes().getNamedList(detail, hist, values));
+
+         report.add(cname, coreSummary);
+     }
+
+     private NamedList<Object> buildAclTxReport(CoreTracker tracker, Long acltxid) throws AuthenticationException, IOException, JSONException
+     {
+         NamedList<Object> nr = new SimpleOrderedMap<Object>();
+         nr.add("TXID", acltxid);
+         nr.add("transaction", buildTrackerReport(tracker, 0l, 0l, acltxid, acltxid, null, null));
+         NamedList<Object> nodes = new SimpleOrderedMap<Object>();
+         // add node reports ....
+         List<Long> dbAclIds = tracker.getAclsForDbAclTransaction(acltxid);
+         for (Long aclid : dbAclIds)
+         {
+             nodes.add("ACLID " + aclid, buildAclReport(tracker, aclid));
+         }
+         nr.add("aclTxDbAclCount", dbAclIds.size());
+         nr.add("nodes", nodes);
+         return nr;
+     }
+
+     private NamedList<Object> buildAclReport(CoreTracker tracker, Long aclid) throws IOException, JSONException
+     {
+         AclReport aclReport = tracker.checkAcl(aclid);
+
+         NamedList<Object> nr = new SimpleOrderedMap<Object>();
+         nr.add("Acl Id", aclReport.getAclId());
+         nr.add("Acl doc in index", aclReport.getIndexAclDoc());
+         if (aclReport.getIndexAclDoc() != null)
+         {
+             nr.add("Acl tx in Index", aclReport.getIndexAclTx());
+         }
+
+         return nr;
+     }
+
+     private NamedList<Object> buildTxReport(CoreTracker tracker, Long txid) throws AuthenticationException, IOException, JSONException
+     {
+         NamedList<Object> nr = new SimpleOrderedMap<Object>();
+         nr.add("TXID", txid);
+         nr.add("transaction", buildTrackerReport(tracker, txid, txid, 0l, 0l, null, null));
+         NamedList<Object> nodes = new SimpleOrderedMap<Object>();
+         // add node reports ....
+         List<Node> dbNodes = tracker.getFullNodesForDbTransaction(txid);
+         for (Node node : dbNodes)
+         {
+             nodes.add("DBID " + node.getId(), buildNodeReport(tracker, node));
+         }
+
+         nr.add("txDbNodeCount", dbNodes.size());
+         nr.add("nodes", nodes);
+         return nr;
+     }
+
+     private NamedList<Object> buildNodeReport(CoreTracker tracker, Node node) throws IOException, JSONException
+     {
+         NodeReport nodeReport = tracker.checkNode(node);
+
+         NamedList<Object> nr = new SimpleOrderedMap<Object>();
+         nr.add("Node DBID", nodeReport.getDbid());
+         nr.add("DB TX", nodeReport.getDbTx());
+         nr.add("DB TX status", nodeReport.getDbNodeStatus().toString());
+         nr.add("Leaf doc in Index", nodeReport.getIndexLeafDoc());
+         nr.add("Aux doc in Index", nodeReport.getIndexAuxDoc());
+         if (nodeReport.getIndexLeafDoc() != null)
+         {
+             nr.add("Leaf tx in Index", nodeReport.getIndexLeafTx());
+         }
+         if (nodeReport.getIndexAuxDoc() != null)
+         {
+             nr.add("Aux tx in Index", nodeReport.getIndexAuxTx());
+         }
+         return nr;
+     }
+
+     private NamedList<Object> buildNodeReport(CoreTracker tracker, Long dbid) throws IOException, JSONException
+     {
+         NodeReport nodeReport = tracker.checkNode(dbid);
+
+         NamedList<Object> nr = new SimpleOrderedMap<Object>();
+         nr.add("Node DBID", nodeReport.getDbid());
+         nr.add("DB TX", nodeReport.getDbTx());
+         nr.add("DB TX status", nodeReport.getDbNodeStatus().toString());
+         nr.add("Leaf doc in Index", nodeReport.getIndexLeafDoc());
+         nr.add("Aux doc in Index", nodeReport.getIndexAuxDoc());
+         if (nodeReport.getIndexLeafDoc() != null)
+         {
+             nr.add("Leaf tx in Index", nodeReport.getIndexLeafTx());
+         }
+         if (nodeReport.getIndexAuxDoc() != null)
+         {
+             nr.add("Aux tx in Index", nodeReport.getIndexAuxTx());
+         }
+         return nr;
+     }
+
+     private NamedList<Object> buildTrackerReport(CoreTracker tracker, Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException,
+     JSONException, AuthenticationException
+     {
+         IndexHealthReport indexHealthReport = tracker.checkIndex(fromTx, toTx, fromAclTx, toAclTx, fromTime, toTime);
+
+         NamedList<Object> ihr = new SimpleOrderedMap<Object>();
+         ihr.add("DB transaction count", indexHealthReport.getDbTransactionCount());
+         ihr.add("DB acl transaction count", indexHealthReport.getDbAclTransactionCount());
+         ihr.add("Count of duplicated transactions in the index", indexHealthReport.getDuplicatedTxInIndex().cardinality());
+         if (indexHealthReport.getDuplicatedTxInIndex().cardinality() > 0)
+         {
+             ihr.add("First duplicate", indexHealthReport.getDuplicatedTxInIndex().nextSetBit(0L));
+         }
+         ihr.add("Count of duplicated acl transactions in the index", indexHealthReport.getDuplicatedAclTxInIndex().cardinality());
+         if (indexHealthReport.getDuplicatedAclTxInIndex().cardinality() > 0)
+         {
+             ihr.add("First duplicate acl tx", indexHealthReport.getDuplicatedAclTxInIndex().nextSetBit(0L));
+         }
+         ihr.add("Count of transactions in the index but not the DB", indexHealthReport.getTxInIndexButNotInDb().cardinality());
+         if (indexHealthReport.getTxInIndexButNotInDb().cardinality() > 0)
+         {
+             ihr.add("First transaction in the index but not the DB", indexHealthReport.getTxInIndexButNotInDb().nextSetBit(0L));
+         }
+         ihr.add("Count of acl transactions in the index but not the DB", indexHealthReport.getAclTxInIndexButNotInDb().cardinality());
+         if (indexHealthReport.getAclTxInIndexButNotInDb().cardinality() > 0)
+         {
+             ihr.add("First acl transaction in the index but not the DB", indexHealthReport.getAclTxInIndexButNotInDb().nextSetBit(0L));
+         }
+         ihr.add("Count of missing transactions from the Index", indexHealthReport.getMissingTxFromIndex().cardinality());
+         if (indexHealthReport.getMissingTxFromIndex().cardinality() > 0)
+         {
+             ihr.add("First transaction missing from the Index", indexHealthReport.getMissingTxFromIndex().nextSetBit(0L));
+         }
+         ihr.add("Count of missing acl transactions from the Index", indexHealthReport.getMissingAclTxFromIndex().cardinality());
+         if (indexHealthReport.getMissingAclTxFromIndex().cardinality() > 0)
+         {
+             ihr.add("First acl transaction missing from the Index", indexHealthReport.getMissingAclTxFromIndex().nextSetBit(0L));
+         }
+         ihr.add("Index transaction count", indexHealthReport.getTransactionDocsInIndex());
+         ihr.add("Index acl transaction count", indexHealthReport.getAclTransactionDocsInIndex());
+         ihr.add("Index unique transaction count", indexHealthReport.getTransactionDocsInIndex());
+         ihr.add("Index unique acl transaction count", indexHealthReport.getAclTransactionDocsInIndex());
+         ihr.add("Index leaf count", indexHealthReport.getLeafDocCountInIndex());
+         ihr.add("Count of duplicate leaves in the index", indexHealthReport.getDuplicatedLeafInIndex().cardinality());
+         if (indexHealthReport.getDuplicatedLeafInIndex().cardinality() > 0)
+         {
+             ihr.add("First duplicate leaf in the index", "LEAF-" + indexHealthReport.getDuplicatedLeafInIndex().nextSetBit(0L));
+         }
+         ihr.add("Last index commit time", indexHealthReport.getLastIndexedCommitTime());
+         Date lastDate = new Date(indexHealthReport.getLastIndexedCommitTime());
+         ihr.add("Last Index commit date", CachingDateFormat.getDateFormat().format(lastDate));
+         ihr.add("Last TX id before holes", indexHealthReport.getLastIndexedIdBeforeHoles());
+         return ihr;
+     }
+
+     /**
+      * Note files can alter due to background processes so file not found is Ok
+      * 
+      * @param srcDir
+      * @param destDir
+      * @param preserveFileDate
+      * @throws IOException
+      */
+     private void copyDirectory(File srcDir, File destDir, boolean preserveFileDate) throws IOException
+     {
+         if (destDir.exists())
+         {
+             throw new IOException("Destination should be created from clean");
+         }
+         else
+         {
+             if (!destDir.mkdirs())
+             {
+                 throw new IOException("Destination '" + destDir + "' directory cannot be created");
+             }
+             if (preserveFileDate)
+             {
+                 // OL if file not found so does not need to check
+                 destDir.setLastModified(srcDir.lastModified());
+             }
+         }
+         if (!destDir.canWrite())
+         {
+             throw new IOException("No acces to destination directory" + destDir);
+         }
+
+         File[] files = srcDir.listFiles();
+         if (files != null)
+         {
+             for (int i = 0; i < files.length; i++)
+             {
+                 File currentCopyTarget = new File(destDir, files[i].getName());
+                 if (files[i].isDirectory())
+                 {
+                     copyDirectory(files[i], currentCopyTarget, preserveFileDate);
+                 }
+                 else
+                 {
+                     copyFile(files[i], currentCopyTarget, preserveFileDate);
+                 }
+             }
+         }
+     }
+
+     private void copyFile(File srcFile, File destFile, boolean preserveFileDate) throws IOException
+     {
+         try
+         {
+             if (destFile.exists())
+             {
+                 throw new IOException("File shoud not exist " + destFile);
+             }
+
+             FileInputStream input = new FileInputStream(srcFile);
+             try
+             {
+                 FileOutputStream output = new FileOutputStream(destFile);
+                 try
+                 {
+                     copy(input, output);
+                 }
+                 finally
+                 {
+                     try
+                     {
+                         output.close();
+                     }
+                     catch (IOException io)
+                     {
+
+                     }
+                 }
+             }
+             finally
+             {
+                 try
+                 {
+                     input.close();
+                 }
+                 catch (IOException io)
+                 {
+
+                 }
+             }
+
+             // check copy
+             if (srcFile.length() != destFile.length())
+             {
+                 throw new IOException("Failed to copy full from '" + srcFile + "' to '" + destFile + "'");
+             }
+             if (preserveFileDate)
+             {
+                 destFile.setLastModified(srcFile.lastModified());
+             }
+         }
+         catch (FileNotFoundException fnfe)
+         {
+             fnfe.printStackTrace();
+         }
+     }
+
+     public int copy(InputStream input, OutputStream output) throws IOException
+     {
+         byte[] buffer = new byte[2048 * 4];
+         int count = 0;
+         int n = 0;
+         while ((n = input.read(buffer)) != -1)
+         {
+             output.write(buffer, 0, n);
+             count += n;
+         }
+         return count;
+     }
+
+     public void deleteDirectory(File directory) throws IOException
+     {
+         if (!directory.exists())
+         {
+             return;
+         }
+         if (!directory.isDirectory())
+         {
+             throw new IllegalArgumentException("Not a directory " + directory);
+         }
+
+         File[] files = directory.listFiles();
+         if (files == null)
+         {
+             throw new IOException("Failed to delete director - no access" + directory);
+         }
+
+         for (int i = 0; i < files.length; i++)
+         {
+             File file = files[i];
+
+             if (file.isDirectory())
+             {
+                 deleteDirectory(file);
+             }
+             else
+             {
+                 if (!file.delete())
+                 {
+                     throw new IOException("Unable to delete file: " + file);
+                 }
+             }
+         }
+
+         if (!directory.delete())
+         {
+             throw new IOException("Unable to delete directory " + directory);
+         }
+     }
+
+     class SolrServletRequest extends SolrQueryRequestBase
+     {
+         public SolrServletRequest(SolrCore core, HttpServletRequest req)
+         {
+             super(core, new MultiMapSolrParams(Collections.<String, String[]> emptyMap()));
+         }
+     }
+
+     public static void main(String[] args)
+     {
+         AlfrescoCoreAdminHandler handler = new AlfrescoCoreAdminHandler();
+         String[] toSort = handler.orderLocalisedNames;
+         Collator collator = Collator.getInstance(Locale.ENGLISH);
+         Arrays.sort(toSort, collator);
+         System.out.println(Locale.ENGLISH);
+         for (int i = 0; i < toSort.length; i++)
+         {
+             System.out.println(toSort[i]);
+         }
+
+         collator = Collator.getInstance(Locale.FRENCH);
+         Arrays.sort(toSort, collator);
+         System.out.println(Locale.FRENCH);
+         for (int i = 0; i < toSort.length; i++)
+         {
+             System.out.println(toSort[i]);
+         }
+
+         collator = Collator.getInstance(Locale.GERMAN);
+         Arrays.sort(toSort, collator);
+         System.out.println(Locale.GERMAN);
+         for (int i = 0; i < toSort.length; i++)
+         {
+             System.out.println(toSort[i]);
+         }
+
+         collator = Collator.getInstance(new Locale("sv"));
+         Arrays.sort(toSort, collator);
+         System.out.println(new Locale("sv"));
+         for (int i = 0; i < toSort.length; i++)
+         {
+             System.out.println(toSort[i]);
+         }
+
+     }
 }

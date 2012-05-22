@@ -46,8 +46,10 @@
       // Initialise prototype properties
       this.parentId = parentId;
       this.buttons = {};
-      this.formsRuntime = null;
       this.eventGroup = htmlId;
+      
+      // Create the runtime instance
+      this.formsRuntime = new Alfresco.forms.Form(this.id);
       
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("metadataRefresh", this.onFormRefresh, this);
@@ -178,7 +180,6 @@
             // fire event to inform any listening components that the form HTML is ready
             YAHOO.Bubbling.fire("formContentReady", this);
 
-            this.formsRuntime = new Alfresco.forms.Form(this.id);
             this.formsRuntime.setShowSubmitStateDynamically(true, false);
             this.formsRuntime.setSubmitElements(this.buttons.submit);
             

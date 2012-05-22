@@ -90,6 +90,7 @@
       "doc": "doc",
       "docx": "doc",
       "eml": "eml",
+      "eps": "eps",
       "fla": "fla",
       "flv": "video",
       "fxp": "fxp",

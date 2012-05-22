@@ -645,6 +645,7 @@ Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize)
       "doc": "doc",
       "docx": "doc",
       "eml": "eml",
+      "eps": "eps",
       "fla": "fla",
       "flv": "video",
       "fxp": "fxp",

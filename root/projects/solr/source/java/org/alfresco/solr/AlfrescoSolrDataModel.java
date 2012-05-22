@@ -1184,7 +1184,7 @@ public class AlfrescoSolrDataModel
             if (field.getName().endsWith(additionalContentFieldEnding)
                     && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))), reverse,
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length())))+additionalContentFieldEnding, reverse,
                         field.sortMissingLast(), field.sortMissingFirst());
             }
         }
@@ -1194,7 +1194,7 @@ public class AlfrescoSolrDataModel
             if (field.getName().endsWith(additionalTextFieldEnding)
                     && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))), reverse,
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length())))+additionalTextFieldEnding, reverse,
                         field.sortMissingLast(), field.sortMissingFirst());
             }
         }
@@ -1204,7 +1204,7 @@ public class AlfrescoSolrDataModel
             if (field.getName().endsWith(additionalMlTextFieldEnding)
                     && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))), reverse,
+                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length())))+additionalMlTextFieldEnding, reverse,
                         field.sortMissingLast(), field.sortMissingFirst());
             }
         }
