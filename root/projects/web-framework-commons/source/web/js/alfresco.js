@@ -9235,7 +9235,7 @@ Alfresco.util.generateThumbnailUrl = function(jsNode, thumbnailName)
          }
       }
    }
-   else
+   if (YAHOO.lang.isUndefined(url) || YAHOO.lang.isNull(url))
    {
       url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true";
    }
