@@ -1,3 +1,8 @@
+.node-header
+{
+    min-height: 8em;
+}
+
 .node-header h1
 {
    padding: 0.5em 0 0.2em;
