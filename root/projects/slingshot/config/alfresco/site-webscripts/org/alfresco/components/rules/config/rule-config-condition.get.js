@@ -15,7 +15,7 @@ function main()
     * and will be dynamically created on the page based on which property that is selected.
     */
    var i = 0;
-   for (; i < actionConditionDefinitions.length; i++)
+   while(i < actionConditionDefinitions.length)
    {
       if (actionConditionDefinitions[i].name == "compare-property-value")
       {
@@ -26,6 +26,10 @@ function main()
       {
          model.compareMimeTypeDefinition = jsonUtils.toJSONString(actionConditionDefinitions[i]);
          actionConditionDefinitions.splice(i, 1);
+      }
+      else
+      {
+         i++;
       }
    }   
    model.ruleConfigDefinitions = jsonUtils.toJSONString(actionConditionDefinitions);
