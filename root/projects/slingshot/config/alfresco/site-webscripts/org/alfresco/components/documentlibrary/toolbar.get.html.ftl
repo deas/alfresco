@@ -20,8 +20,8 @@
 <@markup id="post">
 </@>
 
-<@markup id="html">
-   <@uniqueIdDiv>
+<@uniqueIdDiv>
+   <@markup id="html">
       <@toolbarTemplate/>
-   </@uniqueIdDiv>
+   </@>
 </@>

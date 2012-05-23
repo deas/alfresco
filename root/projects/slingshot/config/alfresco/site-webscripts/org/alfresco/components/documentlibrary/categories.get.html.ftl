@@ -20,12 +20,12 @@
 <@markup id="post">
 </@>
 
-<@markup id="html">
-   <#assign el=args.htmlid?html>   
-   <@uniqueIdDiv>
+<@uniqueIdDiv>
+   <@markup id="html">
+      <#assign el=args.htmlid?html>   
       <div class="categoryview filter">
          <h2 id="${el}-h2">${msg("header.library")}</h2>
          <div id="${el}-treeview" class="category"></div>
       </div>
-   </@uniqueIdDiv>
+   </@>
 </@>

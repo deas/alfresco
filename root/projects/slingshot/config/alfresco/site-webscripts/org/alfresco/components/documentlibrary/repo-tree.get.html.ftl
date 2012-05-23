@@ -19,13 +19,13 @@
 <@markup id="post">
 </@>
 
-<@markup id="html">
-   <#assign id=args.htmlid?html>
-   <@uniqueIdDiv>
+<@uniqueIdDiv>
+   <@markup id="html">
+      <#assign id=args.htmlid?html>
       <div class="treeview filter">
          <h2 id="${id}-h2" class="alfresco-twister">${msg("header.library")}</h2>
          <div id="${id}-treeview" class="tree"></div>
       </div>
-   </@uniqueIdDiv>
+   </@>
 </@>
 
