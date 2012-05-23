@@ -184,8 +184,8 @@
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-802.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7.jar" sourcepath="src/activiti-engine-5.7-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7.jar" sourcepath="src/activiti-spring-5.7-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-20120523.jar" sourcepath="src/activiti-engine-5.7-20120523-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7-20120523.jar" sourcepath="src/activiti-spring-5.7-20120523-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-youtube-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
