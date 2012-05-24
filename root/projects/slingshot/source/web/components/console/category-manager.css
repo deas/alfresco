@@ -125,3 +125,10 @@ span.insitu-add-root-category
    visibility: hidden;
    width: 16px;
 }
+
+.category-manager form.insitu-edit input
+{
+   margin-left: 3px;
+   padding: 1px;
+   width: 15em;
+}
