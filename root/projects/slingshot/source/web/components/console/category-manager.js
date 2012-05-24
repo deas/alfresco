@@ -605,7 +605,7 @@
             {
                type: "text",
                name: this.params.name,
-               value: this.params.value
+               value: this.params.treeNode.label
             }),
             eSave = new Element(document.createElement("a"),
             {
@@ -638,7 +638,7 @@
          eCancel.on("click", function(e)
          {
             Event.stopEvent(e);
-            this.inputBox.value = this.params.value;
+            this.inputBox.value = this.params.treeNode.label;
             this.doHide(true);
          }, this, true);
 
@@ -653,7 +653,7 @@
             fn: function(id, keyEvent)
             {
                Event.stopEvent(keyEvent[1]);
-               this.inputBox.value = this.params.value;
+               this.inputBox.value = this.params.treeNode.label;
                this.doHide(true);
             },
             scope: this,
