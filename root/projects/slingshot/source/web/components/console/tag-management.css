@@ -110,6 +110,14 @@
    visibility: hidden;
 }
 
+.tags-List a.delete-tag-active,
+.tags-List a.edit-tag-active
+{
+   cursor: pointer;
+   padding: 1em 0.75em;
+   visibility: visible;
+}
+
 .tags-List a.delete-tag
 {
    background: url(../images/delete-tag-16.png) no-repeat left;
@@ -118,11 +126,6 @@
 .tags-List a.edit-tag
 {
    background: url(../images/edit-16.png) no-repeat left;
-}
-
-.tags-List .yui-dt tr:hover a
-{
-	visibility: visible;
 }
 
 .tags-List .yui-dt-highlighted a

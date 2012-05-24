@@ -171,8 +171,8 @@
             var tag = oRecord.getData();
             var actions = "", editLink, deleteLink, index=oRecord._nCount;
             
-            actions += '<a id="' + me.id + '-edit-link-'+index+'" href="#" class="edit-tag" title="' + me.msg("title.editTag") + '"></a>';         
-            actions += '<a id="' + me.id + '-delete-link-'+index+'" href="#" class="delete-tag" title="' + me.msg("title.deleteTag") + '"></a>';
+            actions += '<a id="' + me.id + '-edit-link-'+index+'" href="#" class="edit-tag" title="' + me.msg("title.editTag") + '">&nbsp;</a>';
+            actions += '<a id="' + me.id + '-delete-link-'+index+'" href="#" class="delete-tag" title="' + me.msg("title.deleteTag") + '">&nbsp;</a>';
             
             elCell.innerHTML = actions;
             
@@ -182,6 +182,17 @@
             editLink=Dom.getChildrenBy(elCell, function(el){
               return el.id === me.id+"-edit-link-" + index;
               })[0];
+            
+            Event.addListener(oRecord.getId(), "mouseover", function()
+            {
+               Dom.addClass(deleteLink, "delete-tag-active");
+               Dom.addClass(editLink, "edit-tag-active");
+            });
+            Event.addListener(oRecord.getId(), "mouseout", function()
+            {
+               Dom.removeClass(deleteLink, "delete-tag-active");
+               Dom.removeClass(editLink, "edit-tag-active");
+            });
             
             Event.addListener(deleteLink, 'click', function () {me.onActionDelete(tag.name);}, deleteLink, false);
             Event.addListener(editLink, 'click', function () {me.onActionEdit(tag.name);}, editLink, false);
