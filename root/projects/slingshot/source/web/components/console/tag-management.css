@@ -132,3 +132,8 @@
 {
    visibility: visible;
 }
+
+.tags-List .yui-dt18-col-name .yui-dt-liner
+{
+   overflow: visible !important;
+}
