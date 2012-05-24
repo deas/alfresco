@@ -271,6 +271,11 @@
          tree.subscribe("expandComplete", this.onExpandComplete, this, true);
          tree.subscribe('dblClickEvent', tree.onEventEditNode);
 
+         tree._onKeyDownEvent = function DLT__onKeyDownEvent()
+         {
+            // Disable the key down events for the tree so that the cursor behaves as it should when editing the node text
+         }
+
          // Render tree with this one top-level node
          tree.render();
       },
