@@ -137,7 +137,18 @@
          var renderCellTagInfo = function ConsoleTagManagement_onReady_renderCellTagInfo(elCell, oRecord, oColumn, oData)
          {
             var tagName = oRecord.getData().name;
-            var messageDesc = '<span><a class="theme-color-1" href="' + Alfresco.constants.URL_PAGECONTEXT + 'repository#filter=tag|' + encodeURIComponent(tagName) + '&page=1"><b>' + $html(tagName) + '</b></a></span>';
+
+            var truncatedTagName;
+            if (tagName.length > 30)
+            {
+               truncatedTagName = $html(tagName.substring(0, 30) + "...");
+            }
+            else
+            {
+               truncatedTagName = $html(tagName);
+            }
+            var messageDesc = '<span><a class="theme-color-1" title="' + $html(tagName) + '" href="' + Alfresco.constants.URL_PAGECONTEXT + 'repository#filter=tag|' + encodeURIComponent(tagName) + '&page=1"><b>' + truncatedTagName + '</b></a></span>';
+
             elCell.innerHTML = messageDesc ;
          };
          

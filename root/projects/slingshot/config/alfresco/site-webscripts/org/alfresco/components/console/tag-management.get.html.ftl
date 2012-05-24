@@ -23,5 +23,5 @@
    <div id="${el}-tags-list-bar-bottom" class="toolbar theme-bg-color-3 hidden">
       <div id="${el}-paginator" class="paginator hidden">&nbsp;</div>
    </div>
-   <div id="${el}-tags" class="body scrollableList" style="height: 439px; overflow: hidden"></div>
+   <div id="${el}-tags" class="body scrollableList" style="height: 100%; overflow: hidden"></div>
 </div>
