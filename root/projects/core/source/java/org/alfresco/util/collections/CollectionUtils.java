@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -113,6 +114,27 @@ public abstract class CollectionUtils
     public static List<String> toListOfStrings(Collection<?> values)
     {
         return transform(values, TO_STRING_TRANSFORMER);
+    }
+    
+    /**
+     * This utility method converts a vararg of Objects into a Set<T>.
+     * 
+     * @param clazz the Set type to return.
+     * @param objects the objects to be added to the set
+     * @return a Set of objects (any equal objects will of course not be duplicated)
+     * @throws ClassCastException if any of the supplied objects are not of type T.
+     */
+    public static <T> Set<T> asSet(Class<T> clazz, Object... objects)
+    {
+        Set<T> result = new HashSet<T>();
+        for (Object obj : objects)
+        {
+            @SuppressWarnings("unchecked")
+            T cast = (T) obj;
+            result.add(cast);
+        }
+        
+        return result;
     }
     
     /**

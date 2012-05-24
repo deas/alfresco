@@ -31,13 +31,14 @@
     | 
     | Prerequisites:
     | ______________
+    | - Needs to be run in continous.xml environment, so run your build with -f continuous.xml 
     | - Does NOT need Maven installed. Will download Maven 2.1.10 embedded
     | - export ANT_OPTS="-Xms1G -Xmx1G -XX:MaxPermSize=512m" otherwise you'll get OOM/PermGen
     | - check the "maven-prerequisites" target in root/maven.xml to see which standard build targets maven-deploy depends to
     | - need to add server credentials to standard Maven ~/.m2/settings.xml (if not configured in BINARIES)
     |
     -->
-<project name="maven" xmlns:artifact="antlib:org.apache.maven.artifact.ant" >
+<project name="maven" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <dirname property="alfresco.basedir" file="${ant.file.alfresco}"/>
     <!-- 
@@ -52,6 +53,24 @@
 
     <target name="configure-empty-custom-version" unless="maven.custom.label">
         <property name="maven.version.suffix" value=""/>
+    </target>
+	
+    <!-- Aggregator target putting together all configs/tasks needed for maven-deploy. Fails if build number is unset, requires continous.xml -->
+    <target name="maven-env-prerequisites" depends="fail-if-build-number-is-unset">
+	    <!-- Defining the maven ant tasks at runtime -->
+        <path id="maven-ant-tasks.classpath" path="${dir.project.3rdparty.lib}/maven-ant-tasks-2.1.3.jar" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+        <!-- Configuring the settings location -->
+        <property name="maven.settings.file" value="${dir.name.binaries}/build-classpath/settings.xml"/>
+        <condition property="maven.isRelease">
+            <istrue value="${env.bamboo_deploy_as_release}"/>
+        </condition>
+    </target>
+	
+    <!-- Conditionally calls set-build-number. Fails if not in continuous.xml environment -->
+    <target name="fail-if-build-number-is-unset" unless="version.number">
+        <echo>Maven deployment targets need to be run in continuous.xml environment, as they depend on set-build-number. Failing...</echo> 
+        <fail message="Maven deployment needs to be run in continuous environment. Try calling set-build-number first or directly running ant -f continuous.xml maven-build-deploy [-Dbuild.script=enterpriseprojects/build.xml]"/>
     </target>
 
     <!-- Configures for SNAPSHOT deployment in case it's not a release -->
@@ -72,19 +91,6 @@
     	<echo>Configured Release deployment of Alfresco ${file.name.edition} ${version.number} to ${maven.repo.url} as ${maven.group.id} alfresco-* ${maven.version.number}</echo>
     </target>
 	
-    <!-- Aggregator target putting together all configs/tasks needed for maven-deploy -->
-	<target name="maven-env-prerequisites">
-        <!-- Defining the maven ant tasks at runtime -->
-        <path id="maven-ant-tasks.classpath" path="${dir.project.3rdparty.lib}/maven-ant-tasks-2.1.3.jar" />
-        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
-        <!-- Configuring the settings location -->
-        <property name="maven.settings.file" value="${dir.name.binaries}/build-classpath/settings.xml"/>
-        <echo>Deploying to Maven as a release: ${env.bamboo_deploy_as_release}</echo>
-        <condition property="maven.isRelease">
-            <istrue value="${env.bamboo_deploy_as_release}"/>
-        </condition>
-    </target>
-
     <!--
         | Deploys projects/*/build/dist JARs/WARs/ZIPs to a Maven repository configured via properties.
         | NOTE: This goal assumes the artifacts have already been built at an earlier stage. Use maven-build-deploy to build and deploy at once.

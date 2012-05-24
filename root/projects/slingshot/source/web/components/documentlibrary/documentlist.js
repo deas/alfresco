@@ -1527,7 +1527,15 @@
          }
          else
          {
-            html = scope.getActionUrls(record).documentDetailsUrl;
+            var actionUrls = scope.getActionUrls(record);
+            if (jsNode.isLink && jsNode.linkedNode.isContainer)
+            {
+               html = actionUrls.folderDetailsUrl;
+            }
+            else
+            {
+               html = actionUrls.documentDetailsUrl;
+            }
          }
       }
 
