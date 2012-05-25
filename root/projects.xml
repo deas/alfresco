@@ -684,8 +684,6 @@
               includes="*.jar" />
          <lib dir="${dir.project.3rdparty.lib}/spring-surf" 
               includes="*.jar" />
-         <lib dir="${dir.project.3rdparty.lib}/jgroups" 
-              includes="*.jar" />
          <lib dir="${dir.project.3rdparty.lib}/swarmcache" 
               includes="*.jar" />
          <lib dir="${dir.project.repository.dist}" 
@@ -1871,8 +1869,6 @@
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webscriptframework.libs.spring-surf}" />
          <fileset dir="${dir.project.3rdparty.lib}/commons" 
-                  includes="*.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}/jgroups" 
                   includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/jbpm" 
                   includes="*.jar" />

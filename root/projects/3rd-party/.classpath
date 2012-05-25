@@ -84,7 +84,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jgroups/jgroups-2.11.1.Final.jar" sourcepath="src/jgroups-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jsr107cache-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-core-0.4.0-incubating.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-extensions-json-0.4.0-incubating.jar"/>

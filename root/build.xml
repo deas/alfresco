@@ -653,7 +653,6 @@
          <fileset dir="${dir.project.3rdparty.lib}/jmagick" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/commons" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" includes="${includes.webscriptframework.libs.spring-surf}" />
-         <fileset dir="${dir.project.3rdparty.lib}/jgroups" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/jbpm" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/activiti" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/fop" includes="*.jar"/>

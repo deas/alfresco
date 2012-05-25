@@ -15,7 +15,6 @@
 			<include name="**/*.java"/>
 			<exclude name="org/alfresco/jlan/debug/cluster/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/**"/>
-			<exclude name="org/alfresco/jlan/server/filesys/cache/jgroups/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/cache/hazelcast/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/mysql/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/oracle/**"/>
@@ -161,7 +160,6 @@
 			<exclude name="org/alfresco/jlan/server/filesys/cache/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/hazelcast/**"/>
-			<exclude name="org/alfresco/jlan/server/filesys/cache/cluster/jgroups/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/db/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/loader/**"/>
 			<exclude name="org/alfresco/jlan/server/filesys/pseudo/**"/>

@@ -148,7 +148,6 @@ Imagemagick 	http://www.imagemagick.org/script/license.php
 
 ===LGPL 2.1===
 JBPM		http://www.opensource.org/licenses/lgpl-license.php
-jgroups		http://www.jgroups.org, http://www.opensource.org/licenses/lgpl-2.1.php
 jid3lib		https://jid3lib.dev.java.net/ http://www.gnu.org/copyleft/lesser.html
 jug-lgpl	http://jug.safehaus.org/ 
 TinyMCE		http://tinymce.moxiecode.com/tinymce/docs/license.html

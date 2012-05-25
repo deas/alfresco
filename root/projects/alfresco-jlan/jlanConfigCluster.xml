@@ -147,45 +147,6 @@
 		  <cacheDebug flags="Rename"/>
 		</stateCache>
 	</diskshare>
-	  	  
-<!--
-	<diskshare name="ClusterTest" comment="Cluster enabled Derby JDBC virtual filesystem using BLOB">
-	  <driver>
-		<class>org.alfresco.jlan.server.filesys.db.DBDiskDriver</class>
-		<CacheTime>30</CacheTime>
-		<NODebug/>
-        
-		<DatabaseInterface>
-			<class>org.alfresco.jlan.server.filesys.db.derby.DerbyDBInterface</class>
-			<DSN>jdbc:derby:DerbyBlobDB;create=true</DSN>
-			<Username>gkspencer</Username>
-			<Password>roboter</Password>
-			<ConnectionPool>10:20</ConnectionPool>
-			<NODebug/>
-			<NOSQLDebug/>
-		</DatabaseInterface>
-        
-		<FileLoader>
-			<class>org.alfresco.jlan.server.filesys.db.DBFileLoader</class>
-			<ThreadPoolSize>6:2</ThreadPoolSize>
-			<TempDirectory>/Volumes/Data/JLAN/DerbyTemp</TempDirectory>
-			<MaximumFilesPerDirectory>1000</MaximumFilesPerDirectory>
-
-			<Debug/>
-			<NOThreadDebug/>
-		</FileLoader>
-	  </driver>
-	  <stateCache type="cluster">
-		  <initialSize>1000</initialSize>
-		  <clusterName>TestJLANCluster</clusterName>
-		  <jgroupsConfig>./jgroups/config/udp_en0.xml</jgroupsConfig>
-		  <debug/>
-		  <expiryDebug/>
-	  </stateCache>
-
-		<size totalSize="5G"/>
-	</diskshare>
--->	  
   </shares>		
 
   <security>

@@ -49,19 +49,5 @@
 			<logFile>jlansrv.log</logFile>
 			<append/>
 		</output>
-<!--
-		<output>
-			<class>org.alfresco.jlan.debug.cluster.ClusterDebug</class>
-			<jgroupsConfig>./jgroups/config/udp_en0_debug.xml</jgroupsConfig>
-			<clusterName>...</clusterName>
-			<receiveOnly/>
-		
-			<localOutput>
-				<class>org.alfresco.jlan.debug.ConsoleDebug</class>
-				<logFile>jlansrv.log</logFile>
-				<append/>
-			</localOutput>
-		</output>
--->
 	</debug>
 </clusterTests>
