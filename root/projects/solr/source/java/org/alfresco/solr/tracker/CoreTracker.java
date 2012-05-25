@@ -334,7 +334,10 @@ public class CoreTracker implements CloseHook
                 }
                 else if (split[0].equals("alfresco.stores"))
                 {
-                    storeRef = new StoreRef(split[1]);
+                    // Store ref may contain \: as this is written as Java properties but then read by SOLR ...
+                    String storeRefString = split[1];
+                    storeRefString = storeRefString.replace("\\:", ":");
+                    storeRef = new StoreRef(storeRefString);
                 }
                 else if (split[0].equals("alfresco.lag"))
                 {

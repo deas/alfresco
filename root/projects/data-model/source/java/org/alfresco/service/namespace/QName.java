@@ -45,7 +45,7 @@ public final class QName implements QNamePattern, Serializable, Cloneable, Compa
     public static final char NAMESPACE_PREFIX = ':';
     public static final char NAMESPACE_BEGIN = '{';
     public static final char NAMESPACE_END = '}';
-    public static final int MAX_LENGTH = 100;
+    public static final int MAX_LENGTH = 255;
     
     /**
      * Create a QName

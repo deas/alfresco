@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="alfresco" version="1.0">
+   <types>
+      <fieldType name="alfrescoDataType" class="org.alfresco.solr.AlfrescoDataType">
+         <analyzer>
+            <tokenizer class="org.apache.solr.analysis.WhitespaceTokenizerFactory" />
+            <filter class="org.apache.solr.analysis.WordDelimiterFilterFactory" 
+                    generateWordParts="1"
+                    generateNumberParts="1"
+                    catenateWords="1"
+                    catenateNumbers="1"
+                    catenateAll="1"
+                    splitOnCaseChange="1"
+                    splitOnNumerics="1"
+                    preserveOriginal="1"
+                    stemEnglishPossessive="1"/>
+            <filter class="org.apache.solr.analysis.LowerCaseFilterFactory" />
+         </analyzer>
+      </fieldType>
+   </types>
+   <fields>
+      <field name="ID" type="alfrescoDataType" indexed="true" omitNorms="true" stored="true" multiValued="true"></field>
+      <dynamicField name="*" type="alfrescoDataType" indexed="true" omitNorms="true" stored="true" multiValued="true"></dynamicField>
+   </fields>
+   <uniqueKey>ID</uniqueKey>
+   <defaultSearchField>ID</defaultSearchField>
+</schema>
