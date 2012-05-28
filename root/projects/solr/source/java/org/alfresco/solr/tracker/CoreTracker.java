@@ -1234,7 +1234,7 @@ public class CoreTracker implements CloseHook
             int docCount = 0;
 
             Long fromCommitTime =  getTxFromCommitTime(txnsFound, state.lastGoodTxCommitTimeInIndex);
-            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60*60*1000, 2000, state.timeToStopIndexing);
+            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60*60*1000L, 2000, state.timeToStopIndexing);
 
             Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
             if(maxTxnCommitTime != null)
@@ -1400,7 +1400,7 @@ public class CoreTracker implements CloseHook
         do
         {
             Long fromCommitTime =  getChangeSetFromCommitTime(changeSetsFound, state.lastGoodChangeSetCommitTimeInIndex);
-            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60*60*1000, 2000, state.timeToStopIndexing);
+            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60*60*1000L, 2000, state.timeToStopIndexing);
 
             Long maxChangeSetCommitTime = aclChangeSets.getMaxChangeSetCommitTime();
             if(maxChangeSetCommitTime != null)
@@ -1521,9 +1521,15 @@ public class CoreTracker implements CloseHook
 
         if(state.lastGoodChangeSetCommitTimeInIndex == 0)
         {
-            // match TX state 
-            // TODO: also check first ACL timestamp
-            state.lastGoodChangeSetCommitTimeInIndex =  state.lastGoodTxCommitTimeInIndex;
+            AclChangeSets firstChangeSets = client.getAclChangeSets(null, 0L, null, 2000L, 1);
+            if(firstChangeSets.getAclChangeSets().size() > 0)
+            {
+                AclChangeSet firstChangeSet = firstChangeSets.getAclChangeSets().get(0);
+                long firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
+                state.lastGoodChangeSetCommitTimeInIndex =  firstChangeSetCommitTimex;
+            }
+            
+          
         }
 
         if(!state.checkedFirstTransactionTime)
@@ -1711,9 +1717,9 @@ public class CoreTracker implements CloseHook
         }
     }
 
-    protected AclChangeSets getSomeAclChangeSets(BoundedDeque<AclChangeSet> changeSetsFound, Long fromCommitTime, int timeStep, int maxResults, long endTime) throws AuthenticationException, IOException, JSONException
+    protected AclChangeSets getSomeAclChangeSets(BoundedDeque<AclChangeSet> changeSetsFound, Long fromCommitTime, long timeStep, int maxResults, long endTime) throws AuthenticationException, IOException, JSONException
     {
-
+        long actualTimeStep  = timeStep;
 
         AclChangeSets aclChangeSets;
         // step forward in time until we find something or hit the time bound
@@ -1721,8 +1727,13 @@ public class CoreTracker implements CloseHook
         Long startTime = fromCommitTime == null ? Long.valueOf(0L) :fromCommitTime;
         do
         {
-            aclChangeSets = client.getAclChangeSets(startTime, null, startTime + timeStep, null, maxResults);
-            startTime += timeStep;
+            aclChangeSets = client.getAclChangeSets(startTime, null, startTime + actualTimeStep, null, maxResults);
+            actualTimeStep *= 2;
+            if(actualTimeStep > 1000*60*60*24*32L)
+            {
+                actualTimeStep = 1000*60*60*24*32L;
+            }
+            startTime += actualTimeStep;
         }
         while( ((aclChangeSets.getAclChangeSets().size() == 0)  && (startTime < endTime)) || ((aclChangeSets.getAclChangeSets().size() > 0) && alreadyFoundChangeSets(changeSetsFound, aclChangeSets)));
 
@@ -1757,8 +1768,9 @@ public class CoreTracker implements CloseHook
     }
 
 
-    protected Transactions getSomeTransactions(BoundedDeque<Transaction> txnsFound, Long fromCommitTime, int timeStep, int maxResults, long endTime) throws AuthenticationException, IOException, JSONException
+    protected Transactions getSomeTransactions(BoundedDeque<Transaction> txnsFound, Long fromCommitTime, long timeStep, int maxResults, long endTime) throws AuthenticationException, IOException, JSONException
     {
+        long actualTimeStep  = timeStep;
 
         Transactions transactions;
         // step forward in time until we find something or hit the time bound
@@ -1766,8 +1778,13 @@ public class CoreTracker implements CloseHook
         Long startTime = fromCommitTime == null ? Long.valueOf(0L) :fromCommitTime;
         do
         {
-            transactions = client.getTransactions(startTime, null, startTime + timeStep, null, maxResults); 
-            startTime += timeStep;
+            transactions = client.getTransactions(startTime, null, startTime + actualTimeStep, null, maxResults); 
+            actualTimeStep *= 2;
+            if(actualTimeStep > 1000*60*60*24*32L)
+            {
+                actualTimeStep = 1000*60*60*24*32L;
+            }
+            startTime += actualTimeStep;
         }
         while( ((transactions.getTransactions().size() == 0)  && (startTime < endTime)) || ((transactions.getTransactions().size() > 0)  && alreadyFoundTransactions(txnsFound, transactions)));
 
@@ -2675,7 +2692,7 @@ public class CoreTracker implements CloseHook
         long endTime = System.currentTimeMillis() + holeRetention;
         DO: do
         {
-            transactions = getSomeTransactions(txnsFound, lastTxCommitTime, 1000*60*60, 2000, endTime);
+            transactions = getSomeTransactions(txnsFound, lastTxCommitTime, 1000*60*60L, 2000, endTime);
             for (Transaction info : transactions.getTransactions())
             {
                 // include
@@ -2715,8 +2732,16 @@ public class CoreTracker implements CloseHook
 
         // DB ACL TX Count
 
+        long firstChangeSetCommitTimex = 0;
+        AclChangeSets firstChangeSets = client.getAclChangeSets(null, 0L, null, 2000L, 1);
+        if(firstChangeSets.getAclChangeSets().size() > 0)
+        {
+            AclChangeSet firstChangeSet = firstChangeSets.getAclChangeSets().get(0);
+            firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
+        }
+        
         OpenBitSet aclTxIdsInDb = new OpenBitSet();
-        Long lastAclTxCommitTime = Long.valueOf(firstTransactionCommitTime);
+        Long lastAclTxCommitTime = Long.valueOf(firstChangeSetCommitTimex);
         if (fromTime != null)
         {
             lastAclTxCommitTime = fromTime;
@@ -2727,7 +2752,7 @@ public class CoreTracker implements CloseHook
         BoundedDeque<AclChangeSet> changeSetsFound = new  BoundedDeque<AclChangeSet>(100);
         DO: do
         {
-            aclTransactions = getSomeAclChangeSets(changeSetsFound, lastAclTxCommitTime, 1000*60*60, 2000, endTime);
+            aclTransactions = getSomeAclChangeSets(changeSetsFound, lastAclTxCommitTime, 1000*60*60L, 2000, endTime);
             for (AclChangeSet set : aclTransactions.getAclChangeSets())
             {
                 // include
@@ -2852,7 +2877,7 @@ public class CoreTracker implements CloseHook
             {
                 TermDocs termDocs = null;
                 int count = 0;
-                for (long i = minAclTxId; i <= maxTxId; i++)
+                for (long i = minAclTxId; i <= maxAclTxId; i++)
                 {
                     int docCount = 0;
                     String target = NumericEncoder.encode(i);

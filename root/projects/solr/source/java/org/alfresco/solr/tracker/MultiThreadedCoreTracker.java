@@ -243,7 +243,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
             int docCount = 0;
 
             Long fromCommitTime = getTxFromCommitTime(txnsFound, state.lastGoodTxCommitTimeInIndex);
-            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60 * 60 * 1000, 2000, state.timeToStopIndexing);
+            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.timeToStopIndexing);
 
             Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
             if (maxTxnCommitTime != null)
@@ -483,7 +483,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
             int aclCount = 0;
 
             Long fromCommitTime = getChangeSetFromCommitTime(changeSetsFound, state.lastGoodChangeSetCommitTimeInIndex);
-            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60 * 60 * 1000, 2000, state.timeToStopIndexing);
+            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.timeToStopIndexing);
 
             Long maxChangeSetCommitTime = aclChangeSets.getMaxChangeSetCommitTime();
             if(maxChangeSetCommitTime != null)
