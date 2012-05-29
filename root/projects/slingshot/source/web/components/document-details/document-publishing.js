@@ -155,7 +155,8 @@
             channelIcon = "",
             channelTitle = "",
             channelName = this.msg("publishingHistory.event.unknownChannel"),
-            channelId = "";
+            channelId = "",
+            unpublishedAfterwards = false;
 
          // tolerate null channel (e.g. if channel has been deleted)
          if (event.channel)
@@ -177,6 +178,28 @@
                nodeName = node.name;
                nodeLabel = node.version;
                eventType = "publish";
+
+               // Check if the file has been unpublished afterwards
+               var me = this;
+               (function()
+               {
+                  var records = me.widgets.alfrescoDataTable.getDataTable().getRecordSet().getRecords();
+                  for (var j = 0; j < records.length; j++)
+                  {
+                     var foundNodes = records[j].getData().unpublishNodes;
+                     for (var k = 0; k < foundNodes.length; k++)
+                     {
+                        var foundNode = foundNodes[k];
+                        if (foundNode.nodeRef === node.nodeRef && foundNode.version === node.version)
+                        {
+                           unpublishedAfterwards = true;
+                           return;
+                        }
+                     }
+                  }
+               })();
+
+               break;
             }
          }
          
@@ -191,6 +214,7 @@
                   nodeName = node.name;
                   nodeLabel = node.version;
                   eventType = "unpublish";
+                  break;
                }
             }
          }
@@ -208,7 +232,8 @@
             html += '   <h3 class="thin dark">' + $html(nodeName) +  '</h3>';         
             html += '   <span class="actions">';
             // Files can be unpublished only if the channel supports it AND they have successfully been published
-            if (canUnpublish && event.status === "COMPLETED" && eventType === "publish") {
+            // AND not have been unpublished afterwards
+            if (canUnpublish && event.status === "COMPLETED" && eventType === "publish" && !unpublishedAfterwards) {
                html += '		<a href="#" name=".onUnpublishClick" rel="' + nodeRef + '" class="' + this.id + ' unpublish" title="' + this.msg("publishingHistory.action.unpublish") + '">&nbsp;</a>';
             }
             html += '   </span>';
