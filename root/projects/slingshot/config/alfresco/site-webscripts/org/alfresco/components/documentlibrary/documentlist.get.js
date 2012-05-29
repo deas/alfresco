@@ -20,8 +20,8 @@ documentList.options.usePagination = args.pagination != null ? args.pagination :
 documentList.options.sortAscending = model.preferences.sortAscending != null ? model.preferences.sortAscending : true;
 documentList.options.sortField = model.preferences.sortField != null ? model.preferences.sortField : "cm:name";
 documentList.options.showFolders = model.preferences.showFolders != null ? model.preferences.showFolders : true;
-documentList.options.simpleView = model.preferences.simpleView != null ? model.preferences.simpleView : false;
-documentList.options.viewRendererName = model.viewRendererName != null ? model.viewRendererName : "detailed";
+documentList.options.simpleView = model.preferences.simpleView != null ? model.preferences.simpleView : "null";
+documentList.options.viewRendererName = model.preferences.viewRendererName != null ? model.preferences.viewRendererName : "detailed";
 documentList.options.viewRendererNames = model.viewRendererNames != null ? model.viewRendererNames : ["simple", "detailed"];
 documentList.options.highlightFile = page.url.args["file"] != null ? page.url.args["file"] : "";
 documentList.options.replicationUrlMapping = model.replicationUrlMapping != null ? model.replicationUrlMapping : "{}";
