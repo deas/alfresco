@@ -28,6 +28,8 @@ import org.alfresco.repo.search.impl.lucene.query.SelfAxisStructuredFieldPositio
 import org.alfresco.repo.search.impl.lucene.query.StructuredFieldPosition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
+import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO9075;
 import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.Operator;
 import org.jaxen.saxpath.SAXPathException;
@@ -364,7 +366,7 @@ public class SolrXPathHandler implements XPathHandler
 
             if(localName.equals("*"))
             {
-                answer.add(new RelativeStructuredFieldPosition("*"));
+                answer.add(new AbsoluteStructuredFieldPosition("*", absolutePosition));
             }
             else if (namespacePrefixResolver.getNamespaceURI("") == null)
             {
@@ -388,7 +390,14 @@ public class SolrXPathHandler implements XPathHandler
         }
         else
         {
-            answer.add(new AbsoluteStructuredFieldPosition(localName, absolutePosition));
+            if(localName.equals("*"))
+            {
+                answer.add(new AbsoluteStructuredFieldPosition(localName, absolutePosition));
+            }
+            else
+            {
+                answer.add(new AbsoluteStructuredFieldPosition(ISO9075.encode(QName.createValidLocalName(ISO9075.decode(localName))), absolutePosition));
+            }
         }
         query.appendQuery(answer);
 
@@ -427,7 +436,14 @@ public class SolrXPathHandler implements XPathHandler
         }
         else
         {
-            answer.add(new RelativeStructuredFieldPosition(localName));
+            if(localName.equals("*"))
+            {
+                answer.add(new RelativeStructuredFieldPosition(localName));
+            }
+            else
+            {
+                answer.add(new RelativeStructuredFieldPosition(ISO9075.encode(QName.createValidLocalName(ISO9075.decode(localName)))));
+            }
         }
         query.appendQuery(answer);
     }
