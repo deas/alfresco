@@ -1,64 +1,59 @@
-<#if nodeRef??>
-   <#assign el=args.htmlid?js_string>
-   <script type="text/javascript">//<![CDATA[
-      new Alfresco.CommentsList("${el}").setOptions(
-      {
-         nodeRef: "${nodeRef?js_string}",
-         siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
-         maxItems: ${maxItems?js_string},
-         activity: <#if activityParameterJSON??>${activityParameterJSON}<#else>null</#if>,
-         editorConfig:
-         {
-            inline_styles: false,
-            convert_fonts_to_spans: false,
-            theme: "advanced",
-            theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,forecolor,|,undo,redo,removeformat",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_resizing: true,
-            theme_advanced_buttons2: null,
-            theme_advanced_buttons3: null,
-            theme_advanced_path: false,
-            language: "${locale?substring(0, 2)?js_string}"
-         }
-      }).setMessages(
-         ${messages}
-      );
-   //]]></script>
-   <div id="${el}-body" class="comments-list">
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${page.url.context}/res/components/comments/comments-list.css" group="comments"/>
+</@>
 
-      <h2 class="thin dark">${msg("header.comments")}</h2>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${page.url.context}/res/components/comments/comments-list.js" group="comments"/>
+</@>
 
-      <div id="${el}-add-comment">
-         <div id="${el}-add-form-container" class="theme-bg-color-4 hidden"></div>
-      </div>
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
 
-      <div class="comments-list-actions">
-         <div class="left">
-            <div id="${el}-actions" class="hidden">
-               <button class="alfresco-button" name=".onAddCommentClick">${msg("button.addComment")}</button>
+<@markup id="widgets">
+   <#if nodeRef??>
+      <@createWidgets group="comments"/>
+   </#if>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#if nodeRef??>
+         <#assign el=args.htmlid?js_string>
+         <div id="${el}-body" class="comments-list">
+            <h2 class="thin dark">${msg("header.comments")}</h2>
+            <div id="${el}-add-comment">
+               <div id="${el}-add-form-container" class="theme-bg-color-4 hidden"></div>
+            </div>
+            <div class="comments-list-actions">
+               <div class="left">
+                  <div id="${el}-actions" class="hidden">
+                     <button class="alfresco-button" name=".onAddCommentClick">${msg("button.addComment")}</button>
+                  </div>
+               </div>
+               <div class="right">
+                  <div id="${el}-paginator-top"></div>
+               </div>
+               <div class="clear"></div>
+            </div>
+            <hr class="hidden"/>
+            <div id="${el}-comments-list"></div>
+            <hr class="hidden"/>
+            <div class="comments-list-actions">
+               <div class="left">
+               </div>
+               <div class="right">
+                  <div id="${el}-paginator-bottom"></div>
+               </div>
+               <div class="clear"></div>
             </div>
          </div>
-         <div class="right">
-            <div id="${el}-paginator-top"></div>
-         </div>
-         <div class="clear"></div>
-      </div>
-
-      <hr class="hidden"/>
-
-      <div id="${el}-comments-list"></div>
-
-      <hr class="hidden"/>
-
-      <div class="comments-list-actions">
-         <div class="left">
-         </div>
-         <div class="right">
-            <div id="${el}-paginator-bottom"></div>
-         </div>
-         <div class="clear"></div>
-      </div>
-
-   </div>
-</#if>
+      </#if>
+   </@>
+</@>

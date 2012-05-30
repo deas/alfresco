@@ -20,104 +20,100 @@
       to make sure it becomes the selected element.
 
    -->
-<div class="customise-dashlets">
 
-   <script type="text/javascript">//<![CDATA[
-   new Alfresco.CustomiseDashlets("${args.htmlid}").setMessages(
-      ${messages}
-   ).setOptions(
-   {
-      currentLayout:
-      {
-         templateId: "${currentLayout.templateId}",
-         noOfColumns: ${currentLayout.noOfColumns},
-         description: "${currentLayout.description}",
-         icon: "${url.context}/res/components/dashboard/images/${currentLayout.templateId}.png"         
-      },
-      dashboardUrl: "${dashboardUrl}",
-      dashboardId: "${dashboardId}"
-   });
-   //]]></script>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashboard/customise-dashlets.css" group="dashboard"/>
+</@>
 
-   <div id="${args.htmlid}-instructions-div" class="instructions">
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/js/alfresco-dnd.js" group="dashboard"/>
+   <@script type="text/javascript" src="${url.context}/res/components/dashboard/customise-dashlets.js" group="dashboard"/>
+</@>
 
-      <h2>${msg("header.dashlets")}</h2>
-      <hr />
-      
-      <div>
-         <div class="text">${msg("label.instructions")}</div>
-         <div class="buttons" id="${args.htmlid}-toggleDashletsButtonWrapper-div">
-            <input id="${args.htmlid}-addDashlets-button" type="button" value="${msg("button.addDashlets")}" />
-         </div>
-      </div>
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
 
-   </div>
+<@markup id="widgets">
+   <@createWidgets group="dashboard"/>
+</@>
 
-   <div id="${args.htmlid}-available-div" class="available" style="display: none;">
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
 
-      <div>
-         <div class="text">
-            <a class="closeLink" href="#" id="${args.htmlid}-closeAddDashlets-link">${msg("link.close")}</a>
-            <h3 class="padded">${msg("section.addDashlets")}</h3>
-         </div>
-         <ul id="${args.htmlid}-column-ul-0" class="availableList">
-         <#list availableDashlets as dashlet>
-            <li class="availableDashlet">
-               <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
-               <a href="#"><img class="dnd-draggable" src="${url.context}/res/yui/assets/skins/default/transparent.gif" alt="" /></a>
-               <span ><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
-               <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
-            </li>
-         </#list>
-         </ul>
-      </div>
-
-   </div>
-
-   <div class="used">
-
-      <div id="${args.htmlid}-wrapper-div" class="noOfColumns${currentLayout.noOfColumns}">
-
-         <div class="usedActions">&nbsp;</div>
-         <#list columns as column>
-            <div class="column" id="${args.htmlid}-column-div-${column_index + 1}" <#if (column_index >= currentLayout.noOfColumns)>style="display: none;"</#if>>
-            <h3 class="padded">${msg("header.column", column_index + 1)}</h3>
-            <ul id="${args.htmlid}-column-ul-${column_index + 1}" class="usedList">
-            <#list column as dashlet>
-               <li class="usedDashlet">
-                  <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
-                  <input type="hidden" name="originalregionid" value="${dashlet.originalRegionId}"/>
-                  <a href="#"><img class="dnd-draggable" src="${url.context}/res/yui/assets/skins/default/transparent.gif" alt="" /></a>
-                  <span><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
-                  <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
-               </li>
-            </#list>
-            </ul>                                            
+<@markup id="html">
+   <@uniqueIdDiv>
+      <div class="customise-dashlets">
+        <div id="${args.htmlid}-instructions-div" class="instructions">
+            <h2>${msg("header.dashlets")}</h2>
+            <hr />
+            <div>
+               <div class="text">${msg("label.instructions")}</div>
+               <div class="buttons" id="${args.htmlid}-toggleDashletsButtonWrapper-div">
+                  <input id="${args.htmlid}-addDashlets-button" type="button" value="${msg("button.addDashlets")}" />
+               </div>
             </div>
-         </#list>
-         <div class="usedActions">
-            <span id="${args.htmlid}-trashcan-img" class="trashcan" title="${msg("help.trashcan")}">&nbsp;</span>
          </div>
-
-      </div>
-
-    </div>
-
-<div class="actions">
-      
-   <hr />
-      <div>
-         <div class="buttons">
-            <input id="${args.htmlid}-save-button" type="button" value="${msg("button.save")}" />
-            <input id="${args.htmlid}-cancel-button" type="button" value="${msg("button.cancel")}" />
+         <div id="${args.htmlid}-available-div" class="available" style="display: none;">
+            <div>
+               <div class="text">
+                  <a class="closeLink" href="#" id="${args.htmlid}-closeAddDashlets-link">${msg("link.close")}</a>
+                  <h3 class="padded">${msg("section.addDashlets")}</h3>
+               </div>
+               <ul id="${args.htmlid}-column-ul-0" class="availableList">
+               <#list availableDashlets as dashlet>
+                  <li class="availableDashlet">
+                     <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
+                     <a href="#"><img class="dnd-draggable" src="${url.context}/res/yui/assets/skins/default/transparent.gif" alt="" /></a>
+                     <span ><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
+                     <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
+                  </li>
+               </#list>
+               </ul>
+            </div>
+         </div>
+         <div class="used">
+            <div id="${args.htmlid}-wrapper-div" class="noOfColumns${currentLayout.noOfColumns}">
+               <div class="usedActions">&nbsp;</div>
+               <#list columns as column>
+                  <div class="column" id="${args.htmlid}-column-div-${column_index + 1}" <#if (column_index >= currentLayout.noOfColumns)>style="display: none;"</#if>>
+                  <h3 class="padded">${msg("header.column", column_index + 1)}</h3>
+                  <ul id="${args.htmlid}-column-ul-${column_index + 1}" class="usedList">
+                  <#list column as dashlet>
+                     <li class="usedDashlet">
+                        <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
+                        <input type="hidden" name="originalregionid" value="${dashlet.originalRegionId}"/>
+                        <a href="#"><img class="dnd-draggable" src="${url.context}/res/yui/assets/skins/default/transparent.gif" alt="" /></a>
+                        <span><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
+                        <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
+                     </li>
+                  </#list>
+                  </ul>
+                  </div>
+               </#list>
+               <div class="usedActions">
+                  <span id="${args.htmlid}-trashcan-img" class="trashcan" title="${msg("help.trashcan")}">&nbsp;</span>
+               </div>
+            </div>
+          </div>
+      <div class="actions">
+         <hr />
+            <div>
+               <div class="buttons">
+                  <input id="${args.htmlid}-save-button" type="button" value="${msg("button.save")}" />
+                  <input id="${args.htmlid}-cancel-button" type="button" value="${msg("button.cancel")}" />
+               </div>
+            </div>
+         </div>
+         <div style="display: none;">
+            <ul>
+               <!-- The shadow dashlet that is used during drag n drop to "make space" for the dragged dashlet -->
+               <li class="usedDashlet dnd-shadow" id="${args.htmlid}-dashlet-li-shadow"></li>
+            </ul>
          </div>
       </div>
-   </div>
-
-   <div style="display: none;">
-      <ul>
-         <!-- The shadow dashlet that is used during drag n drop to "make space" for the dragged dashlet -->
-         <li class="usedDashlet dnd-shadow" id="${args.htmlid}-dashlet-li-shadow"></li>
-      </ul>
-   </div>
-</div>
+   </@>
+</@>

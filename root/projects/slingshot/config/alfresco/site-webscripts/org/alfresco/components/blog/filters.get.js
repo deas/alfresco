@@ -19,6 +19,15 @@ function main()
    }
    
    model.filters = filters;
+   
+   // Widget instantiation metadata...
+   model.webScriptWidgets = [];
+   var blogPostListFilter = {};
+   blogPostListFilter.name = "Alfresco.component.BaseFilter";
+   blogPostListFilter.instantiationArguments = [ "Alfresco.BlogPostListFilter", "\"" + args.htmlid + "\""];
+   blogPostListFilter.provideMessages = false;
+   blogPostListFilter.provideOptions = false;
+   model.webScriptWidgets.push(blogPostListFilter);
 }
 
 main();

@@ -288,3 +288,16 @@ model.columns = columns;
 model.dashboardUrl = dashboardUrl;
 model.dashboardId = dashboardId;
 model.dashboardType = args.dashboardType;
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var dynamicWelcome = {};
+dynamicWelcome.name = "Alfresco.dashlet.DynamicWelcome";
+dynamicWelcome.provideMessages = true;
+dynamicWelcome.provideOptions = false;
+dynamicWelcome.instantiationArguments = [];
+dynamicWelcome.instantiationArguments.push("\"" + args.htmlid + "\"");
+dynamicWelcome.instantiationArguments.push("\"" + model.dashboardUrl + "\"");
+dynamicWelcome.instantiationArguments.push("\"" + model.dashboardType + "\"");
+dynamicWelcome.instantiationArguments.push("\"" + model.siteURL + "\"");
+model.webScriptWidgets.push(dynamicWelcome);

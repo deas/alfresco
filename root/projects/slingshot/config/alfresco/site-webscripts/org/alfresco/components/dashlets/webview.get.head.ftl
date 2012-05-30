@@ -1,5 +1,3 @@
-<#include "../component.head.inc">
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/dashlets/webview.css" />
-<@script type="text/javascript" src="${page.url.context}/res/components/dashlets/webview.js"></@script>
-<!-- Simple Dialog Assets -->
-<@script type="text/javascript" src="${page.url.context}/res/modules/simple-dialog.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

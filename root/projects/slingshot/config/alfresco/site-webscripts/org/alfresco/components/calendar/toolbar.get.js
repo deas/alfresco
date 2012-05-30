@@ -30,3 +30,34 @@ model.viewType = CalendarScriptHelper.getView(); // returns current view after c
 model.viewToolbarViews = CalendarScriptHelper.listViews(); // returns a array of enabled views
 model.viewToolbarViewCount = CalendarScriptHelper.countViews() > 1; // if only one view, hide view switching buttons
 model.viewToolbarNav = (model.enabledViews.day || model.enabledViews.week || model.enabledViews.month) // see if the Today, Previous and Next navigation items are relevant
+
+var enabledViewList = [];
+if (model.enabledViews.day)
+{
+   model.day = '<input id="' + args.htmlid + '-day" type="radio" name="navigation" value="' + msg.get("button.day") + '" />';
+   enabledViewList.push("\"day\"");
+}
+if (model.enabledViews.week)
+{
+   model.week ='<input id="' + args.htmlid + '-week" type="radio" name="navigation" value="' + msg.get("button.week") + '" />';
+   enabledViewList.push("\"week\"");
+}   
+if (model.enabledViews.month)
+{
+   model.month ='<input id="' + args.htmlid + '-month" type="radio" name="navigation" value="' + msg.get("button.month") + '" />';
+   enabledViewList.push("\"month\"");
+}
+if (model.enabledViews.agenda)
+{
+   model.agenda ='<input id="' + args.htmlid + '-agenda" type="radio" name="navigation" value="' + msg.get("button.agenda") + '" />';
+   enabledViewList.push("\"agenda\"");
+}
+
+model.webScriptWidgets = [];
+var calendarToolbar = {};
+calendarToolbar.name = "Alfresco.CalendarToolbar";
+calendarToolbar.assignToVariable = "calendarToolbar";
+calendarToolbar.instantiationArguments = ["\"" + args.htmlid + "\"", enabledViewList, "\"" + model.defaultView + "\""];
+calendarToolbar.provideOptions = false;
+calendarToolbar.provideMessages = true;
+model.webScriptWidgets.push(calendarToolbar);

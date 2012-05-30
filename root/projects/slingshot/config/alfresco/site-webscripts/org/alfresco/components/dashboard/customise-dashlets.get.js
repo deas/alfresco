@@ -142,6 +142,23 @@ function main()
    model.dashboardId = dashboardId;
    model.columns = columns;
    model.currentLayout = currentLayout;
+   
+   // Widget instantiation metadata...
+   model.webScriptWidgets = [];
+   var customizeDashlets = {};
+   customizeDashlets.name = "Alfresco.CustomiseDashlets";
+   customizeDashlets.provideOptions = true;
+   customizeDashlets.provideMessages = true;
+   customizeDashlets.options = {};
+   customizeDashlets.options.currentLayout = {};
+   customizeDashlets.options.currentLayout.templateId = currentTemplate.id;
+   customizeDashlets.options.currentLayout.noOfColumns = "" + currentNoOfColumns;
+   customizeDashlets.options.currentLayout.description = currentTemplate.description;
+   customizeDashlets.options.currentLayout.icon = url.context + "/res/components/dashboard/images/" + currentTemplate.id + ".png";
+   
+   customizeDashlets.options.dashboardUrl = model.dashboardUrl;
+   customizeDashlets.options.dashboardId = model.dashboardId;
+   model.webScriptWidgets.push(customizeDashlets);
 }
 
 main();

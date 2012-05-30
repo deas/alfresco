@@ -35,5 +35,60 @@ function main()
       }
    }
    model.userIsSiteManager = userIsSiteManager;
+   
+   // Widget instantiation metadata...
+   model.webScriptWidgets = [];
+
+   var wikiDashlet = {};
+   wikiDashlet.name = "Alfresco.dashlet.WikiDashlet";
+   wikiDashlet.assignToVariable = "wiki";
+   wikiDashlet.provideOptions = true;
+   wikiDashlet.provideMessages = true;
+   wikiDashlet.options = {};
+   var pages = [];
+   if (model.pageList != null)
+   {
+      for (var p in pageList.pages)
+      {
+         pages.push(p.name);
+      }
+   }
+   wikiDashlet.options.pages = pages;
+   wikiDashlet.options.guid = instance.object.id;
+   wikiDashlet.options.siteId = siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+   model.webScriptWidgets.push(wikiDashlet);
+
+   var dashletResizer = {};
+   dashletResizer.name = "Alfresco.widget.DashletResizer";
+   dashletResizer.instantiationArguments = [];
+   dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
+   dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
+   model.webScriptWidgets.push(dashletResizer);
+
+   var dashletTitleBarActions = {};
+   dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
+   dashletTitleBarActions.provideOptions = true;
+   dashletTitleBarActions.provideMessages = false;
+   dashletTitleBarActions.options = {};
+   dashletTitleBarActions.options.actions = [];
+   if (model.userIsSiteManager)
+   {
+      dashletTitleBarActions.options.actions.push(
+      {
+         cssClass: "edit",
+         eventOnClick: { ___value : "editWikiDashletEvent", ___type: "REFERENCE"},
+         tooltip: msg.get("dashlet.edit.tooltip")
+      });
+   }
+   dashletTitleBarActions.options.actions.push(
+      {
+         cssClass: "help",
+         bubbleOnClick:
+         {
+            message: msg.get("dashlet.help")
+         },
+         tooltip: msg.get("dashlet.help.tooltip")
+      });
+   model.webScriptWidgets.push(dashletTitleBarActions);
 }
 main();

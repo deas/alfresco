@@ -40,19 +40,21 @@
     */
    Alfresco.CustomiseLayout = function(htmlId)
    {
-      this.name = "Alfresco.CustomiseLayout";
-      this.id = htmlId;      
-
-      // Register this component
-      Alfresco.util.ComponentManager.register(this);
-
-      // Load YUI Components
-      Alfresco.util.YUILoaderHelper.require(["button", "container", "datasource"], this.onComponentsLoaded, this);
-
+      Alfresco.CustomiseLayout.superclass.constructor.call(this, "Alfresco.CustomiseLayout", htmlId, ["button", "container", "datasource"]);
+//      this.name = "Alfresco.CustomiseLayout";
+//      this.id = htmlId;
+//
+//      // Register this component
+//      Alfresco.util.ComponentManager.register(this);
+//
+//      // Load YUI Components
+//      Alfresco.util.YUILoaderHelper.require(["button", "container", "datasource"], this.onComponentsLoaded, this);
+//
       return this;
-   }
+   };
 
-   Alfresco.CustomiseLayout.prototype =
+//   Alfresco.CustomiseLayout.prototype =
+   YAHOO.extend(Alfresco.CustomiseLayout, Alfresco.component.Base,
    {
 
       /**
@@ -95,7 +97,7 @@
        * @param obj {object} Object literal specifying a set of options
        * @return {Alfresco.CustomiseLayout} returns 'this' for method chaining
        */
-      setOptions: function DL_setOptions(obj)
+      setOptions: function CL_setOptions(obj)
       {
          this.options = YAHOO.lang.merge(this.options, obj);
          return this;
@@ -108,7 +110,7 @@
        * @param obj {object} Object literal specifying a set of messages
        * @return {Alfresco.CustomiseLayout} returns 'this' for method chaining
        */
-      setMessages: function CD_setMessages(obj)
+      setMessages: function CL_setMessages(obj)
       {
          Alfresco.util.addMessages(obj, this.name);
          return this;
@@ -120,7 +122,7 @@
        *
        * @method onComponentsLoaded
        */
-      onComponentsLoaded: function FU_onComponentsLoaded()
+      onReady: function CL_onReady()
       {
          // Shortcut for dummy instance
          if (this.id === null)
@@ -130,7 +132,6 @@
 
          this.widgets.layoutLiElements = [];
          this.widgets.layoutUlElement = Dom.get(this.id +"-layout-ul");
-
 
          // Save reference to buttons so we can change label and such later
          this.widgets.changeButton = Alfresco.util.createYUIButton(this, "change-button", this.onChangeButtonClick);
@@ -165,7 +166,14 @@
             // Remove layout/li-element from available layouts if its the current layout
             if (this.options.currentLayout.templateId == layoutId)
             {
-               this.widgets.layoutUlElement.removeChild(layoutLi);
+               if (this.widgets.layoutUlElement)
+               { 
+                  this.widgets.layoutUlElement.removeChild(layoutLi);
+               }
+               else
+               {
+                  console.log("Element not available!");
+               }
             }
          }
       },
@@ -179,7 +187,7 @@
        * @method onSelectLayoutClick
        * @param selectedLayoutId {string} The id of the selected layout
        */
-      onSelectLayoutClick: function CD_onSelectLayoutClick(selectedLayoutId)
+      onSelectLayoutClick: function CL_onSelectLayoutClick(selectedLayoutId)
       {
          // Get references to the divs that should be shown or hidden
          var layoutsDiv = Dom.get(this.id + "-layouts-div");
@@ -245,7 +253,7 @@
        * @method changeLayoutButton
        * @param event {object} an "click" event
        */
-      onChangeButtonClick: function CD_onChangeButtonClick(event)
+      onChangeButtonClick: function CL_onChangeButtonClick(event)
       {
          // Send out event to let other component know that the should hide themselves
          YAHOO.Bubbling.fire("onDashboardLayoutsDisplayed", {});
@@ -264,7 +272,7 @@
        * @method onCancelButtonClick
        * @param event {object} an "click" event
        */
-      onCancelButtonClick: function CD_onCancelButtonClick(event)
+      onCancelButtonClick: function CL_onCancelButtonClick(event)
       {
          // Hide the available layouts-div
          var layoutsDiv = Dom.get(this.id + "-layouts-div");
@@ -277,9 +285,7 @@
          var changeButtonWrapperDiv = Dom.get(this.id + "-changeButtonWrapper-div");
          Dom.setStyle(changeButtonWrapperDiv, "display", "");
       }
-
-   }
-
+   });
 })();
 
 /* Dummy instance to load optional YUI components early */

@@ -1,35 +1,48 @@
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.BlogToolbar("${args.htmlid}").setOptions(
-   {
-      siteId: "${page.url.templateArgs["site"]!""}",
-      containerId: "${template.properties.container!'blog'}",
-      allowCreate: ${blog.permissions.create?string},
-      allowConfigure: ${blog.permissions.edit?string}
-   }).setMessages(
-      ${messages}
-   );
-//]]></script>
-<div id="${args.htmlid}-body" class="share-toolbar blog-toolbar flat-button theme-bg-2">
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/blog/toolbar.css" group="blog"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/blog/config-blog.css" group="blog"/>
+</@>
 
-   <div class="navigation-bar <#if ((args.showNavigationBar!"false") == "false")>hide</#if>">
-      <div>
-         <span class="<#if (page.url.args.listViewLinkBack! == "true")>backLink<#else>forwardLink</#if>">
-            <a href="${url.context}/page/site/${page.url.templateArgs.site}/blog-postlist">${msg("link.listView")}</a>
-         </span>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/blog/toolbar.js" group="blog"/>
+   <@script type="text/javascript" src="${url.context}/res/modules/blog/config-blog.js" group="blog"/>
+</@>
+
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="blog"/>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <div id="${args.htmlid}-body" class="share-toolbar blog-toolbar flat-button theme-bg-2">
+         <div class="navigation-bar <#if ((args.showNavigationBar!"false") == "false")>hide</#if>">
+            <div>
+               <span class="<#if (page.url.args.listViewLinkBack! == "true")>backLink<#else>forwardLink</#if>">
+                  <a href="${url.context}/page/site/${page.url.templateArgs.site}/blog-postlist">${msg("link.listView")}</a>
+               </span>
+            </div>
+         </div>
+         <div class="action-bar theme-bg-1">
+            <div class="new-blog"><button id="${args.htmlid}-create-button">${msg("button.create")}</button></div>
+            <div class="separator">&nbsp;</div>
+            <div class="configure-blog"><button id="${args.htmlid}-configure-button" name="postlist-configure-button">${msg("button.configure")}</button></div>
+         </div>
+         <div class="rss-feed">
+            <div>
+               <a id="${args.htmlid}-rssFeed-button" href="#">${msg("button.rssfeed")}</a>
+            </div>
+         </div>
       </div>
-   </div>
-
-   <div class="action-bar theme-bg-1">
-      <div class="new-blog"><button id="${args.htmlid}-create-button">${msg("button.create")}</button></div>
-      <div class="separator">&nbsp;</div>
-      <div class="configure-blog"><button id="${args.htmlid}-configure-button" name="postlist-configure-button">${msg("button.configure")}</button></div>
-   </div>
-
-   <div class="rss-feed">
-      <div>
-         <a id="${args.htmlid}-rssFeed-button" href="#">${msg("button.rssfeed")}</a>
-      </div>
-   </div>
-
-</div>
-<div class="clear"></div>
+      <div class="clear"></div>
+   </@>
+</@>

@@ -1,3 +1,3 @@
-<#include "../component.head.inc">
-<!-- Blog Archive -->
-<@script type="text/javascript" src="${page.url.context}/res/components/blog/archive.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

@@ -1,7 +1,3 @@
-<#include "../component.head.inc">
-<!-- Blog Toolbar -->
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/blog/toolbar.css" />
-<@script type="text/javascript" src="${page.url.context}/res/components/blog/toolbar.js"></@script>
-<!-- Configure Blog -->
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/blog/config-blog.css" />
-<@script type="text/javascript" src="${page.url.context}/res/modules/blog/config-blog.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

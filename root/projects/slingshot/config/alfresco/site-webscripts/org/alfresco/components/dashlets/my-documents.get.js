@@ -8,11 +8,7 @@ function getFilters()
 
    for each (var xmlFilter in myConfig..filter)
    {
-      filters.push(
-      {
-         type: xmlFilter.@type.toString(),
-         parameters: xmlFilter.@parameters.toString()
-      });
+      filters.push(xmlFilter.@type.toString());
    }
    return filters
 }
@@ -33,3 +29,53 @@ function getMaxItems()
 model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.mydocuments.dashlet");
 model.filters = getFilters();
 model.maxItems = getMaxItems();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+model.prefFilter = model.preferences.filter;
+if (model.prefFilter == null)
+{
+   model.prefFilter = "recentlyModifiedByMe";
+}
+
+model.prefSimpleView = model.preferences.simpleView;
+if (model.prefSimpleView == null)
+{
+   model.prefSimpleView = true;
+}
+
+var myDocs = {};
+myDocs.name = "Alfresco.dashlet.MyDocuments";
+myDocs.provideOptions = true;
+myDocs.provideMessages = true;
+myDocs.options = {};
+myDocs.options.filter = model.prefFilter;
+myDocs.options.maxItems = model.maxItems;
+myDocs.options.simpleView = model.prefSimpleView;
+myDocs.options.validFilters = model.filters;
+model.webScriptWidgets.push(myDocs);
+
+var dashletResizer = {};
+dashletResizer.name = "Alfresco.widget.DashletResizer";
+dashletResizer.instantiationArguments = [];
+dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
+dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
+model.webScriptWidgets.push(dashletResizer);
+
+var dashletTitleBarActions = {};
+dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
+dashletTitleBarActions.provideOptions = true;
+dashletTitleBarActions.provideMessages = false;
+dashletTitleBarActions.options = {};
+dashletTitleBarActions.options.actions = [];
+dashletTitleBarActions.options.actions.push(
+      {
+         cssClass: "help",
+         bubbleOnClick:
+         {
+            message: msg.get("dashlet.help")
+         },
+         tooltip: msg.get("dashlet.help.tooltip")
+      });
+
+model.webScriptWidgets.push(dashletTitleBarActions);

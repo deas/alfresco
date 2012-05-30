@@ -1,30 +1,30 @@
-<#assign dashboardconfig=config.scoped['Dashboard']['dashboard']>
-<script type="text/javascript">//<![CDATA[
-(function()
-{
-   new Alfresco.dashlet.UserCalendar("${args.htmlid?js_string}").setOptions(
-   {
-      listSize: ${dashboardconfig.getChildValue('summary-list-size')!100}
-   }).setMessages(${messages});
-   new Alfresco.widget.DashletResizer("${args.htmlid?js_string}", "${instance.object.id}");
-   new Alfresco.widget.DashletTitleBarActions("${args.htmlid}").setOptions(
-   {
-      actions:
-      [
-         {
-            cssClass: "help",
-            bubbleOnClick:
-            {
-               message: "${msg("dashlet.help")?js_string}"
-            },
-            tooltip: "${msg("dashlet.help.tooltip")?js_string}"
-         }
-      ]
-   });
-})();
-//]]></script>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/user-calendar.css" group="dashlets"/>
+</@>
 
-<div class="dashlet user-calendar">
-   <div class="title">${msg("label.header")}</div>
-   <div id="${args.htmlid?html}-events" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>
-</div>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/dashlets/user-calendar.js" group="dashlets"/>
+</@>
+
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="dashlets"/>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <div class="dashlet user-calendar">
+         <div class="title">${msg("label.header")}</div>
+         <div id="${args.htmlid?html}-events" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>></div>
+      </div>
+   </@>
+</@>

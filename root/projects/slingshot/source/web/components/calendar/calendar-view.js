@@ -103,6 +103,22 @@
       calendarView: '',
 
       /**
+       * Set multiple initialization options at once.
+       *
+       * @method setOptions
+       * @param obj {object} Object literal specifying a set of options
+       * @return {object} returns 'this' for method chaining
+       */
+      setOptions: function Base_setOptions(obj)
+      {
+         this.options = YAHOO.lang.merge(this.options, obj);
+         this.options.startDate = Alfresco.util.fromISO8601(this.options.startDate);
+         this.options.endDate = Alfresco.util.fromISO8601(this.options.endDate);
+         this.options.titleDate = Alfresco.util.fromISO8601(this.options.titleDate);
+         return this;
+      },
+      
+      /**
        * Initialises event handling All events are handled through event
        * delegation via the onInteractionEvent handler
        *

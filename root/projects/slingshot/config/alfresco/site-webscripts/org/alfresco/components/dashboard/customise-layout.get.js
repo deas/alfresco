@@ -8,7 +8,7 @@ function getNoOfColumns(template)
    while (template.properties["gridColumn" + (noOfColumns + 1)] !== null)
    {
       noOfColumns++;
-   }                                       
+   }
    return noOfColumns;
 }
 
@@ -17,45 +17,79 @@ function main()
    // Get current template
    var dashboardId;
    if (args.dashboardType == "user")
-   {                              
+   {
       dashboardId = "user/" + user.name + "/dashboard";
    }
    else if (args.dashboardType == "site")
    {
-      dashboardId = "site/" + page.url.templateArgs.site + "/dashboard";   
+      dashboardId = "site/" + page.url.templateArgs.site + "/dashboard";
    }
    
    // Hardcoded templates until proper service exists
-   var layouts = [
-      {templateId: "dashboard-1-column",             noOfColumns: 1, description: msg.get("msg.template-1-column")},
-      {templateId: "dashboard-2-columns-wide-right", noOfColumns: 2, description: msg.get("msg.template-2-columns-wide-right")},
-      {templateId: "dashboard-2-columns-wide-left",  noOfColumns: 2, description: msg.get("msg.template-2-columns-wide-left")},
-      {templateId: "dashboard-3-columns",            noOfColumns: 3, description: msg.get("msg.template-3-columns")},
-      {templateId: "dashboard-4-columns",            noOfColumns: 4, description: msg.get("msg.template-4-columns")}
-   ];
+   var layouts = {
+      "dashboard-1-column" : {
+         templateId: "dashboard-1-column",
+         noOfColumns: 1, 
+         description: msg.get("msg.template-1-column"), 
+         icon: url.context + "/res/components/dashboard/images/dashboard-1-column.png"
+      },
+      "dashboard-2-columns-wide-right" : {
+         templateId: "dashboard-2-columns-wide-right", 
+         noOfColumns: 2, 
+         description: msg.get("msg.template-2-columns-wide-right"), 
+         icon: url.context + "/res/components/dashboard/images/dashboard-2-columns-wide-right.png"
+       },
+      "dashboard-2-columns-wide-left" : {
+         templateId: "dashboard-2-columns-wide-left",  
+         noOfColumns: 2, 
+         description: msg.get("msg.template-2-columns-wide-left"), 
+         icon: url.context + "/res/components/dashboard/images/dashboard-2-columns-wide-left.png"},
+      "dashboard-3-columns" : {
+         templateId: "dashboard-3-columns",
+         noOfColumns: 3, 
+         description: msg.get("msg.template-3-columns"),
+         icon: url.context + "/res/components/dashboard/images/dashboard-3-columns.png"},
+      "dashboard-4-columns" : {
+         templateId: "dashboard-4-columns",
+         noOfColumns: 4, 
+         description: msg.get("msg.template-4-columns"), 
+         icon: url.context + "/res/components/dashboard/images/dashboard-4-columns.png"}
+   };
    
    var currentTemplate = sitedata.findTemplate(dashboardId),
-      currentNoOfColumns = getNoOfColumns(currentTemplate),
-      currentTemplateDescription = "NONE";
+       currentNoOfColumns = getNoOfColumns(currentTemplate),
+       currentTemplateDescription = "NONE";
    
-   for (var i=0; i<layouts.length; i++)
+   for (var key in layouts)
    {
-      if (layouts[i].templateId == currentTemplate.id)
+      if (layouts[key].templateId == currentTemplate.id)
       {
-         currentTemplateDescription = layouts[i].description;
+         currentTemplateDescription = layouts[key].description;
+         break;
       }
    }
    
    var currentLayout =
-      {
-         templateId: currentTemplate.id,
-         noOfColumns: currentNoOfColumns,
-         description: currentTemplateDescription
-      };
+   {
+      templateId: currentTemplate.id,
+      noOfColumns: currentNoOfColumns,
+      description: currentTemplateDescription
+   };
    
    // Prepare model for template
    model.currentLayout = currentLayout;
    model.layouts = layouts;
+   
+   model.webScriptWidgets = [];
+   var customizeDashlets = {};
+   customizeDashlets.name = "Alfresco.CustomiseLayout";
+   customizeDashlets.provideOptions = true;
+   customizeDashlets.provideMessages = true;
+   customizeDashlets.options = {};
+   customizeDashlets.options.currentLayout = currentLayout;
+   customizeDashlets.options.currentLayout.icon = url.context + "/res/components/dashboard/images/" + currentLayout.templateId + ".png"
+   customizeDashlets.options.layouts = layouts;
+   model.webScriptWidgets.push(customizeDashlets);
 }
 
 main();
