@@ -14,6 +14,8 @@
           * {-7d} -  resolves to a iso8601 date respresentation of the current day rolled the given number of days back
           * {+7d} -  resolves to a iso8601 date respresentation of the current day rolled the given number of days forward
       -->
+      <filter id="workflows"     data="active"       parameters=""/>
+      <filter id="workflows"     data="completed"    parameters="pooledTasks=false&amp;state=COMPLETED"/>
       <filter id="due"           data="today"        parameters="dueAfter={-1d}&amp;dueBefore={0d}"/>
       <filter id="due"           data="tomorrow"     parameters="dueAfter={0d}&amp;dueBefore={1d}"/>
       <filter id="due"           data="next7Days"    parameters="dueAfter={0d}&amp;dueBefore={8d}"/>

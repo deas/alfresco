@@ -148,7 +148,7 @@
                url: url,
                defaultFilter:
                {
-                  filterId: "all"
+                  filterId: "workflows.active"
                },
                filterResolver: this.bind(function(filter)
                {
@@ -251,7 +251,13 @@
          var info = '<h3><a href="' + $siteURL('workflow-details?workflowId=' + workflow.id + '&referrer=workflows&myWorkflowsLinkBack=true') + '" class="theme-color-1" title="' + this.msg("link.viewWorkflow") + '">' + $html(message) + '</a></h3>';
          info += '<div class="due"><label>' + this.msg("label.due") + ':</label><span>' + (dueDate ? Alfresco.util.formatDate(dueDate, "longDate") : this.msg("label.none")) + '</span></div>';
          info += '<div class=started"><label>' + this.msg("label.started") + ':</label><span>' + (startedDate ? Alfresco.util.formatDate(startedDate, "longDate") : this.msg("label.none")) + '</span></div>';
-         info += '<div class="type"><label>' + this.msg("label.type") + '</label><span>' + $html(workflow.title) + '</span></div>';
+         if (!workflow.isActive)
+         {
+            var endedDate = workflow.endDate ? Alfresco.util.fromISO8601(workflow.endDate) : null;
+            info += '<div class=ended"><label>' + this.msg("label.ended") + ':</label><span>' + (endedDate ? Alfresco.util.formatDate(endedDate, "longDate") : this.msg("label.none")) + '</span></div>';
+         }
+         info += '<div class="type"><label>' + this.msg("label.type") + ':</label><span>' + $html(workflow.title) + '</span></div>';
+         info += '<div class="description"><label>' + this.msg("label.description") + ':</label><span>' + $html(workflow.description) + '</span></div>';
          elCell.innerHTML = info;
       },
 
@@ -268,11 +274,22 @@
       {
          // Create actions using WorkflowAction
          this.createAction(elCell, this.msg("link.viewWorkflow"), "workflow-view-link", $siteURL('workflow-details?workflowId=' + oRecord.getData('id') + '&referrer=workflows&myWorkflowsLinkBack=true'));
-         this.createAction(elCell, this.msg("link.cancelWorkflow"), "workflow-cancel-link", function(event, oRecord)
+         if (oRecord.getData('isActive'))
          {
-            this.cancelWorkflow(oRecord.getData("id"), oRecord.getData("message"));
-            Event.preventDefault(event);
-         }, oRecord);
+            this.createAction(elCell, this.msg("link.cancelWorkflow"), "workflow-cancel-link", function(event, oRecord)
+            {
+               this.cancelWorkflow(oRecord.getData("id"), oRecord.getData("message"));
+               Event.preventDefault(event);
+            }, oRecord);
+         }
+         else
+         {
+            this.createAction(elCell, this.msg("link.deleteWorkflow"), "workflow-delete-link", function(event, oRecord)
+            {
+               this.deleteWorkflow(oRecord.getData("id"), oRecord.getData("message"));
+               Event.preventDefault(event);
+            }, oRecord);
+         }
       }
       
    }, true);

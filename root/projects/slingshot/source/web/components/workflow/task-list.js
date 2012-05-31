@@ -139,7 +139,7 @@
                url: url,
                defaultFilter:
                {
-                  filterId: "all" 
+                  filterId: "workflows.active"
                },
                filterResolver: this.bind(function(filter)
                {
@@ -213,9 +213,13 @@
                message = $html(oRecord.getData("properties")["bpm_description"]),
                dueDateStr = oRecord.getData("properties")["bpm_dueDate"],
                dueDate = dueDateStr ? Alfresco.util.fromISO8601(dueDateStr) : null,
+               workflowInstance = oRecord.getData("workflowInstance"),
+               startedDate = workflowInstance.startDate ? Alfresco.util.fromISO8601(workflowInstance.startDate) : null,
                type = $html(oRecord.getData("title")),
                status = $html(oRecord.getData("properties")["bpm_status"]),
-               assignee = oRecord.getData("owner");
+               assignee = oRecord.getData("owner"),
+               description = oRecord.getData("description"),
+               initiator = workflowInstance.initiator.firstName;
                
          // if there is a property label available for the status use that instead
          var data = oRecord.getData();
@@ -230,10 +234,28 @@
             message = this.msg("workflow.no_message");
          }
                
-         var info = '<h3><a href="' + $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks&myTasksLinkBack=true') + '" class="theme-color-1" title="' + this.msg("link.editTask") + '">' + message + '</a></h3>';
+         var href;
+         if(oRecord.getData('isEditable'))
+         {
+            href = $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks&myTasksLinkBack=true') + '" class="theme-color-1" title="' + this.msg("link.editTask");
+         }
+         else
+         {
+            href = $siteURL('task-details?taskId=' + taskId + '&referrer=tasks&myTasksLinkBack=true') + '" class="theme-color-1" title="' + this.msg("link.viewTask");
+         }
+
+         var info = '<h3><a href="' + href + '">' + message + '</a></h3>';
          info += '<div class="due"><label>' + this.msg("label.due") + ':</label><span>' + (dueDate ? Alfresco.util.formatDate(dueDate, "longDate") : this.msg("label.none")) + '</span></div>';
+         info += '<div class="started"><label>' + this.msg("label.started") + ':</label><span>' + (startedDate ? Alfresco.util.formatDate(startedDate, "longDate") : this.msg("label.none")) + '</span></div>';
+         if (!workflowInstance.isActive)
+         {
+            var endedDate = workflowInstance.endDate ? Alfresco.util.fromISO8601(workflowInstance.endDate) : null;
+            info += '<div class=ended"><label>' + this.msg("label.ended") + ':</label><span>' + (endedDate ? Alfresco.util.formatDate(endedDate, "longDate") : this.msg("label.none")) + '</span></div>';
+         }
          info += '<div class="status"><label>' + this.msg("label.status") + ':</label><span>' + status + '</span></div>';
          info += '<div class="type"><label>' + this.msg("label.type", type) + ':</label><span>' + type + '</span></div>';
+         info += '<div class="description"><label>' + this.msg("label.description") + ':</label><span>' + description + '</span></div>';
+         info += '<div class="initiator"><label>' + this.msg("label.initiator") + ':</label><span>' + initiator + '</span></div>';
          if (!assignee || !assignee.userName)
          {
             info += '<div class="unassigned"><span class="theme-bg-color-5 theme-color-5 unassigned-task">' + this.msg("label.unassignedTask") + '</span></div>';
@@ -253,7 +275,10 @@
       renderCellActions: function TL_renderCellActions(elCell, oRecord, oColumn, oData)
       {
          // Create actions using WorkflowAction
-         this.createAction(elCell, this.msg("link.editTask"), "task-edit-link", $siteURL('task-edit?taskId=' + oRecord.getData('id') + '&referrer=tasks&myTasksLinkBack=true'));
+         if (oRecord.getData('isEditable'))
+         {
+            this.createAction(elCell, this.msg("link.editTask"), "task-edit-link", $siteURL('task-edit?taskId=' + oRecord.getData('id') + '&referrer=tasks&myTasksLinkBack=true'));
+         }
          this.createAction(elCell, this.msg("link.viewTask"), "task-view-link", $siteURL('task-details?taskId=' + oRecord.getData('id') + '&referrer=tasks&myTasksLinkBack=true'));
          this.createAction(elCell, this.msg("link.viewWorkflow"), "workflow-view-link", $siteURL('workflow-details?workflowId=' + oRecord.getData('workflowInstance').id + '&' + 'taskId=' + oRecord.getData('id') + '&referrer=tasks&myTasksLinkBack=true'));
       }

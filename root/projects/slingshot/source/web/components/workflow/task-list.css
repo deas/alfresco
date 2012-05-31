@@ -157,6 +157,21 @@
 .task-list .tasks .yui-dt-col-title .yui-dt-liner div.type
 {
    clear: both;
+}
+
+.task-list .tasks .yui-dt-col-title .yui-dt-liner div.status
+{
+   clear: both;
+}
+
+.task-list .tasks .yui-dt-col-title .yui-dt-liner div.description
+{
+   clear: both;
+}
+
+.task-list .tasks .yui-dt-col-title .yui-dt-liner div.initiator
+{
+   clear: both;
    margin-bottom: 0.5em;
 }
 

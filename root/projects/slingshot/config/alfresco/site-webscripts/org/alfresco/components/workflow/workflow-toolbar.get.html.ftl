@@ -3,7 +3,7 @@
    <div class="navigation-bar">
       <div>
          <span class="<#if (page.url.args.myWorkflowsLinkBack! == "true")>backLink<#else>forwardLink</#if>">
-            <a href="${siteURL("my-workflows")}">${msg("link.myWorkflows")}</a>
+            <a href="${siteURL("my-workflows#filter=workflows|active")}">${msg("link.myWorkflows")}</a>
          </span>
       </div>
    </div>

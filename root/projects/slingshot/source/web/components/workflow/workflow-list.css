@@ -171,16 +171,28 @@
 {
    float: left;
    margin-top: 0.5em;
-   min-width: 15em;
+   min-width: 20em;
 }
 
 .workflow-list .workflows .yui-dt-col-title .yui-dt-liner div.type
+{
+   clear: both;
+}
+
+.workflow-list .workflows .yui-dt-col-title .yui-dt-liner div.description
+{
+   clear: both;
+   margin-bottom: 0.5em;
+}
+
+.workflow-list .workflows .yui-dt-col-title .yui-dt-liner div.startedby
 {
    clear: both;
    margin-bottom: 0.5em;
 }
 
 .workflow-list .workflow-cancel-link,
+.workflow-list .workflow-delete-link,
 .workflow-list .workflow-view-link
 {
    background: no-repeat scroll 4px 1px;
@@ -194,12 +206,18 @@
    background-image: url( ../images/remove-icon-16.png );
 }
 
+.workflow-list .workflow-delete-link
+{
+   background-image: url( ../images/delete-16.png );
+}
+
 .workflow-list .workflow-view-link
 {
    background-image: url( ../images/workflow-16.png );
 }
 
 .workflow-list .workflow-cancel-link a,
+.workflow-list .workflow-delete-link a,
 .workflow-list .workflow-view-link a
 {
    min-height: 2em;
@@ -212,6 +230,7 @@
 
 
 .workflow-list .workflow-cancel-link-over,
+.workflow-list .workflow-delete-link-over,
 .workflow-list .workflow-view-link-over
 {
    background-color: #FFF;

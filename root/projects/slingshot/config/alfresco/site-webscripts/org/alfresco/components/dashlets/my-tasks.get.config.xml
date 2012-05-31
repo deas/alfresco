@@ -10,7 +10,8 @@
           * {-7d} - resolves to a iso8601 date representation of the current day rolled the given number of days back
           * {+7d} - resolves to a iso8601 date representation of the current day rolled the given number of days forward
       -->
-      <filter type="allTasks"              parameters=""/>
+      <filter type="activeTasks"           parameters=""/>
+      <filter type="completedTasks"        parameters="pooledTasks=false&amp;state=COMPLETED"/>
       <filter type="highPriorityTasks"     parameters="priority=1"/>
       <filter type="tasksDueToday"         parameters="dueAfter={-1d}&amp;dueBefore={0d}"/>
       <filter type="tasksAssignedToMe"     parameters="pooledTasks=false"/>

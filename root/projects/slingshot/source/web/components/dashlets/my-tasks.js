@@ -143,8 +143,8 @@
       onPreferencesLoaded: function MyTasks_onPreferencesLoaded(p_response)
       {
          // Select the preferred filter in the ui
-         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_TASKS_DASHLET_FILTER, "allTasks");
-         filter = this.options.filters.hasOwnProperty(filter) ? filter : "allTasks";
+         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_TASKS_DASHLET_FILTER, "activeTasks");
+         filter = this.options.filters.hasOwnProperty(filter) ? filter : "activeTasks";
          this.widgets.filterMenuButton.set("label", this.msg("filter." + filter));
          this.widgets.filterMenuButton.value = filter;
 
@@ -168,7 +168,13 @@
             dataSource:
             {
                url: Alfresco.constants.PROXY_URI + webscript,
-               initialParameters: this.substituteParameters(this.options.filters[filter]) || ""
+               filterResolver: this.bind(function()
+               {
+                  // Reuse method form WorkflowActions
+                  var filter = this.widgets.filterMenuButton.value;
+                  var filterParameters = this.options.filters[filter];
+                  return this.substituteParameters(filterParameters) || "";
+               })
             },
             dataTable:
             {
@@ -191,7 +197,11 @@
                config:
                {
                   containers: [this.id + "-paginator"],
-                  template: this.msg("pagination.template"),
+                  template: "{FirstPageLink} {PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink} {LastPageLink}",
+                  firstPageLinkLabel: "&lt;&lt;",
+                  previousPageLinkLabel: "&lt;",
+                  nextPageLinkLabel: "&gt;",
+                  lastPageLinkLabel: "&gt;&gt;",
                   pageReportTemplate: this.msg("pagination.template.page-report"),
                   rowsPerPage: this.options.maxItems
                }               
@@ -234,6 +244,10 @@
          
          if (menuItem)
          {
+            // Set the currentSkipCount to 0 so after changing the filter the paging starts from the first page
+            // Otherwise an error can occur if the previous taks page has more pages than the new page
+            this.widgets.alfrescoDataTable.currentSkipCount = 0;
+            
             this.widgets.filterMenuButton.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.filterMenuButton.value = menuItem.value;
             
@@ -313,7 +327,17 @@
                message = this.msg("workflow.no_message");
             }
 
-            var messageDesc = '<h3><a href="' + $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.editTask") + '">' + $html(message) + '</a></h3>',
+            var href;
+            if (data.isEditable)
+            {
+               href = $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.editTask");
+            }
+            else
+            {
+               href = $siteURL('task-details?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.viewTask");
+            }
+
+            var messageDesc = '<h3><a href="' + href + '">' + $html(message) + '</a></h3>',
                dateDesc = dueDate ? '<h4><span class="' + (today > dueDate ? "task-delayed" : "") + '" title="' + 
                           this.msg("title.dueOn", Alfresco.util.formatDate(dueDate, "longDate")) + '">' + Alfresco.util.formatDate(dueDate, "longDate") + '</span></h4>' : "",
                statusDesc = '<div title="' + this.msg("title.taskSummary", type, status) + '">' + this.msg("label.taskSummary", type, status) + '</div>',

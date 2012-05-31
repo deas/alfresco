@@ -30,8 +30,8 @@
             <item type="link" id="repository" condition="conditionRepositoryRootNode">/repository</item>
             <item type="container" id="more">
                <container-group id="my">
-                  <item type="link" id="my-tasks">/my-tasks</item>
-                  <item type="link" id="my-workflows">/my-workflows</item>
+                  <item type="link" id="my-tasks">/my-tasks#filter=workflows|active</item>
+                  <item type="link" id="my-workflows">/my-workflows#filter=workflows|active</item>
                   <item type="link" id="my-content">/user/user-content</item>
                   <item type="link" id="my-sites">/user/user-sites</item>
                   <item type="link" id="my-profile">{userprofilepage}</item>

@@ -53,7 +53,11 @@
             <div class="align-left" id="${id}-paginator">&nbsp;</div>
             <span class="align-right yui-button-align">
                <span class="first-child">
-                  <a href="${page.url.context}/page/my-tasks" class="theme-color-1">${msg("link.allTasks")}</a>
+                  <a href="${page.url.context}/page/my-tasks#filter=workflows|active" class="theme-color-1">${msg("link.activeTasks")}</a>
+               </span>
+               <span>&#124;</span>
+               <span class="first-child">
+                  <a href="${page.url.context}/page/my-tasks#filter=workflows|completed" class="theme-color-1">${msg("link.completedTasks")}</a>
                </span>
             </span>
             <div class="clear"></div>
