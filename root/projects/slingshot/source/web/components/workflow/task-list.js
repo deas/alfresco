@@ -218,8 +218,8 @@
                type = $html(oRecord.getData("title")),
                status = $html(oRecord.getData("properties")["bpm_status"]),
                assignee = oRecord.getData("owner"),
-               description = oRecord.getData("description"),
-               initiator = workflowInstance.initiator.firstName;
+               description = $html(oRecord.getData("description")),
+               initiator = $html(workflowInstance.initiator.firstName);
                
          // if there is a property label available for the status use that instead
          var data = oRecord.getData();
