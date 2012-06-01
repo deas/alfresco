@@ -1,7 +1,0 @@
-<webscript>
-  <shortname>Facebook ADL Canvas</shortname>
-  <description>Facebook Alfresco Document Library - Canvas</description>
-  <url>/facebook/alfrescodoclib/</url>
-  <format default="fbml"/>
-  <authentication>user</authentication>
-</webscript>
