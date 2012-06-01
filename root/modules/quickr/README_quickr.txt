@@ -1,3 +1,0 @@
-Quickr Integration Module
--------------------------
-
