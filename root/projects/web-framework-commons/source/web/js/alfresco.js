@@ -6833,12 +6833,6 @@ Alfresco.thirdparty.dateFormat = function()
             date = date.replace(".", ""); 
          }
 
-         var parsedDate = parseInt(date);
-         if(!isNaN(parsedDate))
-         {
-            date = parsedDate;
-         }
-
          date = date ? new Date(date) : new Date();
          if (isNaN(date))
          {
