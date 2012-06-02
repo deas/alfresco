@@ -16,13 +16,13 @@
     <p class="intheader-paragraph"> ${msg('search.results.found', results.size, results.totalSize, text, sectionTitle!'the website')}</p>
     </div>
 
-    <div class="interior-content">        
+    <div class="interior-content">
         <ul class="newslist-wrapper">
             <#list results.results as result>
                 <li> 
-                  <h4><a href="<@makeurl asset=result force='short'/>">${result.title!result.name}</a></h4>
+                  <h4><a href="<@makeurl asset=result force='short'/>">${(result.title!result.name)?html}</a></h4>
                   <span class="newslist-date"><#if result.properties['ws:publishedTime']??>${result.properties['ws:publishedTime']?string(msg('date.format'))}</#if></span>
-                  <p>${result.description!''}</p>
+                  <p>${(result.description!'')?html}</p>
                 </li>
             </#list>
         </ul>
@@ -33,7 +33,7 @@
             <#if (pageNumber < totalPages)>
                 <div class="body-rm"><a href="${link}&resultsToSkip=${nextSkip}">${msg("pagination.next")}</a></div>
             </#if>   
-            <span class="page-number">${msg('pagination.page', pageNumber, totalPages)}</span>             
+            <span class="page-number">${msg('pagination.page', pageNumber, totalPages)}</span>
         </div>  
     </div>
 </#if>

@@ -9,8 +9,8 @@
                         <a href="<@makeurl asset=article/>"><img src="<@makeurl asset=image rendition='featuredNewsThumbnail'/>" alt="${image.title!image.name}" class="slide-1-img" /></a>
                     </#if>
                     <div class="slide-1-desc">
-                      <h1>${article.title!article.name}</h1>
-                      <p>${article.description!''}</p>
+                      <h1>${(article.title!article.name)?html}</h1>
+                      <p>${(article.description!'')?html}</p>
                       <div class="slideshow-rm"><a href="<@makeurl asset=article/>">${msg('read.more')}</a></div>
                     </div>
                 </li>

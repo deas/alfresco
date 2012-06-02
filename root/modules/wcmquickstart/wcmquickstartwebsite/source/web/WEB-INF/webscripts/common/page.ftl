@@ -9,13 +9,13 @@
 <div id="body-wrapper">
     <div class="clearfix">
         <div id="logo"> 
-            <a href="${url.context}${rootSection.path}">${rootSection.description!}</a>
-            <#if webSite.title??><p class="logo-desc">${webSite.title}</p></#if>
+            <a href="${url.context}/">${(webSite.description!'')?html}</a>
+            <#if webSite.title??><p class="logo-desc">${webSite.title?html}</p></#if>
         </div>
         <div class="link-menu">
-            <ul>                
+            <ul>
                 <!--<li><a href="#">${msg('links.accessibility')}</a></li>-->
-                <li><a href="${url.context}${rootSection.path}contact/contact.html">${msg('links.contact')}</a></li>
+                <li><a href="${url.context}/contact/contact.html">${msg('links.contact')}</a></li>
             </ul>
         </div>
         <@region id="top-right" scope="template"/>  

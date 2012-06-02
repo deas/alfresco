@@ -100,7 +100,7 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
             IndexReader indexReader = req.getSearcher().getIndexReader();
             
             AbstractLuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(searchParameters, indexReader);
-            Query query = lqp.parse(qstr);
+            Query query = lqp.parse(searchParameters.getQuery());
             ContextAwareQuery contextAwareQuery = new ContextAwareQuery(query, searchParameters);
             return contextAwareQuery;
         }

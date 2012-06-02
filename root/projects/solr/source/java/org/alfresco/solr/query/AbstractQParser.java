@@ -58,9 +58,9 @@ public abstract class AbstractQParser extends QParser
     private static final String ALFRESCO_JSON = "ALFRESCO_JSON";
 
     private static final String AUTHORITY_FILTER_FROM_JSON = "AUTHORITY_FILTER_FROM_JSON";
-    
+
     private static final String TENANT_FILTER_FROM_JSON = "TENANT_FILTER_FROM_JSON";
-    
+
     /**
      * @param qstr
      * @param localParams
@@ -71,7 +71,7 @@ public abstract class AbstractQParser extends QParser
     {
         super(qstr, localParams, params, req);
     }
-    
+
     protected SearchParameters getSearchParameters()
     {
         SearchParameters searchParameters = new SearchParameters();
@@ -116,98 +116,100 @@ public abstract class AbstractQParser extends QParser
         {
             try
             {
-                if (getString().equals(AUTHORITY_FILTER_FROM_JSON))
+                if(getString() != null)
                 {
-                    ArrayList<String> tenantList = new ArrayList<String>(1);
-                    JSONArray tenants = json.getJSONArray("tenants");
-                    for (int i = 0; i < tenants.length(); i++)
+                    if (getString().equals(AUTHORITY_FILTER_FROM_JSON))
                     {
-                        String tenantString = tenants.getString(i);
-                        tenantList.add(tenantString);
-                    }
-                    
-                    ArrayList<String> authorityList = new ArrayList<String>(1);
-                    JSONArray authorities = json.getJSONArray("authorities");
-                    for (int i = 0; i < authorities.length(); i++)
-                    {
-                        String authorityString = authorities.getString(i);
-                        authorityList.add(authorityString);
-                    }
-                    
-                    StringBuilder authQuery = new StringBuilder();
-                    for(String tenant : tenantList)
-                    {
-                        for(String authority : authorityList)
+                        ArrayList<String> tenantList = new ArrayList<String>(1);
+                        JSONArray tenants = json.getJSONArray("tenants");
+                        for (int i = 0; i < tenants.length(); i++)
                         {
-                            if (authQuery.length() > 0)
-                            {
-                                authQuery.append(" ");
-                            }
-                            switch(AuthorityType.getAuthorityType(authority))
-                            {
-                            case USER:
-                                authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
-                                break;
-                            case GROUP:
-                            case EVERYONE:
-                            case GUEST:
-                                if(tenant.length() == 0)
-                                {
-                                    // Default tenant matches 4.0 
-                                    authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
-                                }
-                                else
-                                {
-                                    authQuery.append("|AUTHORITY:\"").append(authority).append("@").append(tenant).append("\"");
-                                }
-                                break;
-                            default:
-                                authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
-                                break;
-                            }
-                            
+                            String tenantString = tenants.getString(i);
+                            tenantList.add(tenantString);
                         }
-                    }
-                    
-                    if (authQuery.length() > 0)
-                    {
-                        searchParameters.setQuery(authQuery.toString());
-                    }
-                }
-                else if (getString().equals(TENANT_FILTER_FROM_JSON))
-                {
-                    ArrayList<String> tenantList = new ArrayList<String>(1);
-                    JSONArray tenants = json.getJSONArray("tenants");
-                    for (int i = 0; i < tenants.length(); i++)
-                    {
-                        String tenantString = tenants.getString(i);
-                        tenantList.add(tenantString);
-                    }
-                    
-                    StringBuilder tenantQuery = new StringBuilder();
-                    for(String tenant : tenantList)
-                    {
-                        if (tenantQuery.length() > 0)
-                        {
-                            tenantQuery.append(" ");
-                        }
-                        
-                        if(tenant.length() > 0)
 
+                        ArrayList<String> authorityList = new ArrayList<String>(1);
+                        JSONArray authorities = json.getJSONArray("authorities");
+                        for (int i = 0; i < authorities.length(); i++)
                         {
-                            tenantQuery.append("|TENANT:\"").append(tenant).append("\"");
+                            String authorityString = authorities.getString(i);
+                            authorityList.add(authorityString);
                         }
-                        else
+
+                        StringBuilder authQuery = new StringBuilder();
+                        for(String tenant : tenantList)
                         {
-                            // TODO: Need to check for the default tenant or no tenant (4.0) or we force a reindex requirement later ...
-                            // Better to add default tenant to the 4.0 index
-                            tenantQuery.append("|TENANT:\"").append("_DEFAULT_").append("\"");
-                            //tenantQuery.append(" |(+ISNODE:T -TENANT:*)");
+                            for(String authority : authorityList)
+                            {
+                                if (authQuery.length() > 0)
+                                {
+                                    authQuery.append(" ");
+                                }
+                                switch(AuthorityType.getAuthorityType(authority))
+                                {
+                                case USER:
+                                    authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                    break;
+                                case GROUP:
+                                case EVERYONE:
+                                case GUEST:
+                                    if(tenant.length() == 0)
+                                    {
+                                        // Default tenant matches 4.0 
+                                        authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                    }
+                                    else
+                                    {
+                                        authQuery.append("|AUTHORITY:\"").append(authority).append("@").append(tenant).append("\"");
+                                    }
+                                    break;
+                                default:
+                                    authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                    break;
+                                }
+
+                            }
                         }
-                       
+
+                        if (authQuery.length() > 0)
+                        {
+                            searchParameters.setQuery(authQuery.toString());
+                        }
                     }
-                    searchParameters.setQuery(tenantQuery.toString());
-  
+                    else if (getString().equals(TENANT_FILTER_FROM_JSON))
+                    {
+                        ArrayList<String> tenantList = new ArrayList<String>(1);
+                        JSONArray tenants = json.getJSONArray("tenants");
+                        for (int i = 0; i < tenants.length(); i++)
+                        {
+                            String tenantString = tenants.getString(i);
+                            tenantList.add(tenantString);
+                        }
+
+                        StringBuilder tenantQuery = new StringBuilder();
+                        for(String tenant : tenantList)
+                        {
+                            if (tenantQuery.length() > 0)
+                            {
+                                tenantQuery.append(" ");
+                            }
+
+                            if(tenant.length() > 0)
+
+                            {
+                                tenantQuery.append("|TENANT:\"").append(tenant).append("\"");
+                            }
+                            else
+                            {
+                                // TODO: Need to check for the default tenant or no tenant (4.0) or we force a reindex requirement later ...
+                                // Better to add default tenant to the 4.0 index
+                                tenantQuery.append("|TENANT:\"").append("_DEFAULT_").append("\"");
+                                //tenantQuery.append(" |(+ISNODE:T -TENANT:*)");
+                            }
+
+                        }
+                        searchParameters.setQuery(tenantQuery.toString());
+                    }
                 }
                 else
                 {
@@ -225,7 +227,7 @@ public abstract class AbstractQParser extends QParser
                     Locale locale = DefaultTypeConverter.INSTANCE.convert(Locale.class, localeString);
                     searchParameters.addLocale(locale);
                 }
-               
+
                 JSONArray templates = json.getJSONArray("templates");
                 for (int i = 0; i < templates.length(); i++)
                 {
@@ -271,7 +273,7 @@ public abstract class AbstractQParser extends QParser
                 log.debug(json.toString());
             }
         }
-        
+
         if (searchParameters.getQuery() == null)
         {
             searchParameters.setQuery(getString());
@@ -281,7 +283,7 @@ public abstract class AbstractQParser extends QParser
         {
             searchParameters.addLocale(I18NUtil.getLocale());
         }
-        
+
         String defaultField = getParam(CommonParams.DF);
         if(defaultField != null)
         {
@@ -290,7 +292,7 @@ public abstract class AbstractQParser extends QParser
 
         // searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
         searchParameters.setNamespace(NamespaceService.CONTENT_MODEL_1_0_URI);
-        
+
         return searchParameters;
     }
 }

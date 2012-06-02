@@ -8,15 +8,15 @@
 	  	<#list feedbackPage.feedback as comment>  	
 	        <li>
                 <#if comment.visitorWebsite??>
-                    <h4><a href="${comment.visitorWebsite}">${comment.visitorName!'Anonymous'?js_string}</a></h4>
+                    <h4><a href="${comment.visitorWebsite}">${(comment.visitorName!'Anonymous')?html}</a></h4>
                 <#else>
-                    <h4>${comment.visitorName!'Anonymous'?js_string}</h4>
+                    <h4>${(comment.visitorName!'Anonymous')?html}</h4>
                 </#if>
                 <span class="newslist-date"><#if comment.postTime??>${comment.postTime?string(msg('date.format'))}</#if></span>
                 <#if comment.commentFlagged || (context.properties['report']!'') = comment.id>
                     <span class="comments-text">${msg('comments.display.censored')}</span>
                 <#else>
-                    <span class="comments-text">${comment.comment!'nothing to say'?js_string}</span>
+                    <span class="comments-text">${(comment.comment!'nothing to say')?html}</span>
                     <span class="comments-report"><a href="?report=${comment.id}">report this post</a></span>
                 </#if>
                 <div class="clearfix"></div>

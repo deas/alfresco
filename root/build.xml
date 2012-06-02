@@ -276,6 +276,15 @@
          <exclude name="**/org/alfresco/enterprise/license/LicenseComponentTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/enterprise/repo/admin/indexcheck/IndexCheckServiceImplTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/RepositoryStartStopTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/cmis/changelog/*.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/cmis/search/*.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/filesys/FTPServerTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/filesys/repo/*.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/jcr/**/*.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/opencmis/search/*.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/util/schemacomp/DbToXMLTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/util/schemacomp/ExportDbTest.java" if="minimal.testing" />
+         <exclude name="**/org/alfresco/util/test/junitrules/*.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/repo/**/*.java" if="minimal.testing" />
 
          <!-- All other tests -->

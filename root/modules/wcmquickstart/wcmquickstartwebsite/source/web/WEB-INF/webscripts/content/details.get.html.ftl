@@ -1,6 +1,6 @@
 <div class="address-box">
     <h3>${msg(title)}</h3>
-    <p>${asset.description!''}</p>
+    <p>${(asset.description!'')?html}</p>
     <ul>
         <li><strong>${msg('content.details.author')}</strong>: ${asset.properties['cm:author']!''}</li>
         <li><strong>${msg('content.details.published')}</strong>: <#if asset.properties['cmis:lastModificationDate']??>${asset.properties['cmis:lastModificationDate']?string(msg('date.format'))}</#if></li>

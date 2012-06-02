@@ -5,7 +5,7 @@
     <#else>
         <ul class="tag-list">
             <#list section.tags as tag>
-                <li><a href="${url.context}/search.html?sectionId=${section.id?url}&tag=${tag.name?url}">${tag.name} (${tag.count})</a></li>
+                <li><a href="${url.context}/search.html?sectionId=${section.id?url}&tag=${tag.name?url}">${tag.name?html} (${tag.count})</a></li>
             </#list>
         </ul>
     </#if>

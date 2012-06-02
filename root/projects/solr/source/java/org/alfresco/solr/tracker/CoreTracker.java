@@ -76,6 +76,8 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.AlfrescoSolrEventListener;
+import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
@@ -252,12 +254,12 @@ public class CoreTracker implements CloseHook
     {
         return state.lastIndexedChangeSetCommitTime;
     }
-    
+
     public long getLastIndexedTxId()
     {
         return state.lastIndexedTxId;
     }
-    
+
     public long getLastIndexedChangeSetId()
     {
         return state.lastIndexedChangeSetId;
@@ -273,7 +275,7 @@ public class CoreTracker implements CloseHook
     {
         return state.lastTxCommitTimeOnServer;
     }
-    
+
     public long getLastChangeSetCommitTimeOnServer()
     {
         return state.lastChangeSetCommitTimeOnServer;
@@ -283,7 +285,7 @@ public class CoreTracker implements CloseHook
     {
         return state.lastTxIdOnServer;
     }
-    
+
     public long getLastChangeSetIdOnServer()
     {
         return state.lastChangeSetIdOnServer;
@@ -1413,7 +1415,7 @@ public class CoreTracker implements CloseHook
             {
                 state.lastChangeSetIdOnServer = aclChangeSets.getMaxChangeSetId();
             }
-            
+
             log.info("Scanning Acl change sets ...");
             if (aclChangeSets.getAclChangeSets().size() > 0)
             {
@@ -1471,7 +1473,7 @@ public class CoreTracker implements CloseHook
                         changeSetsFound.add(changeSet);
 
                         trackerStats.addChangeSetAcls(acls.size());
-                        
+
                         if (changeSet.getCommitTimeMs() > state.lastIndexedChangeSetCommitTime)
                         {
                             state.lastIndexedChangeSetCommitTime = changeSet.getCommitTimeMs();
@@ -1528,8 +1530,8 @@ public class CoreTracker implements CloseHook
                 long firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
                 state.lastGoodChangeSetCommitTimeInIndex =  firstChangeSetCommitTimex;
             }
-            
-          
+
+
         }
 
         if(!state.checkedFirstTransactionTime)
@@ -1629,7 +1631,7 @@ public class CoreTracker implements CloseHook
         {
             state.lastIndexedChangeSetCommitTime = getLastChangeSetCommitTime(reader);
         }
-        
+
         if (state.lastIndexedChangeSetId == 0)
         {
             state.lastIndexedChangeSetId = getLastChangeSetId(reader);
@@ -1728,6 +1730,7 @@ public class CoreTracker implements CloseHook
         do
         {
             aclChangeSets = client.getAclChangeSets(startTime, null, startTime + actualTimeStep, null, maxResults);
+            startTime += actualTimeStep;
             actualTimeStep *= 2;
             if(actualTimeStep > 1000*60*60*24*32L)
             {
@@ -1779,12 +1782,12 @@ public class CoreTracker implements CloseHook
         do
         {
             transactions = client.getTransactions(startTime, null, startTime + actualTimeStep, null, maxResults); 
+            startTime += actualTimeStep;
             actualTimeStep *= 2;
             if(actualTimeStep > 1000*60*60*24*32L)
             {
                 actualTimeStep = 1000*60*60*24*32L;
             }
-            startTime += actualTimeStep;
         }
         while( ((transactions.getTransactions().size() == 0)  && (startTime < endTime)) || ((transactions.getTransactions().size() > 0)  && alreadyFoundTransactions(txnsFound, transactions)));
 
@@ -2065,6 +2068,23 @@ public class CoreTracker implements CloseHook
 
             if ((node.getStatus() == SolrApiNodeStatus.DELETED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
             {
+                // fix up any secondary paths
+                NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+                nmdp.setFromNodeId(node.getId());
+                nmdp.setToNodeId(node.getId());
+                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+                for (NodeMetaData nodeMetaData : nodeMetaDatas)
+                {
+                    if(nodeMetaData.getTxnId() > node.getTxnId())
+                    {
+                        // the node has moved on to a later transaction
+                        // it will be indexed later
+                        continue;
+                    }
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
+                }
+
+
                 log.debug(".. deleting");
                 DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
                 docCmd.id = "LEAF-" + node.getId();
@@ -2083,6 +2103,8 @@ public class CoreTracker implements CloseHook
                 docCmd.fromPending = true;
                 docCmd.fromCommitted = true;
                 core.getUpdateHandler().delete(docCmd);
+
+
             }
 
             if ((node.getStatus() == SolrApiNodeStatus.UPDATED)  || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
@@ -2131,7 +2153,7 @@ public class CoreTracker implements CloseHook
                             if (docSet.size() > 0)
                             {
                                 log.debug("... cascade updating aux doc");
-                                updateDescendantAuxDocs(nodeMetaData, overwrite);
+                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
                             }
                             else
                             {
@@ -2318,17 +2340,17 @@ public class CoreTracker implements CloseHook
             // TODO: add to reporting
             // TODO: Store exception for display via query
             // TODO: retry failed
-            
+
             AddUpdateCommand leafDocCmd = new AddUpdateCommand();
             leafDocCmd.overwriteCommitted = overwrite;
             leafDocCmd.overwritePending = overwrite;
-            
+
             SolrInputDocument doc = new SolrInputDocument();
             doc.addField(AbstractLuceneQueryParser.FIELD_ID, "ERROR-" + node.getId());
             doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
             doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, node.getTxnId());
             doc.addField(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE, e.getMessage());
-            
+
             StringWriter stringWriter = new StringWriter(4096);
             PrintWriter printWriter = new PrintWriter(stringWriter, true);
             try
@@ -2340,8 +2362,8 @@ public class CoreTracker implements CloseHook
             {
                 printWriter.close();
             }
-            
-          
+
+
 
             leafDocCmd.solrDoc = doc;
             leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -2350,55 +2372,84 @@ public class CoreTracker implements CloseHook
             {
                 core.getUpdateHandler().addDoc(leafDocCmd);
             }
-            
+
             log.warn("Node index failed and skipped for " + node.getId() + " in Tx "+node.getTxnId());
         }
 
     }
 
-    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite) throws AuthenticationException, IOException, JSONException
+    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
     {
+        HashSet<Long>childIds = new HashSet<Long>();
+
         if (parentNodeMetaData.getChildIds() != null)
         {
-            for (Long childId : parentNodeMetaData.getChildIds())
+            childIds.addAll(parentNodeMetaData.getChildIds());
+        }
+
+        BooleanQuery bQuery = new BooleanQuery();
+        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT, parentNodeMetaData.getNodeRef().toString())), Occur.MUST);
+        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
+        CacheEntry[] indexedByDocId = (CacheEntry[]) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
+        if (docSet instanceof BitDocSet)
+        {
+            BitDocSet source = (BitDocSet) docSet;
+            OpenBitSet openBitSet = source.getBits();
+            int current = -1;
+            while ((current = openBitSet.nextSetBit(current + 1)) != -1)
             {
-                NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
-                nmdp.setFromNodeId(childId);
-                nmdp.setToNodeId(childId);
-                nmdp.setIncludeAclId(true);
-                nmdp.setIncludeAspects(true);
-                nmdp.setIncludeChildAssociations(false);
-                nmdp.setIncludeChildIds(true);
-                nmdp.setIncludeNodeRef(false);
-                nmdp.setIncludeOwner(true);
-                nmdp.setIncludeParentAssociations(true);
-                nmdp.setIncludePaths(true);
-                nmdp.setIncludeProperties(false);
-                nmdp.setIncludeType(true);
-                nmdp.setIncludeTxnId(true);
-                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
-
-                for (NodeMetaData nodeMetaData : nodeMetaDatas)
-                {
-                    if (mayHaveChildren(nodeMetaData))
-                    {
-                        updateDescendantAuxDocs(nodeMetaData, overwrite);
-                    }
-
-                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
-                    AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                    auxDocCmd.overwriteCommitted = overwrite;
-                    auxDocCmd.overwritePending = overwrite;
-                    auxDocCmd.solrDoc = aux;
-                    auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
-
-                    core.getUpdateHandler().addDoc(auxDocCmd);
-                }
-
+                CacheEntry entry = indexedByDocId[current];
+                childIds.add(entry.getDbid());
+            }
+        }
+        else
+        {
+            for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+            {
+                CacheEntry entry = indexedByDocId[it.nextDoc()];
+                childIds.add(entry.getDbid());
             }
         }
 
+        for (Long childId : childIds)
+        {
+            NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+            nmdp.setFromNodeId(childId);
+            nmdp.setToNodeId(childId);
+            nmdp.setIncludeAclId(true);
+            nmdp.setIncludeAspects(true);
+            nmdp.setIncludeChildAssociations(false);
+            nmdp.setIncludeChildIds(true);
+            nmdp.setIncludeNodeRef(true);
+            nmdp.setIncludeOwner(true);
+            nmdp.setIncludeParentAssociations(true);
+            nmdp.setIncludePaths(true);
+            nmdp.setIncludeProperties(false);
+            nmdp.setIncludeType(true);
+            nmdp.setIncludeTxnId(true);
+            List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+
+            for (NodeMetaData nodeMetaData : nodeMetaDatas)
+            {
+                if (mayHaveChildren(nodeMetaData))
+                {
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
+                }
+
+                SolrInputDocument aux = createAuxDoc(nodeMetaData);
+                AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+                auxDocCmd.overwriteCommitted = overwrite;
+                auxDocCmd.overwritePending = overwrite;
+                auxDocCmd.solrDoc = aux;
+                auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+
+                core.getUpdateHandler().addDoc(auxDocCmd);
+            }
+
+        }
     }
+
+
 
     private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
     {
@@ -2739,7 +2790,7 @@ public class CoreTracker implements CloseHook
             AclChangeSet firstChangeSet = firstChangeSets.getAclChangeSets().get(0);
             firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
         }
-        
+
         OpenBitSet aclTxIdsInDb = new OpenBitSet();
         Long lastAclTxCommitTime = Long.valueOf(firstChangeSetCommitTimex);
         if (fromTime != null)
@@ -3208,7 +3259,7 @@ public class CoreTracker implements CloseHook
 
         return lastTxCommitTime;
     }
-    
+
     private long getLastChangeSetId(SolrIndexReader reader) throws IOException
     {
         long lastTxCommitTime = 0;
