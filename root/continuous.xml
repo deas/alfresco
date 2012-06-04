@@ -719,7 +719,7 @@
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-win.txt" failifexecutionfails="true">
             <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.name.build}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" "project.installerFilename=${file.name.dist.deployment.win}"'/>
         </exec>
-        <exec dir="${dir.installer.bitrock}" executable="${file.name.signcode.exe.linux}" output="${dir.name.build}/error-signcode-deploy-win.txt" failifexecutionfails="true">
+        <exec dir="${dir.installer.deploy}" executable="${file.name.signcode.exe.linux}" output="${dir.name.build}/error-signcode-deploy-win.txt" failifexecutionfails="true">
             <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.name.build}/${file.name.dist.deployment.win}" -out "${dir.continuous.dist}/${file.name.dist.deployment.win}" -t "${url.signcode.timestamp}"'/>
         </exec>
     </target>
