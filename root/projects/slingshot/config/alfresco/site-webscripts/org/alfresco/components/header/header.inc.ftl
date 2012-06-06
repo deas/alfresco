@@ -121,7 +121,7 @@
 </li>   
 <#else>
    <#assign attrTarget><#if item.type = "external-link">target="_blank"</#if></#assign>
-<li><a ${attrStyle} ${attrTitle} ${attrHref} tabindex="0" ${attrTarget!""}>${msg(item.label!"")}</a>
+<li><a ${attrStyle} ${attrTitle} ${attrHref} id="${id}-${item.id}" tabindex="0" ${attrTarget!""}>${msg(item.label!"")}</a>
    <#if item.type = "container"><@subMenu item /></#if>
 </li>
 </#if>
