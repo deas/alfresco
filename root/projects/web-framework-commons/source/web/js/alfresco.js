@@ -2021,6 +2021,12 @@ Alfresco.util.createBalloon = function(p_context, p_params)
       
       this.onClose = new YAHOO.util.CustomEvent("close" , this);
       this.onShow = new YAHOO.util.CustomEvent("show" , this);
+
+      // Register to enable hide all functionality.
+      this.name = "Alfresco.widget.Balloon";
+      this.id = this.balloon.id;
+      Alfresco.util.ComponentManager.register(this);
+
       return this;
    };
 
@@ -2048,6 +2054,8 @@ Alfresco.util.createBalloon = function(p_context, p_params)
       hide: function Balloon_hide()
       {
          this.balloon.hide();
+         // Unregister here since this is the closest we've got to a destroy method.
+         Alfresco.util.ComponentManager.unregister(this);
          this.onClose.fire();
       },
       
@@ -2058,11 +2066,33 @@ Alfresco.util.createBalloon = function(p_context, p_params)
       */
       show: function Balloon_show()
       {
+         // Reregister to ensure we're tracked.
+         Alfresco.util.ComponentManager.reregister(this);
          this.balloon.show();
          this.balloon.bringToTop();
+
+         // Hide Other Balloons
+         this.hideOthers();
+
          this.onShow.fire();
       },
-      
+
+      /**
+       * Ensures that the current Balloon is the only one showing.
+       * @method hideOthers
+       */
+      hideOthers: function Balloon_hideOthers()
+      {
+         var balloons = Alfresco.util.ComponentManager.find({ name: this.name});
+         for (var i=0; i < balloons.length; i++)
+         {
+            if (balloons[i].id != this.id)
+            {
+               balloons[i].balloon.hide();
+            }
+         }
+      },
+
       /**
        * Sets the HTML content of the balloon.
        *
