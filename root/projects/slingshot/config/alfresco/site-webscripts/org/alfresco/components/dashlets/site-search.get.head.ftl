@@ -1,5 +1,3 @@
-<#include "../component.head.inc">
-<!-- Site Search Dashlet -->
-<@script type="text/javascript" src="${page.url.context}/res/components/search/search-lib.js"></@script>
-<@script type="text/javascript" src="${page.url.context}/res/components/dashlets/site-search.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/dashlets/site-search.css" />
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->
