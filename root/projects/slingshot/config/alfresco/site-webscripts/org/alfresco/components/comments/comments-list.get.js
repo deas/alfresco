@@ -114,11 +114,9 @@ function main()
    commentList.options.siteId = model.site;
    commentList.options.maxItems = model.maxItems;
    commentList.options.activity =  model.activityParameterJSON;
-   var locale = locale.substring(0, 2);
+   var locale = this.locale.substring(0, 2);
    commentList.options.editorConfig = 
       {
-         height: height,
-         width: width,
          inline_styles: false,
          convert_fonts_to_spans: false,
          theme: "advanced",
