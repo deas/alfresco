@@ -1147,12 +1147,12 @@
     </target>
 	
 	<target name="assemble-sdk"
-	           depends="continuous-init,sdk-common,sdk-extras">
+	           depends="continuous-init,sdk-common">
 	 </target>
 	  
 
     <target name="sdk-common"
-           depends="continuous-init,generate-docs,incremental">
+           depends="continuous-init,generate-docs,incremental,sdk-extras">
       <mkdir dir="${dir.continuous.dist}" />
 
       <!-- -->

@@ -501,6 +501,17 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                             restartAuthProcess(session, req, res, AUTH_SPNEGO);
                         }   
                     }
+                    else
+                    {
+                        //  Unsupported mechanism, e.g. NegoEx
+                        
+                        if ( logger.isDebugEnabled())
+                            logger.debug( "Unsupported SPNEGO mechanism " + oidStr);
+    
+                        // Try again!
+                        
+                        restartAuthProcess(session, req, res, AUTH_SPNEGO);
+                    }
                 }
                 catch ( IOException ex)
                 {
