@@ -49,3 +49,16 @@ function getListTypes()
 }
 
 model.listTypes = getListTypes();
+
+//Widget instantiation metadata...
+model.webScriptWidgets = [];
+var dataLists = {};
+dataLists.name = "Alfresco.component.DataLists";
+dataLists.provideMessages = true;
+dataLists.provideOptions = true;
+dataLists.options = {};
+dataLists.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+dataLists.options.containerId = template.properties.container != null ? template.properties.container : "dataLists";
+dataLists.options.listId = (page.url.args.list != null) ? page.url.args.list : "";
+dataLists.options.listTypes = model.listTypes;
+model.webScriptWidgets.push(dataLists);

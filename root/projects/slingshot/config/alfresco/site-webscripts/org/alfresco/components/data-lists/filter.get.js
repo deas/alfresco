@@ -26,7 +26,8 @@ function main()
 {
    // Actions
    var myConfig = new XML(config.script),
-      filters = [];
+      filters = [],
+      filterIds = [];
    
    for each(var xmlFilter in myConfig..filter)
    {
@@ -36,9 +37,24 @@ function main()
          data: xmlFilter.@data.toString(),
          label: xmlFilter.@label.toString()
       });
+      
+      filterIds.push(xmlFilter.@id.toString());
    }
    
    model.filters = filters;
+   model.filterIds = filterIds;
 }
 
 main();
+
+//Widget instantiation metadata...
+model.webScriptWidgets = [];
+var filter = {};
+filter.name = "Alfresco.component.BaseFilter";
+filter.assignToVariable = "filter";
+filter.instantiationArguments = [];
+filter.instantiationArguments.push("Alfresco.DataListFilter");
+filter.instantiationArguments.push("\"" + args.htmlid + "\"");
+filter.provideMessages = false;
+filter.provideOptions = false;
+model.webScriptWidgets.push(filter);

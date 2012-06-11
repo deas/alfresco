@@ -46,3 +46,13 @@ function main()
 }
 
 main();
+
+//Widget instantiation metadata...
+model.webScriptWidgets = [];
+var toolbar = {};
+toolbar.name = "Alfresco.component.DataListToolbar";
+toolbar.provideMessages = true;
+toolbar.provideOptions = true;
+toolbar.options = {};
+toolbar.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+model.webScriptWidgets.push(toolbar);

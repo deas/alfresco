@@ -1,11 +1,24 @@
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.DataLoader('${args.htmlid}').setOptions(
-   {
-      url: "${args.url!""}",
-      <#if args.eventData??>eventData: "${args.eventData?js_string}",</#if>
-      <#if args.useProxy??>useProxy: ${args.useProxy},</#if>
-      <#if args.failureMessageKey??>failureMessageKey: "${args.failureMessageKey}",</#if>      
-      eventName: "${args.eventName!""}"
-   }).setMessages(${messages});
-//]]></script>
+<@markup id="css" >
+   <#-- No CSS Dependencies -->
+   <@link href="" group=""/>
+</@>
 
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/data/data-loader.js" group="data"/>
+</@>
+
+<@markup id="pre">
+</@>
+
+<@markup id="widgets">
+   <@createWidgets/>
+</@>
+
+<@markup id="post">
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+   </@>
+</@>
