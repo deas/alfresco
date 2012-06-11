@@ -95,7 +95,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     private MimetypeService mimetypeService;
     private DictionaryService dictionaryService;
 
-    private VtiDocumentHepler documentHelper;
+    private VtiDocumentHelper documentHelper;
     private VtiPathHelper pathHelper;
 
     /**
@@ -212,9 +212,9 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     /**
      * Set document helper
      * 
-     * @param checkoutHelper the document helper to set ({@link VtiDocumentHepler})
+     * @param checkoutHelper the document helper to set ({@link VtiDocumentHelper})
      */
-    public void setDocumentHelper(VtiDocumentHepler checkoutHelper)
+    public void setDocumentHelper(VtiDocumentHelper checkoutHelper)
     {
         this.documentHelper = checkoutHelper;
     }
@@ -322,9 +322,9 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
     /**
      * Get document helper
      * 
-     * @return VtiDocumentHepler document helper
+     * @return VtiDocumentHelper document helper
      */
-    public VtiDocumentHepler getDocumentHelper()
+    public VtiDocumentHelper getDocumentHelper()
     {
         return documentHelper;
     }
@@ -366,7 +366,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         DocumentStatus documentStatus = getDocumentHelper().getDocumentStatus(documentFileInfo.getNodeRef());
 
         // if document isn't checked out then throw exception
-        if (VtiDocumentHepler.isCheckedout(documentStatus) == false)
+        if (VtiDocumentHelper.isCheckedout(documentStatus) == false)
         {
             if (logger.isDebugEnabled())
             {
@@ -376,7 +376,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         }
 
         // if document is checked out, but user isn't owner, then throw exception
-        if (VtiDocumentHepler.isCheckoutOwner(documentStatus) == false)
+        if (VtiDocumentHelper.isCheckoutOwner(documentStatus) == false)
         {
             if (logger.isDebugEnabled())
             {
@@ -390,7 +390,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         {
             tx.begin();
 
-            if (VtiDocumentHepler.isLongCheckedout(documentStatus))
+            if (VtiDocumentHelper.isLongCheckedout(documentStatus))
             {
                 // long-term checkout
                 Map<String, Serializable> props = new HashMap<String, Serializable>(1, 1.0f);
@@ -617,7 +617,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 result.getDialogMetaInfoList().add(getDialogMetaInfo(fileInfo));                
             }
             else if (getNodeService().hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY) == false
-                    && VtiDocumentHepler.applyFilters(fileInfo.getName(), fileDialogFilterValue))
+                    && VtiDocumentHelper.applyFilters(fileInfo.getName(), fileDialogFilterValue))
             {                
                result.getDialogMetaInfoList().add(getDialogMetaInfo(fileInfo));                
             }
@@ -901,7 +901,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                     throw new VtiHandlerException(VtiHandlerException.FILE_OPEN_FOR_WRITE);
                 }
 
-                if (VtiDocumentHepler.isCheckedout(documentStatus) && VtiDocumentHepler.isCheckoutOwner(documentStatus) == false)
+                if (VtiDocumentHelper.isCheckedout(documentStatus) && VtiDocumentHelper.isCheckoutOwner(documentStatus) == false)
                 {
                     // document already checked out by another user
                     if (logger.isDebugEnabled())
@@ -911,7 +911,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                     throw new VtiHandlerException(VtiHandlerException.DOC_CHECKED_OUT);
                 }
 
-                if (VtiDocumentHepler.isLongCheckedout(documentStatus))
+                if (VtiDocumentHelper.isLongCheckedout(documentStatus))
                 {
                     NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(curDocumentFileInfo.getNodeRef());
                     curDocumentFileInfo = getFileFolderService().getFileInfo(workingCopyNodeRef);
@@ -1129,8 +1129,8 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 originalFileInfo = fileInfo;
 
                 DocumentStatus documentStatus = getDocumentHelper().getDocumentStatus(originalFileInfo.getNodeRef());
-                isLongCheckedout = VtiDocumentHepler.isLongCheckedout(documentStatus);
-                isShortCheckedout = VtiDocumentHepler.isShortCheckedout(documentStatus);
+                isLongCheckedout = VtiDocumentHelper.isLongCheckedout(documentStatus);
+                isShortCheckedout = VtiDocumentHelper.isShortCheckedout(documentStatus);
 
                 if (isLongCheckedout)
                 {
@@ -1223,7 +1223,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
         {
             DocumentStatus documentStatus = getDocumentHelper().getDocumentStatus(fileInfo.getNodeRef());
 
-            if (VtiDocumentHepler.isLongCheckedout(documentStatus))
+            if (VtiDocumentHelper.isLongCheckedout(documentStatus))
             {
                 NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(fileInfo.getNodeRef());
                 FileInfo workingCopyFileInfo = getFileFolderService().getFileInfo(workingCopyNodeRef);
@@ -1264,7 +1264,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             throw new VtiHandlerException(VtiHandlerException.FILE_OPEN_FOR_WRITE);
         }
 
-        if (VtiDocumentHepler.isCheckedout(documentStatus) && VtiDocumentHepler.isCheckoutOwner(documentStatus) == false)
+        if (VtiDocumentHelper.isCheckedout(documentStatus) && VtiDocumentHelper.isCheckoutOwner(documentStatus) == false)
         {
             // document already checked out by another user
             if (logger.isDebugEnabled())
@@ -1339,7 +1339,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             throw new VtiHandlerException(VtiHandlerException.REMOVE_FILE);
         }
 
-        if (VtiDocumentHepler.isCheckedout(documentStatus) && VtiDocumentHepler.isCheckoutOwner(documentStatus) == false)
+        if (VtiDocumentHelper.isCheckedout(documentStatus) && VtiDocumentHelper.isCheckoutOwner(documentStatus) == false)
         {
             throw new VtiHandlerException(VtiHandlerException.DOC_CHECKED_OUT);
         }

@@ -36,7 +36,7 @@ import org.alfresco.service.cmr.repository.NodeService;
  * 
  * @author Dmitry Lazurkin
  */
-public class VtiDocumentHepler
+public class VtiDocumentHelper
 {
     private NodeService nodeService;
     private CheckOutCheckInService checkOutCheckInService;

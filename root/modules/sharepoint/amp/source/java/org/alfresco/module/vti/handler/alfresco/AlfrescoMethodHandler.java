@@ -600,7 +600,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         DocumentStatus documentStatus = getDocumentHelper().getDocumentStatus(documentFileInfo.getNodeRef());
 
         // if document isn't checked out then throw exception
-        if (VtiDocumentHepler.isCheckedout(documentStatus) == false)
+        if (VtiDocumentHelper.isCheckedout(documentStatus) == false)
         {
             if (logger.isDebugEnabled())
             {
@@ -616,7 +616,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         }
 
         // if document is checked out, but user isn't owner, then throw exception
-        if (VtiDocumentHepler.isCheckoutOwner(documentStatus) == false)
+        if (VtiDocumentHelper.isCheckoutOwner(documentStatus) == false)
         {
             if (logger.isDebugEnabled())
             {

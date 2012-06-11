@@ -145,7 +145,7 @@
         <property name="shareUtils" ref="shareUtils" />
     </bean>
 
-    <bean id="vtiDocumentHelper" class="org.alfresco.module.vti.handler.alfresco.VtiDocumentHepler">
+    <bean id="vtiDocumentHelper" class="org.alfresco.module.vti.handler.alfresco.VtiDocumentHelper">
         <property name="nodeService" ref="NodeService" />
         <property name="webDAVLockService" ref="webDAVLockService" />
         <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
