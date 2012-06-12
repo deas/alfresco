@@ -9275,7 +9275,7 @@ Alfresco.util.generateThumbnailUrl = function(jsNode, thumbnailName)
       var thumbnailModData = jsNode.properties["cm:lastThumbnailModification"];
       for (var i = 0; i < thumbnailModData.length; i++)
       {
-         if (thumbnailModData[i].indexOf("doclib") != -1)   
+         if (thumbnailModData[i].indexOf(thumbnailName) != -1)   
          {
             url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true&lastModified=" + thumbnailModData[i];
             break;
