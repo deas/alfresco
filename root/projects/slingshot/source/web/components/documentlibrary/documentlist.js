@@ -1555,8 +1555,8 @@
       var jsNode = record.jsNode,
          nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef;
       if (renditionName == null)
-         renditionName = "doclib";
-      return Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib?c=queue&ph=true";
+          renditionName = "doclib";
+      return Alfresco.util.generateThumbnailUrl(jsNode, renditionName);
    };
 
    /**
