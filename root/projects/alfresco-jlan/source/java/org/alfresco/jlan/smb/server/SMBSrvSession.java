@@ -1945,6 +1945,64 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	}
 
 	/**
+	 * Check if this session has any asynchrnous responses queued
+	 * 
+	 * @return boolean
+	 */
+	public final synchronized boolean hasAsyncResponseQueued() {
+		if ( m_asynchQueue == null || m_asynchQueue.size() == 0)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Send queued asynchronous responses
+	 * 
+	 * @return int
+	 */
+	public final synchronized int sendQueuedAsyncResponses() {
+		
+        // Check if there are any pending asynchronous response packets
+
+		int asyncCnt = 0;
+        SMBSrvPacket asynchPkt;
+        
+		while ((asynchPkt = removeFirstAsynchResponse()) != null) {
+
+			try {
+				
+				// Update the asynchronous pacekt count
+				
+				asyncCnt++;
+				
+				// Send the current asynchronous response to the client
+	
+				sendResponseSMB(asynchPkt, asynchPkt.getLength());
+
+				// DEBUG
+	
+				if ( Debug.EnableInfo && (hasDebug(DBG_NOTIFY) || hasDebug(DBG_OPLOCK))) {
+					debugPrintln("Sent queued asynch response type=" + asynchPkt.getPacketTypeString() + ", mid="
+							+ asynchPkt.getMultiplexId() + ", pid=" + asynchPkt.getProcessId());
+					    debugPrintln("  Async queue len=" + m_asynchQueue.size());
+				}
+			}
+			catch (Exception ex) {
+
+				// DEBUG
+				
+				if ( Debug.EnableError && (hasDebug(DBG_NOTIFY) || hasDebug(DBG_OPLOCK)))
+					debugPrintln("Failed to send queued asynch response type=" + asynchPkt.getPacketTypeString() + ", mid="
+							+ asynchPkt.getMultiplexId() + ", pid=" + asynchPkt.getProcessId() + ", ex=" + ex);
+			}
+		}
+		
+		// Return the count of asynchrnous packets processed
+		
+		return asyncCnt;
+	}
+	
+	/**
 	 * Find the notify request with the specified ids
 	 * 
 	 * @param mid int

@@ -74,6 +74,7 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 			int pktCount = 0;
 			boolean morePkts = true;
 			boolean pktError = false;
+			boolean asyncPkt = false;
 			
 			SMBSrvPacket smbPkt = null;
 			
@@ -125,10 +126,21 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 						
 						pktCount++;
 
+						// Check if there are any asynchronous packets queued for this session, they may be queued by
+						// another session/thread for oplock breaks. Do not re-enable socket read events until the asynchronous
+						// packet queue has been cleared
+						
+						if ( asyncPkt == false && m_sess.hasAsyncResponseQueued()) {
+							
+							// Indicate this session has asynchronous packets queued
+							
+							asyncPkt = true;
+						}
+						
 						// If this is the last packet before we hit the maximum packets per thread then
 						// re-enable read events for this socket channel
 						
-						if ( pktCount == MaxPacketsPerRun) {
+						else if ( pktCount == MaxPacketsPerRun && asyncPkt == false) {
 							m_selectionKey.interestOps( m_selectionKey.interestOps() | SelectionKey.OP_READ);
 							m_selectionKey.selector().wakeup();
 						}
@@ -169,9 +181,23 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 				}
 			}
 			
+			// Process the asynchronous packet queue for the session
+			
+			if ( asyncPkt == true) {
+			
+				// Process any asynchronous packets (oplock breaks and change notifications)
+				
+				int asyncCnt = m_sess.sendQueuedAsyncResponses();
+				
+				// DEBUG
+				
+				if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
+					Debug.println("Sent queued async packets count=" + asyncCnt + ", sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress());
+			}
+			
 			// Re-enable read events for this socket channel, if there were no errors
 			
-			if ( pktError == false && pktCount < MaxPacketsPerRun) {
+			if ( pktError == false && (pktCount < MaxPacketsPerRun || asyncPkt == true)) {
 				
 				// Re-enable read events for this socket channel
 			

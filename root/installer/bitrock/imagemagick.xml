@@ -19,6 +19,13 @@ System variables provided by this component:
     <canBeEdited>0</canBeEdited>
     <show>0</show>
     <selected>1</selected>
+    <preBuildActionList>
+        <setInstallerVariable name="component(imagemagick).parameter(imagemagick_ghostscriptwin_included).value" value="1">
+            <ruleList>
+                <fileTest path="${imagemagick_distribution_folder_windows}/lib/gs_init.ps" condition="exists" />
+            </ruleList>
+        </setInstallerVariable>
+    </preBuildActionList>
     <initializationActionList/>
     <parameterList>
         <directoryParameter>
@@ -31,9 +38,10 @@ System variables provided by this component:
             <ask>0</ask>
             <description>ImageMagick version</description>
             <name>imagemagick_version</name>
-            <value>6.5.1</value>
-            <default>6.5.1</default>
+            <value>6.5.6</value>
+            <default>6.5.6</default>
         </stringParameter>
+        <booleanParameter name="imagemagick_ghostscriptwin_included" value="0" ask="0" />
     </parameterList>
     <readyToInstallActionList>
         <setInstallerVariable name="imagemagick_root_directory" value="${installdir}/common">
@@ -94,6 +102,15 @@ set MAGICK_CONFIGURE_PATH=${imagemagick_root_directory.dos}\config
                 <platformTest type="windows"/>
             </ruleList>
         </setInstallerVariable>
+        <setInstallerVariable name="IMAGEMAGICK_ENV_VAR">
+            <value>${IMAGEMAGICK_ENV_VAR}
+set GS_LIB=${imagemagick_root_directory.dos}\lib
+</value>
+            <ruleList>
+                <platformTest type="windows"/>
+                <isTrue value="${imagemagick_ghostscriptwin_included}" />
+            </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="ENV_VAR">
             <value>${IMAGEMAGICK_ENV_VAR}${ENV_VAR}</value>
         </setInstallerVariable>
@@ -134,7 +151,8 @@ set MAGICK_CONFIGURE_PATH=${imagemagick_root_directory.dos}\config
             </distributionFileList>
             <actionList>
                 <substitute>
-                    <files>*.xml;*/Wand-config;*/Magick-config;</files>
+                    <type>exact</type>		    
+                    <files>*</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@BITROCK_IMAGEMAGICK_ROOTDIR@@</pattern>

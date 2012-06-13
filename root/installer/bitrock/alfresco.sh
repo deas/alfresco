@@ -20,7 +20,7 @@ HYPERSONIC_SCRIPT=$INSTALLDIR/hypersonic/scripts/ctl.sh
 TOMCAT_SCRIPT=$INSTALLDIR/tomcat/scripts/ctl.sh
 RESIN_SCRIPT=$INSTALLDIR/resin/scripts/ctl.sh
 SUBVERSION_SCRIPT=$INSTALLDIR/subversion/scripts/ctl.sh
-OPENOFFICE_SCRIPT=$INSTALLDIR/openoffice.app/scripts/ctl.sh
+OPENOFFICE_SCRIPT=$INSTALLDIR/openoffice/scripts/ctl.sh
 #RUBY_APPLICATION_SCRIPT
 LUCENE_SCRIPT=$INSTALLDIR/lucene/scripts/ctl.sh
 ZOPE_SCRIPT=$INSTALLDIR/zope_application/scripts/ctl.sh

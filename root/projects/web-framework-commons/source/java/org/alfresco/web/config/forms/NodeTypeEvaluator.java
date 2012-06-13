@@ -54,7 +54,11 @@ public class NodeTypeEvaluator extends NodeMetadataBasedEvaluator
         try
         {
             JSONObject json = new JSONObject(new JSONTokener(jsonResponseString));
-            Object typeObj = json.get(JSON_TYPE);
+            Object typeObj = null;
+            if (json.has(JSON_TYPE))
+            {
+               typeObj = json.get(JSON_TYPE);
+            }
             if (typeObj instanceof String)
             {
                 String typeString = (String) typeObj;

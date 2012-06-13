@@ -190,6 +190,15 @@
 			<isFalse value="${openofficeservice_notstart}" />			
 		    </ruleList>
                 </runProgram>
+                <actionGroup>
+                    <actionList>
+                        <renameFile origin="${openoffice_directory}/scripts/ctl.sh" destination="${openoffice_directory}/scripts/openoffice_ctl.sh"/>
+                        <addFilesToUninstaller files="${openoffice_directory}/scripts/openoffice_ctl.sh" />
+                    </actionList>
+                    <ruleList>
+                         <isFalse value="${openoffice_installed_as_service}" />
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>

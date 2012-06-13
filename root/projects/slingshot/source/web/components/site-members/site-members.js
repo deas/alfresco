@@ -710,7 +710,7 @@
                // show popup message to confirm
                Alfresco.util.PopupManager.displayMessage(
                {
-                  text: this._msg("site-members.change-role-success", userRole.user, userRole.role)
+                  text: this._msg("site-members.change-role-success", userRole.user, this._msg("role." + userRole.role))
                });
 
                // update the data and table

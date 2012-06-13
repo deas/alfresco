@@ -2200,8 +2200,12 @@ public class FormUIGet extends DeclarativeWebScript
             {
                 error = json.getString(MODEL_MESSAGE);
                 
-                if (logger.isErrorEnabled())
-                    logger.error(error);
+                // Common AccessDeniedException is reported as a 500 server error from the repository
+                if (error.indexOf("org.alfresco.repo.security.permissions.AccessDeniedException") == -1)
+                {
+                   if (logger.isErrorEnabled())
+                       logger.error(error);
+                }
             }
         }
         catch (JSONException je)
