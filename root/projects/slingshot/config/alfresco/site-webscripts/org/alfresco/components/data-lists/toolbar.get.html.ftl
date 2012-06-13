@@ -1,11 +1,11 @@
 <@markup id="css" >
    <#-- CSS Dependencies -->
-   <@link href="${page.url.context}/res/components/data-lists/toolbar.css" group="datalists"/>
+   <@link href="${url.context}/res/components/data-lists/toolbar.css" group="datalists"/>
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
-   <@script type="text/javascript" src="${page.url.context}/res/components/data-lists/toolbar.js" group="datalists"/>
+   <@script type="text/javascript" src="${url.context}/res/components/data-lists/toolbar.js" group="datalists"/>
 </@>
 
 <@markup id="pre">

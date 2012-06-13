@@ -1,10 +1,3 @@
-<#include "../component.head.inc">
-<!-- Document Versions -->
-<@script type="text/javascript" src="${page.url.context}/res/components/document-details/document-versions.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/components/document-details/document-versions.css" />
-<!-- Revert Version -->
-<@script type="text/javascript" src="${page.url.context}/res/modules/document-details/revert-version.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/document-details/revert-version.css" />
-<!-- Historic Properties Viewer -->
-<@script type="text/javascript" src="${page.url.context}/res/modules/document-details/historic-properties-viewer.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/document-details/historic-properties-viewer.css" />
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

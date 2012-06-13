@@ -1,30 +1,47 @@
-<#if documentDetailsJSON??>
+<@standalone>
+   <@markup id="css" >
+      <#-- CSS Dependencies -->
+      <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/document-details/document-actions.css" group="document-details" />
+   </@>
+   
+   <@markup id="js">
+      <#-- JavaScript Dependencies -->
+      <@script type="text/javascript" src="${url.context}/res/components/document-details/document-actions.js" group="document-details" />
+   </@>
+   
+   <@markup id="pre">
+   </@>
+   
+   <@markup id="widgets">
+      <#if documentDetailsJSON??>
+         <@createWidgets group="document-details"/>
+      </#if>
+   </@>
+   
    <#assign el=args.htmlid?js_string>
-   <script type="text/javascript">//<![CDATA[
-      new Alfresco.DocumentActions("${el}").setOptions(
-      {
-         nodeRef: "${nodeRef?js_string}",
-         siteId: <#if site??>"${site?js_string}"<#else>null</#if>,
-         containerId: "${container?js_string}",
-         rootNode: "${rootNode}",
-         replicationUrlMapping: ${replicationUrlMappingJSON!"{}"},
-         documentDetails: ${documentDetailsJSON},
-         repositoryBrowsing: ${(rootNode??)?string}
-      }).setMessages(
-         ${messages}
-      );
-   //]]></script>
-
-   <div id="${el}-body" class="document-actions document-details-panel">
-      <h2 id="${el}-heading" class="thin dark">
-         ${msg("heading")}
-      </h2>
-      <div class="doclist">
-         <div id="${el}-actionSet" class="action-set"></div>
-      </div>
-   </div>
-
-   <script type="text/javascript">//<![CDATA[
-      Alfresco.util.createTwister("${el}-heading", "DocumentActions");
-   //]]></script>
-</#if>
+   <@markup id="post">
+      <#if documentDetailsJSON??>
+         <@inlineScript group="document-details">
+            YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
+               Alfresco.util.createTwister("${el}-heading", "DocumentActions");
+            });
+         </@>
+      </#if>
+   </@>
+   
+   <@markup id="html">
+      <@uniqueIdDiv>
+         <#if documentDetailsJSON??>
+            <#assign el=args.htmlid?js_string>
+            <div id="${el}-body" class="document-actions document-details-panel">
+               <h2 id="${el}-heading" class="thin dark">
+                  ${msg("heading")}
+               </h2>
+               <div class="doclist">
+                  <div id="${el}-actionSet" class="action-set"></div>
+               </div>
+            </div>
+         </#if>
+      </@>
+   </@>
+</@>

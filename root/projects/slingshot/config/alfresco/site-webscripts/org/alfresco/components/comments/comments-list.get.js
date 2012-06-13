@@ -106,7 +106,7 @@ function main()
    // Widget instantiation metadata...
    model.webScriptWidgets = [];
    var commentList = {};
-   commentList.name = "Alfresco.CommentList";
+   commentList.name = "Alfresco.CommentsList";
    commentList.provideMessages = true;
    commentList.provideOptions = true;
    commentList.options = {};

@@ -1,8 +1,8 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
    <!-- General Links Assets -->
-   <@script type="text/javascript" src="${page.url.context}/res/components/links/linksdiscuss-common.js"></@script>
-   <@script type="text/javascript" src="${page.url.context}/res/components/links/links-common.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/components/links/linksdiscuss-common.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/components/links/links-common.js"></@script>
    <@templateHtmlEditorAssets />
 </@>
 

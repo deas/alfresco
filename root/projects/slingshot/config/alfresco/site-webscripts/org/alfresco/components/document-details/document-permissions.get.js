@@ -63,3 +63,17 @@ function main()
 }
 
 main();
+
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var documentPermissions = {};
+documentPermissions.name = "Alfresco.DocumentPermissions";
+documentPermissions.provideMessages = true;
+documentPermissions.provideOptions = true;
+documentPermissions.options = {};
+documentPermissions.options.nodeRef = model.nodeRef;
+documentPermissions.options.siteId = model.site;
+documentPermissions.options.displayName = model.displayName;
+documentPermissions.options.roles = model.roles;
+model.webScriptWidgets.push(documentPermissions);

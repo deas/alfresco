@@ -14,3 +14,11 @@ function getContentTypes()
 }
 
 model.contentTypes = getContentTypes();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var flashUpload = {};
+flashUpload.name = "Alfresco.FlashUpload";
+flashUpload.provideOptions = false;
+flashUpload.provideMessages = true;
+model.webScriptWidgets.push(flashUpload);

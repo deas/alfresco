@@ -63,3 +63,16 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var folderPermissions = {};
+folderPermissions.name = "Alfresco.FolderPermissions";
+folderPermissions.provideMessages = true;
+folderPermissions.provideOptions = true;
+folderPermissions.options = {};
+folderPermissions.options.nodeRef = model.nodeRef;
+folderPermissions.options.siteId = model.site;
+folderPermissions.options.displayName = model.displayName;
+folderPermissions.options.roles = model.roles;
+model.webScriptWidgets.push(folderPermissions);

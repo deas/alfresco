@@ -19,3 +19,14 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var folderLinks = {};
+folderLinks.name = "Alfresco.FolderLinks";
+folderLinks.provideMessages = true;
+folderLinks.provideOptions = true;
+folderLinks.options = {};
+folderLinks.options.nodeRef = model.nodeRef;
+folderLinks.options.siteId = (model.site != null) ? model.site : null;
+model.webScriptWidgets.push(folderLinks);

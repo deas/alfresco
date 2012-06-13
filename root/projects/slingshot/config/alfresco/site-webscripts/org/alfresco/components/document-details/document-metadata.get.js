@@ -14,3 +14,15 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var documentMetadata = {};
+documentMetadata.name = "Alfresco.DocumentMetadata";
+documentMetadata.provideMessages = true;
+documentMetadata.provideOptions = true;
+documentMetadata.options = {};
+documentMetadata.options.nodeRef = model.nodeRef;
+documentMetadata.options.siteId = model.site;
+documentMetadata.options.formId = model.formId;
+model.webScriptWidgets.push(documentMetadata);

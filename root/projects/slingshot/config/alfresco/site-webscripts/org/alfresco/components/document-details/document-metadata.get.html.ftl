@@ -1,33 +1,53 @@
-<#if document??>
-   <!-- Parameters and libs -->
-   <#include "../../include/alfresco-macros.lib.ftl" />
-   <#assign el=args.htmlid/>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <#include "../form/form.css.ftl"/>
+   <@link href="${url.context}/res/components/document-details/document-metadata.css" group="document-details"/>
+</@>
 
-   <!-- Markup -->
-   <div class="document-metadata-header document-details-panel">
-      <h2 id="${el}-heading" class="thin dark">
-         ${msg("heading")}
-         <#if allowMetaDataUpdate!false>
-         <span class="alfresco-twister-actions">
-            <a href="${siteURL("edit-metadata?nodeRef=" + nodeRef?url)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
-         </span>
-         </#if>
-      </h2>
-      <div id="${el}-formContainer"></div>
-      <script type="text/javascript">//<![CDATA[
-         Alfresco.util.createTwister("${el}-heading", "DocumentMetadata");
-      //]]></script>
-   </div>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <#include "../form/form.js.ftl"/>
+   <@script src="${url.context}/res/components/document-details/document-metadata.js" group="document-details"/>
+</@>
 
-   <!-- Javascript instance -->
-   <script type="text/javascript">//<![CDATA[
-      new Alfresco.DocumentMetadata("${el}").setOptions(
-      {
-         nodeRef: "${nodeRef}",
-         site: <#if site??>"${site?js_string}"<#else>null</#if>,
-         formId: <#if formId??>"${formId?js_string}"<#else>null</#if>
-      }).setMessages(
-         ${messages}
-      );
-   //]]></script>
-</#if>
+<@markup id="pre">
+</@>
+
+<@markup id="widgets">
+   <#if document??>
+      <@createWidgets group="document-details"/>
+   </#if>
+</@>
+
+<@markup id="post">
+   <#if document??>
+      <@inlineScript group="document-details">
+         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
+            Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentMetadata");
+         });
+      </@>
+   </#if>
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#if document??>
+         <!-- Parameters and libs -->
+         <#include "../../include/alfresco-macros.lib.ftl" />
+         <#assign el=args.htmlid/>
+         <!-- Markup -->
+         <div class="document-metadata-header document-details-panel">
+            <h2 id="${el}-heading" class="thin dark">
+               ${msg("heading")}
+               <#if allowMetaDataUpdate!false>
+               <span class="alfresco-twister-actions">
+                  <a href="${siteURL("edit-metadata?nodeRef=" + nodeRef?url)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
+               </span>
+               </#if>
+            </h2>
+            <div id="${el}-formContainer"></div>
+         </div>
+      </#if>
+   </@>
+</@>
+

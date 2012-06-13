@@ -1,13 +1,13 @@
 <@markup id="css" >
    <#-- CSS Dependencies -->
-   <@link href="${page.url.context}/res/modules/taglibrary/taglibrary.css" group="discussions" />
-   <@link href="${page.url.context}/res/components/discussions/topic.css" group="discussions" />
+   <@link href="${url.context}/res/modules/taglibrary/taglibrary.css" group="discussions" />
+   <@link href="${url.context}/res/components/discussions/topic.css" group="discussions" />
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
-   <@script src="${page.url.context}/res/modules/taglibrary/taglibrary.js" group="discussions"/>
-   <@script src="${page.url.context}/res/components/discussions/topic.js" group="discussions"/>
+   <@script src="${url.context}/res/modules/taglibrary/taglibrary.js" group="discussions"/>
+   <@script src="${url.context}/res/components/discussions/topic.js" group="discussions"/>
 </@>
 
 <@markup id="pre">

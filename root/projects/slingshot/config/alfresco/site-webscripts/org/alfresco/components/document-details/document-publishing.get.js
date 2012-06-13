@@ -12,3 +12,14 @@ function main()
 }
 
 main();
+
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var documentPublishing = {};
+documentPublishing.name = "Alfresco.DocumentPublishing";
+documentPublishing.provideMessages = true;
+documentPublishing.provideOptions = true;
+documentPublishing.options = {};
+documentPublishing.options.nodeRef = model.nodeRef;
+model.webScriptWidgets.push(documentPublishing);

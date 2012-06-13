@@ -1,11 +1,34 @@
-<!-- Pre-requisite: flash-upload and html-upload components are also included on the page -->
-<#assign fileUploadConfig = config.scoped["DocumentLibrary"]["file-upload"]!>
-<#if fileUploadConfig.getChildValue??>
-   <#assign adobeFlashEnabled = fileUploadConfig.getChildValue("adobe-flash-enabled")!"true">
-</#if>
-<script type="text/javascript">//<![CDATA[
-new Alfresco.getFileUploadInstance().setOptions(
-{
-   adobeFlashEnabled: ${((adobeFlashEnabled!"true") == "true")?string}
-});
-//]]></script>
+<@markup id="css" >
+   <#-- No CSS Dependencies -->
+</@>
+
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/upload/file-upload.js" group="upload"/>
+</@>
+
+<@markup id="pre">
+</@>
+
+<@markup id="widgets">
+   <#-- <@createWidgets group="upload"/> -->
+</@>
+
+<@markup id="post">
+   <@inlineScript group="upload">
+      <#assign fileUploadConfig = config.scoped["DocumentLibrary"]["file-upload"]!>
+      <#if fileUploadConfig.getChildValue??>
+         <#assign adobeFlashEnabled = fileUploadConfig.getChildValue("adobe-flash-enabled")!"true">
+      </#if>
+      new Alfresco.getFileUploadInstance().setOptions(
+      {
+         adobeFlashEnabled: ${((adobeFlashEnabled!"true") == "true")?string}
+      });
+   </@>
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+     <#-- No HTML fragment-->
+   </@>
+</@>

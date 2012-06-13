@@ -1439,7 +1439,11 @@
          // populate with previous if no value set
          if (arrItems === "")
          {
-            arrItems = Dom.get(this.currentValueHtmlId).value;
+            var arrItemsEl = Dom.get(this.currentValueHtmlId);
+            if (arrItemsEl != null)
+            {
+               arrItems = arrItemsEl.value;
+            }
          }
          
          var onSuccess = function ObjectFinder__loadSelectedItems_onSuccess(response)

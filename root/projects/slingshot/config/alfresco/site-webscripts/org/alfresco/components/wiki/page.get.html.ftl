@@ -100,7 +100,7 @@
       <div id="${args.htmlid}-page" class="rich-content"><#if result.pagetext??>${result.pagetext}<#elseif result.message??><span class="error-alt">${result.message}</span></#if></div> 
 <#elseif action == "edit">           
       <div class="page-form-body">
-         <form id="${args.htmlid}-form" action="${page.url.context}/proxy/alfresco/slingshot/wiki/page/${page.url.templateArgs.site}/${page.url.args["title"]?url}" method="post">
+         <form id="${args.htmlid}-form" action="${url.context}/proxy/alfresco/slingshot/wiki/page/${page.url.templateArgs.site}/${page.url.args["title"]?url}" method="post">
             <fieldset>
             <#assign pageContext = page.url.context + "/page/site/" + page.url.templateArgs.site + "/wiki-page?title=" + page.url.args.title?url>
                <input type="hidden" name="context" value="${pageContext?html}" />
@@ -213,7 +213,7 @@
                <div class="tags">
                <#if result.tags?? && result.tags?size &gt; 0>
                   <#list result.tags as tag>
-                     <div class="tag"><img src="${page.url.context}/res/components/images/tag-16.png" /> ${tag}</img></div>                    
+                     <div class="tag"><img src="${url.context}/res/components/images/tag-16.png" /> ${tag}</img></div>                    
                   </#list>
                <#else>
                   ${msg("label.none")}
@@ -225,7 +225,7 @@
                <div class="links">               
                <#if result.links??>
                   <#list result.links as link>
-                     <div><span><a href="${page.url.context}/page/site/${page.url.templateArgs.site}/wiki-page?title=${link?replace(" ", "_")}">${link}</a></span></div>
+                     <div><span><a href="${url.context}/page/site/${page.url.templateArgs.site}/wiki-page?title=${link?replace(" ", "_")}">${link}</a></span></div>
                   </#list>
                </#if>
                </div>

@@ -13,3 +13,15 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var folderMetadata = {};
+folderMetadata.name = "Alfresco.FolderMetadata";
+folderMetadata.provideMessages = true;
+folderMetadata.provideOptions = true;
+folderMetadata.options = {};
+folderMetadata.options.nodeRef = model.nodeRef;
+folderMetadata.options.siteId = model.site;
+folderMetadata.options.formId = model.formId;
+model.webScriptWidgets.push(folderMetadata);

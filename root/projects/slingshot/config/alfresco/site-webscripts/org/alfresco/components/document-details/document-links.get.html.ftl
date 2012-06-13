@@ -1,34 +1,54 @@
-<#if document??>
-   <#if document.workingCopy??>
-      <!-- Don't display links since this nodeRef points to one of a working copy pair -->
-   <#else>
-      <#assign el=args.htmlid?html>
-      <script type="text/javascript">//<![CDATA[
-      new Alfresco.DocumentLinks("${el}").setOptions(
-      {
-         nodeRef: "${nodeRef?js_string}",
-         siteId: <#if site??>"${site?js_string}"<#else>null</#if>
-      }).setMessages(${messages});
-      //]]></script>
-      <div id="${el}-body" class="document-links document-details-panel">
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/document-details/document-links.css" group="document-details"/>
+</@>
 
-         <h2 id="${el}-heading" class="thin dark">${msg("header")}</h2>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/document-details/document-links.js" group="document-details"/>
+</@>
 
-         <div class="panel-body">
+<@markup id="pre">
+   <@inlineScript>
+     <#-- No pre-instantiation JavaScript required -->
+   </@>
+</@>
 
-            <!-- Current page url - (javascript will prefix with the current browser location) -->
-            <h3 class="thin dark">${msg("page.header")}</h3>
-            <div class="link-info">
-               <input id="${el}-page" value=""/>
-               <a href="#" name=".onCopyLinkClick" class="${el} hidden">${msg("page.copy")}</a>
-            </div>
-
-         </div>
-
-         <script type="text/javascript">//<![CDATA[
-         Alfresco.util.createTwister("${el}-heading", "DocumentLinks");
-         //]]></script>
-
-      </div>
+<@markup id="widgets">
+   <#if document??>
+      <@createWidgets group="document-details"/>
    </#if>
-</#if>
+</@>
+
+<#assign el=args.htmlid?html>
+
+<@markup id="post">
+   <#if document??>
+      <@inlineScript group="document-details">
+         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
+            Alfresco.util.createTwister("${el}-heading", "DocumentLinks");
+         });
+      </@>
+   </#if>
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#if document??>
+         <#if document.workingCopy??>
+            <!-- Don't display links since this nodeRef points to one of a working copy pair -->
+         <#else>
+            <div id="${el}-body" class="document-links document-details-panel">
+            <h2 id="${el}-heading" class="thin dark">${msg("header")}</h2>
+            <div class="panel-body">
+               <!-- Current page url - (javascript will prefix with the current browser location) -->
+               <h3 class="thin dark">${msg("page.header")}</h3>
+               <div class="link-info">
+                  <input id="${el}-page" value=""/>
+                  <a href="#" name=".onCopyLinkClick" class="${el} hidden">${msg("page.copy")}</a>
+               </div>
+            </div>
+         </#if>
+      </#if>
+   </@>
+</@>

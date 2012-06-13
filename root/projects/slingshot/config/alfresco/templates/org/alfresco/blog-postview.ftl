@@ -1,8 +1,8 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
    <!-- General Blog Assets -->
-   <@script type="text/javascript" src="${page.url.context}/res/components/blog/blogdiscussions-common.js"></@script>
-   <@script type="text/javascript" src="${page.url.context}/res/components/blog/blog-common.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/components/blog/blogdiscussions-common.js"></@script>
+   <@script type="text/javascript" src="${url.context}/res/components/blog/blog-common.js"></@script>
    <@templateHtmlEditorAssets />
 </@>
 

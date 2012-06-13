@@ -1,27 +1,45 @@
-<#if document??>
-   <#assign el=args.htmlid?html>
-   <script type="text/javascript">//<![CDATA[
-   	new Alfresco.DocumentPublishing("${args.htmlid?js_string}").setOptions(
-   	{
-   	  nodeRef: "${nodeRef?js_string}"
-   	}).setMessages(
-   	   ${messages}
-   	);
-   //]]></script>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/document-details/document-publishing.css" group="document-details"/>
+</@>
 
-   <div id="${el}-body" class="document-publishing document-details-panel">
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/document-details/document-publishing.js" group="document-details"/>
+</@>
 
-      <h2 id="${el}-heading" class="thin dark">
-         ${msg("header.publishingHistory")}
-      </h2>
+<@markup id="pre">
+</@>
 
-      <div class="panel-body">
-      	<div id="${el}-publishing-events" class="publish-events"></div>
-      </div>
+<@markup id="widgets">
+   <#if document??>
+      <@createWidgets group="document-details"/>
+   </#if>
+</@>
 
-      <script type="text/javascript">//<![CDATA[
-         Alfresco.util.createTwister("${el}-heading", "DocumentPublishing");
-      //]]></script>
+<@markup id="post">
+   <#if document??>
+      <@inlineScript group="document-details">
+         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
+            Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentPublishing");
+         });
+      </@>
+   </#if>
+</@>
 
-   </div>
-</#if>
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#if document??>
+         <#assign el=args.htmlid?html>
+         <div id="${el}-body" class="document-publishing document-details-panel">
+            <h2 id="${el}-heading" class="thin dark">
+               ${msg("header.publishingHistory")}
+            </h2>
+            <div class="panel-body">
+               <div id="${el}-publishing-events" class="publish-events"></div>
+            </div>
+         </div>
+      </#if>
+   </@>
+</@>
+

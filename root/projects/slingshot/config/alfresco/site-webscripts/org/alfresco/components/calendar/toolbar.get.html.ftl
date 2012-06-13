@@ -61,7 +61,7 @@
             </div>
             <div class="yui-u flat-button">
                <div class="ical-feed">
-                  <a id="${el}-publishEvents-button" href="${page.url.context}/proxy/alfresco-feed/calendar/eventList-${page.url.templateArgs["site"]}.ics?site=${page.url.templateArgs["site"]}&amp;format=calendar" rel="_blank">${msg("button.ical")}</a>
+                  <a id="${el}-publishEvents-button" href="${url.context}/proxy/alfresco-feed/calendar/eventList-${page.url.templateArgs["site"]}.ics?site=${page.url.templateArgs["site"]}&amp;format=calendar" rel="_blank">${msg("button.ical")}</a>
                </div>
             </div>
          </div>

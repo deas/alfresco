@@ -138,3 +138,21 @@ if (!user.isGuest)
 {
    main();
 }
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var header = {};
+header.name = "Alfresco.component.Header";
+header.assignToVariable = args.htmlid.replace("-", "_");
+header.provideMessages = true;
+header.provideOptions = true;
+header.options = {};
+header.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+header.options.siteTitle = model.siteTitle;
+header.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : config.scoped["Search"]["search"].getChildValue("min-search-term-length");
+header.options.tokens = {
+   site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+   pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
+   userid: user.name
+}
+model.webScriptWidgets.push(header);

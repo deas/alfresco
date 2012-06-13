@@ -1,12 +1,12 @@
 <@markup id="css" >
    <#-- CSS Dependencies -->
-   <@link href="${page.url.context}/res/components/data-lists/datalists.css"  group="datalists"/>
+   <@link href="${url.context}/res/components/data-lists/datalists.css"  group="datalists"/>
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
-   <@script src="${page.url.context}/res/modules/simple-dialog.js"  group="datalists"/>
-   <@script src="${page.url.context}/res/components/data-lists/datalists.js" group="datalists"/>
+   <@script src="${url.context}/res/modules/simple-dialog.js"  group="datalists"/>
+   <@script src="${url.context}/res/components/data-lists/datalists.js" group="datalists"/>
 </@>
 
 <@markup id="pre">

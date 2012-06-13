@@ -1,22 +1,47 @@
-<#if node??>
-   <#assign el=args.htmlid?html>
-   <#if (node?exists)>
-   <script type="text/javascript">//<![CDATA[
-   new Alfresco.WebPreview("${el}").setOptions(
-   {
-      thumbnailModification: [<#list node.thumbnailModifications as t>"${t}"<#if (t_has_next)>, </#if></#list>],
-      nodeRef: "${nodeRef}",
-      name: "${node.name?js_string}",
-      mimeType: "${node.mimeType}",
-      size: "${node.size}",
-      thumbnails: [<#list node.thumbnails as t>"${t}"<#if (t_has_next)>, </#if></#list>],
-      pluginConditions: ${pluginConditionsJSON}
-   }).setMessages(${messages});
-   //]]></script>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/preview/web-preview.css" group="${dependencyGroup}"/>
+   <@link href="${url.context}/res/components/preview/WebPreviewerHTML.css" group="${dependencyGroup}" />
+   <@link href="${url.context}/res/components/preview/Audio.css" group="${dependencyGroup}" />
+   <@link href="${url.context}/res/components/preview/Image.css" group="${dependencyGroup}" />
+</@>
+
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/preview/web-preview.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/WebPreviewer.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/js/flash/extMouseWheel.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/FlashFox.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/StrobeMediaPlayback.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/Video.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/Audio.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/Flash.js" group="${dependencyGroup}"/>
+   <@script src="${url.context}/res/components/preview/Image.js" group="${dependencyGroup}"/>
+</@>
+
+<@markup id="pre">
+</@>
+
+<@markup id="widgets">
+   <#if node?? && node?exists>
+      <@createWidgets group="${dependencyGroup}"/>
    </#if>
-   <div id="${el}-body" class="web-preview">
-      <div id="${el}-previewer-div" class="previewer">
-         <div class="message"><#if (node?exists)>${msg("label.preparingPreviewer")}</#if></div>
-      </div>
-   </div>
-</#if>
+</@>
+
+<@markup id="post">
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#if node??>
+         <#assign el=args.htmlid?html>
+         <div id="${el}-body" class="web-preview">
+            <div id="${el}-previewer-div" class="previewer">
+               <div class="message"><#if (node?exists)>${msg("label.preparingPreviewer")}</#if></div>
+            </div>
+         </div>
+      </#if>
+   </@>
+</@>
+
+

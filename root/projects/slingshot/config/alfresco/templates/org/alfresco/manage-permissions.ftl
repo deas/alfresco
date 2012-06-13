@@ -1,7 +1,7 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
    <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js"></@script>
-   <@script type="text/javascript" src="${page.url.context}/res/templates/manage-permissions/template.manage-permissions.js"></@script>   
+   <@script type="text/javascript" src="${url.context}/res/templates/manage-permissions/template.manage-permissions.js"></@script>   
 </@>
 
 <@templateBody>

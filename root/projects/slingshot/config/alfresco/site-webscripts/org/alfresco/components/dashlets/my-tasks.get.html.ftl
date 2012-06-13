@@ -41,7 +41,7 @@
                </select>
                <span class="align-right yui-button-align">
                   <span class="first-child">
-                     <a href="${page.url.context}/page/start-workflow?referrer=tasks" class="theme-color-1">
+                     <a href="${url.context}/page/start-workflow?referrer=tasks" class="theme-color-1">
                         <img src="${url.context}/res/components/images/workflow-16.png" style="vertical-align: text-bottom" width="16" />
                         ${msg("link.startWorkflow")}</a>
                   </span>
@@ -53,11 +53,11 @@
             <div class="align-left" id="${id}-paginator">&nbsp;</div>
             <span class="align-right yui-button-align">
                <span class="first-child">
-                  <a href="${page.url.context}/page/my-tasks#filter=workflows|active" class="theme-color-1">${msg("link.activeTasks")}</a>
+                  <a href="${url.context}/page/my-tasks#filter=workflows|active" class="theme-color-1">${msg("link.activeTasks")}</a>
                </span>
                <span>&#124;</span>
                <span class="first-child">
-                  <a href="${page.url.context}/page/my-tasks#filter=workflows|completed" class="theme-color-1">${msg("link.completedTasks")}</a>
+                  <a href="${url.context}/page/my-tasks#filter=workflows|completed" class="theme-color-1">${msg("link.completedTasks")}</a>
                </span>
             </span>
             <div class="clear"></div>

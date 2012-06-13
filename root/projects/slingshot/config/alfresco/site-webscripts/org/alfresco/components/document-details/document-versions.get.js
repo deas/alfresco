@@ -18,3 +18,17 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var documentVersions = {};
+documentVersions.name = "Alfresco.DocumentVersions";
+documentVersions.provideMessages = true;
+documentVersions.provideOptions = true;
+documentVersions.options = {};
+documentVersions.options.nodeRef = model.nodeRef;
+documentVersions.options.siteId = model.site;
+documentVersions.options.containerId = model.container;
+documentVersions.options.workingCopyVersion = model.workingCopyVersion;
+documentVersions.options.allowNewVersionUpload = model.allowNewVersionUpload;
+model.webScriptWidgets.push(documentVersions);

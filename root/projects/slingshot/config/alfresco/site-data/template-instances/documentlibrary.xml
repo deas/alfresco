@@ -23,6 +23,9 @@
       <component>
          <region-id>actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
+         <properties>
+            <dependencyGroup>documentlibrary</dependencyGroup>
+         </properties>
       </component>
 
       <!-- Toolbar -->
@@ -37,6 +40,7 @@
          <url>/components/documentlibrary/documentlist</url>
          <properties>
             <pagination>true</pagination>
+            <dependencyGroup>documentlibrary</dependencyGroup>
          </properties>
       </component>
 

@@ -93,3 +93,22 @@ function main()
 
 // Start the webscript
 main();
+
+
+// Set the group from the component property...
+model.dependencyGroup =  (args.dependencyGroup != null) ? args.dependencyGroup : "web-preview";
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var webPreview = {};
+webPreview.name = "Alfresco.WebPreview";
+webPreview.provideOptions = true;
+webPreview.provideMessages = true;
+webPreview.options = {};
+webPreview.options.thumbnailModification = model.node.thumbnailModifications;
+webPreview.options.nodeRef = model.nodeRef;
+webPreview.options.name = model.name;
+webPreview.options.mimeType = model.size;
+webPreview.options.thumbnails = model.node.thumbnails;
+webPreview.options.pluginConditions = model.pluginConditionsJSON;
+model.webScriptWidgets.push(webPreview);

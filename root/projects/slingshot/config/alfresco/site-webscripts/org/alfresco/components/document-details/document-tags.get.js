@@ -31,3 +31,5 @@ function main()
 }
 
 main();
+
+model.webScriptWidgets = [];

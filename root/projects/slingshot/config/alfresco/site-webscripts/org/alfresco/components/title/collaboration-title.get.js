@@ -45,3 +45,15 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var collaborationTitle = {};
+collaborationTitle.name = "Alfresco.CollaborationTitle";
+collaborationTitle.provideOptions = true;
+collaborationTitle.provideMessages = true;
+collaborationTitle.options = {};
+collaborationTitle.options.site = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+collaborationTitle.options.siteTitle = model.siteTitle;
+collaborationTitle.options.user = (user.name != null) ? user.name : ""
+model.webScriptWidgets.push(collaborationTitle);

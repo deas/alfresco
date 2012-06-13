@@ -1,6 +1,3 @@
-<#include "../component.head.inc">
-<!-- Collaboration Title -->
-<@script type="text/javascript" src="${page.url.context}/res/components/title/collaboration-title.js"></@script>
-<!-- Edit Site -->
-<@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/edit-site.css" />
-<@script type="text/javascript" src="${page.url.context}/res/modules/edit-site.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

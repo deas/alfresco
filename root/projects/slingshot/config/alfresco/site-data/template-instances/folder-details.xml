@@ -106,6 +106,7 @@
          <url>/components/documentlibrary/actions-common</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
+            <dependencyGroup>folder-details</dependencyGroup>
          </properties>
       </component>
 
