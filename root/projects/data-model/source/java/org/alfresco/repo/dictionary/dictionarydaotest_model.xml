@@ -11,6 +11,7 @@
    
    <namespaces>
       <namespace uri="http://www.alfresco.org/test/dictionarydaotest/1.0" prefix="test"/>
+      <namespace uri="http://www.alfresco.org/test/dictionarydaotest2/1.0" prefix="test2"/>
    </namespaces>
 
    <data-types>
@@ -68,6 +69,14 @@
          <parameter name="allowedValues">
              <list>
                  <value>HIJ</value>
+             </list>
+         </parameter>
+         <parameter name="caseSensitive"><value>true</value></parameter>
+      </constraint>
+      <constraint name="test2:list3" type="LIST">
+         <parameter name="allowedValues">
+             <list>
+                 <value>XYZ</value>
              </list>
          </parameter>
          <parameter name="caseSensitive"><value>true</value></parameter>
@@ -336,6 +345,17 @@
                <constraints>
                   <constraint ref="test:list1"/>
                   <constraint ref="test:list2"/>
+               </constraints>
+            </property>
+         </overrides>
+      </aspect>
+      <aspect name="test2:aspect-three">
+         <title>Aspect derived from other namespace</title>
+         <parent>test:aspect-base</parent>
+         <overrides>
+            <property name="test:aspect-base-p1">
+               <constraints>
+                  <constraint ref="test2:list3"/>
                </constraints>
             </property>
          </overrides>

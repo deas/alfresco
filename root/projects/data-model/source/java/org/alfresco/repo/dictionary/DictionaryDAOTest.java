@@ -57,6 +57,7 @@ public class DictionaryDAOTest extends TestCase
     public static final String TEST_RESOURCE_MESSAGES = "alfresco/messages/dictionary-messages";
 
     private static final String TEST_URL = "http://www.alfresco.org/test/dictionarydaotest/1.0";
+    private static final String TEST2_URL = "http://www.alfresco.org/test/dictionarydaotest2/1.0";
     private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";
     private static final String TEST_BUNDLE = "org/alfresco/repo/dictionary/dictionarydaotest_model";
     private DictionaryService service;
@@ -189,7 +190,7 @@ public class DictionaryDAOTest extends TestCase
     {   
         QName model = QName.createQName(TEST_URL, "dictionarydaotest");
         Collection<ConstraintDefinition> modelConstraints = service.getConstraints(model);
-        assertEquals(21, modelConstraints.size()); // 8 + 7 + 5 + 1
+        assertEquals(23, modelConstraints.size()); // 10 + 7 + 6
         
         QName conRegExp1QName = QName.createQName(TEST_URL, "regex1");
         boolean found1 = false;
@@ -290,6 +291,7 @@ public class DictionaryDAOTest extends TestCase
         QName aspectBaseQName = QName.createQName(TEST_URL, "aspect-base");
         QName aspectOneQName = QName.createQName(TEST_URL, "aspect-one");
         QName aspectTwoQName = QName.createQName(TEST_URL, "aspect-two");
+        QName aspectThreeQName = QName.createQName(TEST2_URL, "aspect-three");
         QName propQName = QName.createQName(TEST_URL, "aspect-base-p1");
 
         // get the base property
@@ -299,7 +301,11 @@ public class DictionaryDAOTest extends TestCase
         assertEquals("Incorrect number of constraints", 1, propConstraints.size());
         assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
         ListOfValuesConstraint constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
-        assertEquals("Expected 3 allowed values", 3, constraint.getAllowedValues().size());
+        List<String> allowedValues = constraint.getAllowedValues();
+        assertEquals("Expected 3 allowed values", 3, allowedValues.size());
+        assertEquals("ABC", allowedValues.get(0));
+        assertEquals("DEF", allowedValues.get(1));
+        assertEquals("VALUE WITH SPACES", allowedValues.get(2));
 
         // check the inherited property on first derived aspect
         propDef = service.getProperty(aspectOneQName, propQName);
@@ -308,8 +314,10 @@ public class DictionaryDAOTest extends TestCase
         assertEquals("Incorrect number of constraints", 1, propConstraints.size());
         assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
         constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
-        assertEquals("Expected 1 allowed values", 1, constraint.getAllowedValues().size());
-
+        allowedValues = constraint.getAllowedValues();
+        assertEquals("Expected 1 allowed values", 1, allowedValues.size());
+        assertEquals("HIJ", allowedValues.get(0));
+        
         // check the inherited property on second derived aspect
         propDef = service.getProperty(aspectTwoQName, propQName);
         assertNotNull(propDef);
@@ -318,9 +326,26 @@ public class DictionaryDAOTest extends TestCase
         assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
         assertTrue("Constraint instance incorrect", propConstraints.get(1).getConstraint() instanceof ListOfValuesConstraint);
         constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
-        assertEquals("Wrong number of allowed values", 3, constraint.getAllowedValues().size());
+        allowedValues = constraint.getAllowedValues();
+        assertEquals("Wrong number of allowed values", 3, allowedValues.size());
+        assertEquals("ABC", allowedValues.get(0));
+        assertEquals("DEF", allowedValues.get(1));
+        assertEquals("VALUE WITH SPACES", allowedValues.get(2));
         constraint = (ListOfValuesConstraint) propConstraints.get(1).getConstraint();
-        assertEquals("Expected 1 allowed values", 1, constraint.getAllowedValues().size());
+        allowedValues = constraint.getAllowedValues();
+        assertEquals("Wrong number of allowed values", 1, allowedValues.size());
+        assertEquals("HIJ", allowedValues.get(0));
+        
+        // check the cross-namespace inheritance
+        propDef = service.getProperty(aspectThreeQName, propQName);
+        assertNotNull(propDef);
+        propConstraints = propDef.getConstraints();
+        assertEquals("Incorrect number of constraints", 1, propConstraints.size());
+        assertTrue("Constraint instance incorrect", propConstraints.get(0).getConstraint() instanceof ListOfValuesConstraint);
+        constraint = (ListOfValuesConstraint) propConstraints.get(0).getConstraint();
+        allowedValues = constraint.getAllowedValues();
+        assertEquals("Expected 1 allowed values", 1, allowedValues.size());
+        assertEquals("XYZ", allowedValues.get(0));
     }
 
     public void testArchive()
