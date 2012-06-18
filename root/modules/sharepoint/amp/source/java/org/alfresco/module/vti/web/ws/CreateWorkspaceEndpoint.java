@@ -76,7 +76,8 @@ public class CreateWorkspaceEndpoint extends AbstractEndpoint
         else
         {
             // Report that we don't support a subsite
-            throw new VtiSoapException("Subsites are not supported", 1l);
+            throw new VtiSoapException(
+                    "Subsites are not supported, unable to create a meeting workspace under " + siteName, 1l);
         }
         
 

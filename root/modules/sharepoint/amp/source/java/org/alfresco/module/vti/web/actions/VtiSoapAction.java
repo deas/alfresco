@@ -249,7 +249,14 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
                if(soapException.getErrorCode() > 0)
                {
                   Element errorcode = detail.addElement(QName.get("errorcode", "", "http://schemas.microsoft.com/sharepoint/soap/"));
-                  errorcode.addText( "0x"+Long.toHexString(soapException.getErrorCode()) );
+                  
+                  // Codes need to be zero padded to 8 characters, eg 0x12345678
+                  String codeHex = Long.toHexString(soapException.getErrorCode());
+                  while (codeHex.length() < 8)
+                  {
+                      codeHex = "0" + codeHex;
+                  }
+                  errorcode.addText( "0x"+codeHex );
                }
             }
         }
