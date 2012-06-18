@@ -68,33 +68,50 @@ public class CreateWorkspaceEndpoint extends AbstractEndpoint
 
         Element requestElement = soapRequest.getDocument().getRootElement();
 
-        // getting title parameter from request
+        // The Title is always required
         if (logger.isDebugEnabled())
             logger.debug("Getting title from request.");
         XPath titlePath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/title"));
         titlePath.setNamespaceContext(nc);
-        Element title = (Element) titlePath.selectSingleNode(requestElement);
+        Element titleE = (Element) titlePath.selectSingleNode(requestElement);
 
-        if (title.getText() == null || title.getText().length() < 1)
+        if (titleE == null || titleE.getText() == null || titleE.getText().length() < 1)
         {
             throw new RuntimeException("Site name is not specified. Please fill up subject field.");
         }
+        String title = titleE.getText();
+        
 
-        // getting templateName parameter from request
+        // Template Name is optional
         if (logger.isDebugEnabled())
             logger.debug("Getting templateName from request.");
         XPath templateNamePath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/templateName"));
         templateNamePath.setNamespaceContext(nc);
-        Element templateName = (Element) templateNamePath.selectSingleNode(requestElement);
+        Element templateNameE = (Element) templateNamePath.selectSingleNode(requestElement);
+        
+        String templateName = null;
+        if (templateNameE != null)
+        {
+            templateName = templateNameE.getText();
+        }
 
-        // getting lcid parameter from request
+        
+        // LCID (Language Code Identifier) is optional
         if (logger.isDebugEnabled())
             logger.debug("Getting lcid from request.");
         XPath lcidPath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/lcid"));
         lcidPath.setNamespaceContext(nc);
-        Element lcid = (Element) lcidPath.selectSingleNode(requestElement);
+        Element lcidE = (Element) lcidPath.selectSingleNode(requestElement);
+        
+        int lcid = 0;
+        if (lcidE != null)
+        {
+            lcid = Integer.parseInt(lcidE.getText());
+        }
+        
 
-        String siteName = handler.createWorkspace(title.getText(), templateName.getText(), Integer.parseInt(lcid.getText()), getTimeZoneInformation(requestElement),
+        // Have the site created
+        String siteName = handler.createWorkspace(title, templateName, lcid, getTimeZoneInformation(requestElement),
                 (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
 
         // creating soap response
@@ -107,29 +124,42 @@ public class CreateWorkspaceEndpoint extends AbstractEndpoint
         }
     }
 
-    private TimeZoneInformation getTimeZoneInformation(Element element) throws Exception
+    private TimeZoneInformation getTimeZoneInformation(Element requestElement) throws Exception
     {
         TimeZoneInformation timeZoneInforation = new TimeZoneInformation();
 
         SimpleNamespaceContext nc = new SimpleNamespaceContext();
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
+        
+        // Is the timezone present?
+        XPath timezonePath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/timeZoneInformation"));
+        timezonePath.setNamespaceContext(nc);
+        Element tzElement = (Element)timezonePath.selectSingleNode(requestElement);
+        if (tzElement == null)
+        {
+            if (logger.isDebugEnabled())
+                logger.debug("No TimeZone information supplied, using the default");
+            return null;
+        }
 
+        // Fetch the details of the timezone
+        // TODO Fetch from the tzElement object
         XPath biasPath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/timeZoneInformation/bias"));
         biasPath.setNamespaceContext(nc);
-        timeZoneInforation.setBias(Integer.valueOf(((Element) biasPath.selectSingleNode(element)).getTextTrim()));
+        timeZoneInforation.setBias(Integer.valueOf(((Element) biasPath.selectSingleNode(requestElement)).getTextTrim()));
 
-        timeZoneInforation.setStandardDate(createTimeZoneInformationDate(element, "standardDate"));
+        timeZoneInforation.setStandardDate(createTimeZoneInformationDate(requestElement, "standardDate"));
 
         XPath standardBiasPath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/timeZoneInformation/standardBias"));
         standardBiasPath.setNamespaceContext(nc);
-        timeZoneInforation.setStandardBias(Integer.valueOf(((Element) standardBiasPath.selectSingleNode(element)).getTextTrim()));
+        timeZoneInforation.setStandardBias(Integer.valueOf(((Element) standardBiasPath.selectSingleNode(requestElement)).getTextTrim()));
 
-        timeZoneInforation.setDaylightDate(createTimeZoneInformationDate(element, "daylightDate"));
+        timeZoneInforation.setDaylightDate(createTimeZoneInformationDate(requestElement, "daylightDate"));
 
         XPath daylightBiasPath = new Dom4jXPath(buildXPath(prefix, "/CreateWorkspace/timeZoneInformation/daylightBias"));
         daylightBiasPath.setNamespaceContext(nc);
-        timeZoneInforation.setDaylightBias(Integer.valueOf(((Element) daylightBiasPath.selectSingleNode(element)).getTextTrim()));
+        timeZoneInforation.setDaylightBias(Integer.valueOf(((Element) daylightBiasPath.selectSingleNode(requestElement)).getTextTrim()));
 
         return timeZoneInforation;
     }
