@@ -74,14 +74,21 @@ public class GetMeetingWorkspacesEndpoint extends AbstractEndpoint
 
         Element requestElement = soapRequest.getDocument().getRootElement();
 
-        // getting recurring parameter from request
+        // Did they request recurring information?
         if (logger.isDebugEnabled())
             logger.debug("Getting recurring from request.");
         XPath recurringPath = new Dom4jXPath(buildXPath(prefix, "/GetMeetingWorkspaces/recurring"));
         recurringPath.setNamespaceContext(nc);
-        Element recurring = (Element) recurringPath.selectSingleNode(requestElement);
+        Element recurringE = (Element) recurringPath.selectSingleNode(requestElement);
 
-        List<String> siteNames = handler.getMeetingWorkspaces(Boolean.parseBoolean(recurring.getText()));
+        boolean recurring = false;
+        if (recurringE != null)
+        {
+            recurring = Boolean.parseBoolean(recurringE.getText());
+        }
+        
+        // Fetch the sites
+        List<String> siteNames = handler.getMeetingWorkspaces(recurring);
 
         // creating soap response
         Element root = soapResponse.getDocument().addElement("GetMeetingWorkspacesResponse", namespace);
