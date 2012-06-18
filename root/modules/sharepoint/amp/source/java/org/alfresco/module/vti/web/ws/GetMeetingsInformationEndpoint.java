@@ -168,6 +168,7 @@ public class GetMeetingsInformationEndpoint extends AbstractEndpoint
             workspaceStatus.addAttribute("AllowAuthenticatedUsers", String.valueOf(status.isAllowAuthenticatedUsers()));
         }
         
+        soapResponse.setContentType("text/xml");
         if (logger.isDebugEnabled())
         {
             logger.debug("SOAP method with name " + getName() + " is finished.");

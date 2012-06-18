@@ -107,6 +107,7 @@ public class RemoveMeetingEndpoint extends AbstractEndpoint
         // creating soap response
         soapResponse.getDocument().addElement("RemoveMeetingResponse", namespace);
 
+        soapResponse.setContentType("text/xml");
         if (logger.isDebugEnabled())
         {
             logger.debug("SOAP method with name " + getName() + " is finished.");

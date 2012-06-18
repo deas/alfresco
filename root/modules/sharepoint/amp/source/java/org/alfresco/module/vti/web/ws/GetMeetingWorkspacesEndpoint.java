@@ -101,6 +101,7 @@ public class GetMeetingWorkspacesEndpoint extends AbstractEndpoint
             meetingWorkspaces.addElement("Workspace").addAttribute("Url", baseUrl + siteName).addAttribute("Title", siteName);
         }
 
+        soapResponse.setContentType("text/xml");
         if (logger.isDebugEnabled())
         {
             logger.debug("SOAP method with name " + getName() + " is finished.");

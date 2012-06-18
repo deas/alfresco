@@ -91,6 +91,7 @@ public class UpdateMeetingFromICalEndpoint extends AddMeetingFromICalEndpoint
         updateStatus.addAttribute("Detail", "");
         updateStatus.addAttribute("ManageUserPage", "");
 
+        soapResponse.setContentType("text/xml");
         if (logger.isDebugEnabled())
         {
             logger.debug("SOAP method with name " + getName() + " is finished.");
