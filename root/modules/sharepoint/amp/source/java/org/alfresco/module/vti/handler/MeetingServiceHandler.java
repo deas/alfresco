@@ -26,6 +26,7 @@ import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.module.vti.metadata.model.MeetingsInformation;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.service.cmr.site.SiteInfo;
 
 /**
  * Interface for meeting web service handler
@@ -36,12 +37,13 @@ public interface MeetingServiceHandler
 {
 
     /**
-     * Lists the Meeting Workspace sites that are available on Alfresco Server.
+     * Lists the Meeting Workspace sites that are available, to the current user,
+     *  on the Alfresco Server.
      * 
      * @param recurring <code>true</code> if the meeting is recurring; otherwise, <code>false</code>.
-     * @return list that contains the names of Meeting Workspace sites in the root directory of the Alfresco server.
+     * @return list that contains the details of Meeting Workspace sites in the root directory of the Alfresco server.
      */
-    public List<String> getMeetingWorkspaces(boolean recurring);
+    public List<SiteInfo> getMeetingWorkspaces(boolean recurring);
 
     /**
      * Lists the languages and templates supported by the specified Alfresco server.

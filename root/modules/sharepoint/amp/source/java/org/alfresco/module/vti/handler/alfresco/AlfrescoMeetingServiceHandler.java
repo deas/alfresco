@@ -130,34 +130,37 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public String createWorkspace(String title, String templateName, int lcid, TimeZoneInformation timeZoneInformation, SessionUser user) throws Exception
     {
-        title = removeIllegalCharacters(title);
+        // Build the site name from the title
+        String siteName = removeIllegalCharacters(title);
 
-        if (title.equals("_"))
+        // Check we have a valid name
+        if (siteName.equals("_"))
         {
             throw new RuntimeException(getMessage("vti.meeting.error.workspace_name"));
         }
 
+        // Build a unique name up
         SiteInfo siteInfo = null;
-        String newTitle = null;
+        String newSiteName = null;
         int i = 0;
         do
         {
-            newTitle = title + (i == 0 ? "" : "_" + i);
-            siteInfo = siteService.getSite(newTitle);
+            newSiteName = siteName + (i == 0 ? "" : "_" + i);
+            siteInfo = siteService.getSite(newSiteName);
             i++;
         } while (siteInfo != null);
 
-        shareUtils.createSite(user, MEETING_WORKSPACE_NAME, newTitle, newTitle, "", true);
-
-        return newTitle;
+        // Have it created
+        shareUtils.createSite(user, MEETING_WORKSPACE_NAME, newSiteName, title, "", true);
+        return newSiteName;
     }
 
     /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#setWorkspaceTitle(String, String)
      */
-    public void updateWorkspaceTitle(String oldSiteName, String newTitle)
+    public void updateWorkspaceTitle(String siteName, String newTitle)
     {
-        SiteInfo siteInfo = siteService.getSite(oldSiteName);
+        SiteInfo siteInfo = siteService.getSite(siteName);
 
         if (siteInfo == null)
         {
@@ -171,23 +174,8 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         
         if (logger.isDebugEnabled())
         {
-            logger.debug("Updating name/title of site " + oldSiteName + " to '" + newTitle + "'");
+            logger.debug("Updating title of site " + siteName + " to '" + newTitle + "'");
         }
-        
-        String title = removeIllegalCharacters(newTitle);
-        if (title.equals("_"))
-        {
-            throw new RuntimeException(getMessage("vti.meeting.error.workspace_name"));
-        }
-        
-        // Is the new name spare?
-        if (siteService.getSite(title) != null)
-        {
-            // TODO Is this correct?
-            throw new RuntimeException(getMessage("vti.meeting.error.workspace_name"));
-        }
-        
-        // TODO Perform the rename
         
         siteInfo.setTitle(newTitle);
         siteService.updateSite(siteInfo);
@@ -196,15 +184,15 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#getMeetingWorkspaces(boolean)
      */
-    public List<String> getMeetingWorkspaces(boolean recurring)
+    public List<SiteInfo> getMeetingWorkspaces(boolean recurring)
     {
-        List<String> resultList = new ArrayList<String>();
+        List<SiteInfo> resultList = new ArrayList<SiteInfo>();
         for (SiteInfo siteInfo : siteService.listSites(authenticationService.getCurrentUserName()))
         {
             String memberRole = siteService.getMembersRole(siteInfo.getShortName(), authenticationService.getCurrentUserName());
             if (MEETING_WORKSPACE_NAME.equals(siteInfo.getSitePreset()) && SiteModel.SITE_MANAGER.equals(memberRole))
             {
-                resultList.add(siteInfo.getShortName());
+                resultList.add(siteInfo);
             }
         }
         return resultList;

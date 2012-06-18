@@ -22,6 +22,7 @@ package org.alfresco.module.vti.web.ws;
 import java.util.List;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.service.cmr.site.SiteInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -88,7 +89,7 @@ public class GetMeetingWorkspacesEndpoint extends AbstractEndpoint
         }
         
         // Fetch the sites
-        List<String> siteNames = handler.getMeetingWorkspaces(recurring);
+        List<SiteInfo> sites = handler.getMeetingWorkspaces(recurring);
 
         // creating soap response
         Element root = soapResponse.getDocument().addElement("GetMeetingWorkspacesResponse", namespace);
@@ -96,9 +97,11 @@ public class GetMeetingWorkspacesEndpoint extends AbstractEndpoint
 
         String baseUrl = getHost(soapRequest) + soapRequest.getAlfrescoContextName() + "/";
 
-        for (String siteName : siteNames)
+        for (SiteInfo siteInfo : sites)
         {
-            meetingWorkspaces.addElement("Workspace").addAttribute("Url", baseUrl + siteName).addAttribute("Title", siteName);
+            Element workspace = meetingWorkspaces.addElement("Workspace");
+            workspace.addAttribute("Url", baseUrl + siteInfo.getShortName());
+            workspace.addAttribute("Title", siteInfo.getTitle());
         }
 
         soapResponse.setContentType("text/xml");

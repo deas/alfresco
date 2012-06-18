@@ -66,6 +66,21 @@ public class CreateWorkspaceEndpoint extends AbstractEndpoint
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
+        // We don't support meeting sub-sites
+        // Check to ensure that one wasn't requested
+        String siteName = getDwsFromUri(soapRequest);
+        if ("".equals(siteName) || "/".equals(siteName))
+        {
+            // Good, request is to create at the root site
+        }
+        else
+        {
+            // Report that we don't support a subsite
+            throw new VtiSoapException("Subsites are not supported", 1l);
+        }
+        
+
+        // Process the details of the create request
         Element requestElement = soapRequest.getDocument().getRootElement();
 
         // The Title is always required
@@ -111,7 +126,7 @@ public class CreateWorkspaceEndpoint extends AbstractEndpoint
         
 
         // Have the site created
-        String siteName = handler.createWorkspace(title, templateName, lcid, getTimeZoneInformation(requestElement),
+        siteName = handler.createWorkspace(title, templateName, lcid, getTimeZoneInformation(requestElement),
                 (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
 
         // creating soap response
