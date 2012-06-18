@@ -2043,6 +2043,24 @@
       </zip>
    </target>
 
+   <target name="incremental-spp-tomcat-exploded"
+           depends="package-spp-extension,deploy-spp-tomcat-exploded" />
+
+   <target name="deploy-spp-tomcat-exploded"
+           depends="deploy-webclient-tomcat-exploded">
+      <!-- Copy in the SPP things -->
+      <!-- (Ideally we'd amp the exploded directory, but that doesn't work well -->
+      <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/lib" verbose="${copy.verbose}">
+         <fileset file="${dir.module.spp.dist}/${file.name.jar.spp}" />
+      </copy>
+      <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/classes" verbose="${copy.verbose}">
+         <zipfileset dir="${dir.module.spp.config}">
+            <exclude name="**/module.properties" />
+            <exclude name="**/vti-handler-alfresco2-context.xml.sample" />
+         </zipfileset>
+      </copy>
+   </target>
+
    <target name="test-spp"
            depends="compile-spp">
       <run-tests projectdir="${dir.module.spp}" />
