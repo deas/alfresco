@@ -195,21 +195,26 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         {
             MwsStatus siteStatus = MwsStatus.getDefault();
 
-            NodeRef calendarNodeRef = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
-
-            List<FileInfo> childs = fileFolderService.list(calendarNodeRef);
             int count = 0;
-
-            for (FileInfo child : childs)
+            NodeRef calendarNodeRef = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
+            if (calendarNodeRef != null)
             {
-                if (nodeService.getType(child.getNodeRef()).equals(CalendarModel.TYPE_EVENT))
+                List<FileInfo> childs = fileFolderService.list(calendarNodeRef);
+                for (FileInfo child : childs)
                 {
-                    count++;
+                    if (nodeService.getType(child.getNodeRef()).equals(CalendarModel.TYPE_EVENT))
+                    {
+                        count++;
+                    }
                 }
+            }
+            else
+            {
+                if (logger.isInfoEnabled())
+                    logger.info("Calendar details queried for " + siteName + " but no Calendar Container exists");
             }
 
             siteStatus.setMeetingCount(count);
-
             info.setStatus(siteStatus);
         }
 
