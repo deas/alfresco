@@ -75,13 +75,20 @@ public class GetMeetingsInformationEndpoint extends AbstractEndpoint
             logger.debug("Getting requestFlags from request.");
         XPath requestFlagsPath = new Dom4jXPath(buildXPath(prefix, "/GetMeetingsInformation/requestFlags"));
         requestFlagsPath.setNamespaceContext(nc);
-        Element requestFlags = (Element) requestFlagsPath.selectSingleNode(requestElement);
+        Element requestFlagsE = (Element) requestFlagsPath.selectSingleNode(requestElement);
+
+        int requestFlags = 0;
+        if (requestFlagsE != null)
+        {
+            requestFlags = Integer.parseInt(requestFlagsE.getText());
+        }
+        
 
         String siteName = getDwsFromUri(soapRequest);
-
         if (siteName.length() > 0)
         {
-            if (Integer.parseInt(requestFlags.getText()) == 8)
+            // Is Flag 0x8 set? 0x8 = Query the status values of one site
+            if ((requestFlags&8) == 8)
             {
                 siteName = siteName.substring(1);
             }
@@ -96,9 +103,17 @@ public class GetMeetingsInformationEndpoint extends AbstractEndpoint
             logger.debug("Getting lcid from request.");
         XPath lcidPath = new Dom4jXPath(buildXPath(prefix, "/GetMeetingsInformation/lcid"));
         lcidPath.setNamespaceContext(nc);
-        Element lcid = (Element) lcidPath.selectSingleNode(requestElement);
+        Element lcidE = (Element) lcidPath.selectSingleNode(requestElement);
+        
+        int lcid = 0;
+        if (lcidE != null)
+        {
+            lcid = Integer.parseInt(lcidE.getText());
+        }
+        
 
-        MeetingsInformation info = handler.getMeetingsInformation(siteName, Integer.parseInt(requestFlags.getText()), Integer.parseInt(lcid.getText()));
+        // Fetch the meeting details
+        MeetingsInformation info = handler.getMeetingsInformation(siteName, requestFlags, lcid);
 
         // writing soap response
         Element root = soapResponse.getDocument().addElement("GetMeetingsInformationResponse", namespace);

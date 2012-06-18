@@ -36,7 +36,6 @@ import javax.transaction.UserTransaction;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.module.vti.handler.alfresco.VtiExceptionUtils;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.module.vti.metadata.model.MeetingsInformation;
 import org.alfresco.module.vti.metadata.model.MwsStatus;
@@ -177,17 +176,22 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     {
         MeetingsInformation info = new MeetingsInformation();
 
-        if (requestFlags == 3)
+        // Flag 0x1 = Query for user permissions
+        
+        // Flag 0x2 = Query for site template languages
+        if ((requestFlags & 2) == 2)
         {
             info.getTemplateLanguages().add(new Integer(1033));
         }
 
-        if (requestFlags == 5)
+        // Flag 0x4 = Query for the site templates
+        if ((requestFlags & 4) == 4)
         {
             info.getTemplates().add(MwsTemplate.getDefault());
         }
 
-        if (requestFlags == 8)
+        // Flag 0x8 = Query for other status values
+        if ((requestFlags & 8) == 8)
         {
             MwsStatus siteStatus = MwsStatus.getDefault();
 

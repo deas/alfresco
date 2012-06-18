@@ -115,7 +115,7 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         MeetingBean meetingBean = getMeeting(icalText.getText());
         String siteName = getDwsFromUri(soapRequest).substring(1);
 
-        handler.addMeetingFromICal(siteName, meetingBean);
+        handler.addMeetingFromICal(siteName, meetingBean); 
 
         Element root = soapResponse.getDocument().addElement("AddMeetingFromICalResponse", namespace);
         Element result = root.addElement("AddMeetingFromICalResult");
@@ -124,6 +124,7 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
                         "false").addAttribute("AllowAuthenticatedUsers", "false");
         result.addElement("AttendeeUpdateStatus").addAttribute("Code", "0").addAttribute("Detail", "").addAttribute("ManageUserPage", "");
 
+        soapResponse.setContentType("text/xml");
         if (logger.isDebugEnabled())
         {
             logger.debug("SOAP method with name " + getName() + " is finished.");
