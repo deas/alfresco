@@ -153,6 +153,47 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     }
 
     /**
+     * @see org.alfresco.module.vti.handler.MeetingServiceHandler#setWorkspaceTitle(String, String)
+     */
+    public void updateWorkspaceTitle(String oldSiteName, String newTitle)
+    {
+        SiteInfo siteInfo = siteService.getSite(oldSiteName);
+
+        if (siteInfo == null)
+        {
+            throw new RuntimeException("vti.meeting.error.no_site");
+        }
+
+        if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
+        {
+            throw new RuntimeException("vti.meeting.error.bad_type");
+        }
+        
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Updating name/title of site " + oldSiteName + " to '" + newTitle + "'");
+        }
+        
+        String title = removeIllegalCharacters(newTitle);
+        if (title.equals("_"))
+        {
+            throw new RuntimeException(getMessage("vti.meeting.error.workspace_name"));
+        }
+        
+        // Is the new name spare?
+        if (siteService.getSite(title) != null)
+        {
+            // TODO Is this correct?
+            throw new RuntimeException(getMessage("vti.meeting.error.workspace_name"));
+        }
+        
+        // TODO Perform the rename
+        
+        siteInfo.setTitle(newTitle);
+        siteService.updateSite(siteInfo);
+    }
+
+    /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#getMeetingWorkspaces(boolean)
      */
     public List<String> getMeetingWorkspaces(boolean recurring)
@@ -276,6 +317,53 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         });
     }
 
+    /**
+     * @see org.alfresco.module.vti.handler.MeetingServiceHandler#updateMeeting(String, MeetingBean)
+     */
+    public void updateMeeting(final String siteName, MeetingBean meeting)
+    {
+        NodeRef calendarContainer = null;
+
+        calendarContainer = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
+        if (calendarContainer == null)
+        {
+            throw new VtiHandlerException(getMessage("vti.meeting.error.no_site_update"));
+        }
+        
+        // Tweak things on the meeting bean as needed
+        adjustMeetingProperties(meeting);
+        
+        // Get the current event object to update
+        final CalendarEntry entry = getEvent(siteName, meeting.getId());
+        if (entry == null)
+        {
+            throw new VtiHandlerException(getMessage("vti.meeting.error.no_meeting_update"));
+        }
+        
+        // Copy the updateable properties onto it
+        // This is only a subset of what can be supported via iCal
+        // TODO It would be better if the caller asked us for the
+        //  MeetingBean rather than creating a new one...
+        entry.setTitle(meeting.getTitle());
+        entry.setLocation(meeting.getLocation());
+        entry.setStart(meeting.getStart());
+        entry.setEnd(meeting.getEnd());
+
+        transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<Object>()
+        {
+            public Object execute()
+            {
+                calendarService.updateCalendarEntry(entry);
+                return null;
+            }
+        });
+
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Meeting with Outlook UID = '" + meeting.getId() + "' was updated.");
+        }
+    }
+    
     /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#updateMeetingFromICal(String, MeetingBean, boolean)
      */

@@ -468,6 +468,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/AddMeetingFromICal">
                     <ref bean="addMeetingFromICalEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/UpdateMeeting">
+                    <ref bean="updateMeetingEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/UpdateMeetingFromICal">
                     <ref bean="updateMeetingFromICalEndpoint"/>
                 </entry>
@@ -476,6 +479,9 @@
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/DeleteWorkspace">
                     <ref bean="deleteWorkspaceEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/SetWorkspaceTitle">
+                    <ref bean="setWorkspaceTitleEndpoint"/>
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetWeb">
                     <ref bean="getWebEndpoint"/>
@@ -845,6 +851,16 @@
         </property>
     </bean>
 
+    <bean id="updateMeetingEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>UpdateMeeting</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
     <bean id="updateMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingFromICalEndpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
@@ -869,6 +885,16 @@
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>DeleteWorkspace</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="setWorkspaceTitleEndpoint" class="org.alfresco.module.vti.web.ws.SetWorkspaceTitleEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>SetWorkspaceTitle</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>

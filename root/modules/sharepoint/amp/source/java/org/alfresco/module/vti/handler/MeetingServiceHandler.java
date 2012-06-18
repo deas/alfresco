@@ -72,6 +72,22 @@ public interface MeetingServiceHandler
     public String createWorkspace(String title, String templateName, int lcid, TimeZoneInformation timeZoneInformation, SessionUser user) throws Exception;
 
     /**
+     * Updates the title (but not the name) of a Meeting Workspace site on the specified Alfresco server
+     * 
+     * @param siteName The site name
+     * @param title The new title for the Meeting Workspace site
+     */
+    public void updateWorkspaceTitle(String siteName, String newTitle);
+    
+    /**
+     * Updates meeting information .
+     * 
+     * @param siteName The site name
+     * @param meeting The meeting bean ({@link MeetingBean})
+     */
+    public void updateMeeting(String siteName, MeetingBean meeting);
+
+    /**
      * Associates a meeting represented in Internet Calendar (iCal) format with the Meeting Workspace site on the specified Alfresco server.
      * 
      * @param siteName The site name
