@@ -20,7 +20,10 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.ObjectNotFoundException;
+import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -31,7 +34,10 @@ import org.jaxen.dom4j.Dom4jXPath;
 /**
  * Class for handling UpdateMeeting soap method
  * 
- * @author PavelYur
+ * TODO Finish this off, then generalise it for AddMeeting and RestoreMeeting
+ * TODO Can SetAttendeeResponse use this?
+ * 
+ * @author Nick Burch
  */
 public class UpdateMeetingEndpoint extends AddMeetingFromICalEndpoint
 {
@@ -89,7 +95,19 @@ public class UpdateMeetingEndpoint extends AddMeetingFromICalEndpoint
         // TODO
         MeetingBean meetingBean = null;
         String siteName = getDwsFromUri(soapRequest).substring(1);
-        handler.updateMeeting(siteName, meetingBean);
+        
+        try
+        {
+            handler.updateMeeting(siteName, meetingBean);
+        }
+        catch (SiteDoesNotExistException se)
+        {
+            throw new VtiHandlerException(getMessage("vti.meeting.error.no_site_update"));
+        }
+        catch (ObjectNotFoundException eo)
+        {
+            throw new VtiHandlerException(getMessage("vti.meeting.error.no_meeting_update"));
+        }
 
         // creating soap response
         soapResponse.setContentType("text/xml");

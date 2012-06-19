@@ -45,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.XPath;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Abstract base class for all the {@link VtiEndpoint} realizations.
@@ -584,5 +585,21 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
         Element root = soapResponse.getDocument().addElement(getResponseTagName(), namespace);
         Element resultElement = root.addElement(getResultTagName());
         return resultElement;
+    }
+    
+    /**
+     * TODO Fix up the message files so we can get rid of this nasty hack!
+     */
+    protected String getMessage(String name)
+    {
+        String result = null;
+        try
+        {
+            result = new String(I18NUtil.getMessage(name).getBytes("ISO-8859-1"), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+        }
+        return result;
     }
 }

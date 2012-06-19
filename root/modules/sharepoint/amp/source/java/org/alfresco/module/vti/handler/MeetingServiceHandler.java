@@ -26,6 +26,7 @@ import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.module.vti.metadata.model.MeetingsInformation;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.site.SiteInfo;
 
 /**
@@ -79,7 +80,7 @@ public interface MeetingServiceHandler
      * @param siteName The site name
      * @param title The new title for the Meeting Workspace site
      */
-    public void updateWorkspaceTitle(String siteName, String newTitle);
+    public void updateWorkspaceTitle(String siteName, String newTitle) throws SiteDoesNotExistException;
     
     /**
      * Updates meeting information .
@@ -87,7 +88,7 @@ public interface MeetingServiceHandler
      * @param siteName The site name
      * @param meeting The meeting bean ({@link MeetingBean})
      */
-    public void updateMeeting(String siteName, MeetingBean meeting);
+    public void updateMeeting(String siteName, MeetingBean meeting) throws SiteDoesNotExistException, ObjectNotFoundException;
 
     /**
      * Associates a meeting represented in Internet Calendar (iCal) format with the Meeting Workspace site on the specified Alfresco server.
@@ -95,7 +96,7 @@ public interface MeetingServiceHandler
      * @param siteName The site name
      * @param meeting The meeting bean ({@link MeetingBean})
      */
-    public void addMeetingFromICal(String siteName, MeetingBean meeting);
+    public void addMeetingFromICal(String siteName, MeetingBean meeting) throws SiteDoesNotExistException;
 
     /**
      * Updates meeting information stored in Internet Calendar (iCal) format.
@@ -104,7 +105,7 @@ public interface MeetingServiceHandler
      * @param meeting The meeting bean ({@link MeetingBean})
      * @param ignoreAttendees <code>true</code> if you want to skip processing of attendee information in the iCal; otherwise, <code>false</code>.
      */
-    public void updateMeetingFromICal(String siteName, MeetingBean meeting, boolean ignoreAttendees);
+    public void updateMeetingFromICal(String siteName, MeetingBean meeting, boolean ignoreAttendees) throws SiteDoesNotExistException, ObjectNotFoundException;
 
     /**
      * Removes the association between a meeting and a Meeting Workspace site.
@@ -118,8 +119,16 @@ public interface MeetingServiceHandler
      *        2003-03-04T04:45:22-08:00).
      * @param cancelMeeting <code>true</code> if you want to delete a meeting; <code>false</code> if you just want to remove its association with a Meeting Workspace site.
      */
-    public void removeMeeting(String siteName, int recurrenceId, String uid, int sequence, Date utcDateStamp, boolean cancelMeeting);
+    public void removeMeeting(String siteName, int recurrenceId, String uid, int sequence, Date utcDateStamp, 
+            boolean cancelMeeting) throws SiteDoesNotExistException, ObjectNotFoundException;
 
+    /**
+     * Restores a meeting in a Meeting Workspace site, which was previously removed.
+     * This will only be supported if archiving is enabled, and the meeting Calendar NodeRef
+     *  is still present in the archive store.
+     */
+    public void restoreMeeting(String siteName, String uid) throws SiteDoesNotExistException, ObjectNotFoundException;
+    
     /**
      * Deletes the Meeting Workspace site from the specified Alfresco server.
      * 

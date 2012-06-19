@@ -35,6 +35,7 @@ import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.ObjectNotFoundException;
 import org.alfresco.module.vti.handler.SiteTypeException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
@@ -53,6 +54,7 @@ import org.alfresco.service.cmr.calendar.CalendarService;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -308,16 +310,35 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     }
 
     /**
-     * @see org.alfresco.module.vti.handler.MeetingServiceHandler#updateMeeting(String, MeetingBean)
+     * @see org.alfresco.module.vti.handler.MeetingServiceHandler#restoreMeeting(String, String)
      */
-    public void updateMeeting(final String siteName, MeetingBean meeting)
+    @Override
+    public void restoreMeeting(String siteName, String uid) throws SiteDoesNotExistException, ObjectNotFoundException
     {
         NodeRef calendarContainer = null;
 
         calendarContainer = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
         if (calendarContainer == null)
         {
-            throw new VtiHandlerException(getMessage("vti.meeting.error.no_site_update"));
+            throw new SiteDoesNotExistException(siteName);
+        }
+
+        // Look in the archive store
+        // TODO
+        throw new ObjectNotFoundException("Archive store searching not yet supported");
+    }
+
+    /**
+     * @see org.alfresco.module.vti.handler.MeetingServiceHandler#updateMeeting(String, MeetingBean)
+     */
+    public void updateMeeting(final String siteName, MeetingBean meeting) throws SiteDoesNotExistException, ObjectNotFoundException
+    {
+        NodeRef calendarContainer = null;
+
+        calendarContainer = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
+        if (calendarContainer == null)
+        {
+            throw new SiteDoesNotExistException(siteName);
         }
         
         // Tweak things on the meeting bean as needed
@@ -327,7 +348,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         final CalendarEntry entry = getEvent(siteName, meeting.getId());
         if (entry == null)
         {
-            throw new VtiHandlerException(getMessage("vti.meeting.error.no_meeting_update"));
+            throw new ObjectNotFoundException();
         }
         
         // Copy the updateable properties onto it
@@ -586,6 +607,9 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         return result.toString();
     }
 
+    /**
+     * TODO Fix up the message files so we can get rid of this nasty hack!
+     */
     protected String getMessage(String name)
     {
         String result = null;
