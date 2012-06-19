@@ -83,6 +83,14 @@ public interface MeetingServiceHandler
     public void updateWorkspaceTitle(String siteName, String newTitle) throws SiteDoesNotExistException;
     
     /**
+     * Creates the meeting information in the Meeting Workspace site on the specified Alfresco server.
+     * 
+     * @param siteName The site name
+     * @param meeting The meeting bean ({@link MeetingBean})
+     */
+    public void addMeeting(String siteName, MeetingBean meeting) throws SiteDoesNotExistException;
+
+    /**
      * Updates meeting information .
      * 
      * @param siteName The site name

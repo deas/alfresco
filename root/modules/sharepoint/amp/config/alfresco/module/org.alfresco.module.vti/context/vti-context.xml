@@ -480,6 +480,9 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/RemoveMeeting">
                     <ref bean="removeMeetingEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/RestoreMeeting">
+                    <ref bean="restoreMeetingEndpoint"/>
+                </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/meetings/SetAttendeeResponse">
                     <ref bean="setAttendeeResponseEndpoint"/>
                 </entry>
@@ -891,6 +894,16 @@
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>RemoveMeeting</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>
+        </property>
+    </bean>
+
+    <bean id="restoreMeetingEndpoint" class="org.alfresco.module.vti.web.ws.RestoreMeetingEndpoint">
+        <constructor-arg ref="meetingServiceHandler"/>
+        <property name="name">
+            <value>RestoreMeeting</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/meetings/</value>

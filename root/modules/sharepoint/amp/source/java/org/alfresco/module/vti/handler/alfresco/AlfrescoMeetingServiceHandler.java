@@ -110,6 +110,25 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     protected ShareUtils shareUtils;
 
     /**
+     * @see org.alfresco.module.vti.handler.MeetingServiceHandler#addMeeting(String, MeetingBean)
+     */
+    public void addMeeting(String siteName, final MeetingBean meeting)
+    {
+        if (meeting.getSubject() == null)
+        {
+            throw new RuntimeException(getMessage("vti.meeting.error.no_subject"));
+        }
+
+        adjustMeetingProperties(meeting);
+        calendarService.createCalendarEntry(siteName, meeting);
+
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Meeting with subject '" + meeting.getSubject() + "' was created.");
+        }
+    }
+
+    /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#addMeetingFromICal(String, MeetingBean)
      */
     public void addMeetingFromICal(String siteName, final MeetingBean meeting)

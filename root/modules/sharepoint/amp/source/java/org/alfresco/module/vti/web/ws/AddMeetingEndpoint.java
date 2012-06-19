@@ -25,13 +25,13 @@ import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 
 /**
- * Class for handling UpdateMeeting soap method
+ * Class for handling AddMeeting soap method
  * 
  * @author Nick Burch
  */
-public class UpdateMeetingEndpoint extends AbstractMeetingEndpoint
+public class AddMeetingEndpoint extends AbstractMeetingEndpoint
 {
-    public UpdateMeetingEndpoint(MeetingServiceHandler handler)
+    public AddMeetingEndpoint(MeetingServiceHandler handler)
     {
         super(handler);
     }
@@ -46,7 +46,7 @@ public class UpdateMeetingEndpoint extends AbstractMeetingEndpoint
         // TODO
         
         // Perform the deletion
-        handler.updateMeeting(siteName, meetingBean);
+        handler.addMeeting(siteName, meetingBean);
         
         // Build the response
         buildMeetingResponse(soapResponse);
