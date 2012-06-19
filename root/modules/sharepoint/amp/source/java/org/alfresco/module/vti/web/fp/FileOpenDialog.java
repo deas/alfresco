@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.extensions.surf.util.I18NUtil;
-import org.springframework.extensions.surf.util.URLDecoder;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfo;
 import org.alfresco.module.vti.metadata.dialog.DialogMetaInfoComparator;
@@ -36,9 +34,11 @@ import org.alfresco.module.vti.metadata.dialog.DialogsMetaInfo;
 import org.alfresco.module.vti.metadata.dic.VtiSort;
 import org.alfresco.module.vti.metadata.dic.VtiSortField;
 import org.alfresco.module.vti.web.VtiRequestDispatcher;
-import org.springframework.extensions.surf.util.URLEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.extensions.surf.util.URLDecoder;
+import org.springframework.extensions.surf.util.URLEncoder;
 
 import freemarker.core.Environment;
 import freemarker.template.Template;

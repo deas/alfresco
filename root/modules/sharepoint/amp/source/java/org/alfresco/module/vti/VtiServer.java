@@ -26,17 +26,17 @@ import javax.servlet.http.HttpServlet;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.webdav.WebDAVSessionListener;
-import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.FilterHolder;
+import org.mortbay.jetty.servlet.HashSessionIdManager;
 import org.mortbay.jetty.servlet.HashSessionManager;
 import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.jetty.servlet.HashSessionIdManager;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 
 
 /**

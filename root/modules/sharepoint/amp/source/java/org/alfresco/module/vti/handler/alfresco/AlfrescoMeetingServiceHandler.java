@@ -54,7 +54,6 @@ import org.alfresco.service.cmr.calendar.CalendarService;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
-import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;

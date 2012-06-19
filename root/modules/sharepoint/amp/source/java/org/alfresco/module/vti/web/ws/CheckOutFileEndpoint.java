@@ -24,9 +24,9 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
-import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

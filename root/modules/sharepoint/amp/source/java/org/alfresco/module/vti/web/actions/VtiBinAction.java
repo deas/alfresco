@@ -26,9 +26,9 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 import org.alfresco.module.vti.web.fp.NotImplementedVtiMethod;
-import org.alfresco.module.vti.web.fp.VtiMethod;
 import org.alfresco.module.vti.web.fp.VtiFpRequest;
 import org.alfresco.module.vti.web.fp.VtiFpResponse;
+import org.alfresco.module.vti.web.fp.VtiMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

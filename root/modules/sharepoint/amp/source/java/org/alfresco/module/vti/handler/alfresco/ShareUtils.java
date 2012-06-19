@@ -23,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.admin.SysAdminParams;
-import org.springframework.extensions.surf.util.URLEncoder;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -32,6 +31,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.URLEncoder;
 
 /**
  * Helper class to work with sites through REST API

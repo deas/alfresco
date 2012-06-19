@@ -22,8 +22,6 @@ package org.alfresco.module.vti.web.ws;
 import java.util.Date;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Class for handling RemoveMeeting soap method
