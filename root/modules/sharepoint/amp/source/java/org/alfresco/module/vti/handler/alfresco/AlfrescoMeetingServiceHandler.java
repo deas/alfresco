@@ -114,11 +114,22 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public void addMeeting(String siteName, final MeetingBean meeting)
     {
+        // Sanity check
+        SiteInfo siteInfo = siteService.getSite(siteName);
+        if (siteInfo == null)
+        {
+            throw new SiteDoesNotExistException(siteName);
+        }
+        if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
+        {
+            throw new SiteTypeException("vti.meeting.error.bad_type");
+        }
         if (meeting.getSubject() == null)
         {
             throw new RuntimeException(getMessage("vti.meeting.error.no_subject"));
         }
 
+        // Adjust, then add
         adjustMeetingProperties(meeting);
         calendarService.createCalendarEntry(siteName, meeting);
 
@@ -133,11 +144,22 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public void addMeetingFromICal(String siteName, final MeetingBean meeting)
     {
+        // Sanity check
+        SiteInfo siteInfo = siteService.getSite(siteName);
+        if (siteInfo == null)
+        {
+            throw new SiteDoesNotExistException(siteName);
+        }
+        if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
+        {
+            throw new SiteTypeException("vti.meeting.error.bad_type");
+        }
         if (meeting.getSubject() == null)
         {
             throw new RuntimeException(getMessage("vti.meeting.error.no_subject"));
         }
 
+        // Adjust, then add
         adjustMeetingProperties(meeting);
         calendarService.createCalendarEntry(siteName, meeting);
 
@@ -182,13 +204,12 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public void updateWorkspaceTitle(String siteName, String newTitle)
     {
+        // Sanity check
         SiteInfo siteInfo = siteService.getSite(siteName);
-
         if (siteInfo == null)
         {
             throw new SiteDoesNotExistException(siteName);
         }
-
         if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
         {
             throw new SiteTypeException("vti.meeting.error.bad_type");
@@ -351,12 +372,15 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public void updateMeeting(final String siteName, MeetingBean meeting) throws SiteDoesNotExistException, ObjectNotFoundException
     {
-        NodeRef calendarContainer = null;
-
-        calendarContainer = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
-        if (calendarContainer == null)
+        // Sanity check
+        SiteInfo siteInfo = siteService.getSite(siteName);
+        if (siteInfo == null)
         {
             throw new SiteDoesNotExistException(siteName);
+        }
+        if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
+        {
+            throw new SiteTypeException("vti.meeting.error.bad_type");
         }
         
         // Tweak things on the meeting bean as needed

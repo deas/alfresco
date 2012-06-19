@@ -20,6 +20,7 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.SiteTypeException;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 
 /**
@@ -39,7 +40,14 @@ public class UpdateMeetingEndpoint extends AbstractMeetingEndpoint
             MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
     {
         // Perform the deletion
-        handler.updateMeeting(siteName, meetingBean);
+        try
+        {
+            handler.updateMeeting(siteName, meetingBean);
+        }
+        catch (SiteTypeException ste)
+        {
+            throw new VtiSoapException(ste.getMsgId(), 6l);
+        }
         
         // Build the response
         buildMeetingResponse(soapResponse);

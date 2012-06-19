@@ -20,6 +20,7 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.SiteTypeException;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.dom4j.Element;
 
@@ -40,7 +41,18 @@ public class AddMeetingEndpoint extends AbstractMeetingEndpoint
             MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
     {
         // Perform the addition of the meeting
-        handler.addMeeting(siteName, meetingBean);
+        try
+        {
+            handler.addMeeting(siteName, meetingBean);
+        }
+        catch (SiteTypeException ste)
+        {
+            throw new VtiSoapException(ste.getMsgId(), 6l);
+        }
+        catch (Exception e)
+        {
+            throw new VtiSoapException(e.getMessage(), 7l, e);
+        }
         
         // Build the response
         Element e = buildMeetingResponse(soapResponse);

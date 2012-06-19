@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
+import org.alfresco.util.ISO8601DateFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -146,10 +147,28 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
             logger.debug("Getting location from request: " + location);
 
         // utcDateStart
-        Date dateStart = null; // TODO
+        XPath dateStartPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/utcDateStart"));
+        dateStartPath.setNamespaceContext(nc);
+        Element dateStartE = (Element) dateStartPath.selectSingleNode(requestElement);
+        Date dateStart = null;
+        if (dateStartE != null && dateStartE.getText() != null)
+        {
+            dateStart = ISO8601DateFormat.parse(dateStartE.getText());
+        }
+        if (logger.isDebugEnabled())
+            logger.debug("Getting date start from request: " + dateStart);
         
         // utcDateEnd
-        Date dateEnd = null; // TODO
+        XPath dateEndPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/utcDateEnd"));
+        dateEndPath.setNamespaceContext(nc);
+        Element dateEndE = (Element) dateEndPath.selectSingleNode(requestElement);
+        Date dateEnd = null;
+        if (dateEndE != null && dateEndE.getText() != null)
+        {
+            dateEnd = ISO8601DateFormat.parse(dateEndE.getText());
+        }
+        if (logger.isDebugEnabled())
+            logger.debug("Getting date end from request: " + dateEnd);
         
         // getting recurrenceId parameter from request
         XPath recurrenceIdPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/recurrenceId"));
