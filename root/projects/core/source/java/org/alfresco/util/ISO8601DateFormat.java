@@ -178,19 +178,35 @@ public class ISO8601DateFormat
                 throw new IndexOutOfBoundsException("Expected : character but found " + isoDate.charAt(offset));
             }
             int seconds = Integer.parseInt(isoDate.substring(offset += 1 , offset += 2));
+            
             int milliseconds = 0;
+            boolean hasMilliseconds = false;
             if (isoDate.length() > offset && isoDate.charAt(offset) == '.')
             {
                 // ALF-3803 bug fix, milliseconds are optional
                 milliseconds = Integer.parseInt(isoDate.substring(offset += 1, offset += 3));
+                hasMilliseconds = true;
             }
             
             // Do we need to extract the timezone, or was it given?
             if(timezone == null)
             {
-               // Extract timezone
                String timezoneId;
                char timezoneIndicator = isoDate.charAt(offset);
+               
+               if (hasMilliseconds)
+               {
+                   // ALF-14687 bug fix, we can have more than 3 millisecond digits
+                   // But there may be more than that, which we skip over before looking
+                   // for the timezone information. 
+                   while (timezoneIndicator >= '0' && timezoneIndicator <= '9')
+                   {
+                       offset++;
+                       timezoneIndicator = isoDate.charAt(offset);
+                   }
+               }
+                
+               // Extract timezone
                if (timezoneIndicator == '+' || timezoneIndicator == '-')
                {
                    timezoneId = "GMT" + isoDate.substring(offset);

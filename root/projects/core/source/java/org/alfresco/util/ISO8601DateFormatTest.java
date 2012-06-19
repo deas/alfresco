@@ -56,6 +56,22 @@ public class ISO8601DateFormatTest extends TestCase
        
        assertEquals(testA, ISO8601DateFormat.format(dateA));
        assertEquals(testBms, ISO8601DateFormat.format(dateB));
+       
+       // The official ISO 8601.2004 spec doesn't say much helpful about milliseconds
+       // The W3C version <http://www.w3.org/TR/NOTE-datetime> says it's up to different
+       //  implementations to put bounds on them
+       // We can silently ignore anything beyond 3 digits, see ALF-14687
+       String testCms3 = "2005-09-16T17:01:03.123+01:00";
+       String testCms4 = "2005-09-16T17:01:03.1234+01:00";
+       String testCms5 = "2005-09-16T17:01:03.12345+01:00";
+       String testCms6 = "2005-09-16T17:01:03.123456+01:00";
+       String testCms7 = "2005-09-16T17:01:03.1234567+01:00";
+       
+       Date testC = ISO8601DateFormat.parse(testCms3);
+       assertEquals(testC, ISO8601DateFormat.parse(testCms4));
+       assertEquals(testC, ISO8601DateFormat.parse(testCms5));
+       assertEquals(testC, ISO8601DateFormat.parse(testCms6));
+       assertEquals(testC, ISO8601DateFormat.parse(testCms7));
     }
     
     public void testTimezones()
