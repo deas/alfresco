@@ -2047,7 +2047,7 @@
            depends="package-spp-extension,deploy-spp-tomcat-exploded" />
 
    <target name="deploy-spp-tomcat-exploded"
-           depends="deploy-webclient-tomcat-exploded">
+           depends="incremental-webclient-tomcat-exploded,deploy-webclient-tomcat-exploded">
       <!-- Copy in the SPP things -->
       <!-- (Ideally we'd amp the exploded directory, but that doesn't work well -->
       <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/lib" verbose="${copy.verbose}">

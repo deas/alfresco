@@ -20,7 +20,9 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.SiteTypeException;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.repo.webdav.auth.SharepointConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,9 +66,26 @@ public class DeleteWorkspaceEndpoint extends AbstractEndpoint
         nc.addNamespace(soapUriPrefix, soapUri);
 
         // get site name to delete
-        String siteName = getDwsFromUri(soapRequest).substring(1);
+        String siteName = getDwsFromUri(soapRequest);
+        if ("".equals(siteName) || "/".equals("siteName"))
+        {
+            throw new VtiSoapException("A Site Name must be supplied", 4l);
+        }       
+        siteName = siteName.substring(1);
 
-        handler.deleteWorkspace(siteName, (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
+        // perform the deletion
+        try
+        {
+            handler.deleteWorkspace(siteName, (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
+        }
+        catch (SiteDoesNotExistException se)
+        {
+            throw new VtiSoapException("vti.meeting.error.no_site", 0x4l); // TODO Is this the right code?
+        }
+        catch (SiteTypeException ste)
+        {
+            throw new VtiSoapException(ste.getMsgId(), 0x4l);
+        }
 
         // creating soap response
         soapResponse.getDocument().addElement("DeleteWorkspaceResponse", namespace);

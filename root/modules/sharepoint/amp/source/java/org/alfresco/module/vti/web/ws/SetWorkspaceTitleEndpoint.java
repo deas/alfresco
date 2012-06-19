@@ -20,6 +20,7 @@
 package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -65,7 +66,12 @@ public class SetWorkspaceTitleEndpoint extends AbstractEndpoint
         nc.addNamespace(soapUriPrefix, soapUri);
 
         // Get the site name to update
-        String siteName = getDwsFromUri(soapRequest).substring(1);
+        String siteName = getDwsFromUri(soapRequest);
+        if ("".equals(siteName) || "/".equals("siteName"))
+        {
+            throw new VtiSoapException("A Site Name must be supplied", 6l);
+        }       
+        siteName = siteName.substring(1);
         
         
         Element requestElement = soapRequest.getDocument().getRootElement();
@@ -85,7 +91,14 @@ public class SetWorkspaceTitleEndpoint extends AbstractEndpoint
         
 
         // Perform the title update
-        handler.updateWorkspaceTitle(siteName, title);
+        try
+        {
+            handler.updateWorkspaceTitle(siteName, title);
+        }
+        catch (SiteDoesNotExistException e)
+        {
+            throw new VtiSoapException("Site not found", 6l);
+        }
 
         // creating soap response
         soapResponse.setContentType("text/xml");

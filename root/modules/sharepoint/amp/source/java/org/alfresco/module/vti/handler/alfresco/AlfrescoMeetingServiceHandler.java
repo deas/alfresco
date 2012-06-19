@@ -35,6 +35,7 @@ import javax.transaction.UserTransaction;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.SiteTypeException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.module.vti.metadata.model.MeetingsInformation;
@@ -44,6 +45,7 @@ import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.calendar.CalendarServiceImpl;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.calendar.CalendarEntry;
@@ -164,12 +166,12 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
         if (siteInfo == null)
         {
-            throw new RuntimeException("vti.meeting.error.no_site");
+            throw new SiteDoesNotExistException(siteName);
         }
 
         if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
         {
-            throw new RuntimeException("vti.meeting.error.bad_type");
+            throw new SiteTypeException("vti.meeting.error.bad_type");
         }
         
         if (logger.isDebugEnabled())
@@ -470,12 +472,12 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
         if (siteInfo == null)
         {
-            throw new RuntimeException("vti.meeting.error.no_site");
+            throw new SiteDoesNotExistException(siteName);
         }
 
         if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
         {
-            throw new RuntimeException("vti.meeting.error.bad_type");
+            throw new SiteTypeException("vti.meeting.error.bad_type");
         }
 
         shareUtils.deleteSite(user, siteName);
