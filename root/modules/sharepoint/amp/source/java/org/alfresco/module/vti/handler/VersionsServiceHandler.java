@@ -75,4 +75,13 @@ public interface VersionsServiceHandler
      * @return DocumentVersionBean current document
      */
     public List<DocumentVersionBean> deleteAllVersions(String fileName) throws FileNotFoundException;
+    
+    
+    /**
+     * Is the specified file name a versioned file?
+     * 
+     * @param fileName
+     * @return true if versionable, false otherwise.
+     */
+    public boolean isVersionable(String fileName);
 }

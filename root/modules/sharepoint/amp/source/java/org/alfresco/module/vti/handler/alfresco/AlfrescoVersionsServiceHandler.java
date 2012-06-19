@@ -480,4 +480,12 @@ public class AlfrescoVersionsServiceHandler implements VersionsServiceHandler
 
         return docVersion;
     }
+
+    @Override
+    public boolean isVersionable(String fileName)
+    {
+        FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(fileName);
+        boolean versionable = nodeService.hasAspect(documentFileInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE);
+        return versionable;
+    }
 }

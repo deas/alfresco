@@ -89,7 +89,10 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
         Element results = deleteVersionResult.addElement("results", namespace);
 
         results.addElement("list").addAttribute("id", "");
-        results.addElement("versioning").addAttribute("enabled", "1");
+        
+        boolean versioned = handler.isVersionable(dws + "/" + fileName);
+        String versionedStr = versioned ? "1" : "0";
+        results.addElement("versioning").addAttribute("enabled", versionedStr);
         results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName);
 
         boolean isCurrent = true;
