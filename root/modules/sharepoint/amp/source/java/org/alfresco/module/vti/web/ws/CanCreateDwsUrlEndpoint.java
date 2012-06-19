@@ -21,6 +21,7 @@ package org.alfresco.module.vti.web.ws;
 import org.alfresco.module.vti.handler.DwsServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.dic.VtiError;
+import org.alfresco.util.GUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -79,6 +80,11 @@ public class CanCreateDwsUrlEndpoint extends AbstractEndpoint
         if(url != null)
         {
             urlText = url.getTextTrim();
+            if (urlText.equals(""))
+            {
+                // [MS-DWSS] return a generated/unique name
+                urlText = GUID.generate();
+            }
         }
         if (false == handler.canCreateDwsUrl(urlText))
         {
