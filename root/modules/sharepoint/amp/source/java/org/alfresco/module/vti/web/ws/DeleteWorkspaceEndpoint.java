@@ -24,8 +24,7 @@ import org.alfresco.module.vti.handler.SiteTypeException;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.repo.webdav.auth.SharepointConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
 
 /**
@@ -33,47 +32,28 @@ import org.jaxen.SimpleNamespaceContext;
  * 
  * @author PavelYur
  */
-public class DeleteWorkspaceEndpoint extends AbstractEndpoint
+public class DeleteWorkspaceEndpoint extends AbstractWorkspaceEndpoint
 {
-
-    // handler that provides methods for operating with meetings
-    private MeetingServiceHandler handler;
-
-    // xml namespace prefix
-    private static String prefix = "mt";
-
-    private static Log logger = LogFactory.getLog(DeleteWorkspaceEndpoint.class);
-
     public DeleteWorkspaceEndpoint(MeetingServiceHandler handler)
     {
-        this.handler = handler;
+        super(handler);
     }
 
     /**
-     * Delete Meeting Workspace on Alfresco server
-     * 
-     * @param soapRequest Vti soap request ({@link VtiSoapRequest})
-     * @param soapResponse Vti soap response ({@link VtiSoapResponse})
+     * A site is always required
      */
-    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception
+    @Override
+    protected long getSiteRequired()
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Soap Method with name " + getName() + " is started.");
+        return 4l;
+    }
 
-        // mapping xml namespace to prefix
-        SimpleNamespaceContext nc = new SimpleNamespaceContext();
-        nc.addNamespace(prefix, namespace);
-        nc.addNamespace(soapUriPrefix, soapUri);
-
-        // get site name to delete
-        String siteName = getDwsFromUri(soapRequest);
-        if ("".equals(siteName) || "/".equals("siteName"))
-        {
-            throw new VtiSoapException("A Site Name must be supplied", 4l);
-        }       
-        siteName = siteName.substring(1);
-
-        // perform the deletion
+    @Override
+    protected void executeWorkspaceAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
+            Element requestElement, SimpleNamespaceContext nc, String siteName, String title, String templateName,
+            int lcid) throws Exception
+    {
+        // Perform the deletion
         try
         {
             handler.deleteWorkspace(siteName, (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));
@@ -87,12 +67,8 @@ public class DeleteWorkspaceEndpoint extends AbstractEndpoint
             throw new VtiSoapException(ste.getMsgId(), 0x4l);
         }
 
-        // creating soap response
+        // Create the soap response
+        soapResponse.setContentType("text/xml");
         soapResponse.getDocument().addElement("DeleteWorkspaceResponse", namespace);
-
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("SOAP method with name " + getName() + " is finished.");
-        }
     }
 }
