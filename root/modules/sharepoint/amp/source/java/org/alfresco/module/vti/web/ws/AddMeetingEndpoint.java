@@ -19,10 +19,9 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.util.Date;
-
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
+import org.dom4j.Element;
 
 /**
  * Class for handling AddMeeting soap method
@@ -38,17 +37,18 @@ public class AddMeetingEndpoint extends AbstractMeetingEndpoint
     
     @Override
     protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
-            String uid, String organizerEmail, int sequence, String title, String location, Date dateStart,
-            Date dateEnd, int recurrenceId, boolean cancelMeeting) throws Exception
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
     {
-        // Turn the details into a MeetingBean
-        MeetingBean meetingBean = new MeetingBean();
-        // TODO
-        
-        // Perform the deletion
+        // Perform the addition of the meeting
         handler.addMeeting(siteName, meetingBean);
         
         // Build the response
-        buildMeetingResponse(soapResponse);
+        Element e = buildMeetingResponse(soapResponse);
+        Element result = e.addElement("AddMeetingResult");
+        Element meeting = result.addElement("AddMeeting");
+        meeting.addAttribute("Url", getHost(soapRequest) + soapRequest.getAlfrescoContextName() + "/" + siteName + "?calendar=calendar")
+               .addAttribute("HostTitle", meetingBean.getSubject()).addAttribute("UniquePermissions", "true")
+               .addAttribute("MeetingCount", "1").addAttribute("AnonymousAccess", "false")
+               .addAttribute("AllowAuthenticatedUsers", "false");
     }
 }

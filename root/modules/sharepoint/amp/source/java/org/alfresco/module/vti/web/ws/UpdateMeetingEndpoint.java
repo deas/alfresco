@@ -19,8 +19,6 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.util.Date;
-
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 
@@ -38,13 +36,8 @@ public class UpdateMeetingEndpoint extends AbstractMeetingEndpoint
     
     @Override
     protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
-            String uid, String organizerEmail, int sequence, String title, String location, Date dateStart,
-            Date dateEnd, int recurrenceId, boolean cancelMeeting) throws Exception
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
     {
-        // Turn the details into a MeetingBean
-        MeetingBean meetingBean = new MeetingBean();
-        // TODO
-        
         // Perform the deletion
         handler.updateMeeting(siteName, meetingBean);
         

@@ -22,6 +22,7 @@ package org.alfresco.module.vti.web.ws;
 import java.util.Date;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -175,9 +176,18 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
             logger.debug("Getting cancelMeeting from request: " + cancelMeeting);
 
         
+        // Try to turn this into a MeetingBean
+        MeetingBean meetingBean = new MeetingBean();
+        meetingBean.setId(uid);
+        meetingBean.setOrganizer(organizerEmail);
+        meetingBean.setTitle(title);
+        meetingBean.setLocation(location);
+        meetingBean.setStart(dateStart);
+        meetingBean.setEnd(dateEnd);
+        
+        
         // Have the real action performed
-        executeMeetingAction(soapRequest, soapResponse, siteName, uid, organizerEmail, sequence, 
-                             title, location, dateStart, dateEnd, recurrenceId, cancelMeeting);
+        executeMeetingAction(soapRequest, soapResponse, siteName, meetingBean, sequence, recurrenceId, cancelMeeting);
         
         
         // All done
@@ -188,8 +198,7 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
     }
     
     protected abstract void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
-            String siteName, String uid, String organizerEmail,int sequence, String title, 
-            String location, Date dateStart, Date dateEnd, int recurrenceId, boolean cancelMeeting) throws Exception;
+            String siteName, MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception;
     
     /**
      * Builds most of the standard response

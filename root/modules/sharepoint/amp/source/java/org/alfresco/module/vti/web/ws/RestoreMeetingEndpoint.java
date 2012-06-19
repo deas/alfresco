@@ -19,10 +19,9 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.util.Date;
-
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.handler.ObjectNotFoundException;
+import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 
 /**
@@ -38,11 +37,11 @@ public class RestoreMeetingEndpoint extends AbstractMeetingEndpoint
     }
 
     @Override
-    protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, 
-            String siteName, String uid, String organizerEmail, int sequence, String title,
-            String location, Date dateStart, Date dateEnd, int recurrenceId, boolean cancelMeeting) throws Exception
+    protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
     {
         // Perform the restoration, if possible
+        String uid = meetingBean.getId();
         try
         {
             handler.restoreMeeting(siteName, uid);

@@ -19,9 +19,8 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.util.Date;
-
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.metadata.model.MeetingBean;
 
 /**
  * Class for handling RemoveMeeting soap method
@@ -36,12 +35,11 @@ public class RemoveMeetingEndpoint extends AbstractMeetingEndpoint
     }
 
     @Override
-    protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, 
-            String siteName, String uid, String organizerEmail, int sequence, String title,
-            String location, Date dateStart, Date dateEnd, int recurrenceId, boolean cancelMeeting) throws Exception
+    protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
     {
         // Perform the deletion
-        handler.removeMeeting(siteName, recurrenceId, uid, sequence, null, cancelMeeting);
+        handler.removeMeeting(siteName, recurrenceId, meetingBean.getId(), sequence, null, cancelMeeting);
         
         // Build the response
         buildMeetingResponse(soapResponse);
