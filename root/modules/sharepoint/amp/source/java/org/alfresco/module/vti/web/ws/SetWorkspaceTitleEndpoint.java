@@ -21,92 +21,53 @@ package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.repo.site.SiteDoesNotExistException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling SetWorkspaceTitle soap method
  * 
  * @author PavelYur
  */
-public class SetWorkspaceTitleEndpoint extends AbstractEndpoint
+public class SetWorkspaceTitleEndpoint extends AbstractWorkspaceEndpoint
 {
-
-    // handler that provides methods for operating with meetings
-    private MeetingServiceHandler handler;
-
-    // xml namespace prefix
-    private static String prefix = "mt";
-
-    private static Log logger = LogFactory.getLog(SetWorkspaceTitleEndpoint.class);
-
     public SetWorkspaceTitleEndpoint(MeetingServiceHandler handler)
     {
-        this.handler = handler;
+        super(handler);
     }
 
     /**
-     * Set Meeting Workspace Title on Alfresco server
-     * 
-     * @param soapRequest Vti soap request ({@link VtiSoapRequest})
-     * @param soapResponse Vti soap response ({@link VtiSoapResponse})
+     * A site name is always required
      */
-    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception
+    @Override
+    protected long getSiteRequired()
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Soap Method with name " + getName() + " is started.");
+        return 6;
+    }
 
-        // mapping xml namespace to prefix
-        SimpleNamespaceContext nc = new SimpleNamespaceContext();
-        nc.addNamespace(prefix, namespace);
-        nc.addNamespace(soapUriPrefix, soapUri);
-
-        // Get the site name to update
-        String siteName = getDwsFromUri(soapRequest);
-        if ("".equals(siteName) || "/".equals("siteName"))
-        {
-            throw new VtiSoapException("A Site Name must be supplied", 6l);
-        }       
-        siteName = siteName.substring(1);
-        
-        
-        Element requestElement = soapRequest.getDocument().getRootElement();
-
+    @Override
+    protected void executeWorkspaceAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
+            Element requestElement, SimpleNamespaceContext nc, String siteName, String title, String templateName,
+            int lcid) throws Exception
+    {
         // If no new title is given, then an empty string is used
-        if (logger.isDebugEnabled())
-            logger.debug("Getting title from request.");
-        XPath titlePath = new Dom4jXPath(buildXPath(prefix, "/SetWorkspaceTitle/title"));
-        titlePath.setNamespaceContext(nc);
-        Element titleE = (Element) titlePath.selectSingleNode(requestElement);
-
-        String title = "";
-        if (titleE != null && titleE.getText() != null && titleE.getText().length() < 1)
+        if (title == null)
         {
-            title = titleE.getText();
+            title = "";
         }
-        
 
-        // Perform the title update
+        // Update the title
         try
         {
             handler.updateWorkspaceTitle(siteName, title);
         }
         catch (SiteDoesNotExistException e)
         {
-            throw new VtiSoapException("Site not found", 6l);
+            throw new VtiSoapException("Site '" + siteName + "' not found", 6l);
         }
 
-        // creating soap response
+        // Create the soap response
         soapResponse.setContentType("text/xml");
         soapResponse.getDocument().addElement("SetWorkspaceTitleResponse", namespace);
-
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("SOAP method with name " + getName() + " is finished.");
-        }
     }
 }

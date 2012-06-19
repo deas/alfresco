@@ -54,6 +54,12 @@ public class CreateWorkspaceEndpoint extends AbstractWorkspaceEndpoint
             Element requestElement, SimpleNamespaceContext nc, String siteName, String title, String templateName,
             int lcid) throws Exception
     {
+        // A title is required
+        if (title == null || title.length() == 0)
+        {
+            throw new RuntimeException("Site name is not specified. Please fill up subject field.");
+        }
+
         // Have the site created
         siteName = handler.createWorkspace(title, templateName, lcid, getTimeZoneInformation(requestElement),
                 (SessionUser) soapRequest.getSession().getAttribute(SharepointConstants.USER_SESSION_ATTRIBUTE));

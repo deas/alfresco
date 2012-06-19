@@ -105,7 +105,16 @@ public abstract class AbstractWorkspaceEndpoint extends AbstractEndpoint
             else
             {
                 // A site was given and was expected, all is good
+                if (siteName.startsWith("/"))
+                {
+                    // Strip the leading slash off
+                    siteName = siteName.substring(1);
+                }
             }
+        }
+        if (logger.isDebugEnabled())
+        {
+           logger.debug("Site Name is '" + siteName + "'"); 
         }
         
 
@@ -113,18 +122,30 @@ public abstract class AbstractWorkspaceEndpoint extends AbstractEndpoint
         Element requestElement = soapRequest.getDocument().getRootElement();
 
         
-        // The Title is always required
+        // The Title is usually required required
         if (logger.isDebugEnabled())
             logger.debug("Getting title from request.");
         XPath titlePath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/title"));
         titlePath.setNamespaceContext(nc);
         Element titleE = (Element) titlePath.selectSingleNode(requestElement);
 
-        if (titleE == null || titleE.getText() == null || titleE.getText().length() < 1)
+        String title = null;
+        if (titleE != null && titleE.getText() != null && titleE.getText().length() > 0)
         {
-            throw new RuntimeException("Site name is not specified. Please fill up subject field.");
+            title = titleE.getText();
+
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Workspace title is " + title);
+            }
         }
-        String title = titleE.getText();
+        else
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("No title found in request to " + getName());
+            }
+        }
         
 
         // Template Name may be optional
