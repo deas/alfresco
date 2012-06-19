@@ -353,8 +353,6 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         
         // Copy the updateable properties onto it
         // This is only a subset of what can be supported via iCal
-        // TODO It would be better if the caller asked us for the
-        //  MeetingBean rather than creating a new one...
         entry.setTitle(meeting.getTitle());
         entry.setLocation(meeting.getLocation());
         entry.setStart(meeting.getStart());

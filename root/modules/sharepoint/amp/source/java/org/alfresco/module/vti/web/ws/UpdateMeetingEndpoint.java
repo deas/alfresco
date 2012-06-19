@@ -35,7 +35,7 @@ import org.jaxen.dom4j.Dom4jXPath;
  * Class for handling UpdateMeeting soap method
  * 
  * TODO Finish this off, then generalise it for AddMeeting and RestoreMeeting
- * TODO Can SetAttendeeResponse use this?
+ * TODO Link SetAttendeeResponse with this
  * 
  * @author Nick Burch
  */

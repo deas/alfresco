@@ -19,98 +19,33 @@
 
 package org.alfresco.module.vti.web.ws;
 
+import java.util.Date;
+
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
-import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling RemoveMeeting soap method
  * 
  * @author PavelYur
  */
-public class RemoveMeetingEndpoint extends AbstractEndpoint
+public class RemoveMeetingEndpoint extends AbstractMeetingEndpoint
 {
-
-    // handler that provides methods for operating with meetings
-    private MeetingServiceHandler handler;
-
-    // xml namespace prefix
-    private static String prefix = "mt";
-
-    private static Log logger = LogFactory.getLog(RemoveMeetingEndpoint.class);
-
     public RemoveMeetingEndpoint(MeetingServiceHandler handler)
     {
-        this.handler = handler;
+        super(handler);
     }
 
-    /**
-     * Remove meeting from Meeting Workspace
-     * 
-     * @param soapRequest Vti soap request ({@link VtiSoapRequest})
-     * @param soapResponse Vti soap response ({@link VtiSoapResponse})
-     */
-    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception
+    @Override
+    protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, 
+            String siteName, String uid, String organizerEmail, int sequence, String title,
+            String location, Date dateStart, Date dateEnd, int recurrenceId, boolean cancelMeeting) throws Exception
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Soap Method with name " + getName() + " is started.");
-        // mapping xml namespace to prefix
-        SimpleNamespaceContext nc = new SimpleNamespaceContext();
-        nc.addNamespace(prefix, namespace);
-        nc.addNamespace(soapUriPrefix, soapUri);
-
-        Element requestElement = soapRequest.getDocument().getRootElement();
-
-        // getting recurrenceId parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting recurrenceId from request.");
-        XPath recurrenceIdPath = new Dom4jXPath(buildXPath(prefix, "/RemoveMeeting/recurrenceId"));
-        recurrenceIdPath.setNamespaceContext(nc);
-        Element recurrenceId = (Element) recurrenceIdPath.selectSingleNode(requestElement);
-
-        // getting uid parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting uid from request.");
-        XPath uidPath = new Dom4jXPath(buildXPath(prefix, "/RemoveMeeting/uid"));
-        uidPath.setNamespaceContext(nc);
-        Element uid = (Element) uidPath.selectSingleNode(requestElement);
-
-        // getting sequence parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting sequence from request.");
-        XPath sequencePath = new Dom4jXPath(buildXPath(prefix, "/RemoveMeeting/sequence"));
-        sequencePath.setNamespaceContext(nc);
-        Element sequence = (Element) sequencePath.selectSingleNode(requestElement);
-
-        // getting utcDateStamp parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting utcDateStamp from request.");
-        XPath utcDateStampPath = new Dom4jXPath(buildXPath(prefix, "/RemoveMeeting/utcDateStamp"));
-        utcDateStampPath.setNamespaceContext(nc);
-
-        // getting cancelMeeting parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting cancelMeeting from request.");
-        XPath cancelMeetingPath = new Dom4jXPath(buildXPath(prefix, "/RemoveMeeting/cancelMeeting"));
-        cancelMeetingPath.setNamespaceContext(nc);
-        Element cancelMeeting = (Element) cancelMeetingPath.selectSingleNode(requestElement);
-
-        String siteName = getDwsFromUri(soapRequest).substring(1);
-
-        handler.removeMeeting(siteName, Integer.parseInt(recurrenceId.getText()), uid.getText(), Integer.parseInt(sequence.getText()), null, Boolean.parseBoolean(cancelMeeting
-                .getText()));
-
-        // creating soap response
-        soapResponse.getDocument().addElement("RemoveMeetingResponse", namespace);
-
-        soapResponse.setContentType("text/xml");
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("SOAP method with name " + getName() + " is finished.");
-        }
+        // Perform the deletion
+        handler.removeMeeting(siteName, recurrenceId, uid, sequence, null, cancelMeeting);
+        
+        // Build the response
+        buildMeetingResponse(soapResponse);
     }
 }
