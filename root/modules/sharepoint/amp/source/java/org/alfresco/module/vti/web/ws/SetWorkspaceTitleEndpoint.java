@@ -84,7 +84,7 @@ public class SetWorkspaceTitleEndpoint extends AbstractEndpoint
         Element titleE = (Element) titlePath.selectSingleNode(requestElement);
 
         String title = "";
-        if (titleE != null && titleE.getText() != null || titleE.getText().length() < 1)
+        if (titleE != null && titleE.getText() != null && titleE.getText().length() < 1)
         {
             title = titleE.getText();
         }
