@@ -119,10 +119,12 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
 
         Element root = soapResponse.getDocument().addElement("AddMeetingFromICalResponse", namespace);
         Element result = root.addElement("AddMeetingFromICalResult");
-        result.addElement("AddMeetingFromICal").addAttribute("Url", getHost(soapRequest) + soapRequest.getAlfrescoContextName() + "/" + siteName + "?calendar=calendar")
-                .addAttribute("HostTitle", meetingBean.getSubject()).addAttribute("UniquePermissions", "true").addAttribute("MeetingCount", "1").addAttribute("AnonymousAccess",
-                        "false").addAttribute("AllowAuthenticatedUsers", "false");
-        result.addElement("AttendeeUpdateStatus").addAttribute("Code", "0").addAttribute("Detail", "").addAttribute("ManageUserPage", "");
+        Element meetingICal = result.addElement("AddMeetingFromICal");
+        meetingICal.addAttribute("Url", getHost(soapRequest) + soapRequest.getAlfrescoContextName() + "/" + siteName + "?calendar=calendar")
+                   .addAttribute("HostTitle", meetingBean.getSubject()).addAttribute("UniquePermissions", "true")
+                   .addAttribute("MeetingCount", "1").addAttribute("AnonymousAccess", "false")
+                   .addAttribute("AllowAuthenticatedUsers", "false");
+        meetingICal.addElement("AttendeeUpdateStatus").addAttribute("Code", "0").addAttribute("Detail", "").addAttribute("ManageUserPage", "");
 
         soapResponse.setContentType("text/xml");
         if (logger.isDebugEnabled())
@@ -170,8 +172,19 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         meeting.setTitle(params.get("SUMMARY"));
         meeting.setOrganizer(params.get("ORGANIZER"));
         meeting.setId(params.get("UID"));
+        
+        // Start Date is required. If no end is given, the iCal spec
+        //  says that it is treated as ending and the start time
         meeting.setStart(parseDate("DTSTART", params));
-        meeting.setEnd(parseDate("DTEND", params));
+        if (params.containsKey("DTEND"))
+        {
+            meeting.setEnd(parseDate("DTEND", params));
+        }
+        else
+        {
+            meeting.setEnd(meeting.getStart());
+        }
+        
         if (params.get("RRULE") != null)
         {
             meeting.setRecurrenceRule(params.get("RRULE"));
@@ -189,7 +202,10 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
             attendees.add(currentAttendee);
         }
         meeting.setAttendees(attendees);
-        System.out.println(meeting.getAttendees());
+        
+        if (logger.isDebugEnabled())
+            logger.debug("Attendees are: " + meeting.getAttendees());
+        
         return meeting;
     }
 
