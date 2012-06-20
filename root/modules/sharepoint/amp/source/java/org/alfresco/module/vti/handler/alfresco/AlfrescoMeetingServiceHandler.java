@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,10 +58,11 @@ import org.alfresco.service.cmr.calendar.CalendarService;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
@@ -361,6 +363,11 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     }
 
     /**
+     * Note - This method may want replacing with a dedicated Canned Query (CQ),
+     *  if it every gets heavily used (currently it is very rarely called).
+     * 
+     * This method requires that the archive store is enabled.
+     * 
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#restoreMeeting(String, String)
      */
     @Override
@@ -375,11 +382,31 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         }
 
         // Look in the archive store for it
-//        fileFolderService.
-        // TODO
-        throw new ObjectNotFoundException("Archive store searching not yet supported");
+        NodeRef archiveRoot = nodeService.getRootNode(StoreRef.STORE_REF_ARCHIVE_SPACESSTORE);
+        
+        // This takes a slightly icky brute force approach...
+        Set<QName> calendarEntryType = Collections.singleton(CalendarModel.TYPE_EVENT);
+        List<ChildAssociationRef> archivedCalendarEntries = 
+                nodeService.getChildAssocs(archiveRoot, calendarEntryType);
+        
+        NodeRef archivedEventNodeRef = null;
+        for (ChildAssociationRef ref : archivedCalendarEntries)
+        {
+            NodeRef archivedNodeRef = ref.getChildRef();
+            String outlookUID = (String)nodeService.getProperty(archivedNodeRef, CalendarModel.PROP_OUTLOOK_UID);
+            if (uid.equals(outlookUID))
+            {
+                archivedEventNodeRef = archivedNodeRef;
+                break;
+            }
+        }
         
         // If we found it, have it restored
+        if (archivedEventNodeRef == null)
+        {
+            throw new ObjectNotFoundException();
+        }
+        nodeArchiveService.restoreArchivedNode(archivedEventNodeRef);
     }
 
     /**
@@ -792,6 +819,9 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             if (logger.isInfoEnabled())
                 logger.info("Calendar details queried for " + siteName + " but no Calendar Container exists");
         }
+        
+        if (logger.isDebugEnabled())
+            logger.debug("Searched for non-repeating calendar entries in " + siteName + " and found " + count);
 
         return count;
     }
