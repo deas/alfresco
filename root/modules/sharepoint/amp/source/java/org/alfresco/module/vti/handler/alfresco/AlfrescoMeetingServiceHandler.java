@@ -48,6 +48,7 @@ import org.alfresco.query.PagingResults;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.calendar.CalendarServiceImpl;
+import org.alfresco.repo.node.archive.NodeArchiveService;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
@@ -91,25 +92,27 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
     private static final Pattern illegalCharactersRegExpPattern = Pattern.compile("[^A-Za-z0-9_]+");
 
-    protected SiteService siteService;
+    private SiteService siteService;
 
-    protected CalendarService calendarService;
+    private CalendarService calendarService;
     
-    protected AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
 
-    protected TransactionService transactionService;
+    private TransactionService transactionService;
 
-    protected NodeService nodeService;
-
-    protected FileFolderService fileFolderService;
-
-    protected PersonService personService;
+    private NodeService nodeService;
     
-    protected SearchService searchService;
+    private NodeArchiveService nodeArchiveService;
 
-    protected NamespaceService namespaceService;
+    private FileFolderService fileFolderService;
 
-    protected ShareUtils shareUtils;
+    private PersonService personService;
+    
+    private SearchService searchService;
+
+    private NamespaceService namespaceService;
+
+    private ShareUtils shareUtils;
 
     /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#addMeeting(String, MeetingBean)
@@ -231,13 +234,37 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
      */
     public List<SiteInfo> getMeetingWorkspaces(boolean recurring)
     {
+        // NOTE - The meaning of this flag is currently unclear, and a TDI is open for it
+        // Based on the eventual response, the current boolean may need to become a 
+        //  Boolean, or may need to become two booleans.
         List<SiteInfo> resultList = new ArrayList<SiteInfo>();
         for (SiteInfo siteInfo : siteService.listSites(authenticationService.getCurrentUserName()))
         {
             String memberRole = siteService.getMembersRole(siteInfo.getShortName(), authenticationService.getCurrentUserName());
             if (MEETING_WORKSPACE_NAME.equals(siteInfo.getSitePreset()) && SiteModel.SITE_MANAGER.equals(memberRole))
             {
-                resultList.add(siteInfo);
+                // Work out if this workspace has recurring or non-recurring entries in it
+                int count = getCalendarNonRecurringCount(siteInfo.getShortName());
+                
+                if (count == -1)
+                {
+                    // Has at least one recurring entry
+                    // TODO Based on the TDI, when should this be returned?
+                }
+                else if (count == 0)
+                {
+                    // Current spec says that empty workspaces are always returned
+                    resultList.add(siteInfo);
+                }
+                else
+                {
+                    // Has no recurring events, but at least one non-recurring one
+                    // Currently should only be returned if recurring is false
+                    if (!recurring)
+                    {
+                        resultList.add(siteInfo);
+                    }
+                }
             }
         }
         return resultList;
@@ -271,27 +298,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
             // Work out how many calendar entries there are, and check to see if
             //  any of them are recurring entries (they need a special response)
-            PagingResults<CalendarEntry> entries = calendarService.listCalendarEntries(siteName, new PagingRequest(100));
-            
-            int count = 0;
-            if (entries != null && entries.getPage() != null)
-            {
-                count = entries.getPage().size();
-                for (CalendarEntry entry : entries.getPage())
-                {
-                    if (entry.getRecurrenceRule() != null && entry.getRecurrenceRule().length() > 0)
-                    {
-                        // Site has at least one recurring entry, count must be -1
-                        count = -1;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                if (logger.isInfoEnabled())
-                    logger.info("Calendar details queried for " + siteName + " but no Calendar Container exists");
-            }
+            int count = getCalendarNonRecurringCount(siteName);
 
             // Record the status details
             siteStatus.setMeetingCount(count);
@@ -370,9 +377,12 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             throw new SiteDoesNotExistException(siteName);
         }
 
-        // Look in the archive store
+        // Look in the archive store for it
+//        fileFolderService.
         // TODO
         throw new ObjectNotFoundException("Archive store searching not yet supported");
+        
+        // If we found it, have it restored
     }
 
     /**
@@ -745,6 +755,39 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 
         return entry;
     }
+    /**
+     * Returns the number of non recurring entries in a site, or
+     *  -1 if the site contains at least one recurring entry
+     */
+    private int getCalendarNonRecurringCount(String siteName)
+    {
+        // Fetch all the entries in the site's calendar
+        PagingResults<CalendarEntry> entries = 
+                calendarService.listCalendarEntries(siteName, new PagingRequest(100));
+        
+        // Count them, aborting if any are recurring
+        int count = 0;
+        if (entries != null && entries.getPage() != null)
+        {
+            count = entries.getPage().size();
+            for (CalendarEntry entry : entries.getPage())
+            {
+                if (entry.getRecurrenceRule() != null && entry.getRecurrenceRule().length() > 0)
+                {
+                    // Site has at least one recurring entry, count must be -1
+                    count = -1;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (logger.isInfoEnabled())
+                logger.info("Calendar details queried for " + siteName + " but no Calendar Container exists");
+        }
+
+        return count;
+    }
 
     public void setSiteService(SiteService siteService)
     {
@@ -774,6 +817,11 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
+    }
+
+    public void setNodeArchiveService(NodeArchiveService nodeArchiveService)
+    {
+        this.nodeArchiveService = nodeArchiveService;
     }
 
     public void setPersonService(PersonService personService)

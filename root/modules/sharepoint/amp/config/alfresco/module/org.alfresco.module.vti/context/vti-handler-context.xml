@@ -110,6 +110,7 @@
         <property name="authenticationService" ref="AuthenticationService"/>
         <property name="transactionService" ref="transactionService" />
         <property name="nodeService" ref="NodeService"/>
+        <property name="nodeArchiveService" ref="nodeArchiveService"/>
         <property name="personService" ref="PersonService"/>
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="searchService" ref="SearchService" />

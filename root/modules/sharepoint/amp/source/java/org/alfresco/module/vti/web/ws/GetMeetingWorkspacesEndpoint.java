@@ -76,6 +76,9 @@ public class GetMeetingWorkspacesEndpoint extends AbstractEndpoint
         Element requestElement = soapRequest.getDocument().getRootElement();
 
         // Did they request recurring information?
+        // NOTE - The meaning of this flag is currently unclear, and a TDI is open for it
+        // Based on the eventual response, the current boolean may need to become a 
+        //  Boolean, or may need to become two booleans.
         if (logger.isDebugEnabled())
             logger.debug("Getting recurring from request.");
         XPath recurringPath = new Dom4jXPath(buildXPath(prefix, "/GetMeetingWorkspaces/recurring"));
