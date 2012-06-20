@@ -216,9 +216,9 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
            sb.append(endTag("Error"));
            String elText = sb.toString();
            // TODO: need to escape the XML that resides within the SOAP envelope
-           // but DOM4J seems to be normalising back to unescaped quotes. 
-           //elText = elText.replaceAll("\"", "&quo;");
-           endpointResultE.setText(sb.toString());
+           // but DOM4J escapes the string too result in double-escaped ampersand.
+           elText = elText.replaceAll("\"", "&quot;");
+           endpointResultE.setText(elText);
         }
         else
         {
