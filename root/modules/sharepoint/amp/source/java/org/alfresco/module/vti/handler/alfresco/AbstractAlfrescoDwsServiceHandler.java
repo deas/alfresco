@@ -393,7 +393,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
     {
         if (dwsExists(name))
         {
-            throw new DwsException(DwsError.ALREADY_EXISTS);
+            throw new DwsException(DwsError.SERVER_FAILURE);
         }
         
         if(false == stringExists(name))
