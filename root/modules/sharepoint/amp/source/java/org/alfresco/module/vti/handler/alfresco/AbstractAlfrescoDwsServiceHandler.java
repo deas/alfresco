@@ -76,7 +76,7 @@ import org.springframework.util.ObjectUtils;
 public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHandler
 {
     private static Log logger = LogFactory.getLog(AbstractAlfrescoDwsServiceHandler.class);
-    private static final Pattern illegalCharactersRegExpPattern = Pattern.compile("[^A-Za-z0-9_]+");
+    private static final Pattern illegalCharactersRegExpPattern = Pattern.compile("[^A-Za-z0-9_-]+");
 
     protected FileFolderService fileFolderService;
     protected NodeService nodeService;
