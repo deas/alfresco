@@ -83,8 +83,10 @@ public class GetMeetingsInformationEndpoint extends AbstractEndpoint
             requestFlags = Integer.parseInt(requestFlagsE.getText());
         }
         
-
+        // Some kinds of calls need a site, some don't
         String siteName = getDwsFromUri(soapRequest);
+        if (logger.isDebugEnabled())
+            logger.debug("Site Name is '"+siteName+"', request flags are " + requestFlags);
         if (siteName.length() > 0)
         {
             // Is Flag 0x8 set? 0x8 = Query the status values of one site

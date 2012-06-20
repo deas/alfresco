@@ -107,10 +107,6 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     private FileFolderService fileFolderService;
 
     private PersonService personService;
-    
-    private SearchService searchService;
-
-    private NamespaceService namespaceService;
 
     private ShareUtils shareUtils;
 
@@ -278,6 +274,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         MeetingsInformation info = new MeetingsInformation();
 
         // Flag 0x1 = Query for user permissions
+        // TODO Perform the user permissions query
         
         // Flag 0x2 = Query for site template languages
         if ((requestFlags & 2) == 2)
@@ -742,14 +739,24 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
                return null;
             }
             
-            // Find by the UID property
-            List<NodeRef> nodeRefs = searchService.selectNodes(calendarNodeRef, "*//.[@" + CalendarModel.PROP_OUTLOOK_UID.toPrefixString(namespaceService) + "='" + uid + "']", null,
-                    namespaceService, false);
-            if (nodeRefs != null && nodeRefs.size() == 1)
+            // Lookup by the UID property
+            PagingResults<CalendarEntry> entries =
+                    calendarService.listOutlookCalendarEntries(siteName, uid, new PagingRequest(10));
+            if (entries == null || entries.getPage() == null || entries.getPage().size() == 0)
             {
-                NodeRef nodeRef = nodeRefs.get(0);
-                String eventName = (String)nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
-                entry = calendarService.getCalendarEntry(siteName, eventName);
+                // No calendar entry with this UID
+                return null;
+            }
+            
+            if (entries.getPage().size() == 1)
+            {
+                entry = entries.getPage().get(0);
+            }
+            else
+            {
+                logger.warn("Found multiple calendar entries in " + siteName + " with Outlook UID " +
+                            uid + " - expecting 0 or 1 but found " + entries.getPage().size());
+                entry = null;
             }
         }
 
@@ -833,15 +840,4 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     {
         this.fileFolderService = fileFolderService;
     }
-
-    public void setSearchService(SearchService searchService)
-    {
-        this.searchService = searchService;
-    }
-
-    public void setNamespaceService(NamespaceService namespaceService)
-    {
-        this.namespaceService = namespaceService;
-    }
-    
 }
