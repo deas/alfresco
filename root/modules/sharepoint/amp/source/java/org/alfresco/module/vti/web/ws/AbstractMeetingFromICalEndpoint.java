@@ -87,7 +87,7 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
             Element requestElement, SimpleNamespaceContext nc) throws Exception
     {
         // getting organizerEmail parameter from request
-        XPath organizerEmailPath = new Dom4jXPath(buildXPath(prefix, "/AddMeetingFromICal/organizerEmail"));
+        XPath organizerEmailPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/organizerEmail"));
         organizerEmailPath.setNamespaceContext(nc);
         Element organizerEmailE = (Element) organizerEmailPath.selectSingleNode(requestElement);
         String organizerEmail = null;
@@ -99,11 +99,16 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
             logger.debug("Getting organizerEmail from request: " + organizerEmail);
 
         // getting icalText parameter from request
-        XPath icalTextPath = new Dom4jXPath(buildXPath(prefix, "/AddMeetingFromICal/icalText"));
+        XPath icalTextPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/icalText"));
         icalTextPath.setNamespaceContext(nc);
-        Element icalText = (Element) icalTextPath.selectSingleNode(requestElement);
+        Element icalTextE = (Element) icalTextPath.selectSingleNode(requestElement);
+        String icalText = null;
+        if (icalTextE != null && icalTextE.getText() != null)
+        {
+            icalText = icalTextE.getText();
+        }
         if (logger.isDebugEnabled())
-            logger.debug("Getting icalText from request: " + icalText.getText());
+            logger.debug("Getting icalText from request: " + icalText);
         
         // Get the ignoreAttendees parameter from request
         // Controls if this is a scheduling only update, or if attendees are affected too
@@ -119,7 +124,7 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
         }
 
         // Turn the iCal text into an object we can use/store
-        MeetingBean meetingBean = getMeeting(icalText.getText());
+        MeetingBean meetingBean = getMeeting(icalText);
 
         // Have the action done
         executeMeetingAction(soapRequest, soapResponse, siteName, meetingBean, -1, -1, ignoreAttendees, false);
