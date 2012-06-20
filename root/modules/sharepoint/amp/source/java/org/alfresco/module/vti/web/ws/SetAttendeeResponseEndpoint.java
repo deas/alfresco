@@ -19,22 +19,28 @@
 
 package org.alfresco.module.vti.web.ws;
 
+import java.util.Date;
+
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
+import org.alfresco.module.vti.handler.MeetingServiceHandler.AttendeeStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
+import org.jaxen.XPath;
+import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling SetAttendeeResponse soap method
  *
- * TODO Implement
+ * TODO The underlying handler currently does nothing with the details
  * 
  * @author Nick Burch
  */
-public class SetAttendeeResponseEndpoint extends AddMeetingFromICalEndpoint
+public class SetAttendeeResponseEndpoint extends AbstractEndpoint
 {
     // handler that provides methods for operating with meetings
+    @SuppressWarnings("unused")
     private MeetingServiceHandler handler;
 
     // xml namespace prefix
@@ -44,7 +50,6 @@ public class SetAttendeeResponseEndpoint extends AddMeetingFromICalEndpoint
 
     public SetAttendeeResponseEndpoint(MeetingServiceHandler handler)
     {
-        super(handler);
         this.handler = handler;
     }
 
@@ -64,13 +69,90 @@ public class SetAttendeeResponseEndpoint extends AddMeetingFromICalEndpoint
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
+        // Get the site
+        String siteName = getDwsFromUri(soapRequest);
+        if (siteName == null || siteName.length() == 0)
+        {
+            // TODO Is this the right exception?
+            throw new VtiSoapException("A Site Name must be supplied", 0);
+        }
+        else
+        {
+            if (siteName.startsWith("/"))
+            {
+                siteName = siteName.substring(1);
+            }
+        }
+        
+        
+        // Process the request
         Element requestElement = soapRequest.getDocument().getRootElement();
 
-        // TODO
+        // Meeting UID this refers to
+        XPath uidPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/uid"));
+        uidPath.setNamespaceContext(nc);
+        Element uidE = (Element) uidPath.selectSingleNode(requestElement);
+        String uid = uidE.getText();
 
-        // creating soap response
+        // The replying Attendee's email address
+        XPath attendeeEmailPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/attendeeEmail"));
+        attendeeEmailPath.setNamespaceContext(nc);
+        Element attendeeEmailE = (Element) attendeeEmailPath.selectSingleNode(requestElement);
+        String attendeeEmail = null;
+        if (attendeeEmailE != null && attendeeEmailE.getText() != null)
+        {
+            attendeeEmail = attendeeEmailE.getText();
+        }
+        
+        // Meeting sequence number
+        XPath sequencePath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/sequence"));
+        sequencePath.setNamespaceContext(nc);
+        Element sequenceE = (Element) sequencePath.selectSingleNode(requestElement);
+        int sequence = 0;
+        if (sequenceE != null && sequenceE.getText() != null)
+        {
+            sequence = Integer.parseInt(sequenceE.getText());
+        }
+        
+        // Meeting Recurrence ID
+        XPath recurrenceIdPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/recurrenceId"));
+        recurrenceIdPath.setNamespaceContext(nc);
+        Element recurrenceIdE = (Element) recurrenceIdPath.selectSingleNode(requestElement);
+        int recurrenceId = 0;
+        if (recurrenceIdE != null && recurrenceIdE.getText() != null)
+        {
+            recurrenceId = Integer.parseInt(recurrenceIdE.getText());
+        }
+
+        // Response Status
+        XPath responsePath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/attendeeResponse"));
+        responsePath.setNamespaceContext(nc);
+        Element responseE = (Element) responsePath.selectSingleNode(requestElement);
+        AttendeeStatus status = AttendeeStatus.Pending;
+        if (responseE != null && responseE.getText() != null)
+        {
+            if ("responseAccepted".equals(responseE.getText()))
+            {
+                status = AttendeeStatus.Accepted;
+            }
+            if ("responseTentative".equals(responseE.getText()))
+            {
+                status = AttendeeStatus.Tentative;
+            }
+            if ("responseDeclined".equals(responseE.getText()))
+            {
+                status = AttendeeStatus.Declined;
+            }
+        }
+        
+        
+        // Have their response set
+        handler.updateAttendeeResponse(siteName, attendeeEmail, status, uid, recurrenceId, sequence, (Date)null);
+        
+        
+        // Send the response
         soapResponse.setContentType("text/xml");
-        soapResponse.getDocument().addElement("SetAttendeeResponse", namespace);
+        soapResponse.getDocument().addElement("SetAttendeeResponseResponse", namespace);
         
         if (logger.isDebugEnabled())
         {

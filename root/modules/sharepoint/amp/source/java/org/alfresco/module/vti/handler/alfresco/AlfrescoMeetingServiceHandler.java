@@ -525,6 +525,36 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     }
 
     /**
+     * @see MeetingServiceHandler#updateAttendeeResponse(String, String, AttendeeStatus, String, String, int, Date)
+     */
+    @Override
+    public void updateAttendeeResponse(String siteName, String attendeeEmail, AttendeeStatus status, String uid,
+            int recurrenceId, int sequence, Date utcDateStamp) throws SiteDoesNotExistException,
+            ObjectNotFoundException
+    {
+        // Sanity check
+        SiteInfo siteInfo = siteService.getSite(siteName);
+        if (siteInfo == null)
+        {
+            throw new SiteDoesNotExistException(siteName);
+        }
+        if (!siteInfo.getSitePreset().equals(MEETING_WORKSPACE_NAME))
+        {
+            throw new SiteTypeException("vti.meeting.error.bad_type");
+        }
+        
+        // Get the event object they are responding too
+        final CalendarEntry entry = getEvent(siteName, uid);
+        if (entry == null)
+        {
+            throw new ObjectNotFoundException();
+        }
+        
+        // TODO Do something with all of this
+        logger.warn("No support to handle response details of " + status + " from Attendee " + attendeeEmail + " of meeting " + uid);
+    }
+
+    /**
      * @see org.alfresco.module.vti.handler.MeetingServiceHandler#deleteWorkspace(String, SessionUser)
      */
     public void deleteWorkspace(String siteName, SessionUser user) throws Exception

@@ -36,6 +36,10 @@ import org.alfresco.service.cmr.site.SiteInfo;
  */
 public interface MeetingServiceHandler
 {
+    /** The different statuses of a Meeting Attendee */
+    public enum AttendeeStatus {
+        Pending, Accepted, Tentative, Declined
+    }
 
     /**
      * Lists the Meeting Workspace sites that are available, to the current user,
@@ -136,6 +140,13 @@ public interface MeetingServiceHandler
      *  is still present in the archive store.
      */
     public void restoreMeeting(String siteName, String uid) throws SiteDoesNotExistException, ObjectNotFoundException;
+    
+    /**
+     * Sets an attendee's response for a meeting. Currently, nothing happens with this information,
+     *  but in future we could potentially add activity entries, send emails etc 
+     */
+    public void updateAttendeeResponse(String siteName, String attendeeEmail, AttendeeStatus status, String uid, 
+            int recurrenceId, int sequence, Date utcDateStamp) throws SiteDoesNotExistException, ObjectNotFoundException;
     
     /**
      * Deletes the Meeting Workspace site from the specified Alfresco server.
