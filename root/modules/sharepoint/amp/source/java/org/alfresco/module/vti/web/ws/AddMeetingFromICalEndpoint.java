@@ -98,6 +98,21 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
+        // Get the site
+        String siteName = getDwsFromUri(soapRequest);
+        if (siteName == null || siteName.length() == 0)
+        {
+            throw new VtiSoapException("A Site Name must be supplied", 6);
+        }
+        else
+        {
+            if (siteName.startsWith("/"))
+            {
+                siteName = siteName.substring(1);
+            }
+        }
+        
+        // Process the request
         Element requestElement = soapRequest.getDocument().getRootElement();
 
         // getting organizerEmail parameter from request
@@ -113,7 +128,6 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
         icalTextPath.setNamespaceContext(nc);
         Element icalText = (Element) icalTextPath.selectSingleNode(requestElement);
         MeetingBean meetingBean = getMeeting(icalText.getText());
-        String siteName = getDwsFromUri(soapRequest).substring(1);
 
         handler.addMeetingFromICal(siteName, meetingBean); 
 
@@ -140,8 +154,20 @@ public class AddMeetingFromICalEndpoint extends AbstractEndpoint
      */
     protected MeetingBean getMeeting(String icalText)
     {
+        // iCal text is required
+        if (icalText == null)
+        {
+            throw new VtiSoapException("iCal Text is required", 5);
+        }
+        
+        // Strip and prepare
         icalText = icalText.replaceAll("\r\n\t", "");
         icalText = icalText.replaceAll("\r\n ", "");
+        
+        if (icalText.length() == 0)
+        {
+            throw new VtiSoapException("iCal Text must not be empty", 5);
+        }
         
         // Delegate the parsing work (for now) to CalendarTimezoneHelper
         // In future, we should have something build the MeetingBean directly

@@ -69,8 +69,7 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
         String siteName = getDwsFromUri(soapRequest);
         if (siteName == null || siteName.length() == 0)
         {
-            // TODO Is this the right exception?
-            throw new VtiSoapException("A Site Name must be supplied", 0);
+            throw new VtiSoapException("A Site Name must be supplied", 6);
         }
         else
         {
