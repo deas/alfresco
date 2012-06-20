@@ -192,7 +192,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         int i = 0;
         do
         {
-            newSiteName = siteName + (i == 0 ? "" : "_" + i);
+            newSiteName = truncateSiteName(siteName, i == 0 ? "" : "_" + i);
             siteInfo = siteService.getSite(newSiteName);
             i++;
         } while (siteInfo != null);
@@ -625,6 +625,26 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     protected String removeIllegalCharacters(String value)
     {
         return illegalCharactersRegExpPattern.matcher(value).replaceAll("_");
+    }
+    /**
+     * The Site Name is limited by two things, the QName of the ChildAssoc under 
+     *  the sites root, and the Site Authority.
+     * The QName is limited to 255 characters, while the Authority is limited to
+     *  100 characters.
+     * To fit in, the Site Short Name, plus its group prefix, plus the authority names 
+     *  all need to be within this shorter limit.
+     */
+    protected String truncateSiteName(String baseSiteName, String suffix)
+    {
+        // SITE_GROUP_<shortname>_PERMISSION
+        int limit = 72;
+        
+        if (baseSiteName.length() + suffix.length() > limit)
+        {
+            limit -= suffix.length();
+            return baseSiteName.substring(0, limit) + suffix;
+        }
+        return baseSiteName + suffix;
     }
 
     protected NodeRef createDocumentsFolder(final MeetingBean meeting, String siteName)
