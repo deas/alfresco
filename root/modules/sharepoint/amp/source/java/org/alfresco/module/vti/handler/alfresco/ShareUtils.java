@@ -21,6 +21,10 @@ package org.alfresco.module.vti.handler.alfresco;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.alfresco.module.vti.handler.DwsException;
+import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.apache.commons.httpclient.HttpClient;
@@ -107,6 +111,10 @@ public class ShareUtils
                 logger.debug("Trying to create site with name: " + shortName + ". URL: " + createSiteMethod.getURI());
 
             int createSiteStatus = httpClient.executeMethod(createSiteMethod);
+            if (createSiteStatus != HttpServletResponse.SC_OK)
+            {
+                throw new DwsException(DwsError.SERVER_FAILURE);
+            }
             createSiteMethod.getResponseBody();
 
             if (logger.isDebugEnabled())
@@ -116,6 +124,11 @@ public class ShareUtils
         {
             if (logger.isDebugEnabled())
                 logger.debug("Fail to create site with name: " + shortName + ". Message: " + e.getMessage());
+            
+            if (e instanceof DwsException)
+            {
+                throw (DwsException) e;
+            }
             throw new RuntimeException(e);
         }
         finally

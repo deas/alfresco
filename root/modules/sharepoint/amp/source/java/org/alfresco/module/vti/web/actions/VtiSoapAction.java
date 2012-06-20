@@ -19,6 +19,7 @@
 package org.alfresco.module.vti.web.actions;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.metadata.dic.DwsError;
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.module.vti.web.VtiFilter;
 import org.alfresco.module.vti.web.VtiUtilBase;
@@ -200,10 +202,23 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
            Element endpointResponseE = responseElement.addElement(vtiEndpoint.getResponseTagName(), vtiEndpoint.getNamespace());
            Element endpointResultE = endpointResponseE.addElement(vtiEndpoint.getResultTagName());
            
-           String errorCode = handlerException.getError().toCode();
+           DwsError error = handlerException.getError();
+           // Error value, numeric ID
+           int errorId = error.toInt();
+           // Error code, e.g. "ServerFailure"
+           String errorCode = error.toCode();
 
            // Return it as an Coded ID based error, without the message
-           endpointResultE.setText(processTag("Error", errorCode).toString());
+           Map<String, Object> errorAttrs = new HashMap<String, Object>(1);
+           errorAttrs.put("ID", errorId);
+           StringBuilder sb = startTag("Error", errorAttrs);
+           sb.append(errorCode);
+           sb.append(endTag("Error"));
+           String elText = sb.toString();
+           // TODO: need to escape the XML that resides within the SOAP envelope
+           // but DOM4J seems to be normalising back to unescaped quotes. 
+           //elText = elText.replaceAll("\"", "&quo;");
+           endpointResultE.setText(sb.toString());
         }
         else
         {
