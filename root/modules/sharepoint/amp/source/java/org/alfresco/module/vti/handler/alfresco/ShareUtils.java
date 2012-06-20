@@ -111,10 +111,21 @@ public class ShareUtils
                 logger.debug("Trying to create site with name: " + shortName + ". URL: " + createSiteMethod.getURI());
 
             int createSiteStatus = httpClient.executeMethod(createSiteMethod);
+
+            // Check for a critical error
             if (createSiteStatus != HttpServletResponse.SC_OK)
             {
+                // There was a problem with the request
+                logger.warn("Site Creation for SPP/Vti failed");
+                
+                String errorDetails = createSiteMethod.getResponseBodyAsString();
+                if (logger.isDebugEnabled())
+                    logger.debug("Site creation failure details:\n" + errorDetails);
+
                 throw new DwsException(DwsError.SERVER_FAILURE);
             }
+            
+            // Have the response body fetched, to tidy up the HttpClient instance
             createSiteMethod.getResponseBody();
 
             if (logger.isDebugEnabled())
