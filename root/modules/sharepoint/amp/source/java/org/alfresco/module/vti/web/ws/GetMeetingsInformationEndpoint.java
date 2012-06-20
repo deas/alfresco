@@ -96,7 +96,8 @@ public class GetMeetingsInformationEndpoint extends AbstractEndpoint
             }
             else
             {
-                throw new RuntimeException(new String(I18NUtil.getMessage("vti.meeting.error.subsites").getBytes("ISO-8859-1"), "UTF-8"));
+                // There's a specific error code for this case
+                throw new VtiSoapException("vti.meeting.error.subsites", 0x1);
             }
         }
 

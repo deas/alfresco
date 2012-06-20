@@ -77,10 +77,6 @@ import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Alfresco implementation of MeetingServiceHandler.
- * 
- * TODO Finish switching this to using the new {@link CalendarService}
- * 
- * @author PavelYur
  */
 public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
 {
@@ -276,7 +272,11 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         MeetingsInformation info = new MeetingsInformation();
 
         // Flag 0x1 = Query for user permissions
-        // TODO Perform the user permissions query
+        if ((requestFlags & 1) == 1)
+        {
+            // TODO Actually check with the permissions service for this
+            info.setAllowCreate(true);
+        }
         
         // Flag 0x2 = Query for site template languages
         if ((requestFlags & 2) == 2)
