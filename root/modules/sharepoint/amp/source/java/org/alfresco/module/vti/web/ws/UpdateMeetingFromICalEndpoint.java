@@ -21,32 +21,18 @@ package org.alfresco.module.vti.web.ws;
 
 import org.alfresco.module.vti.handler.MeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
-import org.jaxen.SimpleNamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling UpdateMeetingFromICal soap method
  * 
  * @author PavelYur
  */
-public class UpdateMeetingFromICalEndpoint extends AddMeetingFromICalEndpoint
+public class UpdateMeetingFromICalEndpoint extends AbstractMeetingFromICalEndpoint
 {
-    // handler that provides methods for operating with meetings
-    private MeetingServiceHandler handler;
-
-    // xml namespace prefix
-    private static String prefix = "mt";
-
-    private static Log logger = LogFactory.getLog(UpdateMeetingFromICalEndpoint.class);
-
     public UpdateMeetingFromICalEndpoint(MeetingServiceHandler handler)
     {
         super(handler);
-        this.handler = handler;
     }
 
     /**
@@ -55,34 +41,12 @@ public class UpdateMeetingFromICalEndpoint extends AddMeetingFromICalEndpoint
      * @param soapRequest Vti soap request ({@link VtiSoapRequest})
      * @param soapResponse Vti soap response ({@link VtiSoapResponse})
      */
-    public void execute(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse) throws Exception
+    @Override
+    protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean ignoreAttendees, boolean cancelMeeting) throws Exception
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Soap Method with name " + getName() + " is started.");
-        // mapping xml namespace to prefix
-        SimpleNamespaceContext nc = new SimpleNamespaceContext();
-        nc.addNamespace(prefix, namespace);
-        nc.addNamespace(soapUriPrefix, soapUri);
-
-        Element requestElement = soapRequest.getDocument().getRootElement();
-
-        // getting icalText parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting icalText from request.");
-        XPath icalTextPath = new Dom4jXPath(buildXPath(prefix, "/UpdateMeetingFromICal/icalText"));
-        icalTextPath.setNamespaceContext(nc);
-        Element icalText = (Element) icalTextPath.selectSingleNode(requestElement);
-
-        // getting ignoreAttendees parameter from request
-        if (logger.isDebugEnabled())
-            logger.debug("Getting ignoreAttendees from request.");
-        XPath ignoreAttendeesPath = new Dom4jXPath(buildXPath(prefix, "/UpdateMeetingFromICal/ignoreAttendees"));
-        ignoreAttendeesPath.setNamespaceContext(nc);
-        Element ignoreAttendees = (Element) ignoreAttendeesPath.selectSingleNode(requestElement);
-
-        MeetingBean meetingBean = getMeeting(icalText.getText());
-        String siteName = getDwsFromUri(soapRequest).substring(1);
-        handler.updateMeetingFromICal(siteName, meetingBean, Boolean.parseBoolean(ignoreAttendees.getText()));
+        // Have the meeting updated
+        handler.updateMeetingFromICal(siteName, meetingBean, ignoreAttendees);
 
         // creating soap response
         Element updateStatus = soapResponse.getDocument().addElement("UpdateMeetingFromICalResponse", namespace).addElement("UpdateMeetingFromICalResult").addElement(
@@ -92,9 +56,5 @@ public class UpdateMeetingFromICalEndpoint extends AddMeetingFromICalEndpoint
         updateStatus.addAttribute("ManageUserPage", "");
 
         soapResponse.setContentType("text/xml");
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("SOAP method with name " + getName() + " is finished.");
-        }
     }
 }

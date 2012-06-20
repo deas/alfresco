@@ -39,7 +39,7 @@ import org.jaxen.dom4j.Dom4jXPath;
 public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
 {
     // xml namespace prefix
-    private static String prefix = "mt";
+    protected static String prefix = "mt";
 
     private static Log logger = LogFactory.getLog(AbstractMeetingEndpoint.class);
 
@@ -82,7 +82,12 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
         
         // Process the request
         Element requestElement = soapRequest.getDocument().getRootElement();
+        executeRequest(soapRequest, soapResponse, siteName, requestElement, nc);
+    }
 
+    protected void executeRequest(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
+                                  Element requestElement, SimpleNamespaceContext nc) throws Exception
+    {
         // getting uid parameter from request
         XPath uidPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/uid"));
         uidPath.setNamespaceContext(nc);
@@ -194,7 +199,6 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
         if (logger.isDebugEnabled())
             logger.debug("Getting cancelMeeting from request: " + cancelMeeting);
 
-        
         // Try to turn this into a MeetingBean
         MeetingBean meetingBean = new MeetingBean();
         meetingBean.setId(uid);
@@ -206,7 +210,8 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
         
         
         // Have the real action performed
-        executeMeetingAction(soapRequest, soapResponse, siteName, meetingBean, sequence, recurrenceId, cancelMeeting);
+        executeMeetingAction(soapRequest, soapResponse, siteName, meetingBean, sequence, recurrenceId, 
+                false, cancelMeeting);
         
         
         // All done
@@ -217,7 +222,8 @@ public abstract class AbstractMeetingEndpoint extends AbstractEndpoint
     }
     
     protected abstract void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
-            String siteName, MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception;
+            String siteName, MeetingBean meetingBean, int sequence, int recurrenceId, 
+            boolean ignoreAttendees, boolean cancelMeeting) throws Exception;
     
     /**
      * Builds most of the standard response

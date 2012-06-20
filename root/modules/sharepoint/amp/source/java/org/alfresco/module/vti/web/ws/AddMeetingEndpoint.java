@@ -38,7 +38,7 @@ public class AddMeetingEndpoint extends AbstractMeetingEndpoint
     
     @Override
     protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
-            MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean ignoreAttendees, boolean cancelMeeting) throws Exception
     {
         // Perform the addition of the meeting
         try

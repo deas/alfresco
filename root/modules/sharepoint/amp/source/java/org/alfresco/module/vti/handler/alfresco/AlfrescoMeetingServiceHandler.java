@@ -43,6 +43,8 @@ import org.alfresco.module.vti.metadata.model.MeetingsInformation;
 import org.alfresco.module.vti.metadata.model.MwsStatus;
 import org.alfresco.module.vti.metadata.model.MwsTemplate;
 import org.alfresco.module.vti.metadata.model.TimeZoneInformation;
+import org.alfresco.query.PagingRequest;
+import org.alfresco.query.PagingResults;
 import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.calendar.CalendarServiceImpl;
@@ -267,16 +269,21 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         {
             MwsStatus siteStatus = MwsStatus.getDefault();
 
+            // Work out how many calendar entries there are, and check to see if
+            //  any of them are recurring entries (they need a special response)
+            PagingResults<CalendarEntry> entries = calendarService.listCalendarEntries(siteName, new PagingRequest(100));
+            
             int count = 0;
-            NodeRef calendarNodeRef = siteService.getContainer(siteName, CALENDAR_CONTAINER_NAME);
-            if (calendarNodeRef != null)
+            if (entries != null && entries.getPage() != null)
             {
-                List<FileInfo> childs = fileFolderService.list(calendarNodeRef);
-                for (FileInfo child : childs)
+                count = entries.getPage().size();
+                for (CalendarEntry entry : entries.getPage())
                 {
-                    if (nodeService.getType(child.getNodeRef()).equals(CalendarModel.TYPE_EVENT))
+                    if (entry.getRecurrenceRule() != null && entry.getRecurrenceRule().length() > 0)
                     {
-                        count++;
+                        // Site has at least one recurring entry, count must be -1
+                        count = -1;
+                        break;
                     }
                 }
             }
@@ -286,6 +293,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
                     logger.info("Calendar details queried for " + siteName + " but no Calendar Container exists");
             }
 
+            // Record the status details
             siteStatus.setMeetingCount(count);
             info.setStatus(siteStatus);
         }

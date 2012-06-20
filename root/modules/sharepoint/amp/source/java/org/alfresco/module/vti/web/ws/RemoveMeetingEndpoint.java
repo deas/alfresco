@@ -36,7 +36,7 @@ public class RemoveMeetingEndpoint extends AbstractMeetingEndpoint
 
     @Override
     protected void executeMeetingAction(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
-            MeetingBean meetingBean, int sequence, int recurrenceId, boolean cancelMeeting) throws Exception
+            MeetingBean meetingBean, int sequence, int recurrenceId, boolean ignoreAttendees, boolean cancelMeeting) throws Exception
     {
         // Perform the deletion
         handler.removeMeeting(siteName, recurrenceId, meetingBean.getId(), sequence, null, cancelMeeting);
