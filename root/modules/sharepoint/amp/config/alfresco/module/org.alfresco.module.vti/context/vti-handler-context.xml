@@ -15,8 +15,6 @@
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>    	
         <property name="siteService" ref="SiteService" />
-        <!-- <property name="shareUtils" ref="shareUtils" />  
-        <property name="transactionService" ref="transactionService"/>-->
         <property name="dictionaryService" ref="DictionaryService"/>
         <property name="namespaceService" ref="NamespaceService"/>
         <property name="dataListTypes">

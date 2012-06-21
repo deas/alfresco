@@ -31,7 +31,6 @@ import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
-import org.springframework.extensions.surf.util.I18NUtil;
 /**
  * Class for handling GetMeetingsInformation soap method
  * 

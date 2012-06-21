@@ -20,7 +20,6 @@ package org.alfresco.module.vti.handler;
 
 import java.util.List;
 
-import org.alfresco.module.vti.metadata.model.ListBean;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
@@ -67,14 +66,4 @@ public interface ListServiceHandler
      * @return the list of site' lists
      */
     public List<ListInfoBean> getListCollection(String siteName) throws SiteDoesNotExistException;
-
-    /**
-     * Returns the basic schema for the specified list.
-     * 
-     * @param listName the list name 
-     * @return the list information
-     * 
-     * @deprecated Use {@link #getList(String, String)} instead, which has more details
-     */
-    public ListBean getList(String listName);
 }

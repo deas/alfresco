@@ -30,7 +30,6 @@ import java.util.Set;
 import org.alfresco.model.ContentModel;
 import org.alfresco.model.DataListModel;
 import org.alfresco.module.vti.handler.ListServiceHandler;
-import org.alfresco.module.vti.metadata.model.ListBean;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
 import org.alfresco.query.PagingRequest;
@@ -38,7 +37,6 @@ import org.alfresco.query.PagingResults;
 import org.alfresco.repo.security.authentication.AuthenticationComponent;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.repo.site.SiteModel;
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
@@ -49,12 +47,10 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.PropertyCheck;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -68,11 +64,8 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
     private FileFolderService fileFolderService;
     private NodeService nodeService;
     private SiteService siteService;
-    //private ShareUtils shareUtils;
     private NamespaceService namespaceService;
     private DictionaryService dictionaryService;
-    private TransactionService transactionService;
-    //private AuthenticationComponent authenticationComponent;
     
     private Map<Integer,String> dataListTypes;
     private Map<Integer, ListTypeBean> listTypes; 
@@ -125,11 +118,6 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
     public void setDictionaryService(DictionaryService dictionaryService) 
     {
        this.dictionaryService = dictionaryService;
-    }
-
-    public void setTransactionService(TransactionService transactionService) 
-    {
-       this.transactionService = transactionService;
     }
 
     /**
@@ -491,53 +479,7 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         // All done
         return results;
     }
-    
-    /**
-     * TODO Remove the use of this deprecated method 
-     * @see org.alfresco.module.vti.handler.ListServiceHandler#getList(String)
-     */
-    @SuppressWarnings("deprecation")
-    public ListBean getList(String listName)
-    {
-        if (listName.startsWith("{"))
-        {
-            listName = listName.substring(1);
-        }
-        
-        if (listName.endsWith("}"))
-        {
-            listName = listName.substring(0, listName.length() - 1);
-        }
-        
-        final String safeListName = listName;
-        
-        FileInfo listFileInfo = 
-            transactionService.getRetryingTransactionHelper().doInTransaction(
-                new RetryingTransactionCallback<FileInfo>()
-                {
 
-                    @Override
-                    public FileInfo execute() throws Throwable
-                    {
-                        return fileFolderService.getFileInfo(new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, safeListName));
-                    }
-                    
-                }, true, false);            
-        
-        return buildOldListBean(listFileInfo);
-    }
-
-    @SuppressWarnings("deprecation")
-    private ListBean buildOldListBean(FileInfo fileInfo)
-    {
-        ListBean result = new ListBean();
-        result.setId("{" + fileInfo.getNodeRef().getId() + "}");
-        result.setTitle((String)fileInfo.getProperties().get(ContentModel.PROP_NAME));
-        result.setName("{" + fileInfo.getNodeRef().getId() + "}");
-        result.setDescription((String)fileInfo.getProperties().get(ContentModel.PROP_DESCRIPTION));
-        return result;
-    }
-    
     @Override
     public List<ListTypeBean> getAvailableListTypes() 
     {

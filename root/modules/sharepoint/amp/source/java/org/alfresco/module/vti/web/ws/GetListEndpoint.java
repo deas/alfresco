@@ -36,7 +36,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.xml.sax.InputSource;
 
 import freemarker.core.Environment;
 import freemarker.template.Template;
@@ -143,7 +142,7 @@ public class GetListEndpoint extends AbstractListEndpoint
     @SuppressWarnings("unchecked")
     private void copyElement(Element source, Element target)
     {
-        Element copy = target.addElement(source.getName());
+        Element copy = target.addElement(source.getQName());
         for (Attribute attr : (List<Attribute>)source.attributes())
         {
             copy.addAttribute(attr.getQName(), attr.getValue());
