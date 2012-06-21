@@ -514,7 +514,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         {
             if (VtiUtils.hasIllegalCharacter(part))
             {
-                throw new VtiHandlerException(VtiError.NOT_FOUND);
+                throw new DwsException(DwsError.FOLDER_NOT_FOUND);
             }
         }
         
@@ -522,7 +522,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         if (folderFileInfo != null)
         {
-            throw new VtiHandlerException(VtiError.ALREADY_EXISTS);
+            throw new DwsException(DwsError.ALREADY_EXISTS);
         }
 
         Pair<String, String> parentChildPaths = VtiPathHelper.splitPathParentChild(url);
@@ -531,13 +531,13 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         FileInfo parentFileInfo = pathHelper.resolvePathFileInfo(parentPath);
         if (parentFileInfo == null)
         {
-            throw new VtiHandlerException(VtiError.NOT_FOUND);
+            throw new DwsException(DwsError.FOLDER_NOT_FOUND);
         }
 
         String dwsName = parentChildPaths.getSecond();
         if (dwsName.length() == 0)
         {
-            throw new VtiHandlerException(VtiError.NOT_FOUND);
+            throw new DwsException(DwsError.FOLDER_NOT_FOUND);
         }
 
         UserTransaction tx = transactionService.getUserTransaction(false);
@@ -562,7 +562,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
             if (e instanceof AccessDeniedException)
             {
-                throw new VtiHandlerException(VtiError.NO_PERMISSIONS);
+                throw new DwsException(DwsError.NO_ACCESS);
             }
 
             throw VtiExceptionUtils.createRuntimeException(e);
