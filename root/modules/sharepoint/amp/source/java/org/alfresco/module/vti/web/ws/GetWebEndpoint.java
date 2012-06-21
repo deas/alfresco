@@ -84,6 +84,14 @@ public class GetWebEndpoint extends AbstractEndpoint
            url = URLDecoder.decode(urlE.getTextTrim(), "UTF-8");
         }
         
+        if (url != null && (url.equals(".") || url.equals("")))
+        {
+            String dws = getDwsFromUri(soapRequest);
+            String context = getContext(soapRequest);
+            String host = getHost(soapRequest);
+            url = host + context + dws;
+        }
+        
         // Fetch the details for the site
         DwsData dws;
         try {
