@@ -47,6 +47,7 @@ import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.NamespaceService;
@@ -257,9 +258,49 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         {
             throw new SiteDoesNotExistException(siteName);
         }
-
-        // Get the NodeRef
-        NodeRef listNodeRef = locateList(listName, site);
+        
+        // Did they give a name, or an ID? (GUID)
+        NodeRef listNodeRef = null;
+        if (listName.startsWith("{") && listName.endsWith("}") &&
+                listName.length() == 38)
+        {
+            // Build the NodeRef
+            listNodeRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, listName.substring(1, 37));
+            if (logger.isDebugEnabled())
+                logger.debug("Build NodeRef of " + listNodeRef + " for ID-based List Name " + listName);
+            
+            // Check it exists
+            if (! nodeService.exists(listNodeRef))
+            {
+                throw new FileNotFoundException(listNodeRef);
+            }
+            
+            // Verify it's in the correct site
+            NodeRef parent = nodeService.getPrimaryParent(listNodeRef).getParentRef();
+            boolean isInSite = false;
+            while (parent != null)
+            {
+                if (parent.equals(site.getNodeRef()))
+                {
+                    // Found it, it's in the right place
+                    isInSite = true;
+                    break;
+                }
+                else
+                {
+                    parent = nodeService.getPrimaryParent(parent).getParentRef();
+                }
+            }
+            if (! isInSite)
+            {
+                throw new FileNotFoundException("Node " + listNodeRef + " wasn't in the specified site");
+            }
+        }
+        else
+        {
+            // Look up the NodeRef based on the name
+            listNodeRef = locateList(listName, site);
+        }
         
         // Wrap and return
         return buildListInfo(listName, listNodeRef);

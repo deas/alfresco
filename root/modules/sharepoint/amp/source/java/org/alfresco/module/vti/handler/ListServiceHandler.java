@@ -35,7 +35,17 @@ import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 public interface ListServiceHandler
 {
    /**
-    * Fetches an existing Data List
+    * The different kinds of operation which can be performed on
+    *  items within a list. This is defined "Method CMD" element
+    */
+   public enum ListItemOperationType
+   {
+       New, Update, Delete
+   };
+    
+   /**
+    * Fetches an existing Data List. This should ideally be called
+    *  for a List Name, but optionally could be called for a list ID (GUID)
     */
    public ListInfoBean getList(String listName, String dws)
       throws SiteDoesNotExistException, FileNotFoundException;

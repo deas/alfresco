@@ -749,6 +749,7 @@
 
     <bean id="updateListItemsEndpoint" class="org.alfresco.module.vti.web.ws.UpdateListItemsEndpoint">
         <constructor-arg ref="listServiceHandler" />
+        <property name="namespaceService" ref="NamespaceService"/>
         <property name="name">
             <value>UpdateListItems</value>
         </property>

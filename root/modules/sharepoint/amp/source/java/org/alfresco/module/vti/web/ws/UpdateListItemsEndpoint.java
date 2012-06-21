@@ -18,15 +18,26 @@
  */
 package org.alfresco.module.vti.web.ws;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.ListServiceHandler;
+import org.alfresco.module.vti.handler.ListServiceHandler.ListItemOperationType;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
+import org.jaxen.XPath;
+import org.jaxen.dom4j.Dom4jXPath;
 
 /**
  * Class for handling the UpdateListItems soap method, which
@@ -38,6 +49,12 @@ public class UpdateListItemsEndpoint extends AbstractListEndpoint
 {
     @SuppressWarnings("unused")
     private final static Log logger = LogFactory.getLog(UpdateListItemsEndpoint.class);
+    
+    private NamespaceService namespaceService;
+    public void setNamespaceService(NamespaceService namespaceService)
+    {
+        this.namespaceService = namespaceService;
+    }
 
     /**
      * constructor
@@ -80,7 +97,64 @@ public class UpdateListItemsEndpoint extends AbstractListEndpoint
         }
         
         // Fetch the update details
-        // TODO
+        XPath updatesXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/updates"));
+        updatesXPath.setNamespaceContext(nc);
+        Element updates = (Element) updatesXPath.selectSingleNode(requestElement);
+        if (updates == null)
+        {
+            throw new VtiSoapException("No updates found", 0);
+        }
+        
+        // Loop over the batches of item updates
+        for (Element batch : (List<Element>)updates.selectNodes("Batch"))
+        {
+           for (Element method : (List<Element>)batch.selectNodes("Method"))
+           {
+               // Get the ID, aka cm:name, needed for Update and Delete
+               String id = method.attributeValue("ID");
+               
+               // What operation are they performing?
+               ListItemOperationType operation = ListItemOperationType.valueOf(
+                       method.attributeValue("Cmd"));
+               
+               // Build the list of fields
+               Map<QName,String> fields = new HashMap<QName, String>();
+               for (Element field : (List<Element>)method.selectNodes("Field"))
+               {
+                   // Turn the name into an Alfresco QName
+                   QName qname = null;
+                   String fieldName = field.attributeValue("Name");
+                   
+                   // Handle names with special meanings
+                   if ("ID".equals(fieldName))
+                   {
+                       qname = ContentModel.PROP_NAME;
+                   }
+                   else
+                   {
+                       qname = QName.createQName(fieldName, namespaceService);
+                   }
+                   
+                   // Get the value, as a string (will be converted later)
+                   String value = field.getText().toString();
+                   if (value != null)
+                   {
+                       fields.put(qname, value);
+                       
+                       if (logger.isDebugEnabled())
+                           logger.debug("Field add/update of " + qname + " = " + value);
+                   }
+                   else
+                   {
+                       if (logger.isInfoEnabled())
+                           logger.info("Skipping field with no value: " + fieldName + " / " + qname);
+                   }
+               }
+               
+               // Have the operation performed
+               // TODO
+           }
+        }
     }
 
     /**
