@@ -215,9 +215,6 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
            sb.append(errorCode);
            sb.append(endTag("Error"));
            String elText = sb.toString();
-           // TODO: need to escape the XML that resides within the SOAP envelope
-           // but DOM4J escapes the string too result in double-escaped ampersand.
-           elText = elText.replaceAll("\"", "&quot;");
            endpointResultE.setText(elText);
         }
         else
