@@ -41,8 +41,8 @@ import com.ibm.icu.text.SimpleDateFormat;
  */
 public abstract class AbstractListEndpoint extends AbstractEndpoint
 {
-	 private final static Log logger = LogFactory.getLog(AbstractListEndpoint.class);
-	 private final static String DEFAULT_LOCALE = "1033";
+	private final static Log logger = LogFactory.getLog(AbstractListEndpoint.class);
+	protected final static String DEFAULT_LOCALE = "1033";
 
     // handler that provides methods for operating with lists
     protected ListServiceHandler handler;
@@ -86,20 +86,31 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        nc.addNamespace(soapUriPrefix, soapUri);
        nc.addNamespace(prefix, namespace);
 
+       // Grab the site name
        String dws = getDwsFromUri(soapRequest);        
+
+       // Fetch the root of the document
+       Element requestElement = soapRequest.getDocument().getRootElement();
 
        // Get the listName parameter from the request
        XPath listNameXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/listName"));
        listNameXPath.setNamespaceContext(nc);
-       Element listNameE = (Element) listNameXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
+       Element listNameE = (Element) listNameXPath.selectSingleNode(requestElement);
        String listName = null;
        if (listNameE != null)
        {
           listName = listNameE.getTextTrim();
        }
        
+       // Have any further details fetched as needed
+       executeListActionDetails(soapRequest, soapResponse, dws, listName, requestElement, nc);
+    }
+     
+    protected void executeListActionDetails(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
+         String siteName, String listName, Element requestElement, SimpleNamespaceContext nc) throws Exception
+    {
        // Get the description parameter from the request
-       XPath descriptionXPath = new Dom4jXPath(buildXPath(prefix, "/AddList/description"));
+       XPath descriptionXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/description"));
        descriptionXPath.setNamespaceContext(nc);
        Element descriptionE = (Element) descriptionXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
        String description = null;
@@ -109,7 +120,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        }
        
        // Get the template ID parameter from the request
-       XPath templateXPath = new Dom4jXPath(buildXPath(prefix, "/AddList/templateID"));
+       XPath templateXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/templateID"));
        templateXPath.setNamespaceContext(nc);
        Element templateE = (Element) templateXPath.selectSingleNode(soapRequest.getDocument().getRootElement());
        int templateID = -1;
@@ -120,9 +131,15 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
 
 
        // Have the List Added / Fetched
-       ListInfoBean list = executeListAction(soapRequest, dws, listName, description, templateID);
+       ListInfoBean list = executeListAction(soapRequest, siteName, listName, description, templateID);
        
-       
+       // Have it rendered
+       renderList(soapRequest, soapResponse, siteName, list);
+    }
+    
+    protected void renderList(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
+                              String siteName, ListInfoBean list) throws Exception
+    {
        // Return the valid response contents
        Element root = soapResponse.getDocument().addElement(getName()+"Response", namespace);
        Element listResult = root.addElement(getName()+"Result");
@@ -164,6 +181,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        
        // Field Details
        listE.addElement("Fields");
+       // TODO Details on all the fields
        
        // All done
        if (logger.isDebugEnabled()) {

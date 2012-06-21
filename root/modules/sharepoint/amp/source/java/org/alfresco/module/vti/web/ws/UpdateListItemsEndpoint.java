@@ -18,56 +18,51 @@
  */
 package org.alfresco.module.vti.web.ws;
 
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.alfresco.module.vti.handler.ListServiceHandler;
-import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.dic.VtiError;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
+import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import freemarker.core.Environment;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import org.dom4j.Element;
+import org.jaxen.SimpleNamespaceContext;
 
 /**
- * Class for handling GetList method from lists web service.
+ * Class for handling the UpdateListItems soap method, which
+ *  is how entries are added/updated/deleted in a List.
  * 
  * @author Nick Burch
  */
-public class GetListEndpoint extends AbstractListEndpoint
+public class UpdateListItemsEndpoint extends AbstractListEndpoint
 {
-    private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
+    @SuppressWarnings("unused")
+    private final static Log logger = LogFactory.getLog(UpdateListItemsEndpoint.class);
 
-    private Template template = null;
-    
     /**
      * constructor
      *
-     * @param handler that provides methods for operating with lists
+     * @param handler
      */
-    public GetListEndpoint(ListServiceHandler handler)
+    public UpdateListItemsEndpoint(ListServiceHandler handler)
     {
         super(handler);
     }
     
     /**
-     * Fetches the details of the list
+     * Fetches all the details of the update, and processes
      */
     @Override
-    protected ListInfoBean executeListAction(VtiSoapRequest soapRequest, String dws, String listName,
-            String description, int templateID) throws Exception
+    protected void executeListActionDetails(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
+            String listName, Element requestElement, SimpleNamespaceContext nc) throws Exception
     {
         // Have the List Fetched
         ListInfoBean list = null;
         try
         {
-           list = handler.getList(listName, dws);
+           list = handler.getList(listName, listName);
         }
         catch(SiteDoesNotExistException se)
         {
@@ -85,42 +80,18 @@ public class GetListEndpoint extends AbstractListEndpoint
            String message = "List not found: " + fnfe.getMessage();
            throw new VtiSoapException(message, code, fnfe);
         }
-
-        // Return it for rendering
-        return list;
+        
+        // Fetch the update details
+        // TODO
     }
-    
+
     /**
-     * Currently based on a FTL Template
+     * Not used, we are too specific
      */
     @Override
-    protected void renderList(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, 
-            String siteName, ListInfoBean list) throws Exception
+    protected ListInfoBean executeListAction(VtiSoapRequest soapRequest,
+         String dws, String listName, String description, int templateID) throws Exception 
     {
-        Map<String, Object> freeMarkerMap = new HashMap<String, Object>();
-        freeMarkerMap.put("list", list);
-        freeMarkerMap.put("siteName", getContext(soapRequest) + siteName);
-        freeMarkerMap.put("serverOffset", String.valueOf(VtiUtils.getServerOffset()));
-        
-        try
-        {
-            if (template == null)
-            {
-                template = new Template("GetListEndpoint", new InputStreamReader(getClass().getResourceAsStream("GetListEndpoint.ftl")), null, "utf-8");
-            }
-            Environment env = template.createProcessingEnvironment(freeMarkerMap, soapResponse.getWriter());
-            env.setOutputEncoding("utf-8");
-            env.process();
-            soapResponse.getWriter().flush();
-        }
-        catch (TemplateException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("Soap Method with name " + getName() + " is finished.");
-        }
+        throw new IllegalStateException("Should not be called, UpdateListItems has special handling");
     }
 }

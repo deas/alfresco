@@ -393,6 +393,7 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsMetaData">
                     <ref bean="getDwsMetaDataEndpoint"/>
                 </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/CheckOutFile">
                     <ref bean="checkOutFile"/>
                 </entry>
@@ -402,6 +403,7 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/UndoCheckOut">
                     <ref bean="undoCheckOutFile"/>
                 </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetVersions">
                     <ref bean="getVersionsEndpoint"/>
                 </entry>
@@ -411,6 +413,10 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteVersion">
                     <ref bean="deleteVersionEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteAllVersions">
+                    <ref bean="deleteAllVersionsEndpoint"/>
+                </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/AddList">
                     <ref bean="addListEndpoint"/>
                 </entry>
@@ -420,6 +426,19 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListTemplates">
                     <ref bean="getListTemplatesEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListCollection">
+                    <ref bean="getListCollectionEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListItems">
+                    <ref bean="getListItemsEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
+                    <ref bean="getListEndpoint"/>
+                </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/UpdateListItems">
+                    <ref bean="updateListItemsEndpoint"/>
+                </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/GetDwsData">
                     <ref bean="getDwsDataEndpoint"/>
                 </entry>
@@ -428,9 +447,6 @@
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/dws/CanCreateDwsUrl">
                     <ref bean="canCreateDwsUrlEndpoint"/>
-                </entry>
-                <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteAllVersions">
-                    <ref bean="deleteAllVersionsEndpoint"/>
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/directory/GetUserLoginFromEmail">
                     <ref bean="getUserLoginFromEmailEndpoint"/>
@@ -497,15 +513,6 @@
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/IsClaimsMode">
                     <ref bean="isClaimsModeEndpoint"/>
-                </entry>
-                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListCollection">
-                    <ref bean="getListCollectionEndpoint"/>
-                </entry>
-                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListItems">
-                    <ref bean="getListItemsEndpoint"/>
-                </entry>
-                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
-                    <ref bean="getListEndpoint"/>
                 </entry>
             </map>
         </property>
@@ -734,6 +741,16 @@
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>GetListTemplates</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+
+    <bean id="updateListItemsEndpoint" class="org.alfresco.module.vti.web.ws.UpdateListItemsEndpoint">
+        <constructor-arg ref="listServiceHandler" />
+        <property name="name">
+            <value>UpdateListItems</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>
