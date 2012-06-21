@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
+import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.web.VtiFilter;
 import org.apache.commons.logging.Log;
@@ -149,6 +150,8 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        Element root = soapResponse.getDocument().addElement(getName()+"Response", namespace);
        Element listResult = root.addElement(getName()+"Result");
        Element listE = listResult.addElement("List");
+       
+       String siteUrl = getContext(soapRequest) + siteName;
 
        listE.addAttribute("ID", list.getId());
        listE.addAttribute("Name",  list.getName());
@@ -157,16 +160,46 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        listE.addAttribute("Author", list.getAuthor());
        listE.addAttribute("DefaultViewUrl", null); // TODO
        listE.addAttribute("ImageUrl", null); // TODO
+       listE.addAttribute("WebFullUrl", siteUrl);
+       listE.addAttribute("RootFolder", siteUrl + "/" + list.getName()); // TODO
        listE.addAttribute("FeatureId", ""); // Not feature based
        listE.addAttribute("BaseType", Integer.toString( list.getType().getBaseType() ));
        listE.addAttribute("ServerTemplate", Integer.toString( list.getType().getId() ));
        listE.addAttribute("Created", formatDate(list.getCreated()));
        listE.addAttribute("Modified", formatDate(list.getModified()));
        listE.addAttribute("Direction", "none");
+       
+       listE.addAttribute("EnableVersioning", "False"); // TODO Is this right?
+       listE.addAttribute("EnableMinorVersion", "False");
        listE.addAttribute("Version", "1"); // Whole lists aren't versioned
+       listE.addAttribute("MajorVersionLimit", "0");
+       listE.addAttribute("MajorWithMinorVersionsLimit", "0");
+       listE.addAttribute("AllowDeletion", "True"); // TODO Permissions
+       
+       listE.addAttribute("ThumbnailSize", "0");
+       listE.addAttribute("WebImageWidth", "0");
+       listE.addAttribute("WebImageHeight", "0");
+       listE.addAttribute("AnonymousPermMask", "0");
+       listE.addAttribute("ReadSecurity", "1");
+       listE.addAttribute("WriteSecurity", "1");
+       listE.addAttribute("EventSinkAssembly", "");
+       listE.addAttribute("EventSinkClass", "");
+       listE.addAttribute("EventSinkData", "");
+       listE.addAttribute("EmailInsertsFolder", "");
+       listE.addAttribute("EmailAlias", "");
+       listE.addAttribute("SendToLocation", "");
+       listE.addAttribute("WorkFlowId", "00000000-0000-0000-0000-000000000000");
+       listE.addAttribute("HasUniqueScopes", "False");
+       listE.addAttribute("AllowMultiResponses", "False");
+       listE.addAttribute("Hidden", "False");
+       listE.addAttribute("MultipleDataList", "False");
+       listE.addAttribute("Ordered", "False");
+       listE.addAttribute("ShowUser", "True");
+       listE.addAttribute("RequireCheckout", "False");
+       
        listE.addAttribute("ItemCount", Integer.toString( list.getNumItems() ));
        listE.addAttribute("EnableAttachments", "True");
-       listE.addAttribute("EnableVersioning", null); // TODO
+       listE.addAttribute("EnableModeration", "False");
 
        // General Info
        Element regional = listE.addElement("RegionalSettings");
@@ -175,18 +208,23 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        regional.addElement("AdvanceHijri").addText("0");
        regional.addElement("CalendarType").addText("1");
        regional.addElement("Time24").addText("True");
-       regional.addElement("TimeZone").addText("0");
-       regional.addElement("SortOrder").addText(DEFAULT_LOCALE);
+       regional.addElement("TimeZone").addText(String.valueOf(VtiUtils.getServerOffset()));
+       regional.addElement("SortOrder").addText(DEFAULT_LOCALE); // 2070 ?
        regional.addElement("Presence").addText("False");
        
        Element server = listE.addElement("ServerSettings");
        server.addElement("ServerVersion").addText(VtiFilter.EMULATED_SHAREPOINT_VERSION);
        server.addElement("RecycleBinEnabled").addText("False");
-       server.addElement("ServerRelativeUrl").addText("/");
+       server.addElement("ServerRelativeUrl").addText("/" + siteName);
        
        // Field Details
-       listE.addElement("Fields");
-       // TODO Details on all the fields
+       Element fields = listE.addElement("Fields");
+       renderFields(siteName, list, fields);
+    }
+    
+    protected void renderFields(String siteName, ListInfoBean list, Element fieldsElement)
+    {
+        // TODO Details on all the fields
     }
 
     private String formatDate(Date date)
