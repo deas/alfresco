@@ -19,7 +19,10 @@
 package org.alfresco.module.vti.web.ws;
 
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
@@ -30,6 +33,10 @@ import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Attribute;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.xml.sax.InputSource;
 
 import freemarker.core.Environment;
 import freemarker.template.Template;
@@ -95,12 +102,13 @@ public class GetListEndpoint extends AbstractListEndpoint
      * Currently based on a FTL Template, which has fake field details in it
      */
     @Override
-    protected void renderList(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, 
-            String siteName, ListInfoBean list) throws Exception
+    @SuppressWarnings("unchecked")
+    protected void renderFields(String siteName, ListInfoBean list, Element fieldsElement)
+    throws Exception
     {
         Map<String, Object> freeMarkerMap = new HashMap<String, Object>();
         freeMarkerMap.put("list", list);
-        freeMarkerMap.put("siteName", getContext(soapRequest) + siteName);
+        freeMarkerMap.put("siteName", siteName);
         freeMarkerMap.put("serverOffset", String.valueOf(VtiUtils.getServerOffset()));
         
         try
@@ -109,14 +117,44 @@ public class GetListEndpoint extends AbstractListEndpoint
             {
                 template = new Template("GetListEndpoint", new InputStreamReader(getClass().getResourceAsStream("GetListEndpoint.ftl")), null, "utf-8");
             }
-            Environment env = template.createProcessingEnvironment(freeMarkerMap, soapResponse.getWriter());
+
+            // Put it into a string
+            StringWriter sw = new StringWriter();
+            Environment env = template.createProcessingEnvironment(freeMarkerMap, sw);
             env.setOutputEncoding("utf-8");
             env.process();
-            soapResponse.getWriter().flush();
+            
+            // Have it parsed into the DOM
+            SAXReader reader = new SAXReader();
+            Element ftlFields = reader.read(new StringReader(sw.toString())).getRootElement();
+            
+            // Copy it over
+            for (Element field : (List<Element>)ftlFields.elements())
+            {
+                copyElement(field, fieldsElement);
+            }
         }
         catch (TemplateException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void copyElement(Element source, Element target)
+    {
+        Element copy = target.addElement(source.getName());
+        for (Attribute attr : (List<Attribute>)source.attributes())
+        {
+            copy.addAttribute(attr.getQName(), attr.getValue());
+        }
+        for (Element child : (List<Element>)source.elements())
+        {
+            copyElement(child, copy);
+        }
+        if (source.getText() != null)
+        {
+            copy.setText(source.getText());
         }
     }
 }

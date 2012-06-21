@@ -222,7 +222,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        renderFields(siteName, list, fields);
     }
     
-    protected void renderFields(String siteName, ListInfoBean list, Element fieldsElement)
+    protected void renderFields(String siteName, ListInfoBean list, Element fieldsElement) throws Exception
     {
         // TODO Details on all the fields
     }
