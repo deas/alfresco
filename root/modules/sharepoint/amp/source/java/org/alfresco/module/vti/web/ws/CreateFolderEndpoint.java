@@ -81,7 +81,8 @@ public class CreateFolderEndpoint extends AbstractEndpoint
         Element root = soapResponse.getDocument().addElement("CreateFolderResponse", namespace);
         Element createFolderResult = root.addElement("CreateFolderResult");
 
-        createFolderResult.addElement("Result");
+        // Contents are standalone XML
+        createFolderResult.setText("<Result/>");
         
         if (logger.isDebugEnabled()) {
     		logger.debug("SOAP method with name " + getName() + " is finished.");
