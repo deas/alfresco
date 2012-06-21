@@ -81,5 +81,4 @@ public class AddListEndpoint extends AbstractListEndpoint
        // Return the list details
        return list;
     }
-
 }

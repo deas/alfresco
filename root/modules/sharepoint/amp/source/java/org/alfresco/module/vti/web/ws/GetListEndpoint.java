@@ -42,6 +42,7 @@ import freemarker.template.TemplateException;
  */
 public class GetListEndpoint extends AbstractListEndpoint
 {
+    @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
 
     private Template template = null;
@@ -91,7 +92,7 @@ public class GetListEndpoint extends AbstractListEndpoint
     }
     
     /**
-     * Currently based on a FTL Template
+     * Currently based on a FTL Template, which has fake field details in it
      */
     @Override
     protected void renderList(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, 
@@ -116,11 +117,6 @@ public class GetListEndpoint extends AbstractListEndpoint
         catch (TemplateException e)
         {
             throw new RuntimeException(e);
-        }
-
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("Soap Method with name " + getName() + " is finished.");
         }
     }
 }

@@ -104,6 +104,11 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        
        // Have any further details fetched as needed
        executeListActionDetails(soapRequest, soapResponse, dws, listName, requestElement, nc);
+       
+       // All done
+       if (logger.isDebugEnabled()) {
+          logger.debug("SOAP method with name " + getName() + " is finished.");
+       }        
     }
      
     protected void executeListActionDetails(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse,
@@ -145,7 +150,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        Element listResult = root.addElement(getName()+"Result");
        Element listE = listResult.addElement("List");
 
-       listE.addAttribute("ID", list.getNodeRef().getId());
+       listE.addAttribute("ID", list.getId());
        listE.addAttribute("Name",  list.getName());
        listE.addAttribute("Title", list.getTitle());
        listE.addAttribute("Description", list.getDescription());
@@ -182,11 +187,6 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        // Field Details
        listE.addElement("Fields");
        // TODO Details on all the fields
-       
-       // All done
-       if (logger.isDebugEnabled()) {
-          logger.debug("SOAP method with name " + getName() + " is finished.");
-       }        
     }
 
     private String formatDate(Date date)
