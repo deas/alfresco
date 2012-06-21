@@ -422,7 +422,7 @@ Alfresco.util.substituteDotNotation = function(str, obj)
    {
       return Alfresco.util.findValueByDotNotation(obj, p_key);
    });
-}
+};
 
 /**
  * Check if an array contains an object
@@ -973,7 +973,7 @@ Alfresco.util.renderRelativeTime = function(id)
    {
       this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
    })
-}
+};
 
 /**
  * Generate a relative time between two Date objects.
@@ -1160,7 +1160,7 @@ Alfresco.util.relativeDate = function(date, format, options)
       result = dateFormat(date, format)
    }
    return result;
-}
+};
 
 /**
  * Pad a value with leading zeros to the specified length.
@@ -4004,7 +4004,7 @@ Alfresco.util.parseURL = function(url)
       }
    }
    return urlObject;
-}
+};
 
 /**
  * Navigates to a url
@@ -6803,7 +6803,7 @@ else
          return false;
       }
    };
-}
+};
 
 
 /**

@@ -1742,13 +1742,13 @@
       <!-- clean up previously generated properties files -->
       <delete>
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages">
-            <include name="*_en_US.properties" />
+            <include name="*_en.properties" />
          </fileset>
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/model">
-            <include name="*_en_US.properties" />
+            <include name="*_en.properties" />
          </fileset>
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/workflow">
-            <include name="*_en_US.properties" />
+            <include name="*_en.properties" />
          </fileset>
       </delete>
 
@@ -1756,19 +1756,19 @@
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/messages"/>
          <mapper type="regexp" 
                  from="^([^_]*).properties$" 
-                 to="\1_en_US.properties"/>
+                 to="\1_en.properties"/>
       </copy>
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/model">
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/model"/>
          <mapper type="regexp" 
                  from="^([^_]*).properties$" 
-                 to="\1_en_US.properties"/>
+                 to="\1_en.properties"/>
       </copy>
       <copy todir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/workflow">
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/classes/alfresco/workflow"/>
          <mapper type="regexp" 
                  from="^([^_]*).properties$" 
-                 to="\1_en_US.properties"/>
+                 to="\1_en.properties"/>
       </copy>
 
       <mkdir dir="${dir.project.webclient.dist}" />

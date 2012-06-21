@@ -1038,7 +1038,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
          if (event && event.keyCode != 9 && event.keyCode != 16 || !event)
          {
             var msg = (message != null) ? message : "is mandatory.";
-            form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+            form.addError(msg, field);
          }
       }
 
@@ -1119,7 +1119,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       if (!valid && !silent && form)
       {
          var msg = (message != null) ? message : "is not the correct length.";
-         form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+         form.addError(msg, field);
       }
 
       return valid;
@@ -1177,7 +1177,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       if (!valid && !silent && form)
       {
          var msg = (message != null) ? message : "is not a number.";
-         form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+         form.addError(msg, field);
       }
 
       return valid;
@@ -1218,7 +1218,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             if (!silent && form)
             {
                var msg = (message != null) ? message : "is not a number.";
-               form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+               form.addError(msg, field);
             }
          }
          else
@@ -1259,7 +1259,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             if (!valid && !silent && form)
             {
                var msg = (message != null) ? message : "is not within the allowable range.";
-               form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+               form.addError(msg, field);
             }
          }
       }
@@ -1418,7 +1418,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
          if (!valid && !silent && form)
          {
             var msg = (message != null) ? message : "is invalid.";
-            form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+            form.addError(msg, field);
          }
       }
 
@@ -1478,7 +1478,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
          if (!valid && !silent && form)
          {
             var msg = (message != null) ? message : "is invalid.";
-            form.addError(form.getFieldLabel(field.id) + " " + msg, field);
+            form.addError(msg, field);
          }
       }
 

@@ -78,6 +78,12 @@ public class UserDashboardInterceptor extends AbstractWebFrameworkInterceptor
                             serviceRegistry.getPresetsManager().constructPreset("user-dashboard", tokens);
                         }
                     }
+                    else
+                    {
+                       // reset the user context to ensure Guest or similar is not applied - this will avoid
+                       // issues with SSO filters or similar that expect empty user after interceptor execution
+                       rc.setUser(null);
+                    }
                 }
                 catch (UserFactoryException uerr)
                 {
