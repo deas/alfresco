@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
-import org.alfresco.module.vti.metadata.model.ListBean;
+import org.alfresco.module.vti.handler.VtiHandlerException;
+import org.alfresco.module.vti.metadata.model.ListInfoBean;
+import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -72,15 +74,22 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
         // get site name that is used to list subsites
         String siteName = getDwsFromUri(soapRequest);
         
-        List<ListBean> lists;
+        List<ListInfoBean> lists;
         
         if (siteName.equals(""))
         {
-            lists = new ArrayList<ListBean>(0); 
+            lists = new ArrayList<ListInfoBean>(0); 
         }
         else
         {
-            lists = handler.getListCollection(siteName.substring(1));
+            try
+            {
+                lists = handler.getListCollection(siteName.substring(1));
+            }
+            catch (SiteDoesNotExistException e)
+            {
+                throw new VtiHandlerException(VtiHandlerException.BAD_URL);
+            }
         }
 
         // creating soap response
@@ -88,12 +97,12 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
         Element resultElement = responseElement.addElement("GetListCollectionResult");       
         Element listsElement = resultElement.addElement("Lists");
         
-        for (ListBean list : lists)
+        for (ListInfoBean list : lists)
         {
             Element listElement = listsElement.addElement("List");
             listElement.addAttribute("ID", list.getId());
-            listElement.addAttribute("Title", list.getTitle());
             listElement.addAttribute("Name", list.getName());
+            listElement.addAttribute("Title", list.getTitle());
             listElement.addAttribute("Description", list.getDescription());
         }
 

@@ -25,10 +25,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.model.DataListModel;
 import org.alfresco.module.vti.handler.ListServiceHandler;
-import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.model.ListBean;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
@@ -44,6 +45,7 @@ import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -213,20 +215,9 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
        // All done
     }
 
-    @Override
-    public ListInfoBean getList(String listName, String dws)
-         throws SiteDoesNotExistException, FileNotFoundException 
+    private ListInfoBean buildListInfo(String listName, NodeRef listNodeRef)
+            throws FileNotFoundException
     {
-        String siteName = dwsToSiteShortName(dws);
-        SiteInfo site = siteService.getSite(siteName);
-        if(site == null)
-        {
-           throw new SiteDoesNotExistException(siteName);
-        }
-
-        // Get the NodeRef
-        NodeRef listNodeRef = locateList(listName, site);
-        
         // Identify the type
         ListTypeBean type = null;
         
@@ -268,6 +259,24 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         return list;
     }
 
+    @Override
+    public ListInfoBean getList(String listName, String dws)
+            throws SiteDoesNotExistException, FileNotFoundException 
+    {
+        String siteName = dwsToSiteShortName(dws);
+        SiteInfo site = siteService.getSite(siteName);
+        if(site == null)
+        {
+            throw new SiteDoesNotExistException(siteName);
+        }
+
+        // Get the NodeRef
+        NodeRef listNodeRef = locateList(listName, site);
+        
+        // Wrap and return
+        return buildListInfo(listName, listNodeRef);
+    }
+ 
     @Override
     public ListInfoBean createList(String listName, String description, String dws, int templateId)
           throws SiteDoesNotExistException, DuplicateChildNodeNameException, InvalidTypeException
@@ -396,53 +405,90 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
     
     
     /**
-     * TODO Change this to use {@link ListInfoBean} instead
      * @see org.alfresco.module.vti.handler.ListServiceHandler#getListCollection(String)
      */
-    @SuppressWarnings("deprecation")
-    public List<ListBean> getListCollection(final String siteName)
+    public List<ListInfoBean> getListCollection(final String siteName)
     {
-        List<ListBean> results = 
-            transactionService.getRetryingTransactionHelper().doInTransaction(
-                new RetryingTransactionCallback<List<ListBean>>()
+        // Fetch the details for the site
+        SiteInfo siteInfo = siteService.getSite(siteName);
+        if (siteInfo == null)
+        {
+            throw new SiteDoesNotExistException(siteName);
+        }
+        List<ListInfoBean> results = new ArrayList<ListInfoBean>();
+
+        
+        // First up, look for the container based lists
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Looking for containers in site: " + siteName);
+        }
+
+        List<FileInfo> folders = fileFolderService.listFolders(siteInfo.getNodeRef());
+        for (FileInfo folder : folders)
+        {
+            if (nodeService.hasAspect(folder.getNodeRef(), SiteModel.ASPECT_SITE_CONTAINER))
+            {
+                try
                 {
+                    results.add(buildListInfo(folder.getName(), folder.getNodeRef()));
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    if (logger.isInfoEnabled())
+                        logger.info("Skipping container " + folder.getName() + " as can't be represented as a list");
+                }
+            }
+        }
 
-                    @Override
-                    public List<ListBean> execute() throws Throwable
-                    {
-                        List<ListBean> results = new ArrayList<ListBean>();
-
-                        SiteInfo siteInfo = siteService.getSite(siteName);
-
-                        if (siteInfo == null)
-                        {
-                            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
-                        }
-
-                        if (logger.isDebugEnabled())
-                        {
-                            logger.debug("Looking for containers in site: " + siteName);
-                        }
-
-                        List<FileInfo> folders = fileFolderService.listFolders(siteInfo.getNodeRef());
-
-                        for (FileInfo folder : folders)
-                        {
-                            if (nodeService.hasAspect(folder.getNodeRef(), SiteModel.ASPECT_SITE_CONTAINER))
-                            {
-                                results.add(buildListBean(folder));
-                            }
-                        }
-
-                        if (logger.isDebugEnabled())
-                        {
-                            logger.debug("Found " + results.size() + " containers in site " + siteName);
-                        }
-
-                        return results;
-                    }
-                }, true, false);
-
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Found " + results.size() + " containers in site " + siteName);
+        }
+        
+        
+        // Then, look for the Data List based ones
+        NodeRef dataListContainer = siteService.getContainer(siteName, DATALIST_CONTAINER);
+        if(dataListContainer != null)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Looking for data lists in site: " + siteName);
+            }
+            
+            Set<QName> dataListType = Collections.singleton(DataListModel.TYPE_DATALIST);
+            List<ChildAssociationRef> dataLists = nodeService.getChildAssocs(dataListContainer, dataListType);
+            for (ChildAssociationRef ref : dataLists)
+            {
+                NodeRef listNodeRef = ref.getChildRef();
+                String name = (String)nodeService.getProperty(listNodeRef, ContentModel.PROP_NAME);
+                try
+                {
+                    results.add(buildListInfo(name, listNodeRef));
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    if (logger.isInfoEnabled())
+                        logger.info("Skipping data list " + name + " of type " + 
+                                nodeService.getProperty(listNodeRef, DataListModel.PROP_DATALIST_ITEM_TYPE) +
+                        		" as it can't be represented as a list");
+                }
+            }
+            
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Found " + dataLists.size() + " data lists in site " + siteName);
+            }
+        }
+        else
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("No Data Lists found for " + siteName);
+            }
+        }
+        
+        // All done
         return results;
     }
     
@@ -478,11 +524,11 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
                     
                 }, true, false);            
         
-        return buildListBean(listFileInfo);
+        return buildOldListBean(listFileInfo);
     }
 
     @SuppressWarnings("deprecation")
-    private ListBean buildListBean(FileInfo fileInfo)
+    private ListBean buildOldListBean(FileInfo fileInfo)
     {
         ListBean result = new ListBean();
         result.setId("{" + fileInfo.getNodeRef().getId() + "}");

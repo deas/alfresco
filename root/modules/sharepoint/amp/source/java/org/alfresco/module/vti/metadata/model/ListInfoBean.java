@@ -72,6 +72,14 @@ public class ListInfoBean implements Serializable
     }
     
     /**
+     * @return The unique ID of the list, based on the NodeRef
+     */
+    public String getId()
+    {
+        return '{' + nodeRef.getId() + '}';
+    }
+    
+    /**
      * @return The Type of the list
      */
     public ListTypeBean getType()

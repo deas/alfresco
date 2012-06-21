@@ -63,12 +63,10 @@ public interface ListServiceHandler
     /**
      * Returns the names and GUIDs for all the lists in the site.
      * 
-     * TODO Change this to work with {@link ListInfoBean} instead
-     * 
      * @param siteName the name of site 
      * @return the list of site' lists
      */
-    public List<ListBean> getListCollection(String siteName);
+    public List<ListInfoBean> getListCollection(String siteName) throws SiteDoesNotExistException;
 
     /**
      * Returns the basic schema for the specified list.
