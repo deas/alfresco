@@ -1178,6 +1178,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         }
     }
     
+    
     /**
      * Return diffs between input model and model in the Dictionary.
      * 
@@ -1188,8 +1189,26 @@ public class DictionaryDAOImpl implements DictionaryDAO
      */
     public List<M2ModelDiff> diffModel(M2Model model)
     {
+        return diffModel(model, true);
+    }
+    
+    public List<M2ModelDiff> diffModelIgnoringConstraints(M2Model model)
+    {
+        return diffModel(model, false);
+    }
+    
+    /**
+     * Return diffs between input model and model in the Dictionary.
+     * 
+     * If the input model does not exist in the Dictionary then no diffs will be returned.
+     * 
+     * @param model
+     * @return model diffs (if any)
+     */
+    public List<M2ModelDiff> diffModel(M2Model model, boolean enableConstraintClassLoading)
+    {
         // Compile model definition
-        CompiledModel compiledModel = model.compile(this, namespaceDAO, true);
+        CompiledModel compiledModel = model.compile(this, namespaceDAO, enableConstraintClassLoading);
         QName modelName = compiledModel.getModelDefinition().getName();
         
         CompiledModel previousVersion = null;

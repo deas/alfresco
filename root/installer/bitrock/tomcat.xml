@@ -310,7 +310,7 @@ Tomcat 5.5 is recommended.</text>
                     </ruleList>-->
                     <validationActionList>
                         <throwError>
-                            <text>Unable to bind to the given port number. Please select another one.</text>
+                            <text>Unable to bind to the given port number. Please select another Tomcat SSL Port.</text>
                             <ruleList>
                                 <portTest port="${tomcat_server_ssl_port}" condition="cannot_bind"/>
                             </ruleList>
@@ -351,7 +351,7 @@ Tomcat 5.5 is recommended.</text>
                     <description>Tomcat JMX Port:</description>
                     <validationActionList>
                         <throwError>
-                            <text>Unable to bind to the given port number. Please select another one.</text>
+                            <text>Unable to bind to the given port number. Please select another Tomcat JMX Port.</text>
                             <ruleList>
                                 <portTest port="${tomcat_server_jmx_port}" condition="cannot_bind"/>
                             </ruleList>

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -937,7 +938,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         CoreTracker tracker = trackers.get(coreName);
                         if (tracker != null)
                         {
-                            addCoreSummary(cname, detail, hist, values, tracker, report);
+                            addCoreSummary(coreName, detail, hist, values, tracker, report);
 
                             if (reset)
                             {
@@ -946,7 +947,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         }
                         else
                         {
-                            report.add(cname, "Core unknown");
+                            report.add(coreName, "Core unknown");
                         }
                     }
                     rsp.add("Summary", report);
@@ -6213,6 +6214,21 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
          coreSummary.add("Docs/Tx", tracker.getTrackerStats().getTxDocs().getNamedList(detail, hist, values));
          coreSummary.add("Doc Transformation time (ms)", tracker.getTrackerStats().getDocTransformationTimes().getNamedList(detail, hist, values));
 
+         // Modela
+         
+         Map<String, Set<String>> modelErrors = tracker.getModelErrors();
+         if(modelErrors.size() > 0)
+         {
+             NamedList<Object> errorList = new SimpleOrderedMap<Object>();
+             for(String modelName : modelErrors.keySet())
+             {
+                 Set<String> errors = modelErrors.get(modelName);
+                 errorList.add(modelName, errors);
+             }
+             coreSummary.add("Model changes are not compatible with the existing data model and have not been applied", errorList);
+         }
+             
+         
          report.add(cname, coreSummary);
      }
 

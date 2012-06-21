@@ -513,7 +513,7 @@ import org.springframework.util.StringUtils;
         
         if (isIndexed() != propDef.isIndexed())
         { 
-            isUpdatedIncrementally = true;
+            isUpdated = true;
         }
         
         if (isStoredInIndex() != propDef.isStoredInIndex())
@@ -528,7 +528,7 @@ import org.springframework.util.StringUtils;
         
         if (! EqualsHelper.nullSafeEquals(getIndexTokenisationMode().toString(), propDef.getIndexTokenisationMode().toString(), false))
         { 
-            isUpdatedIncrementally = true;
+            isUpdated = true;
         }
         
         

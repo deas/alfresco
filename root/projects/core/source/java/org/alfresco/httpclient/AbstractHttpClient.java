@@ -39,8 +39,12 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
 {
     private static final Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
     
+    public static final String ALFRESCO_DEFAULT_BASE_URL = "/alfresco";
+    
     // Remote Server access
     protected HttpClient httpClient = null;
+    
+    private String baseUrl = ALFRESCO_DEFAULT_BASE_URL;
 
     public AbstractHttpClient(HttpClient httpClient)
     {
@@ -52,6 +56,22 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
         return httpClient;
     }
     
+    /**
+     * @return the baseUrl
+     */
+    public String getBaseUrl()
+    {
+        return baseUrl;
+    }
+
+    /**
+     * @param baseUrl the baseUrl to set
+     */
+    public void setBaseUrl(String baseUrl)
+    {
+        this.baseUrl = baseUrl;
+    }
+
     private boolean isRedirect(HttpMethod method)
     {
     	switch (method.getStatusCode()) {
@@ -115,7 +135,8 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
     protected HttpMethod createMethod(Request req) throws IOException
     {
     	StringBuilder url = new StringBuilder();
-    	url.append("/alfresco/service/");
+    	url.append(baseUrl);
+    	url.append("/service/");
     	url.append(req.getFullUri());
 
         // construct method

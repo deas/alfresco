@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -164,6 +165,8 @@ public class CoreTracker implements CloseHook
     private int alfrescoPort;
 
     private int alfrescoPortSSL;
+    
+    private String baseUrl;
 
     private String cron;
 
@@ -296,6 +299,11 @@ public class CoreTracker implements CloseHook
         return trackerStats;
     }
 
+    public Map<String, Set<String>> getModelErrors()
+    {
+        return dataModel.getModelErrors();
+    }
+    
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         super();
@@ -329,6 +337,10 @@ public class CoreTracker implements CloseHook
                 else  if (split[0].equals("alfresco.port.ssl"))
                 {
                     alfrescoPortSSL = Integer.parseInt(split[1]);
+                }
+                else if (split[0].equals("alfresco.baseUrl"))
+                {
+                    baseUrl = split[1];
                 }
                 else if (split[0].equals("alfresco.cron"))
                 {
@@ -478,6 +490,7 @@ public class CoreTracker implements CloseHook
         // TODO need to make port configurable depending on secure comms, or just make redirects
         // work
         AlfrescoHttpClient repoClient = httpClientFactory.getRepoClient(alfrescoHost, alfrescoPortSSL);
+        repoClient.setBaseUrl(baseUrl);
         return repoClient;
     }
 
@@ -1210,7 +1223,10 @@ public class CoreTracker implements CloseHook
 
         if (state.check)
         {
-            checkIndex(null, null, null, null, null, null);
+            AddUpdateCommand checkDocCmd = new AddUpdateCommand();
+            checkDocCmd.indexedId = "CHECK_CACHE";
+            core.getUpdateHandler().addDoc(checkDocCmd);
+            core.getUpdateHandler().commit(new CommitUpdateCommand(false));
         }
 
     }

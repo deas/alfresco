@@ -355,6 +355,7 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             }
             else
             {
+                Term idTerm = this.idTerm.createTerm(cmd.indexedId);
                 if(idTerm.text().equals("CHECK_CACHE"))
                 {
                     checkCache.set(true);

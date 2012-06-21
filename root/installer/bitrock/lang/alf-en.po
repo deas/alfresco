@@ -583,8 +583,11 @@ msgstr "Unable to bind to the given port number. Please select another Tomcat Se
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 msgstr "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "Unable to bind to the given port number. Please select another one."
+msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+msgstr "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "Unable to bind to the given port number. Please select another Tomcat AJP Port."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."

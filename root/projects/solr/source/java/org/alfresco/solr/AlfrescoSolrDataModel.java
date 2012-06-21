@@ -25,9 +25,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -42,12 +45,14 @@ import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
 import org.alfresco.repo.cache.MemoryCache;
+import org.alfresco.repo.dictionary.CompiledModel;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.DictionaryNamespaceComponent;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
@@ -69,12 +74,14 @@ import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryModelFact
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchParameters;
+import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.client.AlfrescoModel;
@@ -136,6 +143,8 @@ public class AlfrescoSolrDataModel
     private AlfrescoDataType alfrescoDataType;
 
     private String id;
+
+    private HashMap<String, Set<String>> modelErrors = new HashMap<String, Set<String>>();
 
     static
     {
@@ -654,9 +663,56 @@ public class AlfrescoSolrDataModel
      */
     public void putModel(M2Model model)
     {
-        dictionaryDAO.putModelIgnoringConstraints(model);
+        Set<String> errors = validateModel(model);
+        if(errors.size() == 0)
+        {
+            modelErrors.remove(model.getName());
+            dictionaryDAO.putModelIgnoringConstraints(model);
+        }
+        else
+        {
+            if(!modelErrors.containsKey(model.getName()))
+            {
+                modelErrors.put(model.getName(), errors);
+                log.warn(errors.iterator().next());
+            }
+        }
+       
     }
 
+    
+    private Set<String> validateModel(M2Model model)
+    {
+        HashSet<String> errors = new HashSet<String>();
+        try 
+        { 
+            dictionaryDAO.getCompiledModel(QName.createQName(model.getName(), namespaceDAO)); 
+        } 
+        catch (DictionaryException e) 
+        {
+            // No model to diff
+            return errors;
+        }
+        catch(NamespaceException e)
+        {
+            // namespace unknown - no model 
+            return errors;
+        }
+        
+        
+        List<M2ModelDiff> modelDiffs = dictionaryDAO.diffModelIgnoringConstraints(model);
+        
+        for (M2ModelDiff modelDiff : modelDiffs)
+        {
+            if (modelDiff.getDiffType().equals(M2ModelDiff.DIFF_UPDATED))
+            {
+                errors.add("Model not updated: "+model.getName()  + "   Failed to validate model update - found non-incrementally updated " + modelDiff.getElementType() + " '" + modelDiff.getElementName() + "'");
+            }
+        }
+        return errors;
+    }
+  
+    
     public M2Model getM2Model(QName modelQName)
     {
         return dictionaryDAO.getCompiledModel(modelQName).getM2Model();
@@ -1558,4 +1614,14 @@ public class AlfrescoSolrDataModel
         }
         return propertyDef;
     }
+
+    /**
+     * @return the failedModels
+     */
+    public Map<String, Set<String>> getModelErrors()
+    {
+        return Collections.unmodifiableMap(modelErrors);
+    }
+    
+    
 }

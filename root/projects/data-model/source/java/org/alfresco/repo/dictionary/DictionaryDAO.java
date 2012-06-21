@@ -181,6 +181,8 @@ public interface DictionaryDAO extends ModelQuery
      */
     public List<M2ModelDiff> diffModel(M2Model model);
     
+    public List<M2ModelDiff> diffModelIgnoringConstraints(M2Model model);
+    
     /**
      *
      * Register listener with the Dictionary
