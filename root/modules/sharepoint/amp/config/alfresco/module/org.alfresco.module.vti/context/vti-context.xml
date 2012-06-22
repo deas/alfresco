@@ -213,6 +213,16 @@
                 <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
                     <property name="customRules">
                         <map>
+                            <entry key="Request-method">
+                                <value>PUT</value>
+                            </entry>
+                        </map>
+                    </property>
+                    <property name="action" ref="vtiPutAction"/>
+                </bean>                
+                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
+                    <property name="customRules">
+                        <map>
                             <entry key="Request-method"><value>(GET)|(PUT)</value></entry>
                             <entry key="If"><value>^.+$</value></entry>
                         </map>
@@ -355,6 +365,12 @@
     </bean>
 
     <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="vtiPutAction" class="org.alfresco.module.vti.web.actions.VtiPutAction">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="serviceRegistry" ref="ServiceRegistry"/>
         <property name="authenticationService" ref="AuthenticationService"/>
