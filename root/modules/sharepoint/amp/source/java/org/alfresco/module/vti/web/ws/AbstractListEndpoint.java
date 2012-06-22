@@ -151,8 +151,17 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        Element listResult = root.addElement(getName()+"Result");
        Element listE = listResult.addElement("List");
        
+       // Render the list into this element
        String siteUrl = getContext(soapRequest) + siteName;
-
+       renderListDefinition(list, siteName, siteUrl, listE);
+       
+       // Field Details
+       Element fields = listE.addElement("Fields");
+       renderFields(siteName, list, fields);
+    }
+     
+    protected void renderListDefinition(ListInfoBean list, String siteName, String siteUrl, Element listE)
+    {
        listE.addAttribute("ID", list.getId());
        listE.addAttribute("Name",  list.getName());
        listE.addAttribute("Title", list.getTitle());
@@ -216,10 +225,6 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        server.addElement("ServerVersion").addText(VtiFilter.EMULATED_SHAREPOINT_VERSION);
        server.addElement("RecycleBinEnabled").addText("False");
        server.addElement("ServerRelativeUrl").addText("/" + siteName);
-       
-       // Field Details
-       Element fields = listE.addElement("Fields");
-       renderFields(siteName, list, fields);
     }
     
     protected void renderFields(String siteName, ListInfoBean list, Element fieldsElement) throws Exception

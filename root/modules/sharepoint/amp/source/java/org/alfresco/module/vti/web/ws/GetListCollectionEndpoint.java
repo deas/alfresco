@@ -94,29 +94,12 @@ public class GetListCollectionEndpoint extends AbstractListEndpoint
         Element resultElement = responseElement.addElement("GetListCollectionResult");       
         Element listsElement = resultElement.addElement("Lists");
         
-        // TODO Unify this this with rendering in AbstractListEndpoint
         for (ListInfoBean list : lists)
         {
+            String siteUrl = getContext(soapRequest) + siteName;
+            
             Element listElement = listsElement.addElement("List");
-            listElement.addAttribute("ID", list.getId());
-            listElement.addAttribute("Name", list.getName());
-            listElement.addAttribute("Title", list.getTitle());
-            listElement.addAttribute("Description", list.getDescription());
-            listElement.addAttribute("BaseType", Integer.toString(list.getType().getBaseType()));
-            listElement.addAttribute("Created", formatListDate(list.getCreated()));
-            listElement.addAttribute("Modified", formatListDate(list.getModified()));
-            listElement.addAttribute("ItemCount", Integer.toString(list.getNumItems()));
-            
-            listElement.addAttribute("FeatureId", ""); // Not feature based
-            listElement.addAttribute("ServerTemplate", Integer.toString( list.getType().getId() ));
-            listElement.addAttribute("ReadSecurity", "1");
-            listElement.addAttribute("WriteSecurity", "1");
-            
-            // Ones we don't really support
-            listElement.addAttribute("DefaultViewUrl", "");
-            listElement.addAttribute("ImageUrl", "");
-            listElement.addAttribute("Version", "1"); // Whole lists aren't versioned
-            listElement.addAttribute("Direction", "none");
+            renderListDefinition(list, siteName, siteUrl, listElement);
         }
 
         if (logger.isDebugEnabled())
