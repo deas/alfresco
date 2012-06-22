@@ -125,18 +125,24 @@ public class UpdateListItemsEndpoint extends AbstractListEndpoint
                    QName qname = null;
                    String fieldName = field.attributeValue("Name");
                    
+                   // Get the value, as a string (will be converted later)
+                   String value = field.getText().toString();
+                   
                    // Handle names with special meanings
                    if ("ID".equals(fieldName))
                    {
                        qname = ContentModel.PROP_NAME;
+                       if (id == null && value != null)
+                       {
+                           id = value;
+                       }
                    }
                    else
                    {
                        qname = QName.createQName(fieldName, namespaceService);
                    }
                    
-                   // Get the value, as a string (will be converted later)
-                   String value = field.getText().toString();
+                   // Store the value for the operations
                    if (value != null)
                    {
                        fields.put(qname, value);
@@ -152,7 +158,7 @@ public class UpdateListItemsEndpoint extends AbstractListEndpoint
                }
                
                // Have the operation performed
-               // TODO
+               handler.updateListItem(list, operation, id, fields);
            }
         }
     }

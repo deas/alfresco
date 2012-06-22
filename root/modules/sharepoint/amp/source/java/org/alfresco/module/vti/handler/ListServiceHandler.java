@@ -19,6 +19,7 @@
 package org.alfresco.module.vti.handler;
 
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
@@ -26,6 +27,7 @@ import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
+import org.alfresco.service.namespace.QName;
 
 /**
  * Site list service fundamental API.
@@ -76,4 +78,11 @@ public interface ListServiceHandler
      * @return the list of site' lists
      */
     public List<ListInfoBean> getListCollection(String siteName) throws SiteDoesNotExistException;
+    
+    /**
+     * Performs the specified add/update/delete operations against a 
+     *  single list item.
+     */
+    public void updateListItem(ListInfoBean list, ListItemOperationType operation, 
+            String id, Map<QName,String> fields) throws FileNotFoundException;
 }

@@ -211,7 +211,7 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         ListTypeBean type = null;
         
         // Is it a DataList type?
-        String dlType = (String)nodeService.getProperty(listNodeRef, PROP_DATA_LIST_ITEM_TYPE);
+        String dlType = (String)nodeService.getProperty(listNodeRef, DataListModel.PROP_DATALIST_ITEM_TYPE);
         if(dlType != null)
         {
            for(Integer id : dataListTypes.keySet())
@@ -248,6 +248,58 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         return list;
     }
 
+    /**
+     * Checks to see if the name is a guid based one
+     */
+    private boolean isNameGUID(String name)
+    {
+        if (name.startsWith("{") && name.endsWith("}") && name.length() == 38)
+        {
+            return true;
+        }
+        return false;
+    }
+    private NodeRef locateForGUID(String guidID, NodeRef expectedParent) throws FileNotFoundException
+    {
+        if (!isNameGUID(guidID))
+        {
+            throw new FileNotFoundException("ID is not a guid");
+        }
+        
+        // Build the NodeRef
+        NodeRef listNodeRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, guidID.substring(1, 37));
+        if (logger.isDebugEnabled())
+            logger.debug("Build NodeRef of " + listNodeRef + " for ID-based List Name " + guidID);
+        
+        // Check it exists
+        if (! nodeService.exists(listNodeRef))
+        {
+            throw new FileNotFoundException(listNodeRef);
+        }
+            
+        // Verify it's in the correct site
+        NodeRef nodeParent = nodeService.getPrimaryParent(listNodeRef).getParentRef();
+        boolean isInParent = false;
+        while (nodeParent != null)
+        {
+            if (nodeParent.equals(expectedParent))
+            {
+                // Found it, it's in the right place
+                isInParent = true;
+                break;
+            }
+            else
+            {
+                nodeParent = nodeService.getPrimaryParent(nodeParent).getParentRef();
+            }
+        }
+        if (! isInParent)
+        {
+            throw new FileNotFoundException("Node " + listNodeRef + " wasn't in the specified parent hierarchy - wrong site or list");
+        }
+        return listNodeRef;
+    }
+
     @Override
     public ListInfoBean getList(String listName, String dws)
             throws SiteDoesNotExistException, FileNotFoundException 
@@ -261,40 +313,10 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         
         // Did they give a name, or an ID? (GUID)
         NodeRef listNodeRef = null;
-        if (listName.startsWith("{") && listName.endsWith("}") &&
-                listName.length() == 38)
+        if (isNameGUID(listName))
         {
-            // Build the NodeRef
-            listNodeRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, listName.substring(1, 37));
-            if (logger.isDebugEnabled())
-                logger.debug("Build NodeRef of " + listNodeRef + " for ID-based List Name " + listName);
-            
-            // Check it exists
-            if (! nodeService.exists(listNodeRef))
-            {
-                throw new FileNotFoundException(listNodeRef);
-            }
-            
-            // Verify it's in the correct site
-            NodeRef parent = nodeService.getPrimaryParent(listNodeRef).getParentRef();
-            boolean isInSite = false;
-            while (parent != null)
-            {
-                if (parent.equals(site.getNodeRef()))
-                {
-                    // Found it, it's in the right place
-                    isInSite = true;
-                    break;
-                }
-                else
-                {
-                    parent = nodeService.getPrimaryParent(parent).getParentRef();
-                }
-            }
-            if (! isInSite)
-            {
-                throw new FileNotFoundException("Node " + listNodeRef + " wasn't in the specified site");
-            }
+            // Build and verify
+            listNodeRef = locateForGUID(listName, site.getNodeRef());
         }
         else
         {
@@ -372,6 +394,9 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
           throw new DuplicateChildNodeNameException(site.getNodeRef(), ContentModel.ASSOC_CONTAINS, listName, null);
        }
        
+       // TODO For some types, we may need an intermediate between the container and the list
+       // eg Discussions -> Post, Topic, Discussions
+       
        // Have it created
        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
        props.put(ContentModel.PROP_DESCRIPTION, description);
@@ -401,13 +426,13 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
        
        // Create the list
        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
-       props.put(PROP_DATA_LIST_ITEM_TYPE, typeName);
+       props.put(DataListModel.PROP_DATALIST_ITEM_TYPE, typeName);
        props.put(ContentModel.PROP_NAME, listName);
        props.put(ContentModel.PROP_DESCRIPTION, description);
        
        NodeRef nodeRef = nodeService.createNode(
              container, ContentModel.ASSOC_CONTAINS, QName.createQName(listName),
-             TYPE_DATALIST, props
+             DataListModel.TYPE_DATALIST, props
        ).getChildRef();
        
        // Return a wrapper around it
@@ -530,6 +555,64 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
     }
     
     @Override
+    public void updateListItem(ListInfoBean list, ListItemOperationType operation, 
+            String id, Map<QName, String> fields) throws FileNotFoundException
+    {
+        // For update/delete, find the item NodeRef
+        NodeRef nodeRef = null;
+        if (operation == ListItemOperationType.Update ||
+            operation == ListItemOperationType.Delete)
+        {
+            // Do the appropriate lookup
+            if (isNameGUID(id))
+            {
+                nodeRef = locateForGUID(id, list.getNodeRef());
+            }
+            else
+            {
+                nodeRef = nodeService.getChildByName(list.getNodeRef(), ContentModel.ASSOC_CONTAINS, id);
+                if (nodeRef == null)
+                {
+                    throw new FileNotFoundException("No list entry with ID/Name " + id);
+                }
+            }
+        }
+        
+        // Convert the fields as needed
+        Map<QName,Serializable> props = new HashMap<QName, Serializable>();
+        for (QName qname : fields.keySet())
+        {
+            // Everything so far can just be a string
+            String value = fields.get(qname);
+            props.put(qname, value);
+        }
+        
+        
+        // Perform the operation
+        if (operation == ListItemOperationType.New)
+        {
+            // Add the node within the list
+            nodeRef = nodeService.createNode(
+                    list.getNodeRef(), ContentModel.ASSOC_CONTAINS,
+                    QName.createQName(id), list.getType().getEntryType(), props
+            ).getChildRef();
+        }
+        else if (operation == ListItemOperationType.Update)
+        {
+            // For update, update the properties
+            nodeService.setProperties(nodeRef, props);
+        }
+        else if (operation == ListItemOperationType.Delete)
+        {
+            nodeService.deleteNode(nodeRef);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Operation " + operation + " not supported");
+        }
+    }
+
+    @Override
     public void afterPropertiesSet() throws Exception 
     {
         PropertyCheck.mandatory(this, "dataListTypes", dataListTypes);
@@ -581,7 +664,7 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
            if(type != null)
            {
               list = new ListTypeBean(
-                    id, VtiListBaseType.GENERIC_LIST.id, true,
+                    id, VtiListBaseType.GENERIC_LIST.id, true, typeQName,
                     name, type.getTitle(), type.getDescription()
               );
            }
@@ -589,7 +672,7 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
            {
               list = new ListTypeBean(
                     id, VtiListBaseType.GENERIC_LIST.id, true,
-                    name, null, null
+                    typeQName, name, null, null
               );
            }
            

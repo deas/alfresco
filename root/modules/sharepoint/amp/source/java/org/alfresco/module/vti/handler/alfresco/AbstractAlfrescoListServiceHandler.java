@@ -18,13 +18,17 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
+import org.alfresco.model.ContentModel;
+import org.alfresco.model.DataListModel;
+import org.alfresco.model.ForumModel;
 import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.metadata.model.ListTypeBean;
+import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.calendar.CalendarServiceImpl;
 import org.alfresco.repo.discussion.DiscussionServiceImpl;
+import org.alfresco.repo.links.LinksModel;
 import org.alfresco.repo.links.LinksServiceImpl;
 import org.alfresco.repo.wiki.WikiServiceImpl;
-import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,17 +43,13 @@ public abstract class AbstractAlfrescoListServiceHandler implements ListServiceH
     protected static Log logger = LogFactory.getLog(AbstractAlfrescoListServiceHandler.class);
     
     protected static final String DATALIST_CONTAINER = "dataLists";
-    protected static final QName TYPE_DATALIST = QName.createQName(
-          NamespaceService.DATALIST_MODEL_1_0_URI, "dataList");
-    protected static final QName PROP_DATA_LIST_ITEM_TYPE = QName.createQName(
-          NamespaceService.DATALIST_MODEL_1_0_URI, "dataListItemType");
 
     // These are commonly used Types
     public static final ListTypeBean TYPE_DOCUMENT_LIBRARY = buildType(VtiBuiltInListType.DOCLIB);
     public static final ListTypeBean TYPE_DISCUSSIONS = buildType(VtiBuiltInListType.DISCUSS);
     public static final ListTypeBean TYPE_LINKS = buildType(VtiBuiltInListType.LINKS);
     public static final ListTypeBean TYPE_WIKI = buildType(VtiBuiltInListType.WIKI);
-    public static final ListTypeBean TYPE_TASKS = buildType(VtiBuiltInListType.TASKS); // TODO Needs linking to DataList
+    public static final ListTypeBean TYPE_TASKS = buildType(VtiBuiltInListType.TASKS);
 
     /**
      * Builds the Type, or null if it's not 
@@ -59,9 +59,15 @@ public abstract class AbstractAlfrescoListServiceHandler implements ListServiceH
     {
        if(type.component != null)
        {
+          boolean isDataList = false;
+          if (type.component == DATALIST_CONTAINER)
+          {
+              isDataList = true;
+          }
+          
           ListTypeBean list = new ListTypeBean(
-                type.id, type.type.id, false,
-                type.name, null, null
+                type.id, type.type.id, isDataList,
+                type.entryType, type.name, null, null
           );
           return list;
        }
@@ -76,38 +82,44 @@ public abstract class AbstractAlfrescoListServiceHandler implements ListServiceH
      */
     protected static enum VtiBuiltInListType
     {
-       DOCLIB(101, VtiListBaseType.DOCUMENT_LIBRARY, "doclib", "documentLibrary"),
-       SURVEY(102, VtiListBaseType.SURVEY, "survey", null),
-       LINKS(103,  VtiListBaseType.GENERIC_LIST, "links", LinksServiceImpl.LINKS_COMPONENT),
-       ANNOUNCE(104, VtiListBaseType.GENERIC_LIST, "announce", null),
-       CONTACTS(105, VtiListBaseType.GENERIC_LIST, "contacts", null), // Normally a DataList
-       EVENTS(106,   VtiListBaseType.GENERIC_LIST, "events", CalendarServiceImpl.CALENDAR_COMPONENT),
-       TASKS(107,    VtiListBaseType.GENERIC_LIST, "tasks", null), // Normally a DataList
-       DISCUSS(108,  VtiListBaseType.DISCUSSION_BOARD, "discuss", DiscussionServiceImpl.DISCUSSION_COMPONENT),
-       PICTURE_LIBRARY(109, VtiListBaseType.GENERIC_LIST, "piclib", null),
-       DATA_SOURCES(110, VtiListBaseType.GENERIC_LIST, "datasrcs", null),
-       SITE_TEMPLATE_GALLERY(111, VtiListBaseType.GENERIC_LIST, null, null),
-       WEB_PART_GALLERY(113, VtiListBaseType.GENERIC_LIST, null, null),
-       LIST_TEMPLATE_GALLERY(114, VtiListBaseType.GENERIC_LIST, null, null),
-       XML_FORMS(115, VtiListBaseType.GENERIC_LIST, "xmlform", null),
-       NO_CODE_WORKFLOWS(117, VtiListBaseType.GENERIC_LIST, "nocodewf", null),
-       CUSTOM_WORKFLOWS(118, VtiListBaseType.GENERIC_LIST, "workflowProcess", null),
-       WIKI(119, VtiListBaseType.GENERIC_LIST, "webpagelib", WikiServiceImpl.WIKI_COMPONENT),
-       GRID_LIST(120, VtiListBaseType.GENERIC_LIST, "gridlist", null),
-       NO_CODE_PUBLIC_WORKFLOWS(122, VtiListBaseType.GENERIC_LIST, "nocodepublicwf", null),
-       ISSUE(1100, VtiListBaseType.ISSUE, "issue", null), // Normally a DataList
+       DOCLIB(101, VtiListBaseType.DOCUMENT_LIBRARY, "doclib", "documentLibrary", ContentModel.TYPE_CONTENT),
+       SURVEY(102, VtiListBaseType.SURVEY, "survey", null, null),
+       LINKS(103,  VtiListBaseType.GENERIC_LIST, "links", LinksServiceImpl.LINKS_COMPONENT, LinksModel.TYPE_LINK),
+       ANNOUNCE(104, VtiListBaseType.GENERIC_LIST, "announce", null, null),
+       CONTACTS(105, VtiListBaseType.GENERIC_LIST, "contacts", DATALIST_CONTAINER, DataListModel.TYPE_CONTACT),
+       EVENTS(106,   VtiListBaseType.GENERIC_LIST, "events", CalendarServiceImpl.CALENDAR_COMPONENT, CalendarModel.TYPE_EVENT),
+       TASKS(107,    VtiListBaseType.GENERIC_LIST, "tasks", DATALIST_CONTAINER, DataListModel.TYPE_TASK),
+       DISCUSS(108,  VtiListBaseType.DISCUSSION_BOARD, "discuss", DiscussionServiceImpl.DISCUSSION_COMPONENT, ForumModel.TYPE_POST),
+       PICTURE_LIBRARY(109, VtiListBaseType.GENERIC_LIST, "piclib", null, null),
+       DATA_SOURCES(110, VtiListBaseType.GENERIC_LIST, "datasrcs", null, null),
+       SITE_TEMPLATE_GALLERY(111, VtiListBaseType.GENERIC_LIST, null, null, null),
+       WEB_PART_GALLERY(113, VtiListBaseType.GENERIC_LIST, null, null, null),
+       LIST_TEMPLATE_GALLERY(114, VtiListBaseType.GENERIC_LIST, null, null, null),
+       XML_FORMS(115, VtiListBaseType.GENERIC_LIST, "xmlform", null, null),
+       NO_CODE_WORKFLOWS(117, VtiListBaseType.GENERIC_LIST, "nocodewf", null, null),
+       CUSTOM_WORKFLOWS(118, VtiListBaseType.GENERIC_LIST, "workflowProcess", null, null),
+       WIKI(119, VtiListBaseType.GENERIC_LIST, "webpagelib", WikiServiceImpl.WIKI_COMPONENT, ContentModel.TYPE_CONTENT),
+       GRID_LIST(120, VtiListBaseType.GENERIC_LIST, "gridlist", null, null),
+       NO_CODE_PUBLIC_WORKFLOWS(122, VtiListBaseType.GENERIC_LIST, "nocodepublicwf", null, null),
+       ISSUE(1100, VtiListBaseType.ISSUE, "issue", DATALIST_CONTAINER, DataListModel.TYPE_ISSUE),
        ;
        
        public final int id;
        public final VtiListBaseType type;
+       /** The name of the List */
        public final String name;
+       /** The site component of the List */
        public final String component;
-       private VtiBuiltInListType(int id, VtiListBaseType type, String name, String component)
+       /** The type of entries within the list */
+       public final QName entryType;
+       private VtiBuiltInListType(int id, VtiListBaseType type, String name, 
+                                  String component, QName entryType)
        {
           this.id = id;
           this.type = type;
           this.name = name;
           this.component = component;
+          this.entryType = entryType;
        }
     }
     protected static enum VtiListBaseType 
