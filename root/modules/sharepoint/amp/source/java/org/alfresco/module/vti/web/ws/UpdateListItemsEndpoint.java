@@ -31,7 +31,6 @@ import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -47,7 +46,6 @@ import org.jaxen.dom4j.Dom4jXPath;
  */
 public class UpdateListItemsEndpoint extends AbstractListEndpoint
 {
-    @SuppressWarnings("unused")
     private final static Log logger = LogFactory.getLog(UpdateListItemsEndpoint.class);
     
     private NamespaceService namespaceService;
@@ -70,6 +68,7 @@ public class UpdateListItemsEndpoint extends AbstractListEndpoint
      * Fetches all the details of the update, and processes
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected void executeListActionDetails(VtiSoapRequest soapRequest, VtiSoapResponse soapResponse, String siteName,
             String listName, Element requestElement, SimpleNamespaceContext nc) throws Exception
     {

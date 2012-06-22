@@ -423,18 +423,27 @@
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/DeleteList">
                     <ref bean="deleteListEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
+                    <ref bean="getListEndpoint"/>
+                </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListTemplates">
                     <ref bean="getListTemplatesEndpoint"/>
                 </entry>
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListCollection">
                     <ref bean="getListCollectionEndpoint"/>
                 </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListItems">
                     <ref bean="getListItemsEndpoint"/>
                 </entry>
-                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetList">
-                    <ref bean="getListEndpoint"/>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListItemChanges">
+                    <ref bean="getListItemChangesEndpoint"/>
                 </entry>
+                <entry key="http://schemas.microsoft.com/sharepoint/soap/GetListItemChangesSinceToken">
+                    <ref bean="getListItemChangesSinceTokenEndpoint"/>
+                </entry>
+
                 <entry key="http://schemas.microsoft.com/sharepoint/soap/UpdateListItems">
                     <ref bean="updateListItemsEndpoint"/>
                 </entry>
@@ -978,10 +987,33 @@
     </bean>
     
     <bean id="getListItemsEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemsEndpoint">
+        <constructor-arg ref="listServiceHandler"/>
         <constructor-arg ref="vtiHandler"/>
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="name">
             <value>GetListItems</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+    <bean id="getListItemChangesEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemChangesEndpoint">
+        <constructor-arg ref="listServiceHandler"/>
+        <constructor-arg ref="vtiHandler"/>
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="name">
+            <value>GetListItemChanges</value>
+        </property>
+        <property name="namespace">
+            <value>http://schemas.microsoft.com/sharepoint/soap/</value>
+        </property>
+    </bean>
+    <bean id="getListItemChangesSinceTokenEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemChangesSinceTokenEndpoint">
+        <constructor-arg ref="listServiceHandler"/>
+        <constructor-arg ref="vtiHandler"/>
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="name">
+            <value>GetListItemChangesSinceToken</value>
         </property>
         <property name="namespace">
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>

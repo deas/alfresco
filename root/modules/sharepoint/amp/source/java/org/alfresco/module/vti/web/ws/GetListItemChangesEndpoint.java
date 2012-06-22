@@ -26,29 +26,26 @@ import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 
 /**
- * Class for handling GetListItems method from lists web service
+ * Class for handling GetListItemChanges method from lists web service
  *
  * @author PavelYur
  */
-public class GetListItemsEndpoint extends AbstractListItemsEndpoint
+public class GetListItemChangesEndpoint extends GetListItemsEndpoint
 {
     /**
-     * constructor
-     *
-     * @param handler that provides methods for operating with documents and folders
+     * Constructor
      */
-    public GetListItemsEndpoint(ListServiceHandler listHander, MethodHandler methodHandler)
+    public GetListItemChangesEndpoint(ListServiceHandler listHander, MethodHandler methodHandler)
     {
         super(listHander, methodHandler);
     }
 
     /**
      * TODO Support all kinds of lists
+     * TODO Filter by change since date
      */
     protected DocsMetaInfo getListInfo(String siteName, ListInfoBean list, String initialUrl)
     {
         return methodHandler.getListDocuments(siteName, false, false, "", initialUrl, false, false, true, true, false, false, false, false, new HashMap<String, Object>(0), false);
     }
-
 }
-

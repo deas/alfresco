@@ -40,7 +40,6 @@ import org.jaxen.dom4j.Dom4jXPath;
 public class SetAttendeeResponseEndpoint extends AbstractEndpoint
 {
     // handler that provides methods for operating with meetings
-    @SuppressWarnings("unused")
     private MeetingServiceHandler handler;
 
     // xml namespace prefix
