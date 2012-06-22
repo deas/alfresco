@@ -109,6 +109,8 @@ public class GetListCollectionEndpoint extends AbstractListEndpoint
             
             listElement.addAttribute("FeatureId", ""); // Not feature based
             listElement.addAttribute("ServerTemplate", Integer.toString( list.getType().getId() ));
+            listElement.addAttribute("ReadSecurity", "1");
+            listElement.addAttribute("WriteSecurity", "1");
             
             // Ones we don't really support
             listElement.addAttribute("DefaultViewUrl", "");
