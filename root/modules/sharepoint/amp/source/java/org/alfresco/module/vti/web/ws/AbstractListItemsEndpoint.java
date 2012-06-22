@@ -19,6 +19,7 @@
 package org.alfresco.module.vti.web.ws;
 
 import java.net.URLDecoder;
+import java.util.Date;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
 import org.alfresco.module.vti.handler.MethodHandler;
@@ -30,6 +31,7 @@ import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
 import org.alfresco.repo.site.SiteDoesNotExistException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.util.ISO8601DateFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -104,13 +106,35 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
            throw new VtiSoapException(message, code, fnfe);
         }
 
-        // getting folder parameter for listing
+        // Get the folder parameter for listing
         XPath listFolderPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/queryOptions/QueryOptions/Folder"));
         listFolderPath.setNamespaceContext(nc);
         Element listFolder = (Element) listFolderPath.selectSingleNode(soapRequest.getDocument().getRootElement());
+        
+        // There are two ways to get changes since a date, explicit date or token (also date)
+        Date changesSince = null;
+
+        // Get the "Changes Since" date for the listing
+        XPath changesSinceXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/since"));
+        changesSinceXPath.setNamespaceContext(nc);
+        Element changesSinceE = (Element) changesSinceXPath.selectSingleNode(requestElement);
+        if (changesSinceE != null)
+        {
+            changesSince = ISO8601DateFormat.parse(changesSinceE.getTextTrim());
+        }
+        
+        // Alternative is "Changes Since Token", which is also a date
+        XPath changesSinceTokenXPath = new Dom4jXPath(buildXPath(prefix, "/"+getName()+"/changeToken"));
+        changesSinceTokenXPath.setNamespaceContext(nc);
+        Element changesSinceTokenE = (Element) changesSinceTokenXPath.selectSingleNode(requestElement);
+        if (changesSinceTokenE != null)
+        {
+            changesSince = ISO8601DateFormat.parse(changesSinceTokenE.getTextTrim());
+        }
+        
 
         // TODO Implement the correct error handling and error codes
-
+        String timeNow = ISO8601DateFormat.format(new Date());
         DocsMetaInfo result = null;
 
         if (!siteName.equals(""))
@@ -121,7 +145,7 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
                 initialUrl = URLDecoder.decode(listFolder.getTextTrim(), "UTF-8");
             }
             
-            result = getListInfo(siteName, list, initialUrl);
+            result = getListInfo(siteName, list, initialUrl, changesSince);
         }
 
         // creating soap response
@@ -131,6 +155,14 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
         itemsElement.addNamespace("rs", "urn:schemas-microsoft-com:rowset");
         itemsElement.addNamespace("z", "#RowsetSchema");
         Element dataElement = itemsElement.addElement("rs:data");
+
+        // Change tracking information
+        itemsElement.addAttribute("TimeStamp", timeNow);
+        if ("GetListItemChangesSinceToken".equals(getName()))
+        {
+            Element changes = itemsElement.addElement("Changes");
+            changes.addAttribute("LastChangeToken", timeNow);
+        }
         
         int itemCount = 0;
         
@@ -159,7 +191,7 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
         }
     }
     
-    protected abstract DocsMetaInfo getListInfo(String siteName, ListInfoBean list, String initialUrl);
+    protected abstract DocsMetaInfo getListInfo(String siteName, ListInfoBean list, String initialUrl, Date since);
     
     /**
      * Not used, we are too specific

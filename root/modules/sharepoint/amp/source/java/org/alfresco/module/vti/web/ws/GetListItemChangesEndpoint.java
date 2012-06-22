@@ -18,6 +18,7 @@
  */
 package org.alfresco.module.vti.web.ws;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
@@ -44,7 +45,8 @@ public class GetListItemChangesEndpoint extends GetListItemsEndpoint
      * TODO Support all kinds of lists
      * TODO Filter by change since date
      */
-    protected DocsMetaInfo getListInfo(String siteName, ListInfoBean list, String initialUrl)
+    @Override
+    protected DocsMetaInfo getListInfo(String siteName, ListInfoBean list, String initialUrl, Date changesSince)
     {
         return methodHandler.getListDocuments(siteName, false, false, "", initialUrl, false, false, true, true, false, false, false, false, new HashMap<String, Object>(0), false);
     }
