@@ -165,8 +165,8 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        listE.addAttribute("FeatureId", ""); // Not feature based
        listE.addAttribute("BaseType", Integer.toString( list.getType().getBaseType() ));
        listE.addAttribute("ServerTemplate", Integer.toString( list.getType().getId() ));
-       listE.addAttribute("Created", formatDate(list.getCreated()));
-       listE.addAttribute("Modified", formatDate(list.getModified()));
+       listE.addAttribute("Created", formatListDate(list.getCreated()));
+       listE.addAttribute("Modified", formatListDate(list.getModified()));
        listE.addAttribute("Direction", "none");
        
        listE.addAttribute("EnableVersioning", "False"); // TODO Is this right?
@@ -227,7 +227,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
         // TODO Details on all the fields
     }
 
-    private String formatDate(Date date)
+    protected String formatListDate(Date date)
     {
        if(date == null)
        {

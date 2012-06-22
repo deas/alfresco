@@ -187,9 +187,17 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
        // Grab all the properties
        Map<QName,Serializable> props = nodeService.getProperties(list.getNodeRef());
        
+       // Title is always required, description is optional
+       String title = (String)props.get(ContentModel.PROP_TITLE);
+       String description = (String)props.get(ContentModel.PROP_DESCRIPTION);
+       if (title == null)
+       {
+           title = list.getName();
+       }
+       
        // Set the ones of interest
-       list.setTitle((String)props.get(ContentModel.PROP_TITLE));
-       list.setDescription((String)props.get(ContentModel.PROP_DESCRIPTION));
+       list.setTitle(title);
+       list.setDescription(description);
        list.setAuthor((String)props.get(ContentModel.PROP_CREATOR));
        
        list.setCreated((Date)props.get(ContentModel.PROP_CREATED));

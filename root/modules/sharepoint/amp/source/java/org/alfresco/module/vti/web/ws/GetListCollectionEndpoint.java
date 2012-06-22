@@ -35,12 +35,9 @@ import org.jaxen.SimpleNamespaceContext;
  *
  * @author PavelYur
  */
-public class GetListCollectionEndpoint extends AbstractEndpoint
+public class GetListCollectionEndpoint extends AbstractListEndpoint
 {
     private static Log logger = LogFactory.getLog(GetWebCollectionEndpoint.class);
-
-    // handler that provides methods for operating with documents and folders
-    private ListServiceHandler handler;    
 
     // xml namespace prefix
     private static String prefix = "lists";
@@ -52,7 +49,7 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
      */
     public GetListCollectionEndpoint(ListServiceHandler handler)
     {
-        this.handler = handler;
+        super(handler);
     }
     
     /**
@@ -97,6 +94,7 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
         Element resultElement = responseElement.addElement("GetListCollectionResult");       
         Element listsElement = resultElement.addElement("Lists");
         
+        // TODO Unify this this with rendering in AbstractListEndpoint
         for (ListInfoBean list : lists)
         {
             Element listElement = listsElement.addElement("List");
@@ -104,6 +102,19 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
             listElement.addAttribute("Name", list.getName());
             listElement.addAttribute("Title", list.getTitle());
             listElement.addAttribute("Description", list.getDescription());
+            listElement.addAttribute("BaseType", Integer.toString(list.getType().getBaseType()));
+            listElement.addAttribute("Created", formatListDate(list.getCreated()));
+            listElement.addAttribute("Modified", formatListDate(list.getModified()));
+            listElement.addAttribute("ItemCount", Integer.toString(list.getNumItems()));
+            
+            listElement.addAttribute("FeatureId", ""); // Not feature based
+            listElement.addAttribute("ServerTemplate", Integer.toString( list.getType().getId() ));
+            
+            // Ones we don't really support
+            listElement.addAttribute("DefaultViewUrl", "");
+            listElement.addAttribute("ImageUrl", "");
+            listElement.addAttribute("Version", "1"); // Whole lists aren't versioned
+            listElement.addAttribute("Direction", "none");
         }
 
         if (logger.isDebugEnabled())
@@ -112,4 +123,10 @@ public class GetListCollectionEndpoint extends AbstractEndpoint
         }
     }
 
+    @Override
+    protected ListInfoBean executeListAction(VtiSoapRequest soapRequest, String dws, String listName,
+            String description, int templateID) throws Exception
+    {
+        throw new IllegalStateException("Should not be called, GetListCollections has special handling");
+    }
 }

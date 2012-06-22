@@ -75,7 +75,7 @@ public class AddListEndpoint extends AbstractListEndpoint
        }
        catch(InvalidTypeException ite)
        {
-          throw new VtiSoapException("Template ID not known", 0x8107058al, ite); 
+          throw new VtiSoapException("Template ID not known", 0x8102007bl, ite); 
        }
 
        // Return the list details
