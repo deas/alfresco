@@ -619,7 +619,7 @@
          <!-- Checkin from Google Docs -->
          <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
             <param name="function">onActionCheckinFromGoogleDocs</param>
-            <!-- gd:googleResource, cm:workingCopyOwner = currentUser -->
+            <!-- gd:googleResource, cm:workingcopy & cm:workingCopyOwner = currentUser OR cm:checkedOut, cm:lockOwner = currentUser -->
             <evaluator>evaluator.doclib.action.googleDocsCheckIn</evaluator>
             <override>document-checkout-to-googledocs</override>
          </action>

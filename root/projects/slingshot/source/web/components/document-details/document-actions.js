@@ -566,16 +566,28 @@
       {
          var displayName = asset.displayName,
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
-            originalNodeRef = new Alfresco.util.NodeRef(asset.workingCopy.sourceNodeRef),
+            originalNodeRef,
+            originalDocPage = false,
             path = asset.location.path,
             fileName = asset.fileName;
 
-          var progressPopup = Alfresco.util.PopupManager.displayMessage(
-          {
-             displayTime: 0,
-             effect: null,
-             text: this.msg("message.checkin-google.inprogress", displayName)
-          });
+         if (asset.jsNode.hasAspect("cm:checkedOut"))
+         {
+            nodeRef = new Alfresco.util.NodeRef(asset.workingCopy.workingCopyNodeRef);
+            originalNodeRef = new Alfresco.util.NodeRef(asset.nodeRef);
+            originalDocPage = true;
+         }
+         else
+         {
+            originalNodeRef = new Alfresco.util.NodeRef(asset.workingCopy.sourceNodeRef);
+         }
+
+         var progressPopup = Alfresco.util.PopupManager.displayMessage(
+         {
+            displayTime: 0,
+            effect: null,
+            text: this.msg("message.checkin-google.inprogress", displayName)
+         });
 
          this.modules.actions.genericAction(
          {
@@ -587,7 +599,11 @@
                   {
                      this.recordData.jsNode.setNodeRef(data.json.results[0].nodeRef);
                      window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#checkinFromGoogleDocs";
-                  },
+                     if (originalDocPage)
+                     {
+                        window.location.reload();
+                     }
+               },
                   scope: this
                },
                activity:

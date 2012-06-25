@@ -247,6 +247,10 @@
       </property>
    </bean>
 
+   <bean id="evaluator.doclib.action.notWorkingCopy" parent="evaluator.doclib.action.isWorkingCopy">
+      <property name="negateOutput" value="true" />
+   </bean>
+
    <bean id="evaluator.doclib.action.hasWorkingCopy" parent="evaluator.doclib.action.value">
       <property name="accessor" value="workingCopy.hasWorkingCopy" />
       <property name="comparator">
@@ -270,6 +274,20 @@
    </bean>
 
    <bean id="evaluator.doclib.action.editableByCurrentUser" class="org.alfresco.web.evaluator.doclib.action.EditableByCurrentUser"/>
+
+   <!--
+      Checked out
+   -->
+   <bean id="evaluator.doclib.action.checkedOutAspect" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>cm:checkedOut</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.notCheckedOutAspect" parent="evaluator.doclib.action.checkedOutAspect">
+      <property name="negateOutput" value="true" />
+   </bean>
 
    <!--
       View in Explorer
@@ -311,6 +329,8 @@
          <list>
             <ref bean="evaluator.doclib.action.googleDocsEnabled" />
             <ref bean="evaluator.doclib.action.googleDocsEditableAspect" />
+            <ref bean="evaluator.doclib.action.notWorkingCopy" />
+            <ref bean="evaluator.doclib.action.notCheckedOutAspect" />
          </list>
       </property>
    </bean>
