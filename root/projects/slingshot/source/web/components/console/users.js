@@ -1150,6 +1150,7 @@
                   Dom.get(parent.id + "-update-old-password").setAttribute("disabled", true);
                   Dom.get(parent.id + "-update-password").setAttribute("disabled", true);
                   Dom.get(parent.id + "-update-verifypassword").setAttribute("disabled", true);
+                  Dom.get(parent.id + "-update-disableaccount").setAttribute("disabled", true);
                }
                fnSetter("-update-old-password", "");
                fnSetter("-update-password", "");

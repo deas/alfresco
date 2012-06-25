@@ -1523,7 +1523,25 @@
       {
          if (jsNode.isContainer)
          {
-            html = '#" class="filter-change" rel="' + Alfresco.DocumentList.generatePathMarkup(record.location);
+            if (record.parent.isContainer)
+            {
+               // handle folder parent node
+               html = '#" class="filter-change" rel="' + Alfresco.DocumentList.generatePathMarkup(record.location);
+            }
+            else if (record.location.path === "/")
+            {
+               // handle Repository root parent node (special store_root type - not a folder)
+               html = '#" class="filter-change" rel="' + Alfresco.DocumentList.generateFilterMarkup(
+                  {
+                     filterId: "path",
+                     filterData: $combine(record.location.path, "")
+                  });
+            }
+            else
+            {
+               // handle unknown parent node types
+               html = '#';
+            }
          }
          else
          {

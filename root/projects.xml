@@ -1416,6 +1416,12 @@
          <fileset dir="${dir.project.core.src.java}" includes="log4j.properties" />
          <fileset dir="${dir.project.webframeworkcommons.config}" excludes="**/web-extension/**" />
       </copy>
+      <!-- Give it a unique log file -->
+      <replaceregexp
+            file="${dir.project.slingshot.assemble}/WEB-INF/classes/log4j.properties"  
+            match="^log4j\.appender\.File\.File=.*"
+            replace="log4j.appender.File.File=${dir.name.deploy.slingshot}.log"
+            byline="true"/>
 
       <!-- add all JAR to WEB-INF/lib -->
       <copy todir="${dir.project.slingshot.assemble}/WEB-INF/lib">
@@ -1561,6 +1567,12 @@
       
       <copy todir="${dir.project.webeditor.assemble.war}/WEB-INF/classes" 
             file="${dir.project.webeditor.src.java}/log4j.properties" />
+      <!-- Give it a unique log file -->
+      <replaceregexp
+            file="${dir.project.webeditor.assemble.war}/WEB-INF/classes/log4j.properties"  
+            match="^log4j\.appender\.File\.File=.*"
+            replace="log4j.appender.File.File=${dir.name.deploy.webeditor}.log"
+            byline="true"/>
       
       <copy todir="${dir.project.webeditor.assemble.war}/WEB-INF/classes">
          <fileset dir="${dir.project.webeditor.config}" />
