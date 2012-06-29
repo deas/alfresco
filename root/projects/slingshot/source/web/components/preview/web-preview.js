@@ -228,6 +228,13 @@
                   pluginDescriptor = condition.plugins[pi];
                   plugin = new Alfresco.WebPreview.prototype.Plugins[pluginDescriptor.name](this, pluginDescriptor.attributes);
 
+                  // Special case to ignore the WebPreviewer plugin on iOS - we don't want to report output either
+                  // as the output is simply an HTML message unhelpfully informing the user to install Adobe Flash
+                  if (YAHOO.env.ua.ios && pluginDescriptor.name === "WebPreviewer")
+                  {
+                     continue;
+                  }
+
                   // Make sure it may run in this browser...
                   var report = plugin.report();
                   if (report)

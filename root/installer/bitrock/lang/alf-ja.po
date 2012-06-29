@@ -583,8 +583,11 @@ msgstr "指定したポート番号に割り当てることはできません。
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 msgstr "指定したポート番号に割り当てることはできません。Tomcatのシャットダウン用ポートに別のポートを選択してください。"
 
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "指定したポート番号に割り当てることはできません。別のポートを選択してください。"
+msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+msgstr "指定したポート番号に割り当てることはできません。Tomcat SSL用に別のポートを選択してください。"
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "指定したポート番号に割り当てることはできません。Tomcat AJP用に別のポートを選択してください。"
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "指定したポート番号に割り当てることはできません。SharePointプロトコル用に別のポートを選択してください。"
@@ -690,3 +693,6 @@ msgstr "インストールディレクトリのパスに使用できる文字は
 
 msgid "Show next steps"
 msgstr "次の手順を表示"
+
+msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
+msgstr "最低1024 MBのメモリが必要です。お使いのコンピュータのメモリは${machine_total_memory} MBです。"

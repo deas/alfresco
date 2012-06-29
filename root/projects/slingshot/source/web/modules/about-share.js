@@ -104,7 +104,7 @@
 
          if (YAHOO.env.ua.ie === 0 || YAHOO.env.ua.ie > 7)
          {
-            if (YAHOO.env.ua.webkit)
+            if (YAHOO.env.ua.webkit && !YAHOO.env.ua.ios)
             {
                this.widgets.panel.beforeShowEvent.subscribe(function()
                {

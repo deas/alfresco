@@ -26,6 +26,7 @@
 
    <target name="init">
       <property environment="env" />
+      <tstamp/>
 
       <!-- 
             On UNIX, it's considered very poor form to dump a config file that

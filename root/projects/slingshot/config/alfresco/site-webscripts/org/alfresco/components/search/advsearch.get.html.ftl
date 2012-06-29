@@ -1,6 +1,6 @@
-<#assign el=args.htmlid>
+<#assign el=args.htmlid?html>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.AdvancedSearch("${el}").setOptions(
+   new Alfresco.AdvancedSearch("${args.htmlid?js_string}").setOptions(
    {
       siteId: "${siteId}",
       searchForms: [<#list searchForms as f>

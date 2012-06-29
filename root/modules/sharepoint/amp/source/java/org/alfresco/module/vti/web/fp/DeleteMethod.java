@@ -19,7 +19,6 @@
 
 package org.alfresco.module.vti.web.fp;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletResponse;
@@ -80,7 +79,7 @@ public class DeleteMethod extends org.alfresco.repo.webdav.DeleteMethod
                 m_response.setContentType(WebDAV.XML_CONTENT_TYPE);
                 m_response.addHeader(HEADER_X_MSDAVEXT_ERROR, "589838"); // TODO Don't hard code this constant
 
-                XMLWriter xml = createMSWebDavXmlWriter();
+                XMLWriter xml = createXMLWriter();
 
                 xml.startDocument();
 
@@ -103,7 +102,7 @@ public class DeleteMethod extends org.alfresco.repo.webdav.DeleteMethod
                 xml.endElement(WebDAV.DAV_NS, WebDAV.XML_MULTI_STATUS, WebDAV.XML_NS_MULTI_STATUS);
 
                 // Send remaining data
-                xml.flush();
+                flushXML(xml);
             }
             else
             {
@@ -112,13 +111,14 @@ public class DeleteMethod extends org.alfresco.repo.webdav.DeleteMethod
         }
     }
     
-    private XMLWriter createMSWebDavXmlWriter() throws IOException
+    @Override
+    protected OutputFormat getXMLOutputFormat()
     {
         OutputFormat outputFormat = new OutputFormat();
         outputFormat.setNewLineAfterDeclaration(false);
         outputFormat.setNewlines(false);
         outputFormat.setIndent(false);
-        return new XMLWriter(m_response.getWriter(), outputFormat);
+        return outputFormat;
     }
 
     @Override

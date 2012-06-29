@@ -9,15 +9,15 @@
             <substitutionList>
                 <substitution>
                     <pattern>depdata</pattern>
-                    <value>${installdir}/depdata</value>
+                    <value>${installdir.escape_backslashes}/depdata</value>
                 </substitution>
                 <substitution>
                     <pattern>deplog</pattern>
-                    <value>${installdir}/deplog</value>
+                    <value>${installdir.escape_backslashes}/deplog</value>
                 </substitution>
                 <substitution>
                     <pattern>depmetadata</pattern>
-                    <value>${installdir}/depmetadata</value>
+                    <value>${installdir.escape_backslashes}/depmetadata</value>
                 </substitution>
                 <substitution>
                     <pattern>user=admin</pattern>

@@ -41,3 +41,20 @@ input[type="text"], input[type="password"], textarea, select
 {
    background: rgba(0,0,0,0.2); 
 }
+
+/* web-previewer comment area more visible */
+.web-preview .previewer
+{
+   height: auto !important;
+}
+.web-preview .previewer .message
+{
+   padding-top: 25px;
+}
+
+/* larger hit area for doclist actions */
+.doclist a.action-link, .doclist a.simple-link, .doclist a.show-more
+{
+    background-position: 4px 4px;
+    padding: 4px 0 4px 24px;
+}

@@ -583,8 +583,11 @@ msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione ot
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto de parada de Tomcat."
 
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro."
+msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+msgstr "Unable to bind to the given port number. Por favor, seleccione otro puerto SSL de Tomcat."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "Unable to bind to the given port number. Por favor, seleccione otro puerto AJP de Tomcat."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "No se puede utilizar el número de puerto dado. Por favor seleccione otro puerto para el protocolo SharePoint."
@@ -690,3 +693,6 @@ msgstr "El directorio de instalación debe ser una ruta que contenga sólo letra
 
 msgid "Show next steps"
 msgstr "Ver siguientes pasos"
+
+msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
+msgstr "Alfresco recomienda por lo menos 1024 MB de memoria. ${machine_total_memory} MB detectados."

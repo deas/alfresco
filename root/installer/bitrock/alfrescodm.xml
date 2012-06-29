@@ -349,6 +349,8 @@
         <actionGroup>
             <actionList>
                 <deleteFile path="${installdir}/alfresco.log"/>
+                <deleteFile path="${installdir}/awe.log" />
+                <deleteFile path="${installdir}/share.log" />
                 <deleteFile path="${alfresco_data_directory}"/>
             </actionList>
             <ruleList>

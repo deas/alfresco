@@ -172,40 +172,48 @@
     </parameterList>
 
     <postInstallationActionList>
-	<actionGroup>
-	    <actionList>
-		<runProgram>
-		    <abortOnError>0</abortOnError>
-		    <showMessageOnError>0</showMessageOnError>
-		    <program>sc</program>
-		    <programArguments>config ${tomcat_unique_service_name} depend= "${postgres_unique_service_name}"</programArguments>
-		    <ruleList>
-			<platformTest type="windows" />
-		    </ruleList>
-		</runProgram>
-		<runProgram>
-		    <progressText>Stopping PostgreSQL...</progressText>
-		    <program>${installdir}/${ctlscript_unix}</program>
-		    <programArguments>stop postgresql</programArguments>
-		    <ruleList>
-			<platformTest type="unix" />
-                    </ruleList>
-                </runProgram>
-		<runProgram>
-		    <progressText>Stopping PostgreSQL...</progressText>
-		    <program>${postgres_root_directory.dos}\scripts\servicerun.bat</program>
-		    <programArguments>STOP</programArguments>
-		    <ruleList>
-			<platformTest type="windows" />
-                    </ruleList>
-                </runProgram>
-		<waitForPort port="${database_port}" timeout="10000" state="free" />
-	    </actionList>
-	    <ruleList>
-                <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
-                <isTrue value="${component(postgres).selected}" />
-	    </ruleList>
-	</actionGroup>
+        <actionGroup>
+            <actionList>
+                <renameFile origin="${installdir}/manager-osx.app" destination="${installdir}/Application Manager.app" />
+            </actionList>
+            <ruleList>
+                <platformTest type="osx" />
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+            <runProgram>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError>
+                <program>sc</program>
+                <programArguments>config ${tomcat_unique_service_name} depend= "${postgres_unique_service_name}"</programArguments>
+                <ruleList>
+                <platformTest type="windows" />
+                </ruleList>
+            </runProgram>
+            <runProgram>
+                <progressText>Stopping PostgreSQL...</progressText>
+                <program>${installdir}/${ctlscript_unix}</program>
+                <programArguments>stop postgresql</programArguments>
+                <ruleList>
+                <platformTest type="unix" />
+                        </ruleList>
+                    </runProgram>
+            <runProgram>
+                <progressText>Stopping PostgreSQL...</progressText>
+                <program>${postgres_root_directory.dos}\scripts\servicerun.bat</program>
+                <programArguments>STOP</programArguments>
+                <ruleList>
+                <platformTest type="windows" />
+                        </ruleList>
+                    </runProgram>
+            <waitForPort port="${database_port}" timeout="10000" state="free" />
+            </actionList>
+            <ruleList>
+                    <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
+                    <isTrue value="${component(postgres).selected}" />
+            </ruleList>
+        </actionGroup>
         <!--<actionGroup>
             <actionList>
                 <runProgram>

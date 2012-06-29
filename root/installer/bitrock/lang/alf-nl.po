@@ -583,8 +583,11 @@ msgstr "Kan het opgegeven poortnummer niet binden. Selecteer een andere Tomcat S
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 msgstr "Kan het opgegeven poortnummer niet binden. Selecteer een andere Tomcat Shutdown-poort."
 
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "Kan het opgegeven poortnummer niet binden. Selecteer een andere poort."
+msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+msgstr "Kan het opgegeven poortnummer niet binden. Selecteer een andere Tomcat SSL-poort."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "Kan het opgegeven poortnummer niet binden. Selecteer een andere Tomcat AJP-poort."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "Kan het opgegeven poortnummer niet binden. Selecteer een andere poort voor het SharePoint-protocol."
@@ -690,3 +693,6 @@ msgstr "Het installatiepad mag alleen letters, cijfers en de tekens '/', '.', '-
 
 msgid "Show next steps"
 msgstr "Zie de volgende stappen"
+
+msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
+msgstr "Alfresco beveelt minstens 1024 MB aan geheugen. ${machine_total_memory} MB gedetecteerd."

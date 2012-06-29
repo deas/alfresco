@@ -872,7 +872,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                {
                   name = element.id;
                }
-               var value = (element.type === "textarea") ? element.value : YAHOO.lang.trim(element.value);
+               var value = (element.type === "textarea") ? element.value : Alfresco.util.trim(element.value);
                if (name)
                {
                   // check whether the input element is an array value

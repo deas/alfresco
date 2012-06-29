@@ -963,16 +963,11 @@
             elActions.appendChild(actionsEl);
          }
 
-         if (scope.showingMoreActions)
-         {
-            scope.deferredActionsMenu = elActions;
-         }
-         else if (!Dom.hasClass(document.body, "masked"))
+         if (!Dom.hasClass(document.body, "masked"))
          {
             scope.currentActionsMenu = elActions;
             // Show the actions
             Dom.removeClass(elActions, "hidden");
-            scope.deferredActionsMenu = null;
          }
       },
 
@@ -1003,11 +998,14 @@
          var elActions = Dom.get(scope.id + "-actions-" + (targetElement.id));
 
          // Don't hide unless the More Actions drop-down is showing, or a dialog mask is present
-         if ((elActions && !scope.showingMoreActions) || Dom.hasClass(document.body, "masked"))
+         if (elActions || Dom.hasClass(document.body, "masked"))
          {
+            if (scope.hideMoreActionsFn)
+            {
+               scope.hideMoreActionsFn.call(this);
+            }
             // Just hide the action links, rather than removing them from the DOM
             Dom.addClass(elActions, "hidden");
-            scope.deferredActionsMenu = null;
          }
       },
 
@@ -1027,64 +1025,13 @@
          // Get the pop-up div, sibling of the "More Actions" link
          var elMoreActions = Dom.getNextSibling(elMore);
          Dom.removeClass(elMoreActions, "hidden");
-         scope.showingMoreActions = true;
-
-         // Hide pop-up timer function
-         var fnHidePopup = function DL_oASM_fnHidePopup()
+         scope.hideMoreActionsFn = function DL_oASM_fnHidePopup()
          {
-            // Need to rely on the "elMoreActions" enclosed variable, as MSIE doesn't support
-            // parameter passing for timer functions.
-            Event.removeListener(elMoreActions, "mouseover");
-            Event.removeListener(elMoreActions, "mouseout");
+            scope.hideMoreActionsFn = null;
+            
             Dom.removeClass(elMore.firstChild, "highlighted");
             Dom.addClass(elMoreActions, "hidden");
-            scope.showingMoreActions = false;
-            if (scope.deferredActionsMenu !== null)
-            {
-               Dom.addClass(scope.currentActionsMenu, "hidden");
-               scope.currentActionsMenu = scope.deferredActionsMenu;
-               scope.deferredActionsMenu = null;
-               Dom.removeClass(scope.currentActionsMenu, "hidden");
-            }
          };
-
-         // Initial after-click hide timer - 4x the mouseOut timer delay
-         if (elMoreActions.hideTimerId)
-         {
-            window.clearTimeout(elMoreActions.hideTimerId);
-         }
-         elMoreActions.hideTimerId = window.setTimeout(fnHidePopup, scope.options.actionsPopupTimeout * 4);
-
-         // Mouse over handler
-         var onMouseOver = function DLSM_onMouseOver(e, obj)
-         {
-            // Clear any existing hide timer
-            if (obj.hideTimerId)
-            {
-               window.clearTimeout(obj.hideTimerId);
-               obj.hideTimerId = null;
-            }
-         };
-
-         // Mouse out handler
-         var onMouseOut = function DLSM_onMouseOut(e, obj)
-         {
-            var elTarget = Event.getTarget(e);
-            var related = elTarget.relatedTarget;
-
-            // In some cases we should ignore this mouseout event
-            if ((related !== obj) && (!Dom.isAncestor(obj, related)))
-            {
-               if (obj.hideTimerId)
-               {
-                  window.clearTimeout(obj.hideTimerId);
-               }
-               obj.hideTimerId = window.setTimeout(fnHidePopup, scope.options.actionsPopupTimeout);
-            }
-         };
-
-         Event.on(elMoreActions, "mouseover", onMouseOver, elMoreActions);
-         Event.on(elMoreActions, "mouseout", onMouseOut, elMoreActions);
       },
       
       /**
@@ -1360,7 +1307,7 @@
       this.currentPage = 1;
       this.totalRecords = 0;
       this.totalRecordsUpper = null;
-      this.showingMoreActions = false;
+      this.hideMoreActionsFn = null;
       this.state =
       {
          actionEditOfflineActive: false
@@ -1790,15 +1737,6 @@
          initialFilter: {},
 
          /**
-          * Delay time value for "More Actions" popup, in milliseconds
-          *
-          * @property actionsPopupTimeout
-          * @type int
-          * @default 500
-          */
-         actionsPopupTimeout: 700,
-
-         /**
           * Delay before showing "loading" message for slow data requests
           *
           * @property loadingMessageDelay
@@ -1987,22 +1925,13 @@
       currentActionsMenu: null,
 
       /**
-       * Whether "More Actions" pop-up is currently visible.
+       * "More Actions" pop-up handler
        *
-       * @property showingMoreActions
-       * @type boolean
-       * @default false
-       */
-      showingMoreActions: null,
-
-      /**
-       * Deferred actions menu element when showing "More Actions" pop-up.
-       *
-       * @property deferredActionsMenu
-       * @type object
+       * @property hideMoreActionsFn
+       * @type function
        * @default null
        */
-      deferredActionsMenu: null,
+      hideMoreActionsFn: null,
 
       /**
        * Deferred function calls for after a document list update
@@ -4667,7 +4596,7 @@
          this.insituEditors = [];
 
          // More Actions menu no longer relevant
-         this.showingMoreActions = false;
+         this.hideMoreActionsFn = null;
 
          // Slow data webscript message
          this.loadingMessageShowing = false;

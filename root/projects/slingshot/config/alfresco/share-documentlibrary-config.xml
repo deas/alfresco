@@ -467,6 +467,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator>evaluator.doclib.action.upload</evaluator>
             <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
          </action>
 
@@ -498,6 +499,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
+            <evaluator>evaluator.doclib.action.offlineEdit</evaluator>
             <evaluator negate="true">evaluator.doclib.action.notEditable</evaluator>
          </action>
 

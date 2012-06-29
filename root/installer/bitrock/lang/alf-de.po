@@ -583,8 +583,11 @@ msgstr "Es konnte kein Binding auf dem angegebenen Port durchgeführt werden. Bi
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 msgstr "Es konnte kein Binding auf dem angegebenen Port durchgeführt werden. Bitte wählen Sie einen anderen Shutdown-Port für Tomcat aus."
 
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "Es konnte kein Binding auf dem angegebenen Port durchgeführt werden. Bitte wählen Sie einen anderen Port aus."
+msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+msgstr ""Es konnte kein Binding auf dem angegebenen Port durchgeführt werden. Bitte wählen Sie einen anderen SSL-Port für Tomcat aus."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "Es konnte kein Binding auf dem angegebenen Port durchgeführt werden. Bitte wählen Sie einen anderen AJP-Port für Tomcat aus."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "Es konnte kein Binding auf dem angegebenen Port durchgeführt werden. Bitte wählen Sie einen anderen Port für das SharePoint-Protokoll aus."
@@ -690,3 +693,6 @@ msgstr "Der Pfad des Installationsverzeichnis darf nur Buchstaben, Zahlen und di
 
 msgid "Show next steps"
 msgstr "Nächste Schritte"
+
+msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
+msgstr "Alfresco empfiehlt mindestens 1024 MB Speicher. ${machine_total_memory} MB erkannt."

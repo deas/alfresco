@@ -583,8 +583,11 @@ msgstr "Impossibile stabilire un'associazione al numero di porta indicato. Selez
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
 msgstr "Impossibile stabilire un'associazione al numero di porta indicato. Selezionare un'altra porta di arresto di Tomcat."
 
-msgid "Unable to bind to the given port number. Please select another one."
-msgstr "Impossibile stabilire un'associazione al numero di porta indicato. Selezionare un'altra porta."
+msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
+msgstr "Impossibile stabilire un'associazione al numero di porta indicato. Selezionare un'altra porta SSL per Tomcat."
+
+msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
+msgstr "Impossibile stabilire un'associazione al numero di porta indicato. Selezionare un'altra porta AJP per Tomcat."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "Impossibile stabilire un'associazione al numero di porta indicato. Selezionare un'altra porta per il protocollo di SharePoint."
@@ -690,3 +693,6 @@ msgstr "La cartella d'installazione deve essere un percorso contenente solo lett
 
 msgid "Show next steps"
 msgstr "Mostra i passi successivi"
+
+msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
+msgstr "Alfresco consiglia almeno 1024 MB di memoria. ${machine_total_memory} MB rilevati."

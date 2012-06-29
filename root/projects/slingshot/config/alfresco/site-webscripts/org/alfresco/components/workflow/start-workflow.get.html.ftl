@@ -1,18 +1,19 @@
 <#include "../../include/alfresco-macros.lib.ftl" />
-<#assign el=args.htmlid?js_string>
+<#assign el=args.htmlid?html>
 <script type="text/javascript">//<![CDATA[
-   new Alfresco.component.StartWorkflow("${el}").setOptions({
+   new Alfresco.component.StartWorkflow("${args.htmlid?js_string}").setOptions(
+   {
       failureMessage: "message.failure",
       submitButtonMessageKey: "button.startWorkflow",
-      defaultUrl: "${siteURL("my-tasks")}",
+      defaultUrl: "${siteURL("my-tasks")?js_string}",
       selectedItems: "${(page.url.args.selectedItems!"")?js_string}",
       destination: "${(page.url.args.destination!"")?js_string}",
       workflowDefinitions:
       [<#list workflowDefinitions as workflowDefinition>
          {
-            name: "${workflowDefinition.name!""?js_string}",
-            title: "${workflowDefinition.title!""?js_string}",
-            description: "${workflowDefinition.description!""?js_string}"
+            name: "${(workflowDefinition.name!"")?js_string}",
+            title: "${(workflowDefinition.title!"")?js_string}",
+            description: "${(workflowDefinition.description!"")?js_string}"
          }<#if workflowDefinition_has_next>,</#if>
       </#list>]
    }).setMessages(
@@ -33,7 +34,7 @@
          </span>
       </span>
       <#-- Workflow type menu -->
-      <div id="${el}-workflow-definition-menu" class="yuimenu">
+      <div id="${el}-workflow-definition-menu" class="yuimenu" style="visibility:hidden">
          <div class="bd">
             <ul>
                <#list workflowDefinitions as workflowDefinition>

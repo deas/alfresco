@@ -136,6 +136,9 @@
    <bean id="evaluator.doclib.action.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
    <bean id="evaluator.doclib.action.metadataValue" class="org.alfresco.web.evaluator.MetadataValueEvaluator" />
    <bean id="evaluator.doclib.action.isBrowser" class="org.alfresco.web.evaluator.IsBrowserEvaluator" />
+   <bean id="evaluator.doclib.action.notBrowser" parent="evaluator.doclib.action.isBrowser">
+      <property name="negateOutput" value="true" />
+   </bean>
    <bean id="evaluator.doclib.action.isPortlet" class="org.alfresco.web.evaluator.IsPortletModeEvaluator" />
    <bean id="evaluator.doclib.action.notPortlet" parent="evaluator.doclib.action.isPortlet">
       <property name="negateOutput" value="true" />
@@ -179,6 +182,12 @@
    <bean id="evaluator.doclib.action.onlineEditBrowser" parent="evaluator.doclib.action.isBrowser">
       <property name="regex" value="MSIE\s([^;]*)(?!.*Opera.*)" />
    </bean>
+   <bean id="evaluator.doclib.action.notEditBrowser" parent="evaluator.doclib.action.notBrowser">
+      <property name="regex" value=".*iPad;.*Safari/.*" />
+   </bean>
+   <bean id="evaluator.doclib.action.notUploadBrowser" parent="evaluator.doclib.action.notBrowser">
+      <property name="regex" value=".*iPad; CPU OS 5_.*Safari/.*" />
+   </bean>
    <bean id="evaluator.doclib.action.onlineEditMimetype" parent="evaluator.doclib.action.isMimetype">
       <property name="mimetypes">
          <list>
@@ -197,10 +206,16 @@
             <ref bean="evaluator.doclib.action.siteBased" />
             <ref bean="evaluator.doclib.action.onlineEditVtiServer" />
             <ref bean="evaluator.doclib.action.onlineEditMimetype" />
-            <!--<ref bean="evaluator.doclib.action.onlineEditBrowser" />-->
+            <ref bean="evaluator.doclib.action.notEditBrowser" />
          </list>
       </property>
    </bean>
+   
+   <!-- Edit Offline -->
+   <bean id="evaluator.doclib.action.offlineEdit" parent="evaluator.doclib.action.notEditBrowser" />
+   
+   <!-- Upload -->
+   <bean id="evaluator.doclib.action.upload" parent="evaluator.doclib.action.notUploadBrowser" />
 
    <!--
       Simple Workflow

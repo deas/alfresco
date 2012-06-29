@@ -9262,6 +9262,19 @@ Alfresco.util.toggleClass = function(element, className)
 };
 
 /**
+ * Returns trimmed value. This method uses YAHOO.lang.trim + remove IDEOGRAPHIC SPACE (\u3000)
+ * 
+ * @method Alfresco.util.trim
+ * @param value {string} String value which we trim 
+ * @return {string} trimmed value
+ * @static
+ */
+Alfresco.util.trim = function(value)
+{
+   return YAHOO.lang.trim(value).replace(/(^[\s\u3000]+|[\s\u3000]+$)/g, '');
+};
+
+/**
  * Generates a URL to retrieve a thumbnail based on the node and thumbnail name supplied. 
  * 
  * @method generateThumbnailUrl

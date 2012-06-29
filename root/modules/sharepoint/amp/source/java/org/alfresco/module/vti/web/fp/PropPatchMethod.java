@@ -18,10 +18,8 @@
 */
 package org.alfresco.module.vti.web.fp;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -30,7 +28,6 @@ import org.alfresco.repo.webdav.WebDAVProperty;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.dom4j.io.XMLWriter;
 import org.springframework.extensions.surf.util.URLDecoder;
 import org.w3c.dom.Node;
 
@@ -107,12 +104,13 @@ public class PropPatchMethod extends org.alfresco.repo.webdav.PropPatchMethod
     }
 
     /**
-     * @see org.alfresco.repo.webdav.WebDAVMethod#flushXML(org.dom4j.io.XMLWriter)
+     * @see org.alfresco.repo.webdav.WebDAVMethod#shouldFlushXMLWriter()
      */
     @Override
-    protected void flushXML(XMLWriter xml) throws IOException
+    protected boolean shouldFlushXMLWriter()
     {
-        // Do nothing, related to specific Office behaviour
+        // Do not flush, related to specific Office behaviour
+    	return false;
     }
     
 }
