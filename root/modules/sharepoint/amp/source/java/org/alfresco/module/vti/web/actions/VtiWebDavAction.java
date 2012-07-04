@@ -67,11 +67,6 @@ public abstract class VtiWebDavAction implements VtiAction
      */
     public void execute(HttpServletRequest request, HttpServletResponse response)
     {
-        if (webDavHelper == null)
-        {
-            webDavHelper = new VtiWebDavHelper(serviceRegistry, authenticationService, tenantService);
-        }
-
         WebDAVMethod method = getWebDAVMethod();
         method.setDetails(request, response, webDavHelper, pathHelper.getRootNodeRef());
         try
@@ -105,6 +100,16 @@ public abstract class VtiWebDavAction implements VtiAction
     }
 
     /**
+     * Provide a WebDAVHelper collaborator.
+     * 
+     * @param webDavHelper the webDavHelper to set
+     */
+    public void setWebDavHelper(WebDAVHelper webDavHelper)
+    {
+        this.webDavHelper = webDavHelper;
+    }
+
+    /**
      * <p>ServiceRegistry setter.</p>
      *
      * @param serviceRegistry {@link ServiceRegistry}.    
@@ -133,14 +138,4 @@ public abstract class VtiWebDavAction implements VtiAction
     {
         this.tenantService = tenantService;
     }
-
-
-    protected class VtiWebDavHelper extends WebDAVHelper
-    {
-        public VtiWebDavHelper(ServiceRegistry serviceRegistry, AuthenticationService authenticationService, TenantService tenantService)
-        {
-            super(serviceRegistry, authenticationService, tenantService);
-        }
-    };
-
 }

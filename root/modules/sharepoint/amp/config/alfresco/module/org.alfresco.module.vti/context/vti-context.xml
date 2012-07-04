@@ -281,6 +281,13 @@
         </property>
     </bean>
 
+    <bean id="abstractDAVAction" abstract="true">
+        <property name="pathHelper" ref="vtiPathHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="webDavHelper" ref="webDAVHelper"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+    
     <bean id="vtiInfAction" class="org.alfresco.module.vti.web.actions.VtiInfAction">
     </bean>
 
@@ -316,16 +323,9 @@
     <bean id="vtiResourceAction" class="org.alfresco.module.vti.web.actions.VtiResourceAction">
     </bean>
 
-    <bean id="vtiPropfindAction" class="org.alfresco.module.vti.web.actions.VtiPropfindAction" >
-        <property name="pathHelper" ref="vtiPathHelper" />
-        <property name="serviceRegistry" ref="ServiceRegistry" />
-        <property name="authenticationService" ref="AuthenticationService" />
-    </bean>
+    <bean id="vtiPropfindAction" class="org.alfresco.module.vti.web.actions.VtiPropfindAction" parent="abstractDAVAction"/>
 
-    <bean id="vtiPropPatchAction" class="org.alfresco.module.vti.web.actions.VtiPropPatchAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
+    <bean id="vtiPropPatchAction" class="org.alfresco.module.vti.web.actions.VtiPropPatchAction" parent="abstractDAVAction">
         <property name="ignoredProperties">
            <!-- See MS-WDVME 3.1.5.6 for the list of dead properties to ignore -->
            <map>
@@ -346,41 +346,17 @@
         </property>
     </bean>
 
-    <bean id="vtiMkcolAction" class="org.alfresco.module.vti.web.actions.VtiMkcolAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
+    <bean id="vtiMkcolAction" class="org.alfresco.module.vti.web.actions.VtiMkcolAction" parent="abstractDAVAction"/>
 
-    <bean id="vtiMoveAction" class="org.alfresco.module.vti.web.actions.VtiMoveAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
+    <bean id="vtiMoveAction" class="org.alfresco.module.vti.web.actions.VtiMoveAction" parent="abstractDAVAction"/>
 
-    <bean id="vtiDeleteAction" class="org.alfresco.module.vti.web.actions.VtiDeleteAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
+    <bean id="vtiDeleteAction" class="org.alfresco.module.vti.web.actions.VtiDeleteAction" parent="abstractDAVAction"/>
 
-    <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
+    <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction" parent="abstractDAVAction"/>
 
-    <bean id="vtiPutAction" class="org.alfresco.module.vti.web.actions.VtiPutAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
+    <bean id="vtiPutAction" class="org.alfresco.module.vti.web.actions.VtiPutAction" parent="abstractDAVAction"/>
 
-    <bean id="vtiUnlockAction" class="org.alfresco.module.vti.web.actions.VtiUnlockAction">
-        <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
-    </bean>
+    <bean id="vtiUnlockAction" class="org.alfresco.module.vti.web.actions.VtiUnlockAction" parent="abstractDAVAction"/>
 
 
     <bean id="vtiIfHeaderAction" class="org.alfresco.module.vti.web.actions.VtiIfHeaderAction">
