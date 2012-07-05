@@ -41,37 +41,37 @@
       folder:
       {
          nodeRef: "${folder.nodeRef}",
-         site: "${folder.site?html}",
-         name: "${folder.name?html}",
-         path: "${folder.path?html}"
+         site: "${folder.site?js_string}",
+         name: "${folder.name?js_string}",
+         path: "${folder.path?js_string}"
       },
       ruleset:
       {
          rules: <#if ruleset.rules??>[<#list ruleset.rules as rule>
             {
                id: "${rule.id}",
-               title: "${(rule.title!"")?html}",
-               description: "${(rule.description!"")?html}",
-               url: "${rule.url}",
+               title: "${(rule.title!"")?js_string}",
+               description: "${(rule.description!"")?replace("\\n", "\\\\n")?js_string}",
+               url: "${rule.url?js_string}",
                disabled: ${rule.disabled?string},
                owningNode:
                {
                   nodeRef : "${rule.owningNode.nodeRef}",
-                  name : "${rule.owningNode.name?html}"
+                  name : "${rule.owningNode.name?js_string}"
                }
             }<#if rule_has_next>,</#if></#list>
          ]<#else>null</#if>,
          inheritedRules: <#if ruleset.inheritedRules??>[<#list ruleset.inheritedRules as rule>
             {
                id: "${rule.id}",
-               title: "${(rule.title!"")?html}",
-               description: "${(rule.description!"")?html}",
-               url: "${rule.url}",
+               title: "${(rule.title!"")?js_string}",
+               description: "${(rule.description!"")?replace("\\n", "\\\\n")?js_string}",
+               url: "${rule.url?js_string}",
                disabled: ${rule.disabled?string},
                owningNode:
                {
                   nodeRef : "${rule.owningNode.nodeRef}",
-                  name : "${rule.owningNode.name?html}"
+                  name : "${rule.owningNode.name?js_string}"
                }
             }<#if rule_has_next>,</#if></#list>
          ]<#else>null</#if>,
@@ -83,13 +83,12 @@
       linkedToFolder: <#if linkedToFolder??>
       {
          nodeRef: "${linkedToFolder.nodeRef}",
-         site: "${linkedToFolder.site?html}",
-         name: "${linkedToFolder.name?html}",
-         path: "${linkedToFolder.path}"
-      }<#else>null</#if>         
+         site: "${linkedToFolder.site?js_string}",
+         name: "${linkedToFolder.name?js_string}",
+         path: "${linkedToFolder.path?js_string}"
+      }<#else>null</#if>
    });
    //]]></script>
-
 </@>
 
 <@templateFooter>

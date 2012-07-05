@@ -139,7 +139,7 @@
          // Request the RSS feed...
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.URL_CONTEXT + "service/components/dashlets/async-rssfeed/protocol/" + protocol + "/feed-url/" + uri + "/limit/" + this.options.limit + "/target/" + this.options.target,
+            url: Alfresco.constants.URL_CONTEXT + "service/components/dashlets/async-rssfeed/protocol/" + protocol + "/limit/" + this.options.limit + "/target/" + this.options.target + "?feed-url=" + encodeURIComponent(uri) + "",
             method: Alfresco.util.Ajax.GET,
             requestContentType: Alfresco.util.Ajax.JSON,
             successCallback:

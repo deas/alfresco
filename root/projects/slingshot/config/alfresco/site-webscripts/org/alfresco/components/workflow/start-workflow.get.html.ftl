@@ -13,7 +13,7 @@
          {
             name: "${(workflowDefinition.name!"")?js_string}",
             title: "${(workflowDefinition.title!"")?js_string}",
-            description: "${(workflowDefinition.description!"")?js_string}"
+            description: "${(workflowDefinition.description!"")?replace("\\n", "\\\\n")?js_string}"
          }<#if workflowDefinition_has_next>,</#if>
       </#list>]
    }).setMessages(

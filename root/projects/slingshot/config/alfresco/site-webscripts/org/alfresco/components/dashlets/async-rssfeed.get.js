@@ -5,7 +5,7 @@
  */
 function main()
 {
-   var uri = url.templateArgs.feedUrl;
+   var uri = args["feed-url"];
    if (!uri || uri == "default")
    {
       // Use the default

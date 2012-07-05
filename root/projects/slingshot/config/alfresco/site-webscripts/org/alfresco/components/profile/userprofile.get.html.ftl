@@ -202,9 +202,11 @@
             <img class="photoimg" src="${url.context}<#if profile.properties.avatar??>/proxy/alfresco/api/node/${profile.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force<#else>/components/images/no-user-photo-64.png</#if>" alt="" />
          </div>
          <div class="photobtn">
+            <#if uploadable>
             <span class="yui-button yui-push-button" id="${el}-button-upload">
                <span class="first-child"><button>${msg("button.upload")}</button></span>
             </span>
+            </#if>
             <span class="yui-button yui-push-button" id="${el}-button-clearphoto">
                <span class="first-child"><button>${msg("button.usedefault")}</button></span>
             </span>

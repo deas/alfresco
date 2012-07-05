@@ -9271,7 +9271,8 @@ Alfresco.util.toggleClass = function(element, className)
  */
 Alfresco.util.trim = function(value)
 {
-   return YAHOO.lang.trim(value).replace(/(^[\s\u3000]+|[\s\u3000]+$)/g, '');
+   var s = YAHOO.lang.trim(value);
+   return s ? s.replace(/(^[\s\u3000]+|[\s\u3000]+$)/g, '') : s;
 };
 
 /**

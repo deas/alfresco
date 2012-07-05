@@ -42,6 +42,7 @@
                </span>
             </div>
          </div>
+         <#if uploadable>
          <div class="hideable toolbar-hidden DocListTree">
             <div class="file-upload">
                <span id="${id}-fileUpload-button" class="yui-button yui-push-button">
@@ -51,6 +52,7 @@
                </span>
             </div>
          </div>
+         </#if>
          <div class="selected-items hideable toolbar-hidden DocListTree DocListFilter TagFilter DocListCategories">
             <button class="no-access-check" id="${id}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}</button>
             <div id="${id}-selectedItems-menu" class="yuimenu">

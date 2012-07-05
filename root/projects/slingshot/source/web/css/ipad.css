@@ -4,7 +4,17 @@
 .doclist .yui-dt-liner
 {
    padding: 4px;
-   max-width: 440px;
+   max-width: 436px;
+   overflow-x: auto;
+}
+.document-details-panel .set
+{
+   max-width: 278px;
+   overflow-x: auto;
+}
+.document-versions .version-list h3
+{
+   max-width: 238px;
    overflow-x: auto;
 }
 
@@ -57,4 +67,19 @@ input[type="text"], input[type="password"], textarea, select
 {
     background-position: 4px 4px;
     padding: 4px 0 4px 24px;
+}
+
+/* larger hit area for YUI menus, filters and tree rows */
+.yuimenu
+{
+   font-size: 100% !important;
+   line-height: 1.75 !important;
+}
+.filter li
+{
+   padding: 4px 0 6px 20px;
+}
+.ygtvrow
+{
+   height: 26px !important;
 }
