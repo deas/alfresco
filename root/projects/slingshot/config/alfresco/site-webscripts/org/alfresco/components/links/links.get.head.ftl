@@ -1,7 +1,3 @@
-<#include "../component.head.inc">
-<!-- Links  -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/links/links.css" />
-<@script type="text/javascript" src="${url.context}/res/components/links/links.js"></@script>
-<!-- Tag Library -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/taglibrary/taglibrary.css" />
-<@script type="text/javascript" src="${url.context}/res/modules/taglibrary/taglibrary.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

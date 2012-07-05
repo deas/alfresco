@@ -7,3 +7,13 @@ if (repoConfig !== null)
 }
 
 model.rootNode = rootNode;
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var managePermissions = {};
+managePermissions.name = "Alfresco.component.ManagePermissions";
+managePermissions.provideMessages = true;
+managePermissions.provideOptions = true;
+managePermissions.options = {};
+managePermissions.options.nodeRef = args.nodeRef;
+model.webScriptWidgets.push(managePermissions);

@@ -16,3 +16,14 @@ for (var i = 0, j = data.siteRoles.length; i < j; i++)
       model.siteRoles.push(data.siteRoles[i]);
    }
 }
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var invitationList = {};
+invitationList.name = "Alfresco.InvitationList";
+invitationList.provideMessages = true;
+invitationList.provideOptions = true;
+invitationList.options = {};
+invitationList.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+invitationList.options.roles = model.siteRoles;
+model.webScriptWidgets.push(invitationList);

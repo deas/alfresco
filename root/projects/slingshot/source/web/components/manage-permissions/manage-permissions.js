@@ -284,7 +284,7 @@
          // Retrieve current permissions and settable roles for this node
          Alfresco.util.Ajax.jsonGet(
          {
-            url: Alfresco.constants.PROXY_URI + 'slingshot/doclib/permissions/' + this.options.nodeRef.uri,
+            url: Alfresco.constants.PROXY_URI + 'slingshot/doclib/permissions/' + Alfresco.util.NodeRef(this.options.nodeRef).uri,
             successCallback: 
             { 
                fn: this.onPermissionsLoaded, 
@@ -877,7 +877,7 @@
          {
             Alfresco.util.Ajax.jsonPost(
             {
-               url: Alfresco.constants.PROXY_URI + "slingshot/doclib/permissions/" + this.options.nodeRef.uri,
+               url: Alfresco.constants.PROXY_URI + "slingshot/doclib/permissions/" + Alfresco.util.NodeRef(this.options.nodeRef).uri,
                dataObj:
                {
                   permissions: permissions,

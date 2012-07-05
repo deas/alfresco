@@ -26,3 +26,13 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var googleMap = {};
+googleMap.name = "Alfresco.component.GoogleMap";
+googleMap.provideMessages = true;
+googleMap.provideOptions = true;
+googleMap.options = {};
+googleMap.options.documentDetails = model.documentDetailsJSON;
+model.webScriptWidgets.push(googleMap);

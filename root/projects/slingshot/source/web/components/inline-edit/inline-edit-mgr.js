@@ -128,7 +128,7 @@
          var siteId = this.options.siteId, data = 
          {
             fileName: response.config.dataObj.prop_cm_name,
-            nodeRef: this.options.nodeRef.nodeRef
+            nodeRef: new Alfresco.util.NodeRef(this.options.nodeRef)
          };
          this.modules.actions.postActivity(siteId, "inline-edit", "document-details", data);
          this._navigateForward();
@@ -201,7 +201,7 @@
          else
          {
             // go forward to the appropriate details page for the node
-            window.location.href = $siteURL("document-details?nodeRef=" + this.options.nodeRef.toString());
+            window.location.href = $siteURL("document-details?nodeRef=" + new Alfresco.util.NodeRef(this.options.nodeRef).toString());
          }
       }
    });

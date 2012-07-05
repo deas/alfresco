@@ -1,13 +1,30 @@
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.InlineEditMgr("${args.htmlid}").setOptions(
-   {
-      nodeRef: new Alfresco.util.NodeRef("${page.url.args.nodeRef?js_string}"),
-      siteId: "${page.url.templateArgs.site!""}"
-   }).setMessages(
-      ${messages}
-   );
-//]]></script>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/inline-edit/inline-edit-mgr.css" group="inline-edit"/>
+</@>
 
-<div class="inline-edit-mgr">
-   <div class="heading">${msg("inline-edit-mgr.heading")}</div>
-</div>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/inline-edit/inline-edit-mgr.js" group="inline-edit"/>
+   <@script src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="inline-edit"/>
+</@>
+
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="inline-edit"/>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <div class="inline-edit-mgr">
+         <div class="heading">${msg("inline-edit-mgr.heading")}</div>
+      </div>
+   </@>
+</@>

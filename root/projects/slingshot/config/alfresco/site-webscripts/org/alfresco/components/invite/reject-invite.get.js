@@ -47,3 +47,18 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+if (!model.error)
+{
+   var rejectInvite = {};
+   rejectInvite.name = "Alfresco.RejectInvite";
+   rejectInvite.provideMessages = true;
+   rejectInvite.provideOptions = true;
+   rejectInvite.options = {};
+   rejectInvite.options.inviteId = (page.url.args.inviteId != null) ? page.url.args.inviteId : "";
+   rejectInvite.options.inviteTicket = (page.url.args.inviteTicket != null) ? page.url.args.inviteTicket : "";
+   rejectInvite.options.inviteeUserName = (page.url.args.inviteeUserName != null) ? page.url.args.inviteeUserName : "";
+   model.webScriptWidgets.push(rejectInvite);
+}
