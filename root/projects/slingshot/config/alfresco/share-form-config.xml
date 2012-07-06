@@ -723,6 +723,7 @@
             <field-visibility>
                <show id="ooo.enabled" />
                <show id="ooo.exe" />
+               <show id="ooo.host" />
                <show id="ooo.port" />
             </field-visibility>
             <appearance>
@@ -731,6 +732,7 @@
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
                <field id="ooo.exe" label-id="openoffice-subsystem.field.ooo.exe" set="openoffice" />
+               <field id="ooo.host" label-id="openoffice-subsystem.field.ooo.host" set="openoffice" />
                <field id="ooo.port" label-id="openoffice-subsystem.field.ooo.port" set="openoffice" />
             </appearance>
          </form>
