@@ -18,3 +18,14 @@ if (data && data.tags)
 }
 
 model.tags = tags;
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var tagComponent = {};
+tagComponent.name = "Alfresco.TagComponent";
+tagComponent.provideMessages = true;
+tagComponent.provideOptions = true;
+tagComponent.options = {};
+tagComponent.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+tagComponent.options.containerId = (template.properties.container != null) ? template.properties.container : "";
+model.webScriptWidgets.push(tagComponent);

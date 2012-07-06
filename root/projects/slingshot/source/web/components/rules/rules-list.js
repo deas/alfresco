@@ -272,7 +272,7 @@
 
          for (var i = 0, il = ruleInputs.length; i < il; i++)
          {
-            rules.push(this.options.nodeRef.storeType + "://" + this.options.nodeRef.storeId + "/" + ruleInputs[i].value);
+            rules.push(Alfresco.util.NodeRef(this.options.nodeRef).storeType + "://" + Alfresco.util.NodeRef(this.options.nodeRef).storeId + "/" + ruleInputs[i].value);
          }
 
          // Start/stop inherit rules from parent folder
@@ -281,7 +281,7 @@
             url: Alfresco.constants.PROXY_URI_RELATIVE + "api/actionQueue",
             dataObj:
             {
-               actionedUponNode : this.options.nodeRef.toString(),
+               actionedUponNode : Alfresco.util.NodeRef(this.options.nodeRef).toString(),
                actionDefinitionName: "reorder-rules",
                parameterValues:
                {

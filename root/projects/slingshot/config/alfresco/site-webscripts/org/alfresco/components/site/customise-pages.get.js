@@ -38,3 +38,13 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var customisePages = {};
+customisePages.name = "Alfresco.CustomisePages";
+customisePages.provideMessages = true;
+customisePages.provideOptions = true;
+customisePages.options = {};
+customisePages.options.siteId = model.siteId;
+model.webScriptWidgets.push(customisePages);

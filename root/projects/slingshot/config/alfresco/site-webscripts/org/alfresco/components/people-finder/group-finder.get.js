@@ -9,7 +9,7 @@ groupFinder.name = "Alfresco.GroupFinder";
 groupFinder.provideMessages = true;
 groupFinder.provideOptions = true;
 groupFinder.options = {};
-groupFinder.options.siteId = (page.exists == true) ? ((page.url.templateArgs.site != null) ? page.url.templateArgs.site : "") : ((args.site != null) ? args.site : "");
+groupFinder.options.siteId = (this.page != null) ? ((this.page.url.templateArgs.site != null) ? this.page.url.templateArgs.site : "") : ((args.site != null) ? args.site : "");
 groupFinder.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
 groupFinder.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
 groupFinder.options.setFocus = (args.setFocus != null) ? args.setFocus : "false";

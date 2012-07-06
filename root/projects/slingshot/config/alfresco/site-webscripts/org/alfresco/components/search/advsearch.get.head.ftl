@@ -1,7 +1,3 @@
-<#include "../component.head.inc">
-<#include "../form/form.get.head.ftl">
-<!-- Advanced Search -->
-<@script type="text/javascript" src="${url.context}/res/components/form/date-range.js"></@script>
-<@script type="text/javascript" src="${url.context}/res/components/form/number-range.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/search/search.css" />
-<@script type="text/javascript" src="${url.context}/res/components/search/advsearch.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

@@ -179,7 +179,7 @@
       {
          window.location.href = $siteURL("rule-edit?nodeRef={nodeRef}",
          {
-            nodeRef: this.options.nodeRef.toString()
+            nodeRef: Alfresco.util.NodeRef(this.options.nodeRef).toString()
          });
       },
 
@@ -205,7 +205,7 @@
             files:
             {
                displayName: this.folderDetails,
-               nodeRef: this.options.nodeRef.toString()
+               nodeRef: Alfresco.util.NodeRef(this.options.nodeRef).toString()
             }
          }).showDialog();
 
@@ -256,7 +256,7 @@
                url: Alfresco.constants.PROXY_URI_RELATIVE + "api/actionQueue",
                dataObj:
                {
-                  "actionedUponNode": this.options.nodeRef.toString(),
+                  "actionedUponNode": Alfresco.util.NodeRef(this.options.nodeRef).toString(),
                   "actionDefinitionName": "execute-all-rules",
                   "parameterValues":
                   {

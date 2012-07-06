@@ -65,3 +65,28 @@ function main()
 }
 
 main();
+
+
+// Widget instantiation metadata...
+var searchConfig = config.scoped['Search']['search'],
+    defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
+    defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
+
+model.webScriptWidgets = [];
+var search = {};
+search.name = "Alfresco.Search";
+search.provideMessages = true;
+search.provideOptions = true;
+search.options = {};
+search.options.siteId = model.siteId;
+search.options.siteTitle = model.siteTitle;
+search.options.initialSearchTerm = model.searchTerm;
+search.options.initialSearchTag = model.searchTag;
+search.options.initialSearchAllSites = model.searchAllSites;
+search.options.initialSearchRepository = model.searchRepo;
+search.options.initialSort = model.searchSort;
+search.options.searchQuery = model.searchQuery;
+search.options.searchRootNode = config.scoped['RepositoryLibrary']['root-node'].value;
+search.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
+search.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
+model.webScriptWidgets.push(search);

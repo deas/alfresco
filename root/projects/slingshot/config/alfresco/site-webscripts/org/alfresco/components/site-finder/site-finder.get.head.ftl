@@ -1,7 +1,3 @@
-<#include "../component.head.inc">
-<!-- Site Finder -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/site-finder/site-finder.css" />
-<@script type="text/javascript" src="${url.context}/res/components/site-finder/site-finder.js"></@script>
-<!-- Delete Site -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/delete-site.css" />
-<@script type="text/javascript" src="${url.context}/res/modules/delete-site.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

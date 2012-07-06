@@ -251,7 +251,7 @@
          if (this.ruleConfigsAreReady && this.rule)
          {
             // Hide/show the edit & delete buttons
-            if (this.rule.url.indexOf(this.options.nodeRef.uri) == -1 )
+            if (this.rule.url.indexOf(Alfresco.util.NodeRef(this.options.nodeRef).uri) == -1 )
             {
                // This rule doesn't belong to the current folder
                Dom.addClass(this.id + "-actions", "hidden");
@@ -313,7 +313,7 @@
          // Send the user to edit rule page
          window.location.href = $siteURL("rule-edit?nodeRef={nodeRef}&ruleId={ruleId}",
          {
-            nodeRef: this.options.nodeRef.toString(),
+            nodeRef: Alfresco.util.NodeRef(this.options.nodeRef).toString(),
             ruleId: this.ruleDetails.id.toString()
          });
       },
@@ -379,7 +379,7 @@
          Alfresco.util.Ajax.request( 
          {
             method: Alfresco.util.Ajax.DELETE,
-            url: Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + this.options.nodeRef.uri + "/ruleset/rules/" + this.ruleDetails.id,
+            url: Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + Alfresco.util.NodeRef(this.options.nodeRef).uri + "/ruleset/rules/" + this.ruleDetails.id,
             successCallback:
             {
                fn: function (response)
@@ -389,7 +389,7 @@
                   Dom.setStyle(this.widgets.displayEl, "display", "none");
                   YAHOO.Bubbling.fire("folderRulesDetailsChanged",
                   {
-                     nodeRef: this.options.nodeRef
+                     nodeRef: Alfresco.util.NodeRef(this.options.nodeRef)
                   });
                },
                scope: this

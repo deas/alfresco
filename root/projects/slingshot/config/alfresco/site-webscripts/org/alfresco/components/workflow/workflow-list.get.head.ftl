@@ -1,6 +1,3 @@
-<#include "../component.head.inc">
-<!-- Common Workflow Actions -->
-<@script type="text/javascript" src="${url.context}/res/components/workflow/workflow-actions.js"></@script>
-<!-- Workflow List -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/workflow/workflow-list.css" />
-<@script type="text/javascript" src="${url.context}/res/components/workflow/workflow-list.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

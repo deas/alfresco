@@ -1,17 +1,32 @@
-<#include "../../include/alfresco-macros.lib.ftl" />
-<#assign el=args.htmlid?js_string>
-<script type="text/javascript">//<![CDATA[
-new Alfresco.component.TaskDetailsActions("${el}").setOptions(
-{
-   defaultUrl: "${siteURL("my-workflows")}",
-   referrer: <#if page.url.args.referrer??>"${page.url.args.referrer?js_string}"<#else>null</#if>,
-   nodeRef: <#if page.url.args.nodeRef??>"${page.url.args.nodeRef?js_string}"<#else>null</#if>
-}).setMessages(
-   ${messages}
-);
-//]]></script>
-<div id="${el}-body" class="form-manager task-details-actions">
-   <div class="actions hidden">
-      <button id="${el}-edit">${msg("button.edit")}</button>
-   </div>
-</div>
+<@markup id="css" >
+   <#-- No CSS Dependencies -->
+</@>
+
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/workflow/task-details-actions.js" group="workflow"/>
+</@>
+
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="workflow"/>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#include "../../include/alfresco-macros.lib.ftl" />
+      <#assign el=args.htmlid?js_string>
+      <div id="${el}-body" class="form-manager task-details-actions">
+         <div class="actions hidden">
+            <button id="${el}-edit">${msg("button.edit")}</button>
+         </div>
+      </div>
+   </@>
+</@>

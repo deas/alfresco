@@ -205,7 +205,7 @@
             fn: function()
             {
                var ruleId = Dom.get(this.id + "-id").value,
-                  url = Alfresco.constants.PROXY_URI + "api/node/" + this.options.nodeRef.uri + "/ruleset/rules",
+                  url = Alfresco.constants.PROXY_URI + "api/node/" + Alfresco.util.NodeRef(this.options.nodeRef).uri + "/ruleset/rules",
                   successCallback,
                   waitMessage;
                
@@ -457,7 +457,7 @@
       {
          window.location.href = $siteURL("folder-rules?nodeRef={nodeRef}",
          {
-            nodeRef: this.options.nodeRef.toString()
+            nodeRef: Alfresco.util.NodeRef(this.options.nodeRef).toString()
          });
       },
 

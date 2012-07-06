@@ -1,6 +1,3 @@
-<#include "../component.head.inc">
-<!-- User Profile -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/profile/profile.css" />
-<@script type="text/javascript" src="${url.context}/res/components/profile/profile.js"></@script>
-<!-- Simple Dialog -->
-<@script type="text/javascript" src="${url.context}/res/modules/simple-dialog.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

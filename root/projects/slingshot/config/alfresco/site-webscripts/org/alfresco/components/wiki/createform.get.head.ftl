@@ -1,18 +1,3 @@
-<#include "../component.head.inc">
-
-<@script type="text/javascript" src="${url.context}/res/modules/document-picker/document-picker.js"></@script>
-<@script type="text/javascript" src="${url.context}/res/components/object-finder/object-finder.js"></@script>
-
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/document-picker/document-picker.css" />
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/object-finder/object-finder.css" />
-
-<!-- Simple Editor -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/simple-editor.css" />
-
-
-<@script type="text/javascript" src="${url.context}/res/modules/simple-editor.js"></@script>
-<!-- Tag Component -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/taglibrary/taglibrary.css" />
-<@script type="text/javascript" src="${url.context}/res/modules/taglibrary/taglibrary.js"></@script>
-<!-- Wiki Create -->
-<@script type="text/javascript" src="${url.context}/res/components/wiki/createform.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

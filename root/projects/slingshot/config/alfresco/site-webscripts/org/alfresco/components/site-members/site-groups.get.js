@@ -40,3 +40,28 @@ function main()
 }
 
 main();
+
+
+// Widget instantiation metadata...
+var searchConfig = config.scoped['Search']['search'],
+    defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
+    defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
+
+model.webScriptWidgets = [];
+var siteGroups = {};
+siteGroups.name = "Alfresco.SiteGroups";
+siteGroups.provideMessages = true;
+siteGroups.provideOptions = true;
+siteGroups.options = {};
+siteGroups.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+siteGroups.options.currentUser = user.name;
+siteGroups.options.currentUserRole = model.currentUserRole;
+if (model.error)
+{
+   siteGroups.options.error = model.error;
+}
+siteGroups.options.roles = model.siteRoles;
+siteGroups.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
+siteGroups.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
+siteGroups.options.setFocus = (args.setFocus != null) ? args.setFocus : "false";
+model.webScriptWidgets.push(siteGroups);

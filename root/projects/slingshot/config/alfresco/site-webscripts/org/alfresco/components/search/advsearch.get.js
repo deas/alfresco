@@ -62,3 +62,16 @@ function main()
 }
 
 main();
+
+// Widget instantiation metadata...
+model.webScriptWidgets = [];
+var advancedSearch = {};
+advancedSearch.name = "Alfresco.AdvancedSearch";
+advancedSearch.provideMessages = true;
+advancedSearch.provideOptions = true;
+advancedSearch.options = {};
+advancedSearch.options.siteId = model.siteId;
+advancedSearch.options.savedQuery = (page.url.args.sq != null) ? page.url.args.sq : "";
+advancedSearch.options.searchRepo = model.searchRepo;
+advancedSearch.options.searchForms = model.searchForms;
+model.webScriptWidgets.push(advancedSearch);

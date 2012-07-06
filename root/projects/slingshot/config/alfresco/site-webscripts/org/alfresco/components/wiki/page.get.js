@@ -57,3 +57,50 @@ function main()
 }
  
 main();
+
+
+//Widget instantiation metadata...
+model.webScriptWidgets = [];
+var wikiPage = {};
+wikiPage.name = "Alfresco.WikiPage";
+wikiPage.provideMessages = true;
+wikiPage.provideOptions = true;
+wikiPage.options = {};
+wikiPage.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
+wikiPage.options.pageTitle = (page.url.args.title != null) ? page.url.args.title : "";
+wikiPage.options.mode = (page.url.args.action != null) ? page.url.args.action : "view";
+
+if (!model.result.pagetext && !model.result.message)
+{
+   wikiPage.options.error = true;
+}
+wikiPage.options.tags = (model.result.tags != null) ? model.result.tags : [];
+wikiPage.options.pages = (model.result.pageList != null) ? model.result.pageList : [];
+wikiPage.options.versions = [];
+if (model.result.versionhistory != null)
+{
+   for (var i = 0; i<model.result.versionhistory.length; i++)
+   {
+      var version = {};
+      version.title = model.result.versionhistory[i].name;
+      version.label = model.result.versionhistory[i].version;
+      version.versionId = model.result.versionhistory[i].versionId;
+      version.createdDate = model.result.versionhistory[i].date;
+      wikiPage.options.versions.push(version);
+   }
+}
+wikiPage.options.locale = locale.substring(0, 2);
+wikiPage.options.permissions = {}
+if (model.result.permissions != null)
+{
+   wikiPage.options.permissions.create = (model.result.permissions.create != null) ? model.result.permissions.create : "false";
+   wikiPage.options.permissions.edit = (model.result.permissions.edit != null) ? model.result.permissions.edit : "false";
+   wikiPage.options.permissions["delete"] = (model.result.permissions["delete"] != null) ? model.result.permissions["delete"] : "false";
+}
+else
+{
+   wikiPage.options.permissions.create = "false";
+   wikiPage.options.permissions.edit = "false";
+   wikiPage.options.permissions["delete"] = "false";
+}
+model.webScriptWidgets.push(wikiPage);

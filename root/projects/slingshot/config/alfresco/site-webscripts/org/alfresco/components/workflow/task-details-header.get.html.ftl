@@ -1,19 +1,38 @@
-<#assign el=args.htmlid?js_string>
-<script type="text/javascript">//<![CDATA[
-new Alfresco.component.TaskDetailsHeader("${el}").setOptions(
-{
-   referrer: <#if page.url.args.referrer??>"${page.url.args.referrer?js_string}"<#else>null</#if>,
-   nodeRef: <#if page.url.args.nodeRef??>"${page.url.args.nodeRef?js_string}"<#else>null</#if>
-}).setMessages(
-   ${messages}
-);
-//]]></script>
-<div id="${el}-body" class="form-manager task-details-header">
-   <div class="links hidden">
-      <span class="theme-color-2">${msg("label.taskDetails")}</span>
-      <span class="separator">|</span>
-      <a href="">${msg("label.workflowDetails")}</a>
-   </div>
-   <h1>${msg("header")}: <span></span></h1>
-   <div class="clear"></div>
-</div>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/workflow/task-details-header.css" group="workflow"/>
+</@>
+
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/workflow/task-details-header.js" group="workflow"/>
+</@>
+
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="workflow"/>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <#assign el=args.htmlid?js_string>
+      <div id="${el}-body" class="form-manager task-details-header">
+         <div class="links hidden">
+            <span class="theme-color-2">${msg("label.taskDetails")}</span>
+            <span class="separator">|</span>
+            <a href="">${msg("label.workflowDetails")}</a>
+         </div>
+         <h1>${msg("header")}: <span></span></h1>
+         <div class="clear"></div>
+      </div>
+   </@>
+</@>
+
+

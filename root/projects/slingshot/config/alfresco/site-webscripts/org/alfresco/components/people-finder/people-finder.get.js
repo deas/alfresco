@@ -10,7 +10,7 @@ peopleFinder.provideMessages = true;
 peopleFinder.provideOptions = true;
 peopleFinder.options = {};
 peopleFinder.options.userId = user.name;
-peopleFinder.options.siteId = (page.exists == true) ? ((page.url.templateArgs.site != null) ? page.url.templateArgs.site : "") : ((args.site != null) ? args.site : "");
+peopleFinder.options.siteId = (this.page != null) ? ((this.page.url.templateArgs.site != null) ? this.page.url.templateArgs.site : "") : ((args.site != null) ? args.site : "");
 peopleFinder.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
 peopleFinder.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
 peopleFinder.options.setFocus = (args.setFocus != null) ? args.setFocus : "false";

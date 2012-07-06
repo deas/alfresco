@@ -57,3 +57,40 @@ function getMaxItems()
    }
    return maxItems && maxItems.length > 0 ? maxItems : null;
 }
+
+function getSiteUrl(relativeURL, siteId)
+{
+   var portlet = (context.attributes.portletHost != null) ? context.attributes.portletHost : false;
+   var portlet_url = (context.attributes.portletUrl != null) ? context.attributes.portletUrl : "";
+   var site_url = relativeURL;
+
+   if (!siteId)
+   {
+      siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ((args.site != null) ? args.site : "");
+   }
+   
+   if (siteId.length > 0)
+   {
+      site_url = "site/" + siteId + "/" + site_url;
+   }
+
+   if (site_url.indexOf("/") == 0)
+   {
+      site_url = site_url.substring(1);
+   }
+   if (site_url.indexOf("page/") != 0)
+   {
+      site_url = "page/" + site_url;
+   }
+   site_url = "/" + site_url;
+
+   if (portlet)
+   {
+      site_url = portlet_url.replace(/%24%24scriptUrl%24%24/g, encodeURIComponent(site_url.replace(/&amp;/g, "&")));
+   }
+   else
+   {
+      site_url = url.context + site_url;
+   }
+   return site_url;
+}

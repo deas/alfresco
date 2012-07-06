@@ -1,12 +1,34 @@
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.component.BaseFilter("Alfresco.WikiFilter", "${args.htmlid}");
-//]]></script>
-<div id="${args.htmlid}-body" class="filter wiki-filter">
-   <h2>${msg("header.pages")}</h2>
-   <ul class="filterLink">
-      <li><span class="recentlyModified"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=recentlyModified" class="filter-link">${msg("link.recentlyModified")}</a></span></li>
-      <li><span class="all"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=all" class="filter-link">${msg("link.all")}</a></span></li>
-      <li><span class="recentlyAdded"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=recentlyAdded" class="filter-link">${msg("link.recentlyAdded")}</a></span></li>
-      <li><span class="myPages"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=myPages" class="filter-link">${msg("link.myPages")}</a></span></li>
-   </ul>
-</div>
+<@markup id="css" >
+   <#-- No CSS Dependencies -->
+</@>
+
+<@markup id="js">
+   <#-- No JavaScript Dependencies -->
+</@>
+
+<@markup id="pre">
+   <#-- No pre-instantiation JavaScript required -->
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="wiki"/>
+</@>
+
+<@markup id="post">
+   <#-- No post-instantiation JavaScript required -->
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <div id="${args.htmlid}-body" class="filter wiki-filter">
+         <h2>${msg("header.pages")}</h2>
+         <ul class="filterLink">
+            <li><span class="recentlyModified"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=recentlyModified" class="filter-link">${msg("link.recentlyModified")}</a></span></li>
+            <li><span class="all"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=all" class="filter-link">${msg("link.all")}</a></span></li>
+            <li><span class="recentlyAdded"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=recentlyAdded" class="filter-link">${msg("link.recentlyAdded")}</a></span></li>
+            <li><span class="myPages"><a href="${url.context}/page/site/${page.url.templateArgs.site!""}/wiki?filter=myPages" class="filter-link">${msg("link.myPages")}</a></span></li>
+         </ul>
+      </div>
+   </@>
+</@>
+

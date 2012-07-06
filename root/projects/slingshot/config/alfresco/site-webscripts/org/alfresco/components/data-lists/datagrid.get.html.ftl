@@ -1,13 +1,12 @@
-<#-- TODO: Need to handle forms include better -->
-<#include "../form/form.get.head.ftl">
-
 <@markup id="css" >
    <#-- CSS Dependencies -->
+   <#include "../form/form.css.ftl"/>
    <@link href="${url.context}/res/components/data-lists/datagrid.css" group="datalists" />
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
+   <#include "../form/form.js.ftl"/>
    <@script src="${url.context}/res/components/data-lists/datagrid.js" group="datalists" />
 </@>
 
