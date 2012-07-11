@@ -141,3 +141,123 @@
        }
    };
 })();
+
+
+(function()
+{
+   /**
+    * Drag drop support for ipad making yui's drag n drop classes work out of the box on an ipad.
+    *
+    * The trick is to:
+    * - Stop listening for mouse events: "mousedown", "mousemove" & "mouseup"
+    * - Start listening to touch events: "touchstart", "touchmove" & "touchend"
+    * - Make sure the "touchend" events gets it pageX & pageY attributes set so it can be treated as a "mouseup" event.
+    *
+    * Note! Assumes the following when invoked:
+    * - the YAHOO.util.DragDropMgr && YAHOO.util.DragDrop classes have been loaded
+    * - the YAHOO.util.DragDropMgr have been initialized
+    */
+   if (YAHOO.env.ua.ipad && YAHOO.util.DragDropMgr && YAHOO.util.DragDrop)
+   {
+      var Event = YAHOO.util.Event;
+
+      // First patch the YAHOO.uti.DragDropMgr (which is an already created singleton object without a prototype)
+      var DDM_patch = function()
+      {
+         // Remove the mouse listeners that was added in DragDropMgr.onLoad
+         Event.removeListener(document, "mouseup", this.handleMouseUp);
+         Event.removeListener(document, "mousemove", this.handleMouseMove);
+
+         // Add in a "proxy" mousemove listener
+         var original_handleMouseMove = this.handleMouseMove;
+         this.handleMouseMove = function(e)
+         {
+            original_handleMouseMove.call(this, e);
+
+            // Make sure to save the touch coords since the "touchend" event always have pageX and pageY set to 0
+            this._lastTouchPageX = e.pageX;
+            this._lastTouchPageY = e.pageY;
+         };
+
+         // Add our own proxy touch listeners
+         Event.on(document, "touchend", this.handleMouseUp, this, true);
+         Event.on(document, "touchmove", this.handleMouseMove, this, true);
+
+         // Make sure the shim is listening to touch events instead of mouse events
+         var original__createShim = this._createShim;
+         this._createShim = function()
+         {
+            original__createShim.call(this);
+
+            // Stop listening to mouse events
+            Event.removeListener(s, "mouseup",  this.handleMouseUp);
+            Event.removeListener(s, "mouseover",  this.handleMouseMove)
+
+            // Start listening to touch events
+            Event.on(s, "touchend",  this.handleMouseUp, this, true);
+            Event.on(s, "touchmove", this.handleMouseMove, this, true);
+         };
+
+         // Patch the fire events method so we it can treat the "touchend" event as a "mouseup" event (having pageX & pageY)
+         var original_fireEvents = this.fireEvents;
+         this.fireEvents = function(e, isDrop)
+         {
+            if (isDrop)
+            {
+               // Create a fake event object with all attributes the drag drop classes seem to use
+               e = {
+                  pageX: this._lastTouchPageX,
+                  pageY: this._lastTouchPageY,
+                  clientX: e.clientX,
+                  clientY: e.clientY,
+                  button: e.button,
+                  which: e.which
+               };
+            }
+            original_fireEvents.call(this, e, isDrop);
+         };
+
+      };
+      DDM_patch.call(YAHOO.util.DragDropMgr);
+
+      // Now patch the YAHOO.util.DragDrop prototype
+      var DD_patch = function()
+      {
+         var original_init = YAHOO.util.DragDrop.prototype.init;
+         YAHOO.util.DragDrop.prototype.init = function(id, sGroup, config)
+         {
+            original_init.call(this, id, sGroup, config);
+
+            // Stop listening to mouse events
+            Event.removeListener(this._domRef || this.id, "mousedown", this.handleMouseDown);
+
+            // Start listening to touch events
+            Event.on(this._domRef || this.id, "touchstart", this.handleMouseDown, this, true);
+         };
+
+         var original_setOuterHandleElId = YAHOO.util.DragDrop.prototype.setOuterHandleElId;
+         YAHOO.util.DragDrop.prototype.setOuterHandleElId = function(id)
+         {
+            original_setOuterHandleElId.call(this, id);
+
+            // Stop listening to mouse events
+            Event.removeListener(id, "mousedown", this.handleMouseDown);
+
+            // Start listening to touch events
+            Event.on(id, "touchstart", this.handleMouseDown, this, true);
+         };
+
+         var original_handleMouseDown = YAHOO.util.DragDrop.prototype.handleMouseDown;
+         YAHOO.util.DragDrop.prototype.handleMouseDown = function(e, oDD)
+         {
+            // Make sure to save the touch coords since the "touchend" event always have pageX and pageY set to 0
+            this._lastTouchPageX = e.pageX;
+            this._lastTouchPageY = e.pageY;
+
+            original_handleMouseDown.call(this, e, oDD);
+         };
+      };
+      DD_patch.call(YAHOO.util.DragDrop);
+
+   }
+})();

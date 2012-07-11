@@ -532,6 +532,15 @@
          // Add class so it appears to be draggable
          Dom.addClass(li, "dnd-draggable");
 
+         if (!YAHOO.env.ua.ios)
+         {
+            // No need to add keyboard navigation support on ios
+            this._addKeyboardSupport(li, groups);
+         }
+      },
+
+      _addKeyboardSupport: function(li, groups)
+      {
          // Find hidden link to add tab support
          var anchors = new Element(li).getElementsByTagName("a"),
             a;
