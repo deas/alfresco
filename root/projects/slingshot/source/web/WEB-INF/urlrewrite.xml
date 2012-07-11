@@ -4,23 +4,23 @@
 
    <!-- Spring Surf -->
    <rule>
-      <from>/proxy/(.*)</from>
+      <from>^/proxy/(.*)</from>
       <to>/page/proxy/$1</to>
    </rule>
    <rule>
-      <from>/res/(.*)</from>
+      <from>^/res/(.*)</from>
       <to>/page/resource/$1</to>
    </rule>
    <rule>
-      <from>/service/(.*)</from>
+      <from>^/service/(.*)</from>
       <to>/page/$1</to>
    </rule>
    <rule>
-      <from>/feedservice/(.*)</from>
+      <from>^/feedservice/(.*)</from>
       <to>/page/feed/$1</to>
    </rule>
    <rule>
-      <from>/system/(.*)</from>
+      <from>^/system/(.*)</from>
       <to>/page/system/$1</to>
    </rule>
 
