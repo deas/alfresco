@@ -336,7 +336,7 @@ public class PropfindMethod extends WebDAVMethod
                         return alfrescoContext.equals("") ? "/" : alfrescoContext;
                     }
 
-                }, path, isFolder);
+                }, getDAVHelper().getUrlPathPrefix(m_request), path, isFolder);
 
         if (nodeInfo.isFolder())
         {

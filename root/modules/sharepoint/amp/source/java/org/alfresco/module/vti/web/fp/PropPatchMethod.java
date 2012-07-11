@@ -71,7 +71,7 @@ public class PropPatchMethod extends org.alfresco.repo.webdav.PropPatchMethod
                 return alfrescoContext.equals("") ? "/" : alfrescoContext;
             }
 
-        }, path, isFolder);
+        }, getDAVHelper().getUrlPathPrefix(m_request), path, isFolder);
     }
     
     /**
