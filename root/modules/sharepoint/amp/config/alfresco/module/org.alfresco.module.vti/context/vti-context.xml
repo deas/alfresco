@@ -281,10 +281,14 @@
         </property>
     </bean>
 
+    <bean id="sppDAVHelper" parent="webDAVHelper">
+        <property name="urlPathPrefix" value="${alfresco.context}"/>
+    </bean>
+    
     <bean id="abstractDAVAction" abstract="true">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="serviceRegistry" ref="ServiceRegistry"/>
-        <property name="webDavHelper" ref="webDAVHelper"/>
+        <property name="webDavHelper" ref="sppDAVHelper"/>
         <property name="authenticationService" ref="AuthenticationService"/>
     </bean>
     
