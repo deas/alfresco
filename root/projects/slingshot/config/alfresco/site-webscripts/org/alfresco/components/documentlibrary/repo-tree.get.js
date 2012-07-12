@@ -32,15 +32,15 @@ function main()
       }
    }
 
-   var repoDocListTree = {};
-   repoDocListTree.name = "Alfresco.RepositoryDocListTree";
-   repoDocListTree.useOptions = true;
-   repoDocListTree.useMessages = true;
-   repoDocListTree.options = {};
-   repoDocListTree.options.rootNode = model.rootNode != null ? model.rootNode : "null";
-   repoDocListTree.options.evaluateChildFolders = evaluateChildFolders;
-   repoDocListTree.options.maximumFolderCount = maximumFolderCount;
-   repoDocListTree.options.setDropTargets = true;
+   var repoDocListTree = {
+      name : "Alfresco.RepositoryDocListTree",
+      options : {
+         rootNode : model.rootNode != null ? model.rootNode : "null",
+         evaluateChildFolders : evaluateChildFolders,
+         maximumFolderCount : maximumFolderCount,
+         setDropTargets : true
+      }
+   };
    model.widgets.push(repoDocListTree);
 }
 

@@ -1,28 +1,33 @@
-model.widgets = [];
-
-var evaluateChildFolders = "true",
-    maximumFolderCount = "-1";
-var docLibConfig = config.scoped["DocumentLibrary"];
-if (docLibConfig != null)
+function widgets()
 {
-   var tree = docLibConfig["tree"];
-   if (tree != null)
+   model.widgets = [];
+
+   var evaluateChildFolders = "true",
+       maximumFolderCount = "-1";
+   var docLibConfig = config.scoped["DocumentLibrary"];
+   if (docLibConfig != null)
    {
-      var tmp = tree.getChildValue("evaluate-child-folders");
-      evaluateChildFolders = tmp != null ? tmp : "true";
-      tmp = tree.getChildValue("maximum-folder-count");
-      maximumFolderCount = tmp != null ? tmp : "-1";
+      var tree = docLibConfig["tree"];
+      if (tree != null)
+      {
+         var tmp = tree.getChildValue("evaluate-child-folders");
+         evaluateChildFolders = tmp != null ? tmp : "true";
+         tmp = tree.getChildValue("maximum-folder-count");
+         maximumFolderCount = tmp != null ? tmp : "-1";
+      }
    }
+
+   var docListTree = {
+      name : "Alfresco.DocListTree",
+      options : {
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         containerId : template.properties.container != null ? template.properties.container : "documentLibrary",
+         evaluateChildFolders : evaluateChildFolders,
+         maximumFolderCount : maximumFolderCount,
+         setDropTargets : true
+      }
+   };
+   model.widgets.push(docListTree);
 }
 
-var docListTree = {};
-docListTree.name = "Alfresco.DocListTree";
-docListTree.useOptions = true;
-docListTree.useMessages = true;
-docListTree.options = {};
-docListTree.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-docListTree.options.containerId = template.properties.container != null ? template.properties.container : "documentLibrary";
-docListTree.options.evaluateChildFolders = evaluateChildFolders;
-docListTree.options.maximumFolderCount = maximumFolderCount;
-docListTree.options.setDropTargets = true;
-model.widgets.push(docListTree);
+widgets();

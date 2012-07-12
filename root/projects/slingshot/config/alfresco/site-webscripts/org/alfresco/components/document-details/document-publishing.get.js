@@ -9,17 +9,16 @@ function main()
    {
       model.document = documentDetails;
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var documentPublishing = {
+      name : "Alfresco.DocumentPublishing",
+      options : {
+         nodeRef : model.nodeRef
+      }
+   };
+   model.widgets.push(documentPublishing);
 }
 
 main();
-
-
-// Widget instantiation metadata...
-model.widgets = [];
-var documentPublishing = {};
-documentPublishing.name = "Alfresco.DocumentPublishing";
-documentPublishing.useMessages = true;
-documentPublishing.useOptions = true;
-documentPublishing.options = {};
-documentPublishing.options.nodeRef = model.nodeRef;
-model.widgets.push(documentPublishing);

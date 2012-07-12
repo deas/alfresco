@@ -42,18 +42,19 @@ function main()
    }
 
    model.actionSet = actionSet;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var dataGrid = {
+      name : "Alfresco.component.DataGrid",
+      options : {
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         containerId : template.properties.container != null ? template.properties.container : "dataLists",
+         usePagination : (args.pagination != null) ? args.pagination : "false"
+      }
+   };
+   model.widgets.push(dataGrid);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var dataGrid = {};
-dataGrid.name = "Alfresco.component.DataGrid";
-dataGrid.useMessages = true;
-dataGrid.useOptions = true;
-dataGrid.options = {};
-dataGrid.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-dataGrid.options.containerId = template.properties.container != null ? template.properties.container : "dataLists";
-dataGrid.options.usePagination = (args.pagination != null) ? args.pagination : "false";
-model.widgets.push(dataGrid);

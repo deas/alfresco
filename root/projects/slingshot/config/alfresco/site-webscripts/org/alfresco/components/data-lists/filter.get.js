@@ -43,18 +43,20 @@ function main()
    
    model.filters = filters;
    model.filterIds = filterIds;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var filter = {
+      name : "Alfresco.component.BaseFilter",
+      assignTo : "filter",
+      initArgs : ["Alfresco.DataListFilter","\"" + args.htmlid + "\""],
+      useMessages = false,
+      useOptions = false
+   };
+   
+   model.widgets.push(filter);
 }
 
 main();
 
-//Widget instantiation metadata...
-model.widgets = [];
-var filter = {};
-filter.name = "Alfresco.component.BaseFilter";
-filter.assignTo = "filter";
-filter.initArgs = [];
-filter.initArgs.push("Alfresco.DataListFilter");
-filter.initArgs.push("\"" + args.htmlid + "\"");
-filter.useMessages = false;
-filter.useOptions = false;
-model.widgets.push(filter);
+

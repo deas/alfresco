@@ -20,18 +20,19 @@ function main()
       model.destination = documentDetails.item.parent.nodeRef
       model.workflows = getDocumentWorkflows(model.nodeRef);
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var documentWorkflows = {
+      name : "Alfresco.DocumentWorkflows",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site,
+         destination : model.destination
+      }
+   };   
+   model.widgets.push(documentWorkflows);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var documentWorkflows = {};
-documentWorkflows.name = "Alfresco.DocumentWorkflows";
-documentWorkflows.useMessages = true;
-documentWorkflows.useOptions = true;
-documentWorkflows.options = {};
-documentWorkflows.options.nodeRef = model.nodeRef;
-documentWorkflows.options.siteId = model.site;
-documentWorkflows.options.destination = model.destination;
-model.widgets.push(documentWorkflows);

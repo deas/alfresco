@@ -43,16 +43,18 @@ function main()
    }
    
    model.actionSet = actionSet;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var toolbar = {
+      name : "Alfresco.component.DataListToolbar",
+      options : {
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
+      }
+   };
+   
+   model.widgets.push(toolbar);
 }
 
 main();
 
-//Widget instantiation metadata...
-model.widgets = [];
-var toolbar = {};
-toolbar.name = "Alfresco.component.DataListToolbar";
-toolbar.useMessages = true;
-toolbar.useOptions = true;
-toolbar.options = {};
-toolbar.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-model.widgets.push(toolbar);

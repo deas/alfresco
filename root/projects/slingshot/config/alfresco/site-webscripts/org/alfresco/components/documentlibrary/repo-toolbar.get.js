@@ -1,24 +1,30 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/documentlibrary/include/toolbar.lib.js">
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/upload/uploadable.lib.js">
 
-model.widgets = [];
-
-var useTitle = "true";
-var docLibConfig = config.scoped["DocumentLibrary"];
-if (docLibConfig != null)
+function main()
 {
-   var tmp = docLibConfig["use-title"];
-   useTitle = tmp != null ? tmp : "true";
+   model.widgets = [];
+
+   var useTitle = "true";
+   var docLibConfig = config.scoped["DocumentLibrary"];
+   if (docLibConfig != null)
+   {
+      var tmp = docLibConfig["use-title"];
+      useTitle = tmp != null ? tmp : "true";
+   }
+
+   var repoDocListToobar = {
+      name : "Alfresco.RepositoryDocListToolbar",
+      options : {
+         rootNode : model.rootNode != null ? model.rootNode : "",
+         hideNavBar : model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false",
+         googleDocsEnabled : model.googleDocsEnabled != null ? model.googleDocsEnabled : "false",
+         repositoryBrowsing : model.rootNode != null,
+         useTitle : useTitle
+      }
+   };
+   model.widgets.push(repoDocListToobar);
 }
 
-var repoDocListToobar = {};
-repoDocListToobar.name = "Alfresco.RepositoryDocListToolbar";
-repoDocListToobar.useOptions = true;
-repoDocListToobar.useMessages = true;
-repoDocListToobar.options = {};
-repoDocListToobar.options.rootNode = model.rootNode != null ? model.rootNode : "";
-repoDocListToobar.options.hideNavBar = model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false";
-repoDocListToobar.options.googleDocsEnabled = model.googleDocsEnabled != null ? model.googleDocsEnabled : "false";
-repoDocListToobar.options.repositoryBrowsing = model.rootNode != null;
-repoDocListToobar.options.useTitle = useTitle;
-model.widgets.push(repoDocListToobar);
+main();
+

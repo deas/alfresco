@@ -1,6 +1,6 @@
 function main()
 {
-   var locale = locale.substring(0, 2);
+   var locale = this.locale.substring(0, 2);
 
    model.widgets = [];
    var blogPostEdit = {

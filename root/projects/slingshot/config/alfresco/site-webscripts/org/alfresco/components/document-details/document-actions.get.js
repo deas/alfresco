@@ -17,22 +17,24 @@ function main()
       model.documentDetailsJSON = jsonUtils.toJSONString(documentDetails);
       doclibCommon();
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var documentActions = {
+      name : "Alfresco.DocumentActions",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : (model.site != null) ? model.site : null,
+         containerId : model.container,
+         rootNode : model.rootNode,
+         replicationUrlMapping : (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}",
+         documentDetails : model.documentDetails,
+         repositoryBrowsing : (model.rootNode != null)
+      }
+   };
+   model.widgets.push(documentActions);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var documentActions = {};
-documentActions.name = "Alfresco.DocumentActions";
-documentActions.useMessages = true;
-documentActions.useOptions = true;
-documentActions.options = {};
-documentActions.options.nodeRef = model.nodeRef;
-documentActions.options.siteId = (model.site != null) ? model.site : null;
-documentActions.options.containerId = model.container;
-documentActions.options.rootNode = model.rootNode;
-documentActions.options.replicationUrlMapping = (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}";
-documentActions.options.documentDetails = model.documentDetails;
-documentActions.options.repositoryBrowsing = (model.rootNode != null);
-model.widgets.push(documentActions);
+

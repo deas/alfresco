@@ -24,19 +24,20 @@ function main()
 
    // Prepare the model for the template
    model.forum = forum;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+
+   var toolbar = {
+      name : "Alfresco.DiscussionsToolbar",
+      options : {
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         containerId : (page.url.args.containerId != null) ? page.url.args.containerId : "discussions",
+         allowCreate : model.forum.forumPermissions.create
+      }
+   };
+   model.widgets.push(toolbar);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-
-var toolbar = {};
-toolbar.name = "Alfresco.DiscussionsToolbar";
-toolbar.useOptions = true;
-toolbar.useMessages = true;
-toolbar.options = {};
-toolbar.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-toolbar.options.containerId = (page.url.args.containerId != null) ? page.url.args.containerId : "discussions";
-toolbar.options.allowCreate = model.forum.forumPermissions.create;
-model.widgets.push(toolbar);

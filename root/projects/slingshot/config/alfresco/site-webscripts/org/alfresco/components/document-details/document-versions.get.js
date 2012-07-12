@@ -15,20 +15,23 @@ function main()
          model.workingCopyVersion = documentDetails.workingCopy.workingCopyVersion;
       }
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var documentVersions = {
+      name : "Alfresco.DocumentVersions",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site,
+         containerId : model.container,
+         workingCopyVersion : model.workingCopyVersion,
+         allowNewVersionUpload : model.allowNewVersionUpload
+      }
+   };
+   
+   model.widgets.push(documentVersions);
+
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var documentVersions = {};
-documentVersions.name = "Alfresco.DocumentVersions";
-documentVersions.useMessages = true;
-documentVersions.useOptions = true;
-documentVersions.options = {};
-documentVersions.options.nodeRef = model.nodeRef;
-documentVersions.options.siteId = model.site;
-documentVersions.options.containerId = model.container;
-documentVersions.options.workingCopyVersion = model.workingCopyVersion;
-documentVersions.options.allowNewVersionUpload = model.allowNewVersionUpload;
-model.widgets.push(documentVersions);

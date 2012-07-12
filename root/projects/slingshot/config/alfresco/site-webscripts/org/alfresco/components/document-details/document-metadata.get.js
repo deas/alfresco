@@ -11,18 +11,19 @@ function main()
       model.document = documentDetails;
       model.allowMetaDataUpdate = documentDetails.item.node.permissions.user["Write"] || false;
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var documentMetadata = {
+      name : "Alfresco.DocumentMetadata",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site,
+         formId : model.formId
+      }
+   };
+   model.widgets.push(documentMetadata);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var documentMetadata = {};
-documentMetadata.name = "Alfresco.DocumentMetadata";
-documentMetadata.useMessages = true;
-documentMetadata.useOptions = true;
-documentMetadata.options = {};
-documentMetadata.options.nodeRef = model.nodeRef;
-documentMetadata.options.siteId = model.site;
-documentMetadata.options.formId = model.formId;
-model.widgets.push(documentMetadata);
