@@ -142,7 +142,7 @@ public class VtiRequestDispatcher extends HttpServlet
         request.setAttribute(VTI_ALFRESCO_CONTEXT, getContext());
         if (logger.isDebugEnabled())
         {
-            logger.debug("Process request");
+            logger.debug("Dispatching request, URI path: " + request.getRequestURI());
         }
         doActions(request, response);
     }
