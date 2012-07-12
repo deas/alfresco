@@ -9,17 +9,11 @@
    <@script type="text/javascript" src="${url.context}/res/modules/simple-dialog.js" group="dashlets"/>
 </@>
 
-<@markup id="pre">
+<@markup id="widgets">
    <@inlineScript group="dashlets">
       var editWebViewDashletEvent = new YAHOO.util.CustomEvent("onDashletConfigure");
    </@>
-</@>
-
-<@markup id="widgets">
    <@createWidgets group="dashlets"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="dashlets">
       editWebViewDashletEvent.subscribe(webView.onConfigWebViewClick, webView, true);
    </@>

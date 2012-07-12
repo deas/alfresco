@@ -39,16 +39,8 @@
    <@script src="${url.context}/res/modules/form/control-wrapper.js" group="rules"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="rules"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

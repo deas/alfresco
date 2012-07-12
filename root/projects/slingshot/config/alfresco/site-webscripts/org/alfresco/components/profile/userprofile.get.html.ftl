@@ -9,17 +9,10 @@
    <@script src="${url.context}/res/modules/simple-dialog.js" group="profile"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
+<#assign el=args.htmlid>
 
 <@markup id="widgets">
    <@createWidgets group="profile"/>
-</@>
-
-<#assign el=args.htmlid>
-
-<@markup id="post">
    <@inlineScript group="profile">
       (function()
       {

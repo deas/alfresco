@@ -10,16 +10,8 @@
    <@script src="${url.context}/res/modules/taglibrary/taglibrary.js" group="links"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="links"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

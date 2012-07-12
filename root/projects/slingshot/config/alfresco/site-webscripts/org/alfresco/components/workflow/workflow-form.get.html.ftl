@@ -10,16 +10,8 @@
    <@script src="${url.context}/res/components/workflow/workflow-form.js" group="workflow"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="workflow"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

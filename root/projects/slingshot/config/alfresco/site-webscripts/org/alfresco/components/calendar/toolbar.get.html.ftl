@@ -10,15 +10,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/calendar/toolbar.js" group="calendar"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="calendar"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="calendar">
       Alfresco.util.relToTarget("${el}-body");
       Alfresco.util.addMessages(${messages}, "Alfresco.CalendarToolbar");

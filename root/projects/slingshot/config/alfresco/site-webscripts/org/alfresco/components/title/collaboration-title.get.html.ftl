@@ -10,14 +10,8 @@
    <@script src="${url.context}/res/modules/edit-site.js" group="title"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="title"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

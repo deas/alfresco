@@ -8,18 +8,10 @@
    <@script src="${url.context}/res/components/geographic/google-map.js" group="geographic"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <#if documentDetailsJSON??>
       <@createWidgets group="geographic"/>
    </#if>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

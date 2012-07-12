@@ -7,16 +7,8 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="my-documentlibraries"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

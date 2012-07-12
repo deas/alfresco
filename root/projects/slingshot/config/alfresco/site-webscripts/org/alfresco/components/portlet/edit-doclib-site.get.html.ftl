@@ -7,15 +7,8 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="portlet"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="portlet">
       YAHOO.lang.later(YAHOO.env.ua.ie > 0 ? 5000 : 2000, this, function() {
          Alfresco.util.Anim.fadeOut("${id}-updated");

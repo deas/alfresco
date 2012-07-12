@@ -8,14 +8,8 @@
    <@script src="${url.context}/res/components/node-details/node-header.js" group="node-header"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="node-header"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

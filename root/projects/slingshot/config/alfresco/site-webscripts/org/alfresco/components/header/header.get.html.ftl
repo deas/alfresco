@@ -24,21 +24,15 @@
    </#if>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="header"/>
-</@>
-
-<#assign id = args.htmlid?html>
-<#assign jsid = id?replace("-", "_")?js_string>
-
-<@markup id="post">
    <@inlineScript group="header">
       Alfresco.util.createTwister.collapsed = "${collapsedTwisters?js_string}";
    </@>
 </@>
+
+<#assign id = args.htmlid?html>
+<#assign jsid = id?replace("-", "_")?js_string>
 
 <@markup id="html">
    <@uniqueIdDiv>

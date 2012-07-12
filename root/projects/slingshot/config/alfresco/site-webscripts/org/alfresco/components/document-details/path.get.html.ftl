@@ -8,14 +8,8 @@
    <@script src="${url.context}/res/components/document-details/path.js" group="document-details"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="document-details"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

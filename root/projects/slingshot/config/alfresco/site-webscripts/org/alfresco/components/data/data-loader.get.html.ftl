@@ -8,14 +8,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/data/data-loader.js" group="data"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
-   <@createWidgets/>
-</@>
-
-<@markup id="post">
+   <@createWidgets group="data"/>
 </@>
 
 <@markup id="html">

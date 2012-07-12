@@ -8,16 +8,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/dashboard/customise-layout.js" group="dashboard"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="dashboard"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

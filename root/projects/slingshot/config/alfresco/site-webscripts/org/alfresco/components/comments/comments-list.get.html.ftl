@@ -8,18 +8,10 @@
    <@script src="${url.context}/res/components/comments/comments-list.js" group="comments"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <#if nodeRef??>
       <@createWidgets group="comments"/>
    </#if>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

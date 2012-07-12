@@ -8,14 +8,8 @@
    <@script src="${url.context}/res/components/discussions/topiclist.js" group="discussions"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="discussions"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

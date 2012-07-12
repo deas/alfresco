@@ -7,17 +7,8 @@
    <@script src="${url.context}/res/components/tag-filter/tag-filter.js" group="tag-filter"/>
 </@>
 
-<@markup id="pre">
-   <@inlineScript group="tag-filter">
-      <#-- No pre-instantiation JavaScript required -->
-   </@>
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="tag-filter"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="tag-filter">
       tagFilter.setFilterIds(["tag"]);
    </@>

@@ -7,17 +7,9 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <#if allowMetaDataUpdate??>
       <@createWidgets group="folder-details"/>
-   </#if>
-</@>
-
-<@markup id="post">
-   <#if allowMetaDataUpdate??>
       <@inlineScript group="folder-details">
          YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
             Alfresco.util.createTwister("${args.htmlid}-heading", "FolderPermissions");

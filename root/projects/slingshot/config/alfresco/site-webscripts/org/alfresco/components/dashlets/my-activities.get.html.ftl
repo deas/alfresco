@@ -8,17 +8,11 @@
    <@script type="text/javascript" src="${url.context}/res/components/dashlets/activities.js" group="dashlets"/>
 </@>
 
-<@markup id="pre">
+<@markup id="widgets">
    <@inlineScript group="dashlets">
       var activitiesFeedDashletEvent = new YAHOO.util.CustomEvent("openFeedClick");
    </@>
-</@>
-
-<@markup id="widgets">
    <@createWidgets group="dashlets"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="dashlets">
       activitiesFeedDashletEvent.subscribe(activities.openFeedLink, activities, true);
    </@>

@@ -8,17 +8,9 @@
    <@script src="${url.context}/res/components/document-details/document-publishing.js" group="document-details"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <#if document??>
       <@createWidgets group="document-details"/>
-   </#if>
-</@>
-
-<@markup id="post">
-   <#if document??>
       <@inlineScript group="document-details">
          YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
             Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentPublishing");

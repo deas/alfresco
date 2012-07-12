@@ -12,16 +12,8 @@
    <@script type="text/javascript" src="${url.context}/res/modules/delete-site.js" group="dashlets"/>   
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

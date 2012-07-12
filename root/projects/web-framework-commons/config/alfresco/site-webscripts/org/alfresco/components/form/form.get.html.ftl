@@ -7,14 +7,9 @@
       <#include "form.js.ftl"/>
    </@>
    
-   <@markup id="pre">
-   </@>
    
    <@markup id="widgets">
       <@createWidgets/>
-   </@>
-   
-   <@markup id="post">
    </@>
    
    <@markup id="html">

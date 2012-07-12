@@ -10,20 +10,8 @@
    <@script src="${url.context}/res/modules/delete-site.js" group="site-finder"/>
 </@>
 
-<@markup id="pre">
-   <@inlineScript>
-     <#-- No pre-instantiation JavaScript required -->
-   </@>
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="site-finder"/>
-</@>
-
-<@markup id="post">
-   <@inlineScript>
-     <#-- No post-instantiation JavaScript required -->
-   </@>
 </@>
 
 <@markup id="html">

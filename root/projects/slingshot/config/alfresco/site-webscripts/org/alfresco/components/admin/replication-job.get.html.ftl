@@ -11,20 +11,12 @@
    <@script type="text/javascript" src="${url.context}/res/components/admin/replication-job.js" group="admin"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript -->
-</@>
-
 <@markup id="widgets">
    <#if mode == "edit" && !(jobDetail.name??)>
       <div class="error">${msg("message.no-job-details", jobName)}</div>
    <#else>
       <@createWidgets group="admin"/>
    </#if>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript -->
 </@>
 
 <@markup id="html">

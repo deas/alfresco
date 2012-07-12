@@ -7,18 +7,10 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-</@>
-
+<#assign el=args.htmlid?html>
 <@markup id="widgets">
    <#if allowMetaDataUpdate??>
       <@createWidgets group="document-details"/>
-   </#if>
-</@>
-
-<@markup id="post">
-   <#if allowMetaDataUpdate??>
-      <#assign el=args.htmlid?html>
       <@inlineScript group="document-details">
          YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
             Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentTags");

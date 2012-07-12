@@ -39,15 +39,8 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="dashlets">
       YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("myEditingDocsDashlet") , function()
       {

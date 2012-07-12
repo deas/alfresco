@@ -8,18 +8,11 @@
    <@script src="${url.context}/res/components/people-finder/authority-finder.js" group="people-finder"/>
 </@>
 
-<@markup id="pre">
+<@markup id="widgets">
    <@inlineScript group="people-finder">
        var dataWebScript = Alfresco.constants.URL_SERVICECONTEXT + "components/people-finder/authority-query";
    </@>
-</@>
-
-<@markup id="widgets">
    <@createWidgets group="people-finder"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

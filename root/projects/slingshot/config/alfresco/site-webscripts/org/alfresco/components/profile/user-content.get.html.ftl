@@ -9,17 +9,8 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-   <@inlineScript>
-     <#-- No pre-instantiation JavaScript required -->
-   </@>
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="profile"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="profile">
       YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("${el}-body"), function() {
          this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);

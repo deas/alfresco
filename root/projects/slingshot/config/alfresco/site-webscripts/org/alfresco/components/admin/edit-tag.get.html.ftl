@@ -9,14 +9,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/console/tag-management.js" group="admin"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="admin"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

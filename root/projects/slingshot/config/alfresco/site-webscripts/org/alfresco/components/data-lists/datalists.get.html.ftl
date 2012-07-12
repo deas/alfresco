@@ -9,14 +9,8 @@
    <@script src="${url.context}/res/components/data-lists/datalists.js" group="datalists"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="datalists"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

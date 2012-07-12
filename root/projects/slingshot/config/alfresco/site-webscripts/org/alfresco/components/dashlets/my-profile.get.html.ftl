@@ -7,18 +7,14 @@
    <#-- JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="dashlets">
       Alfresco.util.renderRelativeTime("${args.htmlid}")
    </@>
+</@>
+
+<@markup id="post">
 </@>
 
 <@markup id="html">

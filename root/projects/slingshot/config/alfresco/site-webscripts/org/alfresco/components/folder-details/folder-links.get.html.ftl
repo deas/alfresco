@@ -9,17 +9,9 @@
    <@script src="${url.context}/res/components/folder-details/folder-links.js" group="folder-details"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <#if folder??>
       <@createWidgets group="folder-details"/>
-   </#if>
-</@>
-
-<@markup id="post">
-   <#if folder??>
       <@inlineScript group="folder-details">
          YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
             Alfresco.util.createTwister("${args.htmlid}-heading", "FolderLinks");

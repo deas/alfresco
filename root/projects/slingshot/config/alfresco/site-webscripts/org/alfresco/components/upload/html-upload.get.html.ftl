@@ -8,14 +8,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/upload/html-upload.js" group="upload"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="upload"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

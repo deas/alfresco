@@ -24,15 +24,8 @@
    <@script type="text/javascript" src="${url.context}/res/modules/taglibrary/taglibrary.js" group="calendar"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="calendar"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="calendar">
       Alfresco.util.addMessages(${messages}, "Alfresco.EventInfo");
    </@>

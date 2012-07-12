@@ -19,16 +19,10 @@
    <@script src="${url.context}/res/components/preview/Image.js" group="${dependencyGroup}"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <#if node?? && node?exists>
       <@createWidgets group="${dependencyGroup}"/>
    </#if>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

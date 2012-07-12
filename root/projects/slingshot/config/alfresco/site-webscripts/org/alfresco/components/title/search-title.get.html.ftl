@@ -7,14 +7,8 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="title"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@markup id="html">

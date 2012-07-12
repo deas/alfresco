@@ -8,19 +8,12 @@
       <#-- JavaScript Dependencies -->
       <@script type="text/javascript" src="${url.context}/res/components/document-details/document-actions.js" group="document-details" />
    </@>
-   
-   <@markup id="pre">
-   </@>
+
+   <#assign el=args.htmlid?js_string>
    
    <@markup id="widgets">
       <#if documentDetailsJSON??>
          <@createWidgets group="document-details"/>
-      </#if>
-   </@>
-   
-   <#assign el=args.htmlid?js_string>
-   <@markup id="post">
-      <#if documentDetailsJSON??>
          <@inlineScript group="document-details">
             YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
                Alfresco.util.createTwister("${el}-heading", "DocumentActions");

@@ -8,14 +8,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/upload/dnd-upload.js" group="upload"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="upload"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="upload">
       <#assign fileUploadConfig = config.scoped["DocumentLibrary"]["file-upload"]!>
       <#if fileUploadConfig.getChildValue??>

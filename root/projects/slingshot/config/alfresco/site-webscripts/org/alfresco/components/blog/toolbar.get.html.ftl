@@ -10,16 +10,8 @@
    <@script type="text/javascript" src="${url.context}/res/modules/blog/config-blog.js" group="blog"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="blog"/>
-</@>
-
-<@markup id="post">
-   <#-- No post-instantiation JavaScript required -->
 </@>
 
 <@markup id="html">

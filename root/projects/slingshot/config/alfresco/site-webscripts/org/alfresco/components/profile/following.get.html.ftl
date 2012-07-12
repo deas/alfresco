@@ -9,22 +9,15 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="profile"/>
-</@>
- 
-<@markup id="post">
    <@inlineScript group="profile">
       (function() {
          Alfresco.util.renderRelativeTime("${el}-body")
       })();
    </@>
 </@>
-
+ 
 <@markup id="html">
    <@uniqueIdDiv>
       <div id="${el}-body" class="profile">

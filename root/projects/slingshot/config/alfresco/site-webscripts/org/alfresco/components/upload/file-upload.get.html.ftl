@@ -7,14 +7,8 @@
    <@script src="${url.context}/res/components/upload/file-upload.js" group="upload"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
-   <#-- <@createWidgets group="upload"/> -->
-</@>
-
-<@markup id="post">
+   <@createWidgets group="upload"/>
    <@inlineScript group="upload">
       <#assign fileUploadConfig = config.scoped["DocumentLibrary"]["file-upload"]!>
       <#if fileUploadConfig.getChildValue??>

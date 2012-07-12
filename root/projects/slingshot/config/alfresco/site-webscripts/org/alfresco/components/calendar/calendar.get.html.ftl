@@ -8,15 +8,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/calendar/calendar.js" group="calendar"/>
 </@>
 
-<@markup id="pre">
-   <#-- No pre-instantiation JavaScript required -->
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="calendar"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="calendar">
       <#-- JavaScript to be executed AFTER widget instantiation here -->
       calendar.setSiteId("${page.url.templateArgs.site!""}");

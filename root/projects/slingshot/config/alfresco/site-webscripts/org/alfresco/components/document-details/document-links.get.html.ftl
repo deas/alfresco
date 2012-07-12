@@ -8,22 +8,10 @@
    <@script src="${url.context}/res/components/document-details/document-links.js" group="document-details"/>
 </@>
 
-<@markup id="pre">
-   <@inlineScript>
-     <#-- No pre-instantiation JavaScript required -->
-   </@>
-</@>
-
+<#assign el=args.htmlid?html>
 <@markup id="widgets">
    <#if document??>
       <@createWidgets group="document-details"/>
-   </#if>
-</@>
-
-<#assign el=args.htmlid?html>
-
-<@markup id="post">
-   <#if document??>
       <@inlineScript group="document-details">
          YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
             Alfresco.util.createTwister("${el}-heading", "DocumentLinks");

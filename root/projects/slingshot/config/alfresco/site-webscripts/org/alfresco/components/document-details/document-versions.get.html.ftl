@@ -12,20 +12,9 @@
    <@script type="text/javascript" src="${url.context}/res/modules/document-details/historic-properties-viewer.js" group="document-details"/>
 </@>
 
-<@markup id="pre">
-   <@inlineScript>
-     <#-- No pre-instantiation JavaScript required -->
-   </@>
-</@>
-
 <@markup id="widgets">
    <#if allowNewVersionUpload??>
       <@createWidgets group="document-details"/>
-   </#if>
-</@>
-
-<@markup id="post">
-   <#if allowNewVersionUpload??>
       <@inlineScript group="document-details">
          YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
             Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentVersions");

@@ -9,20 +9,8 @@
       <@script src="${url.context}/res/components/people-finder/group-finder.js" group="people-finder"/>
    </@>
    
-   <@markup id="pre">
-      <@inlineScript>
-        <#-- No pre-instantiation JavaScript required -->
-      </@>
-   </@>
-   
    <@markup id="widgets">
       <@createWidgets group="people-finder"/>
-   </@>
-   
-   <@markup id="post">
-      <@inlineScript>
-        <#-- No post-instantiation JavaScript required -->
-      </@>
    </@>
    
    <@markup id="html">

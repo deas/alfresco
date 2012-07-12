@@ -6,14 +6,8 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="datalists"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="datalists">
       <#-- The following section of code is less than ideal. We should be setting the 
            filterIds directly within the widget instantiation rather than post instantiation

@@ -10,17 +10,11 @@
    <@script type="text/javascript" src="${url.context}/res/modules/simple-dialog.js" group="dashlets"/>
 </@>
 
-<@markup id="pre">
+<@markup id="widgets">
    <@inlineScript group="dashlets">
       var rssFeedDashletEvent = new YAHOO.util.CustomEvent("onConfigFeedClick");
    </@>
-</@>
-
-<@markup id="widgets">
    <@createWidgets group="dashlets"/>
-</@>
-
-<@markup id="post">
    <@inlineScript group="dashlets">
       rssFeedDashletEvent.subscribe(rssFeed.onConfigFeedClick, rssFeed, true);
    </@>

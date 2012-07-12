@@ -9,14 +9,8 @@
    <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/repo-tree.js" group="documentlibrary"/>
 </@>
 
-<@markup id="pre">
-</@>
-
 <@markup id="widgets">
    <@createWidgets group="documentlibrary"/>
-</@>
-
-<@markup id="post">
 </@>
 
 <@uniqueIdDiv>
