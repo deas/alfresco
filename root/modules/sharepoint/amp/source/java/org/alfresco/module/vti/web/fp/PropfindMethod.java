@@ -329,14 +329,14 @@ public class PropfindMethod extends WebDAVMethod
 
         // Build the href string for the current node
         String strHRef = m_request.getScheme() + "://" + m_request.getServerName() + ":" + m_request.getServerPort()
-                + WebDAV.getURLForPath(new HttpServletRequestWrapper(m_request)
+                + getDAVHelper().getURLForPath(new HttpServletRequestWrapper(m_request)
                 {
                     public String getServletPath()
                     {
                         return alfrescoContext.equals("") ? "/" : alfrescoContext;
                     }
 
-                }, getDAVHelper().getUrlPathPrefix(m_request), path, isFolder);
+                }, path, isFolder);
 
         if (nodeInfo.isFolder())
         {

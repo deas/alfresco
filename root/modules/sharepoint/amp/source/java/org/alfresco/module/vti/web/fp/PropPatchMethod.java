@@ -64,14 +64,14 @@ public class PropPatchMethod extends org.alfresco.repo.webdav.PropPatchMethod
     @Override
     protected String getURLForPath(HttpServletRequest request, String path, boolean isFolder)
     {
-        return WebDAV.getURLForPath(new HttpServletRequestWrapper(m_request)
+        return getDAVHelper().getURLForPath(new HttpServletRequestWrapper(m_request)
         {
             public String getServletPath()
             {
                 return alfrescoContext.equals("") ? "/" : alfrescoContext;
             }
 
-        }, getDAVHelper().getUrlPathPrefix(m_request), path, isFolder);
+        }, path, isFolder);
     }
     
     /**
