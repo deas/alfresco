@@ -18,17 +18,26 @@
  */
 package org.alfresco.module.vti.web.actions;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.web.VtiAction;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.repo.tenant.TenantUtil;
+import org.alfresco.repo.tenant.TenantUtil.TenantRunAsWork;
+import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVMethod;
 import org.alfresco.repo.webdav.WebDAVServerException;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.security.AuthenticationService;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
 * @author Stas Sokolovsky
 *
 */
-public abstract class VtiWebDavAction implements VtiAction
+public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecutor
 {
     private static final long serialVersionUID = 8916126506309290108L;
 
@@ -57,6 +66,8 @@ public abstract class VtiWebDavAction implements VtiAction
     
     private static Log logger = LogFactory.getLog(VtiWebDavAction.class);
 
+    private VtiWebDavActionExecutor davActionExecutor = this;
+    
     /**
      * <p>Process WebDAV protocol request, dispatch among set of 
      * WebDAVMethods, selects and invokes a realization of {@link WebDAVMethod}
@@ -71,7 +82,7 @@ public abstract class VtiWebDavAction implements VtiAction
         method.setDetails(request, response, webDavHelper, pathHelper.getRootNodeRef());
         try
         {
-            method.execute();
+            davActionExecutor.execute(method, request, response);
         }
         catch (WebDAVServerException e)
         {
@@ -88,6 +99,32 @@ public abstract class VtiWebDavAction implements VtiAction
      * @param pathHelper {@link VtiPathHelper}.
      */
     public abstract WebDAVMethod getWebDAVMethod();
+
+    
+    /**
+     * @see #execute(WebDAVMethod, HttpServletRequest, HttpServletResponse)
+     * @param davActionExecutor the WebDAV method executor.
+     */
+    public void setDavActionExecutor(VtiWebDavActionExecutor davActionExecutor)
+    {
+        this.davActionExecutor = davActionExecutor;
+    }
+
+    /**
+     * Plugable executor implementation allows overriding of this behaviour without disturbing
+     * the class hierarchy.
+     * 
+     * @param method
+     * @param request
+     * @param response
+     * @throws WebDAVServerException
+     */
+    @Override
+    public void execute(WebDAVMethod method, HttpServletRequest request,
+                HttpServletResponse response) throws WebDAVServerException
+    {
+        method.execute();
+    }
 
     /**
      * <p>VtiPathHelper setter.</p>
