@@ -1,7 +1,7 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/documentlibrary/include/toolbar.lib.js">
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/upload/uploadable.lib.js">
 
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var useTitle = "true";
 var docLibConfig = config.scoped["DocumentLibrary"];
@@ -13,12 +13,12 @@ if (docLibConfig != null)
 
 var repoDocListToobar = {};
 repoDocListToobar.name = "Alfresco.RepositoryDocListToolbar";
-repoDocListToobar.provideOptions = true;
-repoDocListToobar.provideMessages = true;
+repoDocListToobar.useOptions = true;
+repoDocListToobar.useMessages = true;
 repoDocListToobar.options = {};
 repoDocListToobar.options.rootNode = model.rootNode != null ? model.rootNode : "";
 repoDocListToobar.options.hideNavBar = model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false";
 repoDocListToobar.options.googleDocsEnabled = model.googleDocsEnabled != null ? model.googleDocsEnabled : "false";
 repoDocListToobar.options.repositoryBrowsing = model.rootNode != null;
 repoDocListToobar.options.useTitle = useTitle;
-model.webScriptWidgets.push(repoDocListToobar);
+model.widgets.push(repoDocListToobar);

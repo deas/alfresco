@@ -1,11 +1,11 @@
 model.lists = ['listA', 'listB'];
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var list = {};
 list.name = "Alfresco.DataListList";
-list.provideMessages = true;
-list.provideOptions = true;
+list.useMessages = true;
+list.useOptions = true;
 list.options = {};
 list.options.siteId = (page.url.templateArgs["site"] != null) ? page.url.templateArgs["site"] : "";
-model.webScriptWidgets.push(list);
+model.widgets.push(list);

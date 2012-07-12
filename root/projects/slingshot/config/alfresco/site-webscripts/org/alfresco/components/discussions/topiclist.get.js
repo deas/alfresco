@@ -1,10 +1,10 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var discussionsTopicList = {};
 discussionsTopicList.name = "Alfresco.DiscussionsTopicList";
-discussionsTopicList.provideOptions = true;
-discussionsTopicList.provideMessages = true;
+discussionsTopicList.useOptions = true;
+discussionsTopicList.useMessages = true;
 discussionsTopicList.options = {};
 discussionsTopicList.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 discussionsTopicList.options.containerId = (page.url.args.containerId != null) ? page.url.args.containerId : "discussions";
@@ -16,4 +16,4 @@ var initialFilter =
    filterData: (page.url.args.filterData != null) ? page.url.args.filterData : null
 }
 discussionsTopicList.options.initialFilter = initialFilter;
-model.webScriptWidgets.push(discussionsTopicList);
+model.widgets.push(discussionsTopicList);

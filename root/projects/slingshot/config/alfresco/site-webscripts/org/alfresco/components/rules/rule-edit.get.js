@@ -53,11 +53,11 @@ function main()
 main();
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var ruleEdit = {};
 ruleEdit.name = "Alfresco.RuleEdit";
-ruleEdit.provideMessages = true;
-ruleEdit.provideOptions = true;
+ruleEdit.useMessages = true;
+ruleEdit.useOptions = true;
 ruleEdit.options = {};
 ruleEdit.options.nodeRef = (page.url.args.nodeRef != null) ? page.url.args.nodeRef : "";
 if (model.rule)
@@ -69,4 +69,4 @@ if (model.constraints)
    ruleEdit.options.constraints = model.constraints;
 }
 ruleEdit.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-model.webScriptWidgets.push(ruleEdit);
+model.widgets.push(ruleEdit);

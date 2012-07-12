@@ -24,12 +24,12 @@ function main()
 main();
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var filter = {};
 filter.name = "Alfresco.component.BaseFilter";
-filter.instantiationArguments = [];
-filter.instantiationArguments.push("Alfresco.TopicListFilter");
-filter.instantiationArguments.push("\"" + args.htmlid + "\"");
-filter.provideMessages = false;
-filter.provideOptions = false;
-model.webScriptWidgets.push(filter);
+filter.initArgs = [];
+filter.initArgs.push("Alfresco.TopicListFilter");
+filter.initArgs.push("\"" + args.htmlid + "\"");
+filter.useMessages = false;
+filter.useOptions = false;
+model.widgets.push(filter);

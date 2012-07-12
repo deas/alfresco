@@ -140,12 +140,12 @@ if (!user.isGuest)
 }
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var header = {};
 header.name = "Alfresco.component.Header";
-header.assignToVariable = args.htmlid.replace("-", "_");
-header.provideMessages = true;
-header.provideOptions = true;
+header.assignTo = args.htmlid.replace("-", "_");
+header.useMessages = true;
+header.useOptions = true;
 header.options = {};
 header.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 header.options.siteTitle = model.siteTitle;
@@ -155,4 +155,4 @@ header.options.tokens = {
    pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
    userid: user.name
 }
-model.webScriptWidgets.push(header);
+model.widgets.push(header);

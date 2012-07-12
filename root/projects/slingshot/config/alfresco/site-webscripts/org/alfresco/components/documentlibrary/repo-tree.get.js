@@ -15,7 +15,7 @@ function main()
    
    model.rootNode = rootNode;
    
-   model.webScriptWidgets = [];
+   model.widgets = [];
 
    var evaluateChildFolders = "true",
        maximumFolderCount = "-1";
@@ -34,14 +34,14 @@ function main()
 
    var repoDocListTree = {};
    repoDocListTree.name = "Alfresco.RepositoryDocListTree";
-   repoDocListTree.provideOptions = true;
-   repoDocListTree.provideMessages = true;
+   repoDocListTree.useOptions = true;
+   repoDocListTree.useMessages = true;
    repoDocListTree.options = {};
    repoDocListTree.options.rootNode = model.rootNode != null ? model.rootNode : "null";
    repoDocListTree.options.evaluateChildFolders = evaluateChildFolders;
    repoDocListTree.options.maximumFolderCount = maximumFolderCount;
    repoDocListTree.options.setDropTargets = true;
-   model.webScriptWidgets.push(repoDocListTree);
+   model.widgets.push(repoDocListTree);
 }
 
 main();

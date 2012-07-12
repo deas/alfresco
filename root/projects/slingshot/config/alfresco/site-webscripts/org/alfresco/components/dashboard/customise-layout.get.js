@@ -73,23 +73,23 @@ function main()
    {
       templateId: currentTemplate.id,
       noOfColumns: currentNoOfColumns,
-      description: currentTemplateDescription
+      description: currentTemplateDescription,
+      icon : url.context + "/res/components/dashboard/images/" + currentTemplate.id + ".png"
    };
    
    // Prepare model for template
    model.currentLayout = currentLayout;
    model.layouts = layouts;
    
-   model.webScriptWidgets = [];
-   var customizeDashlets = {};
-   customizeDashlets.name = "Alfresco.CustomiseLayout";
-   customizeDashlets.provideOptions = true;
-   customizeDashlets.provideMessages = true;
-   customizeDashlets.options = {};
-   customizeDashlets.options.currentLayout = currentLayout;
-   customizeDashlets.options.currentLayout.icon = url.context + "/res/components/dashboard/images/" + currentLayout.templateId + ".png"
-   customizeDashlets.options.layouts = layouts;
-   model.webScriptWidgets.push(customizeDashlets);
+   model.widgets = [];
+   var customizeDashlets = {
+      name : "Alfresco.CustomiseLayout",
+      options : {
+         currentLayout : currentLayout,
+         layouts : layouts
+      }
+   };
+   model.widgets.push(customizeDashlets);
 }
 
 main();

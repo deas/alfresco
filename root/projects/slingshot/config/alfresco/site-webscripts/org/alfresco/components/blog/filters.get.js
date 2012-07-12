@@ -21,13 +21,14 @@ function main()
    model.filters = filters;
    
    // Widget instantiation metadata...
-   model.webScriptWidgets = [];
-   var blogPostListFilter = {};
-   blogPostListFilter.name = "Alfresco.component.BaseFilter";
-   blogPostListFilter.instantiationArguments = [ "Alfresco.BlogPostListFilter", "\"" + args.htmlid + "\""];
-   blogPostListFilter.provideMessages = false;
-   blogPostListFilter.provideOptions = false;
-   model.webScriptWidgets.push(blogPostListFilter);
+   model.widgets = [];
+   var blogPostListFilter = {
+      name : "Alfresco.component.BaseFilter",
+      initArgs : [ "Alfresco.BlogPostListFilter", "\"" + args.htmlid + "\""],
+      useMessages : false,
+      useOptions : false
+   };
+   model.widgets.push(blogPostListFilter);
 }
 
 main();

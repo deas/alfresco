@@ -25,13 +25,13 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var documentWorkflows = {};
 documentWorkflows.name = "Alfresco.DocumentWorkflows";
-documentWorkflows.provideMessages = true;
-documentWorkflows.provideOptions = true;
+documentWorkflows.useMessages = true;
+documentWorkflows.useOptions = true;
 documentWorkflows.options = {};
 documentWorkflows.options.nodeRef = model.nodeRef;
 documentWorkflows.options.siteId = model.site;
 documentWorkflows.options.destination = model.destination;
-model.webScriptWidgets.push(documentWorkflows);
+model.widgets.push(documentWorkflows);

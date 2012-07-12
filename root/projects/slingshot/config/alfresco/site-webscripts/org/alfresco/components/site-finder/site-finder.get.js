@@ -16,11 +16,11 @@ var searchConfig = config.scoped['Search']['search'],
     defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
     defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
 
-model.webScriptWidgets = [];
+model.widgets = [];
 var siteFinder = {};
 siteFinder.name = "Alfresco.SiteFinder";
-siteFinder.provideMessages = true;
-siteFinder.provideOptions = true;
+siteFinder.useMessages = true;
+siteFinder.useOptions = true;
 siteFinder.options = {};
 siteFinder.options.currentUser = user.name;
 siteFinder.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
@@ -35,4 +35,4 @@ for (var i = 0; i < model.inviteData.length; i++)
    invite.type = model.inviteData[i].invitationType;
    siteFinder.options.inviteData.push(invite);
 }
-model.webScriptWidgets.push(siteFinder);
+model.widgets.push(siteFinder);

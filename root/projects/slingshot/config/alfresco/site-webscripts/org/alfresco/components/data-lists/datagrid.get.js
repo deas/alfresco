@@ -47,13 +47,13 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var dataGrid = {};
 dataGrid.name = "Alfresco.component.DataGrid";
-dataGrid.provideMessages = true;
-dataGrid.provideOptions = true;
+dataGrid.useMessages = true;
+dataGrid.useOptions = true;
 dataGrid.options = {};
 dataGrid.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 dataGrid.options.containerId = template.properties.container != null ? template.properties.container : "dataLists";
 dataGrid.options.usePagination = (args.pagination != null) ? args.pagination : "false";
-model.webScriptWidgets.push(dataGrid);
+model.widgets.push(dataGrid);

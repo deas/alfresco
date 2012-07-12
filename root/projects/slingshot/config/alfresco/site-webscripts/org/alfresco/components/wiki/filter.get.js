@@ -1,8 +1,8 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var baseFilter = {};
 baseFilter.name = "Alfresco.component.BaseFilter";
-baseFilter.instantiationArguments = [ "Alfresco.WikiFilter", "\"" + args.htmlid + "\""];
-baseFilter.provideMessages = false;
-baseFilter.provideOptions = false;
-model.webScriptWidgets.push(baseFilter);
+baseFilter.initArgs = [ "Alfresco.WikiFilter", "\"" + args.htmlid + "\""];
+baseFilter.useMessages = false;
+baseFilter.useOptions = false;
+model.widgets.push(baseFilter);

@@ -8,7 +8,7 @@ function main()
    model.imapServerEnabled = imapServerEnabled;
    
    // Widget instantiation metadata...
-   model.webScriptWidgets = [];
+   model.widgets = [];
    
    var dashboardconfig = config.scoped['Dashboard']['dashboard'];
    var listSize = dashboardconfig.getChildValue('summary-list-size');
@@ -17,39 +17,39 @@ function main()
       listSize = 100;
    }
    
-   var mySites = {};
-   mySites.name = "Alfresco.dashlet.MySites";
-   mySites.provideOptions = true;
-   mySites.provideMessages = true;
-   mySites.options = {};
-   mySites.options.imapEnabled = imapServerEnabled;
-   mySites.options.listSize = listSize;
-   model.webScriptWidgets.push(mySites);
+   var mySites = {
+      name : "Alfresco.dashlet.MySites",
+      options : {
+         imapEnabled : imapServerEnabled,
+         listSize : listSize
+      }
+   };
+   model.widgets.push(mySites);
    
-   var dashletResizer = {};
-   dashletResizer.name = "Alfresco.widget.DashletResizer";
-   dashletResizer.instantiationArguments = [];
-   dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
-   dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
-   dashletResizer.provideOptions = false;
-   dashletResizer.provideMessages = false;
-   model.webScriptWidgets.push(dashletResizer);
+   var dashletResizer = {
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
+      useMessages : false
+   };
+   model.widgets.push(dashletResizer);
    
-   var dashletTitleBarActions = {};
-   dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-   dashletTitleBarActions.provideOptions = true;
-   dashletTitleBarActions.provideMessages = false;
-   dashletTitleBarActions.options = {};
-   dashletTitleBarActions.options.actions = [];
-   dashletTitleBarActions.options.actions.push({
-      cssClass: "help",
-      bubbleOnClick:
-      {
-         message: msg.get("dashlet.help")
-      },
-      tooltip: msg.get("dashlet.help.tooltip")
-   })
-   model.webScriptWidgets.push(dashletTitleBarActions);
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: [
+            {
+               cssClass: "help",
+               bubbleOnClick:
+               {
+                  message: msg.get("dashlet.help")
+               },
+               tooltip: msg.get("dashlet.help.tooltip")
+            }
+         ]
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
 }
 
 main();

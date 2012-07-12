@@ -21,12 +21,12 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var folderLinks = {};
 folderLinks.name = "Alfresco.FolderLinks";
-folderLinks.provideMessages = true;
-folderLinks.provideOptions = true;
+folderLinks.useMessages = true;
+folderLinks.useOptions = true;
 folderLinks.options = {};
 folderLinks.options.nodeRef = model.nodeRef;
 folderLinks.options.siteId = (model.site != null) ? model.site : null;
-model.webScriptWidgets.push(folderLinks);
+model.widgets.push(folderLinks);

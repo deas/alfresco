@@ -1,10 +1,15 @@
-model.webScriptWidgets = [];
-var blogPostView = {};
-blogPostView.name = "Alfresco.BlogPostView";
-blogPostView.provideMessages = true;
-blogPostView.provideOptions = true;
-blogPostView.options = {};
-blogPostView.options.siteId = page.url.templateArgs.site;
-blogPostView.options.containerId = "blog";
-blogPostView.options.postId = page.url.args.postId;
-model.webScriptWidgets.push(blogPostView);
+function main()
+{
+   model.widgets = [];
+   var blogPostView = {
+      name : "Alfresco.BlogPostView",
+      options : {
+         siteId : page.url.templateArgs.site,
+         containerId : "blog",
+         postId : page.url.args.postId
+      }
+   };
+   model.widgets.push(blogPostView);
+}
+
+main();

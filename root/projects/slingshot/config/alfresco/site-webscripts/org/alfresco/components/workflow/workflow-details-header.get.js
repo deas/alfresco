@@ -1,9 +1,9 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var workflowDetailsHeader = {};
 workflowDetailsHeader.name = "Alfresco.component.WorkflowDetailsHeader";
-workflowDetailsHeader.provideMessages = true;
-workflowDetailsHeader.provideOptions = true;
+workflowDetailsHeader.useMessages = true;
+workflowDetailsHeader.useOptions = true;
 workflowDetailsHeader.options = {};
 workflowDetailsHeader.options.taskId = page.url.args.taskId;
-model.webScriptWidgets.push(workflowDetailsHeader);
+model.widgets.push(workflowDetailsHeader);

@@ -60,11 +60,11 @@ main();
 
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var wikiPage = {};
 wikiPage.name = "Alfresco.WikiPage";
-wikiPage.provideMessages = true;
-wikiPage.provideOptions = true;
+wikiPage.useMessages = true;
+wikiPage.useOptions = true;
 wikiPage.options = {};
 wikiPage.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 wikiPage.options.pageTitle = (page.url.args.title != null) ? page.url.args.title : "";
@@ -103,4 +103,4 @@ else
    wikiPage.options.permissions.edit = "false";
    wikiPage.options.permissions["delete"] = "false";
 }
-model.webScriptWidgets.push(wikiPage);
+model.widgets.push(wikiPage);

@@ -1,4 +1,4 @@
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var evaluateChildFolders = "true";
 var docLibConfig = config.scoped["DocumentLibrary"];
@@ -14,9 +14,9 @@ if (docLibConfig != null)
 
 var categories = {};
 categories.name = "Alfresco.DocListCategories";
-categories.provideOptions = true;
-categories.provideMessages = true;
+categories.useOptions = true;
+categories.useMessages = true;
 categories.options = {};
 categories.options.nodeRef = "alfresco://category/root"; 
 categories.options.evaluateChildFolders = evaluateChildFolders;
-model.webScriptWidgets.push(categories);
+model.widgets.push(categories);

@@ -72,11 +72,11 @@ var searchConfig = config.scoped['Search']['search'],
     defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
     defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
 
-model.webScriptWidgets = [];
+model.widgets = [];
 var search = {};
 search.name = "Alfresco.Search";
-search.provideMessages = true;
-search.provideOptions = true;
+search.useMessages = true;
+search.useOptions = true;
 search.options = {};
 search.options.siteId = model.siteId;
 search.options.siteTitle = model.siteTitle;
@@ -89,4 +89,4 @@ search.options.searchQuery = model.searchQuery;
 search.options.searchRootNode = config.scoped['RepositoryLibrary']['root-node'].value;
 search.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
 search.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
-model.webScriptWidgets.push(search);
+model.widgets.push(search);

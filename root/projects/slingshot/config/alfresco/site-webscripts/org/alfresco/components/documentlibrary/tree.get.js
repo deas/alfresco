@@ -1,4 +1,4 @@
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var evaluateChildFolders = "true",
     maximumFolderCount = "-1";
@@ -17,12 +17,12 @@ if (docLibConfig != null)
 
 var docListTree = {};
 docListTree.name = "Alfresco.DocListTree";
-docListTree.provideOptions = true;
-docListTree.provideMessages = true;
+docListTree.useOptions = true;
+docListTree.useMessages = true;
 docListTree.options = {};
 docListTree.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 docListTree.options.containerId = template.properties.container != null ? template.properties.container : "documentLibrary";
 docListTree.options.evaluateChildFolders = evaluateChildFolders;
 docListTree.options.maximumFolderCount = maximumFolderCount;
 docListTree.options.setDropTargets = true;
-model.webScriptWidgets.push(docListTree);
+model.widgets.push(docListTree);

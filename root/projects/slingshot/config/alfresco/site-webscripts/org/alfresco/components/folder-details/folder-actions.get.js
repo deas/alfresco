@@ -22,11 +22,11 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var folderActions = {};
 folderActions.name = "Alfresco.FolderActions";
-folderActions.provideMessages = true;
-folderActions.provideOptions = true;
+folderActions.useMessages = true;
+folderActions.useOptions = true;
 folderActions.options = {};
 folderActions.options.nodeRef = model.nodeRef;
 folderActions.options.siteId = (model.site != null) ? model.site : null;
@@ -35,4 +35,4 @@ folderActions.options.rootNode = model.rootNode;
 folderActions.options.replicationUrlMapping = (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}";
 folderActions.options.repositoryBrowsing = (model.rootNode != null);
 folderActions.options.folderDetails = model.folderDetails;
-model.webScriptWidgets.push(folderActions);
+model.widgets.push(folderActions);

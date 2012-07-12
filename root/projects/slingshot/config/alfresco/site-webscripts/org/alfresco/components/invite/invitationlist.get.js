@@ -18,12 +18,12 @@ for (var i = 0, j = data.siteRoles.length; i < j; i++)
 }
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var invitationList = {};
 invitationList.name = "Alfresco.InvitationList";
-invitationList.provideMessages = true;
-invitationList.provideOptions = true;
+invitationList.useMessages = true;
+invitationList.useOptions = true;
 invitationList.options = {};
 invitationList.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 invitationList.options.roles = model.siteRoles;
-model.webScriptWidgets.push(invitationList);
+model.widgets.push(invitationList);

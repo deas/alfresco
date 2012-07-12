@@ -17,13 +17,8 @@ function main()
    model.jobDetail = jobDetail;
    
    // Define widget model...
-   model.webScriptWidgets = [];
-   var replicationJob = {};
-   replicationJob.name = "Alfresco.component.ReplicationJob";
-   replicationJob.provideMessages = true;
-   replicationJob.provideOptions = true;
-   replicationJob.options = {};
-   replicationJob.options.jobName = jobName;
+   model.widgets = [];
+   
    var payload = [];
    if (jobDetail != null)
    {
@@ -32,10 +27,18 @@ function main()
          payload.push(p.nodeRef);
       }
    }
-   replicationJob.options.payload = payload;
-   replicationJob.options.targetName = jobDetail.targetName;
-   replicationJob.options.scheduleStart = jobDetail.schedule.start.iso8601;
-   model.webScriptWidgets.push(replicationJob);
+   
+   var replicationJob = {
+      name: "Alfresco.component.ReplicationJob",
+      options : {
+         jobName : jobName,
+         payload : payload,
+         targetName : jobDetail.targetName,
+         scheduleStart :jobDetail.schedule.start.iso8601
+      },
+   };
+   
+   model.widgets.push(replicationJob);
 }
 
 main();

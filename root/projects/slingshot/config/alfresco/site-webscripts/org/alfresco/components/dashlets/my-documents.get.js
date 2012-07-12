@@ -30,52 +30,56 @@ model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.mydocuments.
 model.filters = getFilters();
 model.maxItems = getMaxItems();
 
-// Widget instantiation metadata...
-model.webScriptWidgets = [];
-model.prefFilter = model.preferences.filter;
-if (model.prefFilter == null)
+function main()
 {
-   model.prefFilter = "recentlyModifiedByMe";
+   // Widget instantiation metadata...
+   model.widgets = [];
+   model.prefFilter = model.preferences.filter;
+   if (model.prefFilter == null)
+   {
+      model.prefFilter = "recentlyModifiedByMe";
+   }
+
+   model.prefSimpleView = model.preferences.simpleView;
+   if (model.prefSimpleView == null)
+   {
+      model.prefSimpleView = true;
+   }
+
+   var myDocs = {
+      name : "Alfresco.dashlet.MyDocuments",
+      options : {
+         filter : model.prefFilter,
+         maxItems : model.maxItems,
+         simpleView : model.prefSimpleView,
+         validFilters : model.filters
+      }
+   };
+   model.widgets.push(myDocs);
+
+   var dashletResizer = {
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""]
+   };
+   model.widgets.push(dashletResizer);
+
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: [
+             {
+                cssClass: "help",
+                bubbleOnClick:
+                {
+                   message: msg.get("dashlet.help")
+                },
+                tooltip: msg.get("dashlet.help.tooltip")
+             }
+         ]
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
 }
 
-model.prefSimpleView = model.preferences.simpleView;
-if (model.prefSimpleView == null)
-{
-   model.prefSimpleView = true;
-}
-
-var myDocs = {};
-myDocs.name = "Alfresco.dashlet.MyDocuments";
-myDocs.provideOptions = true;
-myDocs.provideMessages = true;
-myDocs.options = {};
-myDocs.options.filter = model.prefFilter;
-myDocs.options.maxItems = model.maxItems;
-myDocs.options.simpleView = model.prefSimpleView;
-myDocs.options.validFilters = model.filters;
-model.webScriptWidgets.push(myDocs);
-
-var dashletResizer = {};
-dashletResizer.name = "Alfresco.widget.DashletResizer";
-dashletResizer.instantiationArguments = [];
-dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
-dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
-model.webScriptWidgets.push(dashletResizer);
-
-var dashletTitleBarActions = {};
-dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-dashletTitleBarActions.provideOptions = true;
-dashletTitleBarActions.provideMessages = false;
-dashletTitleBarActions.options = {};
-dashletTitleBarActions.options.actions = [];
-dashletTitleBarActions.options.actions.push(
-      {
-         cssClass: "help",
-         bubbleOnClick:
-         {
-            message: msg.get("dashlet.help")
-         },
-         tooltip: msg.get("dashlet.help.tooltip")
-      });
-
-model.webScriptWidgets.push(dashletTitleBarActions);
+main();

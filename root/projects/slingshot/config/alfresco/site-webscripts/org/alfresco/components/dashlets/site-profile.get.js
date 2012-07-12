@@ -47,23 +47,24 @@ function main()
    model.sitemanagers = sitemanagers;
    
    // Widget instantiation metdata...
-   model.webScriptWidgets = [];
-   var dashletTitleBarActions = {};
-   dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-   dashletTitleBarActions.provideOptions = true;
-   dashletTitleBarActions.provideMessages = false;
-   dashletTitleBarActions.options = {};
-   dashletTitleBarActions.options.actions = [];
-   dashletTitleBarActions.options.actions.push({
-      cssClass: "help",
-      bubbleOnClick:
-      {
-         message: msg.get("dashlet.help")
-      },
-      tooltip: msg.get("dashlet.help.tooltip")
-   });
-
-   model.webScriptWidgets.push(dashletTitleBarActions);
+   model.widgets = [];
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: [
+            {
+               cssClass: "help",
+               bubbleOnClick:
+               {
+                  message: msg.get("dashlet.help")
+               },
+               tooltip: msg.get("dashlet.help.tooltip")
+            }
+         ]
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
 }
 
 main();

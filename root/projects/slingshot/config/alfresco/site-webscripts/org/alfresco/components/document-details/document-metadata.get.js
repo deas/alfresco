@@ -16,13 +16,13 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var documentMetadata = {};
 documentMetadata.name = "Alfresco.DocumentMetadata";
-documentMetadata.provideMessages = true;
-documentMetadata.provideOptions = true;
+documentMetadata.useMessages = true;
+documentMetadata.useOptions = true;
 documentMetadata.options = {};
 documentMetadata.options.nodeRef = model.nodeRef;
 documentMetadata.options.siteId = model.site;
 documentMetadata.options.formId = model.formId;
-model.webScriptWidgets.push(documentMetadata);
+model.widgets.push(documentMetadata);

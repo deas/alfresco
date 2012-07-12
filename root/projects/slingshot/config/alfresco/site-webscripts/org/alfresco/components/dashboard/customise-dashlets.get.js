@@ -144,21 +144,21 @@ function main()
    model.currentLayout = currentLayout;
    
    // Widget instantiation metadata...
-   model.webScriptWidgets = [];
-   var customizeDashlets = {};
-   customizeDashlets.name = "Alfresco.CustomiseDashlets";
-   customizeDashlets.provideOptions = true;
-   customizeDashlets.provideMessages = true;
-   customizeDashlets.options = {};
-   customizeDashlets.options.currentLayout = {};
-   customizeDashlets.options.currentLayout.templateId = currentTemplate.id;
-   customizeDashlets.options.currentLayout.noOfColumns = "" + currentNoOfColumns;
-   customizeDashlets.options.currentLayout.description = currentTemplate.description;
-   customizeDashlets.options.currentLayout.icon = url.context + "/res/components/dashboard/images/" + currentTemplate.id + ".png";
-   
-   customizeDashlets.options.dashboardUrl = model.dashboardUrl;
-   customizeDashlets.options.dashboardId = model.dashboardId;
-   model.webScriptWidgets.push(customizeDashlets);
+   model.widgets = [];
+   var customizeDashlets = {
+      name : "Alfresco.CustomiseDashlets",
+      options : {
+         currentLayout : {
+            templateId : currentTemplate.id,
+            noOfColumns : "" + currentNoOfColumns,
+            description : currentTemplate.description,
+            icon : url.context + "/res/components/dashboard/images/" + currentTemplate.id + ".png"
+         },
+         dashboardUrl : model.dashboardUrl,
+         dashboardId : model.dashboardId
+      }
+   };
+   model.widgets.push(customizeDashlets);
 }
 
 main();

@@ -28,11 +28,11 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var googleMap = {};
 googleMap.name = "Alfresco.component.GoogleMap";
-googleMap.provideMessages = true;
-googleMap.provideOptions = true;
+googleMap.useMessages = true;
+googleMap.useOptions = true;
 googleMap.options = {};
 googleMap.options.documentDetails = model.documentDetailsJSON;
-model.webScriptWidgets.push(googleMap);
+model.widgets.push(googleMap);

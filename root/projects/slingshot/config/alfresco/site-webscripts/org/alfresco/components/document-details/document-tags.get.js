@@ -32,4 +32,4 @@ function main()
 
 main();
 
-model.webScriptWidgets = [];
+model.widgets = [];

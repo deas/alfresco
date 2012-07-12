@@ -16,39 +16,43 @@ function getMaxItems()
 model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.docsummary.dashlet");
 model.maxItems = getMaxItems();
 
-// Widget instantiation metadata...
-model.webScriptWidgets = [];
+function main()
+{
+   // Widget instantiation metadata...
+   model.widgets = [];
 
-var docSummary = {};
-docSummary.name = "Alfresco.dashlet.DocSummary";
-docSummary.provideOptions = true;
-docSummary.provideMessages = true;
-docSummary.options = {};
-docSummary.options.simpleView = model.preferences.prefSimpleView != null ? model.preferences.prefSimpleView : false; 
-docSummary.options.maxItems = model.maxItems;
-model.webScriptWidgets.push(docSummary);
+   var docSummary = {
+      name : "Alfresco.dashlet.DocSummary",
+      options : {
+         simpleView : model.preferences.prefSimpleView != null ? model.preferences.prefSimpleView : false, 
+         maxItems : model.maxItems
+      }
+   };
+   model.widgets.push(docSummary);
 
-var dashletResizer = {};
-dashletResizer.name = "Alfresco.widget.DashletResizer";
-dashletResizer.instantiationArguments = [];
-dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
-dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
-model.webScriptWidgets.push(dashletResizer);
+   var dashletResizer = {
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""]
+   };
+   model.widgets.push(dashletResizer);
 
-var dashletTitleBarActions = {};
-dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-dashletTitleBarActions.provideOptions = true;
-dashletTitleBarActions.provideMessages = false;
-dashletTitleBarActions.options = {};
-dashletTitleBarActions.options.actions = [];
-dashletTitleBarActions.options.actions.push(
-   {
-      cssClass: "help",
-      bubbleOnClick:
-      {
-         message: msg.get("dashlet.help")
-      },
-      tooltip: msg.get("dashlet.help.tooltip")
-   });
-model.webScriptWidgets.push(dashletTitleBarActions);
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: [
+             {
+                cssClass: "help",
+                bubbleOnClick:
+                {
+                   message: msg.get("dashlet.help")
+                },
+                tooltip: msg.get("dashlet.help.tooltip")
+             }
+         ]
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
+}
 
+main();

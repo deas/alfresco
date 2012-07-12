@@ -1,9 +1,9 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var linkEdit = {};
 linkEdit.name = "Alfresco.LinkEdit";
-linkEdit.provideMessages = true;
-linkEdit.provideOptions = true;
+linkEdit.useMessages = true;
+linkEdit.useOptions = true;
 linkEdit.options = {};
 linkEdit.options.siteId = page.url.templateArgs.site != null;
 linkEdit.options.containerId = "links";
@@ -17,4 +17,4 @@ else
    linkEdit.options.editMode = false;
    linkEdit.options.linkId = "";
 }
-model.webScriptWidgets.push(linkEdit);
+model.widgets.push(linkEdit);

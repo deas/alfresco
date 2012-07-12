@@ -1,22 +1,29 @@
 <import resource="classpath:alfresco/site-webscripts/org/alfresco/components/dashlets/my-workspaces.inc.js">
 main("meeting-workspace");
 
-// Widget instantiation metdata...
-model.webScriptWidgets = [];
+function widgets()
+{
+   // Widget instantiation metdata...
+   model.widgets = [];
 
-var dashletTitleBarActions = {};
-dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-dashletTitleBarActions.provideOptions = true;
-dashletTitleBarActions.provideMessages = false;
-dashletTitleBarActions.options = {};
-dashletTitleBarActions.options.actions = [];
-dashletTitleBarActions.options.actions.push({
-   cssClass: "help",
-   bubbleOnClick:
-   {
-      message: msg.get("dashlet.help")
-   },
-   tooltip: msg.get("dashlet.help.tooltip")
-});
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: [
+            {
+               cssClass: "help",
+               bubbleOnClick:
+               {
+                  message: msg.get("dashlet.help")
+               },
+               tooltip: msg.get("dashlet.help.tooltip")
+            }
+         ]
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
+}
 
-model.webScriptWidgets.push(dashletTitleBarActions);
+widgets();
+

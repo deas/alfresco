@@ -19,8 +19,8 @@ function main()
 main();
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var userNotification = {};
 userNotification.name = "Alfresco.UserNotifications";
-userNotification.provideMessages = true;
-model.webScriptWidgets.push(userNotification);
+userNotification.useMessages = true;
+model.widgets.push(userNotification);

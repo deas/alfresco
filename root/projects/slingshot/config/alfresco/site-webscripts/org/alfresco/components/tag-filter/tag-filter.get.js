@@ -18,15 +18,15 @@ if (maxTagCount == null)
    maxTagCount = "100";
 }
 
-model.webScriptWidgets = [];
+model.widgets = [];
 var tagFilter = {};
 tagFilter.name = "Alfresco.TagFilter";
-tagFilter.assignToVariable = "tagFilter";
-tagFilter.provideMessages = true;
-tagFilter.provideOptions = true;
+tagFilter.assignTo = "tagFilter";
+tagFilter.useMessages = true;
+tagFilter.useOptions = true;
 tagFilter.options = {};
 tagFilter.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 tagFilter.options.containerId = (template.properties.container != null) ? template.properties.container : "";
 tagFilter.options.rootNode = model.rootNode;
 tagFilter.options.numTags = maxTagCount;
-model.webScriptWidgets.push(tagFilter);
+model.widgets.push(tagFilter);

@@ -18,11 +18,11 @@ else
 }
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var wikiList = {};
 wikiList.name = "Alfresco.WikiList";
-wikiList.provideMessages = true;
-wikiList.provideOptions = true;
+wikiList.useMessages = true;
+wikiList.useOptions = true;
 wikiList.options = {};
 wikiList.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 wikiList.options.pages = [];
@@ -36,4 +36,4 @@ if (model.pageList != null)
 wikiList.options.permissions = {};
 wikiList.options.permissions.create = (model.pageList != null && model.pageList.permissions != null && model.pageList.permissions.create != null) ? model.pageList.permissions.create : "false";
 wikiList.options.filterId = (page.url.args.filter != null) ? page.url.args.filter : "recentlyModified";
-model.webScriptWidgets.push(wikiList);
+model.widgets.push(wikiList);

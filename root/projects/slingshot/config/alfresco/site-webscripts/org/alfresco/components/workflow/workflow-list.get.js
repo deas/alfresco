@@ -7,14 +7,14 @@ model.maxItems = getMaxItems();
 
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var workflowList = {};
 workflowList.name = "Alfresco.component.WorkflowList";
-workflowList.provideMessages = true;
-workflowList.provideOptions = true;
+workflowList.useMessages = true;
+workflowList.useOptions = true;
 workflowList.options = {};
 workflowList.options.filterParameters = model.filterParameters;
 workflowList.options.hiddenWorkflowNames = model.hiddenWorkflowNames;
 workflowList.options.workflowDefinitions = model.workflowDefinitions;
 workflowList.options.maxItems = (model.maxItems != null) ? model.maxItems : "50";
-model.webScriptWidgets.push(workflowList);
+model.widgets.push(workflowList);

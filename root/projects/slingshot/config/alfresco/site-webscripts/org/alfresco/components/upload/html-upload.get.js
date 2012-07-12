@@ -1,9 +1,9 @@
 <import resource="classpath:alfresco/site-webscripts/org/alfresco/components/upload/flash-upload.get.js">
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var htmlUpload = {};
 htmlUpload.name = "Alfresco.HtmlUpload";
-htmlUpload.provideOptions = false;
-htmlUpload.provideMessages = true;
-model.webScriptWidgets.push(htmlUpload);
+htmlUpload.useOptions = false;
+htmlUpload.useMessages = true;
+model.widgets.push(htmlUpload);

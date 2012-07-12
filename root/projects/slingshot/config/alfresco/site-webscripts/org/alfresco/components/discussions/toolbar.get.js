@@ -29,14 +29,14 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var toolbar = {};
 toolbar.name = "Alfresco.DiscussionsToolbar";
-toolbar.provideOptions = true;
-toolbar.provideMessages = true;
+toolbar.useOptions = true;
+toolbar.useMessages = true;
 toolbar.options = {};
 toolbar.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 toolbar.options.containerId = (page.url.args.containerId != null) ? page.url.args.containerId : "discussions";
 toolbar.options.allowCreate = model.forum.forumPermissions.create;
-model.webScriptWidgets.push(toolbar);
+model.widgets.push(toolbar);

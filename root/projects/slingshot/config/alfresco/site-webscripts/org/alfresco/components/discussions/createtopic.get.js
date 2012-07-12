@@ -1,10 +1,10 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var createTopic = {};
 createTopic.name = "Alfresco.CreateTopic";
-createTopic.provideOptions = true;
-createTopic.provideMessages = true;
+createTopic.useOptions = true;
+createTopic.useMessages = true;
 createTopic.options = {};
 createTopic.options.topicId = (page.url.args.topicId != null) ? page.url.args.topicId : "";
 createTopic.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
@@ -28,4 +28,4 @@ var editorConfig =
    language: this.locale.substring(0, 2)
 };
 createTopic.options.editorConfig = editorConfig;
-model.webScriptWidgets.push(createTopic);
+model.widgets.push(createTopic);

@@ -1,39 +1,46 @@
-model.webScriptWidgets = [];
-
-var userCalendar = {};
-userCalendar.name = "Alfresco.dashlet.UserCalendar";
-userCalendar.provideOptions = true;
-userCalendar.provideMessages = true;
-userCalendar.options = {};
-var dashboardconfig = config.scoped['Dashboard']['dashboard'];
-var listSize = dashboardconfig.getChildValue('summary-list-size');
-if (listSize == null)
+function main()
 {
-   listSize = 100;
-}
-userCalendar.options.listSize = listSize
-model.webScriptWidgets.push(userCalendar);
+   model.widgets = [];
 
-var dashletResizer = {};
-dashletResizer.name = "Alfresco.widget.DashletResizer";
-dashletResizer.instantiationArguments = [];
-dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
-dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
-model.webScriptWidgets.push(dashletResizer);
-
-var dashletTitleBarActions = {};
-dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-dashletTitleBarActions.provideOptions = true;
-dashletTitleBarActions.provideMessages = false;
-dashletTitleBarActions.options = {};
-dashletTitleBarActions.options.actions = [];
-dashletTitleBarActions.options.actions.push(
+   var dashboardconfig = config.scoped['Dashboard']['dashboard'];
+   var listSize = dashboardconfig.getChildValue('summary-list-size');
+   if (listSize == null)
    {
-      cssClass: "help",
-      bubbleOnClick:
-      {
-         message: msg.get("dashlet.help")
-      },
-      tooltip: msg.get("dashlet.help.tooltip")
-   });
-model.webScriptWidgets.push(dashletTitleBarActions);
+      listSize = 100;
+   }
+
+   var userCalendar = {
+      name : "Alfresco.dashlet.UserCalendar",
+      options : {
+         listSize : listSize
+      }
+      
+   };
+   model.widgets.push(userCalendar);
+
+   var dashletResizer = {
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""]
+   };
+   model.widgets.push(dashletResizer);
+
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: [
+             {
+                cssClass: "help",
+                bubbleOnClick:
+                {
+                   message: msg.get("dashlet.help")
+                },
+                tooltip: msg.get("dashlet.help.tooltip")
+             }
+         ]
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
+}
+
+main();

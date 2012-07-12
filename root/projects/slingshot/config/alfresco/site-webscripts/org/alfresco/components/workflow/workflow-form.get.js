@@ -1,10 +1,10 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var workflowForm = {};
 workflowForm.name = "Alfresco.component.WorkflowForm";
-workflowForm.provideMessages = true;
-workflowForm.provideOptions = true;
+workflowForm.useMessages = true;
+workflowForm.useOptions = true;
 workflowForm.options = {};
 workflowForm.options.referrer = page.url.args.referrer;
 workflowForm.options.nodeRef = page.url.args.nodeRef;
-model.webScriptWidgets.push(workflowForm);
+model.widgets.push(workflowForm);

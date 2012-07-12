@@ -1,9 +1,9 @@
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var dataLoader = {};
 dataLoader.name = "Alfresco.DataLoader";
-dataLoader.provideOptions = true;
-dataLoader.provideMessages = true;
+dataLoader.useOptions = true;
+dataLoader.useMessages = true;
 dataLoader.options = {};
 dataLoader.options.url = (args.url != null) ? args.url : "";
 if (args.eventData != null)
@@ -18,4 +18,4 @@ if (args.failureMessageKey != null)
 {
    dataLoader.options.failureMessageKey = args.failureMessageKey;
 }
-model.webScriptWidgets.push(dataLoader);
+model.widgets.push(dataLoader);

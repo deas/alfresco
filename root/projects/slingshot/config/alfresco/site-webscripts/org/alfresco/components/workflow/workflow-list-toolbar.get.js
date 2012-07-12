@@ -1,7 +1,7 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var workflowListToolbar = {};
 workflowListToolbar.name = "Alfresco.component.WorkflowListToolbar";
-workflowListToolbar.provideMessages = true;
-workflowListToolbar.provideOptions = false;
-model.webScriptWidgets.push(workflowListToolbar);
+workflowListToolbar.useMessages = true;
+workflowListToolbar.useOptions = false;
+model.widgets.push(workflowListToolbar);

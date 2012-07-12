@@ -6,10 +6,10 @@ model.contentTypes =
 
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var dndUpload = {};
 dndUpload.name = "Alfresco.DNDUpload";
-dndUpload.assignToVariable = "dndUpload";
-dndUpload.provideOptions = false;
-dndUpload.provideMessages = true;
-model.webScriptWidgets.push(dndUpload);
+dndUpload.assignTo = "dndUpload";
+dndUpload.useOptions = false;
+dndUpload.useMessages = true;
+model.widgets.push(dndUpload);

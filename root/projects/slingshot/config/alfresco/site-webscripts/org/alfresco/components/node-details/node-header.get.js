@@ -28,11 +28,11 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var nodeHeader = {};
 nodeHeader.name = "Alfresco.component.NodeHeader";
-nodeHeader.provideOptions = true;
-nodeHeader.provideMessages = true;
+nodeHeader.useOptions = true;
+nodeHeader.useMessages = true;
 nodeHeader.options = {};
 nodeHeader.options.nodeRef = model.nodeRef;
 nodeHeader.options.siteId = model.site;
@@ -53,4 +53,4 @@ if (model.item.likes != null)
 nodeHeader.options.likes = likes;
 nodeHeader.options.isFavourite = model.item.isFavourite || false;
 nodeHeader.options.isContainer = model.isContainer;
-model.webScriptWidgets.push(nodeHeader);
+model.widgets.push(nodeHeader);

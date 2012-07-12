@@ -40,11 +40,11 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var customisePages = {};
 customisePages.name = "Alfresco.CustomisePages";
-customisePages.provideMessages = true;
-customisePages.provideOptions = true;
+customisePages.useMessages = true;
+customisePages.useOptions = true;
 customisePages.options = {};
 customisePages.options.siteId = model.siteId;
-model.webScriptWidgets.push(customisePages);
+model.widgets.push(customisePages);

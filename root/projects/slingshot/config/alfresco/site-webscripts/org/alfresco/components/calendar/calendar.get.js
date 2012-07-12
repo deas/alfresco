@@ -1,7 +1,11 @@
-model.webScriptWidgets = [];
-var calendar = {};
-calendar.name = "Alfresco.Calendar";
-calendar.assignToVariable = "calendar";
-calendar.provideOptions = false;
-calendar.provideMessages = true;
-model.webScriptWidgets.push(calendar);
+function main()
+{
+   model.widgets = [];
+   var calendar = {
+      name : "Alfresco.Calendar",
+      assignTo : "calendar"
+   };
+   model.widgets.push(calendar);
+}
+
+main();

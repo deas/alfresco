@@ -46,11 +46,11 @@ var searchConfig = config.scoped['Search']['search'],
     defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
     defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
 
-model.webScriptWidgets = [];
+model.widgets = [];
 var siteMembers = {};
 siteMembers.name = "Alfresco.SiteMembers";
-siteMembers.provideMessages = true;
-siteMembers.provideOptions = true;
+siteMembers.useMessages = true;
+siteMembers.useOptions = true;
 siteMembers.options = {};
 siteMembers.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
 siteMembers.options.currentUser = user.name;
@@ -63,4 +63,4 @@ siteMembers.options.roles = model.siteRoles;
 siteMembers.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
 siteMembers.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
 siteMembers.options.setFocus = (args.setFocus != null) ? args.setFocus : "false";
-model.webScriptWidgets.push(siteMembers);
+model.widgets.push(siteMembers);

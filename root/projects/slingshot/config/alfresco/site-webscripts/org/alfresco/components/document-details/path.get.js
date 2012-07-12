@@ -1,7 +1,7 @@
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var path = {};
 path.name = "Alfresco.component.Path";
-path.provideMessages = true;
-path.provideOptions = false;
-model.webScriptWidgets.push(path);
+path.useMessages = true;
+path.useOptions = false;
+model.widgets.push(path);

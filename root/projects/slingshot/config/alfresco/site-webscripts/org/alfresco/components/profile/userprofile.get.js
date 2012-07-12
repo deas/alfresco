@@ -58,11 +58,11 @@ function main()
 main();
 
 //Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var userProfile = {};
 userProfile.name = "Alfresco.UserProfile";
-userProfile.provideMessages = true;
-userProfile.provideOptions = true;
+userProfile.useMessages = true;
+userProfile.useOptions = true;
 userProfile.options = {};
 userProfile.options.userId = user.name;
 userProfile.options.profile = {};
@@ -87,4 +87,4 @@ userProfile.options.profile.companypostcode = (model.profile.companyPostcode != 
 userProfile.options.profile.companytelephone = (model.profile.companyTelephone != null) ? model.profile.companyTelephone : "";
 userProfile.options.profile.companyfax = (model.profile.companyFax != null) ? model.profile.companyFax : "";
 userProfile.options.profile.companyemail = (model.profile.companyEmail != null) ? model.profile.companyEmail : "";
-model.webScriptWidgets.push(userProfile);
+model.widgets.push(userProfile);

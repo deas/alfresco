@@ -24,17 +24,17 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.webScriptWidgets = [];
-   var blogToolbar = {};
-   blogToolbar.name = "Alfresco.BlogToolbar";
-   blogToolbar.provideMessages = true;
-   blogToolbar.provideOptions = true;
-   blogToolbar.options = {};
-   blogToolbar.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-   blogToolbar.options.containerId = (template.properties.container != null) ? template.properties.container : "blog";
-   blogToolbar.options.allowCreate = model.blog.permissions.create;
-   blogToolbar.options.allowConfigure = model.blog.permissions.edit;
-   model.webScriptWidgets.push(blogToolbar);
+   model.widgets = [];
+   var blogToolbar = {
+      name : "Alfresco.BlogToolbar",
+      options : {
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         containerId : (template.properties.container != null) ? template.properties.continer : "blog",
+         allowCreate : model.blog.permissions.create,
+         allowConfigure : model.blog.permissions.edit
+      }
+   };
+   model.widgets.push(blogToolbar);
 }
 
 main();

@@ -54,44 +54,38 @@ function main()
    model.userIsSiteManager = userIsSiteManager;
    
    // Widget instantiation metadata...
-   model.webScriptWidgets = [];
+   model.widgets = [];
 
-   var webView = {};
-   webView.name = "Alfresco.dashlet.WebView";
-   webView.assignToVariable = "webView";
-   webView.provideOptions = true;
-   webView.provideMessages = true;
-   webView.options = {};
-   webView.options.componentId = instance.object.id;
-   webView.options.webviewURI = model.uri;
-   webView.options.webviewTitle = model.webviewTitle;
-   webView.options.webviewHeight = model.height;
-   webView.options.isDefault = model.isDefault;
-   model.webScriptWidgets.push(webView);
+   var webView = {
+      name : "Alfresco.dashlet.WebView",
+      assignTo : "webView",
+      options : {
+         componentId : instance.object.id,
+         webviewURI : model.uri,
+         webviewTitle : model.webviewTitle,
+         webviewHeight : model.height,
+         isDefault : model.isDefault
+      }
+   };
+   model.widgets.push(webView);
 
-   var dashletResizer = {};
-   dashletResizer.name = "Alfresco.widget.DashletResizer";
-   dashletResizer.instantiationArguments = [];
-   dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
-   dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
-   model.webScriptWidgets.push(dashletResizer);
+   var dashletResizer = {
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""]
+   };
+   model.widgets.push(dashletResizer);
 
-   var dashletTitleBarActions = {};
-   dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-   dashletTitleBarActions.provideOptions = true;
-   dashletTitleBarActions.provideMessages = false;
-   dashletTitleBarActions.options = {};
-   dashletTitleBarActions.options.actions = [];
+   var actions = [];
    if (model.userIsSiteManager)
    {
-      dashletTitleBarActions.options.actions.push(
+      actions.push(
       {
          cssClass: "edit",
          eventOnClick: { ___value : "editWebViewDashletEvent", ___type: "REFERENCE"}, 
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }
-   dashletTitleBarActions.options.actions.push({
+   actions.push({
       cssClass: "help",
       bubbleOnClick:
       {
@@ -99,7 +93,15 @@ function main()
       },
       tooltip: msg.get("dashlet.help.tooltip")
    });
-   model.webScriptWidgets.push(dashletTitleBarActions);
+   
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: actions
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
 }
 
 main();

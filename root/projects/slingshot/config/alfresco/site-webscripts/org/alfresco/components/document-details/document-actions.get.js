@@ -22,11 +22,11 @@ function main()
 main();
 
 // Widget instantiation metadata...
-model.webScriptWidgets = [];
+model.widgets = [];
 var documentActions = {};
 documentActions.name = "Alfresco.DocumentActions";
-documentActions.provideMessages = true;
-documentActions.provideOptions = true;
+documentActions.useMessages = true;
+documentActions.useOptions = true;
 documentActions.options = {};
 documentActions.options.nodeRef = model.nodeRef;
 documentActions.options.siteId = (model.site != null) ? model.site : null;
@@ -35,4 +35,4 @@ documentActions.options.rootNode = model.rootNode;
 documentActions.options.replicationUrlMapping = (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}";
 documentActions.options.documentDetails = model.documentDetails;
 documentActions.options.repositoryBrowsing = (model.rootNode != null);
-model.webScriptWidgets.push(documentActions);
+model.widgets.push(documentActions);

@@ -37,14 +37,8 @@ function main()
    model.userIsSiteManager = userIsSiteManager;
    
    // Widget instantiation metadata...
-   model.webScriptWidgets = [];
+   model.widgets = [];
 
-   var wikiDashlet = {};
-   wikiDashlet.name = "Alfresco.dashlet.WikiDashlet";
-   wikiDashlet.assignToVariable = "wiki";
-   wikiDashlet.provideOptions = true;
-   wikiDashlet.provideMessages = true;
-   wikiDashlet.options = {};
    var pages = [];
    if (model.pageList != null)
    {
@@ -53,34 +47,35 @@ function main()
          pages.push(p.name);
       }
    }
-   wikiDashlet.options.pages = pages;
-   wikiDashlet.options.guid = instance.object.id;
-   wikiDashlet.options.siteId = siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-   model.webScriptWidgets.push(wikiDashlet);
 
-   var dashletResizer = {};
-   dashletResizer.name = "Alfresco.widget.DashletResizer";
-   dashletResizer.instantiationArguments = [];
-   dashletResizer.instantiationArguments.push("\"" + args.htmlid + "\"");
-   dashletResizer.instantiationArguments.push("\"" + instance.object.id + "\"");
-   model.webScriptWidgets.push(dashletResizer);
+   var wikiDashlet = {
+      name : "Alfresco.dashlet.WikiDashlet",
+      assignTo : "wiki",
+      options : {
+         pages : pages,
+         guid : instance.object.id,
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
+      }
+   };
+   model.widgets.push(wikiDashlet);
 
-   var dashletTitleBarActions = {};
-   dashletTitleBarActions.name = "Alfresco.widget.DashletTitleBarActions";
-   dashletTitleBarActions.provideOptions = true;
-   dashletTitleBarActions.provideMessages = false;
-   dashletTitleBarActions.options = {};
-   dashletTitleBarActions.options.actions = [];
+   var dashletResizer = {
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"","\"" + instance.object.id + "\""]
+   };
+   model.widgets.push(dashletResizer);
+
+   var actions = [];
    if (model.userIsSiteManager)
    {
-      dashletTitleBarActions.options.actions.push(
+      actions.push(
       {
          cssClass: "edit",
          eventOnClick: { ___value : "editWikiDashletEvent", ___type: "REFERENCE"},
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }
-   dashletTitleBarActions.options.actions.push(
+   actions.push(
       {
          cssClass: "help",
          bubbleOnClick:
@@ -89,6 +84,14 @@ function main()
          },
          tooltip: msg.get("dashlet.help.tooltip")
       });
-   model.webScriptWidgets.push(dashletTitleBarActions);
+
+   var dashletTitleBarActions = {
+      name : "Alfresco.widget.DashletTitleBarActions",
+      useMessages : false,
+      options : {
+         actions: actions
+      }
+   };
+   model.widgets.push(dashletTitleBarActions);
 }
 main();

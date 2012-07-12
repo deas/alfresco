@@ -2,12 +2,12 @@
 
 doclibCommon();
 
-model.webScriptWidgets = [];
+model.widgets = [];
 
 var documentList = {};
 documentList.name = "Alfresco.DocumentList";
-documentList.provideOptions = true;
-documentList.provideMessages = true;
+documentList.useOptions = true;
+documentList.useMessages = true;
 documentList.options = {};
 if (model.repositoryUrl != null)
 {
@@ -28,4 +28,4 @@ documentList.options.replicationUrlMapping = model.replicationUrlMapping != null
 documentList.options.repositoryBrowsing = model.repositoryBrowsing != null; 
 documentList.options.useTitle = model.useTitle != null ? model.useTitle : true;
 documentList.options.userIsSiteManager = model.userIsSiteManager != null ? model.userIsSiteManager : false;
-model.webScriptWidgets.push(documentList);
+model.widgets.push(documentList);
