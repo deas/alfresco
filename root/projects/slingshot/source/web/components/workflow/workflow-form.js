@@ -302,6 +302,8 @@
             Dom.get(this.id + "-status").innerHTML = $html(status);
 
             // Load workflow's start task which "represents" the workflow
+            // (if present)
+            if(this.workflow.startTaskInstanceId) {
             Alfresco.util.Ajax.request(
             {
                url: Alfresco.constants.URL_SERVICECONTEXT + "components/form",
@@ -323,6 +325,9 @@
                scope: this,
                execScripts: true
             });
+            } else {
+               this.onWorkflowFormLoaded({ serverResponse: { responseText: "<div class='form-container'><div class='form-fields'></div></div>" }});
+            }
          }
       },
 
