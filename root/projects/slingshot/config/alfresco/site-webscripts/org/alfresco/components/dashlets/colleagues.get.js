@@ -74,7 +74,7 @@ function main()
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
-         acions : [
+         actions : [
             {
                cssClass: "help",
                bubbleOnClick:

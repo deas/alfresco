@@ -33,6 +33,7 @@ function main()
    var wikiList = {
       id : "WikiList", 
       name : "Alfresco.WikiList",
+      useMessages: false,
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          pages: pages,

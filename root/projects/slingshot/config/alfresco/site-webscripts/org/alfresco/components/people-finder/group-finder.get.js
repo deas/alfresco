@@ -18,7 +18,7 @@ function main()
       }
    };
    model.widgets = [groupFinder];
-   
+}
 
 main();
 
