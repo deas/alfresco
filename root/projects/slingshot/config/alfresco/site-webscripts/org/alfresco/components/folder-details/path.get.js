@@ -1,9 +1,15 @@
-// Widget instantiation metadata...
-model.widgets = [];
-var path = {};
-path.name = "Alfresco.component.Path";
-path.useMessages = true;
-path.useOptions = true;
-path.options = {};
-path.options.showIconType = (args.showIconType != null) ? args.showIconType : "true";
-model.widgets.push(path);
+function main()
+{
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var path = {
+      name : "Alfresco.component.Path",
+      options : {
+         showIconType : (args.showIconType != null) ? args.showIconType : "true"
+      }
+   };
+   model.widgets.push(path);
+}
+
+main();
+

@@ -15,10 +15,15 @@ function getContentTypes()
 
 model.contentTypes = getContentTypes();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var flashUpload = {};
-flashUpload.name = "Alfresco.FlashUpload";
-flashUpload.useOptions = false;
-flashUpload.useMessages = true;
-model.widgets.push(flashUpload);
+function main()
+{
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var flashUpload = {
+      name : "Alfresco.FlashUpload"
+   };
+   model.widgets.push(flashUpload);
+}
+
+main();
+

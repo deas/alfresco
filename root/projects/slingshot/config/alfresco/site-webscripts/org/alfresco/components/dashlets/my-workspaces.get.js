@@ -17,7 +17,8 @@ function widgets()
 
    var dashletResizer = {
       name : "Alfresco.widget.DashletResizer",
-      initArgs : ["\"" + args.htmlid + "\"","\"" + instance.object.id + "\""]
+      initArgs : ["\"" + args.htmlid + "\"","\"" + instance.object.id + "\""],
+      useMessages: false
    };
    model.widgets.push(dashletResizer);
 

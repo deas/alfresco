@@ -59,19 +59,20 @@ function main()
    model.searchRepo = (repoconfig != "none");
    model.siteId = siteId;
    model.searchForms = searchForms;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var advancedSearch = {
+      name : "Alfresco.AdvancedSearch",
+      options : {
+         siteId : model.siteId,
+         savedQuery : (page.url.args.sq != null) ? page.url.args.sq : "",
+         searchRepo : model.searchRepo,
+         searchForms : model.searchForms
+      }
+   };
+   model.widgets.push(advancedSearch);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var advancedSearch = {};
-advancedSearch.name = "Alfresco.AdvancedSearch";
-advancedSearch.useMessages = true;
-advancedSearch.useOptions = true;
-advancedSearch.options = {};
-advancedSearch.options.siteId = model.siteId;
-advancedSearch.options.savedQuery = (page.url.args.sq != null) ? page.url.args.sq : "";
-advancedSearch.options.searchRepo = model.searchRepo;
-advancedSearch.options.searchForms = model.searchForms;
-model.widgets.push(advancedSearch);

@@ -17,22 +17,23 @@ function main()
       model.folderDetailsJSON = jsonUtils.toJSONString(folderDetails);
       doclibCommon();
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var folderActions = {
+      name : "Alfresco.FolderActions",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : (model.site != null) ? model.site : null,
+         containerId : model.container,
+         rootNode : model.rootNode,
+         replicationUrlMapping : (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}",
+         repositoryBrowsing : (model.rootNode != null),
+         folderDetails : model.folderDetails
+      }
+   };
+   model.widgets.push(folderActions);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var folderActions = {};
-folderActions.name = "Alfresco.FolderActions";
-folderActions.useMessages = true;
-folderActions.useOptions = true;
-folderActions.options = {};
-folderActions.options.nodeRef = model.nodeRef;
-folderActions.options.siteId = (model.site != null) ? model.site : null;
-folderActions.options.containerId = model.container;
-folderActions.options.rootNode = model.rootNode;
-folderActions.options.replicationUrlMapping = (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}";
-folderActions.options.repositoryBrowsing = (model.rootNode != null);
-folderActions.options.folderDetails = model.folderDetails;
-model.widgets.push(folderActions);

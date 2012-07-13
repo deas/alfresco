@@ -16,17 +16,19 @@ function main()
          model.webdavUrl = AlfrescoUtil.combinePaths(repositoryUrl, webdavUrl);
       }
    }
+
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var folderLinks = {
+      name : "Alfresco.FolderLinks",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : (model.site != null) ? model.site : null
+      }
+   };
+   model.widgets.push(folderLinks);
+
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var folderLinks = {};
-folderLinks.name = "Alfresco.FolderLinks";
-folderLinks.useMessages = true;
-folderLinks.useOptions = true;
-folderLinks.options = {};
-folderLinks.options.nodeRef = model.nodeRef;
-folderLinks.options.siteId = (model.site != null) ? model.site : null;
-model.widgets.push(folderLinks);

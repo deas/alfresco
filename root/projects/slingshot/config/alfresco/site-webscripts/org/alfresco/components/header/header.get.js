@@ -132,6 +132,24 @@ function main()
    getUserStatus();
    getLogo();
    getLicenseInfo();
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var header = {
+      name : "Alfresco.component.Header",
+      assignTo : args.htmlid.replace("-", "_"),
+      options : {
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         siteTitle : model.siteTitle,
+         minSearchTermLength : (args.minSearchTermLength != null) ? args.minSearchTermLength : config.scoped["Search"]["search"].getChildValue("min-search-term-length"),
+         tokens : {
+            site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+            pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
+            userid: user.name
+         }
+      }
+   };   
+   model.widgets.push(header);
 }
 
 if (!user.isGuest)
@@ -139,20 +157,3 @@ if (!user.isGuest)
    main();
 }
 
-// Widget instantiation metadata...
-model.widgets = [];
-var header = {};
-header.name = "Alfresco.component.Header";
-header.assignTo = args.htmlid.replace("-", "_");
-header.useMessages = true;
-header.useOptions = true;
-header.options = {};
-header.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-header.options.siteTitle = model.siteTitle;
-header.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : config.scoped["Search"]["search"].getChildValue("min-search-term-length");
-header.options.tokens = {
-   site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
-   pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
-   userid: user.name
-}
-model.widgets.push(header);

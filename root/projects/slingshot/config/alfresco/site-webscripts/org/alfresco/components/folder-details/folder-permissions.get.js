@@ -60,19 +60,20 @@ function main()
       model.allowPermissionsUpdate = folderDetails.item.node.permissions.user["ChangePermissions"] || false;
       model.displayName = folderDetails.item.displayName;
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var folderPermissions = {
+      name : "Alfresco.FolderPermissions",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site,
+         displayName : model.displayName,
+         roles : model.roles
+      }
+   };
+   model.widgets.push(folderPermissions);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var folderPermissions = {};
-folderPermissions.name = "Alfresco.FolderPermissions";
-folderPermissions.useMessages = true;
-folderPermissions.useOptions = true;
-folderPermissions.options = {};
-folderPermissions.options.nodeRef = model.nodeRef;
-folderPermissions.options.siteId = model.site;
-folderPermissions.options.displayName = model.displayName;
-folderPermissions.options.roles = model.roles;
-model.widgets.push(folderPermissions);

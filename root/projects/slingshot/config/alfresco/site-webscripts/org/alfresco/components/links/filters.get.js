@@ -19,15 +19,17 @@ function main()
    }
    
    model.filters = filters;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var baseFilter = {
+      name : "Alfresco.component.BaseFilter",
+      initArgs : ["Alfresco.LinkFilter", "\"" + args.htmlid + "\""],
+      useMessages : false,
+      useOptions : false
+   };
+   model.widgets.push(baseFilter);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var baseFilter = {};
-baseFilter.name = "Alfresco.component.BaseFilter";
-baseFilter.initArgs = ["Alfresco.LinkFilter", "\"" + args.htmlid + "\""];
-baseFilter.useMessages = false;
-baseFilter.useOptions = false;
-model.widgets.push(baseFilter);

@@ -23,16 +23,19 @@ function main()
       model.documentDetailsJSON = jsonUtils.toJSONString(documentDetails);
       doclibCommon();
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var googleMap = {
+      name : "Alfresco.component.GoogleMap",
+      options : {
+         documentDetails : model.documentDetailsJSON
+      }
+      
+   };
+   model.widgets.push(googleMap);
+
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var googleMap = {};
-googleMap.name = "Alfresco.component.GoogleMap";
-googleMap.useMessages = true;
-googleMap.useOptions = true;
-googleMap.options = {};
-googleMap.options.documentDetails = model.documentDetailsJSON;
-model.widgets.push(googleMap);

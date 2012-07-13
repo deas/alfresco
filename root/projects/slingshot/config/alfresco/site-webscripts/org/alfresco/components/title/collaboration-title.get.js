@@ -42,18 +42,19 @@ function main()
    model.profile = profile;
    model.userIsSiteManager = userIsSiteManager;
    model.userIsMember = userIsMember;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var collaborationTitle = {
+      name : "Alfresco.CollaborationTitle",
+      options : {
+         site : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         siteTitle : model.siteTitle,
+         user : (user.name != null) ? user.name : ""
+      }
+   };
+   model.widgets.push(collaborationTitle);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var collaborationTitle = {};
-collaborationTitle.name = "Alfresco.CollaborationTitle";
-collaborationTitle.useOptions = true;
-collaborationTitle.useMessages = true;
-collaborationTitle.options = {};
-collaborationTitle.options.site = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-collaborationTitle.options.siteTitle = model.siteTitle;
-collaborationTitle.options.user = (user.name != null) ? user.name : ""
-model.widgets.push(collaborationTitle);

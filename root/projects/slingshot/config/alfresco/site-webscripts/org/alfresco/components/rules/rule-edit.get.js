@@ -48,25 +48,29 @@ function main()
    }
 
    model.rootNode = rootNode;
+   
+  // Widget instantiation metadata...
+   model.widgets = [];
+   var ruleEdit = {
+      name : "Alfresco.RuleEdit",
+      options : {
+         nodeRef : (page.url.args.nodeRef != null) ? page.url.args.nodeRef : "",
+         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
+      }
+      
+   };
+   
+   if (model.rule)
+   {
+      ruleEdit.options.rule = model.rule;
+   }
+   if (model.constraints)
+   {
+      ruleEdit.options.constraints = model.constraints;
+   }
+
+   model.widgets.push(ruleEdit);
 }
 
 main();
 
-//Widget instantiation metadata...
-model.widgets = [];
-var ruleEdit = {};
-ruleEdit.name = "Alfresco.RuleEdit";
-ruleEdit.useMessages = true;
-ruleEdit.useOptions = true;
-ruleEdit.options = {};
-ruleEdit.options.nodeRef = (page.url.args.nodeRef != null) ? page.url.args.nodeRef : "";
-if (model.rule)
-{
-   ruleEdit.options.rule = model.rule;
-}
-if (model.constraints)
-{
-   ruleEdit.options.constraints = model.constraints;
-}
-ruleEdit.options.siteId = (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "";
-model.widgets.push(ruleEdit);

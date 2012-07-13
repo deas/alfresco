@@ -1,20 +1,26 @@
-// Widget instantiation metadata...
-var searchConfig = config.scoped['Search']['search'],
-    defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
-    defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
+function main()
+{
+   // Widget instantiation metadata...
+   var searchConfig = config.scoped['Search']['search'],
+       defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
+       defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
 
-model.widgets = [];
-var peopleFinder = {};
-peopleFinder.name = "Alfresco.PeopleFinder";
-peopleFinder.useMessages = true;
-peopleFinder.useOptions = true;
-peopleFinder.options = {};
-peopleFinder.options.userId = user.name;
-peopleFinder.options.siteId = (this.page != null) ? ((this.page.url.templateArgs.site != null) ? this.page.url.templateArgs.site : "") : ((args.site != null) ? args.site : "");
-peopleFinder.options.minSearchTermLength = (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength;
-peopleFinder.options.maxSearchResults = (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults;
-peopleFinder.options.setFocus = (args.setFocus != null) ? args.setFocus : "false";
-peopleFinder.options.addButtonSuffix = (args.addButtonSuffix != null) ? args.addButtonSuffix : "";
-peopleFinder.options.dataWebScript = ((args.dataWebScript != null) ? args.dataWebScript : "api/groups").replace(/{/g, "[").replace(/}/g, "]");
-peopleFinder.options.viewMode = { ___value : "Alfresco.PeopleFinder.VIEW_MODE_DEFAULT", ___type: "REFERENCE"};
-model.widgets.push(peopleFinder);
+   model.widgets = [];
+   var peopleFinder = {
+      name : "Alfresco.PeopleFinder",
+      options : {
+         userId : user.name,
+         siteId : (this.page != null) ? ((this.page.url.templateArgs.site != null) ? this.page.url.templateArgs.site : "") : ((args.site != null) ? args.site : ""),
+         minSearchTermLength : (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength,
+         maxSearchResults : (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults,
+         setFocus : (args.setFocus != null) ? args.setFocus : "false",
+         addButtonSuffix : (args.addButtonSuffix != null) ? args.addButtonSuffix : "",
+         dataWebScript : ((args.dataWebScript != null) ? args.dataWebScript : "api/groups").replace(/{/g, "[").replace(/}/g, "]"),
+         viewMode : { ___value : "Alfresco.PeopleFinder.VIEW_MODE_DEFAULT", ___type: "REFERENCE"}
+      }
+   };
+   model.widgets.push(peopleFinder);
+}
+
+main();
+

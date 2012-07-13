@@ -1,7 +1,7 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/documentlibrary/include/toolbar.lib.js">
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/upload/uploadable.lib.js">
 
-function main()
+function widgets()
 {
    model.widgets = [];
 
@@ -26,5 +26,5 @@ function main()
    model.widgets.push(repoDocListToobar);
 }
 
-main();
+widgets();
 

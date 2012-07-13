@@ -14,13 +14,14 @@ function main()
       emailFeedDisabled = person.emailFeedDisabled;
    }
    model.emailFeedDisabled = emailFeedDisabled;
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var userNotification = {
+      name : "Alfresco.UserNotifications"
+   };
+   model.widgets.push(userNotification);
 }
 
 main();
 
-//Widget instantiation metadata...
-model.widgets = [];
-var userNotification = {};
-userNotification.name = "Alfresco.UserNotifications";
-userNotification.useMessages = true;
-model.widgets.push(userNotification);

@@ -1,15 +1,19 @@
-model.contentTypes = 
-[{
-   id: "cm:content",
-   value: "cm_content"
-}];
+function main()
+{
+   model.contentTypes = 
+   [{
+      id: "cm:content",
+      value: "cm_content"
+   }];
+   
+   
+   //Widget instantiation metadata...
+   model.widgets = [];
+   var dndUpload = {
+      name : "Alfresco.DNDUpload",
+      assignTo : "dndUpload"
+   };
+   model.widgets.push(dndUpload);
+}
 
-
-//Widget instantiation metadata...
-model.widgets = [];
-var dndUpload = {};
-dndUpload.name = "Alfresco.DNDUpload";
-dndUpload.assignTo = "dndUpload";
-dndUpload.useOptions = false;
-dndUpload.useMessages = true;
-model.widgets.push(dndUpload);
+main();

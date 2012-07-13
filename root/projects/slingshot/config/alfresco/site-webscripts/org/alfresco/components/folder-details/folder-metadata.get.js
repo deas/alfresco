@@ -10,18 +10,19 @@ function main()
    {
       model.allowMetaDataUpdate = folderDetails.item.node.permissions.user["Write"] || false;
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var folderMetadata = {
+      name : "Alfresco.FolderMetadata",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site,
+         formId : model.formId
+      }
+   };
+   model.widgets.push(folderMetadata);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var folderMetadata = {};
-folderMetadata.name = "Alfresco.FolderMetadata";
-folderMetadata.useMessages = true;
-folderMetadata.useOptions = true;
-folderMetadata.options = {};
-folderMetadata.options.nodeRef = model.nodeRef;
-folderMetadata.options.siteId = model.site;
-folderMetadata.options.formId = model.formId;
-model.widgets.push(folderMetadata);

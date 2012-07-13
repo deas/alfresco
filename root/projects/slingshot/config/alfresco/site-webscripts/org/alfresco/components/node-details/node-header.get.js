@@ -23,34 +23,37 @@ function main()
       var count = nodeDetails.item.node.properties["fm:commentCount"];
       model.commentCount = (count != undefined ? count : null);
    }
+   
+   
+   // Widget instantiation metadata...
+   var likes = {};
+   if (model.item.likes != null)
+   {
+      likes.isLiked = model.item.likes.isLiked || false;
+      likes.totalLikes = model.item.likes.totalLikes || 0;
+   }
+
+   model.widgets = [];
+   var nodeHeader = {
+      name : "Alfresco.component.NodeHeader",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site,
+         rootPage : model.rootPage,
+         rootLabelId : model.rootLabelId,
+         showFavourite : model.showFavourite,
+         showLikes : model.showLikes,
+         showComments : model.showComments,
+         showDownload : model.showDownload,
+         showPath : model.showPath,
+         displayName : (model.item.displayName != null) ? model.item.displayName : model.item.fileName,
+         likes : likes,
+         isFavourite : model.item.isFavourite || false,
+         isContainer : model.isContainer
+      }
+   };
+   model.widgets.push(nodeHeader);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var nodeHeader = {};
-nodeHeader.name = "Alfresco.component.NodeHeader";
-nodeHeader.useOptions = true;
-nodeHeader.useMessages = true;
-nodeHeader.options = {};
-nodeHeader.options.nodeRef = model.nodeRef;
-nodeHeader.options.siteId = model.site;
-nodeHeader.options.rootPage = model.rootPage;
-nodeHeader.options.rootLabelId = model.rootLabelId;
-nodeHeader.options.showFavourite = model.showFavourite;
-nodeHeader.options.showLikes = model.showLikes;
-nodeHeader.options.showComments = model.showComments;
-nodeHeader.options.showDownload = model.showDownload;
-nodeHeader.options.showPath = model.showPath;
-nodeHeader.options.displayName = (model.item.displayName != null) ? model.item.displayName : model.item.fileName;
-var likes = {};
-if (model.item.likes != null)
-{
-   likes.isLiked = model.item.likes.isLiked || false;
-   likes.totalLikes = model.item.likes.totalLikes || 0;
-}
-nodeHeader.options.likes = likes;
-nodeHeader.options.isFavourite = model.item.isFavourite || false;
-nodeHeader.options.isContainer = model.isContainer;
-model.widgets.push(nodeHeader);

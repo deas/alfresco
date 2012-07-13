@@ -89,6 +89,21 @@ function main()
       var pluginConditions = getPluginConditions(new XML(config.script));
       model.pluginConditionsJSON = jsonUtils.toJSONString(pluginConditions);
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var webPreview = {
+      name : "Alfresco.WebPreview",
+      options : {
+         thumbnailModification : model.node.thumbnailModifications,
+         nodeRef : model.nodeRef,
+         name : model.name,
+         mimeType : model.size,
+         thumbnails : model.node.thumbnails,
+         pluginConditions : model.pluginConditionsJSON
+      }
+   };
+   model.widgets.push(webPreview);
 }
 
 // Start the webscript
@@ -98,17 +113,3 @@ main();
 // Set the group from the component property...
 model.dependencyGroup =  (args.dependencyGroup != null) ? args.dependencyGroup : "web-preview";
 
-// Widget instantiation metadata...
-model.widgets = [];
-var webPreview = {};
-webPreview.name = "Alfresco.WebPreview";
-webPreview.useOptions = true;
-webPreview.useMessages = true;
-webPreview.options = {};
-webPreview.options.thumbnailModification = model.node.thumbnailModifications;
-webPreview.options.nodeRef = model.nodeRef;
-webPreview.options.name = model.name;
-webPreview.options.mimeType = model.size;
-webPreview.options.thumbnails = model.node.thumbnails;
-webPreview.options.pluginConditions = model.pluginConditionsJSON;
-model.widgets.push(webPreview);

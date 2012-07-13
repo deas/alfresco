@@ -1,7 +1,12 @@
-// Widget instantiation metadata...
-model.widgets = [];
-var taskListToolbar = {};
-taskListToolbar.name = "Alfresco.component.TaskListToolbar";
-taskListToolbar.useMessages = true;
-taskListToolbar.useOptions = false;
-model.widgets.push(taskListToolbar);
+function main()
+{
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var taskListToolbar = {
+      name : "Alfresco.component.TaskListToolbar"
+   };
+   model.widgets.push(taskListToolbar);
+}
+
+main();
+

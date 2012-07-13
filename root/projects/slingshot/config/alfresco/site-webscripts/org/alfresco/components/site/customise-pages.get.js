@@ -35,16 +35,19 @@ function main()
          selected: (t.id == currentTheme)
       });
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var customisePages = {
+      name : "Alfresco.CustomisePages",
+      options : {
+         siteId : model.siteId
+      }
+      
+   };
+   model.widgets.push(customisePages);
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-var customisePages = {};
-customisePages.name = "Alfresco.CustomisePages";
-customisePages.useMessages = true;
-customisePages.useOptions = true;
-customisePages.options = {};
-customisePages.options.siteId = model.siteId;
-model.widgets.push(customisePages);
+

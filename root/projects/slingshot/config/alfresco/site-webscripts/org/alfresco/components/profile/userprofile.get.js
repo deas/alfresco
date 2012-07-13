@@ -53,38 +53,40 @@ function main()
          model.follows = eval('(' + result + ')')[0][page.url.templateArgs["userid"]];
       }
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   var userProfile = {
+      name : "Alfresco.UserProfile",
+      options : {
+         userId : user.name,
+         profile : {
+            isEditable : model.isEditable,
+            name : (model.profile.name != null) ? model.profile.name : "",
+            lastName : (model.profile.lastName != null) ? model.profile.lastName : "",
+            firstName : (model.profile.firstName != null) ? model.profile.firstName : "",
+            jobtitle : (model.profile.jobTitle != null) ? model.profile.jobTitle : "",
+            location : (model.profile.location != null) ? model.profile.location : "",
+            bio : (model.profile.biography != null) ? model.profile.biography : "",
+            telephone : (model.profile.telephone != null) ? model.profile.telephone : "",
+            mobile : (model.profile.mobilePhone != null) ? model.profile.mobilePhone : "",
+            email : (model.profile.email != null) ? model.profile.email : "",
+            skype : (model.profile.skype != null) ? model.profile.skype : "",
+            instantmsg : (model.profile.instantMsg != null) ? model.profile.instantMsg : "",
+            googleusername : (model.profile.googleUsername != null) ? model.profile.googleUsername : "",
+            organization : (model.profile.organization != null) ? model.profile.organization : "",
+            companyaddress1 : (model.profile.companyAddress1 != null) ? model.profile.companyAddress1 : "",
+            companyaddress2 : (model.profile.companyAddress2 != null) ? model.profile.companyAddress2 : "",
+            companyaddress3 : (model.profile.companyAddress3 != null) ? model.profile.companyAddress3 : "",
+            companypostcode : (model.profile.companyPostcode != null) ? model.profile.companyPostcode : "",
+            companytelephone : (model.profile.companyTelephone != null) ? model.profile.companyTelephone : "",
+            companyfax : (model.profile.companyFax != null) ? model.profile.companyFax : "",
+            companyemail : (model.profile.companyEmail != null) ? model.profile.companyEmail : ""
+         }
+      }
+   };
+   model.widgets.push(userProfile);
 }
 
 main();
 
-//Widget instantiation metadata...
-model.widgets = [];
-var userProfile = {};
-userProfile.name = "Alfresco.UserProfile";
-userProfile.useMessages = true;
-userProfile.useOptions = true;
-userProfile.options = {};
-userProfile.options.userId = user.name;
-userProfile.options.profile = {};
-userProfile.options.profile.isEditable = model.isEditable;
-userProfile.options.profile.name = (model.profile.name != null) ? model.profile.name : "";
-userProfile.options.profile.lastName = (model.profile.lastName != null) ? model.profile.lastName : "";
-userProfile.options.profile.firstName = (model.profile.firstName != null) ? model.profile.firstName : "";
-userProfile.options.profile.jobtitle = (model.profile.jobTitle != null) ? model.profile.jobTitle : "";
-userProfile.options.profile.location = (model.profile.location != null) ? model.profile.location : "";
-userProfile.options.profile.bio = (model.profile.biography != null) ? model.profile.biography : "";
-userProfile.options.profile.telephone = (model.profile.telephone != null) ? model.profile.telephone : "";
-userProfile.options.profile.mobile = (model.profile.mobilePhone != null) ? model.profile.mobilePhone : "";
-userProfile.options.profile.email = (model.profile.email != null) ? model.profile.email : "";
-userProfile.options.profile.skype = (model.profile.skype != null) ? model.profile.skype : "";
-userProfile.options.profile.instantmsg = (model.profile.instantMsg != null) ? model.profile.instantMsg : "";
-userProfile.options.profile.googleusername = (model.profile.googleUsername != null) ? model.profile.googleUsername : "";
-userProfile.options.profile.organization = (model.profile.organization != null) ? model.profile.organization : "";
-userProfile.options.profile.companyaddress1 = (model.profile.companyAddress1 != null) ? model.profile.companyAddress1 : "";
-userProfile.options.profile.companyaddress2 = (model.profile.companyAddress2 != null) ? model.profile.companyAddress2 : "";
-userProfile.options.profile.companyaddress3 = (model.profile.companyAddress3 != null) ? model.profile.companyAddress3 : "";
-userProfile.options.profile.companypostcode = (model.profile.companyPostcode != null) ? model.profile.companyPostcode : "";
-userProfile.options.profile.companytelephone = (model.profile.companyTelephone != null) ? model.profile.companyTelephone : "";
-userProfile.options.profile.companyfax = (model.profile.companyFax != null) ? model.profile.companyFax : "";
-userProfile.options.profile.companyemail = (model.profile.companyEmail != null) ? model.profile.companyEmail : "";
-model.widgets.push(userProfile);

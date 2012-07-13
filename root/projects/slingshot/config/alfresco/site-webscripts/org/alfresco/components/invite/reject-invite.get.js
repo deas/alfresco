@@ -44,21 +44,22 @@ function main()
       // Inform the user that there is no invite object available
       model.error = true;
    }
+   
+   // Widget instantiation metadata...
+   model.widgets = [];
+   if (!model.error)
+   {
+      var rejectInvite = {
+         name : "Alfresco.RejectInvite",
+         options : {
+            inviteId : (page.url.args.inviteId != null) ? page.url.args.inviteId : "",
+            inviteTicket : (page.url.args.inviteTicket != null) ? page.url.args.inviteTicket : "",
+            inviteeUserName : (page.url.args.inviteeUserName != null) ? page.url.args.inviteeUserName : ""
+         }
+      };
+      model.widgets.push(rejectInvite);
+   }
 }
 
 main();
 
-// Widget instantiation metadata...
-model.widgets = [];
-if (!model.error)
-{
-   var rejectInvite = {};
-   rejectInvite.name = "Alfresco.RejectInvite";
-   rejectInvite.useMessages = true;
-   rejectInvite.useOptions = true;
-   rejectInvite.options = {};
-   rejectInvite.options.inviteId = (page.url.args.inviteId != null) ? page.url.args.inviteId : "";
-   rejectInvite.options.inviteTicket = (page.url.args.inviteTicket != null) ? page.url.args.inviteTicket : "";
-   rejectInvite.options.inviteeUserName = (page.url.args.inviteeUserName != null) ? page.url.args.inviteeUserName : "";
-   model.widgets.push(rejectInvite);
-}

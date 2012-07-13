@@ -50,8 +50,7 @@ function main()
       name : "Alfresco.component.BaseFilter",
       assignTo : "filter",
       initArgs : ["Alfresco.DataListFilter","\"" + args.htmlid + "\""],
-      useMessages = false,
-      useOptions = false
+      useMessages : false
    };
    
    model.widgets.push(filter);
