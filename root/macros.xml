@@ -194,7 +194,7 @@
 		<attribute name="projectdir" />
 		<sequential>
 			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-			<junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
+			<junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java" failureproperty="tests.failed">
 				<jvmarg value="-server"/>
 				<jvmarg value="-XX:MaxPermSize=256M"/>
 				<jvmarg value="-Dcom.sun.management.jmxremote"/>
