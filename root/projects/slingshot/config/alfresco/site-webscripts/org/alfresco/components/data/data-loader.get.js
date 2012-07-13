@@ -5,7 +5,7 @@ function main()
    var dataLoader = {
       name : "Alfresco.DataLoader",
       options : {
-         url = (args.url != null) ? args.url : ""
+         url : (args.url != null) ? args.url : ""
       }
    };
    if (args.eventData != null)
