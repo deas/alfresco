@@ -8,8 +8,6 @@ function main()
    model.imapServerEnabled = imapServerEnabled;
    
    // Widget instantiation metadata...
-   model.widgets = [];
-   
    var dashboardconfig = config.scoped['Dashboard']['dashboard'];
    var listSize = dashboardconfig.getChildValue('summary-list-size');
    if (listSize == null)
@@ -18,22 +16,23 @@ function main()
    }
    
    var mySites = {
+      id : "MySites", 
       name : "Alfresco.dashlet.MySites",
       options : {
          imapEnabled : imapServerEnabled,
          listSize : listSize
       }
    };
-   model.widgets.push(mySites);
    
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages : false
    };
-   model.widgets.push(dashletResizer);
    
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -49,7 +48,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [mySites, dashletResizer, dashletTitleBarActions];
 }
 
 main();

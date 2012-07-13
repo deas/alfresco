@@ -49,9 +49,9 @@ function main()
 
    model.rootNode = rootNode;
    
-  // Widget instantiation metadata...
-   model.widgets = [];
+   // Widget instantiation metadata...
    var ruleEdit = {
+      id : "RuleEdit", 
       name : "Alfresco.RuleEdit",
       options : {
          nodeRef : (page.url.args.nodeRef != null) ? page.url.args.nodeRef : "",
@@ -69,7 +69,7 @@ function main()
       ruleEdit.options.constraints = model.constraints;
    }
 
-   model.widgets.push(ruleEdit);
+   model.widgets = [ruleEdit];
 }
 
 main();

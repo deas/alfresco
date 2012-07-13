@@ -10,8 +10,8 @@ function main()
       linkId = page.url.args.linkId;
    }
    
-   model.widgets = [];
    var linkEdit = {
+      id : "LinkEdit", 
       name : "Alfresco.LinkEdit",
       options : {
          siteId : page.url.templateArgs.site != null,
@@ -20,7 +20,7 @@ function main()
          linkId : linkId
       }
    };
-   model.widgets.push(linkEdit);
+   model.widgets = [linkEdit];
 }
 
 main();

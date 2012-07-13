@@ -54,9 +54,8 @@ function main()
    model.userIsSiteManager = userIsSiteManager;
    
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var webView = {
+      id : "WebView", 
       name : "Alfresco.dashlet.WebView",
       assignTo : "webView",
       options : {
@@ -67,14 +66,13 @@ function main()
          isDefault : model.isDefault
       }
    };
-   model.widgets.push(webView);
 
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var actions = [];
    if (model.userIsSiteManager)
@@ -96,13 +94,14 @@ function main()
    });
    
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
          actions: actions
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [webView, dashletResizer, dashletTitleBarActions];
 }
 
 main();

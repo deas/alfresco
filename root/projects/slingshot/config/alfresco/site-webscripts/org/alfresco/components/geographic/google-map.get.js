@@ -25,16 +25,15 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var googleMap = {
+      id : "GoogleMap", 
       name : "Alfresco.component.GoogleMap",
       options : {
          documentDetails : model.documentDetailsJSON
       }
       
    };
-   model.widgets.push(googleMap);
-
+   model.widgets = [googleMap];
 }
 
 main();

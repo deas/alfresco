@@ -19,8 +19,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var folderActions = {
+      id : "FolderActions", 
       name : "Alfresco.FolderActions",
       options : {
          nodeRef : model.nodeRef,
@@ -32,7 +32,7 @@ function main()
          folderDetails : model.folderDetails
       }
    };
-   model.widgets.push(folderActions);
+   model.widgets = [folderActions];
 }
 
 main();

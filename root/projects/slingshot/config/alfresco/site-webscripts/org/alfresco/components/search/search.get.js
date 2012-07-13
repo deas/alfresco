@@ -68,8 +68,8 @@ function main()
        defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
        defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
 
-   model.widgets = [];
    var search = {
+      id : "Search", 
       name : "Alfresco.Search",
       options : {
          siteId : model.siteId,
@@ -85,7 +85,7 @@ function main()
          maxSearchResults : (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults
       }
    };
-   model.widgets.push(search);
+   model.widgets = [search];
 }
 
 main();

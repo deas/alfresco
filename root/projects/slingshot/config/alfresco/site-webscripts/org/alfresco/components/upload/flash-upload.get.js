@@ -18,11 +18,11 @@ model.contentTypes = getContentTypes();
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var flashUpload = {
+      id : "FlashUpload", 
       name : "Alfresco.FlashUpload"
    };
-   model.widgets.push(flashUpload);
+   model.widgets = [flashUpload];
 }
 
 main();

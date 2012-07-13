@@ -62,8 +62,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var folderPermissions = {
+      id : "FolderPermissions", 
       name : "Alfresco.FolderPermissions",
       options : {
          nodeRef : model.nodeRef,
@@ -72,7 +72,7 @@ function main()
          roles : model.roles
       }
    };
-   model.widgets.push(folderPermissions);
+   model.widgets = [folderPermissions];
 }
 
 main();

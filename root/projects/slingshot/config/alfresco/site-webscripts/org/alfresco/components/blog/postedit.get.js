@@ -2,8 +2,8 @@ function main()
 {
    var locale = this.locale.substring(0, 2);
 
-   model.widgets = [];
    var blogPostEdit = {
+      id : "BlogPostEdit",
       name : "Alfresco.BlogPostEdit",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -26,7 +26,7 @@ function main()
          }
       }
    };
-   model.widgets.push(blogPostEdit);
+   model.widgets = [blogPostEdit];
 }
 
 main();

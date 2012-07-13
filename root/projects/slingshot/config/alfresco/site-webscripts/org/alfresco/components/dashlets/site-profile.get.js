@@ -47,8 +47,8 @@ function main()
    model.sitemanagers = sitemanagers;
    
    // Widget instantiation metdata...
-   model.widgets = [];
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -64,7 +64,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [dashletTitleBarActions];
 }
 
 main();

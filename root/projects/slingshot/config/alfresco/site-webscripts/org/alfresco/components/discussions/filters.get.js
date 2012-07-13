@@ -21,14 +21,14 @@ function main()
    model.filters = filters;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var filter = {
+      id : "BaseFilter", 
       name : "Alfresco.component.BaseFilter",
       initArgs : ["Alfresco.TopicListFilter","\"" + args.htmlid + "\""],
       useMessages : false,
       useOptions : false
    };
-   model.widgets.push(filter);
+   model.widgets = [filter];
 }
 
 main();

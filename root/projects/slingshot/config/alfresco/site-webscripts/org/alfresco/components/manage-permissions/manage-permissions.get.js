@@ -11,15 +11,15 @@ function main()
    model.rootNode = rootNode;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var managePermissions = {
+      id : "ManagePermissions", 
       name : "Alfresco.component.ManagePermissions",
       options : {
          nodeRef : args.nodeRef
       }
       
    };
-   model.widgets.push(managePermissions);
+   model.widgets = [managePermissions];
 }
 
 main();

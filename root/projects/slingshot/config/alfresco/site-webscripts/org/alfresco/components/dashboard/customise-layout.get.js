@@ -81,15 +81,15 @@ function main()
    model.currentLayout = currentLayout;
    model.layouts = layouts;
    
-   model.widgets = [];
    var customizeDashlets = {
+      id : "CustomiseLayout",
       name : "Alfresco.CustomiseLayout",
       options : {
          currentLayout : currentLayout,
          layouts : layouts
       }
    };
-   model.widgets.push(customizeDashlets);
+   model.widgets = [customizeDashlets];
 }
 
 main();

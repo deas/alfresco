@@ -35,9 +35,8 @@ function main()
    model.userIsSiteManager = userIsSiteManager;
    
    //Widget instantiation metadata...
-   model.widgets = [];
-
    var rssFeed = {
+      id : "RssFeed", 
       name : "Alfresco.dashlet.RssFeed",
       assignTo : "rssFeed",
       options : {
@@ -48,15 +47,14 @@ function main()
          targetElSuffix : "-scrollableList"
       }
    };
-   model.widgets.push(rssFeed);
 
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
-
+   
    var actions = [];
    if (model.userIsSiteManager)
    {
@@ -75,13 +73,14 @@ function main()
       tooltip: msg.get("dashlet.help.tooltip")
    });
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
          actions: actions
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [rssFeed, dashletResizer, dashletTitleBarActions];
 }
 
 main();

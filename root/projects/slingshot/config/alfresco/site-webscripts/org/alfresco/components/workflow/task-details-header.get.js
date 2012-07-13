@@ -1,15 +1,15 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var taskDetailsHeader = {
+      id : "TaskDetailsHeader", 
       name : "Alfresco.component.TaskDetailsHeader",
       options : {
          referrer : page.url.args.referrer,
          nodeRef : page.url.args.nodeRef
       }
    };
-   model.widgets.push(taskDetailsHeader);
+   model.widgets = [taskDetailsHeader];
 }
 
 main();

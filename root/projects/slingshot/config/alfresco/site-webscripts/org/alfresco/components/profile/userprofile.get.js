@@ -55,8 +55,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var userProfile = {
+      id : "UserProfile", 
       name : "Alfresco.UserProfile",
       options : {
          userId : user.name,
@@ -85,7 +85,7 @@ function main()
          }
       }
    };
-   model.widgets.push(userProfile);
+   model.widgets = [userProfile];
 }
 
 main();

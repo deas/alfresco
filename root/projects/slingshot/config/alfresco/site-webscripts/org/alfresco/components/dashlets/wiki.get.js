@@ -37,8 +37,6 @@ function main()
    model.userIsSiteManager = userIsSiteManager;
    
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var pages = [];
    if (model.pageList != null)
    {
@@ -49,6 +47,7 @@ function main()
    }
 
    var wikiDashlet = {
+      id : "WikiDashlet", 
       name : "Alfresco.dashlet.WikiDashlet",
       assignTo : "wiki",
       options : {
@@ -57,14 +56,13 @@ function main()
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
    };
-   model.widgets.push(wikiDashlet);
 
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"","\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var actions = [];
    if (model.userIsSiteManager)
@@ -87,12 +85,13 @@ function main()
       });
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
          actions: actions
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [wikiDashlet, dashletResizer, dashletTitleBarActions];
 }
 main();

@@ -17,7 +17,7 @@ function main()
    model.jobDetail = jobDetail;
    
    // Define widget model...
-   model.widgets = [];
+   
    
    var payload = [];
    if (jobDetail != null)
@@ -29,6 +29,7 @@ function main()
    }
    
    var replicationJob = {
+      id: "ReplicationJob",
       name: "Alfresco.component.ReplicationJob",
       options : {
          jobName : jobName,
@@ -38,7 +39,7 @@ function main()
       },
    };
    
-   model.widgets.push(replicationJob);
+   model.widgets = [replicationJob];
 }
 
 main();

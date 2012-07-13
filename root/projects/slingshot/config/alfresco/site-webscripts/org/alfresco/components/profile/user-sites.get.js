@@ -18,7 +18,7 @@ function main()
    {
       userId = user.name;
    }
-var result = remote.call("/api/people/" + encodeURIComponent(userId) + "/sites?size=" + maxItems);
+   var result = remote.call("/api/people/" + encodeURIComponent(userId) + "/sites?size=" + maxItems);
    model.sites = [];
    if (result.status == 200)
    {

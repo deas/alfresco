@@ -1,25 +1,24 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var siteSearch = {
+      id : "SiteSearch", 
       name : "Alfresco.dashlet.SiteSearch",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          searchRootNode : (config.scoped['RepositoryLibrary']['root-node']).value
       }
    };
-   model.widgets.push(siteSearch);
 
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -35,8 +34,7 @@ function main()
          ]
       }
    };
-
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [siteSearch, dashletResizer, dashletTitleBarActions];
 }
 
 main();

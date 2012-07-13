@@ -22,9 +22,8 @@ model.maxItems = getMaxItems();
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var myTasks = {
+      id : "MyTasks",
       name : "Alfresco.dashlet.MyTasks",
       options : {
          hiddenTaskTypes : model.hiddenTaskTypes,
@@ -32,16 +31,16 @@ function main()
          filters : filterMap
       }
    };
-   model.widgets.push(myTasks);
-
+   
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
-
+   
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -57,7 +56,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [myTasks, dashletResizer, dashletTitleBarActions];
 }
 
 main();

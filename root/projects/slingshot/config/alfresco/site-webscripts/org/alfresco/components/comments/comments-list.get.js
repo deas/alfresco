@@ -105,8 +105,8 @@ function main()
    
    // Widget instantiation metadata...
    var locale = this.locale.substring(0, 2);
-   model.widgets = [];
    var commentList = {
+      id : "CommentsList"
       name : "Alfresco.CommentsList",
       options : {
          nodeRef : model.nodeRef,
@@ -129,7 +129,7 @@ function main()
          }
       }
    };
-   model.widgets.push(commentList);
+   model.widgets = [commentList];
 }
 
 main();

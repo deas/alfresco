@@ -4,14 +4,14 @@ function main()
    var usersConfig = config.scoped['Users']['users'],
        minPasswordLength = usersConfig.getChildValue('password-min-length');
    
-   model.widgets = [];
    var changePassword = {
+      id : "ChangePassword", 
       name : "Alfresco.ChangePassword",
       options : {
          minPasswordLength : minPasswordLength
       }
    };
-   model.widgets.push(changePassword);
+   model.widgets = [changePassword];
 }
 
 main();

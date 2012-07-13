@@ -5,8 +5,8 @@ model.rootNode = DocumentList.getConfigValue("RepositoryLibrary", "root-node", "
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var rulesNone = {
+      id : "RulesNone", 
       name : "Alfresco.RulesNone",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -14,7 +14,7 @@ function main()
          repositoryBrowsing : (model.rootNode != null)
       }
    };
-   model.widgets.push(rulesNone);
+   model.widgets = [rulesNone];
 }
 
 main();

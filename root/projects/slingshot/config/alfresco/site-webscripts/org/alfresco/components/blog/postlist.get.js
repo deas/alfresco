@@ -1,7 +1,7 @@
 function main()
 {
-   model.widgets = [];
    var blogPostList = {
+      id : "BlogPostList",
       name : "Alfresco.BlogPostList",
       options : {
          siteId :(page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -13,7 +13,7 @@ function main()
          }
       }
    };
-   model.widgets.push(blogPostList);
+   model.widgets = [blogPostList];
 }
 
 main();

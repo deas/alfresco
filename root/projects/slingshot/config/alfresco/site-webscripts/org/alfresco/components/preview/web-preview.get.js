@@ -91,8 +91,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var webPreview = {
+      id : "WebPreview", 
       name : "Alfresco.WebPreview",
       options : {
          thumbnailModification : model.node.thumbnailModifications,
@@ -103,7 +103,7 @@ function main()
          pluginConditions : model.pluginConditionsJSON
       }
    };
-   model.widgets.push(webPreview);
+   model.widgets = [webPreview];
 }
 
 // Start the webscript

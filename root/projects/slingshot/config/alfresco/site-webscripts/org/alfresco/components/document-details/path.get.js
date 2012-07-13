@@ -1,11 +1,11 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var path = {
+      id : "Path", 
       name : "Alfresco.component.Path"
    };
-   model.widgets.push(path)
+   model.widgets = [path];
 }
 
 main();

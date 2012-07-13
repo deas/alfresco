@@ -1,23 +1,24 @@
 function main()
 {
-   model.widgets = [];
+   
 
    var miniCalendar = {
+      id: "MiniCalendar",
       name : "Alfresco.dashlet.MiniCalendar",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
    };
-   model.widgets.push(miniCalendar);
 
    var dashletResizer = {
+      id : "DashletResizer",
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -33,7 +34,8 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   
+   model.widgets = [miniCalendar, dashletResizer, dashletTitleBarActions];
 }
 
 main();

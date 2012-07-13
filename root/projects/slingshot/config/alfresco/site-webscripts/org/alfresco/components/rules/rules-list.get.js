@@ -1,8 +1,8 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var rulesList = {
+      id : "RulesList", 
       name : "Alfresco.RulesList",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -12,7 +12,7 @@ function main()
          editable : (args.editable != null) ? args.editable : "false"
       }
    };
-   model.widgets.push(rulesList);
+   model.widgets = [rulesList];
 }
 
 main();

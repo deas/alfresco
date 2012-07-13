@@ -1,8 +1,8 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var linksView = {
+      id : "LinksView", 
       name : "Alfresco.LinksView",
       options : {
          siteId : page.url.templateArgs.site,
@@ -10,7 +10,7 @@ function main()
          linkId : page.url.args.linkId
       }
    };
-   model.widgets.push(linksView);
+   model.widgets = [linksView];
 }
 
 main();

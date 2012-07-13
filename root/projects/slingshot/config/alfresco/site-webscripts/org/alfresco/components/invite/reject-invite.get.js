@@ -46,10 +46,10 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    if (!model.error)
    {
       var rejectInvite = {
+         id : "RejectInvite", 
          name : "Alfresco.RejectInvite",
          options : {
             inviteId : (page.url.args.inviteId != null) ? page.url.args.inviteId : "",
@@ -57,7 +57,7 @@ function main()
             inviteeUserName : (page.url.args.inviteeUserName != null) ? page.url.args.inviteeUserName : ""
          }
       };
-      model.widgets.push(rejectInvite);
+      model.widgets = [rejectInvite];
    }
 }
 

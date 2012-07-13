@@ -22,8 +22,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentWorkflows = {
+      id : "DocumentWorkflows", 
       name : "Alfresco.DocumentWorkflows",
       options : {
          nodeRef : model.nodeRef,
@@ -31,7 +31,7 @@ function main()
          destination : model.destination
       }
    };   
-   model.widgets.push(documentWorkflows);
+   model.widgets = [documentWorkflows];
 }
 
 main();

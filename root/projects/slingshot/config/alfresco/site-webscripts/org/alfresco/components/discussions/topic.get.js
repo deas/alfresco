@@ -1,9 +1,8 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-   
    var discussionsTopic = {
+      id : "DiscussionsTopic", 
       name : "Alfresco.DiscussionsTopic",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -11,7 +10,7 @@ function main()
          topicId : (page.url.args.topicId != null) ? page.url.args.topicId : ""
       }
    };
-   model.widgets.push(discussionsTopic);
+   model.widgets = [discussionsTopic];
 }
 
 main();

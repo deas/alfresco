@@ -3,11 +3,11 @@
 function main2()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var htmlUpload = {
+      id : "HtmlUpload", 
       name : "Alfresco.HtmlUpload"
    };
-   model.widgets.push(htmlUpload);
+   model.widgets = [htmlUpload];
 }
 
 main2();

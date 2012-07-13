@@ -1,7 +1,5 @@
 function widgets()
 {
-   model.widgets = [];
-
    var evaluateChildFolders = "true",
        maximumFolderCount = "-1";
    var docLibConfig = config.scoped["DocumentLibrary"];
@@ -18,6 +16,7 @@ function widgets()
    }
 
    var docListTree = {
+      id : "DocListTree", 
       name : "Alfresco.DocListTree",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -27,7 +26,7 @@ function widgets()
          setDropTargets : true
       }
    };
-   model.widgets.push(docListTree);
+   model.widgets = [docListTree];
 }
 
 widgets();

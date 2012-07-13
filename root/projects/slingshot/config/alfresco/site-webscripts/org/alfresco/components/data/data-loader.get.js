@@ -1,8 +1,7 @@
 function main()
 {
-   model.widgets = [];
-
    var dataLoader = {
+      id : "DataLoader", 
       name : "Alfresco.DataLoader",
       options : {
          url : (args.url != null) ? args.url : ""
@@ -20,7 +19,7 @@ function main()
    {
       dataLoader.options.failureMessageKey = args.failureMessageKey;
    }
-   model.widgets.push(dataLoader);
+   model.widgets = [dataLoader];
 }
 
 main();

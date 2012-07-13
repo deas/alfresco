@@ -20,8 +20,8 @@ function main()
       maxTagCount = "100";
    }
    
-   model.widgets = [];
    var tagFilter = {
+      id : "TagFilter", 
       name : "Alfresco.TagFilter",
       assignTo : "tagFilter",
       options : {
@@ -31,7 +31,7 @@ function main()
          numTags : maxTagCount
       }
    };
-   model.widgets.push(tagFilter);
+   model.widgets = [tagFilter];
 }
 
 main();

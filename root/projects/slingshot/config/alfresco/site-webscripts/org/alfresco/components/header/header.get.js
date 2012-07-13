@@ -134,8 +134,8 @@ function main()
    getLicenseInfo();
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var header = {
+      id : "Header", 
       name : "Alfresco.component.Header",
       assignTo : args.htmlid.replace("-", "_"),
       options : {
@@ -149,7 +149,7 @@ function main()
          }
       }
    };   
-   model.widgets.push(header);
+   model.widgets = [header];
 }
 
 if (!user.isGuest)

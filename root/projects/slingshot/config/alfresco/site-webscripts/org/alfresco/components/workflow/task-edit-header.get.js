@@ -3,15 +3,15 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var taskEditHeader = {
+      id : "TaskEditHeader", 
       name : "Alfresco.component.TaskEditHeader",
       options : {
          submitButtonMessageKey : "button.saveandclose",
          defaultUrl : getSiteUrl("my-tasks")
       }
    };
-   model.widgets.push(taskEditHeader);
+   model.widgets = [taskEditHeader];
 }
 
 main();

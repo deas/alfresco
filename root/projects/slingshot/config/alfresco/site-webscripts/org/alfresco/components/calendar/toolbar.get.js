@@ -55,13 +55,13 @@ function main()
       enabledViewList.push("\"agenda\"");
    }
    
-   model.widgets = [];
    var calendarToolbar = {
+      id : "CalendarToolbar",
       name : "Alfresco.CalendarToolbar",
       assignTo : "calendarToolbar",
       initArgs : ["\"" + args.htmlid + "\"", enabledViewList, "\"" + model.defaultView + "\""]
    };
-   model.widgets.push(calendarToolbar);
+   model.widgets = [calendarToolbar];
 }
 
 main();

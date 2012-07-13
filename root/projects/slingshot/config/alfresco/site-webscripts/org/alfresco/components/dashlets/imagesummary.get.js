@@ -1,23 +1,23 @@
 function main()
 {
-   model.widgets = [];
-
+   
    var imageSummary = {
+      id : "ImageSummary",
       name : "Alfresco.dashlet.ImageSummary",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
    };
-   model.widgets.push(imageSummary);
 
    var dashletResizer = {
+      id : "DashletResizer",
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
-
+   
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -33,7 +33,7 @@ function main()
         ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [imageSummary, dashletResizer, dashletTitleBarActions];
 }
 
 main();

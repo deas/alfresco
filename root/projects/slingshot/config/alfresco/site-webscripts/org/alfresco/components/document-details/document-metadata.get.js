@@ -13,8 +13,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentMetadata = {
+      id : "DocumentMetadata", 
       name : "Alfresco.DocumentMetadata",
       options : {
          nodeRef : model.nodeRef,
@@ -22,7 +22,7 @@ function main()
          formId : model.formId
       }
    };
-   model.widgets.push(documentMetadata);
+   model.widgets = [documentMetadata];
 }
 
 main();

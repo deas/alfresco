@@ -45,15 +45,15 @@ function main()
    model.filterIds = filterIds;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var filter = {
+      id : "BaseFilter", 
       name : "Alfresco.component.BaseFilter",
       assignTo : "filter",
       initArgs : ["Alfresco.DataListFilter","\"" + args.htmlid + "\""],
       useMessages : false
    };
    
-   model.widgets.push(filter);
+   model.widgets = [filter];
 }
 
 main();

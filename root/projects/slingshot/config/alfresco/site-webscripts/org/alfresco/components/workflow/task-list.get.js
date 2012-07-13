@@ -8,8 +8,8 @@ function main()
    model.maxItems = getMaxItems();
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var taskList = {
+      id : "TaskList", 
       name : "Alfresco.component.TaskList",
       options : {
          filterParameters : model.filterParameters,
@@ -17,7 +17,7 @@ function main()
          maxItems : (model.maxItems != null) ? model.maxItems : "50"
       }
    };
-   model.widgets.push(taskList);
+   model.widgets = [taskList];
 }
 
 main();

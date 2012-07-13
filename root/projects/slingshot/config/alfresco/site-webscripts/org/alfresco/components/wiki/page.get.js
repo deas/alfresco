@@ -83,8 +83,8 @@ function main()
       permissions["delete"] = "false";
    }
 
-   model.widgets = [];
    var wikiPage = {
+      id : "WikiPage", 
       name : "Alfresco.WikiPage",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -103,8 +103,7 @@ function main()
       wikiPage.options.error = true;
    }
    
-   model.widgets.push(wikiPage);
-
+   model.widgets = [wikiPage];
 }
  
 main();

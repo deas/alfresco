@@ -5,8 +5,8 @@ function main()
        defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
        defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
 
-   model.widgets = [];
    var peopleFinder = {
+      id : "PeopleFinder", 
       name : "Alfresco.PeopleFinder",
       options : {
          userId : user.name,
@@ -19,7 +19,7 @@ function main()
          viewMode : { ___value : "Alfresco.PeopleFinder.VIEW_MODE_DEFAULT", ___type: "REFERENCE"}
       }
    };
-   model.widgets.push(peopleFinder);
+   model.widgets = [peopleFinder];
 }
 
 main();

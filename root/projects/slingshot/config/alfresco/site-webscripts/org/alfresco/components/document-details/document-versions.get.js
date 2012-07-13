@@ -17,8 +17,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentVersions = {
+      id : "DocumentVersions", 
       name : "Alfresco.DocumentVersions",
       options : {
          nodeRef : model.nodeRef,
@@ -29,8 +29,7 @@ function main()
       }
    };
    
-   model.widgets.push(documentVersions);
-
+   model.widgets = [documentVersions];
 }
 
 main();

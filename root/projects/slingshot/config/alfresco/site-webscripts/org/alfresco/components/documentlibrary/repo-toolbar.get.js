@@ -3,8 +3,6 @@
 
 function widgets()
 {
-   model.widgets = [];
-
    var useTitle = "true";
    var docLibConfig = config.scoped["DocumentLibrary"];
    if (docLibConfig != null)
@@ -14,6 +12,7 @@ function widgets()
    }
 
    var repoDocListToobar = {
+      id : "RepositoryDocListToolbar", 
       name : "Alfresco.RepositoryDocListToolbar",
       options : {
          rootNode : model.rootNode != null ? model.rootNode : "",
@@ -23,7 +22,7 @@ function widgets()
          useTitle : useTitle
       }
    };
-   model.widgets.push(repoDocListToobar);
+   model.widgets = [repoDocListToobar];
 }
 
 widgets();

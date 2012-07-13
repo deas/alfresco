@@ -7,14 +7,14 @@ function main()
    model.allowEmailInvite = json.data.creationAllowed;
 
    // Widget instantiation metadata...
-   model.widgets = [];
    var addEmailInvite = {
+      id : "AddEmailInvite", 
       name : "Alfresco.AddEmailInvite",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
    };
-   model.widgets.push(addEmailInvite);
+   model.widgets = [addEmailInvite];
 }
 
 main();

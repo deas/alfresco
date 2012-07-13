@@ -1,11 +1,11 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var taskListToolbar = {
+      id : "TaskListToolbar", 
       name : "Alfresco.component.TaskListToolbar"
    };
-   model.widgets.push(taskListToolbar);
+   model.widgets = [taskListToolbar];
 }
 
 main();

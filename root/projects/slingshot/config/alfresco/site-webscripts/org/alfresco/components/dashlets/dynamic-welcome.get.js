@@ -292,15 +292,15 @@ function main()
    model.dashboardType = args.dashboardType;
 
    // Widget instantiation metadata...
-   model.widgets = [];
    var dynamicWelcome = {
+      id : "DynamicWelcome",
       name : "Alfresco.dashlet.DynamicWelcome",
       initArgs : ["\"" + args.htmlid + "\"",
                   "\"" + model.dashboardUrl + "\"",
                   "\"" + model.dashboardType + "\"",
                   "\"" + model.siteURL + "\""]
    };
-   model.widgets.push(dynamicWelcome);
+   model.widgets = [dynamicWelcome];
 }
 
 main();

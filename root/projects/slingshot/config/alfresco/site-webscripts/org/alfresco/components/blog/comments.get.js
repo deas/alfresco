@@ -1,12 +1,11 @@
 function main()
 {
-   model.widgets = [];
-
    var height = (args.editorHeight != null) ? args.editorHeight : 180,
        width = (args.editorWidth != null) ? args.editorWidth : 700,
        locale = locale.substring(0, 2);
 
    var commentList = {
+      id: "CommentList",
       name : "Alfresco.CommentList",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -31,7 +30,8 @@ function main()
          }
       }
    };
-   model.widgets.push(commentList);
+   
+   model.widgets = [commentList];
 }
 
 main();

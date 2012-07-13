@@ -1,8 +1,8 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var authorityFinder = {
+      id : "AuthorityFinder", 
       name : "Alfresco.AuthorityFinder",
       options : {
          siteId : (page.exists == true) ? ((page.url.templateArgs.site != null) ? page.url.templateArgs.site : "") : ((args.site != null) ? args.site : ""),
@@ -15,7 +15,7 @@ function main()
          authorityType : { ___value : "Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL", ___type: "REFERENCE"}
       }
    };
-   model.widgets.push(authorityFinder);
+   model.widgets = [authorityFinder];
 }
 
 main();

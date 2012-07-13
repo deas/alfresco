@@ -21,10 +21,9 @@ model.filterActivities = getFilters("filter-activities");
 
 function main()
 {
-  // Widget instantiation metadata...
-   model.widgets = [];
-
+   // Widget instantiation metadata...
    var myActivities = {
+      id : "Activities",
       name : "Alfresco.dashlet.Activities",
       assignTo : "activities",
       options : {
@@ -33,16 +32,16 @@ function main()
          regionId : args['region-id']
       }
    };
-   model.widgets.push(myActivities);
 
    var dashletResizer = {
+      id : "DashletResizer",
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -63,7 +62,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [myActivities, dashletResizer, dashletTitleBarActions];
 }
 
 main();

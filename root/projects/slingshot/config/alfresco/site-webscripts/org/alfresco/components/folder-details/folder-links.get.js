@@ -18,16 +18,15 @@ function main()
    }
 
    // Widget instantiation metadata...
-   model.widgets = [];
    var folderLinks = {
+      id : "FolderLinks", 
       name : "Alfresco.FolderLinks",
       options : {
          nodeRef : model.nodeRef,
          siteId : (model.site != null) ? model.site : null
       }
    };
-   model.widgets.push(folderLinks);
-
+   model.widgets = [folderLinks];
 }
 
 main();

@@ -4,8 +4,8 @@ model.workflowDefinitions = getWorkflowDefinitions();
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var startWorkflow = {
+      id : "StartWorkflow", 
       name : "Alfresco.component.StartWorkflow",
       options : {
          failureMessage : "message.failure",
@@ -16,7 +16,7 @@ function main()
          workflowDefinitions : model.workflowDefinitions
       }
    };
-   model.widgets.push(startWorkflow);
+   model.widgets = [startWorkflow];
 }
 
 main();

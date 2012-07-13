@@ -12,8 +12,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var folderMetadata = {
+      id : "FolderMetadata", 
       name : "Alfresco.FolderMetadata",
       options : {
          nodeRef : model.nodeRef,
@@ -21,7 +21,7 @@ function main()
          formId : model.formId
       }
    };
-   model.widgets.push(folderMetadata);
+   model.widgets = [folderMetadata];
 }
 
 main();

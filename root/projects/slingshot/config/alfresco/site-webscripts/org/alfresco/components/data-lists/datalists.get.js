@@ -53,8 +53,8 @@ model.listTypes = getListTypes();
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var dataLists = {
+      id : "DataLists", 
       name : "Alfresco.component.DataLists",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -64,7 +64,7 @@ function main()
       }
    };
    
-   model.widgets.push(dataLists);
+   model.widgets = [dataLists];
 }
 
 main();

@@ -1,14 +1,14 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var workflowDetailsHeader = {
+      id : "WorkflowDetailsHeader", 
       name : "Alfresco.component.WorkflowDetailsHeader",
       options : {
          taskId : page.url.args.taskId
       }
    };
-   model.widgets.push(workflowDetailsHeader);
+   model.widgets = [workflowDetailsHeader];
 }
 
 main();

@@ -10,8 +10,8 @@ function main()
    
    
    //Widget instantiation metadata...
-   model.widgets = [];
    var workflowList = {
+      id : "WorkflowList", 
       name : "Alfresco.component.WorkflowList",
       options : {
          filterParameters : model.filterParameters,
@@ -20,7 +20,7 @@ function main()
          maxItems : (model.maxItems != null) ? model.maxItems : "50"
       }
    };
-   model.widgets.push(workflowList);
+   model.widgets = [workflowList];
 }
 
 main();

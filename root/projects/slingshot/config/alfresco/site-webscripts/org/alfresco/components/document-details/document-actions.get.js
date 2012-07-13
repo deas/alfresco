@@ -19,8 +19,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentActions = {
+      id : "DocumentActions", 
       name : "Alfresco.DocumentActions",
       options : {
          nodeRef : model.nodeRef,
@@ -32,7 +32,7 @@ function main()
          repositoryBrowsing : (model.rootNode != null)
       }
    };
-   model.widgets.push(documentActions);
+   model.widgets = [documentActions];
 }
 
 main();

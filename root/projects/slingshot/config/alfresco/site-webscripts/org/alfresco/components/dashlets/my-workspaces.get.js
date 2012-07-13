@@ -4,25 +4,24 @@ main("document-workspace");
 function widgets()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var myMeetingWorkspaces = {
+      id : "MyWorkspaces", 
       name : "Alfresco.dashlet.MyWorkspaces",
       options : {
          imapEnabled : model.imapServerEnabled,
          sites : model.sites
       }
    };
-   model.widgets.push(myMeetingWorkspaces);
 
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"","\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -38,7 +37,7 @@ function widgets()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [myMeetingWorkspaces, dashletResizer, dashletTitleBarActions];
 }
 
 widgets();

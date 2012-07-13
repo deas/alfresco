@@ -6,8 +6,8 @@ function main()
    model.viewArgs = CalendarScriptHelper.initView();
 
    // Widget instantiation metadata...
-   model.widgets = [];
    var calendarView = {
+      id : "CalendarView",
       name : "Alfresco.CalendarView",
       assignTo : "calendarView",
       initArgs : ["\"" + args.htmlid + "Container\""],
@@ -41,7 +41,7 @@ function main()
          }
       }
    };
-   model.widgets.push(calendarView);
+   model.widgets = [calendarView];
 }
 
 main();

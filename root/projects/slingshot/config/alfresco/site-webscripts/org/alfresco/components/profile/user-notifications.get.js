@@ -16,11 +16,11 @@ function main()
    model.emailFeedDisabled = emailFeedDisabled;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var userNotification = {
+      id : "UserNotifications", 
       name : "Alfresco.UserNotifications"
    };
-   model.widgets.push(userNotification);
+   model.widgets = [userNotification];
 }
 
 main();

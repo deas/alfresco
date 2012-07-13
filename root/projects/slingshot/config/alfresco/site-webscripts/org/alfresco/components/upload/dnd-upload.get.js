@@ -8,12 +8,12 @@ function main()
    
    
    //Widget instantiation metadata...
-   model.widgets = [];
    var dndUpload = {
+      id : "DNDUpload", 
       name : "Alfresco.DNDUpload",
       assignTo : "dndUpload"
    };
-   model.widgets.push(dndUpload);
+   model.widgets = [dndUpload];
 }
 
 main();

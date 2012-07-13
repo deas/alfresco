@@ -11,14 +11,14 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentPublishing = {
+      id : "DocumentPublishing", 
       name : "Alfresco.DocumentPublishing",
       options : {
          nodeRef : model.nodeRef
       }
    };
-   model.widgets.push(documentPublishing);
+   model.widgets = [documentPublishing];
 }
 
 main();

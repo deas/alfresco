@@ -3,14 +3,14 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var workflowDetailsActions = {
+      id : "WorkflowDetailsActions", 
       name : "Alfresco.component.WorkflowDetailsActions",
       options : {
          submitUrl : getSiteUrl("my-tasks")
       }
    };
-   model.widgets.push(workflowDetailsActions);
+   model.widgets = [workflowDetailsActions];
 }
 
 main();

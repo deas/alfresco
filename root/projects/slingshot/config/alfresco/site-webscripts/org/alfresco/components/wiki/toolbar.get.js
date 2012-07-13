@@ -1,8 +1,8 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var wikiToolbar = {
+      id : "WikiToolbar", 
       name : "Alfresco.WikiToolbar",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -10,7 +10,7 @@ function main()
          showBackLink : (args.showBackLink == "true")
       }
    };
-   model.widgets.push(wikiToolbar);
+   model.widgets = [wikiToolbar];
 }
 
 main();

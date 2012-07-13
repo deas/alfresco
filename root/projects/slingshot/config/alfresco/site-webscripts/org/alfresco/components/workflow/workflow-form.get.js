@@ -1,15 +1,15 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var workflowForm = {
+      id : "WorkflowForm", 
       name : "Alfresco.component.WorkflowForm",
       options : {
          referrer : page.url.args.referrer,
          nodeRef : page.url.args.nodeRef
       }
    };
-   model.widgets.push(workflowForm);
+   model.widgets = [workflowForm];
 }
 
 main();

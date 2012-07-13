@@ -1,8 +1,6 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var initialFilter = 
    {
       filterId: (page.url.args.filterId != null) ? page.url.args.filterId : "new",
@@ -11,6 +9,7 @@ function main()
    }
    
    var discussionsTopicList = {
+      id : "DiscussionsTopicList", 
       name : "Alfresco.DiscussionsTopicList",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -18,8 +17,7 @@ function main()
          initialFilter : initialFilter
       }
    };
-   model.widgets.push(discussionsTopicList);
-
+   model.widgets = [discussionsTopicList];
 }
 
 main();

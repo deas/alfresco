@@ -5,8 +5,8 @@ function main()
        defaultMinSearchTermLength = searchConfig.getChildValue('min-search-term-length'),
        defaultMaxSearchResults = searchConfig.getChildValue('max-search-results');
    
-   model.widgets = [];
    var groupFinder = {
+      id : "GroupFinder", 
       name : "Alfresco.GroupFinder",
       options : {
          siteId : (this.page != null) ? ((this.page.url.templateArgs.site != null) ? this.page.url.templateArgs.site : "") : ((args.site != null) ? args.site : ""),
@@ -17,8 +17,8 @@ function main()
          dataWebScript : ((args.dataWebScript != null) ? args.dataWebScript : "api/groups").replace(/{/g, "[").replace(/}/g, "]")
       }
    };
-   model.widgets.push(groupFinder);
-}
+   model.widgets = [groupFinder];
+   
 
 main();
 

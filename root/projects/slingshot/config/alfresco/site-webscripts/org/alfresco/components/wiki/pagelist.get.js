@@ -30,8 +30,8 @@ function main()
    }
 
    
-   model.widgets = [];
    var wikiList = {
+      id : "WikiList", 
       name : "Alfresco.WikiList",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -42,7 +42,7 @@ function main()
          filterId : (page.url.args.filter != null) ? page.url.args.filter : "recentlyModified"
       }
    };
-   model.widgets.push(wikiList);
+   model.widgets = [wikiList];
 }
 
 main();

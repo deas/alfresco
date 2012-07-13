@@ -144,8 +144,8 @@ function main()
    model.currentLayout = currentLayout;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var customizeDashlets = {
+      id : "CustomiseDashlets",
       name : "Alfresco.CustomiseDashlets",
       options : {
          currentLayout : {
@@ -158,7 +158,7 @@ function main()
          dashboardId : model.dashboardId
       }
    };
-   model.widgets.push(customizeDashlets);
+   model.widgets = [customizeDashlets];
 }
 
 main();

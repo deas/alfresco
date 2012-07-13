@@ -15,8 +15,6 @@ function main()
    
    model.rootNode = rootNode;
    
-   model.widgets = [];
-
    var evaluateChildFolders = "true",
        maximumFolderCount = "-1";
    var docLibConfig = config.scoped["RepositoryLibrary"];
@@ -33,6 +31,7 @@ function main()
    }
 
    var repoDocListTree = {
+      id : "RepositoryDocListTree", 
       name : "Alfresco.RepositoryDocListTree",
       options : {
          rootNode : model.rootNode != null ? model.rootNode : "null",
@@ -41,7 +40,7 @@ function main()
          setDropTargets : true
       }
    };
-   model.widgets.push(repoDocListTree);
+   model.widgets = [repoDocListTree];
 }
 
 main();

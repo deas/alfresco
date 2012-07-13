@@ -1,13 +1,13 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    var baseFilter = {
+      id : "BaseFilter", 
       name : "Alfresco.component.BaseFilter",
       initArgs : [ "Alfresco.WikiFilter", "\"" + args.htmlid + "\""],
       useMessages : false
    };
-   model.widgets.push(baseFilter);
+   model.widgets = [baseFilter];
 }
 
 main();

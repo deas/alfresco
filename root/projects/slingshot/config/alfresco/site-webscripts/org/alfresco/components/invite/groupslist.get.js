@@ -20,15 +20,15 @@ function main()
    }
 
    // Widget instantiation metadata...
-   model.widgets = [];
    var groupsList = {
+      id : "GroupsList", 
       name : "Alfresco.GroupsList",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          roles : model.siteRoles
       }
    };
-   model.widgets.push(groupsList);
+   model.widgets = [groupsList];
 }
 
 main();

@@ -1,7 +1,5 @@
 function main()
 {
-   model.widgets = [];
-
    var evaluateChildFolders = "true";
    var docLibConfig = config.scoped["DocumentLibrary"];
    if (docLibConfig != null)
@@ -15,13 +13,14 @@ function main()
    }
 
    var categories = {
+      id : "DocListCategories", 
       name : "Alfresco.DocListCategories",
       options : {
          nodeRef : "alfresco://category/root", 
          evaluateChildFolders : evaluateChildFolders
       }
    };
-   model.widgets.push(categories);
+   model.widgets = [categories];
 }
 
 main();

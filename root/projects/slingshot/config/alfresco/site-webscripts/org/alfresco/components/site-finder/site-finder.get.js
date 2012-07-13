@@ -29,8 +29,8 @@ function main()
    }
 
    
-   model.widgets = [];
    var siteFinder = {
+      id : "SiteFinder", 
       name : "Alfresco.SiteFinder",
       options : {
          currentUser : user.name,
@@ -40,7 +40,7 @@ function main()
          inviteData: inviteData
       }
    };
-   model.widgets.push(siteFinder);
+   model.widgets = [siteFinder];
 }
 
 main();

@@ -1,11 +1,12 @@
 function main()
 {
-   model.widgets = [];
    var calendar = {
+      id : "Calendar",
       name : "Alfresco.Calendar",
-      assignTo : "calendar"
+      assignTo : "calendar",
+      useOptions: false
    };
-   model.widgets.push(calendar);
+   model.widgets = [calendar];
 }
 
 main();

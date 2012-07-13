@@ -3,8 +3,6 @@
 
 function widgets()
 {
-   model.widgets = [];
-
    var useTitle = "true";
    var docLibConfig = config.scoped["DocumentLibrary"];
    if (docLibConfig != null)
@@ -14,6 +12,7 @@ function widgets()
    }
 
    var docListToolbar = {
+      id : "DocListToolbar", 
       name : "Alfresco.DocListToolbar",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -24,8 +23,7 @@ function widgets()
          useTitle : useTitle
       }
    };
-   model.widgets.push(docListToolbar);
-
+   model.widgets = [docListToolbar];
 }
 
 widgets();

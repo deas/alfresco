@@ -12,15 +12,15 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentActions = {
+      id : "DocumentLinks", 
       name : "Alfresco.DocumentLinks",
       options : {
          nodeRef : model.nodeRef,
          siteId : (model.site != null) ? model.site : null
       }
    };
-   model.widgets.push(documentActions);
+   model.widgets = [documentActions];
 }
 
 main();

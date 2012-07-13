@@ -22,8 +22,8 @@ function main()
    model.tags = tags;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var tagComponent = {
+      id : "TagComponent", 
       name : "Alfresco.TagComponent",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -31,7 +31,7 @@ function main()
       }
    };
    
-   model.widgets.push(tagComponent);
+   model.widgets = [tagComponent];
 }
 
 main();

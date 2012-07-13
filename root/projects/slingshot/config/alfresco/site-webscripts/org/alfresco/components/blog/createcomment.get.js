@@ -4,8 +4,8 @@ function main()
          width = (args.editorWidth != null) ? args.editorWidth : 538,
          locale = locale.substring(0, 2);
 
-   model.widgets = [];
    var createComment = {
+      id: "CreateComment",
       name : "Alfresco.CreateComment",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -30,7 +30,8 @@ function main()
          }
       }
    };
-   model.widgets.push(createComment);
+   model.widgets = [createComment];
+   odel.widgets.push();
 }
 
 main();

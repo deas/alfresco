@@ -26,9 +26,8 @@ function main()
    model.forum = forum;
    
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var toolbar = {
+      id : "DiscussionsToolbar", 
       name : "Alfresco.DiscussionsToolbar",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -36,7 +35,7 @@ function main()
          allowCreate : model.forum.forumPermissions.create
       }
    };
-   model.widgets.push(toolbar);
+   model.widgets = [toolbar];
 }
 
 main();

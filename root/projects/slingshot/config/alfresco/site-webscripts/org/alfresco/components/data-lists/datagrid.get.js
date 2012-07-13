@@ -44,8 +44,8 @@ function main()
    model.actionSet = actionSet;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var dataGrid = {
+      id : "DataGrid", 
       name : "Alfresco.component.DataGrid",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -53,7 +53,7 @@ function main()
          usePagination : (args.pagination != null) ? args.pagination : "false"
       }
    };
-   model.widgets.push(dataGrid);
+   model.widgets = [dataGrid];
 }
 
 main();

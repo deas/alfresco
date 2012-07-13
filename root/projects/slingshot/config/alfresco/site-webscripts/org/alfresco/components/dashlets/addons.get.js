@@ -5,9 +5,9 @@ main();
 function defineWidgets()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
+   
    var rssFeed = {
+      id : "RssFeed",
       name : "Alfresco.dashlet.RssFeed",
       assignTo : "addOnsRssFeed",
       options : {
@@ -18,7 +18,6 @@ function defineWidgets()
          targetElSuffix : "-scrollableList"
       }
    };
-   model.widgets.push(rssFeed);
 
    var actions = [];
    if (model.userIsSiteManager)
@@ -39,13 +38,14 @@ function defineWidgets()
    });
    
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
          actions : actions
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [rssFeed, dashletTitleBarActions];
 }
 
 defineWidgets();

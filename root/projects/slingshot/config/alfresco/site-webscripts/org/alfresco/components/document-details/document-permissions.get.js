@@ -62,8 +62,8 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var documentPermissions = {
+      id : "DocumentPermissions", 
       name : "Alfresco.DocumentPermissions",
       options : {
          nodeRef : model.nodeRef,
@@ -72,7 +72,7 @@ function main()
          roles : model.roles
       }
    };
-   model.widgets.push(documentPermissions);
+   model.widgets = [documentPermissions];
 }
 
 main();

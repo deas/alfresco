@@ -44,8 +44,8 @@ function main()
    model.userIsMember = userIsMember;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var collaborationTitle = {
+      id : "CollaborationTitle", 
       name : "Alfresco.CollaborationTitle",
       options : {
          site : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -53,7 +53,7 @@ function main()
          user : (user.name != null) ? user.name : ""
       }
    };
-   model.widgets.push(collaborationTitle);
+   model.widgets = [collaborationTitle];
 }
 
 main();

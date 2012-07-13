@@ -24,8 +24,9 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
+   
    var blogToolbar = {
+      id : "BlogToolbar",
       name : "Alfresco.BlogToolbar",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -34,7 +35,7 @@ function main()
          allowConfigure : model.blog.permissions.edit
       }
    };
-   model.widgets.push(blogToolbar);
+   model.widgets = [blogToolbar];
 }
 
 main();

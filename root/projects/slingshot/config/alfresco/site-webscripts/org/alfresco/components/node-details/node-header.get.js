@@ -33,8 +33,8 @@ function main()
       likes.totalLikes = model.item.likes.totalLikes || 0;
    }
 
-   model.widgets = [];
    var nodeHeader = {
+      id : "NodeHeader", 
       name : "Alfresco.component.NodeHeader",
       options : {
          nodeRef : model.nodeRef,
@@ -52,7 +52,7 @@ function main()
          isContainer : model.isContainer
       }
    };
-   model.widgets.push(nodeHeader);
+   model.widgets = [nodeHeader];
 }
 
 main();

@@ -37,15 +37,15 @@ function main()
    }
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var customisePages = {
+      id : "CustomisePages", 
       name : "Alfresco.CustomisePages",
       options : {
          siteId : model.siteId
       }
       
    };
-   model.widgets.push(customisePages);
+   model.widgets = [customisePages];
 }
 
 main();

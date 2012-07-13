@@ -45,15 +45,15 @@ function main()
    model.actionSet = actionSet;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var toolbar = {
+      id : "DataListToolbar", 
       name : "Alfresco.component.DataListToolbar",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
    };
    
-   model.widgets.push(toolbar);
+   model.widgets = [toolbar];
 }
 
 main();

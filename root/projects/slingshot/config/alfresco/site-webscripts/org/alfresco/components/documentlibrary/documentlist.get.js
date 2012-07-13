@@ -4,9 +4,9 @@ doclibCommon();
 
 function main()
 {
-   model.widgets = [];
-
+   
    var documentList = {
+      id : "DocumentList", 
       name : "Alfresco.DocumentList",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
@@ -31,7 +31,7 @@ function main()
       documentList.options.repositoryUrl = model.repositoryUrl;
    }
    
-   model.widgets.push(documentList);
+   model.widgets = [documentList];
 }
 
 main();

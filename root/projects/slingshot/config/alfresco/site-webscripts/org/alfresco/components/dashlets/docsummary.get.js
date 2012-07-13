@@ -19,25 +19,24 @@ model.maxItems = getMaxItems();
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var docSummary = {
+      id : "DocSummary",
       name : "Alfresco.dashlet.DocSummary",
       options : {
          simpleView : model.preferences.prefSimpleView != null ? model.preferences.prefSimpleView : false, 
          maxItems : model.maxItems
       }
    };
-   model.widgets.push(docSummary);
 
    var dashletResizer = {
+      id : "DashletResizer",
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -53,7 +52,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [docSummary, dashletResizer, dashletTitleBarActions];
 }
 
 main();

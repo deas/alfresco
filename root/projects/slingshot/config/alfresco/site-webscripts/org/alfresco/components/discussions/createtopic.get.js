@@ -1,9 +1,8 @@
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
-
    var createTopic = {
+      id : "CreateTopic", 
       name : "Alfresco.CreateTopic",
       options : {
          topicId : (page.url.args.topicId != null) ? page.url.args.topicId : "",
@@ -29,7 +28,7 @@ function main()
       }
    };
    
-   model.widgets.push(createTopic);
+   model.widgets = [createTopic];
 }
 
 main();

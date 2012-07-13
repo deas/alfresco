@@ -61,8 +61,8 @@ function main()
    model.searchForms = searchForms;
    
    // Widget instantiation metadata...
-   model.widgets = [];
    var advancedSearch = {
+      id : "AdvancedSearch", 
       name : "Alfresco.AdvancedSearch",
       options : {
          siteId : model.siteId,
@@ -71,7 +71,7 @@ function main()
          searchForms : model.searchForms
       }
    };
-   model.widgets.push(advancedSearch);
+   model.widgets = [advancedSearch];
 }
 
 main();

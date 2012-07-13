@@ -1,7 +1,5 @@
 function main()
 {
-   model.widgets = [];
-
    var dashboardconfig = config.scoped['Dashboard']['dashboard'];
    var listSize = dashboardconfig.getChildValue('summary-list-size');
    if (listSize == null)
@@ -10,22 +8,23 @@ function main()
    }
 
    var userCalendar = {
+      id : "UserCalendar", 
       name : "Alfresco.dashlet.UserCalendar",
       options : {
          listSize : listSize
       }
       
    };
-   model.widgets.push(userCalendar);
 
    var dashletResizer = {
+      id : "DashletResizer", 
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
-
+   
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -41,7 +40,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [userCalendar, dashletResizer, dashletTitleBarActions];
 }
 
 main();

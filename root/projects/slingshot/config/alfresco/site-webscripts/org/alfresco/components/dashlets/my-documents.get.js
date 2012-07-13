@@ -33,7 +33,6 @@ model.maxItems = getMaxItems();
 function main()
 {
    // Widget instantiation metadata...
-   model.widgets = [];
    model.prefFilter = model.preferences.filter;
    if (model.prefFilter == null)
    {
@@ -47,6 +46,7 @@ function main()
    }
 
    var myDocs = {
+      id : "MyDocuments",
       name : "Alfresco.dashlet.MyDocuments",
       options : {
          filter : model.prefFilter,
@@ -55,16 +55,16 @@ function main()
          validFilters : model.filters
       }
    };
-   model.widgets.push(myDocs);
 
    var dashletResizer = {
+      id : "DashletResizer",
       name : "Alfresco.widget.DashletResizer",
       initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
       useMessages: false
    };
-   model.widgets.push(dashletResizer);
 
    var dashletTitleBarActions = {
+      id : "DashletTitleBarActions", 
       name : "Alfresco.widget.DashletTitleBarActions",
       useMessages : false,
       options : {
@@ -80,7 +80,7 @@ function main()
          ]
       }
    };
-   model.widgets.push(dashletTitleBarActions);
+   model.widgets = [myDocs, dashletResizer, dashletTitleBarActions];
 }
 
 main();
