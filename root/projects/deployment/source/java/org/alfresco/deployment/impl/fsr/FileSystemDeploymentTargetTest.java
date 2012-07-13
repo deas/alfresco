@@ -29,7 +29,7 @@ import org.alfresco.deployment.impl.DeploymentException;
 import org.alfresco.deployment.impl.server.Deployment;
 import org.alfresco.deployment.impl.server.DeploymentTargetRegistry;
 import org.alfresco.util.Deleter;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import junit.framework.TestCase;
 
@@ -75,8 +75,8 @@ public class FileSystemDeploymentTargetTest extends TestCase
 	      * Start the Standalone Deployment Engine
 	      */
 	    @SuppressWarnings("unused")
-	        FileSystemXmlApplicationContext receiverContext =
-	            new FileSystemXmlApplicationContext("./config/application-context.xml");
+	        ClassPathXmlApplicationContext receiverContext =
+	            new ClassPathXmlApplicationContext("application-context.xml");
 	        
 	        transport = (DeploymentReceiverTransport)receiverContext.getBean("deploymentReceiverEngine");
 	        registry = (DeploymentTargetRegistry)receiverContext.getBean("deploymentReceiverEngine");    
