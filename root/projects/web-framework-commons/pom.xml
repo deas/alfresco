@@ -1,0 +1,69 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-parent</artifactId>
+        <version>4.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>alfresco-web-framework-commons</artifactId>
+    <name>Alfresco Web Framework common libraries</name>
+    <description>Alfresco Web Framework common libraries</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.extensions.surf</groupId>
+            <artifactId>spring-surf</artifactId>
+            <version>${dependency.surf.version}</version>
+        </dependency>
+        <!-- Test only dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <!--  Needs to produce a war to overlay to share to neatly share source/web/ resources
+            | Producing an attached WAR so that Share can depend and overlay it
+            | Basically mimicking projects.xml at line 1410
+            | next copy all required files from web framework commons projects
+            | <copy todir="${dir.project.slingshot.assemble}">
+            | <fileset dir="${dir.project.webframeworkcommons.src.web}" excludes="WEB-INF/web.xml" />
+            | </copy>
+            -->
+            <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-resources-war</id>
+                            <goals><goal>war</goal></goals>
+                            <phase>package</phase>
+                            <configuration>
+                                <classifier>webapp</classifier>
+                                <!-- This allows this to an empty overlay  -->
+                                <failOnMissingWebXml>false</failOnMissingWebXml>
+                                <primaryArtifact>false</primaryArtifact>
+                                <archiveClasses>true</archiveClasses>
+                            </configuration>                        
+                        </execution>
+                    </executions>                    
+                </plugin>
+            
+            </plugins>
+    </build>
+</project>

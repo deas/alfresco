@@ -1,0 +1,255 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-data-model</artifactId>
+    <name>Alfresco Data model classes</name>
+    <parent>
+        <artifactId>alfresco-parent</artifactId>
+        <groupId>org.alfresco</groupId>
+        <version>4.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <!--  See http://jibx.sourceforge.net/maven-jibx-plugin  -->
+            <plugin>
+                <groupId>org.jibx</groupId>
+                <artifactId>maven-jibx-plugin</artifactId>
+                <configuration>
+                    <load>true</load>
+                    <schemaBindingDirectory>${maven.build.layout.jibx.bindings.folder}</schemaBindingDirectory>
+                    <includeSchemaBindings>
+                        <includeSchemaBinding>m2binding.xml</includeSchemaBinding>
+                    </includeSchemaBindings>
+                    <verbose>false</verbose>
+                    <verify>false</verify>
+                 </configuration>
+                 <executions>
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>bind</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--  Create a jar of test classes, to be reused later in repository -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                 <executions>
+                    <execution>
+                        <id>create-test-jar</id>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Copy ANTLR grammar files in dedicated location -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-grammar-resources</id>
+                        <phase>validate</phase>
+                        <goals><goal>copy-resources</goal></goals>
+                        <configuration>
+                            <outputDirectory>${maven.build.layout.src.main.folder}/../antlr</outputDirectory>
+                            <resources>          
+                                <resource>
+                                    <directory>${legacy.sources.folder}</directory>
+                                    <includes>
+                                        <include>**/*.g</include>
+                                    </includes>
+                                </resource>
+                            </resources>          
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate code through ANTLR -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-parsers</id>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.build.layout.src.main.folder}/../antlr</sourceDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${dependency.lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers</artifactId>
+            <version>${dependency.lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-regex</artifactId>
+            <version>${dependency.lucene.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta-regexp</groupId>
+                    <artifactId>jakarta-regexp</artifactId>                
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-snowball</artifactId>
+            <version>${dependency.lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>                
+                </exclusion>
+                <exclusion>
+                    <groupId>jdom</groupId>
+                    <artifactId>jdom</artifactId>                
+                </exclusion>
+                <exclusion>
+                    <groupId>xom</groupId>
+                    <artifactId>xom</artifactId>                
+                </exclusion>
+                <exclusion>
+                    <groupId>maven-plugins</groupId>
+                    <artifactId>maven-cobertura-plugin</artifactId>                
+                </exclusion>
+                <exclusion>
+                    <groupId>maven-plugins</groupId>
+                    <artifactId>maven-findbugs-plugin</artifactId>                
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-run</artifactId>
+            <version>${dependency.jibx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>${dependency.antlr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.chemistry.opencmis</groupId>
+            <artifactId>chemistry-opencmis-commons-impl</artifactId>
+            <version>${dependency.opencmis.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.xml.messaging.saaj</groupId>
+                    <artifactId>saaj-impl</artifactId>                
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- This is now deployed at:
+            | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/apache/chemistry/chemistry-abdera/0.1-incubating-unreleased/
+            -->
+        <dependency>
+            <groupId>org.apache.chemistry</groupId>
+            <artifactId>chemistry-abdera</artifactId>
+            <version>0.1-incubating-unreleased</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.4</version>
+        </dependency>
+        <!-- This is now deployed at:
+            | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/acegisecurity/acegi-security/0.8.2_patched/
+            -->
+        <dependency>
+            <groupId>org.acegisecurity</groupId>
+            <artifactId>acegi-security</artifactId>
+            <version>0.8.2_patched</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>                
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Tika -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>${dependency.tika.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers</artifactId>
+            <version>${dependency.tika.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gagravarr</groupId>
+            <artifactId>vorbis-java-core</artifactId>
+            <version>0.2-20120518</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gagravarr</groupId>
+            <artifactId>vorbis-java-tika</artifactId>
+            <version>0.2-20120518</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>gunit</artifactId>
+            <version>${dependency.antlr.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

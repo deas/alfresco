@@ -1,0 +1,61 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-jlan</artifactId>
+    <name>Alfresco JLan</name>
+    <description>Alfresco JLan</description>
+    <url>${project.artifactId}</url>
+
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-parent</artifactId>
+        <version>4.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <!-- Intra alfresco deps -->
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>1.9.4.6</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--  TODO: Tests are NOT run since they are not JUnit
+            | Still need to port the logic of runtests.sh AKA
+            | java -cp ./jars/alfresco-jlan-full.jar:./libs/cryptix-jce-provider.jar org.alfresco.jlan.test.cluster.ClusterTest clusterTests.xml
+             -->
+        <plugins>
+            <plugin>
+                <!-- Excludes as configured in original build.xml -->
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/alfresco/jlan/app/**</exclude>
+                                <exclude>org/alfresco/jlan/server/filesys/db/*/**</exclude>
+                                <exclude>org/alfresco/jlan/smb/util/**</exclude>
+                                <exclude>org/alfresco/jlan/util/db/**</exclude>
+                                <exclude>org/alfresco/config/*/**</exclude>                    
+                            </excludes> 
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>        
+    </build>
+
+</project>

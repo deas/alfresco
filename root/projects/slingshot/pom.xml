@@ -1,0 +1,116 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-parent</artifactId>
+        <version>4.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <!-- TODO: This build does not work yet because classes are missing from 
+        the 1.0.0 Surf Jar -->
+    <artifactId>share</artifactId>
+    <packaging>war</packaging>
+    <name>Alfresco Share</name>
+    <description>Alfresco Share</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-web-framework-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-jlan</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.cmis.client</groupId>
+            <artifactId>alfresco-opencmis-extension</artifactId>
+            <version>0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.extensions.surf</groupId>
+            <artifactId>spring-cmis-framework</artifactId>
+            <version>${dependency.surf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${dependency.spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <version>3.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Dependency on the web-framework-commons resources skinny war -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-web-framework-commons</artifactId>
+            <version>${project.version}</version>
+            <classifier>webapp</classifier>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <overlays>
+                        <overlay>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>alfresco-web-framework-commons</artifactId>
+                            <classifier>webapp</classifier>
+                            <excludes>
+                                <exclude>WEB-INF/classes/*</exclude>
+                                <exclude>WEB-INF/lib/*</exclude>
+                            </excludes>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Profile to run Share in jetty embedded. Invoke build with -Prun-share 
+        and | Jetty embedded will run the Share war | TODO: run-war works, run fails. 
+        Configure the jetty plugin to pick the proper resources folder | TODO: Configure 
+        directory scanning and hot reloading -->
+    <profiles>
+        <profile>
+            <id>run-share</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>run-share-in-jetty</id>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

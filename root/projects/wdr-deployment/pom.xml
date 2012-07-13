@@ -1,0 +1,38 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-wdr-deployment</artifactId>
+    <name>Alfresco WDR Deployment</name>
+    <parent>
+        <artifactId>alfresco-parent</artifactId>
+        <groupId>org.alfresco</groupId>
+        <version>4.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-repository</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+	    <!-- Filter integration tests for now -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+		    <excludes>
+		        <exclude>**/*DeploymentTargetTest.*</exclude>
+		    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,235 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.alfresco</groupId>
+    <artifactId>alfresco-parent</artifactId>
+    <version>4.2-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <artifactId>alfresco-core</artifactId>
+  <name>Alfresco Core</name>
+  <description>Alfresco core libraries and utils</description>
+
+  <build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+                <!-- TODO: Remove this exclude. Fails when run in a different timezone than GMT:
+                    |  
+                    |  testMiliseconds(org.alfresco.util.ISO8601DateFormatTest): 
+                    |  expected:<2005-09-16T1[7:01:03.456+01]:00> but was:<2005-09-16T1[8:01:03.456+02]:00>
+                    |  
+                    |  testTimezones(org.alfresco.util.ISO8601DateFormatTest):
+                    |  expected:<2011-02-04T0[5:13:14.000Z]> but was:<2011-02-04T0[6:13:14.000+01:00]>
+                    |
+                    -->
+                <excludes>
+                    <exclude>org/alfresco/util/ISO8601DateFormatTest.class</exclude>
+                </excludes>
+            </configuration>
+        </plugin>            
+        <!-- org.alfresco.util.BaseTest is used by other modules. We need to always produce the test-jar -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>test-jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>           
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!--  These dependencies have been checked against the content of 3rd-party/lib/**. 
+        | Where not public available (AKA patched), they have been deployed with the "patched" classifier
+        | in the Alfresco Artifacts Repository at artfifacts.alfresco.com thirdparty repository
+         -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+      <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>        
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+    </dependency>
+     <!-- This is now deployed at:
+        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/hibernate/hibernate/3.2.6.ga/
+        | toghether with the original POM from hibernate 3.2.6.ga to avoid breaking the correct dependency chain 
+        -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>3.2.6-alfresco-patched</version>
+    </dependency>
+    <dependency>
+      <groupId>org.safehaus.jug</groupId>
+      <artifactId>jug</artifactId>
+      <version>2.0.0</version>
+      <classifier>asl</classifier>
+    </dependency>
+    <!-- This is now deployed at:
+        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/mybatis/mybatis/3.0.4/
+        | toghether with the original POM from mybatis 3.0.4 to avoid breaking the correct dependency chain 
+        -->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>3.0.4</version>
+      <classifier>patched</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>1.0.1</version>
+      <exclusions>
+        <exclusion>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.16</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20090211</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>${dependency.spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${dependency.spring.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>1.8.3-alfresco-patched</version>
+      <exclusions>
+        <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.extensions.surf</groupId>
+      <artifactId>spring-surf-core-configservice</artifactId>
+      <version>${dependency.surf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <version>2.1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.1.11</version>
+      <exclusions>
+        <exclusion>
+            <groupId>javax.xml.stream</groupId>
+            <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+      <exclusions>
+        <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.guessencoding</groupId>
+      <artifactId>guessencoding</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <version>1.0.1b</version>
+    </dependency>
+    <!-- Test only dependencies, as popped up while running mvn test -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.11</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit-dep</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <!-- This is now deployed at:
+        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/commons-dbcp/commons-dbcp/1.4/
+        | toghether with the original POM from mybatis 1.4 to avoid breaking the correct dependency chain 
+        -->
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>1.5.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+      <classifier>patched</classifier>
+    </dependency>
+  </dependencies>
+
+</project>
