@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.security.authentication.AuthenticationComponent;
 import org.alfresco.repo.security.authentication.AuthenticationException;
@@ -69,18 +68,16 @@ public class VtiPathHelper extends AbstractLifecycleBean
     private SearchService searchService;
     private NamespaceService namespaceService;
     private PersonService personService;
-    private SysAdminParams sysAdminParams;
     private TenantService tenantService;
     private DictionaryService dictionaryService;
-
     private AuthenticationComponent authenticationComponent;
-
     private SimpleCache<String, NodeRef> singletonCache; // eg. for vtiRootNodeRef
     private static final String KEY_VTI_ROOT_NODEREF = "key.vtiRoot.noderef";
     
     private String rootPath;
     private String storePath;
-    
+    private String urlPathPrefix;
+
     /**
      * Set authentication component
      * 
@@ -152,13 +149,21 @@ public class VtiPathHelper extends AbstractLifecycleBean
     }
     
     /**
+     * @param urlPathPrefix the urlPathPrefix to set
+     */
+    public void setUrlPathPrefix(String urlPathPrefix)
+    {
+        this.urlPathPrefix = urlPathPrefix;
+    }
+
+    /**
      * Get alfresco context
      * 
      * @return alfresco context
      */
     public String getAlfrescoContext()
     {
-        return "/" + sysAdminParams.getAlfrescoContext();
+        return urlPathPrefix;
     }
     
     /**
@@ -620,11 +625,6 @@ public class VtiPathHelper extends AbstractLifecycleBean
     public void setPersonService(PersonService personService)
     {
         this.personService = personService;
-    }
-
-    public void setSysAdminParams(SysAdminParams sysAdminParams)
-    {
-        this.sysAdminParams = sysAdminParams;
     }
 
     public FileFolderService getFileFolderService()

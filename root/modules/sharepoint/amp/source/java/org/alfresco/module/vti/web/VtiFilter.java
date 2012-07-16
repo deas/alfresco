@@ -38,7 +38,6 @@ import org.alfresco.module.vti.handler.SiteMemberMappingException;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.repo.SessionUser;
-import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -78,7 +77,6 @@ public class VtiFilter implements Filter
     private MethodHandler vtiHandler;
     private VtiPathHelper vtiPathHelper;
 
-    private SysAdminParams sysAdminParams;
     private ServletContext context;
     
     private static Log logger = LogFactory.getLog(VtiFilter.class);
@@ -378,12 +376,7 @@ public class VtiFilter implements Filter
 
     public String getAlfrescoContext()
     {
-        return "/" + sysAdminParams.getAlfrescoContext();
-    }
-
-    public void setSysAdminParams(SysAdminParams sysAdminParams)
-    {
-        this.sysAdminParams = sysAdminParams;
+        return vtiPathHelper.getAlfrescoContext();
     }
     
     public void setAuthenticationHandler(AuthenticationHandler authenticationHandler)

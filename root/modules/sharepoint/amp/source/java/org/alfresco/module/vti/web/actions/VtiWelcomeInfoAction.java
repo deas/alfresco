@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.alfresco.service.cmr.repository.TemplateService;
@@ -59,6 +60,7 @@ public class VtiWelcomeInfoAction implements VtiAction
 
     private SysAdminParams sysAdminParams;
     private TemplateService templateService;
+    private VtiPathHelper vtiPathHelper;
     
     public void setSysAdminParams(SysAdminParams sysAdminParams)
     {
@@ -67,6 +69,11 @@ public class VtiWelcomeInfoAction implements VtiAction
     public void setTemplateService(TemplateService templateService)
     {
        this.templateService = templateService;
+    }
+    
+    public void setVtiPathHelper(VtiPathHelper vtiPathHelper)
+    {
+        this.vtiPathHelper = vtiPathHelper;
     }
     
     /**
@@ -140,8 +147,11 @@ public class VtiWelcomeInfoAction implements VtiAction
        {
           url += ":" + request.getServerPort();
        }
-       url += "/" + sysAdminParams.getAlfrescoContext() + "/";
-       
+       url += vtiPathHelper.getAlfrescoContext();
+       if (!url.endsWith("/"))
+       {
+           url += "/";
+       }
        return url;
     }
 }

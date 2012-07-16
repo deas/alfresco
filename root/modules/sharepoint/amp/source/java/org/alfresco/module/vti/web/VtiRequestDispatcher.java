@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.alfresco.repo.admin.SysAdminParams;
+import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -72,7 +72,7 @@ public class VtiRequestDispatcher extends HttpServlet
 
     private static Log logger = LogFactory.getLog(VtiRequestDispatcher.class);
     
-    private SysAdminParams sysAdminParams;
+    private VtiPathHelper vtiPathHelper;
 
     /**
      * <p>
@@ -147,14 +147,9 @@ public class VtiRequestDispatcher extends HttpServlet
         doActions(request, response);
     }
 
-    public void setSysAdminParams(SysAdminParams sysAdminParams)
-    {
-        this.sysAdminParams = sysAdminParams;
-    }
-    
     private String getContext()
     {
-        return "/" + sysAdminParams.getAlfrescoContext();   
+        return vtiPathHelper.getAlfrescoContext();   
     }
     
     private void doActions(ServletRequest request, ServletResponse response) throws IOException, ServletException
@@ -389,4 +384,13 @@ public class VtiRequestDispatcher extends HttpServlet
         }
     }
 
+    /**
+     * Provide a {@link VtiPathHelper} collaborator instance.
+     * 
+     * @param vtiPathHelper
+     */
+    public void setVtiPathHelper(VtiPathHelper vtiPathHelper)
+    {
+        this.vtiPathHelper = vtiPathHelper;
+    }
 }
