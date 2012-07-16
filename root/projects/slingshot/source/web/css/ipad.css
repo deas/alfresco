@@ -83,3 +83,14 @@ input[type="text"], input[type="password"], textarea, select
 {
    height: 26px !important;
 }
+
+/* larger hit area for YUI resizer */
+.yui-resize .yui-resize-handle-r
+{
+   width: 9px !important;
+}
+.yui-resize .yui-resize-handle-inner-r, .yui-resize .yui-resize-handle-inner-l
+{
+   width: 9px !important;
+   left: 2px;
+}
