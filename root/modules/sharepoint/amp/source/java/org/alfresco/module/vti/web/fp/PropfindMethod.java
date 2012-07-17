@@ -128,7 +128,7 @@ public class PropfindMethod extends WebDAVMethod
         {
             try
             {
-                getDAVHelper().getParentNodeForPath(getRootNodeRef(), URLDecoder.decode(m_request.getRequestURI()), alfrescoContext);
+                getDAVHelper().getParentNodeForPath(getRootNodeRef(), m_strPath, alfrescoContext);
             }
             catch (FileNotFoundException e)
             {
@@ -151,7 +151,7 @@ public class PropfindMethod extends WebDAVMethod
         try
         {
             // Check that the path exists
-            pathNodeInfo = getDAVHelper().getNodeForPath(getRootNodeRef(), URLDecoder.decode(m_request.getRequestURI()), alfrescoContext);
+            pathNodeInfo = getDAVHelper().getNodeForPath(getRootNodeRef(), m_strPath, alfrescoContext);
         }
         catch (FileNotFoundException e)
         {
@@ -248,7 +248,16 @@ public class PropfindMethod extends WebDAVMethod
                     baseBuild.setLength(0);
                     try
                     {
-                        String pathSnippet = getDAVHelper().getPathFromNode(pathNodeInfo.getNodeRef(), curNodeInfo.getNodeRef());
+                        String pathSnippet = null;
+                        if ((pathNodeInfo.getNodeRef() == null) && (curNodeInfo.getNodeRef() == null))
+                        {
+                            pathSnippet = "/";
+                        }
+                        else
+                        {
+                            pathSnippet = getDAVHelper().getPathFromNode(pathNodeInfo.getNodeRef(), curNodeInfo.getNodeRef());
+                        }
+                        
                         baseBuild.append(pathSnippet);
                     }
                     catch (FileNotFoundException e)
@@ -328,15 +337,10 @@ public class PropfindMethod extends WebDAVMethod
         path = path.replaceAll("//", "/");
 
         // Build the href string for the current node
-        String strHRef = m_request.getScheme() + "://" + m_request.getServerName() + ":" + m_request.getServerPort()
-                + getDAVHelper().getURLForPath(new HttpServletRequestWrapper(m_request)
-                {
-                    public String getServletPath()
-                    {
-                        return alfrescoContext.equals("") ? "/" : alfrescoContext;
-                    }
+        String relativeUrl = getDAVHelper().getURLForPath(m_request, path, isFolder);
+        String strHRef = m_request.getScheme() + "://" + m_request.getServerName() +
+                    ":" + m_request.getServerPort() + relativeUrl;
 
-                }, path, isFolder);
 
         if (nodeInfo.isFolder())
         {
@@ -370,14 +374,16 @@ public class PropfindMethod extends WebDAVMethod
         
         NodeRef node = nodeInfo.getNodeRef();
 
-        Map<QName, Serializable> props = getNodeService().getProperties(node);
+        Map<QName, Serializable> props = nodeInfo.getProperties();
         TypeConverter typeConv = DefaultTypeConverter.INSTANCE;
 
-        String guid = node.getId().toUpperCase();
-
-        NodeRef workingCopy = getDAVHelper().getServiceRegistry().getCheckOutCheckInService().getWorkingCopy(node);
+        NodeRef workingCopy = null;
+        if (node != null)
+        {
+            workingCopy = getDAVHelper().getServiceRegistry().getCheckOutCheckInService().getWorkingCopy(node);
+        }
+        
         Map<QName, Serializable> workingCopyProps = null;
-
         if (workingCopy != null)
         {
             String workingCopyOwner = getDAVHelper().getNodeService().getProperty(workingCopy, ContentModel.PROP_WORKING_COPY_OWNER).toString();
@@ -523,18 +529,29 @@ public class PropfindMethod extends WebDAVMethod
         }
 
         // Print out all the custom properties
+        String guid = "";
+        if (node != null)
+        {
+            guid = node.getId().toUpperCase();
+        }
 
         xml.startElement("Repl", "repl-uid", "Repl:repl-uid", nullAttr);
         xml.write(VtiUtils.constructRid(guid));
         xml.endElement("Repl", "repl-uid", "Repl:repl-uid");
 
         xml.startElement("Repl", "resourcetag", "Repl:resourcetag", nullAttr);
-        xml.write(VtiUtils.constructResourceTag(guid, lastModified));
+        if (lastModified != null)
+        {
+            xml.write(VtiUtils.constructResourceTag(guid, lastModified));
+        }
         xml.endElement("Repl", "resourcetag", "Repl:resourcetag");
 
         // Output the etag        
         xml.startElement(WebDAV.DAV_NS, WebDAV.XML_GET_ETAG, WebDAV.XML_NS_GET_ETAG, nullAttr);
-        xml.write(VtiUtils.constructETag(guid, lastModified));
+        if (lastModified != null)
+        {
+            xml.write(VtiUtils.constructETag(guid, lastModified));
+        }
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_GET_ETAG, WebDAV.XML_NS_GET_ETAG);
 
         if (!isDir)
