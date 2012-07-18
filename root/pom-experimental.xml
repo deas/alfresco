@@ -239,9 +239,10 @@
                     <forkMode>always</forkMode>
                     <argLine>-Xmx1024m -XX:MaxPermSize=256m -Duser.language=en</argLine>
                     <systemPropertyVariables>
-                        <!-- Modified alfresco-core/org.alfresco.util.BaseTest.java to accept this property. 
-                         Otherwise test were looking in hardcoded source/test-properties -->
+                        <!-- Modified BaseTest and AVMServiceTestBase to accept these properties
+                         Otherwise test were looking in hardcoded relative locations -->
                         <alfresco.test.resources.dir>${maven.build.layout.resources.test.folder}</alfresco.test.resources.dir>
+                        <alfresco.java.sources.dir>${maven.build.layout.src.main.folder}</alfresco.java.sources.dir>
                         <!-- Database related properties -->
                         <db.url>${db.url}</db.url>
                         <db.driver>${db.driver}</db.driver>
