@@ -17,23 +17,6 @@
 
   <build>
     <plugins>
-        <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-                <!-- TODO: Remove this exclude. Fails when run in a different timezone than GMT:
-                    |  
-                    |  testMiliseconds(org.alfresco.util.ISO8601DateFormatTest): 
-                    |  expected:<2005-09-16T1[7:01:03.456+01]:00> but was:<2005-09-16T1[8:01:03.456+02]:00>
-                    |  
-                    |  testTimezones(org.alfresco.util.ISO8601DateFormatTest):
-                    |  expected:<2011-02-04T0[5:13:14.000Z]> but was:<2011-02-04T0[6:13:14.000+01:00]>
-                    |
-                    -->
-                <excludes>
-                    <exclude>org/alfresco/util/ISO8601DateFormatTest.class</exclude>
-                </excludes>
-            </configuration>
-        </plugin>            
         <!-- org.alfresco.util.BaseTest is used by other modules. We need to always produce the test-jar -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
