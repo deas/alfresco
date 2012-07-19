@@ -4,7 +4,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jakarta-oro-2.0.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jta.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jug-asl-2.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/odmg-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/j2ee/portlet_20.jar" sourcepath="src/portlet_20_src.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/portlet_20_doc.zip!/doc"/>
