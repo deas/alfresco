@@ -234,7 +234,7 @@ public class PropfindMethod extends WebDAVMethod
                 for (FileInfo curNodeInfo : nodeInfos)
                 {
                     // Get the list of child nodes for the current node
-                    List<FileInfo> childNodeInfos = getFileFolderService().list(curNodeInfo.getNodeRef());
+                    List<FileInfo> childNodeInfos = getDAVHelper().getChildren(curNodeInfo);
 
                     // can skip the current node if it doesn't have children
                     if (childNodeInfos.size() == 0)
