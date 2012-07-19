@@ -115,10 +115,10 @@
 
     <!-- Database properties - default values to be overridden in settings.xml -->
     <db.skip>false</db.skip>
-    <db.driver>com.mysql.jdbc.Driver</db.driver>
+    <db.driver>org.postgresql.Driver</db.driver>
     <db.name>alfresco</db.name>
-    <db.url>jdbc:mysql://localhost:3306/${db.name}</db.url>
-    <db.master.url>jdbc:mysql://localhost:3306/</db.master.url>
+    <db.url>jdbc:postgresql:${db.name}</db.url>
+    <db.master.url>jdbc:postgresql:template1</db.master.url>
     <db.username>alfresco</db.username>
     <db.password>alfresco</db.password>
 
@@ -296,6 +296,7 @@
                 <version>1.5</version>
                 <configuration>
                     <skip>${db.skip}</skip>
+                    <autocommit>true</autocommit>
                     <driver>${db.driver}</driver>
                     <url>${db.master.url}</url>
                     <username>${db.username}</username>
