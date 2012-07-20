@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/commons-modeler.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Jndi-Client"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-beanutils-1.7.0.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-digester-1.6.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-1.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>

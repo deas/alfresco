@@ -27,7 +27,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jid3lib-0.5.4.jar" sourcepath="src/jid3lib-0.5.4-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/htmlparser-1.6.jar" sourcepath="src/htmlparser-1.6-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-beanutils-1.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-collections-3.2.1.jar" sourcepath="src/commons-collections-3.2.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-csv-20110211.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-digester-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.2.jar"/>
