@@ -20,7 +20,9 @@ package org.alfresco.util.collections;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -29,7 +31,6 @@ import org.junit.Test;
  * Unit tests for {@link CollectionUtils}.
  * 
  * @author Neil Mc Erlean
- * @since TODO
  */
 public class CollectionUtilsTest
 {
@@ -41,5 +42,33 @@ public class CollectionUtilsTest
         expectedSet.add("Moe");
         
         assertEquals(expectedSet, CollectionUtils.asSet(String.class, "Larry", "Curly", "Moe"));
+    }
+    
+    @Test public void collectionFiltering() throws Exception
+    {
+        Map<String, Integer> nerdsBirthdays = new HashMap<String, Integer>();
+        nerdsBirthdays.put("Alan Turing",           1912);
+        nerdsBirthdays.put("Charles Babbage",       1791);
+        nerdsBirthdays.put("Matthew Smith",         1966);
+        nerdsBirthdays.put("Paul Dirac",            1902);
+        nerdsBirthdays.put("Robert Boyle",          1627);
+        nerdsBirthdays.put("Robert Hooke",          1635);
+        nerdsBirthdays.put("J. Robert Oppenheimer", 1904);
+        
+        Function<String, Boolean> johnFilter = new KeySubstringFilter("John");
+        assertEquals(0, CollectionUtils.filterKeys(nerdsBirthdays, johnFilter).size());
+        
+        Function<String, Boolean> robertFilter = new KeySubstringFilter("Robert");
+        assertEquals(3, CollectionUtils.filterKeys(nerdsBirthdays, robertFilter).size());
+    }
+    
+    private static final class KeySubstringFilter implements Function<String, Boolean>
+    {
+        private final String substring;
+        public KeySubstringFilter(String substring) { this.substring = substring; }
+        @Override public Boolean apply(String value)
+        {
+            return value.contains(substring);
+        }
     }
 }

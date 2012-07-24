@@ -240,6 +240,14 @@ public abstract class CollectionUtils
         return results;
     }
     
+    /**
+     * This method can be used to filter a Map. Any keys in the supplied map, for which the supplied {@link Function filter function}
+     * returns <code>true</code>, will be included in the resultant Map, else they will not.
+     * 
+     * @param map the map whose entries are to be filtered.
+     * @param filter the filter function which is applied to the key.
+     * @return a filtered map.
+     */
     public static <K, V> Map<K, V> filterKeys(Map<K, V> map, Function<? super K, ? extends Boolean> filter)
     {
         Map<K, V> results = new HashMap<K, V>();
