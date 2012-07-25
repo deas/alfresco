@@ -19,6 +19,17 @@ function main()
    }
    
    model.targetGroupPath = targetGroupPath;
+   
+   // Widget instantiation metadata...
+   var widget = {
+      id : "ConsoleReplicationJobs", 
+      name : "Alfresco.ConsoleReplicationJobs",
+      options : {
+         jobName: (page.url.args.jobName != null) ? page.url.args.jobName: "",
+         targetGroupPath: (model.targetGroupPath != null) ? model.targetGroupPath: ""
+      }
+   };
+   model.widgets = [widget];
 }
 
 main();
