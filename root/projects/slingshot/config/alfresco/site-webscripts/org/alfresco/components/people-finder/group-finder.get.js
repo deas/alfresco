@@ -14,7 +14,7 @@ function main()
          maxSearchResults : (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults,
          setFocus : (args.setFocus != null) ? args.setFocus : "false",
          addButtonSuffix : (args.addButtonSuffix != null) ? args.addButtonSuffix : "",
-         dataWebScript : ((args.dataWebScript != null) ? args.dataWebScript : "api/groups").replace(/{/g, "[").replace(/}/g, "]")
+         dataWebScript : ((args.dataWebScript != null) ? args.dataWebScript : "api/groups").replace("[", "{").replace("]", "}")
       }
    };
    model.widgets = [groupFinder];
