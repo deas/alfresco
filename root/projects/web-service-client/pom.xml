@@ -1,0 +1,117 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-web-service-client</artifactId>
+    <name>Alfresco Web Service Client</name>
+    <parent>
+        <artifactId>alfresco-parent</artifactId>
+        <groupId>org.alfresco</groupId>
+        <version>4.2-SNAPSHOT</version>
+        <relativePath>../../pom-experimental.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.security</groupId>
+            <artifactId>wss4j</artifactId>
+            <version>1.5.4-patched</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>                
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+        <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${dependency.spring.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Exclude tests which should not run -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*SystemTest.*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+  <profiles>
+    <!-- Complement to the legacy-layout profile to treat the source/generated folder -->
+    <!-- TODO: regenerate these properly with wsdl2java! -->
+    <profile>
+        <id>legacy-layout</id>
+        <activation>
+            <file>
+                <exists>source</exists>
+            </file>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>copy-generated-sources</id>
+                            <phase>validate</phase>
+                            <goals><goal>copy-resources</goal></goals>
+                            <configuration>
+                                <outputDirectory>${maven.build.layout.src.main.folder}</outputDirectory>
+                                <resources>          
+                                    <resource>
+                                        <directory>source/generated</directory>
+                                        <filtering>${maven.build.filtering.enabled}</filtering>
+                                        <includes>
+                                            <include>**/*.java</include>
+                                        </includes>
+                                    </resource>
+                                </resources> 
+                            </configuration>
+                        </execution>
+                    </executions>    
+                </plugin>                            
+            </plugins>
+        </build>
+    </profile>
+  </profiles>
+
+</project>

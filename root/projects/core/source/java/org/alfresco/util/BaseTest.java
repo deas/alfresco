@@ -38,10 +38,19 @@ public abstract class BaseTest extends TestCase
    
    public BaseTest()
    {
-      this.resourcesDir = System.getProperty("user.dir") + File.separator + "source" + 
-                          File.separator + "test-resources" + File.separator;
+      // GC: Added this to allow flexible test resources folder configuration
+      // Try to get resources dir from a system property otherwise uses the default hardcoded
+      // backward compatible
+      String resourcesDir = System.getProperty("alfresco.test.resources.dir");
+
+      if(resourcesDir == null || resourcesDir.equals(""))
+         resourcesDir = System.getProperty("user.dir") + File.separator + "source" + 
+                 File.separator + "test-resources";  
+
+      // Returns the resources dir with trailing separator
+      this.resourcesDir = resourcesDir + File.separator; 
    }
-   
+
    public String getResourcesDir()
    {
       return this.resourcesDir;
