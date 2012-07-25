@@ -1,5 +1,3 @@
-<#include "../../component.head.inc">
-<!-- Admin Console Trashcan Tool -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/console/trashcan.css" />
-<@script type="text/javascript" src="${url.context}/res/components/console/consoletool.js"></@script>
-<@script type="text/javascript" src="${url.context}/res/components/console/trashcan.js"></@script>
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

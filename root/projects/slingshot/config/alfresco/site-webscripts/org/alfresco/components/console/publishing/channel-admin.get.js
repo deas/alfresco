@@ -16,6 +16,16 @@ function main()
 	   
 	   var data = eval('(' + result.response + ')');
 	   model.channelTypes = data.data;
+	   
+	   // Widget instantiation metadata...
+	   var widget = {
+	      id : "ConsoleChannels", 
+	      name : "Alfresco.ConsoleChannels",
+	      options : {
+	         acceptMessagesFrom: "http://alfresco.com"
+	      }
+	   };
+	   model.widgets = [widget];
 }
 
 main();

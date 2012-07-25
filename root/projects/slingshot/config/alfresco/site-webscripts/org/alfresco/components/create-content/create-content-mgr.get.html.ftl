@@ -1,13 +1,21 @@
-<script type="text/javascript">//<![CDATA[
-   new Alfresco.CreateContentMgr("${args.htmlid?js_string}").setOptions(
-   {
-      siteId: "${page.url.templateArgs.site!""}",
-      isContainer: ${page.url.args.isContainer!"false"}
-   }).setMessages(
-      ${messages}
-   );
-//]]></script>
+<@markup id="css" >
+   <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/create-content/create-content-mgr.css" group="create-content"/>
+</@>
 
-<div class="create-content-mgr">
-   <div class="heading">${msg("create-content-mgr.heading")}</div>
-</div>
+<@markup id="js">
+   <#-- JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/create-content/create-content-mgr.js" group="create-content"/>
+</@>
+
+<@markup id="widgets">
+   <@createWidgets group="create-content"/>
+</@>
+
+<@markup id="html">
+   <@uniqueIdDiv>
+      <div class="create-content-mgr">
+         <div class="heading">${msg("create-content-mgr.heading")}</div>
+      </div>
+   </@>
+</@>

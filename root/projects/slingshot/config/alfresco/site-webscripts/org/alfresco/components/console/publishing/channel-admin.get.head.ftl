@@ -1,23 +1,3 @@
-<#include "../../component.head.inc">
-<#include "../../form/form.get.head.ftl">
-
-<@script type="text/javascript" src="${url.context}/res/components/console/consoletool.js"></@script>
-<!-- Admin Console Channel Management Tool -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/console/channel-admin.css" />
-<@script type="text/javascript" src="${url.context}/res/components/console/channel-admin.js"></@script>
-
-<!-- Simple Dialog -->
-<@script type="text/javascript" src="${url.context}/res/modules/simple-dialog.js"></@script>
-
-<!-- Manage Permissions -->
-<@script type="text/javascript" src="${url.context}/res/templates/manage-permissions/template.manage-permissions.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/manage-permissions/manage-permissions.css" />
-<@script type="text/javascript" src="${url.context}/res/components/manage-permissions/manage-permissions.js"></@script>
-
-<!-- Form.js -->
-<@script type="text/javascript" src="${url.context}/res/components/form/form.js"></@script>
-
-<!-- Authority Finder Assets (req by permissions) -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/people-finder/authority-finder.css" />
-<@script type="text/javascript" src="${url.context}/res/components/people-finder/authority-finder.js"></@script>
-
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->

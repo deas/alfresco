@@ -1,5 +1,3 @@
-<#include "../../../alfresco/components/component.head.inc">
-<!-- Category Manager -->
-<@script type="text/javascript" src="${url.context}/res/components/console/consoletool.js"></@script>
-<@script type="text/javascript" src="${url.context}/res/components/console/category-manager.js"></@script>
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/components/console/category-manager.css" />
+<#-- PLEASE NOTE:
+<#-- Use of .head.ftl WebScript files has now been deprecated from WebScripts that render Share Components.    -->
+<#-- Dependencies are now loaded through the use of the <@script> and <@link> tags in the main .html.ftl file.  -->
