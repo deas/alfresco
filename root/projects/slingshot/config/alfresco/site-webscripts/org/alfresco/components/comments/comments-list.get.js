@@ -106,7 +106,7 @@ function main()
    // Widget instantiation metadata...
    var locale = this.locale.substring(0, 2);
    var commentList = {
-      id : "CommentsList"
+      id : "CommentsList",
       name : "Alfresco.CommentsList",
       options : {
          nodeRef : model.nodeRef,
