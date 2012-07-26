@@ -932,8 +932,8 @@
             flatten="false">
          <fileset dir="${dir.project.3rdparty.lib}" 
                   includes="**/jug-asl-2.0.0.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/truezip.jar" />
+         <fileset dir="${dir.project.3rdparty.lib}/mmt-dependencies" 
+                  includes="*.jar" excludes="*-sources.jar"/>
       </copy>
       
       <!-- unjar the spring surf core JAR -->
