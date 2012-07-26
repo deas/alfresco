@@ -18,18 +18,17 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
+import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.cache.SimpleCache;
-import org.alfresco.repo.model.filefolder.FileInfoImpl;
-import org.alfresco.repo.security.authentication.AuthenticationComponent;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
@@ -39,16 +38,11 @@ import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.*;
-
-import static org.mockito.Matchers.anyString;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
@@ -102,6 +96,19 @@ public class VtiPathHelperTest
         // Decompose an empty URI path.
         parts = pathHelper.doDecomposeURLWork(ALFRESCO_CONTEXT, "", SiteModel.TYPE_SITE);
         assertDecomposedURL("", "", parts);
+        
+        // Detect bad URLs that have the incorrect prefix.
+        try
+        {
+            parts = pathHelper.doDecomposeURLWork(ALFRESCO_CONTEXT, "/wrong-prefix/mysite", SiteModel.TYPE_SITE);
+            throw new RuntimeException("Shouldn't have got here.");
+        }
+        catch (VtiHandlerException e)
+        {
+            // Got here, good.
+            assertEquals(VtiHandlerException.BAD_URL, e.getError());
+        }
+        
     }
 
     protected void assertDecomposedURL(String site, String doc, String[] parts)
