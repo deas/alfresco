@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
 * <p>VtiRequestDispatcher provides the front-end controller for dispatching among 
@@ -156,7 +157,8 @@ public class VtiRequestDispatcher extends HttpServlet
     {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String uri = getUri(httpRequest);
+        String pathWithContext = URLDecoder.decode(httpRequest.getRequestURI());
+        String uri = vtiPathHelper.getPathForURL(pathWithContext);
 
         if (logger.isDebugEnabled())
         {
@@ -278,16 +280,6 @@ public class VtiRequestDispatcher extends HttpServlet
             }
         }
         return result;
-    }
-
-    private String getUri(HttpServletRequest request)
-    {
-        String uri = request.getRequestURI();
-        if (getContext() != null && uri.startsWith(getContext()))
-        {
-            uri = uri.substring(getContext().length());
-        }
-        return uri;
     }
 
     private boolean isMatch(String uri, String pattern)
