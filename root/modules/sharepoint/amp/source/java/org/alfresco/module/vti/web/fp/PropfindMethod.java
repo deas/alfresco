@@ -351,7 +351,7 @@ public class PropfindMethod extends WebDAVMethod
         strHRef = strHRef.endsWith("/") ? strHRef.substring(0, strHRef.length() - 1) : strHRef;
 
         xml.startElement(WebDAV.DAV_NS, WebDAV.XML_HREF, WebDAV.XML_NS_HREF, getDAVHelper().getNullAttributes());
-        xml.write(URLDecoder.decode(strHRef));
+        xml.write(strHRef);
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_HREF, WebDAV.XML_NS_HREF);
 
         generateAllPropertiesResponse(xml, nodeInfo, isFolder);
