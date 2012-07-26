@@ -107,7 +107,7 @@
         <property name="vtiPathHelper" ref="vtiPathHelper"/>
     </bean>
     
-    <bean id="vtiRequestDispatcher" class="org.alfresco.module.vti.web.VtiRequestDispatcher">
+    <bean id="abstractVtiRequestDispatcher" class="org.alfresco.module.vti.web.VtiRequestDispatcher" abstract="true">
         <constructor-arg>
             <!-- ACTIONS -->
             <list>
@@ -275,6 +275,12 @@
         </constructor-arg>
         <property name="vtiPathHelper" ref="vtiPathHelper"/>
     </bean>
+
+    <!--
+        Abstract parent makes it possible to override this bean with a different implementation class,
+        and inherit the configuration from the abstract definition.
+      -->
+    <bean id="vtiRequestDispatcher" parent="abstractVtiRequestDispatcher"/>
 
     <bean id="sppDAVHelper" parent="webDAVHelper">
         <property name="urlPathPrefix" value="${vti.server.url.path.prefix}"/>
