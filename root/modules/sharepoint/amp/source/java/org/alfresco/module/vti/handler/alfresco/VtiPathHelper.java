@@ -51,6 +51,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import org.springframework.extensions.surf.util.URLDecoder;
+import org.springframework.util.StringUtils;
 
 /**
  * Helper for AlfrescoVtiMethodHandler. Help for path resolving and url formatting
@@ -371,11 +372,12 @@ public class VtiPathHelper extends AbstractLifecycleBean
        }
        
        // Strip off the context before continuing with the path resolution
-       String pathUri = uri.substring(alfrescoContext.length() + 1);
+       String pathUri = getPathForURL(uri);
        // Decode the URL before doing path resolution, so that we correctly
        //  match documents or paths containing special characters
        pathUri = URLDecoder.decode(pathUri);
        // Split it into parts based on slashes
+       pathUri = removeSlashes(pathUri); 
        String[] splitPath = pathUri.split("/");
        
        // Build up the path
@@ -428,6 +430,58 @@ public class VtiPathHelper extends AbstractLifecycleBean
            throw new VtiHandlerException(VtiHandlerException.BAD_URL);
        }
        return new String[]{webUrl, fileUrl};
+    }
+
+    /**
+     * Translates an incoming path (as used in a URL) to a repository path, taking into account
+     * any translations that may be necessary. For example:
+     * <pre>
+     *   /alfresco/mysite/documentLibrary/folder1/file1.txt
+     * </pre>
+     * will be translated to:
+     * <pre>
+     *   /mysite/documentLibrary/folder1/file1.txt
+     * </pre>
+     * (assuming that the context-path/servletpath is /alfresco)
+     * @param urlPath
+     * @return
+     */
+    public String getPathForURL(String urlPath)
+    {
+        String path = stripPathPrefix(getAlfrescoContext(), urlPath);
+        if (!path.startsWith("/"))
+        {
+            path = "/" + path;
+        }
+        return path;
+    }
+    
+    /**
+     * Removes a prefix from a given path. For example, given the path "/red/green/blue" and
+     * prefix "/red", the method will return "green/blue" - note that this is now a relative path.
+     * If the path does not begin with the supplied prefix then the path is returned unprocessed.
+     * 
+     * @param prefix
+     * @param path
+     * @return path without prefix
+     */
+    public String stripPathPrefix(final String prefix, String path)
+    {
+        // Only manipulate the path if the prefix is not empty.
+        if (StringUtils.hasText(prefix))
+        {
+            if (path.startsWith(prefix))
+            {
+                path = path.substring(prefix.length());
+
+                // Ensure path is relative before being returned (remove initial slash if present)
+                if (path.startsWith("/"))
+                {
+                    path = path.substring(1);
+                }
+            }
+        }
+        return path;
     }
     
     /**

@@ -27,22 +27,15 @@ import java.util.Date;
 import java.util.Map;
 
 import org.alfresco.module.vti.handler.VtiHandlerException;
-import org.alfresco.repo.cache.MemoryCache;
-import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.site.SiteModel;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
@@ -51,26 +44,11 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author Matt Ward
  */
 @RunWith(MockitoJUnitRunner.class)
-public class VtiPathHelperTest
+public class VtiPathHelperTest extends AbstractVtiPathHelperTestBase<VtiPathHelper>
 {
-    private final static String ALFRESCO_CONTEXT = "/alfresco";
-    private final static NodeRef ROOT_NODE_REF = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, "dummy");
-    private @Mock DictionaryService dict;
-    private @Mock FileFolderService fileFolderService;
-    private @Mock NodeService nodeService;
-    private VtiPathHelper pathHelper;
-    private SimpleCache<String, NodeRef> rootNodeCache;
-    
-    @Before
-    public void setUp()
+    protected VtiPathHelper createVtiHelper()
     {
-        pathHelper = new VtiPathHelper();
-        pathHelper.setDictionaryService(dict);
-        pathHelper.setFileFolderService(fileFolderService);
-        pathHelper.setNodeService(nodeService);
-        rootNodeCache = new MemoryCache<String, NodeRef>();
-        rootNodeCache.put("key.vtiRoot.noderef", ROOT_NODE_REF);
-        pathHelper.setSingletonCache(rootNodeCache);
+        return new VtiPathHelper();
     }
     
     @Test
@@ -111,6 +89,28 @@ public class VtiPathHelperTest
         
     }
 
+    @Test
+    public void canStripPathPrefix()
+    {
+        assertEquals("path/to/file.txt", pathHelper.stripPathPrefix("/alfresco", "/alfresco/path/to/file.txt"));
+        assertEquals("path/to/file.txt", pathHelper.stripPathPrefix("/", "/path/to/file.txt"));
+        assertEquals("/path/to/file.txt", pathHelper.stripPathPrefix("", "/path/to/file.txt"));
+        assertEquals("", pathHelper.stripPathPrefix("", ""));
+                
+        // If the path doesn't start with the prefix, it's left as-is
+        assertEquals("/path/to/file.txt", pathHelper.stripPathPrefix("/prefix", "/path/to/file.txt"));
+        assertEquals("", pathHelper.stripPathPrefix("/alfresco", ""));
+    }
+
+    @Test
+    public void canGetPathForURL()
+    {
+        pathHelper.setUrlPathPrefix("/prefix");
+        
+        assertEquals("/mysite/documentLibrary/path/to/file.txt",
+                    pathHelper.getPathForURL("/prefix/mysite/documentLibrary/path/to/file.txt"));
+    }
+    
     protected void assertDecomposedURL(String site, String doc, String[] parts)
     {
         assertEquals(2, parts.length);
