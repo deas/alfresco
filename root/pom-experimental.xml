@@ -131,6 +131,7 @@
     <!-- Sonar specific properties -->
     <sonar.exclusions></sonar.exclusions>
     <sonar.skippedModules></sonar.skippedModules>
+    <sonar.branch>HEAD</sonar.branch>
     <sonar.jdbc.url>jdbc:mysql://46.51.161.217:3306/sonar</sonar.jdbc.url>
     <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
     <sonar.jdbc.username>sonar</sonar.jdbc.username>
