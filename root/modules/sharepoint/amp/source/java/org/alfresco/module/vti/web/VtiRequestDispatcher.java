@@ -227,12 +227,7 @@ public class VtiRequestDispatcher extends HttpServlet
         }
         if (targetAction != null)
         {
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("Action found for request");
-                logger.debug("Execute target action: " + targetAction.getClass().getSimpleName());
-            }
-            targetAction.execute(httpRequest, httpResponse);
+            executeAction(httpRequest, httpResponse, targetAction);
         }
         else
         {
@@ -242,6 +237,24 @@ public class VtiRequestDispatcher extends HttpServlet
                 		" to uri='" + uri + "'"); 
             }
         }
+    }
+
+    /**
+     * Execute the particular Sharepoint action.
+     * 
+     * @param httpRequest
+     * @param httpResponse
+     * @param targetAction
+     */
+    protected void executeAction(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+                VtiAction targetAction)
+    {
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Action found for request");
+            logger.debug("Execute target action: " + targetAction.getClass().getSimpleName());
+        }
+        targetAction.execute(httpRequest, httpResponse);
     }
 
     private boolean isRulesAccepted(HttpServletRequest request, ActionMapping actionMapping)
