@@ -20,6 +20,7 @@
 package org.alfresco.module.vti;
 
 import java.net.BindException;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
@@ -52,6 +53,7 @@ public class VtiServer extends AbstractLifecycleBean
     private Server server;
     private Connector connector;
     private HttpServlet servlet;
+    private List<String> servletMappings;
     private Filter filter;
     private String sessionCookieName;
     private HashSessionIdManager hashSessionIdManager;
@@ -78,6 +80,16 @@ public class VtiServer extends AbstractLifecycleBean
 		this.servlet = servlet;
 	}
     
+    /**
+     * Set the servlet mapping patterns for the Sharepoint dispatcher servlet.
+     * 
+     * @param servletMappings
+     */
+    public void setServletMappings(List<String> servletMappings)
+    {
+        this.servletMappings = servletMappings;
+    }
+
     /**
      * Set the main VtiFilter. All the requests will be filtered by it.
      * 
@@ -167,7 +179,15 @@ public class VtiServer extends AbstractLifecycleBean
       server.setSessionIdManager(hashSessionIdManager);
 
       Context context = new Context(server, "/", Context.SESSIONS);
-      context.addServlet(new ServletHolder(servlet), "/*");
+      
+      // Map the dispatcher servlet to URL patterns.
+      ServletHolder servletHolder = new ServletHolder(servlet);
+      for (String pattern : servletMappings)
+      {
+          context.addServlet(servletHolder, pattern);
+      }
+      
+      // All requests will be filtered
       context.addFilter(new FilterHolder(filter), "/*", Handler.REQUEST | Handler.FORWARD);
 
       hashSessionManager.addEventListener(webDAVSessionListener);

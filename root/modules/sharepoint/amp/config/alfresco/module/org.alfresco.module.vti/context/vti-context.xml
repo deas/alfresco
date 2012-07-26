@@ -28,6 +28,19 @@
         <property name="servlet">
             <ref bean="vtiRequestDispatcher"/>
         </property>
+        <!--
+            Multiple mappings rather than mapping all requests through "/*" so that HttpServletRequest.getServletPath()
+            and HttpServletRequest.getPathInfo() methods return sensible values - important for
+            code shared with WebDAV for example.
+         -->
+        <property name="servletMappings">
+            <list>
+                <!-- map prefixed access, e.g. /alfresco/example.com/mysite/folder/file.txt -->
+                <value>${vti.server.url.path.prefix}/*</value>
+                <!-- fall through for other patterns, e.g. /_vti_bin/shtml.dll/_vti_rpc -->
+                <value>/*</value>
+            </list>
+        </property>
         <property name="filter">
             <ref bean="vtiFilter"/>
         </property>
