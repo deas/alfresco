@@ -29,6 +29,7 @@ import org.alfresco.repo.webdav.WebDAVSessionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Connector;
+import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.FilterHolder;
@@ -167,7 +168,7 @@ public class VtiServer extends AbstractLifecycleBean
 
       Context context = new Context(server, "/", Context.SESSIONS);
       context.addServlet(new ServletHolder(servlet), "/*");
-      context.addFilter(new FilterHolder(filter), "/*", 1);
+      context.addFilter(new FilterHolder(filter), "/*", Handler.REQUEST | Handler.FORWARD);
 
       hashSessionManager.addEventListener(webDAVSessionListener);
       hashSessionManager.setSessionCookie(sessionCookieName);
