@@ -79,7 +79,6 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
     public void execute(HttpServletRequest request, HttpServletResponse response)
     {
         WebDAVMethod method = getWebDAVMethod();
-        method.setDetails(request, response, webDavHelper, pathHelper.getRootNodeRef());
         try
         {
             davActionExecutor.execute(method, request, response);
@@ -123,6 +122,7 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
     public void execute(WebDAVMethod method, HttpServletRequest request,
                 HttpServletResponse response) throws WebDAVServerException
     {
+        method.setDetails(request, response, webDavHelper, pathHelper.getRootNodeRef());
         method.execute();
     }
 
