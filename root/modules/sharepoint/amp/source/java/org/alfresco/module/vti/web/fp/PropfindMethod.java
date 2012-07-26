@@ -49,6 +49,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.springframework.extensions.surf.util.URLDecoder;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -536,7 +537,10 @@ public class PropfindMethod extends WebDAVMethod
         }
 
         xml.startElement("Repl", "repl-uid", "Repl:repl-uid", nullAttr);
-        xml.write(VtiUtils.constructRid(guid));
+        if (StringUtils.hasText(guid))
+        {            
+            xml.write(VtiUtils.constructRid(guid));
+        }
         xml.endElement("Repl", "repl-uid", "Repl:repl-uid");
 
         xml.startElement("Repl", "resourcetag", "Repl:resourcetag", nullAttr);
