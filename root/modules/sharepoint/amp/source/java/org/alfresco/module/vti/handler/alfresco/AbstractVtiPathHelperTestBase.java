@@ -18,13 +18,22 @@
  */
 package org.alfresco.module.vti.handler.alfresco;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Map;
+
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
+import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.namespace.QName;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -64,5 +73,90 @@ public abstract class AbstractVtiPathHelperTestBase<T extends VtiPathHelper>
         pathHelper.setSingletonCache(rootNodeCache);
         
         pathHelper.setUrlPathPrefix("/alfresco");
+    }
+    
+    protected void assertDecomposedURL(String site, String doc, String[] parts)
+    {
+        assertEquals(2, parts.length);
+        assertEquals(site, parts[0]);
+        assertEquals(doc, parts[1]);
+    }
+    
+    /**
+     * Create a stub FileInfo object containing only the required information.
+     */
+    protected FileInfo makeFileInfo(final NodeRef nodeRef, final QName type)
+    {
+        return new FileInfo()
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public NodeRef getNodeRef()
+            {
+                return nodeRef;
+            }
+
+            @Override
+            public boolean isFolder()
+            {
+                return false;
+            }
+
+            @Override
+            public boolean isLink()
+            {
+                return false;
+            }
+
+            @Override
+            public boolean isHidden()
+            {
+                return false;
+            }
+
+            @Override
+            public NodeRef getLinkNodeRef()
+            {
+                return null;
+            }
+
+            @Override
+            public String getName()
+            {
+                return null;
+            }
+
+            @Override
+            public Date getCreatedDate()
+            {
+                return null;
+            }
+
+            @Override
+            public Date getModifiedDate()
+            {
+                return null;
+            }
+
+            @Override
+            public ContentData getContentData()
+            {
+                return null;
+            }
+
+            @Override
+            public Map<QName, Serializable> getProperties()
+            {
+                return null;
+            }
+
+            @Override
+            public QName getType()
+            {
+                return type;
+            }
+            
+        };
     }
 }
