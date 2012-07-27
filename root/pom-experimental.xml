@@ -132,11 +132,6 @@
     <sonar.exclusions></sonar.exclusions>
     <sonar.skippedModules></sonar.skippedModules>
     <sonar.branch>HEAD</sonar.branch>
-    <sonar.jdbc.url>jdbc:mysql://46.51.161.217:3306/sonar</sonar.jdbc.url>
-    <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
-    <sonar.jdbc.username>sonar</sonar.jdbc.username>
-    <sonar.jdbc.password>sonar</sonar.jdbc.password>
-    <sonar.host.url>http://46.51.161.217:9000/</sonar.host.url>
 
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
