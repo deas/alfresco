@@ -609,8 +609,6 @@ textarea.wide
    margin: 1em 10px 15px;
    padding: 15px;
    position: relative;
-   -moz-border-radius: 10px;
-   -webkit-border-radius: 10px;
    border-radius: 10px;
    /* outline radius for mozilla/firefox only */
    -moz-box-shadow: 0 0 10px #000;

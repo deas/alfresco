@@ -46,9 +46,8 @@
     color: black;
     overflow: auto !important;
     padding: 0;
-    -moz-border-radius: 0px;
+    border-radius: 0px;
 }
-
 
 .yui-columnbrowser .yui-carousel-content {
     float: left;

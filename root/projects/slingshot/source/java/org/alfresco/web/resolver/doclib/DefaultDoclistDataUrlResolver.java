@@ -18,10 +18,10 @@
  */
 package org.alfresco.web.resolver.doclib;
 
-import org.springframework.extensions.surf.util.URLEncoder;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.extensions.surf.util.URLEncoder;
 
 /**
  * Resolves which data url if to use when asking the repository for nodes in the document library's document list.
@@ -30,7 +30,6 @@ import java.util.Map;
  */
 public class DefaultDoclistDataUrlResolver implements DoclistDataUrlResolver
 {
-
     /**
      * Returns the url to the repository doclist webscript to use.
      *
@@ -56,11 +55,19 @@ public class DefaultDoclistDataUrlResolver implements DoclistDataUrlResolver
         // Need to reconstruct and encode original args
         if (args.size() > 0)
         {
-            urlParameters += "?";
+            StringBuilder argsBuf = new StringBuilder(128);
+            argsBuf.append('?');
             for (Map.Entry<String, String> arg: args.entrySet())
             {
-                urlParameters += arg.getKey() + "=" + URLEncoder.encodeUriComponent(arg.getValue().replaceAll("%25","%2525")) + "&";
+                if (argsBuf.length() > 1)
+                {
+                     argsBuf.append('&');
+                }
+                argsBuf.append(arg.getKey())
+                       .append('=')
+                       .append(URLEncoder.encodeUriComponent(arg.getValue().replaceAll("%25","%2525")));
             }
+            urlParameters = argsBuf.toString();
         }
         return urlParameters;
     }

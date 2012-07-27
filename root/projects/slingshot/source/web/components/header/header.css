@@ -189,8 +189,7 @@
    height: 20px;
    position: relative;
    top: -2px;
-   -moz-border-radius: 16px;
-   -webkit-border-radius: 16px;
+   border-radius: 16px;
 }
 
 .header .user-items div.search-box span.yui-button

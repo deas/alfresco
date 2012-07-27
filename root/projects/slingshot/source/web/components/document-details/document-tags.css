@@ -6,8 +6,7 @@
    margin: 1px 0.5em 1px 0;
    padding: 2px 8px;
    zoom: 1;
-   -moz-border-radius: 8px;
-   -webkit-border-radius: 8px;
+   border-radius: 8px;
 }
 
 .document-tags h2 .edit

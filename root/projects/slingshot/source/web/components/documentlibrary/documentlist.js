@@ -1324,6 +1324,7 @@
       this.previewTooltips = [];
       this.insituEditors = [];
       this.dynamicControls = [];
+      this.sortControls = [];
       this.dragAndDropAllowed = true;
       this.dragAndDropEnabled = false;
       this.dragEventRefCount = 0;
@@ -1337,8 +1338,10 @@
        */
       // Specific event handlers
       YAHOO.Bubbling.on("activateDynamicControls", this.onActivateDynamicControls, this);
+      YAHOO.Bubbling.on("activateSortControls", this.onActivateSortControls, this);
       YAHOO.Bubbling.on("deactivateAllControls", this.onDeactivateAllControls, this);
       YAHOO.Bubbling.on("deactivateDynamicControls", this.onDeactivateDynamicControls, this);
+      YAHOO.Bubbling.on("deactivateSortControls", this.onDeactivateSortControls, this);
       YAHOO.Bubbling.on("metadataRefresh", this.onDocListRefresh, this);
       YAHOO.Bubbling.on("fileRenamed", this.onFileRenamed, this);
       YAHOO.Bubbling.on("changeFilter", this.onChangeFilter, this);
@@ -1959,6 +1962,15 @@
       dynamicControls: null,
 
       /**
+       * List of controls that are related to sorting - they can be enabled or disabled
+       * as a group depending on the filter that is currently displayed to the user.
+       * 
+       * @property sortControls
+       * @type array
+       */
+      sortControls: null,
+
+      /**
        * Indicates whether or not we allow the HTML5 drag and drop capability
        *
        * @property dragAndDropAllowed
@@ -2065,7 +2077,7 @@
             {
                Dom.addClass(this.widgets.sortAscending.get("element"), "sort-descending");
             }
-            this.dynamicControls.push(this.widgets.sortAscending);
+            this.sortControls.push(this.widgets.sortAscending);
          }
 
          // Sort Field menu button
@@ -2077,7 +2089,7 @@
          });
          if (this.widgets.sortField !== null)
          {
-            this.dynamicControls.push(this.widgets.sortField);
+            this.sortControls.push(this.widgets.sortField);
 
             // Set the initial menu label
             var menuItems = this.widgets.sortField.getMenu().getItems(),
@@ -4350,6 +4362,46 @@
       },
 
       /**
+       * Deactivate Sort Controls event handler
+       * Only deactivates specifically defined controls.
+       *
+       * @method onDeactivateSortControls
+       * @param layer {object} Event fired
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onDeactivateSortControls: function DL_onDeactivateSortControls(layer, args)
+      {
+         var index, fnDisable = Alfresco.util.disableYUIButton;
+         for (index in this.sortControls)
+         {
+            if (this.sortControls.hasOwnProperty(index))
+            {
+               fnDisable(this.sortControls[index]);
+            }
+         }
+      },
+    
+      /**
+       * Activate Sort Controls event handler
+       * (Re-)Activates controls taking part in dynamic deactivation
+       *
+       * @method onActivateSortControls
+       * @param layer {object} Event fired
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onActivateSortControls: function DL_onActivateSortControls(layer, args)
+      {
+         var index, fnEnable = Alfresco.util.enableYUIButton;
+         for (index in this.sortControls)
+         {
+            if (this.sortControls.hasOwnProperty(index))
+            {
+               fnEnable(this.sortControls[index]);
+            }
+         }
+      },
+
+      /**
        * Activate Dynamic Controls event handler
        * (Re-)Activates controls taking part in dynamic deactivation
        *
@@ -4636,6 +4688,14 @@
                YAHOO.Bubbling.fire("activateDynamicControls");
                YAHOO.Bubbling.fire("selectedFilesChanged");
                this.listUpdated = false;
+               if (this.currentFilter.filterId == "recentlyModified" || this.currentFilter.filterId == "recentlyAdded")
+               {
+                  YAHOO.Bubbling.fire("deactivateSortControls");
+               }
+               else
+               {
+                  YAHOO.Bubbling.fire("activateSortControls");
+               }
             };
             this.afterDocListUpdate.push(fnAfterUpdate);
 
@@ -4678,6 +4738,7 @@
                   {
                      // Folder not found (via the HTTP "404 Not Found" response) - deactivate dynamic controls only
                      YAHOO.Bubbling.fire("deactivateDynamicControls");
+                     YAHOO.Bubbling.fire("deactivateSortControls");
                   }
                   else
                   {

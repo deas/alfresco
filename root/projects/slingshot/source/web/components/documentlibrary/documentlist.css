@@ -540,8 +540,7 @@ body .doclist tr.yui-dt-highlighted
    font-size: 93%;
    margin-right: 0.5em;
    padding: 2px 8px;
-   -moz-border-radius: 8px;
-   -webkit-border-radius: 8px;
+   border-radius: 8px;
 }
 
 /* Actions Rollover */
