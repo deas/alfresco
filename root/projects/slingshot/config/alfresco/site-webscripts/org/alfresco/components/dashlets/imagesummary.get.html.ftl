@@ -1,15 +1,23 @@
 <@markup id="css" >
    <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/documentlibrary/global-folder.css" group="dashlets"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/imagesummary.css" group="dashlets"/>
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/global-folder.js"/>
    <@script type="text/javascript" src="${url.context}/res/components/dashlets/imagesummary.js" group="dashlets"/>
 </@>
 
 <@markup id="widgets">
+   <@inlineScript group="dashlets">
+      var imageFolderDashletEvent = new YAHOO.util.CustomEvent("onDashletConfigure");
+   </@>
    <@createWidgets group="dashlets"/>
+   <@inlineScript group="dashlets">
+      imageFolderDashletEvent.subscribe(imageSummary.onConfigImageFolderClick, imageSummary, true);
+   </@>
 </@>
 
 <@markup id="html">
@@ -31,7 +39,7 @@
          <div class="title">${msg("header.title")}</div>
          <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
             <div class="dashlet-padding">
-               <div id="${el}-wait" class="images-wait"></div>
+               <div id="${el}-wait" class="images-wait hidden"></div>
                <div id="${el}-message" class="images-message hidden"></div>
                <div id="${el}-images" class="images hidden"></div>
             </div>
