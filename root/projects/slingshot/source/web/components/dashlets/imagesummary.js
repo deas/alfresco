@@ -47,7 +47,6 @@
    {
       Alfresco.dashlet.ImageSummary.superclass.constructor.call(this, "Alfresco.dashlet.ImageSummary", htmlId);
       
-      this.itemsPerRow = 0;
       Event.addListener(window, 'resize', this.resizeThumbnailList, this, true);
       
       return this;
@@ -56,12 +55,20 @@
    YAHOO.extend(Alfresco.dashlet.ImageSummary, Alfresco.component.Base,
    {
       /**
-       * Keep track of thumbnail items per row - so don't resize unless actually required
+       * Calculated number of thumbnail items per row - so don't perform full reflow unless actually required
        * 
        * @property itemsPerRow
        * @type integer
        */
       itemsPerRow: 0,
+      
+      /**
+       * Calculated value of padding between thumbnail items - so don't perform full reflow unless actually required
+       * 
+       * @property itemsPerRow
+       * @type string
+       */
+      itemPadding: "0.0",
       
       onReady: function onReady()
       {
@@ -99,6 +106,9 @@
                   // remove the ajax wait spinner
                   Dom.addClass(this.id + "-wait", "hidden");
                   
+                  // perform initial resize to correctly set padding between items
+                  this.resizeThumbnailList(null);
+                  
                   // show the containing element for the list of images
                   Dom.removeClass(elImages, "hidden");
                },
@@ -130,26 +140,39 @@
       resizeThumbnailList: function resizeThumbnailList(e)
       {
          // calculate number of thumbnails we can display across the dashlet width
-         var listDiv = Dom.get(this.id + "-list");
-         var count = Math.floor((listDiv.clientWidth - 16) / 112);
-         if (count == 0) count = 1;
+         var listDiv = Dom.get(this.id + "-list"),
+             clientWidth = listDiv.clientWidth - 16 - (e ? 0 : 16),
+             count = Math.floor(clientWidth / 110),
+             spacing = (((clientWidth % 110) / count / 2) + 3.5).toFixed(1);
          
-         if (count !== this.itemsPerRow)
+         // handle minimum value - we never want to show less than one thumbnail column
+         if (count === 0) count = 1;
+         
+         // reflow the thumbnail items as required
+         if (count !== this.itemsPerRow || spacing !== this.itemPadding)
          {
-            this.itemsPerRow = count;
             var items = Dom.getElementsByClassName("item", null, listDiv);
-            for (var i=0, j=items.length; i<j; i++)
+            for (var i=0, j=items.length, pad="0 "+spacing+"px 8px"; i<j; i++)
             {
-               if (i % count == 0)
+               if (spacing !== this.itemPadding)
                {
-                  // initial item for the current row
-                  Dom.addClass(items[i], "initial");
+                  Dom.setStyle(items[i], "padding", pad);
                }
-               else
+               if (count !== this.itemsPerRow)
                {
-                  Dom.removeClass(items[i], "initial");
+                  if (i % count === 0)
+                  {
+                     // initial item for the current row
+                     Dom.addClass(items[i], "initial");
+                  }
+                  else
+                  {
+                     Dom.removeClass(items[i], "initial");
+                  }
                }
             }
+            this.itemPadding = spacing;
+            this.itemsPerRow = count;
          }
       }
    });

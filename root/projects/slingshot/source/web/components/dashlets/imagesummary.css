@@ -14,10 +14,10 @@
 {
    width: 100px;
    height: 100px;
-   padding: 1px;
-   border: 1px solid #CCCCCC;
+   border: 1px solid #888;
    overflow: hidden;
    position: relative;
+   box-shadow: 3px 3px 3px #aaa;
 }
 
 .images .thumbnail > div
@@ -28,6 +28,12 @@
 .images .thumbnail:hover > div
 {
    visibility: visible;
+}
+
+.images .thumbnail > a > img
+{
+   min-height: 100px;
+   min-width: 100px;
 }
 
 .images .action-overlay

@@ -163,13 +163,6 @@
                scope: _this
             }
          });
-         
-         // Add click handler to config feed link that will be visible if user is site manager.
-         var configFeedLink = Dom.get(this.id + "-configFeed-link");
-         if (configFeedLink)
-         {
-            Event.addListener(configFeedLink, "click", this.onConfigFeedClick, this, true);
-         }
       },
 
       /**

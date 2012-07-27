@@ -16,13 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-/*
- *** Alfresco WebView Dashlet
+
+/**
+ * Alfresco WebView Dashlet
  *
  * @namespace Alfresco.dashlet
  * @class Alfresco.dashlet.WebView
- *
  */
 (function()
 {
@@ -109,9 +108,6 @@
        */
       onReady: function WebView_onReady()
       {
-         var configWebViewLink = Dom.get(this.id + "-configWebView-link");
-         Event.addListener(configWebViewLink, "click", this.onConfigWebViewClick, this, true);
-
          /**
           * Save reference to iframe wrapper so we can hide and show it depending
           * on how well the browser handles flash movies.
