@@ -66,6 +66,7 @@
        */
       onReady: function RF_onReady()
       {
+         Dom.get(this.id + "-title").innerHTML = this.buildTitle(this.options.title);
          this.createDataTable(this.options.searchTerm, this.options.limit);
       },
 
@@ -102,6 +103,23 @@
          }
 
          return desc;
+      },
+
+      /**
+       * Helper method for building the title of the dashlet
+       *
+       * @method getTitle
+       * @param {title}
+       * @return {string} The title of the dashlet
+       */
+      buildTitle: function SavedSearch_buildTitle(title)
+      {
+         var title = YAHOO.lang.trim(title);
+         if (!title || title == null || title.length == 0)
+         {
+            title = this.msg("header.title");
+         }
+         return title;
       },
 
       /**
@@ -234,11 +252,14 @@
                      // Response
                      var json = response.json,
                         searchTerm = json.searchTerm,
-                        limit = json.limit;
+                        limit = json.limit,
+                        title = json.title;
 
                      this.options.searchTerm = searchTerm;
                      this.options.limit = limit;
+                     this.options.title = this.buildTitle(title);
 
+                     Dom.get(this.id + "-title").innerHTML = this.options.title;
                      this.createDataTable(searchTerm, limit);
                   },
                   scope: this
@@ -252,6 +273,7 @@
 
                      Dom.get(this.configDialog.id + "-searchTerm").value = this.options.searchTerm;
                      Dom.get(this.configDialog.id + "-limit").value = this.options.limit;
+                     Dom.get(this.configDialog.id + "-title").value = this.options.title;
                   },
                   scope: this
                }

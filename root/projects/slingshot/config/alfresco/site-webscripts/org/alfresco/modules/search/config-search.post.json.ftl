@@ -1,6 +1,7 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
    "searchTerm": "${searchTerm!''}",
-   "limit": "${limit!''}"
+   "limit": "${limit!''}",
+   "title": "${title!''}"
 }
 </#escape>

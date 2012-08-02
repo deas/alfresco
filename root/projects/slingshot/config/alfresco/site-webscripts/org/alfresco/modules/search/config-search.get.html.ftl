@@ -6,6 +6,8 @@
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-searchTerm">${msg("label.searchTerm")}:</label></div>
             <div class="yui-u"><input id="${el}-searchTerm" type="text" name="searchTerm" value="" maxlength="2048" />&nbsp;*</div>
+            <div class="yui-u first"><label for="${el}-title">${msg("label.title")}:</label></div>
+            <div class="yui-u"><input id="${el}-title" type="text" name="title" value="" maxlength="2048" /></div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label>${msg("label.displayResults")}:</label></div>

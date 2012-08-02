@@ -28,19 +28,20 @@ function main()
    // Prepare the model for the search
    model.searchTerm = args.searchTerm || "";
    model.limit = args.limit || 10;
+   model.title = args.title || "";
 
    // Widget instantiation metadata...
    var savedSearch = {
       id : "SavedSearch",
       name : "Alfresco.dashlet.SavedSearch",
       assignTo : "savedSearch",
-      useMessages : false,
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          componentId : instance.object.id,
          searchRootNode : (config.scoped['RepositoryLibrary']['root-node']).value,
          searchTerm: model.searchTerm,
-         limit : model.limit
+         limit : model.limit,
+         title: model.title
       }
    };
 
