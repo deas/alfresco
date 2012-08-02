@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>config-search-post</shortname>
+  <description>Configuration dialog for saved search dashlet</description>
+  <url>/modules/search/config/{componentId}</url>
+  <format default="json">argument</format>
+</webscript>
