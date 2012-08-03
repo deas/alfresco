@@ -68,6 +68,7 @@
       {
          Dom.get(this.id + "-title").innerHTML = this.buildTitle(this.options.title);
          this.createDataTable(this.options.searchTerm, this.options.limit);
+         YAHOO.Bubbling.on("configSearchClick", this.onConfigSearchClick, this);
       },
 
       /**
@@ -230,60 +231,77 @@
 
       /**
        * Called when the user clicks the config saved search link.
+       *
+       * @method configSearchClick
+       * @param e {string} The click event
+       * @param arg {array} an arbitrary set of parameters
+       */
+      configSearchClick: function SavedSearch_onConfigSearchClick(e, args)
+      {
+         Event.stopEvent(e);
+         YAHOO.Bubbling.fire("configSearchClick",
+         {
+            id: args[0].scope.id
+         });
+      },
+
+      /**
+       * Config search event handler
        * Will open a saved search config dialog
        *
        * @method onConfigSearchClick
-       * @param e The click event
+       * @param layer {string} Event fired
+       * @param args {array} Event parameters (depends on event type)
        */
-      onConfigSearchClick: function SavedSearch_onConfigSearchClick(e)
+      onConfigSearchClick: function SavedSearch_onConfigSearchClick(layer, args)
       {
-         Event.stopEvent(e);
-
-         if (!this.configDialog)
+         if (this.id === args[1].id)
          {
-            this.configDialog = new Alfresco.module.SimpleDialog(this.id + "-configDialog").setOptions(
+            if (!this.configDialog)
             {
-               width: "50em",
-               templateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/search/config",
-               onSuccess:
+               this.configDialog = new Alfresco.module.SimpleDialog(this.id + "-configDialog").setOptions(
                {
-                  fn: function SavedSearch_onConfigFeed_callback(response)
+                  width: "50em",
+                  templateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/search/config",
+                  onSuccess:
                   {
-                     // Response
-                     var json = response.json,
+                     fn: function SavedSearch_onConfigFeed_callback(response)
+                     {
+                        // Response
+                        var json = response.json,
                         searchTerm = json.searchTerm,
                         limit = json.limit,
                         title = json.title;
 
-                     this.options.searchTerm = searchTerm;
-                     this.options.limit = limit;
-                     this.options.title = this.buildTitle(title);
+                        this.options.searchTerm = searchTerm;
+                        this.options.limit = limit;
+                        this.options.title = this.buildTitle(title);
 
-                     Dom.get(this.id + "-title").innerHTML = this.options.title;
-                     this.createDataTable(searchTerm, limit);
+                        Dom.get(this.id + "-title").innerHTML = this.options.title;
+                        this.createDataTable(searchTerm, limit);
+                     },
+                     scope: this
                   },
-                  scope: this
-               },
-               doSetupFormsValidation:
-               {
-                  fn: function SavedSearch_doSetupForm_callback(form)
+                  doSetupFormsValidation:
                   {
-                     form.addValidation(this.configDialog.id + "-searchTerm", Alfresco.forms.validation.mandatory, null, "keyup");
-                     form.setShowSubmitStateDynamically(true, false);
+                     fn: function SavedSearch_doSetupForm_callback(form)
+                     {
+                        form.addValidation(this.configDialog.id + "-searchTerm", Alfresco.forms.validation.mandatory, null, "keyup");
+                        form.setShowSubmitStateDynamically(true, false);
 
-                     Dom.get(this.configDialog.id + "-searchTerm").value = this.options.searchTerm;
-                     Dom.get(this.configDialog.id + "-limit").value = this.options.limit;
-                     Dom.get(this.configDialog.id + "-title").value = this.options.title;
-                  },
-                  scope: this
-               }
-            });
+                        Dom.get(this.configDialog.id + "-searchTerm").value = this.options.searchTerm;
+                        Dom.get(this.configDialog.id + "-limit").value = this.options.limit;
+                        Dom.get(this.configDialog.id + "-title").value = this.options.title;
+                     },
+                     scope: this
+                  }
+               });
+            }
+            this.configDialog.setOptions(
+            {
+               actionUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/search/config/" + encodeURIComponent(this.options.componentId)
+            }).show();
          }
-
-         this.configDialog.setOptions(
-         {
-            actionUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/search/config/" + encodeURIComponent(this.options.componentId)
-         }).show();
       }
    });
 })();

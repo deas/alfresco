@@ -28,7 +28,7 @@ function main()
    // Prepare the model for the search
    model.searchTerm = args.searchTerm || "";
    model.limit = args.limit || 10;
-   model.title = args.title || "";
+   model.title = args.title || msg.get("header.title");
 
    // Widget instantiation metadata...
    var savedSearch = {

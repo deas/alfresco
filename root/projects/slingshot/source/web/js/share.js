@@ -1187,7 +1187,10 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
                         return function(e)
                         {
                            _this._fadeOut(e, _this);
-                           customEvent.fire({});
+                           customEvent.fire({
+                              event: e,
+                              scope: _this
+                           });
                         }
                      })());
                   }

@@ -12,11 +12,11 @@
 
 <@markup id="widgets">
    <@inlineScript group="dashlets">
-      var savedSearchDashletEvent = new YAHOO.util.CustomEvent("onConfigSearchClick");
+      var savedSearchDashletEvent = new YAHOO.util.CustomEvent("configSearchClick");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      savedSearchDashletEvent.subscribe(savedSearch.onConfigSearchClick, savedSearch, true);
+      savedSearchDashletEvent.subscribe(savedSearch.configSearchClick, savedSearch, true);
    </@>
 </@>
 
