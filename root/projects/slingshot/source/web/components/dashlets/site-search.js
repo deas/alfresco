@@ -119,7 +119,7 @@
 
                   if (term != null && resultSize != null)
                   {
-                     this.setSearchTerm(term);
+                     this.setSearchTerm(decodeURIComponent(term));
                      this.setResultSize(resultSize);
                      this.doRequest(PREFERENCES_SITE_SEARCH_DASHLET_TERM, PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
                   }
