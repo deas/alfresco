@@ -119,7 +119,7 @@
 
                   if (term != null && resultSize != null)
                   {
-                     this.setSearchTerm(decodeURIComponent(term));
+                     this.setSearchTerm(term);
                      this.setResultSize(resultSize);
                      this.doRequest(PREFERENCES_SITE_SEARCH_DASHLET_TERM, PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
                   }
@@ -170,7 +170,7 @@
        */
       setSearchTerm: function SiteSearch_setSearchTerm(searchTerm)
       {
-         Dom.get(this.id + "-search-text").value = searchTerm;
+         Dom.get(this.id + "-search-text").value = decodeURIComponent(searchTerm);
       },
 
       /**
