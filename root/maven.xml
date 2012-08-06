@@ -225,6 +225,19 @@
             <arg value="-s"/>
             <arg value="${maven.settings.file}"/>
         </artifact:mvn>
+        <!-- MMT classes -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+            <arg value="-Dfile=${dir.continuous.assemble.mmt}/main/main.jar"/>
+            <arg value="-DgroupId=${maven.group.id}"/>
+            <arg value="-DartifactId=alfresco-mmt"/>
+            <arg value="-Dversion=${maven.version.number}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Durl=${maven.repo.url}"/>
+            <arg value="-DrepositoryId=${maven.repo.id}"/>
+            <arg value="-s"/>
+            <arg value="${maven.settings.file}"/>
+        </artifact:mvn>
     </target>
 
     <target name="maven-deploy-webclient-jars" description="Deploys Alfresco Explorer related JARs to a Maven repository">
