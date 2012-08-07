@@ -1024,6 +1024,10 @@
                this.widgets.dataTable.deleteRow(record);
             }
          }
+         if (rs.getLength() == 0)
+         {
+            this.widgets.dataTable.set("MSG_EMPTY", Alfresco.util.message("message.empty", "Alfresco.SiteFinder"));
+         }
       },
 
       /**
