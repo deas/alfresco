@@ -81,12 +81,13 @@ function main()
    AlfrescoUtil.param("nodeRef");
 
    // Populate model with data from repo
+   var pluginConditions; 
    var documentNode = getDocumentNode(model.nodeRef, null);
    if (documentNode)
    {
       // Populate model with data from node and config
       model.node = documentNode;
-      var pluginConditions = getPluginConditions(new XML(config.script));
+      pluginConditions = getPluginConditions(new XML(config.script));
       model.pluginConditionsJSON = jsonUtils.toJSONString(pluginConditions);
    }
    
@@ -97,10 +98,11 @@ function main()
       options : {
          thumbnailModification : model.node.thumbnailModifications,
          nodeRef : model.nodeRef,
-         name : model.name,
-         mimeType : model.size,
+         name : model.node.name,
+         mimeType : model.node.mimeType,
+         size: model.node.size,
          thumbnails : model.node.thumbnails,
-         pluginConditions : model.pluginConditionsJSON
+         pluginConditions : pluginConditions
       }
    };
    model.widgets = [webPreview];
