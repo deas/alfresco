@@ -226,6 +226,13 @@
             });
          }
 
+         this.configDialog.onCancel = function RssFeed_doBeforeDialogShow_onCancel()
+         {
+            this.hide();
+            var checkbox = this.dialog.form.new_window;
+            checkbox.checked = checkbox.defaultChecked;
+         }
+
          this.configDialog.setOptions(
          {
             actionUrl: actionUrl
