@@ -216,7 +216,14 @@
          dataTable.doBeforeLoadData = function MyTasks_doBeforeLoadData(sRequest, oResponse, oPayload)
          {
             // Hide the paginator if there are fewer rows than would cause pagination
-            Dom.setStyle(this.configs.paginator.getContainerNodes(), "visibility", (oResponse.results.length == 0) ? "hidden" : "visible");
+            if (oResponse.results.length === 0)
+            {
+               Dom.addClass(this.configs.paginator.getContainerNodes(), "hidden");
+            }
+            else
+            {
+               Dom.removeClass(this.configs.paginator.getContainerNodes(), "hidden");
+            }
 
             if (oResponse.results.length === 0)
             {

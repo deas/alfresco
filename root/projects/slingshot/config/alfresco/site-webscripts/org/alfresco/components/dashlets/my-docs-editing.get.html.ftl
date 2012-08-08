@@ -1,42 +1,11 @@
-<#include "../../include/alfresco-macros.lib.ftl" />
-<#macro doclibUrl doc>
-   <a href="${url.context}/page/site/${doc.location.site}/documentlibrary?file=${doc.fileName?url}&amp;filter=editingMe" class="theme-color-1">${doc.displayName?html}</a>
-</#macro>
-
-<#-- Render no items text -->
-<#macro renderNoItems>
-   <div class="detail-list-item first-item">
-      <span class="faded">${msg("label.noItems")}</span>
-   </div>
-</#macro>
-
-<#macro renderItems contents icon>
-   <#assign items=contents.items />
-   <#list items?sort_by("modifiedOn") as doc>
-   <#assign modifiedBy><a class="theme-color-1" href="${url.context}/page/user/${doc.modifiedByUser?url}/profile">${doc.modifiedBy?html}</a></#assign>
-   <div class="detail-list-item <#if doc_index = 0>first-item</#if>">
-      <div>
-         <div class="icon">
-            <img src="${url.context}/res/${icon}" alt="${doc.displayName?html}" />
-         </div>
-         <div class="details">
-            <h4><a href="${siteURL(doc.browseUrl, doc.site.shortName)}" class="theme-color-1">${doc.displayName?html}</a></h4>
-            <div>
-               <#assign siteLink><a class="theme-color-1 site-link" href="${siteURL("dashboard", doc.site.shortName)}">${doc.site.title?html}</a></#assign>
-               ${msg("text.edited-on", "<span class='relativeTime'>${doc.modifiedOn}</span>", siteLink)}
-            </div>
-         </div>
-      </div>
-   </div>
-   </#list>
-</#macro>
-
 <@markup id="css" >
-   <#-- No CSS Dependencies -->
+   <#-- CSS Dependencies -->
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/my-docs-editing.css" group="dashlets"/>
 </@>
 
 <@markup id="js">
-   <#-- No JavaScript Dependencies -->
+   <#-- JavaScript Dependencies -->
+   <@script type="text/javascript" src="${url.context}/res/components/dashlets/my-docs-editing.js" group="dashlets"/>
 </@>
 
 <@markup id="widgets">
@@ -51,74 +20,54 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
+      <#assign el=args.htmlid?html>
       <div class="dashlet" id="myEditingDocsDashlet">
          <div class="title">${msg("header")}</div>
          <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-         <#if documents.error?exists>
-            <div class="detail-list-item first-item last-item">
-               <span class="error">${msg(documents.message)}</span>
-            </div>
-         <#else>
-            <div class="hdr">
-               <h3>${msg('text.documents')}</h3>
-            </div>
-         <#if documents.items?size != 0>
-            <#list documents.items?sort_by("modifiedOn") as doc>
-               <#assign modifiedBy><a href="${url.context}/page/user/${doc.modifiedByUser?url}/profile">${doc.modifiedBy?html}</a></#assign>
-               <#assign fileExtIndex = doc.fileName?last_index_of(".")>
-               <#assign fileExt = (fileExtIndex > -1)?string(doc.fileName?substring(fileExtIndex + 1), "generic")>
-               <div class="detail-list-item <#if doc_index = 0>first-item</#if>">
-                  <div>
-                     <div class="icon">
-                        <img src="${url.context}/components/images/filetypes/${fileExt}-file-32.png"
-                             onerror="this.src='${url.context}/res/components/images/filetypes/generic-file-32.png'"
-                             title="${(doc.displayName!doc.fileName)?html}" width="32" />
-                     </div>
-                     <div class="details">
-                        <h4><@doclibUrl doc /></h4>
-                        <div>
-                           <#assign siteLink><a class="theme-color-1 site-link" href="${siteURL("dashboard", doc.location.site)}">${doc.location.siteTitle?html}</a></#assign>
-                           ${msg("text.editing-since", "<span class='relativeTime'>${doc.modifiedOn}</span>", siteLink)}
-                        </div>
-                     </div>
-                  </div>
+            <div id="${el}-message" class="my-docs-editing-message hidden"></div>
+            <div id="${el}-my-docs" class="my-docs-editing">
+               <div class="hdr">
+                  <h3>${msg('text.documents')}</h3>
                </div>
-            </#list>
-         <#else>
-            <@renderNoItems />
-         </#if>
-      </#if>
-      
-      <#if content.error?exists>
-         <div class="detail-list-item first-item last-item">
-            <span class="error">${msg(content.message?html)}</span>
+               <div id="${el}-documents" class="hidden"></div>
+               <div id="${el}-documents-wait" class="my-docs-editing-wait"></div>
+               <div class="hdr">
+                  <h3>${msg('text.blogposts')}</h3>
+               </div>
+               <div id="${el}-blogposts" class="hidden"></div>
+               <div class="hdr">
+                  <h3>${msg('text.wikipages')}</h3>
+               </div>
+               <div id="${el}-wikipages" class="hidden"></div>
+               <div class="hdr">
+                  <h3>${msg('text.forumposts')}</h3>
+               </div>
+               <div id="${el}-forumposts" class="hidden"></div>
+               <div id="${el}-content-wait" class="my-docs-editing-wait"></div>
+            </div>
          </div>
-      <#else>
-         <div class="hdr">
-            <h3>${msg('text.blogposts')}</h3>
+      </div>
+      <div class="hidden">
+         <#-- HTML template for a document item -->
+         <div id="${el}-document-template" class="detail-list-item">
+            <div class="icon">
+               <img title="{name}" width="32" src="${url.context}/components/images/filetypes/{fileExt}-file-32.png" {onerror} />
+            </div>
+            <div class="details">
+               <h4><a href="${url.context}/page/site/{site}/documentlibrary?file={filename}&amp;filter=editingMe" class="theme-color-1">{name}</a></h4>
+               <div>{editingMessage}</div>
+            </div>
          </div>
-         <#if content.blogPosts.items?size != 0>
-            <@renderItems content.blogPosts 'components/images/blogpost-32.png' />
-         <#else>
-            <@renderNoItems />
-         </#if>
-         <div class="hdr">
-            <h3>${msg('text.wikipages')}</h3>
-         </div>
-         <#if content.wikiPages.items?size != 0>
-            <@renderItems content.wikiPages 'components/images/wikipage-32.png' />
-         <#else>
-            <@renderNoItems />
-         </#if>
-         <div class="hdr">
-            <h3>${msg('text.forumposts')}</h3>
-         </div>
-         <#if content.forumPosts.items?size != 0>
-            <@renderItems content.forumPosts 'components/images/topicpost-32.png' />
-         <#else>
-            <@renderNoItems />
-         </#if>
-      </#if>
+         
+         <#-- HTML template for a blog, wiki or forum item -->
+         <div id="${el}-item-template" class="detail-list-item">
+            <div class="icon">
+               <img src="${url.context}/res/{icon}" alt="{name}" />
+            </div>
+            <div class="details">
+               <h4><a href="{browseURL}" class="theme-color-1">{name}</a></h4>
+               <div>{editingMessage}</div>
+            </div>
          </div>
       </div>
    </@>

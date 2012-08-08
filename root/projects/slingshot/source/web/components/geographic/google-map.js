@@ -92,7 +92,7 @@
          // Async load the Google Maps API. Need to do this, as it breaks the YUI Loader otherwise
          var script = document.createElement("script");
          script.type = "text/javascript";
-         script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=Alfresco.component.GoogleMap.Callback";
+         script.src = window.location.protocol + "//maps.google.com/maps/api/js?sensor=false&callback=Alfresco.component.GoogleMap.Callback";
          document.body.appendChild(script);
       },
 
