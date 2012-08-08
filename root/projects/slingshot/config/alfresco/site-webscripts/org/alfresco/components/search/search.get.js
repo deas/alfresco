@@ -81,8 +81,8 @@ function main()
          initialSort : model.searchSort,
          searchQuery : model.searchQuery,
          searchRootNode : config.scoped['RepositoryLibrary']['root-node'].value,
-         minSearchTermLength : (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength,
-         maxSearchResults : (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults
+         minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength),
+         maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults)
       }
    };
    model.widgets = [search];

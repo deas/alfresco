@@ -63,7 +63,7 @@ function main()
          webviewURI : model.uri,
          webviewTitle : model.webviewTitle,
          webviewHeight : model.height,
-         isDefault : model.isDefault
+         isDefault : Boolean(model.isDefault)
       }
    };
 

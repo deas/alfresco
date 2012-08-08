@@ -31,8 +31,8 @@ function main()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : (template.properties.container != null) ? template.properties.continer : "blog",
-         allowCreate : model.blog.permissions.create,
-         allowConfigure : model.blog.permissions.edit
+         allowCreate : Boolean(model.blog.permissions.create),
+         allowConfigure : Boolean(model.blog.permissions.edit)
       }
    };
    model.widgets = [blogToolbar];

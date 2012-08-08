@@ -50,7 +50,7 @@ function main()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : template.properties.container != null ? template.properties.container : "dataLists",
-         usePagination : (args.pagination != null) ? args.pagination : "false"
+         usePagination : Boolean((args.pagination != null) ? args.pagination : "false")
       }
    };
    model.widgets = [dataGrid];

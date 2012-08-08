@@ -13,7 +13,7 @@ function main()
    }
    if (args.useProxy != null)
    {
-      dataLoader.options.useProxy = args.useProxy;
+      dataLoader.options.useProxy = Boolean(args.useProxy);
    }
    if (args.failureMessageKey != null)
    {

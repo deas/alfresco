@@ -28,7 +28,7 @@ function main()
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : (template.properties.container != null) ? template.properties.container : "",
          rootNode : model.rootNode,
-         numTags : maxTagCount
+         numTags : parseInt(maxTagCount)
       }
    };
    model.widgets = [tagFilter];

@@ -21,9 +21,9 @@ function main() {
       id : "ConsoleGroups", 
       name : "Alfresco.ConsoleGroups",
       options : {
-         minSearchTermLength: minSearchTermLength,
-         maxSearchResults: maxSearchResults,
-         maxPageSize: maxPageSize
+         minSearchTermLength: parseInt(minSearchTermLength),
+         maxSearchResults: parseInt(maxSearchResults),
+         maxPageSize: parseInt(maxPageSize)
       }
    };
    model.widgets = [widget];

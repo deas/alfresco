@@ -23,8 +23,8 @@ function main()
       id : "DocSummary",
       name : "Alfresco.dashlet.DocSummary",
       options : {
-         simpleView : model.preferences.prefSimpleView != null ? model.preferences.prefSimpleView : false, 
-         maxItems : model.maxItems
+         simpleView : Boolean(model.preferences.prefSimpleView != null ? model.preferences.prefSimpleView : false), 
+         maxItems : parseInt(model.maxItems)
       }
    };
 

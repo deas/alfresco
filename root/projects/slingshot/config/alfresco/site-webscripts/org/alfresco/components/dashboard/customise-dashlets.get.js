@@ -150,7 +150,7 @@ function main()
       options : {
          currentLayout : {
             templateId : currentTemplate.id,
-            noOfColumns : "" + currentNoOfColumns,
+            noOfColumns : parseInt("" + currentNoOfColumns),
             description : currentTemplate.description,
             icon : url.context + "/res/components/dashboard/images/" + currentTemplate.id + ".png"
          },

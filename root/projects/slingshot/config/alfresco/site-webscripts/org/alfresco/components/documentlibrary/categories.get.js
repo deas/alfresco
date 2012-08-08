@@ -17,7 +17,7 @@ function main()
       name : "Alfresco.DocListCategories",
       options : {
          nodeRef : "alfresco://category/root", 
-         evaluateChildFolders : evaluateChildFolders
+         evaluateChildFolders : Boolean(evaluateChildFolders)
       }
    };
    model.widgets = [categories];

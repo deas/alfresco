@@ -19,8 +19,8 @@ function main()
       id : "MySites", 
       name : "Alfresco.dashlet.MySites",
       options : {
-         imapEnabled : imapServerEnabled,
-         listSize : listSize
+         imapEnabled : Boolean(imapServerEnabled),
+         listSize : parseInt(listSize)
       }
    };
    

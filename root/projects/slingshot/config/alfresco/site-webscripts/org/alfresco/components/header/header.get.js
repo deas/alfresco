@@ -141,7 +141,7 @@ function main()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          siteTitle : model.siteTitle,
-         minSearchTermLength : (args.minSearchTermLength != null) ? args.minSearchTermLength : config.scoped["Search"]["search"].getChildValue("min-search-term-length"),
+         minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : config.scoped["Search"]["search"].getChildValue("min-search-term-length")),
          tokens : {
             site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
             pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",

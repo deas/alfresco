@@ -29,7 +29,7 @@ function main()
       id : "GoogleMap", 
       name : "Alfresco.component.GoogleMap",
       options : {
-         documentDetails : model.documentDetailsJSON
+         documentDetails : model.documentDetails
       }
       
    };

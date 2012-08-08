@@ -8,7 +8,7 @@ function main()
       id : "ChangePassword", 
       name : "Alfresco.ChangePassword",
       options : {
-         minPasswordLength : minPasswordLength
+         minPasswordLength : parseInt(minPasswordLength)
       }
    };
    model.widgets = [changePassword];

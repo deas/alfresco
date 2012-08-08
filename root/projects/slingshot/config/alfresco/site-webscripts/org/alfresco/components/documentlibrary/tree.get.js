@@ -21,8 +21,8 @@ function widgets()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : template.properties.container != null ? template.properties.container : "documentLibrary",
-         evaluateChildFolders : evaluateChildFolders,
-         maximumFolderCount : maximumFolderCount,
+         evaluateChildFolders : Boolean(evaluateChildFolders),
+         maximumFolderCount : parseInt(maximumFolderCount),
          setDropTargets : true
       }
    };

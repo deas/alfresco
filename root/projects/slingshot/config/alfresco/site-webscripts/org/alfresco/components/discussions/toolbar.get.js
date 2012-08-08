@@ -32,7 +32,7 @@ function main()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : (page.url.args.containerId != null) ? page.url.args.containerId : "discussions",
-         allowCreate : model.forum.forumPermissions.create
+         allowCreate : Boolean(model.forum.forumPermissions.create)
       }
    };
    model.widgets = [toolbar];

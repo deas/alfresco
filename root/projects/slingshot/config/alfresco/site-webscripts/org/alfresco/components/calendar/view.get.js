@@ -18,8 +18,8 @@ function main()
          startDate : model.viewArgs.view.startDate,
          endDate : model.viewArgs.view.endDate,
          titleDate : model.viewArgs.view.titleDate,
-         permitToCreateEvents : model.viewArgs.permitToCreateEvents,
-         truncateLength : 100,
+         permitToCreateEvents : Boolean(model.viewArgs.permitToCreateEvents),
+         truncateLength : parseInt(100),
          fcOpts : 
          {
             weekView: "agendaWeek",
@@ -28,14 +28,14 @@ function main()
             weekMode: "variable",
             weekends: true,
             allDaySlot: true,
-            firstDay: 1,
-            firstHour: 0,
-            minTimeWorkHours: 7,
-            maxTimeWorkHours: 19,
-            minTimeToggle: 0,
-            maxTimeToggle: 24,
-            aspectRatio: 1.5,
-            slotMinutes: 30,
+            firstDay: parseInt(1),
+            firstHour: parseInt(0),
+            minTimeWorkHours: parseInt(7),
+            maxTimeWorkHours: parseInt(19),
+            minTimeToggle: parseInt(0),
+            maxTimeToggle: parseInt(24),
+            aspectRatio: parseInt(1.5),
+            slotMinutes: parseInt(30),
             disableDragging: false,
             disableResizing: false
          }

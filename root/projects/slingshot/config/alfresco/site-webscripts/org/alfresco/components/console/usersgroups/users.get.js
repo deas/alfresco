@@ -23,10 +23,10 @@ function main() {
       id : "ConsoleUsers", 
       name : "Alfresco.ConsoleUsers",
       options : {
-         minSearchTermLength: minSearchTermLength,
-         maxSearchResults: maxSearchResults,
-         minUsernameLength: minUsernameLength,
-         minPasswordLength: minPasswordLength
+         minSearchTermLength: parseInt(minSearchTermLength),
+         maxSearchResults: parseInt(maxSearchResults),
+         minUsernameLength: parseInt(minUsernameLength),
+         minPasswordLength: parseInt(minPasswordLength)
       }
    };
    model.widgets = [widget];

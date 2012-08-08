@@ -27,7 +27,7 @@ function main()
       name : "Alfresco.dashlet.MyTasks",
       options : {
          hiddenTaskTypes : model.hiddenTaskTypes,
-         maxItems : model.maxItems,
+         maxItems : parseInt(model.maxItems),
          filters : filterMap
       }
    };

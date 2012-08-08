@@ -8,7 +8,7 @@ function widgets()
       id : "MyMeetingWorkspaces",
       name : "Alfresco.dashlet.MyMeetingWorkspaces",
       options : {
-         imapEnabled : model.imapServerEnabled,
+         imapEnabled : Boolean(model.imapServerEnabled),
          sites : model.sites
       }
    };

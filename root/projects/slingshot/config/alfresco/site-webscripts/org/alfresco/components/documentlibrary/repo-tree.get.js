@@ -35,8 +35,8 @@ function main()
       name : "Alfresco.RepositoryDocListTree",
       options : {
          rootNode : model.rootNode != null ? model.rootNode : "null",
-         evaluateChildFolders : evaluateChildFolders,
-         maximumFolderCount : maximumFolderCount,
+         evaluateChildFolders : Boolean(evaluateChildFolders),
+         maximumFolderCount : parseInt(maximumFolderCount),
          setDropTargets : true
       }
    };

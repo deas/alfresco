@@ -4,7 +4,7 @@ function main() {
       id : "ConsoleTagManagement", 
       name : "Alfresco.ConsoleTagManagement",
       options : {
-         pageSize: (args.pageSize != null) ? args.pageSize : "15"
+         pageSize: parseInt((args.pageSize != null) ? args.pageSize : "15")
       }
    };
    model.widgets = [widget];

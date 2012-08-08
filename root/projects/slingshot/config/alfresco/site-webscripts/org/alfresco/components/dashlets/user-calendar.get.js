@@ -11,7 +11,7 @@ function main()
       id : "UserCalendar", 
       name : "Alfresco.dashlet.UserCalendar",
       options : {
-         listSize : listSize
+         listSize : parseInt(listSize)
       }
       
    };

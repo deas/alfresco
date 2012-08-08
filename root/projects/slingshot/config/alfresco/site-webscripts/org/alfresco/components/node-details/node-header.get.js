@@ -41,15 +41,15 @@ function main()
          siteId : model.site,
          rootPage : model.rootPage,
          rootLabelId : model.rootLabelId,
-         showFavourite : model.showFavourite,
-         showLikes : model.showLikes,
-         showComments : model.showComments,
-         showDownload : model.showDownload,
-         showPath : model.showPath,
+         showFavourite : Boolean(model.showFavourite),
+         showLikes : Boolean(model.showLikes),
+         showComments : Boolean(model.showComments),
+         showDownload : Boolean(model.showDownload),
+         showPath : Boolean(model.showPath),
          displayName : (model.item.displayName != null) ? model.item.displayName : model.item.fileName,
          likes : likes,
-         isFavourite : model.item.isFavourite || false,
-         isContainer : model.isContainer
+         isFavourite : Boolean(model.item.isFavourite || false),
+         isContainer : Boolean(model.isContainer)
       }
    };
    model.widgets = [nodeHeader];

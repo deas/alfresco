@@ -17,10 +17,10 @@ function widgets()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          rootNode : model.rootNode != null ? model.rootNode : "",
-         hideNavBar : model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false",
-         googleDocsEnabled : model.googleDocsEnabled != null ? model.googleDocsEnabled : "false",
+         hideNavBar : Boolean(model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false"),
+         googleDocsEnabled : Boolean(model.googleDocsEnabled != null ? model.googleDocsEnabled : "false"),
          repositoryBrowsing : model.rootNode != null,
-         useTitle : useTitle
+         useTitle : Boolean(useTitle)
       }
    };
    model.widgets = [docListToolbar];

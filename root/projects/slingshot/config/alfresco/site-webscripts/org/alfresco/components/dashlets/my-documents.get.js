@@ -50,7 +50,7 @@ function main()
       name : "Alfresco.dashlet.MyDocuments",
       options : {
          filter : model.prefFilter,
-         maxItems : model.maxItems,
+         maxItems : parseInt(model.maxItems),
          simpleView : model.prefSimpleView,
          validFilters : model.filters
       }

@@ -17,7 +17,7 @@ function main()
          filterParameters : model.filterParameters,
          hiddenWorkflowNames : model.hiddenWorkflowNames,
          workflowDefinitions : model.workflowDefinitions,
-         maxItems : (model.maxItems != null) ? model.maxItems : "50"
+         maxItems : parseInt((model.maxItems != null) ? model.maxItems : "50")
       }
    };
    model.widgets = [workflowList];

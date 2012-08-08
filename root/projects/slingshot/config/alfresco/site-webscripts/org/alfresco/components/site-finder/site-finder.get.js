@@ -34,9 +34,9 @@ function main()
       name : "Alfresco.SiteFinder",
       options : {
          currentUser : user.name,
-         minSearchTermLength : (args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength,
-         maxSearchResults : (args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults,
-         setFocus : (args.setFocus != null) ? args.setFocus : "false",
+         minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength),
+         maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults),
+         setFocus : Boolean((args.setFocus != null) ? args.setFocus : "false"),
          inviteData: inviteData
       }
    };

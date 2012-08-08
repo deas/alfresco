@@ -14,7 +14,7 @@ function main()
       options : {
          filterParameters : model.filterParameters,
          hiddenTaskTypes : model.hiddenTaskTypes,
-         maxItems : (model.maxItems != null) ? model.maxItems : "50"
+         maxItems : parseInt((model.maxItems != null) ? model.maxItems : "50")
       }
    };
    model.widgets = [taskList];
