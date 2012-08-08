@@ -102,7 +102,7 @@ function main()
          mimeType : model.node.mimeType,
          size: model.node.size,
          thumbnails : model.node.thumbnails,
-         pluginConditions : pluginConditions
+         pluginConditions : model.pluginConditionsJSON
       }
    };
    model.widgets = [webPreview];

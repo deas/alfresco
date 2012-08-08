@@ -183,6 +183,9 @@
        */
       onReady: function WP_onReady()
       {
+         // Convert the JSON string conditions back into an object...
+         this.options.pluginConditions = eval(this.options.pluginConditions);
+         
          // Setup web preview
          this.setupPreview(false);
       },
