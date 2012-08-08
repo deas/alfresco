@@ -87,11 +87,12 @@
     <module>projects/repository</module>
     <module>projects/wdr-deployment</module>
     <module>projects/remote-api</module>
-    <module>projects/web-framework-commons</module>
     <module>projects/jndi-client</module>
     <module>projects/catalina-virtual</module>
-    <module>projects/web-service-client</module>
+    <module>projects/web-framework-commons</module>
+    <module>enterpriseprojects/repository</module>
     <module>projects/web-client</module>
+    <module>projects/web-service-client</module>
     <module>projects/slingshot</module>
   </modules>
 
@@ -208,7 +209,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -224,7 +225,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
+                <version>2.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -329,7 +330,7 @@
         </plugin>
         <plugin>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.4</version>
+            <version>2.5</version>
             <configuration>
                 <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
             </configuration>
@@ -368,7 +369,7 @@
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.2</version>
         </plugin>
     </plugins>
   </reporting>
