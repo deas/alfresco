@@ -17,14 +17,21 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Base component for various Search related components.
+ * 
+ * Provides helper functions to generate search related URLs, text and image thumbnails
+ * 
+ * @namespace Alfresco.component
+ * @class Alfresco.component.SearchBase
+ */
 (function()
 {
-
    /**
     * Alfresco Slingshot aliases
     */
-   var $html = Alfresco.util.encodeHTML;
-   var $msg = Alfresco.util.message;
+   var $html = Alfresco.util.encodeHTML,
+       $msg = Alfresco.util.message;
 
    /**
     * Alfresco.component.SearchBase constructor.
@@ -71,7 +78,6 @@
        */
       getBrowseUrl: function(name, type, site, path, nodeRef, container, modifiedOn)
       {
-
          var url = null;
 
          switch (type)
