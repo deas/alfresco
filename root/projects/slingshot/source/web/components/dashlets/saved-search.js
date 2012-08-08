@@ -268,10 +268,10 @@
                      fn: function SavedSearch_onConfigFeed_callback(response)
                      {
                         // Response
-                        var json = response.json,
-                        searchTerm = json.searchTerm,
-                        limit = json.limit,
-                        title = json.title;
+                        var dataObj = response.config.dataObj,
+                        searchTerm = dataObj.searchTerm,
+                        limit = dataObj.limit,
+                        title = dataObj.title;
 
                         this.options.searchTerm = searchTerm;
                         this.options.limit = limit;
@@ -299,7 +299,7 @@
             }
             this.configDialog.setOptions(
             {
-               actionUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/search/config/" + encodeURIComponent(this.options.componentId)
+               actionUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/dashlet/config/" + encodeURIComponent(this.options.componentId)
             }).show();
          }
       }
