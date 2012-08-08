@@ -718,8 +718,18 @@
          
          var permissionsEl = Dom.get(this.id + "-managepermissions"),
             permissionsContainerEl = Dom.get(this.id + "-body"),
-            nodeRef = Alfresco.util.ComponentManager.findFirst("Alfresco.component.ManagePermissions").options.nodeRef, 
+            nodeRef = Alfresco.util.ComponentManager.findFirst("Alfresco.component.ManagePermissions").options.nodeRef;
+         
+         var url;
+         if (nodeRef.uri)
+         {
             url = Alfresco.constants.PROXY_URI + 'slingshot/doclib/node/' + nodeRef.uri;
+         }
+         else
+         {
+            var nodeRefObj = Alfresco.util.NodeRef(nodeRef);
+            url = Alfresco.constants.PROXY_URI + 'slingshot/doclib/node/' + nodeRefObj.storeType + "/" + nodeRefObj.storeId + "/" + nodeRefObj.id;
+         }
 
          // Write response to DOM and switch to permissions mode (hiding channels UI):
          permissionsEl.innerHTML = response.serverResponse.responseText;

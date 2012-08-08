@@ -1,11 +1,32 @@
 function main()
 {
+   var siteId;
+   if (typeof page != "undefined")
+   {
+      if (page.url.templateArgs.site != null)
+      {
+         siteId = page.url.templateArgs.site;
+      }
+      else
+      {
+         siteId = "";
+      }
+   }
+   else if (args.site != null)
+   {
+      siteId = args.site;
+   }
+   else
+   {
+      siteId = "";
+   }
+   
    // Widget instantiation metadata...
    var authorityFinder = {
       id : "AuthorityFinder", 
       name : "Alfresco.AuthorityFinder",
       options : {
-         siteId : (page.exists == true) ? ((page.url.templateArgs.site != null) ? page.url.templateArgs.site : "") : ((args.site != null) ? args.site : ""),
+         siteId : siteId,
          minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : "3"),
          maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : "100"),
          setFocus : Boolean((args.setFocus != null) ? args.setFocus : "false"),
