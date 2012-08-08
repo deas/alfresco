@@ -357,10 +357,13 @@
          renderCellThumbnail = function Search_renderCellThumbnail(elCell, oRecord, oColumn, oData)
          {
             oColumn.width = 100;
-            oColumn.height = 100;
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-            Dom.setStyle(elCell, "height", oColumn.height + "px");
+            Dom.setStyle(elCell.parentNode, "background-color", "#f4f4f4");
             Dom.addClass(elCell, "thumbnail-cell");
+            if (oRecord.getData("type") === "document")
+            {
+               Dom.addClass(elCell, "thumbnail");
+            }
             
             elCell.innerHTML = me.buildThumbnailHtmlByRecord(oRecord);
          };
@@ -376,8 +379,10 @@
           */
          renderCellDescription = function Search_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
-            // apply styles
+            // apply styles (TODO: TD class?)
             Dom.setStyle(elCell.parentNode, "line-height", "1.5em");
+            Dom.setStyle(elCell.parentNode, "border-right", "none");
+            Dom.setStyle(elCell.parentNode, "vertical-align", "top");
             
             // site and repository items render with different information available
             var site = oRecord.getData("site");

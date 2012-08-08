@@ -215,7 +215,7 @@
          {
             if (site)
             {
-               if (path === null || path === undefined)
+               if (!path)
                {
                   path = "";
                }
@@ -322,12 +322,11 @@
       
       buildThumbnailHtmlImgEl: function(displayName, type, name, nodeRef, site, path, container, modifiedOn, height, width)
       {
-         var url = this.getBrowseUrl(name, type, site, path, nodeRef, container, modifiedOn);
-         var imageUrl = this.buildImageUrl(type, nodeRef, modifiedOn);
-
-         var htmlName = $html(displayName);
-         var html;
-         if (height && height != null && width && width != null)
+         var url = this.getBrowseUrl(name, type, site, path, nodeRef, container, modifiedOn),
+             imageUrl = this.buildImageUrl(type, nodeRef, modifiedOn),
+             htmlName = $html(displayName),
+             html;
+         if (height && width)
          {
             html = '<span><a href="' + url + '"><img src="' + imageUrl + '" alt="' + htmlName + '" title="' + htmlName + '" width="' + width + '" height="' + height + '" /></a></span>';
          }

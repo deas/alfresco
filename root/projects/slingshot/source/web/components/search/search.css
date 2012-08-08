@@ -32,7 +32,7 @@
 
 .search .search-box input
 {
-   padding: 0.3em;
+   padding: 5px;
 }
 
 .search .search-box .terms
@@ -49,8 +49,6 @@
 .search .search-bar
 {
    padding: 4px 0.5em 2px;
-   border-bottom: 1px solid #F0F3F4;
-	border-top: 1px solid #F0F3F4;
 }
 
 .search .search-bar-bottom
@@ -80,13 +78,16 @@
 .search .action-overlay
 {
    position: absolute;
-   margin-top: 80px;
-   margin-left: 64px;
+   margin-top: 2px;
+   margin-left: 70px;
 }
 
 .search .thumbnail-cell
 {
-   text-align: center,
+   text-align: center;
+   vertical-align: middle;
+   padding-top: 8px;
+   padding-bottom: 8px;
 }
 
 .search .thumbnail-cell > div
@@ -97,6 +98,11 @@
 .search .thumbnail-cell:hover > div
 {
    visibility: visible;
+}
+
+.search .thumbnail > span img
+{
+   box-shadow: 3px 3px 5px #888;
 }
 
 .search .itemname
@@ -162,7 +168,12 @@
 
 .search .yui-dt td
 {
-   border-bottom: 1px dashed #D7D7D7;
+   border-bottom: 1px solid #ddd;
+}
+
+.search .yui-dt tr.yui-dt-first td
+{
+   border-top: 1px solid #ddd;
 }
 
 .search .search-bar span.yui-button
