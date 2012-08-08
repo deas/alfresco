@@ -11,6 +11,9 @@
 </@>
 
 <@markup id="widgets">
+   <@inlineScript group="title">
+      Alfresco.constants.DASHLET_RESIZE = ${userIsSiteManager?string} && YAHOO.env.ua.mobile === null;
+   </@>
    <@createWidgets group="title"/>
 </@>
 

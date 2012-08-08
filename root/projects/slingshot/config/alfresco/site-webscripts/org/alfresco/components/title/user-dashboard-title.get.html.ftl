@@ -6,17 +6,18 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
+<#assign userName>${user.properties["firstName"]?html} <#if user.properties["lastName"]??>${user.properties["lastName"]?html}</#if></#assign>
+
 <@markup id="widgets">
+   <@inlineScript group="title">
+      Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string} && YAHOO.env.ua.mobile === null;
+   </@>
    <@createWidgets group="title"/>
 </@>
 
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign activePage = page.url.templateArgs.pageid!"customise-user-dashboard">
-      <#assign userName>${user.properties["firstName"]?html} <#if user.properties["lastName"]??>${user.properties["lastName"]?html}</#if></#assign>
-      <script type="text/javascript">//<![CDATA[
-         Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string} && YAHOO.env.ua.mobile === null;
-      //]]></script>
       <div class="page-title theme-bg-color-1 theme-border-1"><!-- ${activePage} -->
          <div class="title">
             <h1 class="theme-color-3">${msg("header.dashboard", "<span>${userName}</span>")}</h1>
