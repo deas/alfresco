@@ -374,10 +374,8 @@ public class ImporterComponent
                 {
                     String[] qnameComponents = QName.splitPrefixedQName(segments[i]);
                     
-                    String localName = QName.createValidLocalName(qnameComponents[1]);
-                    
                     // MT: bootstrap of "alfrescoUserStore.xml" requires 'sys:people/cm:admin@tenant' to be encoded as 'sys:people/cm:admin_x0040_tenant' (for XPath)
-                    localName = localName.replace("@", "_x0040_");
+                    String localName = qnameComponents[1].replace("@", "_x0040_");
                     
                     QName segmentQName = QName.createQName(qnameComponents[0], localName, namespaceService);
                     validPath.append(segmentQName.toPrefixString());
