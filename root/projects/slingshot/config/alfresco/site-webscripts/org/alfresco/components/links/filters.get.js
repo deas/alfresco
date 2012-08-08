@@ -24,7 +24,7 @@ function main()
    var baseFilter = {
       id : "BaseFilter", 
       name : "Alfresco.component.BaseFilter",
-      initArgs : ["Alfresco.LinkFilter", "\"" + args.htmlid + "\""],
+      initArgs : ["'Alfresco.LinkFilter'", "\"" + args.htmlid + "\""],
       useMessages : false,
       useOptions : false
    };

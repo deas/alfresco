@@ -24,7 +24,7 @@ function main()
    var filter = {
       id : "BaseFilter", 
       name : "Alfresco.component.BaseFilter",
-      initArgs : ["Alfresco.TopicListFilter","\"" + args.htmlid + "\""],
+      initArgs : ["'Alfresco.TopicListFilter'","\"" + args.htmlid + "\""],
       useMessages : false,
       useOptions : false
    };

@@ -4,7 +4,7 @@ function main()
    var baseFilter = {
       id : "BaseFilter", 
       name : "Alfresco.component.BaseFilter",
-      initArgs : [ "Alfresco.WikiFilter", "\"" + args.htmlid + "\""],
+      initArgs : [ "'Alfresco.WikiFilter'", "\"" + args.htmlid + "\""],
       useMessages : false
    };
    model.widgets = [baseFilter];

@@ -24,7 +24,7 @@ function main()
    var blogPostListFilter = {
       id: "BlogPostListFilter",
       name : "Alfresco.component.BaseFilter",
-      initArgs : [ "Alfresco.BlogPostListFilter", "\"" + args.htmlid + "\""],
+      initArgs : [ "'Alfresco.BlogPostListFilter'", "\"" + args.htmlid + "\""],
       useMessages : false,
       useOptions : false
    };
