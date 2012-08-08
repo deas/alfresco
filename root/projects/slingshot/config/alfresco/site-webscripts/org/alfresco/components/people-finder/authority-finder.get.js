@@ -10,9 +10,9 @@ function main()
          maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : "100"),
          setFocus : Boolean((args.setFocus != null) ? args.setFocus : "false"),
          addButtonSuffix : (args.addButtonSuffix != null) ? args.addButtonSuffix : "",
-         dataWebScript : { ___value : "dataWebScript", ___type: "REFERENCE"},
-         viewMode : { ___value : "Alfresco.AuthorityFinder.VIEW_MODE_DEFAULT", ___type: "REFERENCE"},
-         authorityType : { ___value : "Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL", ___type: "REFERENCE"}
+         dataWebScript : { _alfValue : "dataWebScript", _alfType: "REFERENCE"},
+         viewMode : { _alfValue : "Alfresco.AuthorityFinder.VIEW_MODE_DEFAULT", _alfType: "REFERENCE"},
+         authorityType : { _alfValue : "Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL", _alfType: "REFERENCE"}
       }
    };
    model.widgets = [authorityFinder];

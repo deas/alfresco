@@ -24,7 +24,7 @@ function defineWidgets()
    {
       actions.push({
          cssClass: "edit",
-         eventOnClick: { ___value : "addOnsRssFeedDashletEvent", ___type: "REFERENCE"},
+         eventOnClick: { _alfValue : "addOnsRssFeedDashletEvent", _alfType: "REFERENCE"},
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

@@ -70,7 +70,7 @@ function main()
       actions.push(
       {
          cssClass: "edit",
-         eventOnClick: { ___value : "editWikiDashletEvent", ___type: "REFERENCE"},
+         eventOnClick: { _alfValue : "editWikiDashletEvent", _alfType: "REFERENCE"},
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

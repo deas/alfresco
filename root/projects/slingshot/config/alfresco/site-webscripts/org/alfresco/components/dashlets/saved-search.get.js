@@ -57,7 +57,7 @@ function main()
    {
       actions.push({
          cssClass: "edit",
-         eventOnClick: { ___value : "savedSearchDashletEvent", ___type: "REFERENCE"},
+         eventOnClick: { _alfValue : "savedSearchDashletEvent", _alfType: "REFERENCE"},
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

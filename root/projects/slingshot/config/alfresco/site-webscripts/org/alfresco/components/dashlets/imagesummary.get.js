@@ -51,7 +51,7 @@ function main()
       actions.push(
       {
          cssClass: "edit",
-         eventOnClick: { ___value : "imageFolderDashletEvent", ___type: "REFERENCE"}, 
+         eventOnClick: { _alfValue : "imageFolderDashletEvent", _alfType: "REFERENCE"}, 
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

@@ -80,7 +80,7 @@ function main()
       actions.push(
       {
          cssClass: "edit",
-         eventOnClick: { ___value : "editWebViewDashletEvent", ___type: "REFERENCE"}, 
+         eventOnClick: { _alfValue : "editWebViewDashletEvent", _alfType: "REFERENCE"}, 
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }
