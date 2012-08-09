@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,6 +19,7 @@
 package org.alfresco.util;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.util.bean.BooleanBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobDetail;
@@ -45,6 +46,7 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
 
     private String beanName;
     
+
     private Trigger trigger;
     
     private boolean enabled = true;
@@ -102,12 +104,17 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
         {
             throw new AlfrescoRuntimeException("Job detail has not been set");
         }
-        if ((scheduler == null) || (!enabled))
+        if (scheduler == null)
         {
-            logger.warn("Job " + getBeanName() + " is not active/enabled");
+            logger.warn("Job " + getBeanName() + " is not active");
+        }
+        else if (!enabled)
+        {
+            logger.warn("Job " + getBeanName() + " is not enabled");
         }
         else
         {
+            logger.info("Job " + getBeanName() + " is active and enabled");
             // Register the job with the scheduler
             this.trigger = getTrigger();
             if (this.trigger == null)
@@ -175,4 +182,8 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
         this.enabled = enabled;
     }
 
+    public void setEnabledFromBean(BooleanBean enabled)
+    {
+        this.enabled = enabled.isTrue();
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+import org.alfresco.util.bean.BooleanBean;
 import org.alfresco.util.exec.RuntimeExec.ExecutionResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -144,6 +145,11 @@ public class RuntimeExecBootstrapBean extends AbstractLifecycleBean
         // the injection of properties ${foo.bar}. In this way undefined properties (which will
         // be injected as "${foo.bar}") will mean the parameter is equivalent to false.
         this.enabled = Boolean.parseBoolean(enabled);
+    }
+    
+    public void setEnabledFromBean(BooleanBean enabled)
+    {
+        this.enabled = enabled.isTrue();
     }
     
     @Override
