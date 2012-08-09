@@ -310,3 +310,10 @@ table .yui-dt-empty
    width: 10em;
 }
 
+/* Version History */
+
+div.historic-properties-viewer div.nav
+{
+   margin: 0;
+   width: 20em;
+}
