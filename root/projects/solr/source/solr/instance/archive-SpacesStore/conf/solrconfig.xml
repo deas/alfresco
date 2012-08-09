@@ -384,6 +384,20 @@
       autowarmCount="0"
     />
 
+    <cache name="alfrescoAuthorityCache"
+      class="solr.FastLRUCache"
+      size="${solr.authorityCache.size:512}"
+      initialSize="${solr.authorityCache.initialSize:512}"
+      autowarmCount="0"
+    />
+
+    <cache name="alfrescoPathCache"
+      class="solr.FastLRUCache"
+      size="${solr.pathCache.size:512}"
+      initialSize="${solr.pathCache.initialSize:512}"
+      autowarmCount="0"
+    />
+
     <listener event="newSearcher" class="org.alfresco.solr.AlfrescoSolrEventListener">
     </listener>
 

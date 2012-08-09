@@ -685,7 +685,7 @@
          for (var i = 0, ii = p_permissions.length; i < ii; i++)
          {
             perm = p_permissions[i];
-            if (!perm.removed)
+            if (!perm.removed && !(perm.authority.name === "GROUP_EVERYONE" && perm.role === "ReadPermissions"))
             {
                data.push(
                {

@@ -318,7 +318,7 @@
             <substitutionList>
                 <substitution>
                     <pattern>shared.loader=</pattern>
-                    <value>shared.loader=${'${catalina.base}/shared/classes,${catalina.base}/shared/lib/*.jar'}</value>
+                    <value>shared.loader=${'${catalina.base}/shared/classes'}</value>
                 </substitution>
             </substitutionList>
         </substitute>

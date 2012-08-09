@@ -32,7 +32,6 @@ import org.apache.solr.search.SolrIndexSearcher;
 
 public class SolrCachingOwnerScorer extends AbstractSolrCachingScorer
 {
-  
 
     /**
      * @param similarity
@@ -52,45 +51,39 @@ public class SolrCachingOwnerScorer extends AbstractSolrCachingScorer
         // translate reults to leaf docs
         // build ordered doc list
 
-        // CacheEntry[] indexedByDocId = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
-        // AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
-        //
-        //       
-        // DocSet authorityOwnedAuxDocs = searcher.getDocSet(new TermQuery(new Term("OWNER", authority)));
-        // BitDocSet authorityOwnedDocs = new BitDocSet();
-        //
-        // if(authorityOwnedAuxDocs instanceof BitDocSet)
-        // {
-        // BitDocSet source = (BitDocSet)authorityOwnedAuxDocs;
-        // OpenBitSet openBitSet = source.getBits();
-        // int current = -1;
-        // while((current = openBitSet.nextSetBit(current+1)) != -1)
-        // {
-        // CacheEntry entry = indexedByDocId[current];
-        // authorityOwnedDocs.addUnique(entry.getLeaf());
-        // }
-        // }
-        // else
-        // {
-        // for (DocIterator it = authorityOwnedAuxDocs.iterator(); it.hasNext(); /* */)
-        // {
-        // CacheEntry entry = indexedByDocId[it.next()];
-        // authorityOwnedDocs.addUnique(entry.getLeaf());
-        // }
-        // }
-
         BitDocSet authorityOwnedDocs = new BitDocSet();
 
         HashMap<String, OwnerLookUp> ownerLookUp = (HashMap<String, OwnerLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
                 AlfrescoSolrEventListener.KEY_OWNER_LOOKUP);
-        OwnerLookUp lookUp = ownerLookUp.get(authority);
-        if (lookUp != null)
+
+        if (authority.contains("\\|"))
         {
-            CacheEntry[] indexedOderedByOwnerIdThenDoc = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
-                    AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
-            for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
+            for (String current : authority.split("|"))
             {
-                authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].getLeaf());
+                OwnerLookUp lookUp = ownerLookUp.get(current);
+                if (lookUp != null)
+                {
+                    CacheEntry[] indexedOderedByOwnerIdThenDoc = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
+                            AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
+                    for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
+                    {
+                        authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].getLeaf());
+                    }
+                }
+            }
+
+        }
+        else
+        {
+            OwnerLookUp lookUp = ownerLookUp.get(authority);
+            if (lookUp != null)
+            {
+                CacheEntry[] indexedOderedByOwnerIdThenDoc = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
+                        AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
+                for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
+                {
+                    authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].getLeaf());
+                }
             }
         }
 

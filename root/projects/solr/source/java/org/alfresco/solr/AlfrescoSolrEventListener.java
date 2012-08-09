@@ -41,6 +41,8 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrEventListener;
+import org.apache.solr.search.FastLRUCache;
+import org.apache.solr.search.SolrCache;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.slf4j.Logger;
@@ -86,6 +88,10 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static final String KEY_DELETE_ALL = "KEY_DELETE_ALL";
 
     public static String ALFRESCO_CACHE = "alfrescoCache";
+    
+    public static String ALFRESCO_AUTHORITY_CACHE = "alfrescoAuthorityCache";
+    
+    public static String ALFRESCO_PATH_CACHE = "alfrescoPathCache";
 
     // Full cache of doc position to DBID, and leaf and path oposition
     public static String KEY_DBID_LEAF_PATH_BY_DOC_ID = "KEY_DBID_LEAF_PATH_BY_DOC_ID";
@@ -199,7 +205,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             ConcurrentHashMap<Long, Long> deletedAclTx = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETED_ACL_TX);
             AtomicBoolean deleteAll = (AtomicBoolean) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETE_ALL);
             AtomicBoolean checkCache = (AtomicBoolean) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_CHECK_CACHE);
-
+            
             if (checkCache == null)
             {
                 checkCache = new AtomicBoolean(false);
@@ -542,7 +548,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         // build lookups
 
-        HashMap<Long, AclLookUp> alcLookUp = new HashMap<Long, AclLookUp>();
+        HashMap<AclLookUp, AclLookUp> alcLookUp = new HashMap<AclLookUp, AclLookUp>();
 
         AclLookUp currentAclLookUp = null;
         for (int i = 0; i < indexedOderedByAclIdThenDoc.length; i++)
@@ -565,7 +571,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         // acl id has changed - new set
                         currentAclLookUp.setEnd(i);
                         AclLookUp next = new AclLookUp(entry.getAclid(), i);
-                        alcLookUp.put(Long.valueOf(currentAclLookUp.aclid), currentAclLookUp);
+                        alcLookUp.put(currentAclLookUp, currentAclLookUp);
                         currentAclLookUp = next;
                     }
                 }
@@ -576,7 +582,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 if (currentAclLookUp != null)
                 {
                     currentAclLookUp.setEnd(i);
-                    alcLookUp.put(Long.valueOf(currentAclLookUp.aclid), currentAclLookUp);
+                    alcLookUp.put(currentAclLookUp, currentAclLookUp);
                 }
                 break;
             }
@@ -584,7 +590,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         if (currentAclLookUp != null)
         {
             currentAclLookUp.setEnd(indexedOderedByAclIdThenDoc.length);
-            alcLookUp.put(Long.valueOf(currentAclLookUp.aclid), currentAclLookUp);
+            alcLookUp.put(currentAclLookUp, currentAclLookUp);
         }
 
         Arrays.sort(indexedOderedByOwnerIdThenDoc, new Comparator<CacheEntry>()
@@ -723,7 +729,6 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF, indexedOderedByOwnerIdThenDoc);
         
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_ID_MANAGER, ownerIdManager);
-
     }
 
     /**
@@ -1460,7 +1465,39 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             return end;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode()
+        {
+            return (int)(aclid ^ (aclid >>> 32));
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (!(obj instanceof AclLookUp))
+                return false;
+            AclLookUp other = (AclLookUp) obj;
+            if (aclid != other.aclid)
+                return false;
+            return true;
+        }    
+     
+        public void setAclid(long aclid)
+        {
+            this.aclid = aclid;
+        }
     }
+    
 
     public static class OwnerLookUp
     {

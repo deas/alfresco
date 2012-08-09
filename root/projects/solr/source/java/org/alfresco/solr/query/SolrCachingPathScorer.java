@@ -27,6 +27,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
+import org.apache.solr.search.SolrCache;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -49,6 +50,12 @@ public class SolrCachingPathScorer extends AbstractSolrCachingScorer
         // PathCollector pathCollector = new PathCollector();
         // searcher.search(solrPathQuery, pathCollector);
 
+        DocSet answer = (DocSet)searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_PATH_CACHE, solrPathQuery);
+        if(answer != null)
+        {
+            return new SolrCachingPathScorer(similarity, answer, reader);
+        }
+        
         DocSet docSet = searcher.getDocSet(solrPathQuery);
 
         CacheEntry[] indexedByDocId = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
@@ -76,6 +83,8 @@ public class SolrCachingPathScorer extends AbstractSolrCachingScorer
             }
         }
 
-        return new SolrCachingPathScorer(similarity, new BitDocSet(translated), reader);
+        BitDocSet toCache =  new BitDocSet(translated);
+        searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_PATH_CACHE, solrPathQuery, toCache);
+        return new SolrCachingPathScorer(similarity, toCache, reader);
     }
 }

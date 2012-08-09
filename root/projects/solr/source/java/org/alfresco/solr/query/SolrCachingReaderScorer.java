@@ -26,6 +26,8 @@ import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.AclLookUp;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Similarity;
@@ -57,12 +59,29 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
         
      
         long[] aclByDocId = (long[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_ID_BY_DOC_ID);
-        HashMap<Long, AlfrescoSolrEventListener.AclLookUp> lookups = (HashMap<Long, AlfrescoSolrEventListener.AclLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_LOOKUP);
+        HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp> lookups = (HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_LOOKUP);
         AlfrescoSolrEventListener.CacheEntry[] aclThenLeafOrderedEntries = ( AlfrescoSolrEventListener.CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
       
-        DocSet aclDocSet = searcher.getDocSet(new TermQuery(new Term("READER", authority)));
+        
+        DocSet aclDocSet;
+        if(authority.contains("|"))
+        {
+           BooleanQuery bQuery = new BooleanQuery();
+           for(String current : authority.split("\\|"))
+           {
+               bQuery.add(new TermQuery(new Term("READER", current)), Occur.SHOULD);
+           }
+           aclDocSet = searcher.getDocSet(bQuery);
+        }
+        else
+        {   
+            aclDocSet = searcher.getDocSet(new TermQuery(new Term("READER", authority)));
+        }
+        
         BitDocSet readableDocSet = new BitDocSet();
 
+        AlfrescoSolrEventListener.AclLookUp key = new AlfrescoSolrEventListener.AclLookUp(0);
+        
         if(aclDocSet instanceof BitDocSet)
         {
             BitDocSet source = (BitDocSet)aclDocSet;
@@ -71,7 +90,8 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
             while((current = openBitSet.nextSetBit(current+1)) != -1)
             {
                 long acl = aclByDocId[current];
-                AlfrescoSolrEventListener.AclLookUp value = lookups.get(Long.valueOf(acl));
+                key.setAclid(acl);
+                AlfrescoSolrEventListener.AclLookUp value = lookups.get(key);
                 if(value != null)
                 {
                     for(int i = value.getStart(); i < value.getEnd(); i++)
@@ -88,7 +108,8 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
             {
                 int doc = it.nextDoc();
                 long acl = aclByDocId[doc];
-                AlfrescoSolrEventListener.AclLookUp value = lookups.get(Long.valueOf(acl));
+                key.setAclid(acl);
+                AlfrescoSolrEventListener.AclLookUp value = lookups.get(key);
                 if(value != null)
                 {
                     for(int i = value.getStart(); i < value.getEnd(); i++)

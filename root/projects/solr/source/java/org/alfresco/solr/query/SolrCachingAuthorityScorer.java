@@ -23,13 +23,11 @@ import java.util.HashSet;
 
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.solr.AlfrescoSolrEventListener;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.search.BitDocSet;
-import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
+import org.apache.solr.search.SolrCache;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -50,13 +48,21 @@ public class SolrCachingAuthorityScorer extends AbstractSolrCachingScorer
         // translate reults to leaf docs
         // build ordered doc list
 
+        DocSet answer = (DocSet)searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_AUTHORITY_CACHE, authority);
+        if(answer != null)
+        {
+            return new SolrCachingAuthorityScorer(similarity, answer, reader);
+        }
+        
         HashSet<String> globalReaders = (HashSet<String>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_GLOBAL_READERS);
 
         if (globalReaders.contains(authority))
         {
             // can read all
             OpenBitSet allLeafDocs = (OpenBitSet) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
-            return new SolrCachingAuthorityScorer(similarity, new BitDocSet(allLeafDocs), reader);
+            DocSet toCache = new BitDocSet(allLeafDocs);
+            searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_AUTHORITY_CACHE, authority, toCache);
+            return new SolrCachingAuthorityScorer(similarity, toCache, reader);
         }
 
         DocSet readableDocSet = searcher.getDocSet(new SolrCachingReaderQuery(authority));
@@ -64,7 +70,10 @@ public class SolrCachingAuthorityScorer extends AbstractSolrCachingScorer
         if (globalReaders.contains(PermissionService.OWNER_AUTHORITY))
         {
             DocSet authorityOwnedDocs = searcher.getDocSet(new SolrCachingOwnerQuery(authority));
-            return new SolrCachingAuthorityScorer(similarity, readableDocSet.union(authorityOwnedDocs), reader);
+            
+            DocSet toCache = readableDocSet.union(authorityOwnedDocs);
+            searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_AUTHORITY_CACHE, authority, toCache);
+            return new SolrCachingAuthorityScorer(similarity, toCache, reader);
         }
         else
         {
@@ -74,7 +83,9 @@ public class SolrCachingAuthorityScorer extends AbstractSolrCachingScorer
            
             DocSet docsAuthorityOwnsAndCanRead = ownerReadableDocSet.intersection(authorityOwnedDocs);
             
-            return new SolrCachingAuthorityScorer(similarity, readableDocSet.union(docsAuthorityOwnsAndCanRead), reader);
+            DocSet toCache = readableDocSet.union(docsAuthorityOwnsAndCanRead);
+            searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_AUTHORITY_CACHE, authority, toCache);
+            return new SolrCachingAuthorityScorer(similarity, toCache, reader);
         }
     }
 }

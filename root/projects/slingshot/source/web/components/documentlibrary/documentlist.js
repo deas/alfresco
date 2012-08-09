@@ -2892,7 +2892,7 @@
             {
                Alfresco.logger.debug("HistoryManager: page changed:" + newPage);
                // Update the DocList
-               if (this.currentPage !== newPage)
+               if (this.currentPage != newPage)
                {
                   this._updateDocList.call(this,
                   {
