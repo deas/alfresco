@@ -234,5 +234,10 @@
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-file-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-file-7.5.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-zip-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-zip-7.5.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/mmt-dependencies/truezip-swing-7.5.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-file-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-file-7.5.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-kernel-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-kernel-7.5.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-file-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-file-7.5.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-zip-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-zip-7.5.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/mmt-dependencies/truezip-swing-7.5.5.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

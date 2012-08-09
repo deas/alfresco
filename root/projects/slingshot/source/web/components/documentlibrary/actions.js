@@ -377,6 +377,9 @@
                            {
                               text: this.msg("message.details.success")
                            });
+                           
+                           // Refresh the document list... 
+                           this._updateDocList.call(this); 
                         },
                         scope: this
                      },

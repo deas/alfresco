@@ -625,7 +625,7 @@ Alfresco.util.formatFileSize = function(fileSize)
  * @return {string} The icon name, e.g. doc-file-32.png
  * @static
  */
-Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize)
+Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize, p_fileParentType)
 {
    // Mapping from extn to icon name for cm:content
    var extns = 
@@ -714,6 +714,7 @@ Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize)
 
    var prefix = "generic",
       fileType = typeof p_fileType === "string" ? p_fileType : "cm:content",
+      fileParentType = typeof p_fileParentType === "string" ? p_fileParentType : null,
       iconSize = typeof p_iconSize === "number" ? p_iconSize : 32;
    
    // If type = cm:content, then use extn look-up
@@ -728,7 +729,18 @@ Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize)
    }
    else if (typeof type == "undefined")
    {
-      type = "file";
+      if (fileParentType !== null)
+      {
+         type = Alfresco.util.getFileIcon.types[fileParentType];
+         if (typeof type == "undefined")
+         {
+            type = "file";
+         }
+      }
+      else
+      {
+         type = "file";
+      }
    }
    return prefix + "-" + type + "-" + iconSize + ".png";
 };

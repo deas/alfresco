@@ -124,7 +124,7 @@
             this.widgets.columnbrowser = new YAHOO.extension.ColumnBrowser(parent.id + "-columnbrowser",
             {
                numVisible: 3,
-               rootUrl: Alfresco.constants.PROXY_URI + "api/rootgroups?sortBy=displayName",
+               rootUrl: Alfresco.constants.PROXY_URI + "api/rootgroups?sortBy=displayName&zone=APP.DEFAULT",
                pagination:
                {
                   rowsPerPage: parent.options.maxPageSize,
@@ -2007,8 +2007,9 @@
          {
             this.showAll = state.showAll == "true" ? true : false;
             // reset group browser url
-            var rootUrl = Alfresco.constants.PROXY_URI + "api/rootgroups" +
-               (this.showAll ? "" : "?zone=APP.DEFAULT");
+            var rootUrl = Alfresco.constants.PROXY_URI + "api/rootgroups?sortBy=displayName" +
+               (this.showAll ? "" : "&zone=APP.DEFAULT");
+            this.panelHandlers.searchPanelHandler.widgets.columnbrowser.set("rootUrl", rootUrl);
             this.panelHandlers.searchPanelHandler.widgets.columnbrowser.load([rootUrl] , true);
          }
          

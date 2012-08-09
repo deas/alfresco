@@ -221,6 +221,9 @@
                <!-- tags and categories -->
                <show id="cm:taggable" for-mode="edit" force="true" />
                <show id="cm:categories" />
+
+               <!-- emailserver:aliasable aspect -->
+               <show id="emailserver:alias" />
             </field-visibility>
             <appearance>
                <field id="cm:name">

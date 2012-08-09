@@ -2320,7 +2320,7 @@
        */
       getIconURL: function ObjectRenderer_getIconURL(item, size)
       {
-         return Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(item.name, item.type, size);
+         return Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(item.name, item.type, size, item.parentType);
       },
       
       /**
