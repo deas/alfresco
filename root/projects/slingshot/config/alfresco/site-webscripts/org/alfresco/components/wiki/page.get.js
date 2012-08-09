@@ -98,7 +98,7 @@ function main()
       }
    };
    
-   if (!model.result.pagetext && !model.result.message)
+   if (model.result.message != null)
    {
       wikiPage.options.error = true;
    }
