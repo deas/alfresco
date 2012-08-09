@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
  /**
  * HistoricPropertiesViewer component.
  *
@@ -25,17 +25,17 @@
  * @namespace Alfresco.module
  * @class Alfresco.module.HistoricPropertiesViewer
  */
- 
+
 (function()
 {
-   
+
    /**
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-         Event = YAHOO.util.Event, 
+         Event = YAHOO.util.Event,
          KeyListener = YAHOO.util.KeyListener;
-   
+
    /**
     * HistoricPropertiesViewer constructor.
     *
@@ -65,7 +65,7 @@
       Alfresco.util.YUILoaderHelper.require(["button", "container"], this.onComponentsLoaded, this);
 
       return this;
-      
+
    };
 
    Alfresco.module.HistoricPropertiesViewer.prototype =
@@ -97,21 +97,21 @@
       /**
        *  A local cache of the document version response
        *  this is retrieved during set up & updated on each show
-       *  
+       *
        *  @property versions
        *  @type array
        */
       versions: [],
-      
+
       /**
        * A reference to the earliest version.
        * Set when creating the dropdown menu
-       * 
+       *
        * @property earliestVersion
        * @type object
        */
       earliestVersion: {},
-      
+
       /**
        * Object container for storing YUI widget and HTMLElement instances.
        *
@@ -119,7 +119,7 @@
        * @type object
        */
       widgets: {},
-      
+
       /**
        * Fired by YUILoaderHelper when required component script files have
        * been loaded into the browser.
@@ -157,19 +157,19 @@
          {
              throw new Error("A nodeRef, filename and version must be provided");
          }
-         
+
          // Read versions from cache
          var documentVersions = Alfresco.util.ComponentManager.findFirst("Alfresco.DocumentVersions");
          if (documentVersions) {
             this.versions = documentVersions.versionCache;
          }
-         
+
          // Check if the dialog has been showed before
          if (this.widgets.panel)
          {
             // It'll need updating, probably.
             this.update(this.showConfig.nodeRef);
-            
+
             // The displaying.
             this._showPanel();
          }
@@ -187,7 +187,7 @@
                failureMessage: "Could not load html template for properties viewer",
                execScripts: true
             });
-            
+
             // Register the ESC key to close the dialog
             this.widgets.escapeListener = new KeyListener(document,
             {
@@ -197,10 +197,10 @@
                fn: this.onCancelButtonClick,
                scope: this,
                correctScope: true
-            }); 
-            
+            });
+
          }
-                  
+
       },
 
       /**
@@ -216,10 +216,10 @@
          // Inject the template from the XHR request into a new DIV element
          var containerDiv = document.createElement("div");
          containerDiv.innerHTML = response.serverResponse.responseText;
-               
+
          var dialogDiv = YAHOO.util.Dom.getFirstChild(containerDiv);
 
-         // Create the panel from the HTML returned in the server reponse         
+         // Create the panel from the HTML returned in the server reponse
          this.widgets.panel = Alfresco.util.createYUIPanel(dialogDiv);
 
          // Create menu button:
@@ -231,97 +231,97 @@
          this.widgets.formContainer = Dom.get(this.id + "-properties-form");
 
          // Set up Nav events:
-         navEls = Dom.getElementsByClassName("historic-properties-nav", "a", this.id + "-dialog")
+         navEls = Dom.getElementsByClassName("historic-properties-nav", "a", this.id + "-dialog");
          Event.addListener(navEls[0], "click", this.onNavButtonClick, this, true);
          Event.addListener(navEls[1], "click", this.onNavButtonClick, this, true);
          this.updateNavState();
-         
+
          // Load Form content
          this.loadProperties();
-         
+
          // Show panel
          this._showPanel();
-         
+
       },
 
       /**
-       * 
+       *
        * Fired when the option in the dropdown version menu is changed
-       * 
+       *
        * @method onVersionMenuChange
-       * 
+       *
        */
       onVersionMenuChange: function HPV_onVersionMenuChange(sType, aArgs, p_obj)
       {
          var domEvent = aArgs[0],
             eventTarget = aArgs[1],
             newNodeRef = eventTarget.value;
-         
+
          // Update the display:
          this.update(newNodeRef);
       },
-      
+
       /**
-       * 
+       *
        * This function updates the display, menu and config with a new NodeRef.
-       * 
+       *
        * @method update
-       * 
+       *
        */
       update: function HPV_update(newNodeRef)
       {
          if (newNodeRef) {
-         
+
             // Update Config Node Ref.
             this.showConfig.nodeRef = newNodeRef;
 
             // Update the properties display
             this.loadProperties();
-            
+
             // Update the Menu
             this.setMenuTitle();
-            
+
             // Update the Navigation
             this.updateNavState();
          }
       },
-      
+
       /**
-       * 
+       *
        * Determines if the Next and Previous buttons should be enabled.
        * Buttons are disabled by added a disabled class to them
-       * 
+       *
        * @method updateNavState
-       * 
+       *
        */
-      updateNavState: function HPV_updateNavState() 
+      updateNavState: function HPV_updateNavState()
       {
          var navEls = Dom.getElementsByClassName("historic-properties-nav", "a", this.id + "-dialog");
-         
+
          // Start from a known state, default = enabled.
          Dom.removeClass(navEls, "disabled");
-         
+
          if (this.showConfig.nodeRef === this.earliestVersion.nodeRef)
          {
             // At earliest, so disable the previous button
             Dom.addClass(navEls[0], "disabled");
          }
          else if (this.showConfig.nodeRef === this.showConfig.latestVersion.nodeRef)
-         {   
+         {
             // at latest, so disable the next button.
             Dom.addClass(navEls[1], "disabled");
          }
       },
-      
+
       /**
-       * 
+       *
        * Instantiates a YUI Menu Button & Writes the Menu HTML for it.
-       * 
+       *
        * @method createMenu
        * @param {HTMLElement} The containing element for the Version History Dialogue
-       * 
+       *
        */
-      
+
       createMenu: function HPV_createMenu(dialogDiv)
       {
          var menuContainer = Dom.get(this.id + "-versionNav-menu"),
@@ -332,12 +332,16 @@
                {
                   "0": this.showConfig.latestVersion.label
                }),
-            i, menuHTML, menuTitle,
-               
-         
+            i, menuHTML = [], menuTitle;
+
+
          // Write HTML for menu & add current version and option groups to menu:
-         menuHTML = "<option value='" + this.showConfig.latestVersion.nodeRef + "' title='" + currentTitle + "'>" + currentTitle + "</option>";
-         
+         menuHTML.push(
+         {
+            value: this.showConfig.latestVersion.nodeRef,
+            text: currentTitle
+         });
+
          // Add an option element for each of the previous versions
          for (i in this.versions) {
             var version = this.versions[i],
@@ -345,28 +349,38 @@
                   {
                      "0": version.label
                   });
-            
+
             // Check if this version is the earliest available
-            if (parseInt(i, 10) === this.versions.length - 1) 
+            if (parseInt(i, 10) === this.versions.length - 1)
             {
                this.earliestVersion = version;
             }
-            
-            menuHTML += "<option value='" + version.nodeRef + "' title='" + title + "'>" + title + "</option>"
+
+            menuHTML.push(
+            {
+               value: version.nodeRef,
+               text: title
+            });
             if (version.nodeRef === this.showConfig.nodeRef) {
                menuTitle = title;
             }
          }
-         
-         menuContainer.innerHTML = menuHTML;
-         
+
+         for (var i = 0; i < menuHTML.length; i++)
+         {
+            var option = document.createElement("option");
+            option.text = menuHTML[i].text;
+            option.value = menuHTML[i].value;
+            menuContainer.add(option);
+         }
+
          // Instantiate the Menu
          this.widgets.versionMenu = new Alfresco.util.createYUIButton(this, "versionNav-button", this.onVersionMenuChange, {
             type: "menu",
             menu: menuContainer,
             lazyloadmenu: false
-         })
-         
+         });
+
          // Set the menu title:
          this.setMenuTitle(menuTitle);
 
@@ -380,32 +394,32 @@
          Dom.insertBefore(currentVersionHeader, firstLI);
          Dom.insertAfter(previousVersionHeader, firstLI);
       },
-      
+
       /**
-       * 
+       *
        * @method getVersion
        * @param {string} - either "previous", "next", or a version label
        * @return {string} - nodeRef to the specified version
        */
-      getVersionNodeRef: function HPV_getVersionNodeRef(returnLabel) 
+      getVersionNodeRef: function HPV_getVersionNodeRef(returnLabel)
       {
-         var visibleNodeRef = this.showConfig.nodeRef, 
+         var visibleNodeRef = this.showConfig.nodeRef,
             i, returnNodeRef, visibleIndex, returnIndex;
-         
+
          // Latest version isn't in the versions array, so default visibleIndex to -1 to allow the maths below to work
          visibleIndex = -1;
-         
+
          // find the index of the version we're showing at the moment:
          for (i in this.versions) {
               if (this.versions[i].nodeRef === visibleNodeRef) {
-                 visibleIndex = i;  
+                 visibleIndex = i;
               }
-              // While we're looping through, check to see if we were passed in a label. 
+              // While we're looping through, check to see if we were passed in a label.
               if (this.versions[i].label === returnLabel) {
-                 returnIndex = i;  
+                 returnIndex = i;
               }
          }
-         
+
          if (returnLabel === this.showConfig.latestVersion.label) {
             return this.showConfig.latestVersion.nodeRef;
          }
@@ -416,20 +430,20 @@
          else if (returnLabel === "previous") {
             returnIndex = parseInt(visibleIndex, 10) + 1
          }
-         
+
          // Treat current version specially: -1 = current version
-         if (returnIndex === -1) 
+         if (returnIndex === -1)
          {
             return this.showConfig.latestVersion.nodeRef;
          }
-         
+
          returnVersion = this.versions[returnIndex]
          if (typeof(returnVersion) !== "undefined") {
             returnNodeRef = returnVersion.nodeRef;
-            return returnNodeRef;  
+            return returnNodeRef;
          }
       },
-      
+
       /**
        * Fired when the user clicks the cancel button.
        * Closes the panel.
@@ -441,38 +455,39 @@
       {
          // Hide the panel
          this.widgets.panel.hide();
-         
+
          // Disable the Esc key listener
          this.widgets.escapeListener.disable();
 
       },
 
       /**
-       * 
+       *
        * Triggered by the user clicking on the Next or Previous navigation buttons.
-       * 
+       *
        * @method onNavButtonClick
-       * 
+       *
        */
       onNavButtonClick: function HPV_onNavButtonClick(event, p_obj)
       {
-         var dir = event.target.rel,
+         var target = Event.getTarget(event),
+            dir = target.rel,
             newNodeRef = this.getVersionNodeRef(dir);
-         
-         if (!Dom.hasClass(event.target, "disabled")) 
+
+         if (!Dom.hasClass(target, "disabled"))
          {
             this.update(newNodeRef);
          }
          //prevent the default action.
-         event.preventDefault();
+         Event.preventDefault(event);
       },
-      
+
       /**
-       * 
+       *
        * Trigger an AJAX request to load the properties via the forms service
-       * 
+       *
        * @method loadProperties
-       * 
+       *
        */
       loadProperties: function HPV_loadProperties(){
          Alfresco.util.Ajax.request(
@@ -485,62 +500,62 @@
                   },
                   failureMessage: "Could not version properties",
                   execScripts: true
-               });   
+               });
       },
-      
+
       /**
-       * 
+       *
        * Updates the title on the dropdown box with the current version number.
-       * 
+       *
        * @method setMenuTitle
        */
       setMenuTitle: function HPV_setMenuTitle(title){
          var label, i;
-         
+
          // If the title hasn't been passed, we'll need to find it from the currentNodeRef.
          if (!title) {
             if (this.showConfig.nodeRef === this.showConfig.latestVersion.nodeRef) {
-               label = this.showConfig.latestVersion.label
-               
+               label = this.showConfig.latestVersion.label;
+
                title = Alfresco.util.message("historicProperties.menu.title.latest", this.name,
                      {
                         "0": label
                      });
-               
+
             }
-            else 
+            else
             {
                for (i in this.versions) {
                   if (this.versions[i].nodeRef === this.showConfig.nodeRef) {
-                     label = this.versions[i].label;  
+                     label = this.versions[i].label;
                   }
                }
-               
+
                title = Alfresco.util.message("historicProperties.menu.title", this.name,
                      {
                         "0": label
                      });
-               
+
             }
          }
-         
+
          // Set the title.
          this.widgets.versionMenu.set("label", title);
-         
+
       },
-      
+
       /**
-       * 
+       *
        * Fired when loadProperties successfully returns
        * Loads the results of the AJAX call into the HTML element we grabbed a reference to earlier
-       * 
+       *
        * @method onPropertiesLoaded
-       * 
+       *
        */
       onPropertiesLoaded: function HPV_onPropertiesLoaded(response){
          this.widgets.formContainer.innerHTML = response.serverResponse.responseText;
       },
-      
+
       /**
        * Adjust the gui according to the config passed into the show method.
        *
@@ -574,7 +589,7 @@
 
          // Enable the Esc key listener
          this.widgets.escapeListener.enable();
-         
+
          // Show the panel
          this.widgets.panel.show();
       }
@@ -586,4 +601,3 @@ Alfresco.module.getHistoricPropertiesViewerInstance = function()
    var instanceId = "alfresco-historicPropertiesViewer-instance";
    return Alfresco.util.ComponentManager.get(instanceId) || new Alfresco.module.HistoricPropertiesViewer(instanceId);
 }
- 
