@@ -367,7 +367,7 @@
          <list>
             <ref bean="evaluator.doclib.action.googleDocsEnabled" />
             <ref bean="evaluator.doclib.action.googleDocsEditableAspect" />
-            <ref bean="evaluator.doclib.action.notWorkingCopy" />
+            <ref bean="evaluator.doclib.action.isNotWorkingCopy" />
             <ref bean="evaluator.doclib.action.notCheckedOutAspect" />
          </list>
       </property>

@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.alfresco.web.site.servlet.MTAuthenticationFilter;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.RequestContextUtil;
+import org.springframework.extensions.surf.ServletUtil;
 import org.springframework.extensions.surf.WebFrameworkServiceRegistry;
 import org.springframework.extensions.surf.exception.UserFactoryException;
 import org.springframework.extensions.surf.mvc.AbstractWebFrameworkInterceptor;
@@ -63,6 +64,7 @@ public class UserDashboardInterceptor extends AbstractWebFrameworkInterceptor
                 try
                 {
                     // init the user object so we can test the current user ID against the page uri
+                    ServletUtil.setRequest(req);
                     RequestContextUtil.populateRequestContext(rc, req);
                     final String userid = rc.getUserId();
                     

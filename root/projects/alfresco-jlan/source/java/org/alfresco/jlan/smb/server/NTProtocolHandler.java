@@ -1139,6 +1139,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				PCShare share = new PCShare(uncPath);
 				shareName = share.getShareName();
 				hostName = share.getNodeName();
+				m_sess.setShareHostName(hostName);
 			}
 			catch (InvalidUNCPathException ex) {
 				m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTInvalidParameter, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
@@ -7587,9 +7588,9 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 		}
 		else {
 
-			// Send back an error, security descriptors not supported
-
-			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.SRVNonSpecificError, SMBStatus.ErrSrv);
+			// Return a success response
+			
+			m_sess.sendSuccessResponseSMB( smbPkt);
 		}
 	}
 

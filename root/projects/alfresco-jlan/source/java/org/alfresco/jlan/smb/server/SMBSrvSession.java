@@ -183,6 +183,10 @@ public class SMBSrvSession extends SrvSession implements Runnable {
 	
 	private boolean m_asyncRead;
 	
+	// Client used this hostname or ip address to mount the network drive
+
+    private String m_shareHostName;
+
 	/**
 	 * Class constructor.
 	 * 
@@ -2146,4 +2150,22 @@ public class SMBSrvSession extends SrvSession implements Runnable {
     {
         return true;
     }
+
+	/**
+	 * Set the hostname the client used to mount a network drive
+	 * 
+	 * @param inProgress boolean
+	 */
+	public void setShareHostName(String hostName) {
+		m_shareHostName = hostName;
+	}
+
+	/**
+	 * Get the hostname the client used to mount a network drive
+	 * 
+	 * @param inProgress boolean
+	 */
+	public String getShareHostName() {
+		return m_shareHostName;
+	}
 }

@@ -1,5 +1,5 @@
 ﻿msgid "${product_fullname} OpenOffice Service"
-msgstr "${product_fullname} OpenOfficeサービス"
+msgstr "${product_fullname} LibreOfficeサービス"
 
 msgid "${product_fullname} Service"
 msgstr "${product_fullname}サービス"
@@ -182,7 +182,7 @@ msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "Alfrescoモジュールパッケージ(AMP)をインストールしています"
 
 msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "OpenOfficeを${OpenOfficeUniqueServiceName}という名前のWindowsサービスとしてインストールしています"
+msgstr "LibreOfficeを${OpenOfficeUniqueServiceName}という名前のWindowsサービスとしてインストールしています"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "PostgreSQLを${postgres_unique_service_name}という名前のWindowsサービスとしてインストールしています"
@@ -242,19 +242,19 @@ msgid "Open SSL Component"
 msgstr "SSLコンポーネントを開く"
 
 msgid "OpenOffice"
-msgstr "OpenOffice"
+msgstr "LibreOffice"
 
 msgid "OpenOffice Server Port"
-msgstr "OpenOfficeサーバーのポート"
+msgstr "LibreOfficeサーバーのポート"
 
 msgid "OpenOffice Server port"
-msgstr "OpenOfficeサーバーのポート"
+msgstr "LibreOfficeサーバーのポート"
 
 msgid "OpenOffice installation directory"
-msgstr "OpenOfficeのインストールディレクトリ"
+msgstr "LibreOfficeのインストールディレクトリ"
 
 msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "OpenOffice.orgは、ワープロ、表計算、プレゼンテーション、グラフィックス、データベースなど、ドキュメントの加工に必要なオフィスソフトウェアがすべて揃ったオープンソースのマルチプラットフォームです。"
+msgstr "LibreOfficeは、ワープロ、表計算、プレゼンテーション、グラフィックス、データベースなど、ドキュメントの加工に必要なオフィスソフトウェアがすべて揃ったオープンソースのマルチプラットフォームです。"
 
 msgid "Parameters"
 msgstr "パラメータ"
@@ -293,7 +293,7 @@ msgid "Please enter the port of your database."
 msgstr "データベースのポートを入力してください"
 
 msgid "Please enter the port that the Openoffice Server will listen to by default."
-msgstr "OpenOFFICEサーバーがデフォルトでリッスンするポートを入力してください。"
+msgstr "LibreOFFICEサーバーがデフォルトでリッスンするポートを入力してください。"
 
 msgid "Please enter your database 'postgres' user password."
 msgstr "データベースのPostgreユーザーのパスワードを入力してください。"
@@ -455,7 +455,7 @@ msgid "Start tomcat service"
 msgstr "Tomcatサービスの開始"
 
 msgid "Starting OpenOffice..."
-msgstr "OpenOfficeを開始しています…"
+msgstr "LibreOfficeを開始しています…"
 
 msgid "Starting servers ..."
 msgstr "サーバーを開始しています…"

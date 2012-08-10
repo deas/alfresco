@@ -1,5 +1,5 @@
 ﻿msgid "${product_fullname} OpenOffice Service"
-msgstr "Servizio OpenOffice ${product_fullname}"
+msgstr "Servizio LibreOffice ${product_fullname}"
 
 msgid "${product_fullname} Service"
 msgstr "Servizio ${product_fullname}"
@@ -182,7 +182,7 @@ msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "Installazione dei pacchetti di moduli Alfresco (AMP)"
 
 msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "Installazione di OpenOffice come servizio Windows con il nome ${OpenOfficeUniqueServiceName}"
+msgstr "Installazione di LibreOffice come servizio Windows con il nome ${OpenOfficeUniqueServiceName}"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "Installazione di PostgreSQL come servizio Windows con il nome ${postgres_unique_service_name}"
@@ -242,19 +242,19 @@ msgid "Open SSL Component"
 msgstr "Componente OpenSSL"
 
 msgid "OpenOffice"
-msgstr "OpenOffice"
+msgstr "LibreOffice"
 
 msgid "OpenOffice Server Port"
-msgstr "Porta server OpenOffice"
+msgstr "Porta server LibreOffice"
 
 msgid "OpenOffice Server port"
-msgstr "Porta server OpenOffice"
+msgstr "Porta server LibreOffice"
 
 msgid "OpenOffice installation directory"
-msgstr "Directory di installazione di OpenOffice"
+msgstr "Directory di installazione di LibreOffice"
 
 msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "OpenOffice.org è una suite di software per l'ufficio multipiattaforma e open-source che fornisce strumenti di elaborazione testi, fogli di calcolo, presentazioni, grafica e database per la trasformazione di documenti."
+msgstr "LibreOffice è una suite di software per l'ufficio multipiattaforma e open-source che fornisce strumenti di elaborazione testi, fogli di calcolo, presentazioni, grafica e database per la trasformazione di documenti."
 
 msgid "Parameters"
 msgstr "Parametri"
@@ -293,7 +293,7 @@ msgid "Please enter the port of your database."
 msgstr "Immettere la porta del database."
 
 msgid "Please enter the port that the Openoffice Server will listen to by default."
-msgstr "Immettere la porta di cui il server OpenOffice resterà in ascolto per default."
+msgstr "Immettere la porta di cui il server LibreOffice resterà in ascolto per default."
 
 msgid "Please enter your database 'postgres' user password."
 msgstr "Immettere la password dell'utente 'postgres' del database."
@@ -455,7 +455,7 @@ msgid "Start tomcat service"
 msgstr "Avvia il servizio Tomcat"
 
 msgid "Starting OpenOffice..."
-msgstr "Avvio di OpenOffice in corso..."
+msgstr "Avvio di LibreOffice in corso..."
 
 msgid "Starting servers ..."
 msgstr "Avvio dei server in corso..."

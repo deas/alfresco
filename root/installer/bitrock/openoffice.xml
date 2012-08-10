@@ -74,8 +74,8 @@
             </ruleList>
         </getUniqueWindowsServiceName>
         <setInstallerVariable name="openoffice_execute_abort_action_list" value="1"/>
-        <setInstallerVariable name="openoffice_directory" value="${installdir}/openoffice"/>
-        <setInstallerVariable name="openoffice_directory" value="${installdir}/openoffice.app">
+        <setInstallerVariable name="openoffice_directory" value="${installdir}/libreoffice"/>
+        <setInstallerVariable name="openoffice_directory" value="${installdir}/libreoffice.app">
             <ruleList>
                 <platformTest type="osx" />
             </ruleList>
@@ -117,7 +117,7 @@
                     <program>sc</program>
                     <programArguments>stop ${OpenOfficeUniqueServiceName}</programArguments>
                 </runProgram>
-                <deleteFile path="${installdir}/openoffice"/>
+                <deleteFile path="${installdir}/libreoffice"/>
             </actionList>
             <ruleList>
                 <compareText text="${openoffice_execute_abort_action_list}" value="1"/>
@@ -128,7 +128,7 @@
 <!-- LINUX -->
 <actionGroup>
             <actionList>
-                <deleteFile path="${installdir}/openoffice"/>
+                <deleteFile path="${installdir}/libreoffice"/>
             </actionList>
             <ruleList>
                 <compareText text="${openoffice_execute_abort_action_list}" value="1" logic="equals"/>
@@ -144,8 +144,8 @@
 		    <type>exact</type>
 		    <substitutionList>
 			<substitution>
-			    <pattern>$INSTALLDIR/openoffice/</pattern>
-			    <value>$INSTALLDIR/openoffice.app/</value>
+			    <pattern>$INSTALLDIR/libreoffice/</pattern>
+			    <value>$INSTALLDIR/libreoffice.app/</value>
 			</substitution>
 		    </substitutionList>
 		    <ruleList>
@@ -207,7 +207,7 @@
         <actionGroup>
             <actionList>
                 <substitute>
-                    <files>${installdir}/openoffice/App/openoffice/program/bootstrap.ini</files>
+                    <files>${installdir}/libreoffice/App/libreoffice/program/bootstrap.ini</files>
                     <substitutionList>
                         <substitution pattern="UserInstallation *= *[^\n]*" value="UserInstallation=${openoffice_directory.dos.unix}/settings"/>
                     </substitutionList>

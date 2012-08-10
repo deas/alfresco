@@ -1,5 +1,5 @@
 ﻿msgid "${product_fullname} OpenOffice Service"
-msgstr "${product_fullname} OpenOffice 服务"
+msgstr "${product_fullname} LibreOffice 服务"
 
 msgid "${product_fullname} Service"
 msgstr "${product_fullname} 服务"
@@ -182,7 +182,7 @@ msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "安装 Alfresco Module Package (AMP)"
 
 msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "将 OpenOffice 作为名为 ${OpenOfficeUniqueServiceName} 的 Windows 服务安装"
+msgstr "将 LibreOffice 作为名为 ${OpenOfficeUniqueServiceName} 的 Windows 服务安装"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "将 PostgreSQL 作为名为 ${postgres_unique_service_name} 的 Windows 服务安装"
@@ -242,19 +242,19 @@ msgid "Open SSL Component"
 msgstr "Open SSL 组件"
 
 msgid "OpenOffice"
-msgstr "OpenOffice"
+msgstr "LibreOffice"
 
 msgid "OpenOffice Server Port"
-msgstr "OpenOffice 服务器端口"
+msgstr "LibreOffice 服务器端口"
 
 msgid "OpenOffice Server port"
-msgstr "OpenOffice 服务器端口"
+msgstr "LibreOffice 服务器端口"
 
 msgid "OpenOffice installation directory"
-msgstr "OpenOffice 安装目录"
+msgstr "LibreOffice 安装目录"
 
 msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "OpenOffice.org 是多平台、开源办公软件套件，适用于文字处理、电子表格、演示文稿、图形以及文档转换所需的数据库。"
+msgstr "LibreOffice 是多平台、开源办公软件套件，适用于文字处理、电子表格、演示文稿、图形以及文档转换所需的数据库。"
 
 msgid "Parameters"
 msgstr "参数"
@@ -293,7 +293,7 @@ msgid "Please enter the port of your database."
 msgstr "请输入数据库端口。"
 
 msgid "Please enter the port that the Openoffice Server will listen to by default."
-msgstr "请输入 Openoffice 服务器默认情况下侦听的端口。"
+msgstr "请输入 LibreOffice 服务器默认情况下侦听的端口。"
 
 msgid "Please enter your database 'postgres' user password."
 msgstr "请输入数据库‘postgres’用户密码。"
@@ -455,7 +455,7 @@ msgid "Start tomcat service"
 msgstr "启动 tomcat 服务"
 
 msgid "Starting OpenOffice..."
-msgstr "正在启动 OpenOffice..."
+msgstr "正在启动 LibreOffice..."
 
 msgid "Starting servers ..."
 msgstr "正在启动服务器..."

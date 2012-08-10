@@ -207,7 +207,7 @@ ${alfresco_readme_path}
                         </substitution>
 		                <substitution>
                             <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
-                            <value>${openoffice_directory.dos.unix}/App/openoffice/program/soffice.exe</value>
+                            <value>${openoffice_directory.dos.unix}/App/libreoffice/program/soffice.exe</value>
                             <ruleList>
                                 <platformTest type="windows"/>
                             </ruleList>

@@ -628,6 +628,13 @@
          {
             YAHOO.Bubbling.fire("metadataRefresh");
          }
+         else
+         {
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: this.msg("message.edit-online.office.failure")
+            });		 
+         }
       },
 
       /**

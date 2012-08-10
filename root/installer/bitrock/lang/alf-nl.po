@@ -1,5 +1,5 @@
 msgid "${product_fullname} OpenOffice Service"
-msgstr "${product_fullname} OpenOffice-service"
+msgstr "${product_fullname} LibreOffice-service"
 
 msgid "${product_fullname} Service"
 msgstr "${product_fullname} Service"
@@ -182,7 +182,7 @@ msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "Alfresco-modulepakketten (AMP's) installeren..."
 
 msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "OpenOffice wordt als Windows-service geïnstalleerd met de naam ${OpenOfficeUniqueServiceName}"
+msgstr "LibreOffice wordt als Windows-service geïnstalleerd met de naam ${OpenOfficeUniqueServiceName}"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "PostgreSQL wordt als Windows-service geïnstalleerd met de naam ${postgres_unique_service_name}"
@@ -242,19 +242,19 @@ msgid "Open SSL Component"
 msgstr "SSL-onderdeel openen"
 
 msgid "OpenOffice"
-msgstr "OpenOffice"
+msgstr "LibreOffice"
 
 msgid "OpenOffice Server Port"
-msgstr "OpenOffice-serverpoort"
+msgstr "LibreOffice-serverpoort"
 
 msgid "OpenOffice Server port"
-msgstr "OpenOffice-serverpoort"
+msgstr "LibreOffice-serverpoort"
 
 msgid "OpenOffice installation directory"
-msgstr "OpenOffice-installatiemap"
+msgstr "LibreOffice-installatiemap"
 
 msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "OpenOffice.org is een multi-platform, open-source kantoorsoftwarepakket voor tekstverwerking, spreadsheets, presentaties, afbeeldingen en databases dat benodigd is voor documentconversies."
+msgstr "LibreOffice is een multi-platform, open-source kantoorsoftwarepakket voor tekstverwerking, spreadsheets, presentaties, afbeeldingen en databases dat benodigd is voor documentconversies."
 
 msgid "Parameters"
 msgstr "Parameters"
@@ -293,7 +293,7 @@ msgid "Please enter the port of your database."
 msgstr "Voer de poort voor uw database in."
 
 msgid "Please enter the port that the Openoffice Server will listen to by default."
-msgstr "Voer de poort in die de OpenOffice-server standaard afvraagt."
+msgstr "Voer de poort in die de LibreOffice-server standaard afvraagt."
 
 msgid "Please enter your database 'postgres' user password."
 msgstr "Voer het 'postgres'-gebruikerswachtwoord voor uw database in."
@@ -455,7 +455,7 @@ msgid "Start tomcat service"
 msgstr "Tomcat-service starten"
 
 msgid "Starting OpenOffice..."
-msgstr "OpenOffice starten..."
+msgstr "LibreOffice starten..."
 
 msgid "Starting servers ..."
 msgstr "Servers starten..."

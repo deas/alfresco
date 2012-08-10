@@ -276,14 +276,14 @@
          siteTreeContainerTypes: {},
 
          /**
-          * Sites API
+          * People API
           *
-          * The URL to the API that returns the site listing.
+          * The URL to the API that returns person information
           *
-          * @property sitesAPI
+          * @property peopleAPI
           * @type {String} Absolute URL
           */
-         sitesAPI: Alfresco.constants.PROXY_URI + "api/sites",
+         peopleAPI: Alfresco.constants.PROXY_URI + "api/people",
 
 
          /**
@@ -698,6 +698,7 @@
          
          if (viewMode == DLGF.VIEW_MODE_SITE)
          {
+            Dom.get(this.id + "-treeview").innerHTML = "";
             Dom.removeClass(this.id + "-wrapper", "repository-mode");
             this._populateSitePicker();
          }
@@ -1054,18 +1055,21 @@
             }
             
             // Select current site, or first site retrieved
-            YAHOO.Bubbling.fire("siteChanged",
+            if (firstSite != null)
             {
-               site: (this.options.siteId && this.options.siteId.length > 0) ? this.options.siteId : firstSite.shortName,
-               siteTitle: (this.options.siteId && this.options.siteId.length > 0) ? this.options.siteTitle : firstSite.title,
-               eventGroup: this,
-               scrollTo: true
-            });
+               YAHOO.Bubbling.fire("siteChanged",
+               {
+                  site: (this.options.siteId && this.options.siteId.length > 0) ? this.options.siteId : firstSite.shortName,
+                  siteTitle: (this.options.siteId && this.options.siteId.length > 0) ? this.options.siteTitle : firstSite.title,
+                  eventGroup: this,
+                  scrollTo: true
+               });
+            }
          };
          
          var config =
          {
-            url: this.options.sitesAPI,
+            url: this.options.peopleAPI + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
             responseContentType: Alfresco.util.Ajax.JSON,
             successCallback:
             {
