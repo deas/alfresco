@@ -113,7 +113,7 @@
       <!--
       <repository-url>http://localhost:8080/alfresco</repository-url>
       -->
-      
+
       <!--
          Google Docs™ integration
       -->
@@ -241,6 +241,21 @@
          <indicator id="transferred-node" index="60">
             <evaluator>evaluator.doclib.indicator.transferredNode</evaluator>
          </indicator>
+         <indicator id="cloud-synced" index="70" action="onCloudSyncIndicatorAction">
+            <evaluator>evaluator.doclib.indicator.isSynced</evaluator>
+         </indicator>
+         <indicator id="cloud-sync-failed" index="80" action="onCloudSyncFailedIndicatorAction">
+            <evaluator>evaluator.doclib.indicator.isSyncFailed</evaluator>
+            <override>cloud-synced</override>
+         </indicator>
+         <indicator id="cloud-indirect-sync" index="90" action="onCloudIndirectSyncIndicatorAction">
+            <evaluator>evaluator.doclib.indicator.isIndirectSync</evaluator>
+            <override>cloud-synced</override>
+         </indicator>
+         <indicator id="cloud-indirect-sync-failed" index="90" action="onCloudIndirectSyncFailedIndicatorAction">
+            <evaluator>evaluator.doclib.indicator.isIndirectSyncFailed</evaluator>
+            <override>cloud-sync-failed</override>
+         </indicator>
       </indicators>
 
       <!--
@@ -252,6 +267,8 @@
          <!-- Default (fallback) -->
          <template id="default">
             <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
+            <banner index="20" id="syncTransientError" evaluator="evaluator.doclib.metadata.hasSyncTransientErrorBanner">{syncTransientError}</banner>
+            <banner index="30" id="syncFailed" evaluator="evaluator.doclib.metadata.hasSyncFailedBanner">{syncFailed}</banner>
             <line index="10" id="date">{date}{size}</line>
             <line index="20" id="description" view="detailed">{description}</line>
             <line index="30" id="tags" view="detailed">{tags}</line>
@@ -263,6 +280,8 @@
          <template id="isWorkingCopy">
             <evaluator>evaluator.doclib.metadata.isWorkingCopy</evaluator>
             <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
+            <banner index="20" id="syncTransientError" evaluator="evaluator.doclib.metadata.hasSyncTransientErrorBanner">{syncTransientError}</banner>
+            <banner index="30" id="syncFailed" evaluator="evaluator.doclib.metadata.hasSyncFailedBanner">{syncFailed}</banner>
             <line index="10" id="date">{date}{size}</line>
             <line index="20" id="description" view="detailed">{description}</line>
          </template>
@@ -271,6 +290,8 @@
          <template id="dictionaryModel">
             <evaluator>evaluator.doclib.metadata.isDictionaryModel</evaluator>
             <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
+            <banner index="20" id="syncTransientError" evaluator="evaluator.doclib.metadata.hasSyncTransientErrorBanner">{syncTransientError}</banner>
+            <banner index="30" id="syncFailed" evaluator="evaluator.doclib.metadata.hasSyncFailedBanner">{syncFailed}</banner>
             <line index="10" id="date">{date}</line>
             <line index="20" id="description" view="detailed">{description}</line>
             <line index="30" id="dictionaryModel" simpleView="true">{modelActive label.modelActive}{modelName label.modelName}{modelDescription label.modelDescription}</line>
@@ -280,6 +301,8 @@
          <template id="transferTarget">
             <evaluator>evaluator.doclib.metadata.isTransferTarget</evaluator>
             <banner index="10" id="lockBanner" evaluator="evaluator.doclib.metadata.hasLockBanner">{lockBanner}</banner>
+            <banner index="20" id="syncTransientError" evaluator="evaluator.doclib.metadata.hasSyncTransientErrorBanner">{syncTransientError}</banner>
+            <banner index="30" id="syncFailed" evaluator="evaluator.doclib.metadata.hasSyncFailedBanner">{syncFailed}</banner>
             <line index="10" id="date">{date}</line>
             <line index="20" id="description" view="detailed">{description}</line>
             <line index="30" id="transferTarget" simpleView="true">{trx_enabled label.trx_enabled}{trx_endpointhost label.trx_endpointhost}{trx_endpointport label.trx_endpointport}</line>
@@ -287,12 +310,36 @@
       </metadata-templates>
 
       <!--
-         Create Content menu items
+         Create Content menu items, can be of 3 types matching the usual doclib action config:
+
+         * "link" - accepts a "href" param that will be passed a nodeRef token for substitution, used for external links
+         * "pagelink" - accepts a "page" param that will be passed a nodeRef token for substitution, used for Share links
+         * "javascript" - accepts & "function" param of an action that will get the current folder item as first argument.
+
+         I.e.
+         <content id="plain-text" label="create-content.text" icon="text" type="pagelink">
+            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
+            <permissions>
+               <permission allow="true">SomeUserPermissions</permission>
+            </permissions>
+         </content>
+
+         Note that the "CreateChildren" permission is always required and will disable the entire menu if no granted for a folder.
+
+         Also note that the old/untyped simple config still is allowed, the config snippet below will automatically be
+         converted to a "pagelink" as in the example above.
+         <content id="plain-text" label="create-content.text" icon="text" itemid="cm:content" mimetype="text/plain" permission="SomeUserPermissions"/>
       -->
       <create-content>
-         <content id="plain-text" mimetype="text/plain" label="create-content.text" itemid="cm:content" icon="text"/>
-         <content id="html" mimetype="text/html"  label="create-content.html" itemid="cm:content"/>
-         <content id="xml" mimetype="text/xml" label="create-content.xml" itemid="cm:content"/>
+         <content id="plain-text" label="create-content.text" type="pagelink" index="10" icon="text">
+            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
+         </content>
+         <content id="html" label="create-content.html" type="pagelink" index="20">
+            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/html</param>
+         </content>
+         <content id="xml" label="create-content.xml" type="pagelink" index="30">
+            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/xml</param>
+         </content>
       </create-content>
 
       <create-content-by-template>true</create-content-by-template>
@@ -656,6 +703,38 @@
             <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
+         <!-- Cloud Sync: Create -->
+         <action id="document-cloud-sync" type="javascript" label="actions.document.cloud-sync">
+            <param name="function">onActionCloudSync</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>evaluator.doclib.action.isSyncable</evaluator>
+         </action>
+
+         <!-- Cloud Sync: Delete -->
+         <action id="document-cloud-unsync" type="javascript" label="actions.document.cloud-unsync">
+            <param name="function">onActionCloudUnsync</param>
+            <permissions>
+               <permission allow="true">Delete</permission>
+            </permissions>
+            <evaluator>evaluator.doclib.action.isUnsyncable</evaluator>
+            <override>document-cloud-sync</override>
+         </action>
+
+         <!-- Cloud Sync: View In Cloud -->
+         <action id="document-view-in-cloud" type="link" label="actions.document.view-in-cloud">
+            <param name="href">{cloudViewUrl}</param>
+            <param name="target">_blank</param>
+            <evaluator>evaluator.doclib.action.isSyncedFromLocal</evaluator>
+         </action>
+         
+         <!-- Cloud Sync: Request Sync -->
+         <action id="document-request-sync" type="javascript" label="actions.document.request-sync">
+            <param name="function">onActionCloudSyncRequest</param>
+            <evaluator>evaluator.doclib.action.isSyncedFromLocal</evaluator>
+         </action>
+
       </actions>
 
 
@@ -694,6 +773,10 @@
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
             <action index="320" id="document-view-in-source-repository" />
+            <action index="330" id="document-cloud-sync" />
+            <action index="340" id="document-cloud-unsync" />
+            <action index="350" id="document-view-in-cloud" />
+            <action index="360" id="document-request-sync"/>
          </actionGroup>
 
          <actionGroup id="document-details">
@@ -723,6 +806,10 @@
             <action index="330" id="document-view-in-source-repository" />
             <action index="340" id="document-publish" />
             <action index="350" id="document-view-googlemaps" />
+            <action index="360" id="document-cloud-sync" />
+            <action index="370" id="document-cloud-unsync" />
+            <action index="380" id="document-view-in-cloud" />
+            <action index="390" id="document-request-sync"/>
          </actionGroup>
 
          <actionGroup id="folder-browse">
@@ -739,6 +826,10 @@
             <action index="200" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="210" id="document-manage-aspects" label="actions.folder.manage-aspects" />
             <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
+            <action index="360" id="document-cloud-sync" />
+            <action index="370" id="document-cloud-unsync" />
+            <action index="380" id="document-view-in-cloud" />
+            <action index="390" id="document-request-sync"/>
          </actionGroup>
 
          <actionGroup id="folder-details">
@@ -755,6 +846,10 @@
             <action index="200" id="document-change-type" label="actions.folder.change-type" />
             <action index="210" id="view-in-explorer" />
             <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
+            <action index="360" id="document-cloud-sync" />
+            <action index="370" id="document-cloud-unsync" />
+            <action index="380" id="document-view-in-cloud" />
+            <action index="390" id="document-request-sync"/>
          </actionGroup>
 
          <actionGroup id="document-link-browse">

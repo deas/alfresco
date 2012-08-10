@@ -507,7 +507,7 @@ var DocList =
    getAllIndicators: function getAllIndicators()
    {
       var scopedRoot = config.scoped["DocumentLibrary"]["indicators"],
-         configs, indicators = {}, indicatorConfig, indicatorId, indicatorIndex, indicator, indicatorParamConfig;
+         configs, indicators = {}, indicatorConfig, indicatorId, indicatorIndex, indicatorAction, indicator, indicatorParamConfig;
 
       try
       {
@@ -532,6 +532,7 @@ var DocList =
                   DocList.fnAddIfNotNull(indicator, DocList.getEvaluatorConfig(indicatorConfig), "evaluators");
                   DocList.fnAddIfNotNull(indicator, DocList.getLabelParamConfig(indicatorConfig), "labelParams");
                   DocList.fnAddIfNotNull(indicator, DocList.getOverrideConfig(indicatorConfig), "overrides");
+                  DocList.fnAddIfNotNull(indicator, indicatorConfig.getAttribute("action"), "action");
 
                   indicators[indicatorId] = indicator;
                }

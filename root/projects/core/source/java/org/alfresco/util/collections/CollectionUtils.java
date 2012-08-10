@@ -36,6 +36,7 @@ import org.alfresco.util.Pair;
 
 /**
  * @author Nick Smith
+ * @author Neil Mc Erlean
  * @since 4.0
  */
 public abstract class CollectionUtils
@@ -47,6 +48,108 @@ public abstract class CollectionUtils
             return true;
         }
         return items.isEmpty();
+    }
+    
+    /**
+     * This method merges two sets returning the union of both sets.
+     * 
+     * @param first  first set. can be null.
+     * @param second second set. can be null.
+     * @return the union of both sets. will not be null
+     */
+    public static <T> Set<T> nullSafeMerge(Set<T> first, Set<T> second)
+    {
+        return nullSafeMerge(first, second, false);
+    }
+    
+    /**
+     * This method merges two sets returning the union of both sets.
+     * 
+     * @param first  first set. can be null.
+     * @param second second set. can be null.
+     * @param if the result is empty, should we return null?
+     * @return the union of both sets or null.
+     */
+    public static <T> Set<T> nullSafeMerge(Set<T> first, Set<T> second, boolean emptyResultIsNull)
+    {
+        Set<T> result = new HashSet<T>();
+        
+        if (first != null) result.addAll(first);
+        if (second != null) result.addAll(second);
+        
+        if (result.isEmpty() && emptyResultIsNull)
+        {
+            result = null;
+        }
+        return result;
+    }
+    
+    /**
+     * This method merges two maps returning the union of both maps.
+     * 
+     * @param first  first map. can be null.
+     * @param second second map. can be null.
+     * @return the union of both maps. will not be null
+     */
+    public static <K, V> Map<K, V> nullSafeMerge(Map<K, V> first, Map<K, V> second)
+    {
+        return nullSafeMerge(first, second, false);
+    }
+    
+    /**
+     * This method merges two maps returning the union of both maps.
+     * 
+     * @param first  first map. can be null.
+     * @param second second map. can be null.
+     * @param if the result is empty, should we return null?
+     * @return the union of both maps, or null.
+     */
+    public static <K, V> Map<K, V> nullSafeMerge(Map<K, V> first, Map<K, V> second, boolean emptyResultIsNull)
+    {
+        Map<K, V> result = new HashMap<K, V>();
+        
+        if (first != null) result.putAll(first);
+        if (second != null) result.putAll(second);
+        
+        if (result.isEmpty() && emptyResultIsNull)
+        {
+            result = null;
+        }
+        return result;
+    }
+    
+    /**
+     * This method joins two lists returning the a single list consisting of the first followed by the second.
+     * 
+     * @param first  first list. can be null.
+     * @param second second list. can be null.
+     * @return the concatenation of both lists. will not be null
+     */
+    public static <T> List<T> nullSafeAppend(List<T> first, List<T> second)
+    {
+        return nullSafeAppend(first, second, false);
+    }
+    
+    /**
+     * This method joins two lists returning the a single list consisting of the first followed by the second.
+     * 
+     * @param first  first list. can be null.
+     * @param second second list. can be null.
+     * @param emptyResultIsNull if the result is empty, should we return null?
+     * @return the concatenation of both lists or null
+     */
+    public static <T> List<T> nullSafeAppend(List<T> first, List<T> second, boolean emptyResultIsNull)
+    {
+        List<T> result = new ArrayList<T>();
+        
+        if (first != null) result.addAll(first);
+        if (second != null) result.addAll(second);
+        
+        if (result.isEmpty() && emptyResultIsNull)
+        {
+            result = null;
+        }
+        return result;
     }
     
     public static final Function<Object, String> TO_STRING_TRANSFORMER = new Function<Object, String>()

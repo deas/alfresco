@@ -136,6 +136,20 @@ function main()
       });
    }
 
+function getCloudSignUpColumn()
+{
+   return (
+   {
+      title: "welcome.cloud.sign-up.title",
+      description: "welcome.cloud.sign-up.description",
+      imageUrl: "/res/components/images/help-cloud-bw-64.png",
+      actionMsg: "welcome.cloud.sign-up.link",
+      actionHref: "http://www.alfresco.com/cloud?utm_source=AlfEnt4&utm_medium=anchor&utm_campaign=claimnetwork",
+      actionId: null,
+      actionTarget: "_blank"
+   });
+}
+
    model.showDashlet = true;
 
    // This WebScript will render welcome dashlets for both user and site dashboards, however
@@ -285,6 +299,8 @@ function main()
          }
       }
    }
+
+columns[3] = getCloudSignUpColumn();
 
    model.columns = columns;
    model.dashboardUrl = dashboardUrl;

@@ -29,7 +29,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      Selector = YAHOO.util.Selector;
 
    /**
     * Preferences
@@ -58,7 +59,19 @@
        */
       onReady: function DocSummary_onReady()
       {
-         Alfresco.dashlet.DocSummary.superclass.onReady.apply(this, arguments);
+         // Create Dropdown filter
+         this.widgets.filter = Alfresco.util.createYUIButton(this, "filters", this.onFilterChange,
+         {
+            type: "menu",
+            menu: "filters-menu",
+            lazyloadmenu: false
+         });
+
+         // Select the preferred filter in the ui
+         var filter = this.options.filter;
+         filter = Alfresco.util.arrayContains(this.options.validFilters, filter) ? filter : this.options.validFilters[0];
+         this.widgets.filter.set("label", this.msg("filter." + filter));
+         this.widgets.filter.value = filter;
 
          // Detailed/Simple List button
          this.widgets.simpleDetailed = new YAHOO.widget.ButtonGroup(this.id + "-simpleDetailed");
@@ -67,17 +80,12 @@
             this.widgets.simpleDetailed.check(this.options.simpleView ? 0 : 1);
             this.widgets.simpleDetailed.on("checkedButtonChange", this.onSimpleDetailed, this.widgets.simpleDetailed, this);
          }
-      },
 
-      /**
-       * Generate base webscript url.
-       *
-       * @method getWebscriptUrl
-       * @override
-       */
-      getWebscriptUrl: function SimpleDocList_getWebscriptUrl()
-      {
-         return Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/site/" + Alfresco.constants.SITE + "/documentLibrary?max=50";
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
+
+         // DataTable can now be rendered
+         Alfresco.dashlet.DocSummary.superclass.onReady.apply(this, arguments);
       },
 
       /**
@@ -86,9 +94,30 @@
        * @method getParameters
        * @override
        */
-      getParameters: function DocSummary_getParameters()
+      getParameters: function MyDocuments_getParameters()
       {
-         return "filter=recentlyModified";
+         return "filter=" + this.widgets.filter.value;
+      },
+
+      /**
+       * Filter Change menu handler
+       *
+       * @method onFilterChange
+       * @param p_sType {string} The event
+       * @param p_aArgs {array}
+       */
+      onFilterChange: function MyDocuments_onFilterChange(p_sType, p_aArgs)
+      {
+         var menuItem = p_aArgs[1];
+         if (menuItem)
+         {
+            this.widgets.filter.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.filter.value = menuItem.value;
+
+            this.services.preferences.set(PREFERENCES_DOCSUMMARY_DASHLET_FILTER, this.widgets.filter.value);
+
+            this.reloadDataTable();
+         }
       },
 
       /**

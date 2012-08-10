@@ -4,5 +4,7 @@
       <filter type="recentlyModifiedByMe" />
       <filter type="editingMe" />
       <filter type="favourites" />
+      <filter type="synced" evaluator="syncMode.getValue() != 'OFF'" />
+      <filter type="syncedErrors" evaluator="syncMode.getValue() != 'OFF'" />
    </filters>
 </config>

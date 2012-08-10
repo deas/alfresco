@@ -29,6 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.util.EqualsHelper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -716,8 +719,11 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_TX_ID_BY_DOC_ID, txByDocId);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_TX_ID_BY_DOC_ID, aclTxByDocId);
 
-        globalReaders.add("ROLE_OWNER");
-        globalReaders.add("ROLE_ADMINISTRATOR");
+        // TODO: Make global readers configurable.
+        globalReaders.add(PermissionService.OWNER_AUTHORITY);
+        globalReaders.add(PermissionService.ADMINISTRATOR_AUTHORITY);
+        globalReaders.add(AuthenticationUtil.getSystemUserName());
+        
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_GLOBAL_READERS, globalReaders);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ALL_LEAF_DOCS, allLeafDocs);

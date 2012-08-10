@@ -20,7 +20,8 @@ function widgets()
          hideNavBar : Boolean(model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false"),
          googleDocsEnabled : Boolean(model.googleDocsEnabled != null ? model.googleDocsEnabled : "false"),
          repositoryBrowsing : model.rootNode != null,
-         useTitle : Boolean(useTitle)
+         useTitle : Boolean(useTitle),
+         syncMode : model.syncMode != null ? model.syncMode : ""
       }
    };
    model.widgets = [docListToolbar];

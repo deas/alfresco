@@ -485,7 +485,7 @@
                }
                this.rolePickers[permissions[1]].set("label", msg);
             }
-            else
+            else if (permissions[1] != "GROUP_EVERYONE")
             {
                this.hiddenRoles[permissions[1]] =
                {

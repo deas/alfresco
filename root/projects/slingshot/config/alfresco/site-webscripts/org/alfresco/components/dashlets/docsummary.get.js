@@ -1,5 +1,31 @@
 <import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
 
+function runEvaluator(evaluator)
+{
+   return eval(evaluator);
+}
+
+/* Get filters */
+function getFilters()
+{
+   var myConfig = new XML(config.script),
+      filters = [];
+
+   for each (var xmlFilter in myConfig..filter)
+   {
+      // add support for evaluators on the filter. They should either be missing or eval to true
+      if (xmlFilter.@evaluator.toString() === "" || runEvaluator(xmlFilter.@evaluator.toString()))
+      {
+         filters.push(
+         {
+            type: xmlFilter.@type.toString(),
+            parameters: xmlFilter.@parameters.toString()
+         });
+      }
+   }
+   return filters
+}
+
 /* Max Items */
 function getMaxItems()
 {
@@ -14,6 +40,7 @@ function getMaxItems()
 }
 
 model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.docsummary.dashlet");
+model.filters = getFilters();
 model.maxItems = getMaxItems();
 
 function main()
@@ -23,6 +50,8 @@ function main()
       id : "DocSummary",
       name : "Alfresco.dashlet.DocSummary",
       options : {
+         filter : model.preferences.filter != null ? model.preferences.filter : "recentlyModifiedByMe",
+         validFilters : model.filters,
          simpleView : Boolean(model.preferences.prefSimpleView != null ? model.preferences.prefSimpleView : false), 
          maxItems : parseInt(model.maxItems)
       }

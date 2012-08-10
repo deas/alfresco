@@ -11,12 +11,16 @@ function main()
    
    for each(var xmlFilter in myConfig..filter)
    {
-      filters.push(
+      // add support for evaluators on the filter. They should either be missing or eval to true
+      if (xmlFilter.@evaluator.toString() === "" || runEvaluator(xmlFilter.@evaluator.toString()))
       {
-         id: xmlFilter.@id.toString(),
-         data: xmlFilter.@data.toString(),
-         label: xmlFilter.@label.toString()
-      });
+         filters.push(
+         {
+            id: xmlFilter.@id.toString(),
+            data: xmlFilter.@data.toString(),
+            label: xmlFilter.@label.toString()
+         });
+      }
    }
    
    model.filters = filters;
@@ -29,6 +33,11 @@ function main()
       useMessages : false
    };
    model.widgets = [docListFilter];
+}
+
+function runEvaluator(evaluator)
+{
+   return eval(evaluator);
 }
 
 main();

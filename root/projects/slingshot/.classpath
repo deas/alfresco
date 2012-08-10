@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-cmis-framework-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.context-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/json-simple-1.1.1.jar" sourcepath="/3rd Party/src/json-simple-1.1.1-src.zip"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/json.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-httpclient-3.1.jar" sourcepath="/3rd Party/src/commons-httpclient-3.1-src.zip">
 		<attributes>

@@ -53,6 +53,7 @@
 
       // Decoupled event listeners
       YAHOO.Bubbling.on("filesPermissionsUpdated", this.doRefresh, this);
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
       YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
       
       return this;
@@ -275,6 +276,7 @@
       doRefresh: function FolderActions_doRefresh()
       {
          YAHOO.Bubbling.unsubscribe("filesPermissionsUpdated", this.doRefresh, this);
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh, this);
          this.refresh('components/folder-details/folder-actions?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' : ''));
       }
    }, true);

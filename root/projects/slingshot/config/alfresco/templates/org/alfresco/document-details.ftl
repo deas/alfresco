@@ -27,10 +27,14 @@
             <@region id="document-tags" scope="template"/>
             <@region id="document-links" scope="template"/>
             <@region id="document-metadata" scope="template"/>
+            <@region id="document-sync" scope="template"/>
             <@region id="document-permissions" scope="template"/>
             <@region id="document-workflows" scope="template"/>
             <@region id="document-versions" scope="template"/>
             <@region id="document-publishing" scope="template"/>
+            <#if imapServerEnabled>
+               <@region id="document-attachments" scope="template"/>
+            </#if>
          </div>
       </div>
 

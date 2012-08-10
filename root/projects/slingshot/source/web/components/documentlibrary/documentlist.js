@@ -556,7 +556,19 @@
                label = Alfresco.util.message(indicator.label, scope.name, indicator.labelParams);
                label = Alfresco.util.substituteDotNotation(label, record);
 
-               desc += '<div class="status"><img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" /></div>';
+               desc += '<div class="status">';
+               
+               if (indicator.action)
+               {
+                  desc += '<a class="indicator-action" data-action="' + indicator.action + '">';
+               }
+               
+               desc += '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon + '" title="' + label + '" alt="' + indicator.id + '" />';
+               if (indicator.action)
+               {
+                  desc += '</a>';
+                  desc += '</div>';
+               }
             }
          }
 
@@ -811,6 +823,11 @@
          }
 
          elCell.innerHTML = desc;
+
+         Event.on(Dom.getElementsByClassName("banner-more-info-link", "span", elCell), "click", function showMoreInfoLinkClick(event)
+         {
+            scope.onCloudSyncIndicatorAction(record, event.target)
+         }, {}, scope);
       },
       
       /**
@@ -2540,18 +2557,25 @@
             var properties = record.jsNode.properties,
                bannerUser = properties.lockOwner || properties.workingCopyOwner,
                bannerLink = Alfresco.DocumentList.generateUserLink(this, bannerUser),
+               isContainer = record.jsNode.isContainer,
+               nodeTypePrefix = "details.banner.",
                html = "";
+
+            if (isContainer)
+            {
+               nodeTypePrefix += "folder."
+            }
 
             /* Google Docs Integration */
             if (record.workingCopy && $isValueSet(record.workingCopy.googleDocUrl))
             {
                if (bannerUser.userName === Alfresco.constants.USERNAME)
                {
-                  html = this.msg("details.banner.google-docs-owner", '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + this.msg("details.banner.google-docs.link") + '</a>');
+                  html = this.msg(nodeTypePrefix + "google-docs-owner", '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + this.msg("details.banner.google-docs.link") + '</a>');
                }
                else
                {
-                  html = this.msg("details.banner.google-docs-locked", bannerLink, '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + this.msg("details.banner.google-docs.link") + '</a>');
+                  html = this.msg(nodeTypePrefix + "google-docs-locked", bannerLink, '<a href="' + record.workingCopy.googleDocUrl + '" target="_blank">' + this.msg("details.banner.google-docs.link") + '</a>');
                }
             }
             /* Regular Working Copy handling */
@@ -2559,14 +2583,24 @@
             {
                if (record.workingCopy && bannerUser.userName === Alfresco.constants.USERNAME)
                {
-                  html = this.msg("details.banner." + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
+                  html = this.msg(nodeTypePrefix + (record.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
                }
                else
                {
-                  html = this.msg("details.banner.locked", bannerLink);
+                  html = this.msg(nodeTypePrefix + "locked", bannerLink);
                }
             }
             return html;
+         });
+
+         this.registerRenderer("syncFailed", function(record, label)
+         {
+            return this.msg("details.banner.sync-failed") + '<span class="banner-more-info-link">' + this.msg("details.banner.more-info") + '</span>';
+         });
+
+         this.registerRenderer("syncTransientError", function(record, label)
+         {
+            return this.msg("details.banner.sync-transient-error") + '<span class="banner-more-info-link">' + this.msg("details.banner.more-info") + '</span>';
          });
 
          /**
@@ -3199,6 +3233,22 @@
          // Enable row highlighting
          this.widgets.dataTable.subscribe("rowMouseoverEvent", this.onEventHighlightRow, this, true);
          this.widgets.dataTable.subscribe("rowMouseoutEvent", this.onEventUnhighlightRow, this, true);
+
+         // Enable actions on indicators
+         Event.delegate(this.id, "click", function DL__setupDataTable_onIndicatorAction(event, target)
+         {
+            var action = target.getAttribute("data-action"),
+               record = me.widgets.dataTable.getRecord(target).getData();
+
+            // Look for method in Alfresco.DocumentList or Global scopes & call it with the record as the only param
+            if (YAHOO.lang.isFunction(me[action]))
+            {
+               me[action].call(me, record, target);
+            } else if (YAHOO.lang.isFunction(window[action]))
+            {
+               window[action](record, target);
+            }
+         }, "a.indicator-action");
 
          // Feature detection for drag and drop support (by not attempting to attach the drag events
          // to anything we can prevent attempted uploads happening - this is particularly important
@@ -4746,7 +4796,7 @@
                      YAHOO.Bubbling.fire("deactivateAllControls");
                   }
 
-                  var fnAfterFailedUpdate = function DL__uDL_failureHandler_fnAfterUpdate(responseMsg)
+                  var fnAfterFailedUpdate = function DL__uDL_failureHandler_fnAfterUpdate(responseMsg, responseStatus)
                   {
                      return function DL__uDL_failureHandler_afterUpdate()
                      {
@@ -4756,11 +4806,18 @@
                         });
                         this.widgets.paginator.render();
                         this.widgets.dataTable.set("MSG_ERROR", responseMsg);
-                        this.widgets.dataTable.showTableMessage(responseMsg, YAHOO.widget.DataTable.CLASS_ERROR);
+                        if (responseStatus === 410)
+                        {
+                           this.widgets.dataTable.showTableMessage(responseMsg, YAHOO.widget.DataTable.CLASS_DISABLED);
+                        }
+                        else
+                        {
+                           this.widgets.dataTable.showTableMessage(responseMsg, YAHOO.widget.DataTable.CLASS_ERROR);
+                        }
                      };
                   };
 
-                  this.afterDocListUpdate.push(fnAfterFailedUpdate(YAHOO.lang.JSON.parse(oResponse.responseText).message));
+                  this.afterDocListUpdate.push(fnAfterFailedUpdate(YAHOO.lang.JSON.parse(oResponse.responseText).message, oResponse.status));
                   this.widgets.dataTable.initializeTable();
                   this.widgets.dataTable.render();
                   this.listUpdated = false;

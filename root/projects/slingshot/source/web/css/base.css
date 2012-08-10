@@ -615,6 +615,15 @@ textarea.wide
    -webkit-box-shadow: 0 0 10px #000;
 }
 
+.bd .balloon a,
+.bd .balloon a:link,
+.bd .balloon a:visited,
+.bd .balloon a:hover,
+.bd .balloon a:active
+{
+   color: white;
+}
+
 /* Mac/Firefox 3.6 fix override */
 .prevent-scrollbars
 {
@@ -657,6 +666,34 @@ textarea.wide
 .balloon .text ul li
 {
    list-style: disc;
+}
+
+.info-balloon
+{
+   background: none repeat scroll 0 0 #FFFFFF;
+   border: 1px solid #808080;
+   border-radius: 10px 10px 10px 10px;
+   box-shadow: 0 0 10px #000000;
+   color: #333333;
+   left: 50px;
+   margin: 1em 10px 15px;
+   padding: 15px;
+   position: relative;
+   top: 180px;
+}
+
+.info-balloon-arrow
+{
+   border-style: none;
+}
+
+.info-balloon .closeButton
+{
+   background: url("../themes/default/images/sprite.png") no-repeat scroll 0 -300px transparent;
+   cursor: pointer;
+   float: right;
+   text-indent: -999em;
+   width: 25px;
 }
 
 .yui-resize div.yui-resize-handle-b

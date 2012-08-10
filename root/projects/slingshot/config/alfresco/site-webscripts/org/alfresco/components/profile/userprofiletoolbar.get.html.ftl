@@ -41,6 +41,8 @@
          <div class="link"><a href="following" <#if activePage=="following">class="activePage theme-color-4"</#if>>${msg("link.otherfollowing")} (${following})</a></div>
             </#if>
          </#if>
+         <div class="separator">&nbsp;</div>
+         <div class="link"><a href="user-cloud-auth" <#if activePage=="user-cloud-auth">class="activePage theme-color-4"</#if>>${msg("link.cloud-auth")}</a></div>
       </div>
    </@>
 </@>

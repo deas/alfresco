@@ -23,3 +23,15 @@
    border: 1px solid #2b6eb5;
    text-decoration: none;
 }
+
+.requestDeleteRemote-checkBox
+{
+   margin-top: 10px;
+}
+
+.requestDeleteRemote-text
+{
+   position: relative;
+   right: -5px;
+   top: -2px;
+}

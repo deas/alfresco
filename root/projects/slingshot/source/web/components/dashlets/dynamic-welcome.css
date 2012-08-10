@@ -36,76 +36,90 @@ div.dashlet.dynamic-welcome
 
 .welcome-info h1
 {
-    font-size: 187%;
-    font-weight: normal;
-    margin-bottom: 0;
-    letter-spacing: -0.7px;
+   font-size: 187%;
+   font-weight: normal;
+   margin-bottom: 0;
+   letter-spacing: -0.7px;
 }
 
 .welcome-info h2
 {
-    font-size: 138.5%;
-    margin-bottom: 18px;
-    font-weight: normal;
+   font-size: 138.5%;
+   margin-bottom: 18px;
+   font-weight: normal;
 }
 
 .welcome-info-text
 {
-    font-size: 108%;
-    margin-top: 0px;
-    margin-bottom: 12px;
-}
-
-.welcome-left-container
-{
-    clear: left;
-    float: left;
-    overflow: hidden;
-    width: 100%;
-}
-
-.welcome-middle-container
-{
-    clear: left;
-    float: left;
-    position: relative;
-    right: 33%;
-    width: 100%;
-    border-right: solid 1px #FFEA5B;
+   font-size: 108%;
+   margin-top: 0px;
+   margin-bottom: 12px;
 }
 
 .welcome-right-container
 {
-    float: left;
-    position: relative;
-    right: 33%;
-    width: 100%;
-    border-right: solid 1px #FFEA5B;
+   clear: left;
+   float: left;
+   width: 100%;
+   overflow: hidden;
+}
+
+.welcome-middle-right-container
+{
+   clear: left;
+   float: left;
+   width: 100%;
+   position: relative;
+   right: 25%;
+   border-right: solid 1px #FFEA5B;
+}
+
+.welcome-middle-left-container
+{
+   clear: left;
+   float: left;
+   width: 100%;
+   position: relative;
+   right: 25%;
+   border-right: solid 1px #FFEA5B;
+}
+
+.welcome-left-container
+{
+   float: left;
+   width: 100%;
+   position: relative;
+   right: 25%;
+   border-right: solid 1px #FFEA5B;
 }
 
 .welcome-details-column
 {
    float: left;
-   height: 100%;
-   width: 29%;
-   margin-right: 5px;
+   width: 21%;
    position: relative;
+   left: 77%;
    overflow: hidden;
 }
 
 .welcome-details-column-0
 {
-   left: 67.5%;
+   left: 77%;
 }
 
 .welcome-details-column-1
 {
-    left: 73%;
+   left: 81%;
 }
 
 .welcome-details-column-2
 {
-    left: 77%;
+   left: 85%;
+}
+
+.welcome-details-column-3
+{
+   left: 89%;
 }
 
 .welcome-details-column-image

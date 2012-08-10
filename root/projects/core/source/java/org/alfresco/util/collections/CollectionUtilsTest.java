@@ -18,13 +18,17 @@
  */
 package org.alfresco.util.collections;
 
+import static org.alfresco.util.collections.CollectionUtils.nullSafeMerge;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,14 +38,48 @@ import org.junit.Test;
  */
 public class CollectionUtilsTest
 {
+    private static Set<String>          stooges;
+    
+    private static Map<String, Integer> primes;
+    private static Map<String, Integer> squares;
+    private static Map<String, Integer> nullMap;
+    
+    @Before public void initData()
+    {
+        stooges = new HashSet<String>();
+        stooges.add("Larry");
+        stooges.add("Curly");
+        stooges.add("Moe");
+        
+        primes = new HashMap<String, Integer>();
+        primes.put("two", 2);
+        primes.put("three", 3);
+        primes.put("five", 5);
+        
+        squares = new HashMap<String, Integer>();
+        squares.put("one", 1);
+        squares.put("two", 4);
+        squares.put("three", 9);
+    }
+    
     @Test public void varArgsAsSet()
     {
-        Set<String> expectedSet = new HashSet<String>();
-        expectedSet.add("Larry");
-        expectedSet.add("Curly");
-        expectedSet.add("Moe");
+        assertEquals(stooges, CollectionUtils.asSet(String.class, "Larry", "Curly", "Moe"));
+    }
+    
+    @Test public void nullSafeMergeMaps()
+    {
+        assertNull(nullSafeMerge(nullMap, nullMap, true));
         
-        assertEquals(expectedSet, CollectionUtils.asSet(String.class, "Larry", "Curly", "Moe"));
+        assertEquals(Collections.emptyMap(), nullSafeMerge(nullMap, nullMap));
+        assertEquals(primes, nullSafeMerge(nullMap, primes));
+        assertEquals(primes, nullSafeMerge(primes, nullMap));
+        
+        Map<String, Integer> primesAndSquares = new HashMap<String, Integer>();
+        primesAndSquares.putAll(primes);
+        primesAndSquares.putAll(squares);
+        
+        assertEquals(primesAndSquares, nullSafeMerge(primes, squares));
     }
     
     @Test public void collectionFiltering() throws Exception

@@ -117,6 +117,20 @@
             <activityType>document</activityType>
          </properties>
       </component>
+      <component>
+         <region-id>document-attachments</region-id>
+         <url>/components/document-details/document-attachments</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>     
+      <component>
+         <region-id>repo-document-attachments</region-id>
+         <url>/components/document-details/document-attachments</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
 
       <!-- Document Actions (incl commons) -->
       <component>
@@ -169,6 +183,15 @@
       <component>
          <region-id>document-metadata</region-id>
          <url>/components/document-details/document-metadata</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component>
+
+      <!-- Document Sync -->
+      <component>
+         <region-id>document-sync</region-id>
+         <url>/components/document-details/document-sync</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>

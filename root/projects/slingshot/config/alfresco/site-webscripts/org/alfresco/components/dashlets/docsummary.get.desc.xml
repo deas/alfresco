@@ -1,5 +1,5 @@
 <webscript>
-   <shortname>Recently Modified Documents</shortname>
+   <shortname>Site Content</shortname>
    <description>Document summary component</description>
    <family>site-dashlet</family>
    <url>/components/dashlets/docsummary</url>

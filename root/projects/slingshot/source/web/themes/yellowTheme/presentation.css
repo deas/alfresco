@@ -886,7 +886,8 @@ body.yui-skin-yellowTheme .yui-columnbrowser .yui-carousel-content li.yui-column
 .yui-skin-yellowTheme .agendaview a,
 .yui-skin-yellowTheme a.previousEvents,
 .yui-skin-yellowTheme a.nextEvents,
-.yui-skin-default div.channels a
+.yui-skin-default div.channels a,
+.yui-skin-default .info-balloon a
 {
    color: #F6931C;
 }

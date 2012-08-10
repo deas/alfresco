@@ -273,7 +273,37 @@
           * @property siteTreeContainerTypes
           * @type Object
           */
-         siteTreeContainerTypes: {}
+         siteTreeContainerTypes: {},
+
+         /**
+          * Sites API
+          *
+          * The URL to the API that returns the site listing.
+          *
+          * @property sitesAPI
+          * @type {String} Absolute URL
+          */
+         sitesAPI: Alfresco.constants.PROXY_URI + "api/sites",
+
+
+         /**
+          * Containers API
+          *
+          * The URL to the API that returns the container listing.
+          *
+          * @property containersAPI
+          * @type {String} Absolute URL
+          */
+         containersAPI: Alfresco.constants.PROXY_URI + "slingshot/doclib/containers/",
+
+         /**
+          * The message that gets displayed if the template cannot be loaded.
+          *
+          *
+          * @property templateFailMessage
+          * @type {string} text of message to be displayed to the user in a dialogue
+          */
+         templateFailMessage: "Could not load 'global-folder' template"
       },
 
 
@@ -330,7 +360,7 @@
                   fn: this.onTemplateLoaded,
                   scope: this
                },
-               failureMessage: "Could not load 'global-folder' template:" + this.options.templateUrl,
+               failureMessage: this.options.templateFailMessage,
                execScripts: true
             });
          }
@@ -438,19 +468,22 @@
                      for (var i = 0, j = results.items.length; i < j; i++)
                      {
                         item = results.items[i];
-                        tempNode = new YAHOO.widget.TextNode(
+                        if (this.options.mode != 'sync' || !Alfresco.util.arrayContains(item.aspects, "sync:syncSetMemberNode"))
                         {
-                           label: $html(item.name),
-                           path: $combine(nodePath, item.name),
-                           nodeRef: item.nodeRef,
-                           description: item.description,
-                           userAccess: item.userAccess,
-                           style: item.userAccess.create ? "" : "no-permission"
-                        }, node, false);
+                           tempNode = new YAHOO.widget.TextNode(
+                           {
+                              label: $html(item.name),
+                              path: $combine(nodePath, item.name),
+                              nodeRef: item.nodeRef,
+                              description: item.description,
+                              userAccess: item.userAccess,
+                              style: item.userAccess.create ? "" : "no-permission"
+                           }, node, false);
 
-                        if (!item.hasChildren)
-                        {
-                           tempNode.isLeaf = true;
+                           if (!item.hasChildren)
+                           {
+                              tempNode.isLeaf = true;
+                           }
                         }
                      }
                      
@@ -1027,7 +1060,7 @@
          
          var config =
          {
-            url: Alfresco.constants.PROXY_URI + "api/sites",
+            url: this.options.sitesAPI,
             responseContentType: Alfresco.util.Ajax.JSON,
             successCallback:
             {
@@ -1114,10 +1147,13 @@
             }
             containerPicker.innerHTML = '';
          };
-         
+
+         var containerURL = Alfresco.util.parseURL(this.options.containersAPI);
+         containerURL.pathname += this.options.siteId;
+
          var config =
          {
-            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/containers/" + this.options.siteId,
+            url: containerURL.getUrl(),
             responseContentType: Alfresco.util.Ajax.JSON,
             successCallback:
             {

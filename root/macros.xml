@@ -263,8 +263,7 @@
 					<exclude name="**/log4javascript*.js" />
 				</fileset>
 				<arg line="-jar"/>
-				<arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
-				<arg line="-p"/>
+				<arg path="${dir.project.3rdparty.lib}/yuicompressor-2.4.7.jar"/>
 				<arg line="-o"/>
 				<targetfile />
 				<srcfile />
@@ -280,8 +279,7 @@
 			<apply executable="java" parallel="false">
 				<fileset file="@{sourcefile}" />
 				<arg line="-jar"/>
-				<arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.4-dev.jar"/>
-				<arg line="-p"/>
+				<arg path="${dir.project.3rdparty.lib}/yuicompressor-2.4.7.jar"/>
 				<arg line="-o"/>
 				<arg line="@{destfile}" />
 				<srcfile />

@@ -1,5 +1,10 @@
 <import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
 
+function runEvaluator(evaluator)
+{
+   return eval(evaluator);
+}
+
 /* Get filters */
 function getFilters()
 {
@@ -8,7 +13,11 @@ function getFilters()
 
    for each (var xmlFilter in myConfig..filter)
    {
-      filters.push(xmlFilter.@type.toString());
+      // add support for evaluators on the filter. They should either be missing or eval to true
+      if (xmlFilter.@evaluator.toString() === "" || runEvaluator(xmlFilter.@evaluator.toString()))
+      {
+         filters.push(xmlFilter.@type.toString());
+      }
    }
    return filters
 }

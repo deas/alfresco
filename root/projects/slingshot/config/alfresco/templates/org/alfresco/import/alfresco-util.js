@@ -129,21 +129,41 @@ var AlfrescoUtil =
       if (nodeRef)
       {
          var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
-         if (!site)
-         {
-            // Repository mode
-            url += "?libraryRoot=" + encodeURIComponent(AlfrescoUtil.getRootNode());
-         }
-         var result = remote.connect("alfresco").get(url);
+         return AlfrescoUtil.processNodeDetails(url, site, options);
+      }
+      return null;
+   },
 
-         if (result.status == 200)
+   processNodeDetails: function processNodeDetails(url, site, options)
+   {
+      if (!site)
+      {
+         // Repository mode
+         url += "?libraryRoot=" + encodeURIComponent(AlfrescoUtil.getRootNode());
+      }
+      var result = remote.connect("alfresco").get(url);
+
+      if (result.status == 200)
+      {
+         var details = eval('(' + result + ')');
+         if (details && (details.item || details.items))
          {
-            var details = eval('(' + result + ')');
-            if (details && (details.item || details.items))
-            {
-               DocList.processResult(details, options);
-               return details;
-            }
+            DocList.processResult(details, options);
+            return details;
+         }
+      }
+      return null;
+   },
+
+   getRemoteNodeDetails: function getRemoteNodeDetails(remoteNodeRef, remoteNetworkId, options)
+   {
+      if (remoteNodeRef)
+      {
+         var url = '/cloud/doclib2/node/' + remoteNodeRef.replace("://", "/") + "?network=" + remoteNetworkId,
+            details = AlfrescoUtil.processNodeDetails(url, true, options);
+         if (details)
+         {
+            return details;
          }
       }
       return null;
@@ -580,5 +600,30 @@ var AlfrescoUtil =
          }
       }
       return paths;
+   },
+
+   /**
+    * Fetch Information about the remote node that corresponds to the local one we've got.
+    * Used by sync to determine remote nodeRef and remote network id.
+    *
+    * @method getRemoteNodeRef
+    * @param localNodeRef {string} nodeRef of local node you want to find info for
+    * @return {object} containing nodeRef and networkId
+    */
+   getRemoteNodeRef: function getRemoteNodeRef(localNodeRef)
+   {
+      var connector = remote.connect("alfresco");
+      var result = connector.get("/enterprise/sync/remotesyncednode?nodeRef="+encodeURIComponent(localNodeRef));
+      if (result.status == 200)
+      {
+         return eval('(' + result + ')');
+      } else if (result.status == 403)
+      {
+         // Node Not Synced.
+         return {error: eval('(' + result + ')')};
+      } else
+      {
+         return null;
+      }
    }
 };

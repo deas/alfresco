@@ -1920,6 +1920,28 @@ Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
 };
 
 /**
+ * Creates an "information balloon tooltip" UI control attached to a passed-in element.
+ * This is similar to the standard balloon UI Control, but designed for better legibility of larger amounts of information
+ *
+ * @method Alfresco.util.createInfoBalloon
+ * @param p_context {Element|string} Element (or DOM ID) to align the balloon to
+ * @param p_params {object} Optional additional configuration to override the defaults
+ * <pre>
+ *    width {string} CSS width of the tooltip. Defaults to 30em
+ * </pre>
+ * @return {object|null} Balloon instance
+ */
+Alfresco.util.createInfoBalloon = function(p_context, p_params)
+{
+   p_params = YAHOO.lang.merge(
+   {
+      wrapperClass: "info-balloon",
+      arrowClass: "info-balloon-arrow",
+   }, p_params || {});
+   return Alfresco.util.createBalloon(p_context, p_params);
+},
+
+/**
  * Creates a "balloon tooltip" UI control attached to a passed-in element.
  *
  * @method Alfresco.util.createBalloon
@@ -1945,7 +1967,9 @@ Alfresco.util.createBalloon = function(p_context, p_params)
       html: "",
       text: "",
       closeButton: true,
-      width: "30em"
+      width: "30em",
+      wrapperClass: "balloon",
+      arrowClass: "balloon-arrow"
    }, p_params || {});
 
    return (new Alfresco.widget.Balloon(elContext, p_params));
@@ -2007,8 +2031,8 @@ Alfresco.util.createBalloon = function(p_context, p_params)
       var wrapper = document.createElement("div"),
          arrow = document.createElement("div");
 
-      Dom.addClass(wrapper, "balloon");
-      Dom.addClass(arrow, "balloon-arrow");
+      Dom.addClass(wrapper, p_params.wrapperClass);
+      Dom.addClass(arrow, p_params.arrowClass);
 
       if (p_params.closeButton)
       {

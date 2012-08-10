@@ -1493,8 +1493,10 @@
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 
+      <!-- Note: This is manually duplicated from the build.xml file -->
       <concat destfile="${dir.project.slingshot.assemble}/js/documentlibrary-actions.js" force="no">
          <fileset file="${dir.project.slingshot.src.web}/components/documentlibrary/actions.js" />
+         <fileset file="${dir.project.slingshot.src.web}/components/documentlibrary/actions-util.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/global-folder.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/copy-move-to.js" />
@@ -1502,6 +1504,8 @@
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/permissions.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/aspects.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/social-publish.js" />
+         <fileset file="${dir.project.slingshot.src.web}/modules/documentlibrary/cloud-folder.js" />
+         <fileset file="${dir.project.slingshot.src.web}/modules/cloud-auth.js" />
       </concat>
 
       <concat destfile="${dir.project.slingshot.assemble}/js/datalist-actions.js" force="no">
@@ -2817,7 +2821,7 @@
 
       <patternset id="ftr.libs.thirdparty.runtime">
          <include name="commons/commons-logging-1.1.1.jar" />
-         <include name="commons/commons-fileupload-1.2.1.jar" />
+         <include name="commons/commons-fileupload-1.2.2.jar" />
          <include name="spring-surf/spring-webscripts-1.2.0-SNAPSHOT.jar" />
          <include name="spring-surf/spring-webscripts-api-1.2.0-SNAPSHOT.jar" />
          <include name="org.springframework.aop-3.0.5.RELEASE.jar" />
@@ -2909,7 +2913,7 @@
             <include name="commons/commons-logging-1.1.1.jar" />
             <include name="optional/log4j-1.2.15.jar" />
             <include name="aopalliance.jar" />
-            <include name="json-simple-1.1.jar" />
+            <include name="json-simple-1.1.1.jar" />
          </fileset>
       </copy>
 
