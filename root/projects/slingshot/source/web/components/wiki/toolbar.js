@@ -88,9 +88,17 @@
           * Indicating if back link is used
           *
           * @property showBackLink
-          * @type {string}
+          * @type string
           */
-         showBackLink: false         
+         showBackLink: false,
+
+         /**
+          * To tell if the wiki page exists in the repo yet.
+          *
+          * @property statusCode
+          * @type boolean
+          */
+         exists: true
       },
 
       /**
@@ -503,22 +511,40 @@
       {
          var me = this;
 
-         if (e.serverResponse.status === 409)
+         if (e.serverResponse.status === 404 && !this.options.exists)
          {
+            // We tried to rename a page that doesn't yet exist, just forward the user to the new page
+            // which also won't exist but display itself like it does.
+            var url = Alfresco.constants.URL_PAGECONTEXT + "site/" + encodeURIComponent(this.options.siteId) + "/wiki-page?title=" + encodeURIComponent(e.config.dataObj.name);
+            if (!this.options.showBackLink)
+            {
+               url += "?listViewLinkBack=true";
+            }
+            window.location.href = url;
+         }
+         else
+         {
+            var defaultKey = "rename.failure",
+               statusKey = defaultKey + "." + e.serverResponse.status,
+               text = $msg(statusKey, pageTitle);
+            if (statusKey == text)
+            {
+               text = $msg(defaultKey, pageTitle)
+            }
             Alfresco.util.PopupManager.displayPrompt(
             {
                title: $msg("rename.failure.title"),
-               text: $msg("rename.failure.duplicate", pageTitle),
+               text: text,
                buttons: [
-               {
-                  text: $msg("button.ok"),
-                  handler: function()
                   {
-                     this.destroy();
-                     Dom.get(me.id + "-renameTo").focus();
-                  },
-                  isDefault: true
-               }]
+                     text: $msg("button.ok"),
+                     handler: function()
+                     {
+                        this.destroy();
+                        Dom.get(me.id + "-renameTo").focus();
+                     },
+                     isDefault: true
+                  }]
             });
          }
       },

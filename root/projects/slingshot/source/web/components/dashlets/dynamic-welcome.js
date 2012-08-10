@@ -56,7 +56,7 @@
    YAHOO.extend(Alfresco.dashlet.DynamicWelcome, Alfresco.component.Base,
    {
       site: "",
-      dashboardType: "",      
+      dashboardType: "",
       dashboardUrl: "",
       closeDialog: null,
 
@@ -67,7 +67,7 @@
        * @type Alfresco.module.CreateSite
        */
       createSite: null,
-
+      
       /**
        * Fired by YUI when parent element is available for scripting.
        * Initialises components, including YUI widgets.
@@ -161,7 +161,8 @@
          else
          {
             // Use the preferences services to update the users preferences for this site...
-            this.services.preferences.set("org.alfresco.share.siteWelcome." + this.site, false,
+            var updatedSite = this.site.substring(1).replace(/\//g, "-");
+            this.services.preferences.set("org.alfresco.share.siteWelcome." + updatedSite, false,
             {
                successCallback:
                {

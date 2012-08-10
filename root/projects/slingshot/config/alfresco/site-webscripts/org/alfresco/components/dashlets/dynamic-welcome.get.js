@@ -178,10 +178,31 @@ function getCloudSignUpColumn()
       // displayed is determined by user preferences. Before going any further we
       // need to establish whether the welcome dashlet should even be displayed.
       var preferences,
-         hideDashlet = false;
+      hideDashlet = false,
+      profile;
 
       try
       {
+      // Call the repository for the site profile
+      var json = remote.call("/api/sites/" + page.url.templateArgs.site);
+      profile =
+      {
+         title: "",
+         shortName: "",
+         visibility: "PUBLIC"
+      };
+
+      if (json.status == 200)
+      {
+         // Create javascript objects from the repo response
+         var obj = eval('(' + json + ')');
+         if (obj)
+         {
+            profile = obj;
+            model.siteNodeRef = obj.node;
+         }
+      }
+
          // Request the current user's preferences to determine whether or not
          // the dashlet should be displayed...
          var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
@@ -196,7 +217,7 @@ function getCloudSignUpColumn()
             }
             else
             {
-               hideDashlet = preferences[page.url.templateArgs.site] != null;
+            hideDashlet = preferences[profile.node.substring(1).replace(/\//g, "-")] != null;
             }
          }
       }
@@ -217,26 +238,6 @@ function getCloudSignUpColumn()
          dashboardId = "site/" + page.url.templateArgs.site + "/dashboard";
          dashboardUrl = dashboardId;
          model.siteURL = page.url.templateArgs.site;
-
-         // Call the repository for the site profile
-         var json = remote.call("/api/sites/" + page.url.templateArgs.site);
-
-         var profile =
-         {
-            title: "",
-            shortName: "",
-            visibility: "PUBLIC"
-         };
-
-         if (json.status == 200)
-         {
-            // Create javascript objects from the repo response
-            var obj = eval('(' + json + ')');
-            if (obj)
-            {
-               profile = obj;
-            }
-         }
 
          var siteTitle = (profile.title != "") ? profile.title : profile.shortName;
 
@@ -314,7 +315,7 @@ columns[3] = getCloudSignUpColumn();
       initArgs : ["\"" + args.htmlid + "\"",
                   "\"" + model.dashboardUrl + "\"",
                   "\"" + model.dashboardType + "\"",
-                  "\"" + model.siteURL + "\""]
+                  "\"" + (model.siteNodeRef == null ? "" :  model.siteNodeRef) + "\""]
    };
    model.widgets = [dynamicWelcome];
 }
