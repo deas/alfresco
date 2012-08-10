@@ -7,9 +7,9 @@
       <#if syncMode == "${sync_mode}">
          <div class="cloud-sync-error-details {syncFailed}">
             <div class="cloud-sync-details-failed-detailed">
-               ${msg("sync.status.last-failed")}
-               <span><a class="cloud-sync-details-failed-show-link">${msg("sync.status.show-details")}</a></span>
-               <span><a class="cloud-sync-details-failed-hide-link hidden">${msg("sync.status.hide-details")}</a></span>
+                  <span><a class="cloud-sync-details-failed-show-link">${msg("sync.status.show-details")}</a></span>
+                  <span><a class="cloud-sync-details-failed-hide-link hidden">${msg("sync.status.hide-details")}</a></span>
+                  ${msg("sync.status.last-failed")}
                <div class="cloud-sync-error-detailed hidden">
                   <span class="cloud-sync-error-code">{errorCode}</span>
                   <div class="cloud-sync-error-details-report">
@@ -21,9 +21,9 @@
          </div>
          <div class="cloud-sync-error-details-transient {transientError}">
             <div class="cloud-sync-details-failed-detailed-transient">
-               ${msg("sync.status.transient-error")}
-               <span><a class="cloud-sync-details-failed-show-link-transient">${msg("sync.status.show-details")}</a></span>
-               <span><a class="cloud-sync-details-failed-hide-link-transient hidden">${msg("sync.status.hide-details")}</a></span>
+                  <span><a class="cloud-sync-details-failed-show-link-transient">${msg("sync.status.show-details")}</a></span>
+                  <span><a class="cloud-sync-details-failed-hide-link-transient hidden">${msg("sync.status.hide-details")}</a></span>
+                  ${msg("sync.status.transient-error")}
                <div class="cloud-sync-error-detailed-transient hidden">
                   <span class="cloud-sync-error-code">{transientErrorCode}</span>
                   <div class="cloud-sync-error-details-report">
@@ -70,7 +70,6 @@
                      <#-- Show the file/folder name with a link, if we're not showing the parent. -->
                      <#if !isParentPath??>
                         <#assign cloudViewUrl=url.context + "/service/cloud/cloudUrl?nodeRef=" + nodeRef>
-                        &gt;
                         <span class="document-link">
                            <#if isContainer>
                               <img src="${url.context}/components/images/filetypes/generic-folder-32.png" width="32" /><a href="${cloudViewUrl}" target="_blank" class="view-in-cloud">${nodeTitle}</a>
@@ -96,7 +95,7 @@
             <div class="cloud-sync-indirect-root location">
                <h4>${msg("sync.status.heading.synced-folder")}</h4>
                <span class="document-root-link document-link">
-                  <img src="${url.context}/components/images/filetypes/generic-folder-32.png" width="32" /><a href="folder-details?nodeRef=${rootNodeRef}" class="view-in-cloud">${rootNodeName}</a>
+                  <img src="${url.context}/res/components/images/filetypes/generic-folder-32.png" width="32" /><a href="folder-details?nodeRef=${rootNodeRef}" class="view-in-cloud">${rootNodeName}</a>
                 </span>
              </div>
           </#if>

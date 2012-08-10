@@ -40,13 +40,13 @@
 {
    display: block;
    font-size: 110%;
-   margin-bottom: -10px;
-   padding-top: 5px;
+   margin-bottom: -15px;
+   margin-top: 3px;
 }
 
 .location .document-root-link
 {
-   padding-top: 3px;
+   margin-top: 2px;
 }
 
 .location .view-in-cloud
@@ -88,7 +88,7 @@ a.cloud-sync-details-failed-hide-link-transient
 
 div.cloud-sync-status-buttons
 {
-   padding-top: 10px;
+   padding-top: 15px;
    text-align: center;
 }
 
@@ -98,14 +98,14 @@ div.cloud-sync-status-buttons
    display: block;
    font: 13px/1.231 arial,helvetica,clean,sans-serif;
    padding-right: 55px;
-   padding-top: 8px;
+   padding-top: 5px;
 }
 
 .sticky-wrapper textarea.cloud-sync-error-details,
 .sticky-wrapper textarea.cloud-sync-error-details-transient
 {
    margin-bottom: 5px;
-   margin-top: 8px;
+   margin-top: 5px;
    min-height: 6em;
    padding: 7px;
    width: 85%;
@@ -113,33 +113,34 @@ div.cloud-sync-status-buttons
 
 .cloud-sync-error-details-report
 {
-   padding-top: 20px;
+   padding-top: 17px;
 }
 
 .cloud-sync-indirect-root
 {
    color: black;
-   padding-top: 5px;
+   padding-top: 13px;
 }
 
-.sticky-wrapper label.cloud-sync-error-details-label
+.sticky-wrapper label.cloud-sync-error-details-label,
+.sticky-wrapper label.cloud-sync-error-details-transient-label
 {
    color: black;
 }
 
 .cloud-sync-location-heading
 {
-   padding-top: 10px;
+   padding-top: 5px;
    color: black;
 }
 
 .cloud-sync-status-heading
 {
    color: black;
-   padding-top: 15px;
+   padding-top: 10px;
 }
 
 .cloud-sync-details-info
 {
-   margin-bottom: -10px;
+   margin-bottom: -15px;
 }

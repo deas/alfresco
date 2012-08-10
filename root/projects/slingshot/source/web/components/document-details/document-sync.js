@@ -163,19 +163,19 @@
 
          Event.on(Dom.getElementsByClassName("document-sync-link", "a", root), "click", function syncToCloudClick(event)
          {
-            event.preventDefault();
+            Event.preventDefault(event);
             this.onActionCloudSync(record);
          }, {}, this);
 
          Event.on(Dom.getElementsByClassName("document-unsync-link", "a", root), "click", function unsyncFromCloudClick(event)
          {
-            event.preventDefault();
+            Event.preventDefault(event);
             this.onActionCloudUnsync(record);
          }, {}, this);
 
          Event.on(Dom.getElementsByClassName("document-requestsync-link", "a", root), "click", function requestSyncClick(event)
          {
-            event.preventDefault();
+            Event.preventDefault(event);
             this.onActionCloudSyncRequest(record);
          }, {}, this);
       },

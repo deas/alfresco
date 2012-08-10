@@ -255,6 +255,7 @@
          <indicator id="cloud-indirect-sync-failed" index="90" action="onCloudIndirectSyncFailedIndicatorAction">
             <evaluator>evaluator.doclib.indicator.isIndirectSyncFailed</evaluator>
             <override>cloud-sync-failed</override>
+            <override>cloud-indirect-sync</override>
          </indicator>
       </indicators>
 

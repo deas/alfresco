@@ -10,23 +10,31 @@ function main()
 
    model.syncMode = syncMode.value;
    var remoteNodeInfo = AlfrescoUtil.getRemoteNodeRef(model.nodeRef),
-   nodeDetails = null;
+      nodeDetails = null;
 
-   if (remoteNodeInfo && remoteNodeInfo.remoteNodeRef)
+   if (model.syncMode == "ON_PREMISE")
    {
-      nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteNodeRef, remoteNodeInfo.remoteNetworkId);
+      if (remoteNodeInfo && remoteNodeInfo.remoteNodeRef)
+      {
+         nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteNodeRef, remoteNodeInfo.remoteNetworkId);
+      }
+      else if (remoteNodeInfo && remoteNodeInfo.remoteParentNodeRef)
+      {
+         model.isParentPath = true;
+         nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteParentNodeRef, remoteNodeInfo.remoteNetworkId);
+      }
    }
-   else if (remoteNodeInfo && remoteNodeInfo.remoteParentNodeRef)
+   else
    {
-      model.isParentPath = true;
-      nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteParentNodeRef, remoteNodeInfo.remoteNetworkId);
+      nodeDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, true);
    }
 
    if (nodeDetails && nodeDetails.error && nodeDetails.error.status && nodeDetails.error.status.code === 403)
    {
       // 403 returned when not is not a sync set member.
       model.synced = false;
-   } else if (nodeDetails)
+   }
+   else if (nodeDetails)
    {
       model.nodeFound = true;
       model.item = nodeDetails.item;

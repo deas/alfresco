@@ -18,6 +18,7 @@
  */
 package org.alfresco.jlan.smb.server;
 
+import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.thread.ThreadRequest;
 
 /**
@@ -57,6 +58,15 @@ public class CIFSThreadRequest implements ThreadRequest {
 			// Process the CIFS request
 			
 			m_sess.processPacket( m_smbPkt);
+
+			// Process any asynchronous packets (oplock breaks and change notifications)
+			
+			int asyncCnt = m_sess.sendQueuedAsyncResponses();
+			
+			// DEBUG
+			
+			if ( asyncCnt > 0 && Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
+				Debug.println("Sent queued async packets (JNI) count=" + asyncCnt + ", sess=" + m_sess.getUniqueId());
 		}
 		else {
 			

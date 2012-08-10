@@ -40,6 +40,13 @@
       $isValueSet = Alfresco.util.isValueSet;
 
    /**
+    * Cloud folder picker dialog.
+    * This will be defined globally, because the sync actions are available in the actions panel as well as in the
+    * sync panel. And clicking those actions from different panels creates different panels in different contexts.
+    */
+   var cloudFolderPicker;
+
+   /**
     * Alfresco.doclib.Actions implementation
     */
    Alfresco.doclib.Actions = {};
@@ -463,12 +470,20 @@
          var me = this,
             jsNode = record.jsNode,
             content = jsNode.isContainer ? "folder" : "document",
-            displayName = record.displayName;
+            displayName = record.displayName,
+            isCloud = (this.options.syncMode === "CLOUD")
 
          var displayPromptText = this.msg("message.confirm.delete", displayName);
          if (jsNode.hasAspect("sync:syncSetMemberNode"))
          {
-            displayPromptText += this.msg("actions.synced." + content + ".delete", displayName);
+            if (isCloud)
+            {
+               displayPromptText += this.msg("actions.synced.cloud." + content + ".delete", displayName);
+            }
+            else
+            {
+               displayPromptText += this.msg("actions.synced." + content + ".delete", displayName);
+            }
          }
          
          Alfresco.util.PopupManager.displayPrompt(
@@ -1440,9 +1455,9 @@
       onActionCloudSync: function dlA_onActionCloudSync(record)
       {
          // Instantiate Cloud Folder Picker & Cloud Auth Dialogue if they don't exist
-         if (!this.modules.cloudFolderPicker)
+         if (!cloudFolderPicker)
          {
-            this.modules.cloudFolderPicker = new Alfresco.module.DoclibCloudFolder(this.id + "-cloud-folder");
+            cloudFolderPicker = new Alfresco.module.DoclibCloudFolder(this.id + "-cloud-folder");
 
             var me = this;
 
@@ -1473,11 +1488,11 @@
                   },
                   failureMessage: this.msg("message.sync.failure")
                })
-            }, this.modules.cloudFolderPicker);
+            }, cloudFolderPicker);
          }
          else
          {
-            var optionInputs = this.modules.cloudFolderPicker.widgets.optionInputs;
+            var optionInputs = cloudFolderPicker.widgets.optionInputs;
             if (optionInputs)
             {
                for (var i = 0; i < optionInputs.length; i++)
@@ -1492,15 +1507,15 @@
             this.modules.cloudAuth = new Alfresco.module.CloudAuth(this.id + "cloudAuth");
          }
 
-         this.modules.cloudFolderPicker.setOptions(
+         cloudFolderPicker.setOptions(
          {
             files: record
          });
 
          this.modules.cloudAuth.setOptions(
          {
-            authCallback: this.modules.cloudFolderPicker.showDialog,
-            authCallbackContext: this.modules.cloudFolderPicker
+            authCallback: cloudFolderPicker.showDialog,
+            authCallbackContext: cloudFolderPicker
          }).checkAuth();
       },
 
@@ -1516,7 +1531,8 @@
          var me = this,
             content = record.jsNode.isContainer ? "folder" : "document",
             displayName = record.displayName,
-            deleteRemoteFile = '<div><input type="checkbox" id="requestDeleteRemote" class="requestDeleteRemote-checkBox"><span class="requestDeleteRemote-text">' + this.msg("sync.remove." + content + ".from.cloud", displayName) + '</span></div>';
+            isCloud = (this.options.syncMode === "CLOUD"),
+            deleteRemoteFile = isCloud ? "" : '<div><input type="checkbox" id="requestDeleteRemote" class="requestDeleteRemote-checkBox"><span class="requestDeleteRemote-text">' + this.msg("sync.remove." + content + ".from.cloud", displayName) + '</span></div>';
 
          Alfresco.util.PopupManager.displayPrompt(
          {
@@ -1528,7 +1544,7 @@
                text: this.msg("button.unsync"),
                handler: function dlA_onActionCloudUnsync_unsync()
                {
-                  var requestDeleteRemote = Dom.getAttribute("requestDeleteRemote", "checked");
+                  var requestDeleteRemote = isCloud ? false : Dom.getAttribute("requestDeleteRemote", "checked");
                   this.destroy();
                   Alfresco.util.Ajax.request(
                   {

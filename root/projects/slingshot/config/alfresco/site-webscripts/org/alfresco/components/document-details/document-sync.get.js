@@ -12,6 +12,7 @@ function main()
    {
       model.documentDetails = jsonUtils.toJSONString(documentDetails);
    }
+   model.syncMode = syncMode.getValue();
    model.syncEnabled = (syncMode.getValue() != "OFF");
 }
 

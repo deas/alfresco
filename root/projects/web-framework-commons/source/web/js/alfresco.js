@@ -1936,7 +1936,7 @@ Alfresco.util.createInfoBalloon = function(p_context, p_params)
    p_params = YAHOO.lang.merge(
    {
       wrapperClass: "info-balloon",
-      arrowClass: "info-balloon-arrow",
+      arrowClass: "info-balloon-arrow"
    }, p_params || {});
    return Alfresco.util.createBalloon(p_context, p_params);
 },
@@ -1987,7 +1987,7 @@ Alfresco.util.createBalloon = function(p_context, p_params)
     * Alfresco library aliases
     */
    var $html = Alfresco.util.encodeHTML,
-      PREVENT_SCROLLBAR_FIX = (YAHOO.widget.Module.prototype.platform === "mac" && 0 < YAHOO.env.ua.gecko && YAHOO.env.ua.gecko < 2);
+      PREVENT_SCROLLBAR_FIX = (YAHOO.widget.Module.prototype.platform === "mac" && 0 < YAHOO.env.ua.gecko);
 
    /**
     * Alfresco.widget.Balloon constructor.

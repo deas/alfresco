@@ -116,7 +116,7 @@ public class SyncModeConfig extends BaseProcessorExtension implements Serializab
                         if ("ENTERPRISE".equals(edition))
                         {
                             // initiate a call to retrieve the sync mode from the repository
-                            final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
+                            final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco");
                             final Response response = conn.call("/enterprise/sync/config");
                             if (response.getStatus().getCode() == Status.STATUS_OK)
                             {

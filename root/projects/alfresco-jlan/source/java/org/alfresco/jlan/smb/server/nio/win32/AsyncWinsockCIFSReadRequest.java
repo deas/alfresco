@@ -105,6 +105,15 @@ public class AsyncWinsockCIFSReadRequest implements ThreadRequest {
 				
 				m_sess.processPacket( smbPkt);
 				smbPkt = null;
+				
+				// Process any asynchronous packets (oplock breaks and change notifications)
+				
+				int asyncCnt = m_sess.sendQueuedAsyncResponses();
+				
+				// DEBUG
+				
+				if ( asyncCnt > 0 && Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
+					Debug.println("Sent queued async packets (JNI/NIO) count=" + asyncCnt + ", sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress());
 			}
 			catch ( Throwable ex) {
 				Debug.println(ex);

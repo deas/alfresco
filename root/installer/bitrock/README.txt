@@ -1,4 +1,4 @@
-Alfresco Community 4.0
+Alfresco Community 4.1
 ======================
 
 For Enterprise subscribers, refer to http://support.alfresco.com for release notes and detailed information on this release.

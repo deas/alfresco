@@ -26,8 +26,8 @@
             <div id="${el}-containerPicker" class="container-picker"></div>
          </div>
          <div class="path">
-            <h3>${msg("header.path-picker")}</h3>
             <div class="cloud-path-add-folder" title="${msg("tooltip.create-folder")}">&nbsp;</div>
+            <h3>${msg("header.path-picker")}</h3>
             <div id="${el}-treeview" class="treeview"></div>
          </div>
          <div class="cloud-options">

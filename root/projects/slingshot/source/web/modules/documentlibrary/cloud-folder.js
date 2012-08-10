@@ -162,7 +162,7 @@
 
          Event.on(Dom.getElementsByClassName("cloud-path-add-folder", "div"), "click", function onCreateFolder(event)
          {
-            event.preventDefault();
+            Event.preventDefault(event);
             this.createFolderInTheCloud();
          }, {}, this);
       },
@@ -187,6 +187,12 @@
             {
                Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.msg("sync.new-folder.in-the-cloud.title");
                Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg("sync.new-folder.in-the-cloud.header");
+            };
+
+            // Intercept before form submit. The cancel button won't be disabled, because an instance of the dialog won't be created each time
+            var doBeforeFormSubmit = function cloudFolder_doBeforeFormSubmit(args)
+            {
+               this.widgets.cancelButton.set("disabled", false);
             };
 
             // Intercept before making ajax request
@@ -232,9 +238,27 @@
                      {
                         Alfresco.util.PopupManager.displayMessage(
                         {
-                           text: this.msg("sync.new-folder.creation.success")
+                           text: this.msg("sync.new-folder.creation.success"),
+                           displayTime: 0.5
                         });
-                        
+
+                        var pathSeparator = "/";
+                        // Split the selected path
+                        var paths = this.selectedNode.data.path.split(pathSeparator);
+                        // Remove the empty element(s) from the array
+                        paths = Alfresco.util.arrayRemove(paths, "");
+                        // Add the new folder to the paths
+                        paths.push(response.config.dataObj.name);
+
+                        var expandPath = "";
+                        this.pathsToExpand = [];
+                        for (var i = 0, j = paths.length; i < j; i++)
+                        {
+                           // Push the path onto the list of paths to be expanded
+                           expandPath += pathSeparator + paths[i];
+                           this.pathsToExpand.push(expandPath);
+                        }
+
                         // Fire the siteChanged event to refresh the list of folders
                         YAHOO.Bubbling.fire("siteChanged",
                         {
@@ -270,6 +294,11 @@
                templateUrl: templateUrl,
                actionUrl: null,
                clearForm: true,
+               doBeforeFormSubmit:
+               {
+                  fn: doBeforeFormSubmit,
+                  scope: this
+               },
                doBeforeDialogShow:
                {
                   fn: doBeforeDialogShow,
@@ -341,6 +370,26 @@
 
             // Set option.
             this.options.syncOptions[property] = state;
+         }
+      },
+
+      /**
+       * Overrides onExpandComplete
+       *
+       * Fired by YUI TreeView when a node has finished expanding
+       * @method onExpandComplete
+       * @param oNode {YAHOO.widget.Node} the node recently expanded
+       */
+      onExpandComplete: function cloudFolder_onExpandComplete(oNode)
+      {
+         if (this.pathsToExpand != null)
+         {
+            var node = this.widgets.treeview.getNodeByProperty("path", this.pathsToExpand.shift());
+            if (node != null)
+            {
+               node.expand();
+               this._updateSelectedNode(node);
+            }
          }
       }
 

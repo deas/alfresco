@@ -18,6 +18,8 @@ function main()
       doclibCommon();
    }
    
+   model.syncMode = syncMode.getValue();
+
    // Widget instantiation metadata...
    var folderActions = {
       id : "FolderActions", 
@@ -29,7 +31,8 @@ function main()
          rootNode : Boolean(model.rootNode),
          replicationUrlMapping : (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}",
          repositoryBrowsing : (model.rootNode != null),
-         folderDetails : model.folderDetails
+         folderDetails : model.folderDetails,
+         syncMode : model.syncMode != null ? model.syncMode : ""
       }
    };
    model.widgets = [folderActions];

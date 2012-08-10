@@ -222,8 +222,7 @@
       {
          Event.on(Dom.getElementsByClassName("cloud-sync-details-failed-show-link", "a", root), "click", function showDetailsLinkClick(event)
          {
-            event.preventDefault();
-
+            Event.preventDefault(event);
             if (!Dom.hasClass(Dom.getElementsByClassName("cloud-sync-error-detailed-transient"), "hidden")[0])
             {
                Dom.addClass(Dom.getElementsByClassName("cloud-sync-error-detailed-transient"), "hidden");
@@ -251,8 +250,7 @@
       {
          Event.on(Dom.getElementsByClassName("cloud-sync-details-failed-show-link-transient", "a", root), "click", function showDetailsLinkClick(event)
          {
-            event.preventDefault();
-
+            Event.preventDefault(event);
             if (!Dom.hasClass(Dom.getElementsByClassName("cloud-sync-error-detailed"), "hidden")[0])
             {
                Dom.addClass(Dom.getElementsByClassName("cloud-sync-error-detailed"), "hidden");
@@ -280,7 +278,7 @@
       {
          Event.on(Dom.getElementsByClassName("cloud-sync-details-failed-hide-link", "a", root), "click", function hideLinkClick(event)
          {
-            event.preventDefault();
+            Event.preventDefault(event);
             Dom.addClass(Dom.getElementsByClassName("cloud-sync-error-detailed"), "hidden");
             Dom.removeClass(Dom.getElementsByClassName("cloud-sync-details-info"), "hidden");
             Dom.removeClass(Dom.getElementsByClassName("cloud-sync-details-failed-show-link"), "hidden");
@@ -301,7 +299,7 @@
       {
          Event.on(Dom.getElementsByClassName("cloud-sync-details-failed-hide-link-transient", "a", root), "click", function hideLinkClick(event)
          {
-            event.preventDefault();
+            Event.preventDefault(event);
             Dom.addClass(Dom.getElementsByClassName("cloud-sync-error-detailed-transient"), "hidden");
             Dom.removeClass(Dom.getElementsByClassName("cloud-sync-details-info"), "hidden");
             Dom.removeClass(Dom.getElementsByClassName("cloud-sync-details-failed-show-link-transient"), "hidden");

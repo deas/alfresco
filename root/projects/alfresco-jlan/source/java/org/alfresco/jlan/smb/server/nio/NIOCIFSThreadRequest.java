@@ -191,8 +191,8 @@ public class NIOCIFSThreadRequest implements ThreadRequest {
 				
 				// DEBUG
 				
-				if ( Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
-					Debug.println("Sent queued async packets count=" + asyncCnt + ", sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress());
+				if ( asyncCnt > 0 && Debug.EnableInfo && m_sess.hasDebug( SMBSrvSession.DBG_SOCKET))
+					Debug.println("Sent queued async packets (NIO) count=" + asyncCnt + ", sess=" + m_sess.getUniqueId() + ", addr=" + m_sess.getRemoteAddress().getHostAddress());
 			}
 			
 			// Re-enable read events for this socket channel, if there were no errors

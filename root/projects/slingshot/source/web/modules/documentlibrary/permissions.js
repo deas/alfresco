@@ -470,6 +470,7 @@
          var defaultRoles = this.options.files[0].node.permissions.roles,
             permissions;
 
+         var noPrivilegeMsg = this.msg("role.None");
          for (i = 0, j = defaultRoles.length; i < j; i++)
          {
             permissions = defaultRoles[i].split(";");
@@ -483,6 +484,12 @@
                {
                   msg = permissions[2];
                }
+
+               if (msg == noPrivilegeMsg)
+               {
+                  this.rolePickers[permissions[1]].set("value", "");
+               }
+
                this.rolePickers[permissions[1]].set("label", msg);
             }
             else if (permissions[1] != "GROUP_EVERYONE")

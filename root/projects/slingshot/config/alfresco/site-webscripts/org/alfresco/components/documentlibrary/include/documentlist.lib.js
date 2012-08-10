@@ -174,4 +174,5 @@ function doclibCommon()
    model.useTitle = DocumentList.getConfigValue("DocumentLibrary", "use-title", null);
    model.userIsSiteManager = DocumentList.isUserSiteManager();
    model.metadataTemplates = {};
+   model.syncMode = syncMode.getValue();
 }

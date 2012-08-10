@@ -2162,9 +2162,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
             }
             
-            while (tracker.inNew < lastNew)
+            if (targetHasDeletions)
             {
-                if (targetHasDeletions)
+                while (tracker.inNew < lastNew)
                 {
                     if(finalIndexReader.isDeleted(tracker.inNew - firstNew))
                     {
@@ -2180,8 +2180,12 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         tracker.inNew++;
                         tracker.earlyDeletes++;
                     }
-                }
-                
+                    else
+                    {
+                        // We're not going to get much further in this loop!
+                        break;
+                    }
+                }                
             }
             
             // skip and check remaining nulls in the source

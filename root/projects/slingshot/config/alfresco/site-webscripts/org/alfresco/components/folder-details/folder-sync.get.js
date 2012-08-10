@@ -12,6 +12,7 @@ function main()
    {
       model.folderDetails = jsonUtils.toJSONString(folderDetails);
    }
+   model.syncMode = syncMode.getValue();
    model.syncEnabled = (syncMode.getValue() != "OFF");
 }
 

@@ -23,7 +23,8 @@
       {
          nodeRef: "${nodeRef}",
          site: <#if site??>"${site?js_string}"<#else>null</#if>,
-         documentDetails: ${documentDetails}
+         documentDetails: ${documentDetails},
+         syncMode: "${syncMode}"
       }).setMessages(
          ${messages}
       );

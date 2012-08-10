@@ -826,7 +826,7 @@
 
          Event.on(Dom.getElementsByClassName("banner-more-info-link", "span", elCell), "click", function showMoreInfoLinkClick(event)
          {
-            scope.onCloudSyncIndicatorAction(record, event.target)
+            scope.onCloudSyncIndicatorAction(record, Event.getTarget(event))
          }, {}, scope);
       },
       
@@ -2595,12 +2595,12 @@
 
          this.registerRenderer("syncFailed", function(record, label)
          {
-            return this.msg("details.banner.sync-failed") + '<span class="banner-more-info-link">' + this.msg("details.banner.more-info") + '</span>';
+            return '<span class="banner-more-info-link">' + this.msg("details.banner.more-info") + '</span>' + this.msg("details.banner.sync-failed");
          });
 
          this.registerRenderer("syncTransientError", function(record, label)
          {
-            return this.msg("details.banner.sync-transient-error") + '<span class="banner-more-info-link">' + this.msg("details.banner.more-info") + '</span>';
+            return '<span class="banner-more-info-link">' + this.msg("details.banner.more-info") + '</span>' + this.msg("details.banner.sync-transient-error");
          });
 
          /**

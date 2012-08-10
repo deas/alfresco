@@ -323,10 +323,13 @@ public class MultiThreadedCoreTracker extends CoreTracker
                     docCount = 0;
                 }
             }
-            if (getDocCout(txBatch) > 0)
+            if (!txBatch.isEmpty())
             {
                 indexed = true;
-                docCount += indexBatchOfTransactions(txBatch, solrIndexSearcher);
+                if (getDocCout(txBatch) > 0)
+                {
+                    docCount += indexBatchOfTransactions(txBatch, solrIndexSearcher);
+                }
                 for (Transaction scheduled : txBatch)
                 {
                     txnsFound.add(scheduled);

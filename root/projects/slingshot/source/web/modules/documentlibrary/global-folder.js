@@ -468,22 +468,20 @@
                      for (var i = 0, j = results.items.length; i < j; i++)
                      {
                         item = results.items[i];
-                        if (this.options.mode != 'sync' || !Alfresco.util.arrayContains(item.aspects, "sync:syncSetMemberNode"))
+                        var isSyncSetMemberNode = this.options.mode == 'sync' && Alfresco.util.arrayContains(item.aspects, "sync:syncSetMemberNode"); 
+                        tempNode = new YAHOO.widget.TextNode(
                         {
-                           tempNode = new YAHOO.widget.TextNode(
-                           {
-                              label: $html(item.name),
-                              path: $combine(nodePath, item.name),
-                              nodeRef: item.nodeRef,
-                              description: item.description,
-                              userAccess: item.userAccess,
-                              style: item.userAccess.create ? "" : "no-permission"
-                           }, node, false);
+                           label: $html(item.name),
+                           path: $combine(nodePath, item.name),
+                           nodeRef: item.nodeRef,
+                           description: item.description,
+                           userAccess: isSyncSetMemberNode ? false : item.userAccess,
+                           style: isSyncSetMemberNode ? "no-permission" : (item.userAccess.create ? "" : "no-permission")
+                        }, node, false);
 
-                           if (!item.hasChildren)
-                           {
-                              tempNode.isLeaf = true;
-                           }
+                        if (!item.hasChildren)
+                        {
+                           tempNode.isLeaf = true;
                         }
                      }
                      
@@ -538,6 +536,13 @@
                // Timeout -- abort the transaction after 7 seconds
                timeout: 7000
             };
+
+            // Add a noCache parameter to the URL to ensure that XHR requests are always made to the
+            // server when using IE. Otherwise IE7/8 will cache the response.
+            if (YAHOO.env.ua.ie > 0)
+            {
+               uri += (uri.indexOf("?") == -1 ? "?" : "&") + "noCache=" + new Date().getTime();
+            }
 
             // Make the XHR call using Connection Manager's asyncRequest method
             YAHOO.util.Connect.asyncRequest("GET", uri, callback);

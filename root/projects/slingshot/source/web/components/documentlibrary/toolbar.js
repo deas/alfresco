@@ -1114,27 +1114,30 @@
 
          var parent = this.doclistMetadata.parent;
 
-         var aspects = parent.aspects;
-         if (aspects)
+         if (parent)
          {
-            if (Alfresco.util.arrayContains(aspects, "sync:syncSetMemberNode"))
+            var aspects = parent.aspects;
+            if (aspects)
             {
-               Dom.removeClass(unsyncFromCloudButtonDiv, "hidden");
+               if (Alfresco.util.arrayContains(aspects, "sync:syncSetMemberNode"))
+               {
+                  Dom.removeClass(unsyncFromCloudButtonDiv, "hidden");
+                  Dom.addClass(syncToCloudButtonDiv, "hidden");
+               }
+               else
+               {
+                  Dom.removeClass(syncToCloudButtonDiv, "hidden");
+                  Dom.addClass(unsyncFromCloudButtonDiv, "hidden");
+               }
+            }
+
+            var properties = parent.properties;
+            if (properties && (properties["cm:name"] === "documentLibrary" || properties["sync:directSync"] === "false") || this.options.syncMode !== "ON_PREMISE")
+            {
+               Dom.addClass(unsyncFromCloudButtonDiv, "hidden");
                Dom.addClass(syncToCloudButtonDiv, "hidden");
             }
-            else
-            {
-               Dom.removeClass(syncToCloudButtonDiv, "hidden");
-               Dom.addClass(unsyncFromCloudButtonDiv, "hidden");
-            }
          }
-
-         var properties = parent.properties;
-         if (properties && (properties["cm:name"] === "documentLibrary" || properties["sync:directSync"] === "false") || this.options.syncMode !== "ON_PREMISE")
-         {
-            Dom.addClass(unsyncFromCloudButtonDiv, "hidden");
-            Dom.addClass(syncToCloudButtonDiv, "hidden");
-         }   
       },
       
       /**

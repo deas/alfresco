@@ -20,7 +20,6 @@ package org.alfresco.web.evaluator.doclib.action;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.evaluator.BaseEvaluator;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -38,12 +37,19 @@ public class EditableByCurrentUser extends BaseEvaluator
 {
     private static final String PROP_WORKINGCOPYOWNER = "cm:workingCopyOwner";
     private static final String PROP_LOCKOWNER = "cm:lockOwner";
+    private static final String PROP_LOCKTYPE = "cm:lockType";
+    private static final String NODE_LOCK = "NODE_LOCK";
 
     @Override
     public boolean evaluate(JSONObject jsonObject)
     {
         try
         {
+            Object lockType = getProperty(jsonObject, PROP_LOCKTYPE);
+            if (lockType != null && ((String) lockType).equalsIgnoreCase(NODE_LOCK))
+            {
+               return false;
+            }
             if (getIsLocked(jsonObject))
             {
                 return getMatchesCurrentUser(jsonObject, PROP_LOCKOWNER);
