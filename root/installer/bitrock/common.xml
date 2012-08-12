@@ -102,10 +102,10 @@ Copyrighted by BitRock
     <folderList>
         <folder>
             <description>Program Files</description>
-            <destination>${installdir}</destination>
+            <destination>${installdir}/common</destination>
             <name>common</name>
             <distributionFileList>
-                <distributionFile origin="${common_distribution_folder}"/>
+                <distributionFile origin="${common_distribution_folder}/*" allowWildcards="1"/>
             </distributionFileList>
             <shouldPackRuleList>
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />

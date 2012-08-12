@@ -653,6 +653,11 @@
          // NodeRef
          record["nodeRef"] = parent.nodeRef;
 
+         // jsNode
+         var jsNode = new Object();
+         jsNode["isContainer"] = parent.isContainer;
+         record["jsNode"] = jsNode;
+
          this.onActionCloudSync(record);
       },
 
