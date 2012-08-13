@@ -1914,7 +1914,7 @@ Alfresco.Share.userAvatar = function(userName, size)
 
          dataTable.doBeforeLoadData = function SimpleDocList_doBeforeLoadData(sRequest, oResponse, oPayload)
          {
-            if (oResponse.results.length === 0)
+            if (oResponse.results && oResponse.results.length === 0)
             {
                oResponse.results.unshift(
                {
