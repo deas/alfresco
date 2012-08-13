@@ -136,19 +136,19 @@ function main()
       });
    }
 
-function getCloudSignUpColumn()
-{
-   return (
+   function getCloudSignUpColumn()
    {
-      title: "welcome.cloud.sign-up.title",
-      description: "welcome.cloud.sign-up.description",
-      imageUrl: "/res/components/images/help-cloud-bw-64.png",
-      actionMsg: "welcome.cloud.sign-up.link",
-      actionHref: "http://www.alfresco.com/cloud?utm_source=AlfEnt4&utm_medium=anchor&utm_campaign=claimnetwork",
-      actionId: null,
-      actionTarget: "_blank"
-   });
-}
+      return (
+      {
+         title: "welcome.cloud.sign-up.title",
+         description: "welcome.cloud.sign-up.description",
+         imageUrl: "/res/components/images/help-cloud-bw-64.png",
+         actionMsg: "welcome.cloud.sign-up.link",
+         actionHref: "http://www.alfresco.com/cloud?utm_source=AlfEnt4&utm_medium=anchor&utm_campaign=claimnetwork",
+         actionId: null,
+         actionTarget: "_blank"
+      });
+   }
 
    model.showDashlet = true;
 
@@ -183,25 +183,25 @@ function getCloudSignUpColumn()
 
       try
       {
-      // Call the repository for the site profile
-      var json = remote.call("/api/sites/" + page.url.templateArgs.site);
-      profile =
-      {
-         title: "",
-         shortName: "",
-         visibility: "PUBLIC"
-      };
-
-      if (json.status == 200)
-      {
-         // Create javascript objects from the repo response
-         var obj = eval('(' + json + ')');
-         if (obj)
+         // Call the repository for the site profile
+         var json = remote.call("/api/sites/" + page.url.templateArgs.site);
+         profile =
          {
-            profile = obj;
-            model.siteNodeRef = obj.node;
+            title: "",
+            shortName: "",
+            visibility: "PUBLIC"
+         };
+
+         if (json.status == 200)
+         {
+            // Create javascript objects from the repo response
+            var obj = eval('(' + json + ')');
+            if (obj)
+            {
+               profile = obj;
+               model.siteNodeRef = obj.node;
+            }
          }
-      }
 
          // Request the current user's preferences to determine whether or not
          // the dashlet should be displayed...
@@ -217,7 +217,7 @@ function getCloudSignUpColumn()
             }
             else
             {
-            hideDashlet = preferences[profile.node.substring(1).replace(/\//g, "-")] != null;
+               hideDashlet = preferences[profile.node.substring(1).replace(/\//g, "-")] != null;
             }
          }
       }
@@ -301,7 +301,7 @@ function getCloudSignUpColumn()
       }
    }
 
-columns[3] = getCloudSignUpColumn();
+   columns[3] = getCloudSignUpColumn();
 
    model.columns = columns;
    model.dashboardUrl = dashboardUrl;
