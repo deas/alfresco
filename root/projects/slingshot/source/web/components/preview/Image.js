@@ -57,9 +57,9 @@ Alfresco.WebPreview.prototype.Plugins.Image.prototype =
        *
        * @property srcMaxSize
        * @type String
-       * @default "500000"
+       * @default "2000000"
        */
-      srcMaxSize: "500000"
+      srcMaxSize: "2000000"
    },
 
    /**
