@@ -68,8 +68,15 @@
          });
 
          // Select the preferred filter in the ui
-         var filter = this.options.filter;
-         filter = Alfresco.util.arrayContains(this.options.validFilters, filter) ? filter : this.options.validFilters[0];
+         var filter = this.options.validFilters[0].type;
+         for (var i=0; i<this.options.validFilters.length; i++)
+         {
+            if (this.options.filter === this.options.validFilters[i].type)
+            {
+               filter = this.options.filter;
+               break;
+            }
+         }
          this.widgets.filter.set("label", this.msg("filter." + filter));
          this.widgets.filter.value = filter;
 
