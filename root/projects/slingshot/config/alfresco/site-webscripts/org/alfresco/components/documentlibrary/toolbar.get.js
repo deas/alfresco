@@ -12,16 +12,18 @@ function widgets()
    }
 
    var docListToolbar = {
-      id : "DocListToolbar", 
-      name : "Alfresco.DocListToolbar",
-      options : {
-         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
-         rootNode : model.rootNode != null ? model.rootNode : "",
-         hideNavBar : Boolean(model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false"),
-         googleDocsEnabled : Boolean(model.googleDocsEnabled != null ? model.googleDocsEnabled : "false"),
-         repositoryBrowsing : model.rootNode != null,
-         useTitle : Boolean(useTitle),
-         syncMode : model.syncMode != null ? model.syncMode : ""
+      id: "DocListToolbar", 
+      name: "Alfresco.DocListToolbar",
+      options: {
+         siteId: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         rootNode: toolbar.rootNode != null ? toolbar.rootNode : "",
+         hideNavBar: Boolean(toolbar.preferences.hideNavBar != null ? toolbar.preferences.hideNavBar != null : "false"),
+         googleDocsEnabled: Boolean(toolbar.googleDocsEnabled != null ? toolbar.googleDocsEnabled : "false"),
+         repositoryBrowsing: toolbar.rootNode != null,
+         useTitle: Boolean(useTitle),
+         syncMode: toolbar.syncMode != null ? toolbar.syncMode : "",
+         createContentByTemplateEnabled: Boolean(model.createContentByTemplateEnabled),
+         createContentActions: model.createContent
       }
    };
    model.widgets = [docListToolbar];

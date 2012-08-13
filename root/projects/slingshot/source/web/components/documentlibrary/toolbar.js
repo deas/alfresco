@@ -243,10 +243,10 @@
 
             // Make sure we load sub menu lazily with data on each click
             var createContentMenu = this.widgets.createContent.getMenu(),
-               groupIndex = 0;
+                groupIndex = 0;
 
             // Create content actions
-            if (this.options.createContentActions.length > 0)
+            if (this.options.createContentActions.length !== 0)
             {
                var menuItems = [], menuItem, content, url, config, html, li;
                for (var i = 0; i < this.options.createContentActions.length; i++)

@@ -28,7 +28,7 @@ function getPreferences()
       }
    }
    
-   model.preferences = preferences;
+   toolbar.preferences = preferences;
 }
 
 function getActionSet(myConfig)
@@ -237,7 +237,7 @@ function getCreateContent()
    var createContentByTemplateConfig = config.scoped["DocumentLibrary"]["create-content-by-template"];
    createContentByTemplateEnabled = createContentByTemplateConfig !== null ? createContentByTemplateConfig.value.toString() == "true" : false;
 
-   model.googleDocsEnabled = googleDocsEnabled;
+   toolbar.googleDocsEnabled = googleDocsEnabled;
    model.createContent = createContent.sort(sortByIndex);
    model.createContentByTemplateEnabled = createContentByTemplateEnabled;
 }
@@ -254,8 +254,10 @@ function getRepositoryBrowserRoot()
       rootNode = repoConfig.value;
    }
 
-   model.rootNode = rootNode;
+   toolbar.rootNode = rootNode;
 }
+
+var toolbar = {};
 
 /**
  * Main entrypoint for component webscript logic
@@ -271,7 +273,7 @@ function main()
    getCreateContent(myConfig);
    getRepositoryBrowserRoot();
 
-   model.syncMode = syncMode.value;
+   toolbar.syncMode = syncMode.value;
 }
 
 main();

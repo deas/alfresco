@@ -12,18 +12,19 @@ function widgets()
    }
 
    var repoDocListToobar = {
-      id : "RepositoryDocListToolbar", 
-      name : "Alfresco.RepositoryDocListToolbar",
-      options : {
-         rootNode : model.rootNode != null ? model.rootNode : "",
-         hideNavBar : Boolean(model.preferences.hideNavBar != null ? model.preferences.hideNavBar != null : "false"),
-         googleDocsEnabled : Boolean(model.googleDocsEnabled != null ? model.googleDocsEnabled : "false"),
-         repositoryBrowsing : model.rootNode != null,
-         useTitle : Boolean(useTitle)
+      id: "RepositoryDocListToolbar", 
+      name: "Alfresco.RepositoryDocListToolbar",
+      options: {
+         rootNode: toolbar.rootNode != null ? toolbar.rootNode : "",
+         hideNavBar: Boolean(toolbar.preferences.hideNavBar != null ? toolbar.preferences.hideNavBar != null : "false"),
+         googleDocsEnabled: Boolean(toolbar.googleDocsEnabled != null ? toolbar.googleDocsEnabled : "false"),
+         repositoryBrowsing: toolbar.rootNode != null,
+         useTitle: Boolean(useTitle),
+         createContentByTemplateEnabled: Boolean(model.createContentByTemplateEnabled),
+         createContentActions: model.createContent
       }
    };
    model.widgets = [repoDocListToobar];
 }
 
 widgets();
-
