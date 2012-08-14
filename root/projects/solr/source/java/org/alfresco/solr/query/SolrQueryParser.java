@@ -719,4 +719,13 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
 
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#addContentCrossLocaleWildcards()
+     */
+    @Override
+    public boolean addContentCrossLocaleWildcards()
+    {
+        return false;
+    }
+
 }

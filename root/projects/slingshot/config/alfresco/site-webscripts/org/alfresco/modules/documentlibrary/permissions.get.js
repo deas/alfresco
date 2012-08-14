@@ -29,6 +29,7 @@ function getRoles()
 }
 
 var roles = getRoles();
+var isSitePublic = isSitePublic();
 var groupNames = [];
 var permGroups = [];
 var permissionGroups = roles.permissionGroups;
@@ -40,7 +41,7 @@ for (group in permissionGroups)
 
    // it is not allowed for a user to increase access for "All Other Users" on a non-public site.
    // so don't show this option in the UI
-   if (groupName == "EVERYONE" && !isSitePublic())
+   if (groupName == "EVERYONE" && !isSitePublic)
    {
       permissionGroups.splice(group, 1);
       continue;
@@ -68,5 +69,6 @@ for (role in siteRoles)
 }
 
 model.siteRoles = roleNames;
+model.isSitePublic = isSitePublic.toString();
 model.permissionGroups = permGroups;
 model.groupNames = groupNames;

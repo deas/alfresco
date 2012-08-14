@@ -283,7 +283,7 @@
           * @property peopleAPI
           * @type {String} Absolute URL
           */
-         peopleAPI: Alfresco.constants.PROXY_URI + "api/people",
+         peopleAPI: Alfresco.constants.PROXY_URI + "api/people/",
 
 
          /**

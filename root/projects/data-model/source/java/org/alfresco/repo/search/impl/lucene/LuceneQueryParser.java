@@ -881,4 +881,13 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
         booleanQuery.add(result, Occur.SHOULD);
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#addContentCrossLocaleWildcards()
+     */
+    @Override
+    public boolean addContentCrossLocaleWildcards()
+    {
+        return true;
+    }
+
 }

@@ -492,7 +492,7 @@
 
                this.rolePickers[permissions[1]].set("label", msg);
             }
-            else if (permissions[1] != "GROUP_EVERYONE")
+            else if (permissions[1] != "GROUP_EVERYONE" || this.options.isSitePublic)
             {
                this.hiddenRoles[permissions[1]] =
                {

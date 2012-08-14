@@ -844,6 +844,7 @@
 
       <zip destfile="${dir.continuous.dist}/${file.name.dist.solr}.zip">
          <zipfileset dir="${dir.project.solr.instance}" />
+         <zipfileset prefix="alf_data/keystore" dir="${dir.project.repository.config}/alfresco/keystore" />
       </zip>
 
    </target>

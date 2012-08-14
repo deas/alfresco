@@ -631,7 +631,6 @@
             var fileInfo = this.fileStore[id];
             if (fileInfo != null && fileInfo.state == this.STATE_ILLEGAL_FILENAME)
             {
-               
                // Add the failure label to the filename & and as a title attribute
                var msg = this.msg("label.illegalChars");
                fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " " + msg;
@@ -884,14 +883,20 @@
          {
             fileInfo.state = this.STATE_FAILURE;
 
+            var errormsg = event.status;
+            // TODO: pass through additional data from Flash Adaptor to return JSON error response text
+            //JSON.parse(fileInfo.request.responseText).message;
+            //errormsg = errormsg.substring(errormsg.indexOf(" ") + 1);
+
             // Add the failure label to the filename & and as a title attribute
             var key = "label.failure." + event.status,
                msg = Alfresco.util.message(key, this.name);
-            if(msg == key)
+            if (msg == key)
             {
-               msg = Alfresco.util.message("label.failure", this.name);
+               msg = Alfresco.util.message("label.failure", this.name, errormsg);
             }
-            fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " " + msg;
+            fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " (" + msg + ")";
+            fileInfo.progressInfo.setAttribute("title", msg);
             fileInfo.progressInfoCell.setAttribute("title", msg);
 
             // Change the style of the progress bar

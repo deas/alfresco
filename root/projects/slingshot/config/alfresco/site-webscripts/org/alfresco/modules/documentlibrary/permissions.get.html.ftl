@@ -5,7 +5,8 @@
       roles:
       {
          <#list siteRoles as siteRole>"${siteRole}": true<#if siteRole_has_next>,</#if></#list>
-      }
+      },
+      isSitePublic: ${isSitePublic}
    }).setMessages(
       ${messages}
    );

@@ -1039,6 +1039,8 @@
       _processUploadFailure: function DND__processUploadFailure(fileInfo, status)
       {
          fileInfo.state = this.STATE_FAILURE;
+         var errormsg = JSON.parse(fileInfo.request.responseText).message;
+         errormsg = errormsg.substring(errormsg.indexOf(" ") + 1);
 
          // Add the failure label to the filename & and as a title attribute
          var key = "label.failure." + status,
@@ -1046,10 +1048,11 @@
 
          if (msg == key)
          {
-            msg = Alfresco.util.message("label.failure", this.name);
+            msg = Alfresco.util.message("label.failure", this.name, errormsg);
          }
          fileInfo.fileSizeInfo["innerHTML"] = fileInfo.fileSizeInfo["innerHTML"] + " (" + msg + ")";
-         fileInfo.progressInfoCell.setAttribute("title", msg);
+         fileInfo.fileSizeInfo.setAttribute("title", msg);
+         fileInfo.progressInfo.setAttribute("title", msg);
 
          // Change the style of the progress bar
          Dom.removeClass(fileInfo.progress, "fileupload-progressSuccess-span");

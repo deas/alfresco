@@ -234,6 +234,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         return defaultSearchMLAnalysisMode;
     }
 
+    public abstract boolean addContentCrossLocaleWildcards();
+    
     /**
      * Lucene default constructor
      * 
@@ -4721,7 +4723,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             List<Locale> expandedLocales = new ArrayList<Locale>();
             for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
             {
-                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, true));
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, addContentCrossLocaleWildcards()));
             }
 
             return addContentSpanQuery(field, first, last, slop, inOrder, expandedFieldName, expandedLocales, mlAnalysisMode);
@@ -4971,7 +4973,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             List<Locale> expandedLocales = new ArrayList<Locale>();
             for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
             {
-                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, true));
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, addContentCrossLocaleWildcards()));
             }
 
             return addContentAttributeQuery(queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, expandedLocales, mlAnalysisMode);
