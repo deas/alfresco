@@ -203,10 +203,10 @@ function showLightbox(objLink)
 		if (objLoadingImage) {	objLoadingImage.style.display = 'none'; }
 
 		// Hide select boxes as they will 'peek' through the image in IE
-		selects = document.getElementsByTagName("select");
+		/*selects = document.getElementsByTagName("select");
         for (i = 0; i != selects.length; i++) {
                 selects[i].style.visibility = "hidden";
-        }
+        }*/
 
 	
 		objLightbox.style.display = 'block';
@@ -241,10 +241,10 @@ function hideLightbox()
 	objLightbox.style.display = 'none';
 
 	// make select boxes visible
-	selects = document.getElementsByTagName("select");
+	/*selects = document.getElementsByTagName("select");
     for (i = 0; i != selects.length; i++) {
 		selects[i].style.visibility = "visible";
-	}
+	}*/
 
 	// disable keypress listener
 	document.onkeypress = '';
