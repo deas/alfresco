@@ -160,7 +160,16 @@ function showLightbox(objLink)
 
 	// set height of Overlay to take up whole page and show
 	objOverlay.style.height = (arrayPageSize[1] + 'px');
+	// NOTE: ALFRESCO: perform fade in effect
+	objOverlay.style.opacity = 0;
 	objOverlay.style.display = 'block';
+   new YAHOO.util.ColorAnim(objOverlay,
+   {
+      opacity:
+      {
+         to: 1
+      }
+   }, 0.25).animate();
 
 	// preload image
 	imgPreload = new Image();
@@ -197,19 +206,28 @@ function showLightbox(objLink)
 		// A small pause between the image loading and displaying is required with IE,
 		// this prevents the previous image displaying for a short burst causing flicker.
 		if (navigator.appVersion.indexOf("MSIE")!=-1){
-			pause(250);
+			pause(100);
 		} 
 
 		if (objLoadingImage) {	objLoadingImage.style.display = 'none'; }
 
+      // NOTE: ALFRESCO: Not required for currently supported browsers
 		// Hide select boxes as they will 'peek' through the image in IE
 		/*selects = document.getElementsByTagName("select");
         for (i = 0; i != selects.length; i++) {
                 selects[i].style.visibility = "hidden";
         }*/
 
-	
+      // NOTE: ALFRESCO: perform fade in effect
+	   objLightbox.style.opacity = 0;
 		objLightbox.style.display = 'block';
+      new YAHOO.util.ColorAnim(objLightbox,
+      {
+         opacity:
+         {
+            to: 1
+         }
+      }, 0.25).animate();
 
 		// After image is loaded, update the overlay height as the new image might have
 		// increased the overall page height.
@@ -240,6 +258,7 @@ function hideLightbox()
 	objOverlay.style.display = 'none';
 	objLightbox.style.display = 'none';
 
+   // NOTE: ALFRESCO: Not required for currently supported browsers
 	// make select boxes visible
 	/*selects = document.getElementsByTagName("select");
     for (i = 0; i != selects.length; i++) {
@@ -320,13 +339,14 @@ function initLightbox()
 	objLightbox.setAttribute('id','lightbox');
 	objLightbox.style.display = 'none';
 	objLightbox.style.position = 'absolute';
-	objLightbox.style.zIndex = '100';	
+	objLightbox.style.boxShadow = '9px 9px 9px #222';
+	objLightbox.style.zIndex = '100';
 	objBody.insertBefore(objLightbox, objOverlay.nextSibling);
 	
 	// create link
 	var objLink = document.createElement("a");
 	objLink.setAttribute('href','#');
-	objLink.setAttribute('title','Click to close');
+	//objLink.setAttribute('title','Click to close');
 	objLink.onclick = function () {hideLightbox(); return false;}
 	objLightbox.appendChild(objLink);
 
@@ -365,10 +385,11 @@ function initLightbox()
 	objLightboxDetails.appendChild(objCaption);
 
 	// create keyboard message
-	var objKeyboardMsg = document.createElement("div");
+	// NOTE: ALFRESCO: remove messages
+	/*var objKeyboardMsg = document.createElement("div");
 	objKeyboardMsg.setAttribute('id','keyboardMsg');
-	objKeyboardMsg.innerHTML = 'press <a href="#" onclick="hideLightbox(); return false;"><kbd>x</kbd></a> to close';
-	objLightboxDetails.appendChild(objKeyboardMsg);
+	objKeyboardMsg.innerHTML = 'Press <a href="#" onclick="hideLightbox(); return false;"><kbd>X</kbd></a> to close.';
+	objLightboxDetails.appendChild(objKeyboardMsg);*/
 }
 
 
