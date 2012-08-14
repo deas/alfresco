@@ -234,125 +234,120 @@
          return result;
       },
 
-      buildImageUrlByRecord: function(record)
-      {
-         var type = record.getData("type"),
-            nodeRef = record.getData("nodeRef"),
-            modifiedOn = record.getData("modifiedOn");
-
-         return this.buildImageUrl(type, nodeRef, modifiedOn);
-      },
-
-      buildImageUrl: function(type, nodeRef, modifiedOn)
+      buildThumbnailUrl: function(type, nodeRef, modifiedOn)
       {
          var imageUrl = '';
          switch (type)
          {
-         case "document":
-            imageUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + nodeRef.replace(":/", "");
-            imageUrl += "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + Alfresco.util.encodeHTML(modifiedOn);
-            break;
-
-         case "folder":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/folder.png';
-            break;
-
-         case "blogpost":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/blog-post.png';
-            break;
-
-         case "forumpost":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/topic-post.png';
-            break;
-
-         case "calendarevent":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/calendar-event.png';
-            break;
-
-         case "wikipage":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/wiki-page.png';
-            break;
-
-         case "link":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/link.png';
-            break;
-
-         case "datalist":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/datalist.png';
-            break;
-
-         case "datalistitem":
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/datalistitem.png';
-            break;
-
-         default:
-            imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/generic-result.png';
-            break;
+            case "document":
+               imageUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/" + nodeRef.replace(":/", "");
+               imageUrl += "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + Alfresco.util.encodeHTML(modifiedOn);
+               break;
+   
+            case "folder":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/folder.png';
+               break;
+   
+            case "blogpost":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/blog-post.png';
+               break;
+   
+            case "forumpost":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/topic-post.png';
+               break;
+   
+            case "calendarevent":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/calendar-event.png';
+               break;
+   
+            case "wikipage":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/wiki-page.png';
+               break;
+   
+            case "link":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/link.png';
+               break;
+   
+            case "datalist":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/datalist.png';
+               break;
+   
+            case "datalistitem":
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/datalistitem.png';
+               break;
+   
+            default:
+               imageUrl = Alfresco.constants.URL_RESCONTEXT + 'components/search/images/generic-result.png';
+               break;
          }
          return imageUrl;
       },
 
-      buildThumbnailHtmlByRecord: function(record)
+      buildThumbnailHtml: function(record, height, width)
       {
-         var displayName = record.getData("displayName"),
-            type = record.getData("type"),
-            name = record.getData("name"),
-            nodeRef = record.getData("nodeRef"),
-            site = record.getData("site"),
-            path = record.getData("path"),
-            container = record.getData("container"),
-            modifiedOn = record.getData("modifiedOn");
+         var config = {
+            displayName: record.getData("displayName"),
+            type: record.getData("type"),
+            name: record.getData("name"),
+            nodeRef: record.getData("nodeRef"),
+            site: record.getData("site"),
+            path: record.getData("path"),
+            container: record.getData("container"),
+            modifiedOn: record.getData("modifiedOn"),
+            mimetype: record.getData("mimetype"),
+            width: width,
+            height: height
+         };
 
-         return this.buildThumbnailHtml(displayName, type, name, nodeRef, site, path, container, modifiedOn);
-      },
+         var html = this._buildThumbnailHtml(config);
 
-      buildThumbnailHtmlByRecordWithAdditionalParams: function(record, height, width)
-      {
-         var displayName = record.getData("displayName"),
-            type = record.getData("type"),
-            name = record.getData("name"),
-            nodeRef = record.getData("nodeRef"),
-            site = record.getData("site"),
-            path = record.getData("path"),
-            container = record.getData("container"),
-            modifiedOn = record.getData("modifiedOn");
-
-         return this.buildThumbnailHtmlImgEl(displayName, type, name, nodeRef, site, path, container, modifiedOn, height, width);         
-      },
-      
-      buildThumbnailHtmlImgEl: function(displayName, type, name, nodeRef, site, path, container, modifiedOn, height, width)
-      {
-         var url = this.getBrowseUrl(name, type, site, path, nodeRef, container, modifiedOn),
-             imageUrl = this.buildImageUrl(type, nodeRef, modifiedOn),
-             htmlName = $html(displayName),
-             html;
-         if (height && width)
+         if (width && height)
          {
-            html = '<span><a href="' + url + '"><img src="' + imageUrl + '" alt="' + htmlName + '" title="' + htmlName + '" width="' + width + '" height="' + height + '" /></a></span>';
+            return html;
          }
-         else
+
+         if (config.type === "document")
          {
-            html = '<span><a href="' + url + '"><img src="' + imageUrl + '" alt="' + htmlName + '" title="' + htmlName + '" /></a></span>';
+            var viewUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/content/" + config.nodeRef.replace(":/", "") + "/" + encodeURIComponent(config.name),
+                isImage = (config.mimetype && config.mimetype.match("^image/")),
+                actions = '<div class="action-overlay">';
+            if (!isImage)
+            {
+               actions += '<a href="' + viewUrl + '" target="_blank"><img title="' + $html($msg("label.viewinbrowser")) +
+                       '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/search/images/view-in-browser-16.png" width="16" height="16"/></a>';
+            }
+            else
+            {
+               actions += '<a href="' + this.getBrowseUrlForRecord(record) + '"><img title="' + $html($msg("label.viewdetails")) +
+                       '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/actions/document-view-details-16.png" width="16" height="16"/></a>';
+            }
+            actions += '<a href="' + viewUrl + '?a=true" style="padding-left:4px" target="_blank"><img title="' + $html($msg("label.download")) +
+                    '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/search/images/download-16.png" width="16" height="16"/></a>';
+            actions += '</div>';
+            
+            html = actions + html;
          }
 
          return html;
       },
-
-      buildThumbnailHtml: function(displayName, type, name, nodeRef, site, path, container, modifiedOn)
+      
+      _buildThumbnailHtml: function(config)
       {
-         var html = this.buildThumbnailHtmlImgEl(displayName, type, name, nodeRef, site, path, container, modifiedOn);
-
-         if (type === "document")
+         var url, isImage = (config.mimetype && config.mimetype.match("^image/"));
+         if (isImage)
          {
-            var viewUrl = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/content/" + nodeRef.replace(":/", "") + "/" + name;
-            html = '<div class="action-overlay">' +
-               '<a href="' + encodeURI(viewUrl) + '" target="_blank"><img title="' + $html($msg("label.viewinbrowser")) +
-               '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/search/images/view-in-browser-16.png" width="16" height="16"/></a>' +
-               '<a href="' + encodeURI(viewUrl + "?a=true") + '" style="padding-left:4px" target="_blank"><img title="' + $html($msg("label.download")) +
-               '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/search/images/download-16.png" width="16" height="16"/></a>' +
-               '</div>' + html;
+            url = Alfresco.constants.PROXY_URI_RELATIVE + "api/node/content/" + config.nodeRef.replace(":/", "") + "/" + encodeURIComponent(config.name);
          }
-
+         else
+         {
+            url = this.getBrowseUrl(config.name, config.type, config.site, config.path, config.nodeRef, config.container, config.modifiedOn);
+         }
+         
+         var imageUrl = this.buildThumbnailUrl(config.type, config.nodeRef, config.modifiedOn),
+             htmlName = $html(config.displayName);
+         
+         var html = '<span><a href="' + url + '"' + (isImage ? ' onclick="showLightbox(this);return false;"' : "") + '><img src="' + imageUrl + '" alt="' + htmlName + '" title="' + htmlName + '"' + (config.height && config.width ? ' width="' + config.width + '" height="' + config.height + '"' : "") + '/></a></span>';
+         
          return html;
       }
    });

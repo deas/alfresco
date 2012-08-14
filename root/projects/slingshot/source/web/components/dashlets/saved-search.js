@@ -193,11 +193,14 @@
        * @param oRecord {object}
        * @param oColumn {object}
        * @param oData {object|string}
-       *
        */
       renderCellThumbnail: function SavedSearch_renderCellThumbnail(elCell, oRecord, oColumn, oData)
       {
-         elCell.innerHTML = this.buildThumbnailHtmlByRecordWithAdditionalParams(oRecord, 48, 48);
+         if (oRecord.getData("type") === "document")
+         {
+            Dom.addClass(elCell.parentNode, "thumbnail");
+         }
+         elCell.innerHTML = this.buildThumbnailHtml(oRecord, 48, 48);
       },
 
       /**
@@ -208,7 +211,6 @@
        * @param oRecord {object}
        * @param oColumn {object}
        * @param oData {object|string}
-       *
        */
       renderCellDescription: function SavedSearch_renderCellDescription(elCell, oRecord, oColumn, oData)
       {

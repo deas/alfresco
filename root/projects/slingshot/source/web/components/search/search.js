@@ -365,7 +365,7 @@
                Dom.addClass(elCell, "thumbnail");
             }
             
-            elCell.innerHTML = me.buildThumbnailHtmlByRecord(oRecord);
+            elCell.innerHTML = me.buildThumbnailHtml(oRecord);
          };
 
          /**
@@ -379,10 +379,8 @@
           */
          renderCellDescription = function Search_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
-            // apply styles (TODO: TD class?)
-            Dom.setStyle(elCell.parentNode, "line-height", "1.5em");
-            Dom.setStyle(elCell.parentNode, "border-right", "none");
-            Dom.setStyle(elCell.parentNode, "vertical-align", "top");
+            // apply class to the appropriate TD cell
+            Dom.addClass(elCell.parentNode, "description");
             
             // site and repository items render with different information available
             var site = oRecord.getData("site");

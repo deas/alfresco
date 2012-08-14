@@ -11,7 +11,7 @@
 .search .search-sites
 {
    margin-bottom: -0.75em;
-   padding: 1.25em 0 0 1.25em;
+   padding: 1em 0 0 1.25em;
 }
 
 .search .search-sites a.bold
@@ -103,6 +103,13 @@
 .search .thumbnail > span img
 {
    box-shadow: 3px 3px 5px #888;
+}
+
+.search table td.description
+{
+   line-height: 1.5em;
+   border-right: none;
+   vertical-align: top;
 }
 
 .search .itemname
