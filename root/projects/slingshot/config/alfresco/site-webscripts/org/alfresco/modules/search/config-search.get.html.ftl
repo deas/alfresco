@@ -1,6 +1,6 @@
 <#assign el=args.htmlid?html>
 <div id="${el}-configDialog">
-   <div class="hd">${msg("label.enterSearchTerm")}:</div>
+   <div class="hd">${msg("label.enterSearchTerm")}</div>
    <div class="bd">
       <form id="${el}-form" action="" method="POST">
          <div class="yui-gd">
