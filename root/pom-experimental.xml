@@ -87,14 +87,24 @@
     <module>projects/repository</module>
     <module>projects/wdr-deployment</module>
     <module>projects/remote-api</module>
+    <module>projects/web-framework-commons</module>
     <module>projects/jndi-client</module>
     <module>projects/catalina-virtual</module>
-    <module>projects/web-framework-commons</module>
     <module>enterpriseprojects/repository</module>
     <module>enterpriseprojects/remote-api</module>
     <module>projects/web-client</module>
     <module>projects/web-service-client</module>
     <module>projects/slingshot</module>
+    <module>projects/web-editor</module>
+    <module>projects/web-editor-plugin</module>
+    <module>projects/solr</module>
+    <module>projects/file-transfer-receiver</module>
+<!-- TODO
+    <module>modules/sharepoint/amp</module>
+    <module>modules/wcmquickstart</module>
+    <module>enterprisemodules/xamconnector</module>
+    <module>projects/web-editor-samples</module>
+-->
   </modules>
 
   <properties>
