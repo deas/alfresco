@@ -91,6 +91,7 @@
     <module>projects/catalina-virtual</module>
     <module>projects/web-framework-commons</module>
     <module>enterpriseprojects/repository</module>
+    <module>enterpriseprojects/remote-api</module>
     <module>projects/web-client</module>
     <module>projects/web-service-client</module>
     <module>projects/slingshot</module>
@@ -229,11 +230,11 @@
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12.1</version>
+                <version>2.12.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.11</version> <!-- Waiting for SUREFIRE-827 fix to be released -->
+                <version>2.12.2</version>
                 <configuration>
                     <!-- To prevent tests alfresco.log to be created in project roots and bother while synchronizing with SCM -->
                     <workingDirectory>${project.build.directory}</workingDirectory>
@@ -355,7 +356,7 @@
         </plugin>
         <plugin>
             <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.12.1</version>
+            <version>2.12.2</version>
         </plugin>
         <plugin>
             <artifactId>maven-pmd-plugin</artifactId>
@@ -426,6 +427,7 @@
                                             <exclude>**/MockClass*.java</exclude>
                                             <exclude>**/MockedTest*.java</exclude>
                                             <exclude>**/*Test.java</exclude>
+                                            <exclude>**/*Test_.java</exclude>
                                             <exclude>**/*Tester.java</exclude>
                                             <exclude>**/*TestingUtils.java</exclude>
                                             <exclude>**/*Tests.java</exclude>
@@ -486,6 +488,7 @@
                                             <include>**/MockClass*.java</include>
                                             <include>**/MockedTest*.java</include>
                                             <include>**/*Test.java</include>
+                                            <include>**/*Test_.java</include>
                                             <include>**/*Tester.java</include>
                                             <include>**/*TestingUtils.java</include>
                                             <include>**/*Tests.java</include>
