@@ -1052,6 +1052,9 @@
         <property name="protocol">
             <value>${vti.server.external.protocol}</value>
         </property>
+        <property name="contextPath">
+            <value>${vti.server.external.contextPath}</value>
+        </property>
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />
         </property>

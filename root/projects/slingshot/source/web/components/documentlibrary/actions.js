@@ -708,26 +708,7 @@
             // Ensure we have the record's onlineEditUrl populated
             if (!$isValueSet(record.onlineEditUrl))
             {
-               var onlineEditUrl = this.doclistMetadata.custom.vtiServer.host + ":" +
-                     this.doclistMetadata.custom.vtiServer.port + "/" +
-                     $combine("alfresco", loc.site.name, loc.container.name, loc.path, loc.file);
-
-               if (!(/^(http|https):\/\//).test(onlineEditUrl))
-               {
-                  // Did they specify the protocol on the vti server bean?
-                  var protocol = this.doclistMetadata.custom.vtiServer.protocol;
-                  if (protocol == null)
-                  {
-                      // If it's not set, assume it's the same as Share
-                      protocol = window.location.protocol;
-                      // Get it without the trailing colon, to match the vti property form
-                      protocol = protocol.substring(0, protocol.length-1);
-                  }
-
-                  // Build up the full HTTP / HTTPS URL
-                  onlineEditUrl = protocol + "://" + onlineEditUrl;
-               }
-               record.onlineEditUrl = onlineEditUrl;
+               record.onlineEditUrl = Alfresco.util.onlineEditUrl(this.doclistMetadata.custom.vtiServer, loc);
             }
 
             if (YAHOO.env.ua.ie > 0)

@@ -184,6 +184,48 @@ Alfresco.util.isSharePointPluginInstalled = function()
 };
 
 /**
+ * Creates a url for online editing with sharepoint.
+ *
+ * @method Alfresco.util.onlineEditUrl
+ * @param vtiServer {Object} (Required) Vti Server config object
+ * @param vtiServer.protocol {String} (Optional) The protocol to use (Defaults to the current page's protocol, i.e. "http" or "https")
+ * @param vtiServer.host {String}
+ * @param vtiServer.port {Number}
+ * @param vtiServer.contextPath {String}
+ * @param location {Object} (Required) Object describing the location of the file to edit
+ * @param location.site {Object} Object describing the site the file is located in
+ * @param location.site.name {String} The shortname of the site the file is located in
+ * @param location.container {Object} Object describing the container the file is located in
+ * @param location.container.name {String} The name of the container the files is located in
+ * @param location.path {String} The path to the file inside the container
+ * @param location.file {String} The name of the file to edit
+ * @return {String} The url to where the document can be edited online
+ */
+Alfresco.util.onlineEditUrl = function(vtiServer, location)
+{
+   // Thor: used by overridden JS to place the tenant domain into the URL.
+   var tenant = location.tenant ? location.tenant : "";
+   var onlineEditUrl = vtiServer.host + ":" + vtiServer.port + "/" +
+      Alfresco.util.combinePaths(vtiServer.contextPath, tenant, location.site ? location.site.name : "", location.container ? location.container.name : "", location.path, location.file);
+   if (!(/^(http|https):\/\//).test(onlineEditUrl))
+   {
+      // Did they specify the protocol on the vti server bean?
+      var protocol = vtiServer.protocol;
+      if (protocol == null)
+      {
+         // If it's not set, assume it's the same as Share
+         protocol = window.location.protocol;
+         // Get it without the trailing colon, to match the vti property form
+         protocol = protocol.substring(0, protocol.length-1);
+      }
+
+      // Build up the full HTTP / HTTPS URL
+      onlineEditUrl = protocol + "://" + onlineEditUrl;
+   }
+   return onlineEditUrl;
+};
+
+/**
  * Appends an array onto an object
  *
  * @method Alfresco.util.appendArrayToObject
