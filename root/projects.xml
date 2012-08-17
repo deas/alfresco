@@ -2114,7 +2114,6 @@
       </copy>
       <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/classes" verbose="${copy.verbose}">
          <zipfileset dir="${dir.module.spp.config}">
-            <exclude name="**/module.properties" />
             <exclude name="**/vti-handler-alfresco2-context.xml.sample" />
          </zipfileset>
       </copy>
