@@ -99,9 +99,11 @@
     <module>projects/web-editor-plugin</module>
     <module>projects/solr</module>
     <module>projects/file-transfer-receiver</module>
-<!-- TODO
     <module>modules/sharepoint/amp</module>
-    <module>modules/wcmquickstart</module>
+    <module>modules/wcmquickstart/wcmquickstartmodule</module>
+    <module>modules/wcmquickstart/wcmquickstartclientapi</module>
+    <module>modules/wcmquickstart/wcmquickstartwebsite</module>
+<!-- TODO
     <module>enterprisemodules/xamconnector</module>
     <module>projects/web-editor-samples</module>
 -->

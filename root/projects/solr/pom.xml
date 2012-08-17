@@ -53,17 +53,13 @@
         </dependency>
     </dependencies>
 
-    <!-- Skip tests: they are not run in the Ant build, and they all fail... -->
-    <!-- Property to be able to run tests with -DskipTests=false -->
-    <properties>
-        <skipTests>true</skipTests>
-    </properties>
+    <!-- Only run a few test methods. All other tests fail, and are never run in the Ant build -->
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>${skipTests}</skipTests>
+                        <test>AlfrescoSolrEventListenerTest#testAllMatch*</test>
                 </configuration>
             </plugin>
         </plugins>
