@@ -408,6 +408,7 @@ public class DictionaryQuery extends SingletonValueProcessorExtension<Dictionary
         {
            throw new AlfrescoRuntimeException("Unable to retrieve dictionary information from Alfresco: " + response.getStatus().getCode());
         }
+        
         return dictionary;
     }
 

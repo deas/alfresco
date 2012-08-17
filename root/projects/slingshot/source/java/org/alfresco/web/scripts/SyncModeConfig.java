@@ -71,8 +71,6 @@ public class SyncModeConfig extends SingletonValueProcessorExtension<String> imp
             final Response response = conn.call("/enterprise/sync/config");
             if (response.getStatus().getCode() == Status.STATUS_OK)
             {
-                logger.info("Successfully retrieved Sync Mode configuration from Alfresco.");
-                
                 try
                 {
                     // extract sync mode
@@ -80,6 +78,7 @@ public class SyncModeConfig extends SingletonValueProcessorExtension<String> imp
                     if (json.has("syncMode"))
                     {
                         syncModeConfig = json.getString("syncMode");
+                        logger.info("Successfully retrieved Sync Mode configuration from Alfresco: " + syncModeConfig);
                     }
                     else
                     {

@@ -118,6 +118,7 @@ public abstract class SingletonValueProcessorExtension<T> extends BaseProcessorE
         {
             this.lock.readLock().unlock();
         }
+        
         return result;
     }
     

@@ -1,11 +1,7 @@
 function main()
 {
-   // Check for IMAP server status
-   var result = remote.call("/imap/servstatus"),
-      imapServerEnabled = (result.status == 200 && result == "enabled");
-
    // Prepare the model for the template
-   model.imapServerEnabled = imapServerEnabled;
+   model.imapServerEnabled = imapServerStatus.enabled;
    
    // Widget instantiation metadata...
    var dashboardconfig = config.scoped['Dashboard']['dashboard'];
@@ -19,7 +15,7 @@ function main()
       id : "MySites", 
       name : "Alfresco.dashlet.MySites",
       options : {
-         imapEnabled : Boolean(imapServerEnabled),
+         imapEnabled : Boolean(imapServerStatus.enabled),
          listSize : parseInt(listSize)
       }
    };

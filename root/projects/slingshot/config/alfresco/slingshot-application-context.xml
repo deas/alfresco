@@ -188,30 +188,29 @@
 
    <bean id="webscript.org.springframework.extensions.messages.post" parent="webscript" class="org.alfresco.web.scripts.MessagesWebScript" />
 
+   <!-- Scripting model extensions -->
+   <bean id="slingshot.scriptprocessor.imapServerStatus" parent="baseScriptExtension" class="org.alfresco.web.scripts.ImapServerStatus">
+      <property name="extensionName" value="imapServerStatus" />
+   </bean>
+
    <bean id="slingshot.scriptprocessor.syncModeConfig" parent="baseScriptExtension" class="org.alfresco.web.scripts.SyncModeConfig">
-      <property name="extensionName">
-         <value>syncMode</value>
-      </property>
+      <property name="extensionName" value="syncMode" />
    </bean>
 
    <bean id="slingshot.scriptprocessor.dictionaryQuery" parent="baseScriptExtension" class="org.alfresco.web.scripts.DictionaryQuery">
-      <property name="extensionName">
-         <value>dictionary</value>
-      </property>
+      <property name="extensionName" value="dictionary" />
    </bean>
 
    <bean id="slingshot.scriptprocessor.evaluatorHelper" parent="baseScriptExtension" class="org.alfresco.web.scripts.ActionEvaluatorHelper">
-      <property name="extensionName" value="evaluatorHelper"/>
+      <property name="extensionName" value="evaluatorHelper" />
    </bean>
 
    <bean id="slingshot.scriptprocessor.resolverHelper" parent="baseScriptExtension" class="org.alfresco.web.scripts.ResolverHelper">
-      <property name="extensionName" value="resolverHelper"/>
+      <property name="extensionName" value="resolverHelper" />
    </bean>
 
    <bean id="slingshot.templateprocessor.mimetypesQuery" parent="baseTemplateExtension" class="org.alfresco.web.scripts.MimetypesQuery">
-      <property name="extensionName">
-         <value>mimetypes</value>
-      </property>
+      <property name="extensionName" value="mimetypes" />
    </bean>
 
    <!-- Extension utils -->
