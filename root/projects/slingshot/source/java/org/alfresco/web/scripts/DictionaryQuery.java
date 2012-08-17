@@ -24,11 +24,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.util.ParameterCheck;
+import org.alfresco.web.scripts.Dictionary.DictionaryAssoc;
+import org.alfresco.web.scripts.Dictionary.DictionaryItem;
+import org.alfresco.web.scripts.Dictionary.DictionaryProperty;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -42,7 +43,6 @@ import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.Response;
-import org.springframework.extensions.webscripts.processor.BaseProcessorExtension;
 
 /**
  * Slingleton scripting host object provided to allows scripts to execute basic
@@ -55,15 +55,9 @@ import org.springframework.extensions.webscripts.processor.BaseProcessorExtensio
  * @author Kevin Roast
  */
 @SuppressWarnings("serial")
-public class DictionaryQuery extends BaseProcessorExtension implements Serializable
+public class DictionaryQuery extends SingletonValueProcessorExtension<Dictionary> implements Serializable
 {
     private static Log logger = LogFactory.getLog(DictionaryQuery.class);
-    
-    /** Map of Alfresco tenant domains to dictionary objects */
-    private final Map<String, Dictionary> dictionaries = new HashMap<String, Dictionary>();
-    
-    /** Lock for access to data dictionary */
-    private final ReadWriteLock dictionaryLock = new ReentrantReadWriteLock();
     
     
     /**
@@ -359,504 +353,470 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
      */
     private Dictionary getDictionary()
     {
-        Dictionary dictionary;
-        
-        // resolve the tenant domain from the user ID
-        final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
-        final String userId = rc.getUserId();
-        if (userId == null || AuthenticationUtil.isGuest(userId))
-        {
-            throw new AlfrescoRuntimeException("User ID must exist and cannot be guest.");
-        }
-        String storeId = "";            // default domain
-        int idx = userId.indexOf('@');
-        if (idx != -1)
-        {
-            // assume MT so partition by user domain
-            storeId = userId.substring(idx);
-        }
-        
-        // NOTE: currently there is a single RRW lock for all dictionaries -
-        // in a heavily multi-tenant scenario (especially ones with new tenants
-        // being created often) the first access of a new tenant dictionary would
-        // potentially slow other tenant users access to their dictionary.
-        // In this situation a lock per tenant would be preferable.
-        this.dictionaryLock.readLock().lock();
-        try
-        {
-            dictionary = dictionaries.get(storeId);
-            if (dictionary == null)
-            {
-                this.dictionaryLock.readLock().unlock();
-                this.dictionaryLock.writeLock().lock();
-                try
-                {
-                    // check again, as more than one thread could have been waiting on the Write lock 
-                    dictionary = dictionaries.get(storeId);
-                    if (dictionary == null)
-                    {
-                        // initiate a call to retrieve the dictionary from the repository
-                        final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
-                        final Response response = conn.call("/api/dictionary");
-                        if (response.getStatus().getCode() == Status.STATUS_OK)
-                        {
-                            logger.info("Successfully retrieved dictionary information from Alfresco." +
-                                        (storeId.length() != 0 ? (" - for domain: " + storeId) : ""));
-                            
-                            final Map<String, DictionaryItem> types = new HashMap<String, DictionaryItem>(128);
-                            final Map<String, DictionaryItem> aspects = new HashMap<String, DictionaryItem>(128);
-                            
-                            // TODO: remove url field from response template? waste of space...
-                            
-                            // extract dictionary types and aspects
-                            final JSONArray json = new JSONArray(response.getResponse());
-                            for (int i=0; i<json.length(); i++)
-                            {
-                                // get the object representing the dd class
-                                JSONObject ddclass = json.getJSONObject(i);
-                                
-                                // is this an aspect or a type definition?
-                                String typeName = ddclass.getString("name");
-                                if (ddclass.getBoolean("isAspect"))
-                                {
-                                    aspects.put(typeName, new DictionaryItem(typeName, ddclass));
-                                }
-                                else
-                                {
-                                    types.put(typeName, new DictionaryItem(typeName, ddclass));
-                                }
-                            }
-                            
-                            // store the dictionary against the tenant domain
-                            dictionary = new Dictionary(types, aspects);
-                            this.dictionaries.put(storeId, dictionary);
-                        }
-                        else
-                        {
-                           throw new AlfrescoRuntimeException("Unable to retrieve dictionary information from Alfresco: " + response.getStatus().getCode());
-                        }
-                    }
-                }
-                catch (ConnectorServiceException cerr)
-                {
-                    throw new AlfrescoRuntimeException("Unable to retrieve dictionary information from Alfresco: " + cerr.getMessage());
-                }
-                catch (Exception err)
-                {
-                    throw new AlfrescoRuntimeException("Failed processing dictionary information from Alfresco: " + err.getMessage());
-                }
-                finally
-                {
-                    this.dictionaryLock.readLock().lock();
-                    this.dictionaryLock.writeLock().unlock();
-                }
-            }
-        }
-        finally
-        {
-            this.dictionaryLock.readLock().unlock();
-        }
-        return dictionary;
+        return getSingletonValue(true);
     }
     
-    
-    /**
-     * Class representing a Data Dictionary model instance. There will be a DD instance
-     * for each tenant in Alfresco, for a single tenant instance there will only be one.
-     * <p>
-     * Handles the internals of various dictionary queries and manipulates the JSON data
-     * that represents each type, aspect and its properties. The various public methods
-     * on the DictionaryQuery should stay isolated from the JSON internals.
-     */
-    private class Dictionary
+    @Override
+    protected Dictionary retrieveValue(final String userId, final String storeId)
+            throws ConnectorServiceException
     {
-        static final String JSON_IS_CONTAINER = "isContainer";
-        static final String JSON_DESCRIPTION = "description";
-        static final String JSON_TITLE = "title";
-        static final String JSON_PROPERTIES = "properties";
-        static final String JSON_DEFAULT_ASPECTS = "defaultAspects";
-        static final String JSON_NAME = "name";
-        static final String JSON_PARENT = "parent";
-        static final String JSON_DATATYPE = "dataType";
-        static final String JSON_DEFAULTVALUE = "defaultValue";
-        static final String JSON_MULTIVALUED = "multiValued";
-        static final String JSON_MANDATORY = "mandatory";
-        static final String JSON_ENFORCED = "enforced";
-        static final String JSON_PROTECTED = "protected";
-        static final String JSON_INDEXED = "indexed";
-        static final String JSON_ASSOCIATIONS = "associations";
-        static final String JSON_CHILDASSOCIATIONS = "childassociations";
-        static final String JSON_SOURCE = "source";
-        static final String JSON_TARGET = "target";
-        static final String JSON_CLASS = "class";
-        static final String JSON_ROLE = "role";
-        static final String JSON_MANY = "many";
+        Dictionary dictionary;
         
-        final private Map<String, DictionaryItem> types;
-        final private Map<String, DictionaryItem> aspects;
-        
-        /**
-         * Constructor
-         * 
-         * @param types     Map of short type names to to DictionaryItem objects
-         * @param aspects   Map of short aspect names to to DictionaryItem objects
-         */
-        Dictionary(Map<String, DictionaryItem> types, Map<String, DictionaryItem> aspects)
+        // initiate a call to retrieve the dictionary from the repository
+        final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
+        final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
+        final Response response = conn.call("/api/dictionary");
+        if (response.getStatus().getCode() == Status.STATUS_OK)
         {
-            this.types = types;
-            this.aspects = aspects;
-        }
-        
-        public DictionaryItem getType(String type)
-        {
-            return (DictionaryItem)this.types.get(type);
-        }
-        
-        public DictionaryItem getAspect(String aspect)
-        {
-            return (DictionaryItem)this.aspects.get(aspect);
-        }
-        
-        public DictionaryItem getTypeOrAspect(String ddclass)
-        {
-            DictionaryItem item = (DictionaryItem)this.types.get(ddclass);
-            if (item == null)
-            {
-                item = (DictionaryItem)this.aspects.get(ddclass);
-            }
-            return item;
-        }
-        
-        public boolean isSubType(String type, String isType)
-        {
-            boolean isSubType = false;
+            logger.info("Successfully retrieved Data Dictionary from Alfresco." +
+                        (storeId.length() != 0 ? (" - for domain: " + storeId) : ""));
+            
+            final Map<String, DictionaryItem> types = new HashMap<String, DictionaryItem>(128);
+            final Map<String, DictionaryItem> aspects = new HashMap<String, DictionaryItem>(128);
+            
+            // TODO: remove url field from response template? waste of space...
+            
+            // extract dictionary types and aspects
             try
             {
-                DictionaryItem ddtype = getType(type);
-                while (!isSubType && ddtype != null)
+                JSONArray json = new JSONArray(response.getResponse());
+                for (int i=0; i<json.length(); i++)
                 {
-                    // the parent JSON object will always exist, but may be empty
-                    JSONObject parent = ddtype.data.getJSONObject(JSON_PARENT);
-                    if (parent.has(JSON_NAME))
+                    // get the object representing the dd class
+                    JSONObject ddclass = json.getJSONObject(i);
+                    
+                    // is this an aspect or a type definition?
+                    String typeName = ddclass.getString("name");
+                    if (ddclass.getBoolean("isAspect"))
                     {
-                        // found a parent type specified for our type
-                        String parentName = parent.getString(JSON_NAME);
-                        ddtype = this.types.get(parentName);
-                        if (ddtype != null)
-                        {
-                            isSubType = (isType.equals(ddtype.data.getString(JSON_NAME)));
-                        }
+                        aspects.put(typeName, new DictionaryItem(typeName, ddclass));
                     }
                     else
                     {
-                        // no parent found - end the search
-                        ddtype = null;
+                        types.put(typeName, new DictionaryItem(typeName, ddclass));
                     }
                 }
             }
-            catch (JSONException jsonErr)
+            catch (JSONException e)
             {
-                throw new AlfrescoRuntimeException("Error retrieving subtype/parent information for: " + type, jsonErr);
+                throw new AlfrescoRuntimeException(e.getMessage(), e);
             }
-            return isSubType;
+            
+            dictionary = new Dictionary(types, aspects);
         }
-        
-        public boolean hasDefaultAspect(String type, String aspect)
+        else
         {
-            boolean hasAspect = false;
-            try
+           throw new AlfrescoRuntimeException("Unable to retrieve dictionary information from Alfresco: " + response.getStatus().getCode());
+        }
+        return dictionary;
+    }
+
+    @Override
+    protected String getValueName()
+    {
+        return "dictionary information";
+    }
+}
+
+
+/**
+ * Class representing a Data Dictionary model instance. There will be a DD instance
+ * for each tenant in Alfresco, for a single tenant instance there will only be one.
+ * <p>
+ * Handles the internals of various dictionary queries and manipulates the JSON data
+ * that represents each type, aspect and its properties. The various public methods
+ * on the DictionaryQuery should stay isolated from the JSON internals.
+ * 
+ * @author Kevin Roast
+ */
+class Dictionary
+{
+    static final String JSON_IS_CONTAINER = "isContainer";
+    static final String JSON_DESCRIPTION = "description";
+    static final String JSON_TITLE = "title";
+    static final String JSON_PROPERTIES = "properties";
+    static final String JSON_DEFAULT_ASPECTS = "defaultAspects";
+    static final String JSON_NAME = "name";
+    static final String JSON_PARENT = "parent";
+    static final String JSON_DATATYPE = "dataType";
+    static final String JSON_DEFAULTVALUE = "defaultValue";
+    static final String JSON_MULTIVALUED = "multiValued";
+    static final String JSON_MANDATORY = "mandatory";
+    static final String JSON_ENFORCED = "enforced";
+    static final String JSON_PROTECTED = "protected";
+    static final String JSON_INDEXED = "indexed";
+    static final String JSON_ASSOCIATIONS = "associations";
+    static final String JSON_CHILDASSOCIATIONS = "childassociations";
+    static final String JSON_SOURCE = "source";
+    static final String JSON_TARGET = "target";
+    static final String JSON_CLASS = "class";
+    static final String JSON_ROLE = "role";
+    static final String JSON_MANY = "many";
+    
+    final private Map<String, DictionaryItem> types;
+    final private Map<String, DictionaryItem> aspects;
+    
+    /**
+     * Constructor
+     * 
+     * @param types     Map of short type names to to DictionaryItem objects
+     * @param aspects   Map of short aspect names to to DictionaryItem objects
+     */
+    Dictionary(Map<String, DictionaryItem> types, Map<String, DictionaryItem> aspects)
+    {
+        this.types = types;
+        this.aspects = aspects;
+    }
+    
+    public DictionaryItem getType(String type)
+    {
+        return (DictionaryItem)this.types.get(type);
+    }
+    
+    public DictionaryItem getAspect(String aspect)
+    {
+        return (DictionaryItem)this.aspects.get(aspect);
+    }
+    
+    public DictionaryItem getTypeOrAspect(String ddclass)
+    {
+        DictionaryItem item = (DictionaryItem)this.types.get(ddclass);
+        if (item == null)
+        {
+            item = (DictionaryItem)this.aspects.get(ddclass);
+        }
+        return item;
+    }
+    
+    public boolean isSubType(String type, String isType)
+    {
+        boolean isSubType = false;
+        try
+        {
+            DictionaryItem ddtype = getType(type);
+            while (!isSubType && ddtype != null)
             {
-                DictionaryItem ddtype = getType(type);
-                if (ddtype != null)
+                // the parent JSON object will always exist, but may be empty
+                JSONObject parent = ddtype.data.getJSONObject(JSON_PARENT);
+                if (parent.has(JSON_NAME))
                 {
-                    JSONObject aspects = ddtype.data.getJSONObject(JSON_DEFAULT_ASPECTS);
-                    Iterator<String> keys = aspects.keys();
-                    while (!hasAspect && keys.hasNext())
+                    // found a parent type specified for our type
+                    String parentName = parent.getString(JSON_NAME);
+                    ddtype = this.types.get(parentName);
+                    if (ddtype != null)
                     {
-                        hasAspect = (aspect.equals(keys.next()));
+                        isSubType = (isType.equals(ddtype.data.getString(JSON_NAME)));
+                    }
+                }
+                else
+                {
+                    // no parent found - end the search
+                    ddtype = null;
+                }
+            }
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving subtype/parent information for: " + type, jsonErr);
+        }
+        return isSubType;
+    }
+    
+    public boolean hasDefaultAspect(String type, String aspect)
+    {
+        boolean hasAspect = false;
+        try
+        {
+            DictionaryItem ddtype = getType(type);
+            if (ddtype != null)
+            {
+                JSONObject aspects = ddtype.data.getJSONObject(JSON_DEFAULT_ASPECTS);
+                Iterator<String> keys = aspects.keys();
+                while (!hasAspect && keys.hasNext())
+                {
+                    hasAspect = (aspect.equals(keys.next()));
+                }
+            }
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'defaultAspects' information for: " + type, jsonErr);
+        }
+        return hasAspect;
+    }
+    
+    public String[] getDefaultAspects(String type)
+    {
+        String[] defaultAspects = null;
+        try
+        {
+            DictionaryItem ddtype = getType(type);
+            if (ddtype != null)
+            {
+                JSONObject aspects = ddtype.data.getJSONObject(JSON_DEFAULT_ASPECTS);
+                defaultAspects = new String[aspects.length()];
+                int count = 0;
+                Iterator<String> keys = aspects.keys();
+                while (keys.hasNext())
+                {
+                    defaultAspects[count++] = keys.next();
+                }
+            }
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'defaultAspects' information for: " + type, jsonErr);
+        }
+        return defaultAspects != null ? defaultAspects : new String[0];
+    }
+    
+    public boolean hasProperty(String ddclass, String property, boolean checkDefaultAspects)
+    {
+        boolean hasProperty = false;
+        try
+        {
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            if (dditem != null)
+            {
+                JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
+                Iterator<String> props = properties.keys();
+                while (!hasProperty && props.hasNext())
+                {
+                    // test properties and inherited properties
+                    hasProperty = (property.equals(props.next()));
+                }
+                if (checkDefaultAspects && !hasProperty)
+                {
+                    // test each default aspect for the property
+                    JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
+                    Iterator<String> keys = aspects.keys();
+                    while (!hasProperty && keys.hasNext())
+                    {
+                        // get each aspect defined on the type
+                        DictionaryItem aspect = getAspect(keys.next());
+                        if (aspect != null)
+                        {
+                            props = aspect.data.getJSONObject(JSON_PROPERTIES).keys();
+                            while (!hasProperty && props.hasNext())
+                            {
+                                // test properties on each aspect
+                                hasProperty = (property.equals(props.next()));
+                            }
+                        }
                     }
                 }
             }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'defaultAspects' information for: " + type, jsonErr);
-            }
-            return hasAspect;
         }
-        
-        public String[] getDefaultAspects(String type)
+        catch (JSONException jsonErr)
         {
-            String[] defaultAspects = null;
-            try
+            throw new AlfrescoRuntimeException("Error retrieving 'properties' information for: " + ddclass, jsonErr);
+        }
+        return hasProperty;
+    }
+   
+    public String getTitle(String ddclass)
+    {
+        try
+        {
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            return dditem != null ? dditem.data.getString(JSON_TITLE) : null;
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'title' information for: " + ddclass, jsonErr);
+        }
+    }
+    
+    public String getDescription(String ddclass)
+    {
+        try
+        {
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            return dditem != null ? dditem.data.getString(JSON_DESCRIPTION) : null;
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'description' information for: " + ddclass, jsonErr);
+        }
+    }
+    
+    public String getParent(String ddclass)
+    {
+        try
+        {
+            String parentType = null;
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            if (dditem != null)
             {
-                DictionaryItem ddtype = getType(type);
-                if (ddtype != null)
+                // the parent JSON object will always exist, but may be empty
+                JSONObject parent = dditem.data.getJSONObject(JSON_PARENT);
+                parentType = parent.optString(JSON_NAME);
+            }
+            return parentType;
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'parent' information for: " + ddclass, jsonErr);
+        }
+    }
+    
+    public boolean isContainer(String type)
+    {
+        try
+        {
+            DictionaryItem ddtype = getType(type);
+            return ddtype != null ? ddtype.data.getBoolean(JSON_IS_CONTAINER) : false;
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'isContainer' information for: " + type, jsonErr);
+        }
+    }
+    
+    public DictionaryProperty getProperty(String ddclass, String property, boolean checkDefaultAspects)
+    {
+        try
+        {
+            DictionaryProperty ddprop = null;
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            if (dditem != null)
+            {
+                JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
+                if (properties.has(property))
                 {
-                    JSONObject aspects = ddtype.data.getJSONObject(JSON_DEFAULT_ASPECTS);
-                    defaultAspects = new String[aspects.length()];
-                    int count = 0;
+                    ddprop = new DictionaryProperty(property, properties.getJSONObject(property));
+                }
+                else if (checkDefaultAspects)
+                {
+                    // test each default aspect for the property
+                    JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
+                    Iterator<String> keys = aspects.keys();
+                    while (ddprop == null && keys.hasNext())
+                    {
+                        // get each aspect defined on the type
+                        DictionaryItem aspect = getAspect(keys.next());
+                        if (aspect != null)
+                        {
+                            properties = aspect.data.getJSONObject(JSON_PROPERTIES);
+                            if (properties.has(property))
+                            {
+                                ddprop = new DictionaryProperty(property, properties.getJSONObject(property));
+                            }
+                        }
+                    }
+                }
+            }
+            return ddprop;
+        }
+        catch (JSONException jsonErr)
+        {
+            throw new AlfrescoRuntimeException("Error retrieving 'properties' information for: " + ddclass, jsonErr);
+        }
+    }
+    
+    public DictionaryProperty[] getProperties(String ddclass, boolean checkDefaultAspects)
+    {
+        try
+        {
+            DictionaryProperty[] ddprops = null;
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            if (dditem != null)
+            {
+                JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
+                List<DictionaryProperty> propList = new ArrayList<DictionaryProperty>(properties.length());
+                Iterator<String> props = properties.keys();
+                while (props.hasNext())
+                {
+                    String propName = props.next();
+                    propList.add(new DictionaryProperty(propName, properties.getJSONObject(propName)));
+                }
+                if (checkDefaultAspects)
+                {
+                    JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
                     Iterator<String> keys = aspects.keys();
                     while (keys.hasNext())
                     {
-                        defaultAspects[count++] = keys.next();
-                    }
-                }
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'defaultAspects' information for: " + type, jsonErr);
-            }
-            return defaultAspects != null ? defaultAspects : new String[0];
-        }
-        
-        public boolean hasProperty(String ddclass, String property, boolean checkDefaultAspects)
-        {
-            boolean hasProperty = false;
-            try
-            {
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                if (dditem != null)
-                {
-                    JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
-                    Iterator<String> props = properties.keys();
-                    while (!hasProperty && props.hasNext())
-                    {
-                        // test properties and inherited properties
-                        hasProperty = (property.equals(props.next()));
-                    }
-                    if (checkDefaultAspects && !hasProperty)
-                    {
-                        // test each default aspect for the property
-                        JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
-                        Iterator<String> keys = aspects.keys();
-                        while (!hasProperty && keys.hasNext())
+                        // get each aspect defined on the type
+                        DictionaryItem aspect = getAspect(keys.next());
+                        if (aspect != null)
                         {
-                            // get each aspect defined on the type
-                            DictionaryItem aspect = getAspect(keys.next());
-                            if (aspect != null)
+                            properties = aspect.data.getJSONObject(JSON_PROPERTIES);
+                            props = properties.keys();
+                            while (props.hasNext())
                             {
-                                props = aspect.data.getJSONObject(JSON_PROPERTIES).keys();
-                                while (!hasProperty && props.hasNext())
-                                {
-                                    // test properties on each aspect
-                                    hasProperty = (property.equals(props.next()));
-                                }
+                                String propName = props.next();
+                                propList.add(new DictionaryProperty(propName, properties.getJSONObject(propName)));
                             }
                         }
                     }
                 }
+                ddprops = new DictionaryProperty[propList.size()];
+                propList.toArray(ddprops);
             }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'properties' information for: " + ddclass, jsonErr);
-            }
-            return hasProperty;
+            return ddprops != null ? ddprops : new DictionaryProperty[0];
         }
-       
-        public String getTitle(String ddclass)
+        catch (JSONException jsonErr)
         {
-            try
-            {
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                return dditem != null ? dditem.data.getString(JSON_TITLE) : null;
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'title' information for: " + ddclass, jsonErr);
-            }
+            throw new AlfrescoRuntimeException("Error retrieving 'properties' information for: " + ddclass, jsonErr);
         }
-        
-        public String getDescription(String ddclass)
+    }
+    
+    public DictionaryAssoc[] getAssociations(String ddclass)
+    {
+        try
         {
-            try
+            DictionaryAssoc[] ddassocs = null;
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            if (dditem != null)
             {
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                return dditem != null ? dditem.data.getString(JSON_DESCRIPTION) : null;
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'description' information for: " + ddclass, jsonErr);
-            }
-        }
-        
-        public String getParent(String ddclass)
-        {
-            try
-            {
-                String parentType = null;
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                if (dditem != null)
+                JSONObject assocs = dditem.data.getJSONObject(JSON_ASSOCIATIONS);
+                ddassocs = new DictionaryAssoc[assocs.length()];
+                int count = 0;
+                Iterator<String> assocNames = assocs.keys();
+                while (assocNames.hasNext())
                 {
-                    // the parent JSON object will always exist, but may be empty
-                    JSONObject parent = dditem.data.getJSONObject(JSON_PARENT);
-                    parentType = parent.optString(JSON_NAME);
+                    String assocName = assocNames.next();
+                    ddassocs[count++] = new DictionaryAssoc(assocName, assocs.getJSONObject(assocName));
                 }
-                return parentType;
             }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'parent' information for: " + ddclass, jsonErr);
-            }
+            return ddassocs != null ? ddassocs : new DictionaryAssoc[0];
         }
-        
-        public boolean isContainer(String type)
+        catch (JSONException jsonErr)
         {
-            try
-            {
-                DictionaryItem ddtype = getType(type);
-                return ddtype != null ? ddtype.data.getBoolean(JSON_IS_CONTAINER) : false;
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'isContainer' information for: " + type, jsonErr);
-            }
+            throw new AlfrescoRuntimeException("Error retrieving 'associations' information for: " + ddclass, jsonErr);
         }
-        
-        public DictionaryProperty getProperty(String ddclass, String property, boolean checkDefaultAspects)
+    }
+    
+    public DictionaryAssoc[] getChildAssociations(String ddclass)
+    {
+        try
         {
-            try
+            DictionaryAssoc[] ddassocs = null;
+            DictionaryItem dditem = getTypeOrAspect(ddclass);
+            if (dditem != null)
             {
-                DictionaryProperty ddprop = null;
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                if (dditem != null)
+                JSONObject assocs = dditem.data.getJSONObject(JSON_CHILDASSOCIATIONS);
+                ddassocs = new DictionaryAssoc[assocs.length()];
+                int count = 0;
+                Iterator<String> assocNames = assocs.keys();
+                while (assocNames.hasNext())
                 {
-                    JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
-                    if (properties.has(property))
-                    {
-                        ddprop = new DictionaryProperty(property, properties.getJSONObject(property));
-                    }
-                    else if (checkDefaultAspects)
-                    {
-                        // test each default aspect for the property
-                        JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
-                        Iterator<String> keys = aspects.keys();
-                        while (ddprop == null && keys.hasNext())
-                        {
-                            // get each aspect defined on the type
-                            DictionaryItem aspect = getAspect(keys.next());
-                            if (aspect != null)
-                            {
-                                properties = aspect.data.getJSONObject(JSON_PROPERTIES);
-                                if (properties.has(property))
-                                {
-                                    ddprop = new DictionaryProperty(property, properties.getJSONObject(property));
-                                }
-                            }
-                        }
-                    }
+                    String assocName = assocNames.next();
+                    ddassocs[count++] = new DictionaryAssoc(assocName, assocs.getJSONObject(assocName));
                 }
-                return ddprop;
             }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'properties' information for: " + ddclass, jsonErr);
-            }
+            return ddassocs != null ? ddassocs : new DictionaryAssoc[0];
         }
-        
-        public DictionaryProperty[] getProperties(String ddclass, boolean checkDefaultAspects)
+        catch (JSONException jsonErr)
         {
-            try
-            {
-                DictionaryProperty[] ddprops = null;
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                if (dditem != null)
-                {
-                    JSONObject properties = dditem.data.getJSONObject(JSON_PROPERTIES);
-                    List<DictionaryProperty> propList = new ArrayList<DictionaryProperty>(properties.length());
-                    Iterator<String> props = properties.keys();
-                    while (props.hasNext())
-                    {
-                        String propName = props.next();
-                        propList.add(new DictionaryProperty(propName, properties.getJSONObject(propName)));
-                    }
-                    if (checkDefaultAspects)
-                    {
-                        JSONObject aspects = dditem.data.getJSONObject(JSON_DEFAULT_ASPECTS);
-                        Iterator<String> keys = aspects.keys();
-                        while (keys.hasNext())
-                        {
-                            // get each aspect defined on the type
-                            DictionaryItem aspect = getAspect(keys.next());
-                            if (aspect != null)
-                            {
-                                properties = aspect.data.getJSONObject(JSON_PROPERTIES);
-                                props = properties.keys();
-                                while (props.hasNext())
-                                {
-                                    String propName = props.next();
-                                    propList.add(new DictionaryProperty(propName, properties.getJSONObject(propName)));
-                                }
-                            }
-                        }
-                    }
-                    ddprops = new DictionaryProperty[propList.size()];
-                    propList.toArray(ddprops);
-                }
-                return ddprops != null ? ddprops : new DictionaryProperty[0];
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'properties' information for: " + ddclass, jsonErr);
-            }
+            throw new AlfrescoRuntimeException("Error retrieving 'childassociations' information for: " + ddclass, jsonErr);
         }
-        
-        public DictionaryAssoc[] getAssociations(String ddclass)
-        {
-            try
-            {
-                DictionaryAssoc[] ddassocs = null;
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                if (dditem != null)
-                {
-                    JSONObject assocs = dditem.data.getJSONObject(JSON_ASSOCIATIONS);
-                    ddassocs = new DictionaryAssoc[assocs.length()];
-                    int count = 0;
-                    Iterator<String> assocNames = assocs.keys();
-                    while (assocNames.hasNext())
-                    {
-                        String assocName = assocNames.next();
-                        ddassocs[count++] = new DictionaryAssoc(assocName, assocs.getJSONObject(assocName));
-                    }
-                }
-                return ddassocs != null ? ddassocs : new DictionaryAssoc[0];
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'associations' information for: " + ddclass, jsonErr);
-            }
-        }
-        
-        public DictionaryAssoc[] getChildAssociations(String ddclass)
-        {
-            try
-            {
-                DictionaryAssoc[] ddassocs = null;
-                DictionaryItem dditem = getTypeOrAspect(ddclass);
-                if (dditem != null)
-                {
-                    JSONObject assocs = dditem.data.getJSONObject(JSON_CHILDASSOCIATIONS);
-                    ddassocs = new DictionaryAssoc[assocs.length()];
-                    int count = 0;
-                    Iterator<String> assocNames = assocs.keys();
-                    while (assocNames.hasNext())
-                    {
-                        String assocName = assocNames.next();
-                        ddassocs[count++] = new DictionaryAssoc(assocName, assocs.getJSONObject(assocName));
-                    }
-                }
-                return ddassocs != null ? ddassocs : new DictionaryAssoc[0];
-            }
-            catch (JSONException jsonErr)
-            {
-                throw new AlfrescoRuntimeException("Error retrieving 'childassociations' information for: " + ddclass, jsonErr);
-            }
-        }
-        
-        @Override
-        public String toString()
-        {
-            return "Dictionary contains " + this.types.size() + " types and " + this.aspects.size() + " aspects.";
-        }
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Dictionary contains " + this.types.size() + " types and " + this.aspects.size() + " aspects.";
     }
     
     
@@ -865,7 +825,7 @@ public class DictionaryQuery extends BaseProcessorExtension implements Serializa
      * <p>
      * The dd item is backed by the underlying JSON structure from the parent dictionary.
      */
-    private static class DictionaryItem
+    public static class DictionaryItem
     {
         final private String type;
         final private JSONObject data;

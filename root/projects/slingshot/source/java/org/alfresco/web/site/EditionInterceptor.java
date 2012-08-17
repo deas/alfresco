@@ -53,6 +53,13 @@ import org.springframework.web.context.request.WebRequest;
  */
 public class EditionInterceptor extends AbstractWebFrameworkInterceptor
 {
+    /** public name of the value in the RequestContext */
+    public static final String EDITION_INFO = "editionInfo";
+    
+    public static final String ENTERPRISE_EDITION = "ENTERPRISE";
+    public static final String TEAM_EDITION = "TEAM";
+    public static final String UNKNOWN_EDITION = "UNKNOWN";
+    
     private static Log logger = LogFactory.getLog(EditionInterceptor.class);
     
     private static EditionInfo EDITIONINFO = null;
@@ -109,11 +116,11 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                             
                             // apply runtime config overrides based on the repository edition
                             String runtimeConfig = null;
-                            if ("TEAM".equals(EDITIONINFO.getEdition()))
+                            if (TEAM_EDITION.equals(EDITIONINFO.getEdition()))
                             {
                                 runtimeConfig = "classpath:alfresco/team-config.xml";
                             }
-                            else if ("ENTERPRISE".equals(EDITIONINFO.getEdition()))
+                            else if (ENTERPRISE_EDITION.equals(EDITIONINFO.getEdition()))
                             {
                                 runtimeConfig = "classpath:alfresco/enterprise-config.xml";
                             }
@@ -142,7 +149,7 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                                 outputInfo = true;
                             }
                             // set a value so scripts have something to work with - the interceptor will retry later
-                            ThreadLocalRequestContext.getRequestContext().setValue("editionInfo", new EditionInfo());
+                            ThreadLocalRequestContext.getRequestContext().setValue(EDITION_INFO, new EditionInfo());
                         }
                     }
                 }
@@ -158,7 +165,7 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
             }
             if (EDITIONINFO != null)
             {
-                ThreadLocalRequestContext.getRequestContext().setValue("editionInfo", EDITIONINFO);
+                ThreadLocalRequestContext.getRequestContext().setValue(EDITION_INFO, EDITIONINFO);
             }
         }
         finally
@@ -197,7 +204,7 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
         {
             this.users = -1L;
             this.documents = -1L;
-            this.edition = "UNKNOWN";
+            this.edition = UNKNOWN_EDITION;
         }
         
         EditionInfo(String response) throws JSONException

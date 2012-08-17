@@ -26,8 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
@@ -43,29 +41,20 @@ import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.Response;
-import org.springframework.extensions.webscripts.processor.BaseProcessorExtension;
 
 /**
- * Slingleton templating host object provided to allows templates access to
- *  the Alfresco Repository Mimetypes information. 
+ * Singleton templating host object provided to allows templates access to
+ * the Alfresco Repository Mimetypes information. 
  * <p>
  * Service object that maintains no state other than the mimetypes info itself.
  * 
  * @author Nick Burch
  */
 @SuppressWarnings("serial")
-public class MimetypesQuery extends BaseProcessorExtension implements Serializable
+public class MimetypesQuery extends SingletonValueProcessorExtension<Map<String,Mimetype>> implements Serializable
 {
     private static Log logger = LogFactory.getLog(MimetypesQuery.class);
     
-    /** 
-     * Map of Mimetypes to their details.
-     * Mimetypes are not per-tenant, so we only need one map 
-     */
-    private Map<String,Mimetype> mimetypes; 
-    
-    /** Lock for access to mimetypes */
-    private final ReadWriteLock mimetypesLock = new ReentrantReadWriteLock();
     
     /**
      * Get all human readable mimetype descriptions, indexed by mimetype
@@ -154,124 +143,106 @@ public class MimetypesQuery extends BaseProcessorExtension implements Serializab
      */
     private Map<String,Mimetype> getMimetypes()
     {
-        // We don't need to worry about tenants, as the mimetypes are repository
-        //  wide across all of them
-        final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
-        final String userId = rc.getUserId();
+        return getSingletonValue();
+    }
+    
+    @Override
+    protected Map<String, Mimetype> retrieveValue(final String userId, final String storeId) throws ConnectorServiceException
+    {
+        Map<String,Mimetype> mimetypes;
         
-        // Get the lock read lock on the mimetypes, then fetch if needed
-        this.mimetypesLock.readLock().lock();
-        try
+        // initiate a call to retrieve the dictionary from the repository
+        final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
+        final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
+        final Response response = conn.call("/api/mimetypes/descriptions");
+        if (response.getStatus().getCode() == Status.STATUS_OK)
         {
-            if (mimetypes == null)
+            logger.info("Successfully retrieved mimetypes information from Alfresco.");
+            
+            mimetypes = new HashMap<String, Mimetype>(128);
+            
+            try
             {
-                this.mimetypesLock.readLock().unlock();
-                this.mimetypesLock.writeLock().lock();
-                try
+                // Extract mimetype information
+                final JSONObject json = new JSONObject(response.getResponse());
+                final JSONObject data = json.getJSONObject("data");
+                
+                Iterator<String> types = data.keys();
+                while (types.hasNext())
                 {
-                    // check again, as more than one thread could have been waiting on the Write lock 
-                    if (mimetypes == null)
-                    {
-                        // initiate a call to retrieve the dictionary from the repository
-                        final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
-                        final Response response = conn.call("/api/mimetypes/descriptions");
-                        if (response.getStatus().getCode() == Status.STATUS_OK)
-                        {
-                            logger.info("Successfully retrieved mimetypes information from Alfresco.");
-                            
-                            mimetypes = new HashMap<String, Mimetype>(128);
-                            
-                            // Extract mimetype information
-                            final JSONObject json = new JSONObject(response.getResponse());
-                            final JSONObject data = json.getJSONObject("data");
-                            
-                            Iterator<String> types = data.keys();
-                            while (types.hasNext())
-                            {
-                                // The type is the key
-                                String mimetype = types.next();
-                                
-                                // The details come from the value
-                                Mimetype details = new Mimetype(mimetype, data.getJSONObject(mimetype));
-                                
-                                mimetypes.put(mimetype, details);
-                            }
-                            
-                            logger.debug("Completed processing of mimetypes information");
-                        }
-                        else
-                        {
-                           throw new AlfrescoRuntimeException("Unable to retrieve mimetypes information from Alfresco: " + response.getStatus().getCode());
-                        }
-                    }
-                }
-                catch (ConnectorServiceException cerr)
-                {
-                    throw new AlfrescoRuntimeException("Unable to retrieve mimetypes information from Alfresco: " + cerr.getMessage());
-                }
-                catch (Exception err)
-                {
-                    throw new AlfrescoRuntimeException("Failed processing dictionary information from Alfresco: " + err.getMessage());
-                }
-                finally
-                {
-                    this.mimetypesLock.readLock().lock();
-                    this.mimetypesLock.writeLock().unlock();
+                    // The type is the key
+                    String mimetype = types.next();
+                    
+                    // The details come from the value
+                    Mimetype details = new Mimetype(mimetype, data.getJSONObject(mimetype));
+                    
+                    mimetypes.put(mimetype, details);
                 }
             }
+            catch (JSONException e)
+            {
+                throw new AlfrescoRuntimeException(e.getMessage(), e);
+            }
         }
-        finally
+        else
         {
-            this.mimetypesLock.readLock().unlock();
+            throw new AlfrescoRuntimeException("Unable to retrieve mimetypes information from Alfresco: " + response.getStatus().getCode());
         }
+        
         return mimetypes;
     }
 
-    /**
-     * Holds the information returned on a mimetype, from the repository
-     *  mimetypes information webscript
-     */
-    private static class Mimetype
+    @Override
+    protected String getValueName()
     {
-        private final String mimetype;
-        private final String description;
-        private final String defaultExtension;
-        private final List<String> additionalExtensions;
+        return "mimetypes information";
+    }
+}
+
+
+/**
+ * Holds the information returned on a mimetype, from the repository mimetypes information webscript
+ */
+class Mimetype
+{
+    private final String mimetype;
+    private final String description;
+    private final String defaultExtension;
+    private final List<String> additionalExtensions;
+    
+    Mimetype(String mimetype, JSONObject json) throws JSONException
+    {
+        this.mimetype = mimetype;
+        this.description = json.getString("description");
         
-        private Mimetype(String mimetype, JSONObject json) throws JSONException
+        JSONObject ext = json.getJSONObject("extensions");
+        defaultExtension = ext.getString("default");
+        
+        JSONArray additional = ext.getJSONArray("additional");
+        additionalExtensions = new ArrayList<String>(additional.length());
+        for (int i=0; i<additional.length(); i++)
         {
-            this.mimetype = mimetype;
-            this.description = json.getString("description");
-            
-            JSONObject ext = json.getJSONObject("extensions");
-            defaultExtension = ext.getString("default");
-            
-            JSONArray additional = ext.getJSONArray("additional");
-            additionalExtensions = new ArrayList<String>(additional.length());
-            for (int i=0; i<additional.length(); i++)
-            {
-                additionalExtensions.add(additional.getString(i));
-            }
+            additionalExtensions.add(additional.getString(i));
         }
+    }
 
-        public String getMimetype()
-        {
-            return mimetype;
-        }
+    public String getMimetype()
+    {
+        return mimetype;
+    }
 
-        public String getDescription()
-        {
-            return description;
-        }
+    public String getDescription()
+    {
+        return description;
+    }
 
-        public String getDefaultExtension()
-        {
-            return defaultExtension;
-        }
+    public String getDefaultExtension()
+    {
+        return defaultExtension;
+    }
 
-        public List<String> getAdditionalExtensions()
-        {
-            return additionalExtensions;
-        }
+    public List<String> getAdditionalExtensions()
+    {
+        return additionalExtensions;
     }
 }
