@@ -184,7 +184,7 @@
             siteId: response.json.siteId,
             files:
             {
-               displayName: this.options.displayName,
+               displayName: this.options.files.displayName,
                node:
                {
                   nodeRef: response.json.nodeRef,
@@ -194,7 +194,7 @@
                   }
                }
             }
-         })
+         });
          this._showDialog();
       },
       
@@ -470,7 +470,6 @@
          var defaultRoles = this.options.files[0].node.permissions.roles,
             permissions;
 
-         var noPrivilegeMsg = this.msg("role.None");
          for (i = 0, j = defaultRoles.length; i < j; i++)
          {
             permissions = defaultRoles[i].split(";");
@@ -483,11 +482,6 @@
                if (msg === "role." + permissions[2])
                {
                   msg = permissions[2];
-               }
-
-               if (msg == noPrivilegeMsg)
-               {
-                  this.rolePickers[permissions[1]].set("value", "");
                }
 
                this.rolePickers[permissions[1]].set("label", msg);

@@ -35,14 +35,14 @@
             </#if>
          <div class="separator">&nbsp;</div>
          <div class="link"><a href="user-notifications" <#if activePage=="user-notifications">class="activePage theme-color-4"</#if>>${msg("link.notifications")}</a></div>
+         <div class="separator">&nbsp;</div>
+         <div class="link"><a href="user-cloud-auth" <#if activePage=="user-cloud-auth">class="activePage theme-color-4"</#if>>${msg("link.cloud-auth")}</a></div>
          <#else>
             <#if following &gt; -1>
          <div class="separator">&nbsp;</div>
          <div class="link"><a href="following" <#if activePage=="following">class="activePage theme-color-4"</#if>>${msg("link.otherfollowing")} (${following})</a></div>
             </#if>
          </#if>
-         <div class="separator">&nbsp;</div>
-         <div class="link"><a href="user-cloud-auth" <#if activePage=="user-cloud-auth">class="activePage theme-color-4"</#if>>${msg("link.cloud-auth")}</a></div>
       </div>
    </@>
 </@>

@@ -883,17 +883,17 @@
          {
             fileInfo.state = this.STATE_FAILURE;
 
-            var errormsg = event.status;
-            // TODO: pass through additional data from Flash Adaptor to return JSON error response text
-            //JSON.parse(fileInfo.request.responseText).message;
-            //errormsg = errormsg.substring(errormsg.indexOf(" ") + 1);
+            // NOTE: ideally pass through JSON error response text from Flash upload adaptor 
+            //       - there is currently no known way to do this due to Flash bugs, see:
+            //       http://yuilibrary.com/projects/yui3/ticket/2529848 
+            //       http://stackoverflow.com/questions/4483004/getting-http-500-response-body-with-flex 
 
             // Add the failure label to the filename & and as a title attribute
             var key = "label.failure." + event.status,
                msg = Alfresco.util.message(key, this.name);
             if (msg == key)
             {
-               msg = Alfresco.util.message("label.failure", this.name, errormsg);
+               msg = Alfresco.util.message("label.failure", this.name);
             }
             fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " (" + msg + ")";
             fileInfo.progressInfo.setAttribute("title", msg);

@@ -1053,6 +1053,7 @@
          fileInfo.fileSizeInfo["innerHTML"] = fileInfo.fileSizeInfo["innerHTML"] + " (" + msg + ")";
          fileInfo.fileSizeInfo.setAttribute("title", msg);
          fileInfo.progressInfo.setAttribute("title", msg);
+         fileInfo.progressInfo.parentElement.setAttribute("title", msg);
 
          // Change the style of the progress bar
          Dom.removeClass(fileInfo.progress, "fileupload-progressSuccess-span");

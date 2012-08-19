@@ -565,6 +565,10 @@
                {
                   nodeRef: nodeRef.uri
                }
+            },
+            wait:
+            {
+               message: this.msg("message.multiple-delete.please-wait")
             }
          });
       },

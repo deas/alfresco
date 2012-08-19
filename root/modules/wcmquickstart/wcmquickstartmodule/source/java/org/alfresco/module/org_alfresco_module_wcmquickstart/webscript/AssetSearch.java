@@ -136,6 +136,7 @@ public class AssetSearch extends AbstractWebScript
             {
                 String[] tokens = phrase.split(" ");
                 queryBuilder.append("+(");
+                boolean emptyTag = tag == null || tag.isEmpty();
                 for (String token : tokens)
                 {
                     queryBuilder.append("+(");
@@ -145,6 +146,12 @@ public class AssetSearch extends AbstractWebScript
                     queryBuilder.append("@cm\\:description:\"");
                     queryBuilder.append(token);
                     queryBuilder.append("\"^5 ");
+                    if (emptyTag)
+                    {
+                        queryBuilder.append("@ws\\:tags:\"");
+                        queryBuilder.append(token);
+                        queryBuilder.append("\"^3 ");
+                    }
                     queryBuilder.append("TEXT:\"");
                     queryBuilder.append(token);
                     queryBuilder.append("\") ");

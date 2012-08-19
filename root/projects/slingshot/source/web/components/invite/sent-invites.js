@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -185,7 +185,21 @@
                {
                   // Filter the results for the search term
                   var lowerCaseTerm = me.searchTerm.toLowerCase();
+                  var lowerCaseTermRegStr=lowerCaseTerm;
+                  var regRepl=["\/","\\\\","\\?","\\+","\\$","\\.","\\^","\\(","\\)"];
+                  for (var i = 0, j = regRepl.length; i < j; i++)
+                  {
+                     lowerCaseTermRegStr=lowerCaseTermRegStr.replace(new RegExp(regRepl[i],'g'),regRepl[i]);
+                  }
+                  var ignoreIndex=lowerCaseTermRegStr.search("\\*")==0;
+                  if (ignoreIndex)
+                  {
+                      lowerCaseTermRegStr=lowerCaseTermRegStr.substring(1);
+                  }
+                  lowerCaseTermRegStr=lowerCaseTermRegStr.replace(new RegExp("\\*",'g'),".*");
+                  var regTerm=new RegExp(lowerCaseTermRegStr, "i");
                   var personData, userName, firstName, lastName, fullName;
+                  var userNameRegMatch, firstNameRegMatch, lastNameRegMatch, fullNameRegMatch;
                   for (var i = 0, j = oFullResponse.invites.length; i < j; i++)
                   {
                      personData = oFullResponse.invites[i].invitee;
@@ -194,14 +208,28 @@
                      lastName = (personData.lastName || "").toLowerCase();
                      fullName = (firstName + " " + lastName).toLowerCase();
                      
+                     userNameRegMatch = regTerm.exec(userName);
+                     firstNameRegMatch = regTerm.exec(firstName);
+                     lastNameRegMatch = regTerm.exec(lastName);
+                     fullNameRegMatch = regTerm.exec(fullName);
                      // Determine if person matches search term
-                     if ((userName.indexOf(lowerCaseTerm) != -1) ||
-                         (firstName.indexOf(lowerCaseTerm) != -1) ||
-                         (lastName.indexOf(lowerCaseTerm) != -1) ||
-                         (fullName.indexOf(lowerCaseTerm) != -1))
+                     if ((userNameRegMatch!=null && userNameRegMatch[0] != "") ||
+                         (firstNameRegMatch!=null && firstNameRegMatch[0] != "") ||
+                         (lastNameRegMatch!=null && lastNameRegMatch[0] != "") ||
+                         (userNameRegMatch=null && fullNameRegMatch[0] != ""))
                      {
                         // Add user to list
-                        items.push(oFullResponse.invites[i]);
+                        if (ignoreIndex)
+                        {
+                           items.push(oFullResponse.invites[i]);
+                        }
+                        else if ((userNameRegMatch!=null && userNameRegMatch.index == 0) ||
+                                 (firstNameRegMatch!=null && firstNameRegMatch.index == 0) ||
+                                 (lastNameRegMatch!=null && lastNameRegMatch.index == 0) ||
+                                 (userNameRegMatch=null && fullNameRegMatch.index == 0))
+                        {
+                           items.push(oFullResponse.invites[i]);
+                        }
                      }
                   }
                }

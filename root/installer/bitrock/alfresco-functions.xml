@@ -10,6 +10,15 @@
                 <stringParameter name="alfrescoFiles" />
             </parameterList>
             <actionList>
+            <setInstallerVariableFromRegEx>
+                <name>imagemagick_root_directory_windows</name>
+                <pattern>/</pattern>
+                <substitution>\</substitution>
+                <text>${imagemagick_root_directory}</text>
+                <ruleList>
+                    <platformTest type="windows"/>
+                </ruleList>
+             </setInstallerVariableFromRegEx>		
 	        <substitute>
 		    <files>${alfrescoFiles}</files>
 		    <substitutionList>
@@ -39,16 +48,22 @@
                                 <platformTest type="windows"/>
                             </ruleList>
                         </substitution>
-		        <substitution>
-                            <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ROOTDIR@@</pattern>
-                            <value>${imagemagick_root_directory.unix}</value>
+                        <substitution>
+                            <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ENV@@</pattern>
+                            <value>img.root=${imagemagick_root_directory.unix}
+img.dyn=${'${img.root}'}/lib
+img.exe=${'${img.root}'}/bin/convert</value>
                             <ruleList>
                                 <platformTest type="unix"/>
                             </ruleList>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ROOTDIR@@</pattern>
-                            <value>${imagemagick_root_directory.dos.unix}</value>
+                            <pattern>@@BITROCK_ALFRESCO_IMAGEMAGICK_ENV@@</pattern>
+                            <value>img.root=${imagemagick_root_directory_windows.escape_backslashes}
+img.coders=${'${img.root}'}\\modules\\coders
+img.config=${'${img.root}'}\\config
+img.gslib=${'${img.root}'}\\lib
+img.exe=${'${img.root}'}\\convert.exe</value>
                             <ruleList>
                                 <platformTest type="windows"/>
                             </ruleList>
@@ -113,13 +128,6 @@
                             <pattern>@@BITROCK_OO_PORT@@</pattern>
                             <value>${openoffice_port}</value>
                         </substitution>
-			<substitution>
-                            <pattern>{img.root}/bin/convert</pattern>
-                            <value>{img.root}/convert</value>
-                            <ruleList>
-			      <platformTest type="windows"/>
-			    </ruleList>
-			</substitution>
 			<substitution>
                             <pattern>@@BITROCK_PDF2SWF_PATH@@</pattern>
                             <value>${installdir.dos.unix}/swftools/pdf2swf.exe</value>

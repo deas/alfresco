@@ -321,6 +321,8 @@ public class RuntimeExec
     public void setProcessProperties(Map<String, String> processProperties)
     {
         ArrayList<String> processPropList = new ArrayList<String>(processProperties.size());
+        boolean hasPath = false;
+        String systemPath = System.getenv("PATH");
         for (Map.Entry<String, String> entry : processProperties.entrySet())
         {
             String key = entry.getKey();
@@ -343,7 +345,28 @@ public class RuntimeExec
             {
                 continue;
             }
-            processPropList.add(key + "=" + value);
+            // If a path is specified, prepend it to the existing path
+            if (key.equals("PATH"))
+            {
+                if (systemPath != null && systemPath.length() > 0)
+                {
+                    processPropList.add(key + "=" + value + File.pathSeparator + systemPath);                    
+                }
+                else
+                {                    
+                    processPropList.add(key + "=" + value);
+                }
+                hasPath = true;
+            }
+            else
+            {
+                processPropList.add(key + "=" + value);                
+            }
+        }
+        // If a path was not specified, inherit the current one
+        if (!hasPath && systemPath != null && systemPath.length() > 0)
+        {
+            processPropList.add("PATH=" + systemPath);                                
         }
         this.processProperties = processPropList.toArray(new String[processPropList.size()]);
     }
