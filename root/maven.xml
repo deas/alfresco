@@ -226,6 +226,7 @@
             <arg value="${maven.settings.file}"/>
         </artifact:mvn>
         <!-- MMT classes -->
+        <!-- BDE-85: Temporary comment until we make this right, deploying with a useful pom
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
             <arg value="-Dfile=${dir.continuous.assemble.mmt}/main/main.jar"/>
@@ -238,6 +239,7 @@
             <arg value="-s"/>
             <arg value="${maven.settings.file}"/>
         </artifact:mvn>
+        -->
     </target>
 
     <target name="maven-deploy-webclient-jars" description="Deploys Alfresco Explorer related JARs to a Maven repository">
