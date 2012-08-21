@@ -75,6 +75,15 @@
          searchRootNode: "",
 
          /**
+          * Search term
+          * 
+          * @property searchTerm
+          * @type string
+          * @default ""
+          */
+         searchTerm: "",
+
+         /**
           * Number of results to display in the search dashlet
           *
           * @property resultSize
@@ -83,6 +92,9 @@
           */
          resultSize: "10"
       },
+
+      PREFERENCES_SITE_SEARCH_DASHLET_TERM: "",
+      PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE: "",
 
       /**
        * Fired by YUI when parent element is available for scripting
@@ -95,9 +107,9 @@
             id = this.id;
 
          // Preferences
-         var PREFERENCES_SITE_SEARCH_DASHLET = "org.alfresco.share.site.search.dashlet." + id,
-            PREFERENCES_SITE_SEARCH_DASHLET_TERM = PREFERENCES_SITE_SEARCH_DASHLET + ".term",
-            PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE = PREFERENCES_SITE_SEARCH_DASHLET + ".resultSize";
+         var PREFERENCES_SITE_SEARCH_DASHLET = "org.alfresco.share.site.search.dashlet." + this.options.regionId + (this.options.siteId ? ("." + this.options.siteId) : "");
+         this.PREFERENCES_SITE_SEARCH_DASHLET_TERM = PREFERENCES_SITE_SEARCH_DASHLET + ".term";
+         this.PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE = PREFERENCES_SITE_SEARCH_DASHLET + ".resultSize";
 
          // Create result size menu
          this.widgets.resultSizeMenuButton = Alfresco.util.createYUIButton(this, "resultSize", this.onResultSizeSelected,
@@ -114,14 +126,14 @@
             {
                fn: function(p_oResponse)
                {
-                  var term = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREFERENCES_SITE_SEARCH_DASHLET_TERM),
-                  resultSize = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
+                  var term = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.PREFERENCES_SITE_SEARCH_DASHLET_TERM),
+                      resultSize = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
 
-                  if (term != null && resultSize != null)
+                  if (term != null || resultSize != null)
                   {
-                     this.setSearchTerm(term);
-                     this.setResultSize(resultSize);
-                     this.doRequest(PREFERENCES_SITE_SEARCH_DASHLET_TERM, PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
+                     this.options.searchTerm = Dom.get(this.id + "-search-text").value = (term ? term : "");
+                     this.options.resultSize = (resultSize ? resultSize : "10");
+                     this.doRequest();
                   }
 
                   var resultSize = this.getResultSize();
@@ -136,18 +148,21 @@
          });
 
          // Enter key press
+         var me = this;
          Dom.get(id + "-search-text").onkeypress = function(e)
          {
             if (e.keyCode == YAHOO.util.KeyListener.KEY.ENTER)
             {
-               me.doRequest(PREFERENCES_SITE_SEARCH_DASHLET_TERM, PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
+               me.setSearchTerm(YAHOO.lang.trim(Dom.get(me.id + "-search-text").value));
+               me.doRequest();
             }
          };
 
          // Search button click
          Dom.get(id + "-search-button").onclick = function(e)
          {
-            me.doRequest(PREFERENCES_SITE_SEARCH_DASHLET_TERM, PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
+            me.setSearchTerm(YAHOO.lang.trim(Dom.get(me.id + "-search-text").value));
+            me.doRequest();
          };
       },
 
@@ -159,7 +174,7 @@
        */
       getSearchTerm: function SiteSearch_getSearchTerm()
       {
-         return encodeURIComponent(YAHOO.lang.trim(Dom.get(this.id + "-search-text").value));
+         return this.options.searchTerm;
       },
 
       /**
@@ -170,7 +185,13 @@
        */
       setSearchTerm: function SiteSearch_setSearchTerm(searchTerm)
       {
-         Dom.get(this.id + "-search-text").value = decodeURIComponent(searchTerm);
+         if (this.options.searchTerm != searchTerm)
+         {
+            this.options.searchTerm = searchTerm;
+            
+            // Save preferences
+            this.services.preferences.set(this.PREFERENCES_SITE_SEARCH_DASHLET_TERM, searchTerm);
+         }
       },
 
       /**
@@ -192,7 +213,13 @@
        */
       setResultSize: function SiteSearch_setResultSize(resultSize)
       {
-         this.options.resultSize = resultSize;
+         if (this.options.resultSize != resultSize)
+         {
+            this.options.resultSize = resultSize;
+            
+            // Save preferences
+            this.services.preferences.set(this.PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE, resultSize);
+         }
       },
 
       /**
@@ -203,7 +230,7 @@
        */
       getRootNode: function SiteSearch_getRootNode()
       {
-         return encodeURIComponent(this.options.searchRootNode);
+         return this.options.searchRootNode;
       },
 
       /**
@@ -259,20 +286,18 @@
 
          return YAHOO.lang.substitute(url,
          {
-            term: this.getSearchTerm(),
+            term: encodeURIComponent(this.getSearchTerm()),
             maxResults: this.getResultSize(),
-            rootNode: this.getRootNode()
+            rootNode: encodeURIComponent(this.getRootNode())
          });
       },
 
       /**
-       * Creates the data table and saves the preferences
+       * Init the data table
        *
        * @method doRequest
-       * @param {string} pref_term
-       * @param {string} pref_resultSize
        */
-      doRequest: function SiteSearch_doRequest(pref_term, pref_resultSize)
+      doRequest: function SiteSearch_doRequest()
       {
          this.widgets.alfrescoDataTable = new Alfresco.util.DataTable(
          {
@@ -301,18 +326,6 @@
                }
             }
          });
-
-         // Save preferences
-         var me = this;
-         this.widgets.alfrescoDataTable.getDataTable().subscribe("postRenderEvent", function (o) {
-            var preferences = me.services.preferences;
-            preferences.set(pref_term, me.getSearchTerm());
-            preferences.set(pref_resultSize, me.getResultSize());
-         });
-
-         var resultSize = this.getResultSize();
-         this.widgets.resultSizeMenuButton.set("label", resultSize);
-         this.widgets.resultSizeMenuButton.value = resultSize;
       },
 
       /**
@@ -405,6 +418,5 @@
             }
          }
       }
-
    });
 })();

@@ -6,7 +6,8 @@ function main()
       name : "Alfresco.dashlet.SiteSearch",
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
-         searchRootNode : (config.scoped['RepositoryLibrary']['root-node']).value
+         searchRootNode : (config.scoped['RepositoryLibrary']['root-node']).value,
+         regionId : args['region-id']
       }
    };
 
