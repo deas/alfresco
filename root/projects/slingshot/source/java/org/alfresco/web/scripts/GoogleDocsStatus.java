@@ -21,6 +21,8 @@ package org.alfresco.web.scripts;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.ServletUtil;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
@@ -31,18 +33,18 @@ import org.springframework.extensions.webscripts.connector.Response;
 
 /**
  * Slingleton scripting host object provided to retrieve the value of the
- * IMAP Server enabled status from the Alfresco repository.
+ * Google Docs enabled status configuration from the Alfresco repository.
  * 
  * @author Kevin Roast
  */
 @SuppressWarnings("serial")
-public class ImapServerStatus extends SingletonValueProcessorExtension<Boolean>
+public class GoogleDocsStatus extends SingletonValueProcessorExtension<Boolean>
 {
-    private static Log logger = LogFactory.getLog(ImapServerStatus.class);
+    private static Log logger = LogFactory.getLog(GoogleDocsStatus.class);
     
     
     /**
-     * @return the enabled status of the IMAP server
+     * @return the enabled status of the Google Docs subsystem
      */
     public boolean getEnabled()
     {
@@ -54,18 +56,34 @@ public class ImapServerStatus extends SingletonValueProcessorExtension<Boolean>
     {
         boolean enabled = false;
         
-        // initiate a call to retrieve the server status from the repository
+        // initiate a call to retrieve the subsystem status from the repository
         final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
         final Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", userId, ServletUtil.getSession());
-        final Response response = conn.call("/imap/servstatus");
+        final Response response = conn.call("/api/googledocs/status");
         if (response.getStatus().getCode() == Status.STATUS_OK)
         {
-            enabled = (response.getText().equals("enabled"));
-            logger.info("Successfully retrieved IMAP server status from Alfresco: " + response.getText());
+            try
+            {
+                // extract sync mode
+                JSONObject json = new JSONObject(response.getResponse());
+                if (json.has("data") && json.getJSONObject("data").has("enabled"))
+                {
+                    enabled = json.getJSONObject("data").getBoolean("enabled");
+                    logger.info("Successfully retrieved Google Docs subsystem status from Alfresco: " + enabled);
+                }
+                else
+                {
+                    logger.error("Unexpected response from '/api/googledocs/status' - did not contain expected JSON values.");
+                }
+            }
+            catch (JSONException e)
+            {
+                throw new AlfrescoRuntimeException(e.getMessage(), e);
+            }
         }
         else
         {
-            throw new AlfrescoRuntimeException("Unable to retrieve IMAP server status from Alfresco: " + response.getStatus().getCode());
+            throw new AlfrescoRuntimeException("Unable to retrieve Google Docs subsystem status from Alfresco: " + response.getStatus().getCode());
         }
         
         return enabled;
@@ -74,6 +92,6 @@ public class ImapServerStatus extends SingletonValueProcessorExtension<Boolean>
     @Override
     protected String getValueName()
     {
-        return "IMAP server status";
+        return "Google Docs subsystem status";
     }
 }

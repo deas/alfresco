@@ -173,19 +173,7 @@ function getCreateContent()
    if (googleDocsConfig !== null)
    {
       // Request the Google Docs status on the Repository
-      var result = remote.call("/api/googledocs/status");
-      if (result.status == 200 && result != "{}")
-      {
-         var obj = eval('(' + result + ')');
-         try
-         {
-            googleDocsEnabled = obj.data.enabled;
-         }
-         catch (e)
-         {
-         }
-      }
-
+      googleDocsEnabled = googleDocsStatus.enabled;
       if (googleDocsEnabled)
       {
          var configs = googleDocsConfig.getChildren("creatable-types"),
