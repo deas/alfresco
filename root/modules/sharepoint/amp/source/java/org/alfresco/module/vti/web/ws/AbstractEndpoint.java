@@ -179,6 +179,15 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
         try
         {
             dws = URLDecoder.decode(dws, "UTF-8");
+            // THOR: could have "tenant/site", e.g. example.com/mysite so take the last part
+            if (dws.contains("/"))
+            {
+                int lastSlash = dws.lastIndexOf("/");
+                if (dws.length() > lastSlash + 1)
+                {
+                    dws = dws.substring(lastSlash + 1);
+                }
+            }
         }
         catch (UnsupportedEncodingException e)
         {
