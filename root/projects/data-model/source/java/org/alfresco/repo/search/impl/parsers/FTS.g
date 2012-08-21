@@ -28,6 +28,7 @@ options
 {
         output    = AST;
         backtrack = false;
+        memoize   = false; 
 }
 /*
  * Additional tokens for tree building.
@@ -105,7 +106,7 @@ package org.alfresco.repo.search.impl.parsers;
     {
         CMIS, DEFAULT_CONJUNCTION, DEFAULT_DISJUNCTION
     }
-
+    
     private Stack<String> paraphrases = new Stack<String>();
     
     private boolean defaultFieldConjunction = true;
@@ -361,9 +362,9 @@ ftsQuery
 
 ftsDisjunction
         :
-        {getMode() == Mode.CMIS}?=> cmisExplicitDisjunction
-        | {getMode() == Mode.DEFAULT_CONJUNCTION}?=> ftsExplicitDisjunction
-        | {getMode() == Mode.DEFAULT_DISJUNCTION}?=> ftsImplicitDisjunction
+          {getMode() == Mode.CMIS}? cmisExplicitDisjunction
+        | {getMode() == Mode.DEFAULT_CONJUNCTION}? ftsExplicitDisjunction
+        | {getMode() == Mode.DEFAULT_DISJUNCTION}? ftsImplicitDisjunction
         ;
 
 ftsExplicitDisjunction
@@ -451,38 +452,27 @@ cmisPrefixed
  * Individual query components
  */
 
-
 ftsTest
         :
-        (ftsFieldGroupProximity) => ftsFieldGroupProximity
+           (ftsFieldGroupProximity) => ftsFieldGroupProximity
                 ->
                         ^(PROXIMITY ftsFieldGroupProximity)
-        | ftsTerm ( (fuzzy) => fuzzy)?
-                ->
-                        ^(TERM ftsTerm fuzzy?)
-        | ftsExactTerm ( (fuzzy) => fuzzy)?
-                ->
-                        ^(EXACT_TERM ftsExactTerm fuzzy?)
-        | ftsPhrase ( (slop) => slop)?
-                ->
-                        ^(PHRASE ftsPhrase slop?)
-        | ftsExactPhrase ( (slop) => slop)?
-                ->
-                        ^(EXACT_PHRASE ftsExactPhrase slop?)
-        | ftsTokenisedPhrase ( (slop) => slop)?
-                ->
-                        ^(PHRASE ftsTokenisedPhrase slop?)
-        | ftsSynonym ( (fuzzy) => fuzzy)?
-                ->
-                        ^(SYNONYM ftsSynonym fuzzy?)
-        | ftsRange
+        |
+           ftsTermOrPhrase
+        |
+           ftsExactTermOrPhrase
+        | 
+           ftsTokenisedTermOrPhrase
+        |
+           ftsRange
                 ->
                         ^(RANGE ftsRange)
-        | ftsFieldGroup
+        |  
+           ftsFieldGroup
                 -> ftsFieldGroup
-        | LPAREN ftsDisjunction RPAREN
+        |  LPAREN ftsDisjunction RPAREN
                 -> ftsDisjunction
-        | template
+        |  template
                 -> template
         ;
 
@@ -527,40 +517,73 @@ boost
                         ^(BOOST number)
         ;
 
-ftsTerm
+ftsTermOrPhrase
         :
-        (fieldReference COLON)? ftsWord
-                -> ftsWord fieldReference?
+        (fieldReference COLON) => fieldReference COLON
+        (
+                FTSPHRASE ((slop)=> slop)?
+                -> ^(PHRASE FTSPHRASE fieldReference slop?)
+                |
+                ftsWord ((fuzzy) => fuzzy)?
+                -> ^(TERM ftsWord fieldReference fuzzy?)
+        )
+        |
+        FTSPHRASE ((slop)=> slop)?
+                -> ^(PHRASE FTSPHRASE slop?)
+        | 
+        ftsWord ((fuzzy) => fuzzy)?
+                -> ^(TERM ftsWord fuzzy?)
         ;
+        
+        
+ftsExactTermOrPhrase
+        :
+        EQUALS
+        (
+        (fieldReference COLON) => fieldReference COLON
+        (
+                FTSPHRASE ((slop)=> slop)?
+                -> ^(EXACT_PHRASE FTSPHRASE fieldReference slop?)
+                |
+                ftsWord ((fuzzy) => fuzzy)?
+                -> ^(EXACT_TERM ftsWord fieldReference fuzzy?)
+        )
+        |
+        FTSPHRASE ((slop)=> slop)?
+                -> ^(EXACT_PHRASE FTSPHRASE slop?)
+        | 
+        ftsWord ((fuzzy) => fuzzy)?
+                -> ^(EXACT_TERM ftsWord fuzzy?)
+        )
+        ;
+        
+
+ftsTokenisedTermOrPhrase
+        :
+        TILDA
+        (
+        (fieldReference COLON) => fieldReference COLON
+        (
+                FTSPHRASE ((slop)=> slop)?
+                -> ^(PHRASE FTSPHRASE fieldReference slop?)
+                |
+                ftsWord ((fuzzy) => fuzzy)?
+                -> ^(TERM ftsWord fieldReference fuzzy?)
+        )
+        |
+        FTSPHRASE ((slop)=> slop)?
+                -> ^(PHRASE FTSPHRASE slop?)
+        | 
+        ftsWord ((fuzzy) => fuzzy)?
+                -> ^(TERM ftsWord fuzzy?)
+        )
+        ;
+
 
 cmisTerm
         :
         ftsWord
                 -> ftsWord
-        ;
-
-ftsExactTerm
-        :
-        EQUALS ftsTerm
-                -> ftsTerm
-        ;
-
-ftsPhrase
-        :
-        (fieldReference COLON)? FTSPHRASE
-                -> FTSPHRASE fieldReference?
-        ;
-        
-ftsExactPhrase
-        :
-        EQUALS ftsPhrase
-                -> ftsPhrase
-        ;
-        
-ftsTokenisedPhrase
-        :
-        TILDA ftsPhrase
-                -> ftsPhrase
         ;
 
 
@@ -570,11 +593,6 @@ cmisPhrase
                 -> FTSPHRASE
         ;
 
-ftsSynonym
-        :
-        TILDA ftsTerm
-                -> ftsTerm
-        ;
 
 ftsRange
         :
@@ -591,8 +609,8 @@ ftsFieldGroup
 
 ftsFieldGroupDisjunction
         :
-        {defaultFieldConjunction() == true}?=> ftsFieldGroupExplicitDisjunction
-        | {defaultFieldConjunction() == false}?=> ftsFieldGroupImplicitDisjunction
+        {defaultFieldConjunction() == true}? ftsFieldGroupExplicitDisjunction
+        | {defaultFieldConjunction() == false}? ftsFieldGroupImplicitDisjunction
         ;
 
 ftsFieldGroupExplicitDisjunction
@@ -718,7 +736,7 @@ ftsFieldGroupProximity
 
 ftsFieldGroupProximityTerm
         :
-        ID
+          ID
         | FTSWORD
         | FTSPRE
         | FTSWILD
@@ -765,7 +783,7 @@ fieldReference
         :
         AT?
         (
-                prefix
+                  (prefix) => prefix
                 | uri
         )?
         identifier
@@ -801,16 +819,51 @@ uri
 
 identifier
         :
-        (ID DOT ID) => id1=ID DOT id2=ID
+        (ID DOT ID) =>
+         id1=ID DOT id2=ID
                 ->      {new CommonTree(new CommonToken(FTSLexer.ID, $id1.text+$DOT.text+$id2.text))}
-        | ID
+        | 
+           ID
                 ->
                         ID
         ; 
 
-ftsWord :
-          ftsWordBase ((DOT | COMMA ) ftsWordBase)*
-        | (DOT | COMMA) ftsWordBase ((DOT | COMMA) ftsWordBase)*
+ftsWord
+        :
+           ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase
+        | (ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase DOT|COMMA ftsWordBase) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase
+        |  ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)
+        | (ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)
+        |  ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase
+        | (ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase
+        | ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)
+        | (ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)
+        | ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase
+        | (ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase 
+        | ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA)
+        | (ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) ) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase (DOT|COMMA) 
+        | ((DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA) ftsWordBase
+        | (ftsWordBase (DOT|COMMA) ftsWordBase) => 
+           ftsWordBase (DOT|COMMA) ftsWordBase
+        | ((DOT|COMMA) ftsWordBase (DOT|COMMA)) => 
+           (DOT|COMMA) ftsWordBase (DOT|COMMA)
+        | (ftsWordBase (DOT|COMMA)) => 
+           ftsWordBase (DOT|COMMA)
+        | (DOT|COMMA) ftsWordBase 
+        | ftsWordBase 
         ;
         
 ftsWordBase
@@ -835,7 +888,7 @@ number
 
 ftsRangeWord
         :
-        ID
+          ID
         | FTSWORD
         | FTSPRE
         | FTSWILD
@@ -1090,12 +1143,14 @@ STAR
         '*'
         ;
 
-DOTDOT
+// This is handled sa part for FLOATING_POINT_LITERAL to reduce lexer complexity 
+fragment DOTDOT
         :
         '..'
         ;
 
-DOT
+// This is handled sa part for FLOATING_POINT_LITERAL to reduce lexer complexity 
+fragment DOT
         :
         '.'
         ;
@@ -1215,74 +1270,95 @@ ID
         )*
         ;
 
-DECIMAL_INTEGER_LITERAL
+// This is handled sa part for FLOATING_POINT_LITERAL to reduce lexer complexity 
+fragment DECIMAL_INTEGER_LITERAL
         :
-        (
-                PLUS
-                | MINUS
-        )?
-        DECIMAL_NUMERAL
         ;
 
 FLOATING_POINT_LITERAL
-        // Integer ranges
         :
-          (START_RANGE_I DOTDOT START_RANGE_F) =>
-          start=START_RANGE_I dotdot=DOTDOT end=START_RANGE_F {
-                        $start.setType(DECIMAL_INTEGER_LITERAL);
-                        emit($start);
-                        $dotdot.setType(DOTDOT);
-                        emit($dotdot);
-                        $end.setType(FLOATING_POINT_LITERAL);
-                        emit($end);
-                }
-        | (START_RANGE_I DOTDOT START_RANGE_I) =>
-          start=START_RANGE_I dotdot=DOTDOT end=START_RANGE_I {
-                        $start.setType(DECIMAL_INTEGER_LITERAL);
-                        emit($start);
-                        $dotdot.setType(DOTDOT);
-                        emit($dotdot);
-                        $end.setType(DECIMAL_INTEGER_LITERAL);
-                        emit($end);
-                }
-        // Float ranges
-        | (START_RANGE_F DOTDOT START_RANGE_F) =>
-          start=START_RANGE_F dotdot=DOTDOT end=START_RANGE_F {
-                        $start.setType(FLOATING_POINT_LITERAL);
-                        emit($start);
-                        $dotdot.setType(DOTDOT);
-                        emit($dotdot);
-                        $end.setType(FLOATING_POINT_LITERAL);
-                        emit($end);
-                }
-        | start=START_RANGE_F dotdot=DOTDOT end=START_RANGE_I {
-                        $start.setType(FLOATING_POINT_LITERAL);
-                        emit($start);
-                        $dotdot.setType(DOTDOT);
-                        emit($dotdot);
-                        $end.setType(DECIMAL_INTEGER_LITERAL);
-                        emit($end);
-                }
-        // Normal float rules
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ DOT DIGIT* EXPONENT?
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DOT DIGIT+ EXPONENT?
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ EXPONENT
+         (PLUS|MINUS)?
+         (
+                DIGIT+
+                (
+                        {input.LA(2) != '.'}?=> DOT 
+                        (
+                                DIGIT+
+                                (
+                                    EXPONENT
+                                    {$type = FLOATING_POINT_LITERAL; }
+                                    |
+                                    {input.LA(2) != '.'}?=> DOT 
+                                    {
+                                         int index = $text.indexOf('.');
+                                         
+                                         CommonToken digits1 = new CommonToken(input, DECIMAL_INTEGER_LITERAL, Token.DEFAULT_CHANNEL, $pos, $pos+index-1);
+                                         emit(digits1);
+                                        
+                                         CommonToken dot1 = new CommonToken(input, DOT, Token.DEFAULT_CHANNEL, $pos+index, $pos+index);
+                                         emit(dot1);
+                    
+                                         CommonToken digits2 = new CommonToken(input, DECIMAL_INTEGER_LITERAL, Token.DEFAULT_CHANNEL, $pos+index+1, $pos + $text.length() -2);
+                                         emit(digits2);
+                                
+                                         CommonToken dot2 = new CommonToken(input, DOT, Token.DEFAULT_CHANNEL, $pos + $text.length() -1, $pos + $text.length() -1);
+                                         emit(dot2);
+                                        
+                                    }
+                                    |
+                                    {$type = FLOATING_POINT_LITERAL; }
+                                )
+                                |
+                                EXPONENT
+                                {$type = FLOATING_POINT_LITERAL; }
+                                |
+                                {$type = FLOATING_POINT_LITERAL; }
+                        )
+                        |
+                        (
+                                EXPONENT
+                                {$type = FLOATING_POINT_LITERAL; }
+                                |
+                                {$type = DECIMAL_INTEGER_LITERAL; }
+                        )        
+                       
+                )
+                |
+                
+                DOT
+                (   
+                        DIGIT+ 
+                        (
+                            EXPONENT
+                            {$type = FLOATING_POINT_LITERAL; }
+                            |
+                            {$text.startsWith(".")}? {input.LA(2) != '.'}?=> DOT 
+                           
+                                {
+                               
+                                CommonToken dot1 = new CommonToken(input, DOT, Token.DEFAULT_CHANNEL, $pos, $pos);
+                                emit(dot1);
+                    
+                                CommonToken digits = new CommonToken(input, DECIMAL_INTEGER_LITERAL, Token.DEFAULT_CHANNEL, $pos+1, $pos + $text.length() -2);
+                                emit(digits);
+                                
+                                CommonToken dot2 = new CommonToken(input, DOT, Token.DEFAULT_CHANNEL, $pos + $text.length() -1, $pos + $text.length() -1);
+                                emit(dot2);
+                               
+                                }
+                            |
+                            {$type = FLOATING_POINT_LITERAL; }
+                                
+                        )
+                        |
+                        {input.LA(2) != '.'}?=> '.'
+                        {$type = DOTDOT; }
+                        |
+                        {$type = DOT; }
+                 )
+         )
         ;
+        
 
 
 /*
@@ -1297,41 +1373,6 @@ FLOATING_POINT_LITERAL
  *
  * Float and integer are based on the Java language spec.
  */
-
-
-
-
-fragment
-START_RANGE_I
-        :
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+
-        ;
-
-fragment
-START_RANGE_F
-        :
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ DOT DIGIT* EXPONENT?
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DOT DIGIT+ EXPONENT?
-        |
-        (
-                PLUS
-                | MINUS
-        )?
-        DIGIT+ EXPONENT
-        ;
 
 /**   
  * Fragments for decimal
@@ -1386,27 +1427,7 @@ SIGNED_INTEGER
         )?
         DIGIT+
         ;
-//
-//FTSRANGE
-//        :
-//        start=FTSRANGEPOINT dotdot=DOTDOT end=FTSRANGEPOINT {
-//                        $start.setType(FTSWORD);
-//                        emit($start);
-//                        $dotdot.setType(DOTDOT);
-//                        emit($dotdot);
-//                        $end.setType(FTSWORD);
-//                        emit($end);
-//                }
-//        ;
-//
-//fragment
-//FTSRANGEPOINT
-//        :
-//        (
-//                F_ESC
-//                | START_WORD
-//        )+
-//        ;
+
 
 FTSWORD
         :

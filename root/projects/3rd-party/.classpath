@@ -181,10 +181,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.1.jar" sourcepath="src/json-simple-1.1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-802.jdbc4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/antlr-3.3-complete.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.2.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-20120704.jar" sourcepath="src/activiti-engine-5.7-20120704-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7-20120704.jar" sourcepath="src/activiti-spring-5.7-20120704-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.7-20120820.jar" sourcepath="src/activiti-engine-5.7-20120820-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.7-20120820.jar" sourcepath="src/activiti-spring-5.7-20120820-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-youtube-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
@@ -237,5 +236,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-file-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-file-7.5.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-zip-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-zip-7.5.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/mmt-dependencies/truezip-swing-7.5.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-3.4-complete.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

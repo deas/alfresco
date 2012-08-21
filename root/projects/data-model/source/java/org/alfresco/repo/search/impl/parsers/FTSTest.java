@@ -71,7 +71,7 @@ public class FTSTest extends TestCase
 
     public void testLexerOutput() throws IOException, RecognitionException
     {
-        CharStream cs = new ANTLRStringStream(".txt");
+        CharStream cs = new ANTLRStringStream("cm_content.mimetype:\"text/plain\"");
         FTSLexer lexer = new FTSLexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         
