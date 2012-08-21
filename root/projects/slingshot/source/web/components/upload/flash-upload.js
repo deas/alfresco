@@ -489,7 +489,10 @@
       {
          this.uploader.enable();
          this.uploader.setAllowMultipleFiles(this.showConfig.mode === this.MODE_MULTI_UPLOAD);
-         this.uploader.setFileFilters(this.showConfig.filter);
+         if (this.showConfig.filter)
+         {
+            this.uploader.setFileFilters(this.showConfig.filter);
+         }
       },
 
       /**
