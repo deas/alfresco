@@ -53,7 +53,7 @@
         </property>
     </bean>
 
-    <bean id="dwsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoDwsServiceHandler">
+    <bean id="abstractDwsServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoDwsServiceHandler" abstract="true">
         <property name="fileFolderService" ref="FileFolderService"/>
         <property name="nodeService" ref="NodeService"/>    	
         <property name="permissionService" ref="PermissionService"/>
@@ -92,6 +92,8 @@
             </map>
         </property>
     </bean>
+    
+    <bean id="dwsServiceHandler" parent="abstractDwsServiceHandler"/>
 
     <bean id="userGroupServiceHandler" class="org.alfresco.module.vti.handler.alfresco.AlfrescoUserGroupServiceHandler">    	
         <property name="nodeService" ref="NodeService"/>
