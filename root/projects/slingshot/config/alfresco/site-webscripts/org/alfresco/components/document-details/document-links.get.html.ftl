@@ -11,12 +11,16 @@
 <#assign el=args.htmlid?html>
 <@markup id="widgets">
    <#if document??>
-      <@createWidgets group="document-details"/>
-      <@inlineScript group="document-details">
-         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-            Alfresco.util.createTwister("${el}-heading", "DocumentLinks");
-         });
-      </@>
+      <#if document.workingCopy??>
+          <!-- Don't display links since this nodeRef points to one of a working copy pair -->
+      <#else>
+         <@createWidgets group="document-details"/>
+         <@inlineScript group="document-details">
+            YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
+               Alfresco.util.createTwister("${el}-heading", "DocumentLinks");
+            });
+         </@>
+      </#if>
    </#if>
 </@>
 
