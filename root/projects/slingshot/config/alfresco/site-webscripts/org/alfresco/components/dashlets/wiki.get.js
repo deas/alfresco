@@ -40,7 +40,7 @@ function main()
    var pages = [];
    if (model.pageList != null)
    {
-      for (var p in pageList.pages)
+      for (var p in model.pageList.pages)
       {
          pages.push(p.name);
       }
