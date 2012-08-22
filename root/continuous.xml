@@ -617,7 +617,7 @@
 
 
    <target name="assemble-commands"
-           depends="package-bm-remote, package-mmt, assemble-commands-init, assemble-command-extras"/>
+           depends="package-mmt, assemble-commands-init, assemble-command-extras"/>
 
    <target name="assemble-commands-init">
            
@@ -991,121 +991,6 @@
 
       <zip destfile="${dir.continuous.assemble.commands}/${file.name.dist.mmt}.jar">
          <zipfileset dir="${dir.continuous.assemble.mmt}" />
-      </zip>
-   </target>
-
-   <!-- ************************************ -->
-   <!-- ** Benchmark Remote targets       ** -->
-   <!-- ************************************ -->
-   
-   <target name="assemble-bm-remote" 
-           depends="continuous-init">
-
-      <!-- Create the required directory structure -->
-      <mkdir dir="${dir.continuous.dist}" />
-      <mkdir dir="${dir.continuous.assemble.bm-remote}" />
-
-      <!-- extract the one-jar file -->
-      <unjar src="${dir.project.3rdparty.lib}/one-jar/one-jar-boot-0.96-RC4.jar" 
-             dest="${dir.continuous.assemble.bm-remote}" 
-             overwrite="true" />
-      <!-- remove unwanted files -->
-      <delete >
-         <fileset dir="${dir.continuous.assemble.bm-remote}">
-            <include name="**/*.java" />
-            <include name="**/boot-manifest.mf" />
-         </fileset>
-      </delete>
-
-      <!-- copy required jars into lib folder -->
-      <copy todir="${dir.continuous.assemble.bm-remote}/lib" 
-            flatten="false">
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="org.springframework*.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/aopalliance.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/ehcache-core-2.0.0.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/slf4j-api-1.5.11.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/slf4j-log4j12-1.5.11.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/jug-asl-2.0.0.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/commons/commons-logging-1.1.1.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/log4j-1.2.15.jar" />
-      </copy>
-
-      <!-- get the files for the main bm-remote jar -->
-      <copy todir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar" 
-            flatten="false">
-         <fileset dir="${dir.project.core.src.java}" 
-                  includes="log4j.properties" />
-         <fileset dir="${dir.project.core.classes}" 
-                  includes="org/alfresco/error/AlfrescoRuntimeException.class" />
-         <fileset dir="${dir.project.core.classes}" 
-                  includes="org/alfresco/error/StackTraceUtil.class" />
-         <fileset dir="${dir.project.core.classes}" 
-                  includes="org/alfresco/util/GUID.class" />
-         <fileset dir="${dir.project.datamodel.classes}" 
-                  includes="org/alfresco/model/ContentModel.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/model/RenditionModel.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/repo/cache/EhCacheAdapter.class" />
-         <fileset dir="${dir.project.datamodel.classes}" 
-                  includes="org/alfresco/repo/cache/SimpleCache.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/repo/remote/FileFolderRemoteClient.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/repo/model/filefolder/**/*.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/service/cmr/model/*.class" />
-         <fileset dir="${dir.project.datamodel.classes}" 
-                  includes="org/alfresco/service/cmr/repository/*.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/service/cmr/repository/*.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/service/cmr/remote/*.class" />
-         <fileset dir="${dir.project.datamodel.classes}" 
-                  includes="org/alfresco/service/namespace/*.class" />
-         <fileset dir="${dir.project.repository.classes}" 
-                  includes="org/alfresco/service/namespace/*.class" />
-      </copy>
-      <!-- copy the ehcache file -->
-      <copy todir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar" 
-            flatten="false">
-         <fileset dir="${dir.project.repository.src.java}" 
-                  includes="org/alfresco/repo/model/filefolder/**/loader-ehcache.xml" />
-      </copy>
-      <!-- copy in a manifest file -->
-      <copy tofile="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar/META-INF/MANIFEST.MF" >
-         <fileset dir="${dir.project.repository}/source/META-INF" 
-                  includes="bm-remote-manifest.mf" />
-      </copy>
-      <!-- jar the main bm-remote classes -->
-      <mkdir dir="${dir.continuous.assemble.bm-remote}/main" />
-      <jar destfile="${dir.continuous.assemble.bm-remote}/main/main.jar" 
-           manifest="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar/META-INF/MANIFEST.MF" 
-           update="false" >
-         <fileset dir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar">
-            <include name="**/*" />
-         </fileset>
-      </jar>
-      <!-- Remove temp files -->
-      <delete dir="${dir.continuous.assemble.bm-remote}/tmp-bm-remote-jar" />
-
-   </target>
-   
-   <target name="package-bm-remote" 
-           depends="assemble-bm-remote"
-           description="Creates the Alfresco Remote Benchmark Tool distribution file for all platforms">
-      <mkdir dir="${dir.continuous.assemble.commands}" />
-
-      <zip destfile="${dir.continuous.assemble.commands}/${file.name.dist.bm-remote}.jar">
-         <zipfileset dir="${dir.continuous.assemble.bm-remote}" />
       </zip>
    </target>
 
