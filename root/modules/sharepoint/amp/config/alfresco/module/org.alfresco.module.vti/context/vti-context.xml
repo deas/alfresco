@@ -299,11 +299,19 @@
         <property name="urlPathPrefix" value="${vti.server.url.path.prefix}"/>
     </bean>
     
+    <bean id="vtiActivityPoster" class="org.alfresco.repo.webdav.ActivityPosterImpl">
+        <property name="appTool" value="Sharepoint"/>
+        <property name="activityService" ref="activityService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="personService" ref="PersonService"/>
+    </bean>
+    
     <bean id="abstractDAVAction" abstract="true">
         <property name="pathHelper" ref="vtiPathHelper"/>
         <property name="serviceRegistry" ref="ServiceRegistry"/>
         <property name="webDavHelper" ref="sppDAVHelper"/>
         <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="activityPoster" ref="vtiActivityPoster"/>
     </bean>
     
     <bean id="vtiInfAction" class="org.alfresco.module.vti.web.actions.VtiInfAction">

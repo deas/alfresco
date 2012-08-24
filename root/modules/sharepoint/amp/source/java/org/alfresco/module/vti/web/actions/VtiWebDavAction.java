@@ -31,6 +31,8 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.repo.tenant.TenantUtil;
 import org.alfresco.repo.tenant.TenantUtil.TenantRunAsWork;
+import org.alfresco.repo.webdav.ActivityPostProducer;
+import org.alfresco.repo.webdav.ActivityPoster;
 import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVMethod;
@@ -67,6 +69,8 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
     private static Log logger = LogFactory.getLog(VtiWebDavAction.class);
 
     private VtiWebDavActionExecutor davActionExecutor = this;
+    
+    private ActivityPoster activityPoster;
     
     /**
      * <p>Process WebDAV protocol request, dispatch among set of 
@@ -110,6 +114,14 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
     }
 
     /**
+     * @param activityPoster the activityPoster to set
+     */
+    public void setActivityPoster(ActivityPoster activityPoster)
+    {
+        this.activityPoster = activityPoster;
+    }
+
+    /**
      * Plugable executor implementation allows overriding of this behaviour without disturbing
      * the class hierarchy.
      * 
@@ -123,6 +135,14 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
                 HttpServletResponse response) throws WebDAVServerException
     {
         method.setDetails(request, response, webDavHelper, pathHelper.getRootNodeRef());
+        
+        // A very few WebDAV methods produce activity posts.
+        if (method instanceof ActivityPostProducer)
+        {
+            ActivityPostProducer activityPostProducer = (ActivityPostProducer) method;
+            activityPostProducer.setActivityPoster(activityPoster);
+        }
+        
         method.execute();
     }
 
