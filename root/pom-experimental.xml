@@ -103,7 +103,6 @@
     <module>modules/wcmquickstart/wcmquickstartmodule</module>
     <module>modules/wcmquickstart/wcmquickstartclientapi</module>
     <module>modules/wcmquickstart/wcmquickstartwebsite</module>
-    <module>enterprisemodules/xamconnector</module>
     <module>projects/web-editor-samples/customer-site</module>
   </modules>
 
