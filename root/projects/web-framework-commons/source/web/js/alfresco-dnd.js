@@ -532,9 +532,9 @@
          // Add class so it appears to be draggable
          Dom.addClass(li, "dnd-draggable");
 
-         if (!YAHOO.env.ua.ios)
+         if (!YAHOO.env.ua.ios && !YAHOO.env.ua.android)
          {
-            // No need to add keyboard navigation support on ios
+            // No need to add keyboard navigation support on ios or android
             this._addKeyboardSupport(li, groups);
          }
       },

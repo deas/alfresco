@@ -146,20 +146,72 @@
 (function()
 {
    /**
-    * Drag drop support for ipad making yui's drag n drop classes work out of the box on an ipad.
+    * Drag drop support for ipad (safari) & android (chrome) making yui's drag n drop classes work out of the box.
     *
     * The trick is to:
     * - Stop listening for mouse events: "mousedown", "mousemove" & "mouseup"
     * - Start listening to touch events: "touchstart", "touchmove" & "touchend"
-    * - Make sure the "touchend" events gets it pageX & pageY attributes set so it can be treated as a "mouseup" event.
+    * - Make sure all events have with pageX & pageY attributes set so they can be treated as a "mouse" event.
     *
     * Note! Assumes the following when invoked:
     * - the YAHOO.util.DragDropMgr && YAHOO.util.DragDrop classes have been loaded
     * - the YAHOO.util.DragDropMgr have been initialized
     */
-   if (YAHOO.env.ua.ipad && YAHOO.util.DragDropMgr && YAHOO.util.DragDrop)
+   if ((YAHOO.env.ua.ipad || YAHOO.env.ua.android) && YAHOO.util.DragDropMgr && YAHOO.util.DragDrop)
    {
       var Event = YAHOO.util.Event;
+
+      // Fake an object that pretends to be an event so we can set it's pageX & pageY coords
+      var createMouseEvent = function(e)
+      {
+         var event = {
+            type: e.type,
+            target: YAHOO.util.Event.getTarget(e),
+            pageX: e.pageX,
+            pageY: e.pageY,
+            which: e.which
+         };
+
+         // Make sure the event can stop bubbling
+         var orgEvent = e;
+         if (e.stopPropagation)
+         {
+            event.stopPropagation = function()
+            {
+               orgEvent.stopPropagation();
+            };
+         }
+         if (e.preventDefault)
+         {
+            event.preventDefault = function()
+            {
+               orgEvent.preventDefault();
+            }
+         }
+
+         // Android always sets the pageY but the pageX is always 0, pick it from the targetTouches instead
+         if (e.targetTouches && e.targetTouches.length > 0)
+         {
+            var touch = e.targetTouches[e.targetTouches.length - 1];
+            event.pageX = touch.pageX;
+            event.pageY = touch.pageY;
+         }
+
+         // Add it in since the yui classes are looking at the value
+         if (e.clientX || e.clientY)
+         {
+            event.clientX = e.clientX;
+            event.clientY = e.clientY;
+         }
+
+         // Add it in since the yui classes are looking at the value
+         if (e.button)
+         {
+            event.button = e.button;
+         }
+
+         return event;
+      };
 
       // First patch the YAHOO.uti.DragDropMgr (which is an already created singleton object without a prototype)
       var DDM_patch = function()
@@ -172,11 +224,13 @@
          var original_handleMouseMove = this.handleMouseMove;
          this.handleMouseMove = function(e)
          {
-            original_handleMouseMove.call(this, e);
+            // Create a faked event so that pageX and pageY will be set
+            var event = createMouseEvent(e);
+            original_handleMouseMove.call(this, event);
 
             // Make sure to save the touch coords since the "touchend" event always have pageX and pageY set to 0
-            this._lastTouchPageX = e.pageX;
-            this._lastTouchPageY = e.pageY;
+            this._lastTouchPageX = event.pageX;
+            this._lastTouchPageY = event.pageY;
          };
 
          // Add our own proxy touch listeners
@@ -202,19 +256,16 @@
          var original_fireEvents = this.fireEvents;
          this.fireEvents = function(e, isDrop)
          {
+            var event = e;
             if (isDrop)
             {
                // Create a fake event object with all attributes the drag drop classes seem to use
-               e = {
-                  pageX: this._lastTouchPageX,
-                  pageY: this._lastTouchPageY,
-                  clientX: e.clientX,
-                  clientY: e.clientY,
-                  button: e.button,
-                  which: e.which
-               };
+               event = createMouseEvent(e);
+               event.pageX = this._lastTouchPageX;
+               event.pageY = this._lastTouchPageY;
             }
-            original_fireEvents.call(this, e, isDrop);
+
+            original_fireEvents.call(this, event, isDrop);
          };
 
       };
@@ -250,11 +301,14 @@
          var original_handleMouseDown = YAHOO.util.DragDrop.prototype.handleMouseDown;
          YAHOO.util.DragDrop.prototype.handleMouseDown = function(e, oDD)
          {
-            // Make sure to save the touch coords since the "touchend" event always have pageX and pageY set to 0
-            this._lastTouchPageX = e.pageX;
-            this._lastTouchPageY = e.pageY;
+            // Create a faked event with pageX and pageY attributes to keep yui happy
+            var event = createMouseEvent(e);
 
-            original_handleMouseDown.call(this, e, oDD);
+            // Make sure to save the touch coords since the "touchend" event always have pageX and pageY set to 0
+            this._lastTouchPageX = event.pageX;
+            this._lastTouchPageY = event.pageY;
+
+            original_handleMouseDown.call(this, event, oDD);
          };
       };
       DD_patch.call(YAHOO.util.DragDrop);
