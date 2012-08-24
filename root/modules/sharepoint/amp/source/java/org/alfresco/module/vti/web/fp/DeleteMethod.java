@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVServerException;
-import org.alfresco.service.cmr.model.FileInfo;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
@@ -119,12 +118,5 @@ public class DeleteMethod extends org.alfresco.repo.webdav.DeleteMethod
         outputFormat.setNewlines(false);
         outputFormat.setIndent(false);
         return outputFormat;
-    }
-
-    @Override
-    protected void postActivity(FileInfo parent, FileInfo deletedFile, String siteId)
-                throws WebDAVServerException
-    {
-        // TODO: get activity posting working for Sharepoint.
     }
 }

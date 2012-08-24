@@ -18,7 +18,6 @@
  */
 package org.alfresco.module.vti.web.fp;
 
-import org.alfresco.repo.webdav.WebDAVServerException;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -57,11 +56,5 @@ public class PutMethod extends org.alfresco.repo.webdav.PutMethod
     public String getPath()
     {
        return AbstractMethod.getPathWithoutContext(alfrescoContext, m_request);
-    }
-
-    @Override
-    protected void postActivity() throws WebDAVServerException
-    {
-        // TODO: fix activity posting for sharepoint version. 
     }
 }
