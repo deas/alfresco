@@ -1526,7 +1526,7 @@
          var searchTerm = YAHOO.lang.trim(searchTermElem.value);
          
          // inform the user if the search term entered is too small
-         if (searchTerm.length < this.options.minSearchTermLength)
+         if (searchTerm.replace(/\*/g, "").length < this.options.minSearchTermLength)
          {
             Alfresco.util.PopupManager.displayMessage(
             {
