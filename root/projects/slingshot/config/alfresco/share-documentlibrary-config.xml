@@ -200,10 +200,16 @@
          <indicator id="lock-owner" index="10">
             <evaluator>evaluator.doclib.indicator.lockOwner</evaluator>
          </indicator>
-         <indicator id="locked" index="10">
+         <indicator id="locked" index="10" icon="lock-owner-16.png">
             <evaluator>evaluator.doclib.indicator.locked</evaluator>
             <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
+         </indicator>
+         <indicator id="nodeLock" index="10" icon="lock-owner-16.png" label="status.locked">
+            <evaluator>evaluator.doclib.indicator.nodeLocked</evaluator>
+            <labelParam index="0">{jsNode.properties.cm_lockOwner.displayName}</labelParam>
+            <labelParam index="1">{jsNode.properties.cm_lockOwner.userName}</labelParam>
+            <override>locked</override>
          </indicator>
          <!-- Google Docs Editing -->
          <indicator id="google-docs-editing" index="10">

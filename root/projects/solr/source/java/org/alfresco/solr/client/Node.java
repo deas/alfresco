@@ -26,6 +26,7 @@ public class Node
     };
 
     private long id;
+    private String nodeRef;
     private long txnId;
     private SolrApiNodeStatus status;
     public long getId()
@@ -35,6 +36,14 @@ public class Node
     public void setId(long id)
     {
         this.id = id;
+    }
+    public String getNodeRef()
+    {
+        return nodeRef;
+    }
+    public void setNodeRef(String nodeRef)
+    {
+        this.nodeRef = nodeRef;
     }
     public long getTxnId()
     {

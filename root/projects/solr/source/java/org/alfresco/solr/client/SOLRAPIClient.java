@@ -540,6 +540,11 @@ public class SOLRAPIClient
             {
                 nodeInfo.setId(jsonNodeInfo.getLong("id"));
             }
+
+            if(jsonNodeInfo.has("nodeRef"))
+            {
+                nodeInfo.setNodeRef(jsonNodeInfo.getString("nodeRef"));
+            }
             
             if(jsonNodeInfo.has("txnId"))
             {

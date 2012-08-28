@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -110,46 +110,55 @@ public class DynamicCollectionProcessor implements WebSiteModel
                     @Override
                     public Object execute() throws Throwable
                     {
-                        //Find all web root nodes
-                        ResultSet rs = searchService.query(
+                    	ResultSet rs = null;
+                    	
+                    	try
+                    	{
+                            //Find all web root nodes
+                            rs = searchService.query(
                         				StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
                         				SearchService.LANGUAGE_LUCENE, 
                         				QUERY);
                      
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("Running dynamic collection refresh processor across " + rs.length() + " dynamic collection nodes");
-                        }
-                        
-                        // Get the current date
-                        Calendar now = Calendar.getInstance();
-                        
-                        // Interate over the dynamic queries 
-                        for (NodeRef collection : rs.getNodeRefs())
-                        {
-                            Date refreshAtDate = (Date)nodeService.getProperty(collection, PROP_REFRESH_AT);
-                            Calendar refreshAt = Calendar.getInstance();
-                            if (refreshAtDate != null)
+                            if (log.isDebugEnabled())
                             {
-                                // Convert the date to calendar
-                                refreshAt.setTime(refreshAtDate);
+                                log.debug("Running dynamic collection refresh processor across " + rs.length() + " dynamic collection nodes");
                             }
-                                
-                            if ((refreshAtDate == null) || now.after(refreshAt))
+                        
+                            // Get the current date
+                            Calendar now = Calendar.getInstance();
+                        
+                            // Interate over the dynamic queries 
+                            for (NodeRef collection : rs.getNodeRefs())
                             {
-                                if (log.isDebugEnabled() == true)
+                                Date refreshAtDate = (Date)nodeService.getProperty(collection, PROP_REFRESH_AT);
+                                Calendar refreshAt = Calendar.getInstance();
+                                if (refreshAtDate != null)
                                 {
-                                    String collectionName = (String)nodeService.getProperty(collection, ContentModel.PROP_NAME);
-                                    if (collectionName != null)
-                                    {
-                                        log.debug("Refreshing dynamic collection " + collectionName);
-                                    }
-                                }                                    
+                                    // Convert the date to calendar
+                                    refreshAt.setTime(refreshAtDate);
+                                }
                                 
-                                // Refresh the collection
-                                collectionHelper.refreshCollection(collection);
+                                if ((refreshAtDate == null) || now.after(refreshAt))
+                                {
+                                    if (log.isDebugEnabled() == true)
+                                    {
+                                        String collectionName = (String)nodeService.getProperty(collection, ContentModel.PROP_NAME);
+                                        if (collectionName != null)
+                                        {
+                                            log.debug("Refreshing dynamic collection " + collectionName);
+                                        }
+                                    }                                    
+                                
+                                    // Refresh the collection
+                                    collectionHelper.refreshCollection(collection);
+                                }
                             }
-                        }
+                    	}
+                    	finally
+                    	{
+                    		if (rs != null) {rs.close();}
+                    	}
                         return null;
                     }   
                 });

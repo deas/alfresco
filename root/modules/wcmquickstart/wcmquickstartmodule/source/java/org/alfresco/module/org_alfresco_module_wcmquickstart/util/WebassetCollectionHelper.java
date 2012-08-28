@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -183,10 +183,11 @@ public class WebassetCollectionHelper implements WebSiteModel
             {
                 log.debug("About to run query for dynamic asset collection (" + collection + "): " + query);
             }
+            ResultSet resultSet = null;
             try
             {
                 // Execute the query
-                ResultSet resultSet = searchService.query(searchParameters);
+                resultSet = searchService.query(searchParameters);
 
                 // Iterate over the results of the query
                 int resultCount = 0;
@@ -219,6 +220,10 @@ public class WebassetCollectionHelper implements WebSiteModel
             catch (Exception e)
             {
                 log.error("Failed to complete update of dynamic asset collection (" + collection + "): " + query, e);
+            }
+            finally
+            {
+            	if (resultSet != null) {resultSet.close();}
             }
         }
     }

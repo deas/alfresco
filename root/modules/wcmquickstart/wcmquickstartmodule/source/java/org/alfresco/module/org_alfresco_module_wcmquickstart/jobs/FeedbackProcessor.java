@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -84,70 +84,78 @@ public class FeedbackProcessor
                     @Override
                     public Object execute() throws Throwable
                     {                   
-                        //Find all visitor feedback nodes that have not yet been processed
-                        ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
+                    	ResultSet rs = null;
+                    	
+                    	try
+                    	{
+                            //Find all visitor feedback nodes that have not yet been processed
+                            rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
                                 SearchService.LANGUAGE_LUCENE, "@ws\\:ratingProcessed:\"false\"");
                      
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("Running feedback processor across " + rs.length() + " feedback nodes");
-                        }
-                        for (ResultSetRow row : rs)
-                        {                 
-                            // Get the feedback node and feedback type
-                            NodeRef feedback = row.getNodeRef();
-                            String feedbackType = (String)nodeService.getProperty(feedback, WebSiteModel.PROP_FEEDBACK_TYPE);
-                            
-                            if (feedbackType != null)
+                            if (log.isDebugEnabled())
                             {
-                                // Get the feedback processor handler
-                                FeedbackProcessorHandler handler = handlers.get(feedbackType);
-                                if (handler != null)
+                                log.debug("Running feedback processor across " + rs.length() + " feedback nodes");
+                            }
+                            for (ResultSetRow row : rs)
+                            {                 
+                                // Get the feedback node and feedback type
+                                NodeRef feedback = row.getNodeRef();
+                                String feedbackType = (String)nodeService.getProperty(feedback, WebSiteModel.PROP_FEEDBACK_TYPE);
+                            
+                                if (feedbackType != null)
                                 {
-                                    /// TODO wrap into sub transaction
-                                    
-                                    // Process the feedback
-                                    if (log.isDebugEnabled() == true)
+                                    // Get the feedback processor handler
+                                    FeedbackProcessorHandler handler = handlers.get(feedbackType);
+                                    if (handler != null)
                                     {
-                                        log.debug("Processing feedback node " + feedback.toString() + " of feedback type " + feedbackType);                                        
+                                        /// TODO wrap into sub transaction
+                                    
+                                        // Process the feedback
+                                        if (log.isDebugEnabled() == true)
+                                        {
+                                            log.debug("Processing feedback node " + feedback.toString() + " of feedback type " + feedbackType);                                        
+                                        }
+                                        handler.processFeedback(feedback);
+                                        
+                                        // END
+                                        // TODO Log exception                                    
+                                    
+                                        //Set the "ratingProcessed" flag to true on this feedback node so we don't process it again
+                                        nodeService.setProperty(feedback, WebSiteModel.PROP_RATING_PROCESSED, Boolean.TRUE);
                                     }
-                                    handler.processFeedback(feedback);
-                                    
-                                    // END
-                                    // TODO Log exception                                    
-                                    
-                                    //Set the "ratingProcessed" flag to true on this feedback node so we don't process it again
-                                    nodeService.setProperty(feedback, WebSiteModel.PROP_RATING_PROCESSED, Boolean.TRUE);
+                                    else
+                                    {
+                                        // Record that a feedback processor could not be found
+                                        if (log.isDebugEnabled() == true)
+                                        {
+                                            log.debug("Feedback processor handler can not be found for feedback type " + feedbackType + " on feedback node " + feedback.toString());
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    // Record that a feedback processor could not be found
+                                    // Record that no feedback type has been set for this feedback
                                     if (log.isDebugEnabled() == true)
                                     {
-                                        log.debug("Feedback processor handler can not be found for feedback type " + feedbackType + " on feedback node " + feedback.toString());
+                                        log.debug("Feedback type not specified for feedback node " + feedback.toString());
                                     }
-                                }
+                                }                                
                             }
-                            else
+                        
+                            // Execute feedback processor callbacks
+                            for (FeedbackProcessorHandler handler : handlers.values())
                             {
-                                // Record that no feedback type has been set for this feedback
                                 if (log.isDebugEnabled() == true)
                                 {
-                                    log.debug("Feedback type not specified for feedback node " + feedback.toString());
+                                    log.debug("Executing feedback handler callback for feedback type " + handler.getFeedbackType());
                                 }
-                            }                                
-                        }
-                        
-                        // Execute feedback processor callbacks
-                        for (FeedbackProcessorHandler handler : handlers.values())
-                        {
-                            if (log.isDebugEnabled() == true)
-                            {
-                                log.debug("Executing feedback handler callback for feedback type " + handler.getFeedbackType());
+                                handler.processorCallback();
                             }
-                            handler.processorCallback();
-                        }
-                        
+                      	}
+                    	finally
+                    	{
+                    		if (rs != null) {rs.close();}
+                    	}
                         return null;
                     }   
                 });

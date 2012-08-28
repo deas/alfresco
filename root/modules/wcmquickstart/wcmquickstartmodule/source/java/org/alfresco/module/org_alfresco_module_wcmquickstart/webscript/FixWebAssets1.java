@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -53,23 +53,42 @@ public class FixWebAssets1 extends DeclarativeWebScript implements WebSiteModel
 	@Override
 	protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache)
 	{
-	    //Find all nodes with the webasset aspect and populate the publishDate and published properties
-	    ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, SearchService.LANGUAGE_LUCENE, "ASPECT:\"" + ASPECT_WEBASSET + "\"");
-	    Date now = new Date();
-	    for (ResultSetRow row : rs)
+
+	    ResultSet rs = null;
+	    
+	    try
 	    {
-	        Map<QName,Serializable> props = nodeService.getProperties(row.getNodeRef());
-            props.put(PROP_AVAILABLE, Boolean.TRUE);
-            props.put(PROP_AVAILABLE_FROM_DATE, now);
-            props.put(PROP_PUBLISHED_TIME, now);
-            nodeService.setProperties(row.getNodeRef(), props);
-            nodeService.addAspect(row.getNodeRef(), ContentModel.ASPECT_TAGGABLE, null);
+	        //Find all nodes with the webasset aspect and populate the publishDate and published properties
+	        rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, SearchService.LANGUAGE_LUCENE, "ASPECT:\"" + ASPECT_WEBASSET + "\"");
+	        Date now = new Date();
+	        for (ResultSetRow row : rs)
+	        {
+	            Map<QName,Serializable> props = nodeService.getProperties(row.getNodeRef());
+                    props.put(PROP_AVAILABLE, Boolean.TRUE);
+                    props.put(PROP_AVAILABLE_FROM_DATE, now);
+                    props.put(PROP_PUBLISHED_TIME, now);
+                    nodeService.setProperties(row.getNodeRef(), props);
+                    nodeService.addAspect(row.getNodeRef(), ContentModel.ASPECT_TAGGABLE, null);
+	        }
 	    }
-        rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, SearchService.LANGUAGE_LUCENE, "TYPE:\"" + TYPE_SECTION + "\"");
-        for (ResultSetRow row : rs)
-        {
-            nodeService.addAspect(row.getNodeRef(), ContentModel.ASPECT_TAGSCOPE, null);
-        }
+	    finally
+	    {
+	        if (rs != null) {rs.close();}
+	    }   
+	    
+	    rs = null;
+	    try
+	    {
+                rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, SearchService.LANGUAGE_LUCENE, "TYPE:\"" + TYPE_SECTION + "\"");
+                for (ResultSetRow row : rs)
+                {
+                     nodeService.addAspect(row.getNodeRef(), ContentModel.ASPECT_TAGSCOPE, null);
+                }
+	    }
+	    finally
+	    {
+	    	if (rs != null) {rs.close();}
+	    }
 	    return new TreeMap<String, Object>();
 	}
 	

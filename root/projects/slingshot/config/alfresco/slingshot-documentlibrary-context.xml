@@ -23,6 +23,16 @@
    <bean id="evaluator.doclib.indicator.editing" class="org.alfresco.web.evaluator.doclib.indicator.EditingEvaluator" />
    <bean id="evaluator.doclib.indicator.lockOwner" class="org.alfresco.web.evaluator.doclib.indicator.LockOwnerEvaluator" />
    <bean id="evaluator.doclib.indicator.locked" class="org.alfresco.web.evaluator.doclib.indicator.LockedEvaluator" />
+   <!-- Node Locked evaluator added due to ALF-15498 - properties needed for tooltip label do not exist if a node is locked directly using a node lock (rather than as a working copy) -->
+   <bean id="evaluator.doclib.indicator.nodeLocked" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.indicator.locked" />
+            <ref bean="evaluator.doclib.action.isLocked" />
+         </list>
+      </property>
+   </bean>
+
    <bean id="evaluator.doclib.indicator.googleDocsEditing" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsEditingEvaluator" />
    <bean id="evaluator.doclib.indicator.googleDocsOwner" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsOwnerEvaluator" />
    <bean id="evaluator.doclib.indicator.googleDocsLocked" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsLockedEvaluator" />

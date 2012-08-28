@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -58,18 +58,27 @@ public class PublishQueueProcessor
                     @Override
                     public Object execute() throws Throwable
                     {
-                        //Find all web root nodes
-                        ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
+                    	ResultSet rs = null;
+                    	
+                    	try
+                    	{
+                            //Find all web root nodes
+                            rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
                                 SearchService.LANGUAGE_LUCENE, "TYPE:\"" + WebSiteModel.TYPE_WEB_SITE + "\"");
                      
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("Running publish queue processor across " + rs.length() + " website nodes");
-                        }
-                        for (ResultSetRow row : rs)
-                        {
-                            publishService.publishQueue(row.getNodeRef());
-                        }
+                            if (log.isDebugEnabled())
+                            {
+                                log.debug("Running publish queue processor across " + rs.length() + " website nodes");
+                            }
+                            for (ResultSetRow row : rs)
+                            {
+                                publishService.publishQueue(row.getNodeRef());
+                            }
+                    	}
+                    	finally
+                    	{
+                    		if (rs != null) {rs.close();}
+                    	}
                         return null;
                     }   
                 });

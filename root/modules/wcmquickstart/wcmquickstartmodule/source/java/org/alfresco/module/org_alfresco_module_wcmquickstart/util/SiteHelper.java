@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -306,22 +306,31 @@ public class SiteHelper implements WebSiteModel
         {
             log.debug("Running query: " + query);
         }
-        ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, SearchService.LANGUAGE_LUCENE,
-                query);
-        //It is possible that the query will find datalists whose titles *contain* the searched for name rather than
-        //matching it exactly. Look at each result and test explicitly for equality...
-        for (ResultSetRow row : rs)
+        
+        ResultSet rs = null;
+        
+        try
         {
-            MLText title = (MLText)row.getValue(ContentModel.PROP_TITLE);
-            if (listTitle.equals(title.getDefaultValue()))
+            rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, SearchService.LANGUAGE_LUCENE, query);
+            //It is possible that the query will find datalists whose titles *contain* the searched for name rather than
+            //matching it exactly. Look at each result and test explicitly for equality...
+            for (ResultSetRow row : rs)
             {
-                visitorFeedbackList = row.getNodeRef();
-                if (log.isDebugEnabled())
+                MLText title = (MLText)row.getValue(ContentModel.PROP_TITLE);
+                if (listTitle.equals(title.getDefaultValue()))
                 {
-                    log.debug("Found the appropriate data list: " + visitorFeedbackList);
+                    visitorFeedbackList = row.getNodeRef();
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Found the appropriate data list: " + visitorFeedbackList);
+                    }
+                    break;
                 }
-                break;
             }
+        }
+        finally
+        {
+        	if (rs != null) {rs.close();}
         }
         
         if ((visitorFeedbackList == null) && create)

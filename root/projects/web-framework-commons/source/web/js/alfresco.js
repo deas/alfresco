@@ -206,7 +206,7 @@ Alfresco.util.onlineEditUrl = function(vtiServer, location)
    // Thor: used by overridden JS to place the tenant domain into the URL.
    var tenant = location.tenant ? location.tenant : "";
    var onlineEditUrl = vtiServer.host + ":" + vtiServer.port + "/" +
-      Alfresco.util.combinePaths(vtiServer.contextPath, tenant, location.site ? location.site.name : "", location.container ? location.container.name : "", location.path, location.file);
+      Alfresco.util.combinePaths(vtiServer.contextPath, tenant, location.site ? location.site.name : "", location.container ? location.container.name : "", location.path, location.file.replace(/#/g,"%23"));
    if (!(/^(http|https):\/\//).test(onlineEditUrl))
    {
       // Did they specify the protocol on the vti server bean?

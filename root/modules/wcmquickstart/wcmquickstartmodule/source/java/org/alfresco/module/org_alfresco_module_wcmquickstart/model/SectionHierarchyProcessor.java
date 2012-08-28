@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -231,9 +231,13 @@ public class SectionHierarchyProcessor implements WebSiteModel
             {
                 public Object execute() throws Throwable
                 {
+                ResultSet rs = null;
+
+                try
+                {
                     Set<NodeRef> sectionsToProcess = new HashSet<NodeRef>();
-                    ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
-                            SearchService.LANGUAGE_LUCENE, "+TYPE:\"" + TYPE_WEB_ROOT + "\"");
+                    rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE,
+                    SearchService.LANGUAGE_LUCENE, "+TYPE:\"" + TYPE_WEB_ROOT + "\"");
                     for (ResultSetRow row : rs)
                     {
                         if (!nodeService.hasAspect(row.getNodeRef(), ASPECT_HAS_ANCESTORS))
@@ -245,7 +249,12 @@ public class SectionHierarchyProcessor implements WebSiteModel
                     {
                         process(sectionsToProcess);
                     }
-                    return null;
+               }
+               finally
+               {
+                   if (rs != null) {rs.close();}
+               }
+                   return null;
                 }
             };
 

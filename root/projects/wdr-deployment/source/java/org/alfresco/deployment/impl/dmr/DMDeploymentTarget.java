@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2011 Alfresco Software Limited.
+ * Copyright (C) 2009-2010 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -202,58 +202,66 @@ public class DMDeploymentTarget implements Serializable, DeploymentTarget
                  * Get the DM deployment root and make sure it exists.
                  */ 
                 String rootQuery = rootLocator.getRootQuery(localStoreName);
-                ResultSet result = searchService.query(new StoreRef(getStoreRef()), SearchService.LANGUAGE_XPATH, rootQuery);
+                ResultSet result = null;
+                try
+                {
+                    result = searchService.query(new StoreRef(getStoreRef()), SearchService.LANGUAGE_XPATH, rootQuery);
                 
-                if(result.length() != 1)
-                {
-                    throw new DeploymentException("root path not found or not unique:" + rootQuery);
-                }
-                NodeRef rootNodeRef = result.getNodeRef(0);
+                    if(result.length() != 1)
+                    {
+                        throw new DeploymentException("root path not found or not unique:" + rootQuery);
+                    }
+                    NodeRef rootNodeRef = result.getNodeRef(0);
                                 
-                /**
-                 * If the project root does not exist then create it
-                 */
-                NodeRef childNode = nodeService.getChildByName(rootNodeRef, ContentModel.ASSOC_CONTAINS, localStoreName);
-                if(childNode != null)
-                {
+                    /**
+                     * If the project root does not exist then create it
+                     */
+                    NodeRef childNode = nodeService.getChildByName(rootNodeRef, ContentModel.ASSOC_CONTAINS, localStoreName);
+                    if(childNode != null)
+                    {
                     if (logger.isDebugEnabled())
                     {
                         logger.debug("project root already exists" + localStoreName);
                     }
-                    if(!nodeService.hasAspect(childNode, WCMAppModel.ASPECT_DEPLOYED))
-                    {
+                        if(!nodeService.hasAspect(childNode, WCMAppModel.ASPECT_DEPLOYED))
+                        {
                         if (logger.isDebugEnabled())
                         {
                             logger.debug("adding deployed aspect - did not exist");
                         }
-                        setWCMGuid(childNode, "0");
+                            setWCMGuid(childNode, "0");
+                        }
                     }
-                }
-                else
+                    else
                 {
                     if (logger.isDebugEnabled())
-                    {
+                {    
                         logger.debug("project root not found - create new one" + localStoreName);
                     }
                     
-                    Map<QName, Serializable> contentProps = new HashMap<QName, Serializable>(3, 1.0f);
-                    contentProps.put(ContentModel.PROP_NAME, localStoreName);
-                    contentProps.put(ContentModel.PROP_TITLE, "Web Project :" + storeName);
-                    contentProps.put(ContentModel.PROP_DESCRIPTION, "WCM Deployed root web-project: " + storeName);
-                    QName localQName = QName.createQName(
-                            NamespaceService.CONTENT_MODEL_1_0_URI,
-                            QName.createValidLocalName(localStoreName));
-                    ChildAssociationRef childRef = nodeService.createNode(rootNodeRef, ContentModel.ASSOC_CONTAINS, localQName, ContentModel.TYPE_FOLDER, contentProps);
-                    childNode = childRef.getChildRef();
-                    setWCMGuid(childNode, "0");
+                        Map<QName, Serializable> contentProps = new HashMap<QName, Serializable>(3, 1.0f);
+                        contentProps.put(ContentModel.PROP_NAME, localStoreName);
+                        contentProps.put(ContentModel.PROP_TITLE, "Web Project :" + storeName);
+                        contentProps.put(ContentModel.PROP_DESCRIPTION, "WCM Deployed root web-project: " + storeName);
+                        QName localQName = QName.createQName(
+                                NamespaceService.CONTENT_MODEL_1_0_URI,
+                                QName.createValidLocalName(localStoreName));
+                        ChildAssociationRef childRef = nodeService.createNode(rootNodeRef, ContentModel.ASSOC_CONTAINS, localQName, ContentModel.TYPE_FOLDER, contentProps);
+                        childNode = childRef.getChildRef();
+                        setWCMGuid(childNode, "0");
                     
                     if (logger.isDebugEnabled())
                     {
                         logger.debug("project root node created");
                     }
-                }
+                    }
                 
-                return fileFolderService.getFileInfo(childNode);
+                return fileFolderService.getFileInfo(childNode);          
+                }
+                finally
+                {
+                	if(result != null) {result.close();}
+                }
             }
         };
         

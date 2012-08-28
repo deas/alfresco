@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -60,10 +60,11 @@ public class AvailabilityProcessor
                     public Object doWork() throws Exception
                     {
                         behaviourFilter.disableBehaviour(ContentModel.ASPECT_AUDITABLE);
+                        ResultSet rs = null;
                         try
                         {
                             //Find all web assets that are due to become available today
-                            ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
+                            rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
                                     SearchService.LANGUAGE_LUCENE, "+@ws\\:availableFromDate:today +@ws\\:published:\"false\"");
                          
                             if (log.isDebugEnabled())
@@ -74,7 +75,15 @@ public class AvailabilityProcessor
                             {
                                 nodeService.setProperty(row.getNodeRef(), WebSiteModel.PROP_AVAILABLE, Boolean.TRUE);
                             }
+                        }
+                        finally
+                        {
+                            if (rs != null) {rs.close();}
+                        }
+                        rs = null;
 
+                        try
+                        {
                             //Find all web assets that are due to expire today
                             rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
                                     SearchService.LANGUAGE_LUCENE, "+@ws\\:availableToDate:today +@ws\\:published:\"true\"");
@@ -91,6 +100,7 @@ public class AvailabilityProcessor
                         finally
                         {
                             behaviourFilter.enableBehaviour(ContentModel.ASPECT_AUDITABLE);
+                            rs.close();
                         }
                         return null;
                     }

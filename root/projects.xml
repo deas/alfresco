@@ -468,8 +468,7 @@
                if(m.matches()) {
                   var this_path = m.group(1);
                   if ((! this_path.startsWith("lib/ant-1.")) &&
-                      (! this_path.startsWith("lib/org.springframework")) &&
-                      (! this_path.startsWith("lib/slf4j"))
+                      (! this_path.startsWith("lib/org.springframework"))
                      ) {
                      var pe = path.createPathElement();
                      pe.setLocation(new File(projPath+this_path));
@@ -480,16 +479,14 @@
       ]]></script>
       
       <path id="temp.classpath.unit.test.extension">
-          <fileset dir="${dir.project.system-build-test.dist}">
-            <include name="**/*.jar" />
-          </fileset>
-          <fileset dir="${dir.project.remoteapi.dist}">
-            <include name="**/*.jar" />
-          </fileset>
-          <fileset dir="${dir.project.webserviceclient.dist}">
-            <include name="**/*.jar" />
-          </fileset>
           <pathelement location="${dir.project.webclient.dist}" />
+          <pathelement location="${dir.project.core.dist}/${file.name.jar.core}" />
+          <pathelement location="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
+          <pathelement location="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}" />
+          <pathelement location="${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}" />
+          <pathelement location="${dir.project.solr.dist}/${file.name.jar.solr}" />
+          <pathelement location="${dir.project.system-build-test.dist}/${file.name.jar.system-build-test}" />
+          <pathelement location="${dir.project.system-build-test}/keystore" />
       </path>
 
       <sequential>

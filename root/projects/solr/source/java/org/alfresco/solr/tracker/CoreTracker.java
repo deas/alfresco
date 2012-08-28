@@ -2088,7 +2088,21 @@ public class CoreTracker implements CloseHook
                 NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
                 nmdp.setFromNodeId(node.getId());
                 nmdp.setToNodeId(node.getId());
-                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+                List<NodeMetaData> nodeMetaDatas;
+                if (node.getStatus() == SolrApiNodeStatus.DELETED)
+                {
+                    // Fake the empty node metadata for this parent deleted node
+                    NodeMetaData nodeMetaData = new NodeMetaData();
+                    nodeMetaData.setId(node.getId());
+                    nodeMetaData.setType(ContentModel.TYPE_DELETED);
+                    nodeMetaData.setNodeRef(new NodeRef(node.getNodeRef()));
+                    nodeMetaData.setTxnId(node.getTxnId());
+                    nodeMetaDatas = Collections.singletonList(nodeMetaData);                    
+                }
+                else
+                {
+                    nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+                }
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
                     if(nodeMetaData.getTxnId() > node.getTxnId())
@@ -2389,7 +2403,7 @@ public class CoreTracker implements CloseHook
                 core.getUpdateHandler().addDoc(leafDocCmd);
             }
 
-            log.warn("Node index failed and skipped for " + node.getId() + " in Tx "+node.getTxnId());
+            log.warn("Node index failed and skipped for " + node.getId() + " in Tx "+node.getTxnId(), e);
         }
 
     }

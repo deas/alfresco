@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -93,6 +93,8 @@ public class AssetSearch extends AbstractWebScript
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException
     {
+    	ResultSet rs = null;
+    	
         try
         {
             sectionHierarchyProcessor.init();
@@ -183,7 +185,7 @@ public class AssetSearch extends AbstractWebScript
                 log.debug("About to run query: " + query);
                 start = System.currentTimeMillis();
             }
-            ResultSet rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
+            rs = searchService.query(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, 
                     SearchService.LANGUAGE_LUCENE, query);
             if (log.isDebugEnabled())
             {
@@ -219,6 +221,10 @@ public class AssetSearch extends AbstractWebScript
         catch (Throwable e)
         {
             throw createStatusException(e, req, res);
+        }
+        finally
+        {
+        	if (rs != null) {rs.close();}
         }
     }
 }

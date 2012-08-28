@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -131,10 +131,19 @@ public class AssetGet extends AbstractWebScript
                 {
                     searchParameters.addLocale(locale);
                 }
-                ResultSet rs = searchService.query(searchParameters);
-                if (rs.length() > 0)
+                ResultSet rs = null;
+                
+                try
                 {
-                    foundNodes.add(rs.getNodeRef(0));
+                    rs = searchService.query(searchParameters);
+                    if (rs.length() > 0)
+                    {
+                        foundNodes.add(rs.getNodeRef(0));
+                    }
+                }
+                finally
+                {
+                	if (rs != null) {rs.close();}
                 }
             }
             else
