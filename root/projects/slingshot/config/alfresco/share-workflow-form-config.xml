@@ -220,7 +220,6 @@
                <show id="bpm:workflowDueDate" />
                <show id="bpm:workflowPriority" />
                <show id="bpm:groupAssignee" />
-               <show id="wf:requiredApprovePercent" />
                <show id="packageItems" />
                <show id="bpm:sendEMailNotifications" />
             </field-visibility>
