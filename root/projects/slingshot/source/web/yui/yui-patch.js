@@ -146,7 +146,7 @@
 (function()
 {
    /**
-    * Drag drop support for ipad (safari) & android (chrome) making yui's drag n drop classes work out of the box.
+    * Drag drop support for ipad (safari) & android (default browser & chrome) making yui's drag n drop classes work out of the box.
     *
     * The trick is to:
     * - Stop listening for mouse events: "mousedown", "mousemove" & "mouseup"
