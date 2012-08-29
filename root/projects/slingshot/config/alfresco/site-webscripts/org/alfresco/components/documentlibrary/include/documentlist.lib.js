@@ -13,28 +13,17 @@ var DocumentList =
    /* Get user preferences */
    getPreferences: function getPreferences()
    {
-      var preferences = {};
+      var userprefs = {};
 
-      try
+      var prefs = eval('(' + preferences.value + ')');
+      // Populate the preferences object literal for easy look-up later
+      userprefs = eval('try{(prefs.' + DocumentList.PREFERENCES_ROOT + ')}catch(e){}');
+      if (typeof userprefs != "object")
       {
-         // Request the current user's preferences
-         var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-         if (result.status == 200 && result != "{}")
-         {
-            var prefs = eval('(' + result + ')');
-            // Populate the preferences object literal for easy look-up later
-            preferences = eval('(prefs.' + DocumentList.PREFERENCES_ROOT + ')');
-            if (typeof preferences != "object")
-            {
-               preferences = {};
-            }
-         }
-      }
-      catch (e)
-      {
+         userprefs = {};
       }
 
-      return preferences;
+      return userprefs;
    },
 
    /* Get configuration value */

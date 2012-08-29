@@ -13,26 +13,30 @@ function main()
 {
    // Model variables - must have defaults
    var favouriteSites = [],
-      currentSiteIsFav = false,
-      siteTitle = "";
+       currentSiteIsFav = false,
+       siteTitle = "";
 
    var prefs,
-      favourites;
+       favourites;
 
-   // Call the repo for the user's favourite sites
-   // TODO: Clean-up old favourites here?
-   var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-   if (result.status == 200 && result != "{}")
+   // can optionally pass JSON list of fav sites if they are already known to the caller
+   if (args.favsites)
    {
-      prefs = eval('(' + result + ')');
-      
+      favourites = eval('(' + args.favsites + ')');
+   }
+   else
+   {
+      // Process the user's favourite sites
+      // TODO: Clean-up old favourites here?
+      prefs = eval('(' + preferences.value + ')');
+
       // Populate the favourites object literal for easy look-up later
       favourites = eval('try{(prefs.' + PREF_FAVOURITE_SITES + ')}catch(e){}');
-   }
 
-   if (typeof favourites != "object")
-   {
-      favourites = {};
+      if (typeof favourites != "object")
+      {
+         favourites = {};
+      }
    }
 
    // Call the repo to return a specific list of site metadata i.e. those in the fav list
@@ -45,9 +49,9 @@ function main()
          values: []
       }
    },
-      currentSite = args.siteId || "",
-      ignoreCurrentSite = false,
-      shortName;
+   currentSite = args.siteId || "",
+   ignoreCurrentSite = false,
+   shortName;
    
    for (shortName in favourites)
    {

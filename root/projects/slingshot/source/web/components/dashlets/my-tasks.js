@@ -124,26 +124,10 @@
          });
 
          // Load preferences (after which the appropriate tasks will be displayed)
-         this.services.preferences.request(PREFERENCES_TASKS_DASHLET_FILTER,
-         {
-            successCallback:
-            {
-               fn: this.onPreferencesLoaded,
-               scope: this
-            }
-         });
-      },
-      
-      /**
-       * Process response from preference query
-       *
-       * @method onPreferencesLoaded
-       * @param p_response {object} Response from "api/people/{userId}/preferences" query
-       */
-      onPreferencesLoaded: function MyTasks_onPreferencesLoaded(p_response)
-      {
+         var prefs = this.services.preferences.get();
+
          // Select the preferred filter in the ui
-         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_TASKS_DASHLET_FILTER, "activeTasks");
+         var filter = Alfresco.util.findValueByDotNotation(prefs, PREFERENCES_TASKS_DASHLET_FILTER, "activeTasks");
          filter = this.options.filters.hasOwnProperty(filter) ? filter : "activeTasks";
          this.widgets.filterMenuButton.set("label", this.msg("filter." + filter));
          this.widgets.filterMenuButton.value = filter;

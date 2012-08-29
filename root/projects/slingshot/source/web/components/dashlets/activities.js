@@ -159,87 +159,68 @@
          this.widgets.activities.set("label", this.msg("filter.allItems"));
          this.widgets.activities.value = "";
 
-         this.services.preferences.request(this.buildPreferences(),
+         var prefs = this.services.preferences.get();
+         var activitiesPreference = Alfresco.util.findValueByDotNotation(prefs, this.buildPreferences(PREF_ACTIVITIES), "");
+         if (activitiesPreference !== null)
          {
-            successCallback:
+            this.widgets.activities.value = activitiesPreference;
+            // set the correct menu label
+            var menuItems = this.widgets.activities.getMenu().getItems();
+            for (index in menuItems)
             {
-               fn: function(p_oResponse)
+               if (menuItems.hasOwnProperty(index))
                {
-                  var activitiesPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.buildPreferences(PREF_ACTIVITIES), "");
-                  if (activitiesPreference !== null)
+                  if (menuItems[index].value === activitiesPreference)
                   {
-                     this.widgets.activities.value = activitiesPreference;
-                     // set the correct menu label
-                     var menuItems = this.widgets.activities.getMenu().getItems();
-                     for (index in menuItems)
-                     {
-                        if (menuItems.hasOwnProperty(index))
-                        {
-                           if (menuItems[index].value === activitiesPreference)
-                           {
-                              this.widgets.activities.set("label", menuItems[index].cfg.getProperty("text"));
-                              break;
-                           }
-                        }
-                     }
+                     this.widgets.activities.set("label", menuItems[index].cfg.getProperty("text"));
+                     break;
                   }
-                  
-                  var rangePreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.buildPreferences(PREF_RANGE), "7");
-                  if (rangePreference !== null)
-                  {
-                     this.widgets.range.value = rangePreference;
-                     // set the correct menu label
-                     var menuItems = this.widgets.range.getMenu().getItems();
-                     for (index in menuItems)
-                     {
-                        if (menuItems.hasOwnProperty(index))
-                        {
-                           if (menuItems[index].value === rangePreference)
-                           {
-                              this.widgets.range.set("label", menuItems[index].cfg.getProperty("text"));
-                              break;
-                           }
-                        }
-                     }
-                  }
-                  
-                  var filterPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.buildPreferences(PREF_FILTER), "all");
-                  if (filterPreference !== null)
-                  {
-                     this.widgets.user.value = filterPreference;
-                     // set the correct menu label
-                     var menuItems = this.widgets.user.getMenu().getItems();
-                     for (index in menuItems)
-                     {
-                        if (menuItems.hasOwnProperty(index))
-                        {
-                           if (menuItems[index].value === filterPreference)
-                           {
-                              this.widgets.user.set("label", menuItems[index].cfg.getProperty("text"));
-                              break;
-                           }
-                        }
-                     }
-                  }
-                  // Display the toolbar now that we have selected the filter
-                  Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
-                  // Populate the activity list
-                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
-               },
-               scope: this
-            },
-            failureCallback:
-            {
-               fn: function()
-               {
-                  // Display the toolbar now that we have selected the filter
-                  Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
-                  // Populate the activity list
-                  this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
-               },
-               scope: this
+               }
             }
-         });
+         }
+         
+         var rangePreference = Alfresco.util.findValueByDotNotation(prefs, this.buildPreferences(PREF_RANGE), "7");
+         if (rangePreference !== null)
+         {
+            this.widgets.range.value = rangePreference;
+            // set the correct menu label
+            var menuItems = this.widgets.range.getMenu().getItems();
+            for (index in menuItems)
+            {
+               if (menuItems.hasOwnProperty(index))
+               {
+                  if (menuItems[index].value === rangePreference)
+                  {
+                     this.widgets.range.set("label", menuItems[index].cfg.getProperty("text"));
+                     break;
+                  }
+               }
+            }
+         }
+         
+         var filterPreference = Alfresco.util.findValueByDotNotation(prefs, this.buildPreferences(PREF_FILTER), "all");
+         if (filterPreference !== null)
+         {
+            this.widgets.user.value = filterPreference;
+            // set the correct menu label
+            var menuItems = this.widgets.user.getMenu().getItems();
+            for (index in menuItems)
+            {
+               if (menuItems.hasOwnProperty(index))
+               {
+                  if (menuItems[index].value === filterPreference)
+                  {
+                     this.widgets.user.set("label", menuItems[index].cfg.getProperty("text"));
+                     break;
+                  }
+               }
+            }
+         }
+         
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", this.id, true), "hidden");
+         // Populate the activity list
+         this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
       },
       
       /**

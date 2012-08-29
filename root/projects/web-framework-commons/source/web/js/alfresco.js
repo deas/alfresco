@@ -7263,6 +7263,8 @@ Alfresco.service.BaseService.prototype =
 
    YAHOO.extend(Alfresco.service.Preferences, Alfresco.service.BaseService,
    {
+      _prefs: null,
+      
       /**
        * Gets a user specific property
        *
@@ -7276,7 +7278,23 @@ Alfresco.service.BaseService.prototype =
       },
 
       /**
-       * Requests a user specific property
+       * Get the complete copy of the currently cached user preferences. This value is set once per page load - a component
+       * should retrieve this once onReady() but not assume the state is correct after that. The component should maintain
+       * its own local copies of values as modified by set(), add() or remote() operations until the next page refresh.
+       *
+       * @method get
+       */
+      get: function Preferences_get()
+      {
+         if (this._prefs === null)
+         {
+            this._prefs = YAHOO.lang.JSON.parse(Alfresco.constants.USERPREFERENCES);
+         }
+         return this._prefs;
+      },
+      
+      /**
+       * Requests a fresh copy of a user specific property
        *
        * @method request
        * @param name {string} The name of the property to get, or null or no param for all

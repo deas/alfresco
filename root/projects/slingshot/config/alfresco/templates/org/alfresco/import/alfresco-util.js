@@ -251,35 +251,26 @@ var AlfrescoUtil =
     */
    getPreferences: function getPreferences(p_filter)
    {
-      var preferences = {};
+      var userprefs = {};
 
-      try
+      // Retrieve the current user's preferences
+      var prefs = eval('(' + preferences.value + ')');
+
+      // Populate the preferences object literal for easy look-up later
+      if (typeof p_filter == "undefined" || p_filter.length == 0)
       {
-         // Request the current user's preferences
-         var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-         if (result.status == 200 && result != "{}")
-         {
-            var prefs = eval('try{(' + result + ')}catch(e){}');
-            // Populate the preferences object literal for easy look-up later
-            if (typeof p_filter == "undefined" || p_filter.length == 0)
-            {
-               preferences = eval('try{(prefs)}catch(e){}');
-            }
-            else
-            {
-               preferences = eval('try{(prefs.' + p_filter + ')}catch(e){}');
-            }
-            if (typeof preferences != "object")
-            {
-               preferences = {};
-            }
-         }
+         userprefs = eval('try{(prefs)}catch(e){}');
       }
-      catch (e)
+      else
       {
+         userprefs = eval('try{(prefs.' + p_filter + ')}catch(e){}');
+      }
+      if (typeof userprefs != "object")
+      {
+         userprefs = {};
       }
 
-      return preferences;
+      return userprefs;
    },
 
    /**

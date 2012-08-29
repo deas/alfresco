@@ -7,28 +7,17 @@ function sortByIndex(obj1, obj2)
 
 function getPreferences()
 {
-   var preferences = {};
+   var doclistPrefs = {};
    
-   // Request the current user's preferences
-   var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-   if (result.status == 200 && result != "{}")
+   // Populate the preferences object literal for easy look-up later
+   var prefs = eval('(' + preferences.value + ')');
+   doclistPrefs = eval('try{(prefs.' + PREFERENCES_ROOT + ')}catch(e){}');
+   if (typeof doclistPrefs != "object")
    {
-      var prefs = eval('(' + result + ')');
-      try
-      {
-         // Populate the preferences object literal for easy look-up later
-         preferences = eval('(prefs.' + PREFERENCES_ROOT + ')');
-         if (typeof preferences != "object")
-         {
-            preferences = {};
-         }
-      }
-      catch (e)
-      {
-      }
+      doclistPrefs = {};
    }
    
-   toolbar.preferences = preferences;
+   toolbar.preferences = doclistPrefs;
 }
 
 function getActionSet(myConfig)

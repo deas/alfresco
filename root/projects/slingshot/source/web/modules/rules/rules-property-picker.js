@@ -179,23 +179,13 @@
          tmpEl.innerHTML = response.serverResponse.responseText;
 
          // Load the users rules property settings before calling the super classes onTemplateLoaded method
-         this.preferencesService.request(Alfresco.service.Preferences.RULE_PROPERTY_SETTINGS,
-         {
-            successCallback:
-            {
-               fn: function(p_oResponse, superClassResponse)
-               {
-                  // Save users rule property settings
-                  this.rulePropertySettings = Alfresco.util.findValueByDotNotation(p_oResponse.json, "org.alfresco.share.rule.properties", {});
+         var prefs = this.preferencesService.get();
 
-                  // Let the original template get rendered.
-                  Alfresco.module.RulesPropertyPicker.superclass.onTemplateLoaded.call(this, superClassResponse);
-               },
-               scope: this,
-               obj: superClassResponse
-            },
-            failureMessage: this.msg("message.load.rulePropertySettings.error")
-         });
+         // Save users rule property settings
+         this.rulePropertySettings = Alfresco.util.findValueByDotNotation(prefs, "org.alfresco.share.rule.properties", {});
+
+         // Let the original template get rendered.
+         Alfresco.module.RulesPropertyPicker.superclass.onTemplateLoaded.call(this, superClassResponse);
       },
 
       /**
@@ -215,7 +205,6 @@
          }
          return result;
       },
-
 
       /**
        * Internal formatter for the show in menu column
@@ -248,7 +237,6 @@
          }, this);
          elCell.appendChild(checkBoxEl);
       },
-
 
       /**
        * Called when the user toggles the "Show in menu" checkbox
@@ -339,4 +327,3 @@
    /* Dummy instance to load optional YUI components early */
    var dummyInstance = new Alfresco.module.RulesPropertyPicker("null");
 })();
-

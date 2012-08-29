@@ -177,9 +177,8 @@ function main()
       // is only one configuration for each site dashboard, whether or not it is
       // displayed is determined by user preferences. Before going any further we
       // need to establish whether the welcome dashlet should even be displayed.
-      var preferences,
-      hideDashlet = false,
-      profile;
+      var hideDashlet = false,
+          profile;
 
       try
       {
@@ -205,20 +204,16 @@ function main()
 
          // Request the current user's preferences to determine whether or not
          // the dashlet should be displayed...
-         var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-         if (result.status == 200 && result != "{}")
+         var prefs = eval('(' + preferences.value + ')');
+         // Populate the preferences object literal for easy look-up later
+         var dashletprefs = eval('try{(prefs.org.alfresco.share.siteWelcome)}catch(e){}');
+         if (typeof dashletprefs != "object")
          {
-            var prefs = eval('(' + result + ')');
-            // Populate the preferences object literal for easy look-up later
-            preferences = eval('try{(prefs.org.alfresco.share.siteWelcome)}catch(e){}');
-            if (typeof preferences != "object")
-            {
-               preferences = {};
-            }
-            else
-            {
-               hideDashlet = preferences[profile.node.substring(1).replace(/\//g, "-")] != null;
-            }
+            dashletprefs = {};
+         }
+         else
+         {
+            hideDashlet = dashletprefs[profile.node.substring(1).replace(/\//g, "-")] != null;
          }
       }
       catch (e)

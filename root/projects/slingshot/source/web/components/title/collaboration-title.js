@@ -41,9 +41,6 @@
    {
       Alfresco.CollaborationTitle.superclass.constructor.call(this, "Alfresco.CollaborationTitle", htmlId);
 
-      // Initialise prototype properties
-      this.preferencesService = new Alfresco.service.Preferences();
-
       return this;
    };
 

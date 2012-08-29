@@ -65,98 +65,93 @@ function main()
    }
    model.constraintsFilter = jsonUtils.toJSONString(constraintsFilter);
 
-
    // Load user preferences for which proeprties to show in menu as default
-   var connector = remote.connect("alfresco");
-   var result = connector.get("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-   if (result.status == 200)
+   var prefs = eval('(' + preferences.value + ')'),
+      ruleProperties = {};
+   // Get all default properties
+   if (c.defaults)
    {
-      var prefs = eval('(' + result + ')'),
-         ruleProperties = {};
-      // Get all default properties
-      if (c.defaults)
+      for each (propertyNode in c.defaults.elements("property"))
       {
-         for each (propertyNode in c.defaults.elements("property"))
-         {
-            ruleProperties[propertyNode.text()] = "show";
-         }
+         ruleProperties[propertyNode.text()] = "show";
       }
+   }
 
-      // Complete with user preferences
-      if (prefs && prefs.org && prefs.org.alfresco && prefs.org.alfresco.share && prefs.org.alfresco.share.rule && prefs.org.alfresco.share.rule.properties)
+   // Complete with user preferences
+   if (prefs && prefs.org && prefs.org.alfresco && prefs.org.alfresco.share && prefs.org.alfresco.share.rule && prefs.org.alfresco.share.rule.properties)
+   {
+      var userProperties = prefs.org.alfresco.share.rule.properties;
+      for (propertyName in userProperties)
       {
-         var userProperties = prefs.org.alfresco.share.rule.properties;
-         for (propertyName in userProperties)
-         {
-            // Will set value to "show" or "hide"
-            ruleProperties[propertyName] = userProperties[propertyName];
-         }
+         // Will set value to "show" or "hide"
+         ruleProperties[propertyName] = userProperties[propertyName];
       }
+   }
 
-      // Get info such as type and display name about the properties to display
-      var propertiesParam = [],
-         transientPropertyInstructions = {},
-         instructions,
-         propertyNameTokens,
-         basePropertyName;
-      for (propertyName in ruleProperties)
+   // Get info such as type and display name about the properties to display
+   var propertiesParam = [],
+      transientPropertyInstructions = {},
+      instructions,
+      propertyNameTokens,
+      basePropertyName;
+   for (propertyName in ruleProperties)
+   {
+      if (ruleProperties[propertyName] == "show")
       {
-         if (ruleProperties[propertyName] == "show")
+         propertyNameTokens = propertyName.split(":");
+         basePropertyName = propertyNameTokens[0] + ":" + propertyNameTokens[1];
+         instructions = transientPropertyInstructions[basePropertyName];
+         if (!instructions)
          {
-            propertyNameTokens = propertyName.split(":");
-            basePropertyName = propertyNameTokens[0] + ":" + propertyNameTokens[1];
-            instructions = transientPropertyInstructions[basePropertyName];
-            if (!instructions)
+            instructions = [];
+            transientPropertyInstructions[basePropertyName] = instructions;
+         }
+         propertiesParam.push(basePropertyName);
+         instructions.push(propertyNameTokens.length > 2 ? propertyName : basePropertyName);
+      }
+   }
+
+   var allProperties = [],
+      instruction;
+   if (propertiesParam.length > 0)
+   {
+      var connector = remote.connect("alfresco");
+      var result = connector.get("/api/properties?name=" + propertiesParam.join("&name="));
+      if (result.status == 200)
+      {
+         var properties = eval('(' + result + ')');
+         for (var i = 0, il = properties.length; i < il; i++)
+         {
+            property = properties[i];
+            instructions = transientPropertyInstructions[property.name];
+            for (var j = 0, jl = instructions ? instructions.length : 0; j < jl; j++)
             {
-               instructions = [];
-               transientPropertyInstructions[basePropertyName] = instructions;
-            }
-            propertiesParam.push(basePropertyName);
-            instructions.push(propertyNameTokens.length > 2 ? propertyName : basePropertyName);
-         }
-      }
-
-      var allProperties = [],
-         instruction;
-      if (propertiesParam.length > 0)
-      {
-         result = connector.get("/api/properties?name=" + propertiesParam.join("&name="));
-         if (result.status == 200)
-         {
-            var properties = eval('(' + result + ')');
-            for (var i = 0, il = properties.length; i < il; i++)
-            {
-               property = properties[i];
-               instructions = transientPropertyInstructions[property.name];
-               for (var j = 0, jl = instructions ? instructions.length : 0; j < jl; j++)
+               instruction = instructions[j];
+               if (instruction == property.name)
                {
-                  instruction = instructions[j];
-                  if (instruction == property.name)
+                  // It was a normal property, just add it
+                  allProperties.push(
                   {
-                     // It was a normal property, just add it
-                     allProperties.push(
-                     {
-                        name: property.name,
-                        dataType: property.dataType,
-                        title: property.title ? property.title : property.name 
-                     });
-                  }
-                  else
+                     name: property.name,
+                     dataType: property.dataType,
+                     title: property.title ? property.title : property.name 
+                  });
+               }
+               else
+               {
+                  // It was a transient property, modify the id to represent the transient property
+                  allProperties.push(
                   {
-                     // It was a transient property, modify the id to represent the transient property
-                     allProperties.push(
-                     {
-                        name: instruction,
-                        dataType: property.dataType,
-                        title: null // will be set inside client js file instead
-                     });
-                  }
+                     name: instruction,
+                     dataType: property.dataType,
+                     title: null // will be set inside client js file instead
+                  });
                }
             }
          }
       }
-      model.properties = jsonUtils.toJSONString(allProperties);
    }
+   model.properties = jsonUtils.toJSONString(allProperties);
 }
 
 main();

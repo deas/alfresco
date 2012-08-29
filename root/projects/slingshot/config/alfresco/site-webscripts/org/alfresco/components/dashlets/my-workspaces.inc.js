@@ -27,24 +27,20 @@ function main(siteType)
       if (sites.length > 0)
       {
          // Call the repo for the user's favourite sites
-         result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-         if (result.status == 200 && result != "{}")
+         var prefs = eval('(' + preferences.value + ')');
+         
+         // Populate the favourites object literal for easy look-up later
+         favourites = eval('try{(prefs.' + PREF_FAVOURITE_SITES + ')}catch(e){}');
+         if (typeof favourites != "object")
          {
-            var prefs = eval('(' + result + ')');
-            
-            // Populate the favourites object literal for easy look-up later
-            favourites = eval('try{(prefs.' + PREF_FAVOURITE_SITES + ')}catch(e){}');
-            if (typeof favourites != "object")
-            {
-               favourites = {};
-            }
+            favourites = {};
+         }
 
-            // Populate the imap favourites object literal for easy look-up later
-            imapFavourites = eval('try{(prefs.' + PREF_IMAP_FAVOURITE_SITES + ')}catch(e){}');
-            if (typeof imapFavourites != "object")
-            {
-               imapFavourites = {};
-            }
+         // Populate the imap favourites object literal for easy look-up later
+         imapFavourites = eval('try{(prefs.' + PREF_IMAP_FAVOURITE_SITES + ')}catch(e){}');
+         if (typeof imapFavourites != "object")
+         {
+            imapFavourites = {};
          }
 
          // Array Remove - By John Resig (MIT Licensed)

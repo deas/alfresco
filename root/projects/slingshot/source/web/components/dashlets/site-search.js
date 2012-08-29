@@ -120,32 +120,24 @@
          });
 
          // Load preferences
-         this.services.preferences.request(PREFERENCES_SITE_SEARCH_DASHLET,
+         var prefs = this.services.preferences.get();
+         
+         var term = Alfresco.util.findValueByDotNotation(prefs, this.PREFERENCES_SITE_SEARCH_DASHLET_TERM),
+             resultSize = Alfresco.util.findValueByDotNotation(prefs, this.PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
+
+         if (term != null || resultSize != null)
          {
-            successCallback:
-            {
-               fn: function(p_oResponse)
-               {
-                  var term = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.PREFERENCES_SITE_SEARCH_DASHLET_TERM),
-                      resultSize = Alfresco.util.findValueByDotNotation(p_oResponse.json, this.PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE);
+            this.options.searchTerm = Dom.get(this.id + "-search-text").value = (term ? term : "");
+            this.options.resultSize = (resultSize ? resultSize : "10");
+            this.doRequest();
+         }
 
-                  if (term != null || resultSize != null)
-                  {
-                     this.options.searchTerm = Dom.get(this.id + "-search-text").value = (term ? term : "");
-                     this.options.resultSize = (resultSize ? resultSize : "10");
-                     this.doRequest();
-                  }
+         var resultSize = this.getResultSize();
+         this.widgets.resultSizeMenuButton.set("label", resultSize);
+         this.widgets.resultSizeMenuButton.value = resultSize;
 
-                  var resultSize = this.getResultSize();
-                  this.widgets.resultSizeMenuButton.set("label", resultSize);
-                  this.widgets.resultSizeMenuButton.value = resultSize;
-
-                  // Display the toolbar now that we have selected the filter
-                  Dom.removeClass(Selector.query(".toolbar div", id, true), "hidden");
-               },
-               scope: this
-            }
-         });
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", id, true), "hidden");
 
          // Enter key press
          var me = this;

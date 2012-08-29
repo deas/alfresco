@@ -232,44 +232,26 @@
          // Preferences service
          this.services.preferences = new Alfresco.service.Preferences();
 
-         this.services.preferences.request(PREFERENCES_REPLICATIONJOBS,
+         var prefs = this.services.preferences.get();
+         var sortByPreference = Alfresco.util.findValueByDotNotation(prefs, PREF_SORTBY, null);
+         if (sortByPreference !== null)
          {
-            successCallback:
+            this.widgets.sortBy.value = sortByPreference;
+            // set the correct menu label
+            var menuItems = this.widgets.sortBy.getMenu().getItems();
+            for (var index in menuItems)
             {
-               fn: function ConsoleReplicationJobs_onReady_successCallback(p_oResponse)
+               if (menuItems.hasOwnProperty(index))
                {
-                  var sortByPreference = Alfresco.util.findValueByDotNotation(p_oResponse.json, PREF_SORTBY, null);
-                  if (sortByPreference !== null)
+                  if (menuItems[index].value === sortByPreference)
                   {
-                     this.widgets.sortBy.value = sortByPreference;
-                     // set the correct menu label
-                     var menuItems = this.widgets.sortBy.getMenu().getItems();
-                     for (var index in menuItems)
-                     {
-                        if (menuItems.hasOwnProperty(index))
-                        {
-                           if (menuItems[index].value === sortByPreference)
-                           {
-                              this.widgets.sortBy.set("label", this.msg("button.sort-by", menuItems[index].cfg.getProperty("text")));
-                              break;
-                           }
-                        }
-                     }
+                     this.widgets.sortBy.set("label", this.msg("button.sort-by", menuItems[index].cfg.getProperty("text")));
+                     break;
                   }
-                  this.populateJobsList(true);
-               },
-               scope: this
-            },
-            failureCallback:
-            {
-               fn: function ConsoleReplicationJobs_onReady_failureCallback()
-               {
-                  // Populate the jobs list anyway
-                  this.populateJobsList(true);
-               },
-               scope: this
+               }
             }
-         });
+         }
+         this.populateJobsList(true);
       },
 
       /**

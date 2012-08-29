@@ -92,12 +92,16 @@
          YAHOO.Bubbling.on("siteDeleted", this.onSiteDeleted, this);
 
          this.preferencesService = new Alfresco.service.Preferences();
-
+         var favsites = Alfresco.util.findValueByDotNotation(this.preferencesService.get(), Alfresco.service.Preferences.FAVOURITE_SITES, null);
          var templateUrl = Alfresco.constants.URL_SERVICECONTEXT + "modules/header/sites",
             dataObj =
             {
                htmlid: this.id
             };
+         if (favsites)
+         {
+            dataObj.favsites = YAHOO.lang.JSON.stringify(favsites);
+         }
          
          if (this.options.siteId !== "")
          {

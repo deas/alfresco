@@ -293,45 +293,23 @@
        */
       onSitesLoaded: function MySites_onSitesLoaded(p_response)
       {
-         // Load preferences (after which the appropriate sites will be displayed)
-         this.services.preferences.request(PREFERENCES_SITES,
-         {
-            successCallback:
-            {
-               fn: this.onPreferencesLoaded,
-               scope: this,
-               obj: p_response.json
-            }
-         });
-      },
-
-      /**
-       * Process response from sites and preferences queries
-       *
-       * @method onPreferencesLoaded
-       * @param p_response {object} Response from "api/people/{userId}/preferences" query
-       * @param p_items {object} Response from "api/people/{userId}/sites" query
-       */
-      onPreferencesLoaded: function MySites_onPreferencesLoaded(p_response, p_items)
-      {
-         var favSites = {},
-            imapfavSites = {},
+         var p_items = p_response.json,
+             prefs = this.services.preferences.get();
+         var favSites,
+            imapfavSites,
             siteManagers, i, j, k, l,
             ii = 0;
 
          // Save preferences
-         if (p_response.json.org)
+         favSites = Alfresco.util.findValueByDotNotation(prefs, "org.alfresco.share.sites.favourites");
+         if (typeof(favSites) === "undefined")
          {
-            favSites = p_response.json.org.alfresco.share.sites.favourites;
-            if (typeof(favSites) === "undefined")
-            {
-               favSites = {};
-            } 
-            imapfavSites = p_response.json.org.alfresco.share.sites.imapFavourites;
-         }
+            favSites = {};
+         } 
+         imapfavSites = Alfresco.util.findValueByDotNotation(prefs, "org.alfresco.share.sites.imapFavourites");
 
          // Select the preferred filter in the ui
-         var filter = Alfresco.util.findValueByDotNotation(p_response.json, PREFERENCES_SITES_DASHLET_FILTER, "all");
+         var filter = Alfresco.util.findValueByDotNotation(prefs, PREFERENCES_SITES_DASHLET_FILTER, "all");
          filter = this.options.validFilters.hasOwnProperty(filter) ? filter : "all";
          this.widgets.type.set("label", this.msg("filter." + filter));
          this.widgets.type.value = filter;

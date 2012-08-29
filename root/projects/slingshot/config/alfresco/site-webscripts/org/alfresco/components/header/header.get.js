@@ -11,17 +11,13 @@ function getTwisterPrefs()
 {
    var collapsedTwisters = "",
       result,
-      response;
+      prefs;
 
-   result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences");
-   if (result.status == 200 && result != "{}")
+   prefs = eval('(' + preferences.value + ')');
+   collapsedTwisters = eval('try{(prefs.' + PREF_COLLAPSED_TWISTERS + ')}catch(e){}');
+   if (typeof collapsedTwisters != "string")
    {
-      response = eval('(' + result + ')');
-      collapsedTwisters = eval('try{(response.' + PREF_COLLAPSED_TWISTERS + ')}catch(e){}');
-      if (typeof collapsedTwisters != "string")
-      {
-         collapsedTwisters = "";
-      }
+      collapsedTwisters = "";
    }
    model.collapsedTwisters = collapsedTwisters;
 }

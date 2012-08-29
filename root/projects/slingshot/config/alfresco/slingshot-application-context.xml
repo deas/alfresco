@@ -189,6 +189,10 @@
    <bean id="webscript.org.springframework.extensions.messages.post" parent="webscript" class="org.alfresco.web.scripts.MessagesWebScript" />
 
    <!-- Scripting model extensions -->
+   <bean id="slingshot.scriptprocessor.preferences" parent="baseScriptExtension" class="org.alfresco.web.scripts.UserPreferences">
+      <property name="extensionName" value="preferences" />
+   </bean>
+   
    <bean id="slingshot.scriptprocessor.googleDocsStatus" parent="baseScriptExtension" class="org.alfresco.web.scripts.GoogleDocsStatus">
       <property name="extensionName" value="googleDocsStatus" />
    </bean>
