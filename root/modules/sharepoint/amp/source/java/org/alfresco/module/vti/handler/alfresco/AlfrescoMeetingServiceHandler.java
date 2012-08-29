@@ -71,6 +71,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.GUID;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
@@ -85,6 +86,8 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     private static String CALENDAR_CONTAINER_NAME = "calendar";
 
     private static String DOCUMENT_LIBRARY_CONTAINER_NAME = "documentLibrary";
+    
+    private static String DEFAULT_SITE_NAME = "meeting";
 
     private static Log logger = LogFactory.getLog(AlfrescoMeetingServiceHandler.class);
 
@@ -174,12 +177,12 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     public String createWorkspace(String title, String templateName, int lcid, TimeZoneInformation timeZoneInformation, SessionUser user) throws Exception
     {
         // Build the site name from the title
-        String siteName = removeIllegalCharacters("sp_"+title);
+        String siteName = removeIllegalCharacters(title);
 
-        // Check we have a valid name
-        if (siteName.equals("_"))
-        {
-            throw new RuntimeException(getMessage("vti.meeting.error.workspace_name"));
+        // A list of underscores is not a valid name.
+        int matches = StringUtils.countMatches(siteName, "_");
+        if(matches>0 && siteName.length()==matches){
+        	siteName = DEFAULT_SITE_NAME;
         }
 
         // Build a unique name up
