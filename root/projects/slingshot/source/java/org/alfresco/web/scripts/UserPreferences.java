@@ -22,6 +22,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.ServletUtil;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
+import org.springframework.extensions.surf.site.AuthenticationUtil;
 import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.surf.util.URLEncoder;
 import org.springframework.extensions.webscripts.Status;
@@ -51,26 +52,28 @@ public class UserPreferences extends BaseProcessorExtension
         String prefs = (String)rc.getValue(USER_PREFERENCES);
         if (prefs == null)
         {
-            // retrieve the preferences and store on the request context for later usage within
-            // the scope of the current request - multiple components may need the values
-            try
+            // set to a safe empty value for now - but don't cache the response
+            // this is valid to return for the guest user and on server response failure
+            prefs = "{}";
+            
+            if (!AuthenticationUtil.isGuest(rc.getUserId()))
             {
-                Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", rc.getUserId(), ServletUtil.getSession());
-                Response response = conn.call("/api/people/" + URLEncoder.encode(rc.getUserId()) + "/preferences");
-                if (response.getStatus().getCode() == Status.STATUS_OK)
+                // retrieve the preferences and store on the request context for later usage within
+                // the scope of the current request - multiple components may need the values
+                try
                 {
-                    prefs = response.getResponse();
-                    rc.setValue(USER_PREFERENCES, prefs);
+                    Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco", rc.getUserId(), ServletUtil.getSession());
+                    Response response = conn.call("/api/people/" + URLEncoder.encode(rc.getUserId()) + "/preferences");
+                    if (response.getStatus().getCode() == Status.STATUS_OK)
+                    {
+                        prefs = response.getResponse();
+                        rc.setValue(USER_PREFERENCES, prefs);
+                    }
                 }
-                else
+                catch (ConnectorServiceException e)
                 {
-                    // return an empty value for now - but don't cache the response
-                    prefs = "{}";
+                    throw new AlfrescoRuntimeException("Unable to retrieve user preferences: " + e.getMessage(), e);
                 }
-            }
-            catch (ConnectorServiceException e)
-            {
-                throw new AlfrescoRuntimeException("Unable to retrieve user preferences: " + e.getMessage(), e);
             }
         }
         return prefs;
