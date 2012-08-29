@@ -174,7 +174,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
     public String createWorkspace(String title, String templateName, int lcid, TimeZoneInformation timeZoneInformation, SessionUser user) throws Exception
     {
         // Build the site name from the title
-        String siteName = removeIllegalCharacters(title);
+        String siteName = removeIllegalCharacters("sp_"+title);
 
         // Check we have a valid name
         if (siteName.equals("_"))

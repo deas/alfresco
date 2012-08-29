@@ -33,6 +33,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLEncoder;
@@ -101,7 +102,11 @@ public class ShareUtils
     public void createSite(SessionUser user, String sitePreset, String shortName, String title, String description, boolean isPublic) throws HttpException, IOException
     {
         HttpClient httpClient = new HttpClient();
-
+        
+        title = StringEscapeUtils.escapeJavaScript(title);
+        shortName = StringEscapeUtils.escapeJavaScript(shortName);
+        description = StringEscapeUtils.escapeJavaScript(description);
+        
         String createSiteBody = "{\"isPublic\":\"" + isPublic + "\",\"title\":\"" + title + "\",\"shortName\":\"" + shortName + "\"," + "\"description\":\"" + description
                 + "\",\"sitePreset\":\"" + sitePreset + "\"" + (isPublic ? ",\"alfresco-createSite-instance-isPublic-checkbox\":\"on\"}" : "}");
         PostMethod createSiteMethod = createPostMethod(getAlfrescoHostWithPort() + getAlfrescoContext() + "/s/api/sites?alf_ticket=" + user.getTicket(), createSiteBody, CONTENT_TYPE_JSON);
