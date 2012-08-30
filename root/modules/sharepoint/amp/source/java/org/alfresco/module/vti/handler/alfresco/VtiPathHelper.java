@@ -164,6 +164,10 @@ public class VtiPathHelper extends AbstractLifecycleBean
      */
     public String getAlfrescoContext()
     {
+        if (urlPathPrefix.equals("/"))
+        {
+            return "";
+        }
         return urlPathPrefix;
     }
     

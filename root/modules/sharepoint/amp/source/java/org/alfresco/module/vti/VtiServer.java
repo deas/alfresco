@@ -20,6 +20,7 @@
 package org.alfresco.module.vti;
 
 import java.net.BindException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.Filter;
@@ -87,7 +88,18 @@ public class VtiServer extends AbstractLifecycleBean
      */
     public void setServletMappings(List<String> servletMappings)
     {
-        this.servletMappings = servletMappings;
+        this.servletMappings = new ArrayList<String>();
+        for (String mapping : servletMappings)
+        {
+            // Double-slash possible when vti.server.url.path.prefix is "/"
+            // and mapping produced in vti-context.xml after placeholder interpolation is "//*"
+            mapping = mapping.replaceAll("//", "/");
+            
+            if (!this.servletMappings.contains(mapping))
+            {
+                this.servletMappings.add(mapping);
+            }
+        }
     }
 
     /**
