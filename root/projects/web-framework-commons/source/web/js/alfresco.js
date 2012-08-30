@@ -1687,7 +1687,11 @@ Alfresco.util.createYUIButton = function(p_scope, p_name, p_onclick, p_obj, p_oE
             if (obj.type == "menu")
             {
                // Special case for a menu
-               button.getMenu().subscribe("click", p_onclick, p_scope, true);
+               button.getMenu().subscribe("click", function (p_sType, p_aArgs, p_oObj)
+               {
+                  p_aArgs[p_aArgs.length] = p_name;
+                  p_onclick.call(p_scope, p_sType, p_aArgs, p_oObj);
+               }, p_scope, true);
                button.getMenu().subscribe("keydown", function (p_sType, p_aArgs, p_oObj)
                {
                   if (p_aArgs[0].keyCode == YUIKeyListener.KEY.ENTER)
