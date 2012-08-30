@@ -222,7 +222,7 @@
             replyAuthor = oRecord.getData("lastReplyBy"),
             isUpdated = oRecord.getData("isUpdated"),
             createdDate =  Alfresco.util.relativeTime(oRecord.getData("createdOn")),
-            updatedDate = Alfresco.util.relativeTime(oRecord.getData("updatedOn"))
+            updatedDate = Alfresco.util.relativeTime(oRecord.getData("updatedOn")),
             lastReplyDate = Alfresco.util.relativeTime(oRecord.getData("lastReplyOn")),
             site = oRecord.getData("site"),
             url = Alfresco.constants.URL_PAGECONTEXT + "site/" + site + "/discussions-topicview?topicId=" + name + "&listViewLinkBack=true";
