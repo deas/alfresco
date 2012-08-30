@@ -239,7 +239,7 @@
          if(replies > 0)
          {
             cellContent += "<br>";
-            if(replies = 1)
+            if(replies == 1)
             {
                cellContent += "<span class=\"nodeAttrLabel\">" + this.msg("topicList.replies.single") + " </span>";
             }
