@@ -36,6 +36,7 @@
    var $html = Alfresco.util.encodeHTML;
 
    var PREFERENCES_FORUM_SUMMARY_DASHLET = "org.alfresco.share.forum.summary.dashlet.";
+   
    /**
     * Dashboard ForumSummary constructor.
     *
@@ -46,6 +47,7 @@
    Alfresco.dashlet.ForumSummary = function ForumSummary_constructor(htmlId)
    {
       Alfresco.dashlet.ForumSummary.superclass.constructor.call(this, "Alfresco.dashlet.ForumSummary", htmlId, ["container", "datasource", "datatable"]);
+      
       // Services
       this.services.preferences = new Alfresco.service.Preferences();
       PREFERENCES_FORUM_SUMMARY_DASHLET = PREFERENCES_FORUM_SUMMARY_DASHLET + this.id;
@@ -107,61 +109,53 @@
        */
       onReady: function ForumSummary_onReady()
       {
-         var me = this,
-         id = this.id;
+         var id = this.id;
 
          // Load preferences
-         this.services.preferences.request(PREFERENCES_FORUM_SUMMARY_DASHLET,
+         var prefs = this.services.preferences.get();
+         
+         for each(var filter in this.options.filters)
          {
-            successCallback:
+            var button = Alfresco.util.createYUIButton(this, filter.name, this.onFilterChanged,
             {
-               fn: function(p_oResponse)
+               type: "menu",
+               menu: filter.name + "-menu",
+               lazyloadmenu: false
+            });
+            var filterPrefName = PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name;
+            var selectedOption = Alfresco.util.findValueByDotNotation(prefs, filterPrefName);
+            
+            if (selectedOption !== null)
+            {
+               for each(var option in filter.options)
                {
-                  for each(var filter in me.options.filters)
+                  if(option.value == selectedOption)
                   {
-                     var button = Alfresco.util.createYUIButton(this, filter.name, this.onFilterChanged,
-                     {
-                        type: "menu",
-                        menu: filter.name + "-menu",
-                        lazyloadmenu: false
-                     });
-                     var filterPrefName = PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name;
-                     var selectedOption = Alfresco.util.findValueByDotNotation(p_oResponse.json, filterPrefName);
-                     
-                     if(selectedOption !== null)
-                     {
-                        for each(var option in filter.options)
-                        {
-                           if(option.value == selectedOption)
-                           {
-                              button.set("label", this.msg("filter." + filter.name + "." + option.label));
-                              button.value = selectedOption;
-                              break;
-                           }
-                        }
-                     }
-                     else
-                     {
-                        this.options.filterPreferences[filterPrefName] = filter.options[0].value;
-                        var preferences = this.services.preferences;
-                        preferences.set(filterPrefName, this.options.filterPreferences[filterPrefName]);
-                        
-                        button.set("label", this.msg("filter." + filter.name + "." + filter.options[0].label));
-                        button.value = filter.options[0].value;
-                     }
-
-                     me.widgets[filter.name + "MenuButton"] = button;
-                     me.options.filterPreferences[filterPrefName] = selectedOption;
+                     button.set("label", this.msg("filter." + filter.name + "." + option.label));
+                     button.value = selectedOption;
+                     break;
                   }
-
-                  me.doRequest();
-
-                  // Display the toolbar now that we have selected the filter
-                  Dom.removeClass(Selector.query(".toolbar div", id, true), "hidden");
-               },
-               scope: me
+               }
             }
-         });
+            else
+            {
+               // Set initial preference
+               this.options.filterPreferences[filterPrefName] = filter.options[0].value;
+               var preferences = this.services.preferences;
+               preferences.set(filterPrefName, this.options.filterPreferences[filterPrefName]);
+               
+               button.set("label", this.msg("filter." + filter.name + "." + filter.options[0].label));
+               button.value = filter.options[0].value;
+            }
+
+            this.widgets[filter.name + "MenuButton"] = button;
+            this.options.filterPreferences[filterPrefName] = selectedOption;
+         }
+
+         this.doRequest();
+
+         // Display the toolbar now that we have selected the filter
+         Dom.removeClass(Selector.query(".toolbar div", id, true), "hidden");
       },
 
       /**
@@ -262,7 +256,6 @@
        * @param oRecord {object}
        * @param oColumn {object}
        * @param oData {object|string}
-       *
        */
       buildThumbnail: function SiteSearch_buildThumbnail(elCell, oRecord, oColumn, oData)
       {
@@ -287,14 +280,14 @@
          parameters += "resultSize=" + this.options.resultSize;
          
          var url = "";
-         if(this.options.siteId.length > 0)
-    	 {
-        	 url = Alfresco.constants.PROXY_URI + "api/forum/site/{site}/discussions/posts/filtered?{parameters}";
-    	 }
+         if (this.options.siteId.length > 0)
+         {
+            url = Alfresco.constants.PROXY_URI + "api/forum/site/{site}/discussions/posts/filtered?{parameters}";
+         }
          else
-    	 {
-        	 url = Alfresco.constants.PROXY_URI + "api/forum/discussions/posts/filtered?{parameters}";
-    	 }
+         {
+            url = Alfresco.constants.PROXY_URI + "api/forum/discussions/posts/filtered?{parameters}";
+         }
          
          return YAHOO.lang.substitute(url,
          {
