@@ -578,10 +578,13 @@ public class MultiThreadedCoreTracker extends CoreTracker
                     aclCount = 0;
                 }
             }
-            if (getAclCount(changeSetBatch) > 0)
+            if (!changeSetBatch.isEmpty())
             {
                 indexed = true;
-                aclCount += indexBatchOfChangeSets(changeSetBatch, solrIndexSearcher);
+                if(getAclCount(changeSetBatch) > 0)
+                {
+                    aclCount += indexBatchOfChangeSets(changeSetBatch, solrIndexSearcher);
+                }
                 for (AclChangeSet scheduled : changeSetBatch)
                 {
                     changeSetsFound.add(scheduled);

@@ -1182,7 +1182,7 @@
       <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/dependencies" />
       <copy todir="${dir.continuous.assemble.sdk}/lib/server/dependencies">
          <fileset dir="${dir.project.3rdparty.lib}" 
-                  includes="**/*.jar" excludes="${dir.name.devenv}/**, jboss/**, virtual-tomcat/**"/>
+                  includes="**/*.jar" excludes="${dir.name.devenv}/**, jboss/**, virtual-tomcat/**, mmt-dependencies/**"/>
          <fileset dir="${dir.project.3rdparty.lib}/${dir.name.devenv}"
                   includes="org.springframework.test*.jar" />
       </copy>

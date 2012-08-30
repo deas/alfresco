@@ -182,11 +182,22 @@ public class SectionGet extends AbstractWebScript
         searchParameters.setQuery(query);
         searchParameters.addSort("@"+WebSiteModel.PROP_ORDER_INDEX.toString(), true);
 
-        ResultSet rs = searchService.query(searchParameters);
-        for (ResultSetRow row : rs)
+        ResultSet rs = null;
+        try
         {
-            foundNodes.add(row.getNodeRef());
+            rs = searchService.query(searchParameters);
+            for (ResultSetRow row : rs)
+            {
+                foundNodes.add(row.getNodeRef());
+            }
+            return foundNodes;
         }
-        return foundNodes;
+        finally
+        {
+            if (rs != null)
+            {
+                rs.close();
+            }
+        }
     }
 }

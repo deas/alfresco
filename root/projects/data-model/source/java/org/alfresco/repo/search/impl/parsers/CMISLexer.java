@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2012-08-20 13:21:43
+// $ANTLR 3.4 W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2012-08-28 10:47:25
 
     package org.alfresco.repo.search.impl.parsers;
     import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
@@ -9,94 +9,95 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings({"all", "warnings", "unchecked"})
 public class CMISLexer extends Lexer {
     public static final int EOF=-1;
-    public static final int QUERY=4;
-    public static final int ALL_COLUMNS=5;
-    public static final int COLUMN=6;
-    public static final int COLUMNS=7;
-    public static final int COLUMN_REF=8;
-    public static final int QUALIFIER=9;
-    public static final int FUNCTION=10;
-    public static final int SOURCE=11;
-    public static final int TABLE=12;
-    public static final int TABLE_REF=13;
-    public static final int PARAMETER=14;
-    public static final int CONJUNCTION=15;
-    public static final int DISJUNCTION=16;
-    public static final int NEGATION=17;
-    public static final int PRED_COMPARISON=18;
-    public static final int PRED_IN=19;
-    public static final int PRED_EXISTS=20;
-    public static final int PRED_LIKE=21;
-    public static final int PRED_FTS=22;
-    public static final int LIST=23;
-    public static final int PRED_CHILD=24;
-    public static final int PRED_DESCENDANT=25;
-    public static final int SORT_SPECIFICATION=26;
-    public static final int NUMERIC_LITERAL=27;
-    public static final int STRING_LITERAL=28;
-    public static final int DATETIME_LITERAL=29;
-    public static final int BOOLEAN_LITERAL=30;
-    public static final int SINGLE_VALUED_PROPERTY=31;
-    public static final int SELECT=32;
-    public static final int STAR=33;
-    public static final int COMMA=34;
-    public static final int AS=35;
-    public static final int DOTSTAR=36;
-    public static final int DOT=37;
-    public static final int LPAREN=38;
-    public static final int RPAREN=39;
-    public static final int FROM=40;
-    public static final int JOIN=41;
-    public static final int INNER=42;
-    public static final int LEFT=43;
-    public static final int OUTER=44;
-    public static final int ON=45;
-    public static final int EQUALS=46;
-    public static final int WHERE=47;
-    public static final int OR=48;
-    public static final int AND=49;
-    public static final int NOT=50;
-    public static final int NOTEQUALS=51;
-    public static final int LESSTHAN=52;
-    public static final int GREATERTHAN=53;
-    public static final int LESSTHANOREQUALS=54;
-    public static final int GREATERTHANOREQUALS=55;
-    public static final int IN=56;
-    public static final int LIKE=57;
-    public static final int IS=58;
-    public static final int NULL=59;
-    public static final int ANY=60;
-    public static final int CONTAINS=61;
-    public static final int IN_FOLDER=62;
-    public static final int IN_TREE=63;
-    public static final int ORDER=64;
-    public static final int BY=65;
-    public static final int ASC=66;
-    public static final int DESC=67;
-    public static final int COLON=68;
-    public static final int QUOTED_STRING=69;
-    public static final int ID=70;
-    public static final int DOUBLE_QUOTE=71;
-    public static final int FLOATING_POINT_LITERAL=72;
-    public static final int DECIMAL_INTEGER_LITERAL=73;
-    public static final int TRUE=74;
-    public static final int FALSE=75;
-    public static final int TIMESTAMP=76;
-    public static final int SCORE=77;
-    public static final int DOTDOT=78;
-    public static final int TILDA=79;
-    public static final int PLUS=80;
-    public static final int MINUS=81;
-    public static final int DECIMAL_NUMERAL=82;
-    public static final int DIGIT=83;
-    public static final int EXPONENT=84;
-    public static final int WS=85;
-    public static final int ZERO_DIGIT=86;
-    public static final int NON_ZERO_DIGIT=87;
-    public static final int E=88;
-    public static final int SIGNED_INTEGER=89;
+    public static final int ALL_COLUMNS=4;
+    public static final int AND=5;
+    public static final int ANY=6;
+    public static final int AS=7;
+    public static final int ASC=8;
+    public static final int BOOLEAN_LITERAL=9;
+    public static final int BY=10;
+    public static final int COLON=11;
+    public static final int COLUMN=12;
+    public static final int COLUMNS=13;
+    public static final int COLUMN_REF=14;
+    public static final int COMMA=15;
+    public static final int CONJUNCTION=16;
+    public static final int CONTAINS=17;
+    public static final int DATETIME_LITERAL=18;
+    public static final int DECIMAL_INTEGER_LITERAL=19;
+    public static final int DECIMAL_NUMERAL=20;
+    public static final int DESC=21;
+    public static final int DIGIT=22;
+    public static final int DISJUNCTION=23;
+    public static final int DOT=24;
+    public static final int DOTDOT=25;
+    public static final int DOTSTAR=26;
+    public static final int DOUBLE_QUOTE=27;
+    public static final int E=28;
+    public static final int EQUALS=29;
+    public static final int EXPONENT=30;
+    public static final int FALSE=31;
+    public static final int FLOATING_POINT_LITERAL=32;
+    public static final int FROM=33;
+    public static final int FUNCTION=34;
+    public static final int GREATERTHAN=35;
+    public static final int GREATERTHANOREQUALS=36;
+    public static final int ID=37;
+    public static final int IN=38;
+    public static final int INNER=39;
+    public static final int IN_FOLDER=40;
+    public static final int IN_TREE=41;
+    public static final int IS=42;
+    public static final int JOIN=43;
+    public static final int LEFT=44;
+    public static final int LESSTHAN=45;
+    public static final int LESSTHANOREQUALS=46;
+    public static final int LIKE=47;
+    public static final int LIST=48;
+    public static final int LPAREN=49;
+    public static final int MINUS=50;
+    public static final int NEGATION=51;
+    public static final int NON_ZERO_DIGIT=52;
+    public static final int NOT=53;
+    public static final int NOTEQUALS=54;
+    public static final int NULL=55;
+    public static final int NUMERIC_LITERAL=56;
+    public static final int ON=57;
+    public static final int OR=58;
+    public static final int ORDER=59;
+    public static final int OUTER=60;
+    public static final int PARAMETER=61;
+    public static final int PLUS=62;
+    public static final int PRED_CHILD=63;
+    public static final int PRED_COMPARISON=64;
+    public static final int PRED_DESCENDANT=65;
+    public static final int PRED_EXISTS=66;
+    public static final int PRED_FTS=67;
+    public static final int PRED_IN=68;
+    public static final int PRED_LIKE=69;
+    public static final int QUALIFIER=70;
+    public static final int QUERY=71;
+    public static final int QUOTED_STRING=72;
+    public static final int RPAREN=73;
+    public static final int SCORE=74;
+    public static final int SELECT=75;
+    public static final int SIGNED_INTEGER=76;
+    public static final int SINGLE_VALUED_PROPERTY=77;
+    public static final int SORT_SPECIFICATION=78;
+    public static final int SOURCE=79;
+    public static final int STAR=80;
+    public static final int STRING_LITERAL=81;
+    public static final int TABLE=82;
+    public static final int TABLE_REF=83;
+    public static final int TILDA=84;
+    public static final int TIMESTAMP=85;
+    public static final int TRUE=86;
+    public static final int WHERE=87;
+    public static final int WS=88;
+    public static final int ZERO_DIGIT=89;
 
         public Token nextToken() {
             while (true) 
@@ -141,14 +142,16 @@ public class CMISLexer extends Lexer {
 
     // delegates
     // delegators
+    public Lexer[] getDelegates() {
+        return new Lexer[] {};
+    }
 
-    public CMISLexer() {;} 
+    public CMISLexer() {} 
     public CMISLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }
     public CMISLexer(CharStream input, RecognizerSharedState state) {
         super(input,state);
-
     }
     public String getGrammarFileName() { return "W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g"; }
 
@@ -161,13 +164,14 @@ public class CMISLexer extends Lexer {
             // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:854:9: '\\'' (~ ( '\\'' | '\\\\' ) | '\\\\' . )* '\\''
             {
             match('\''); 
+
             // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:855:9: (~ ( '\\'' | '\\\\' ) | '\\\\' . )*
             loop1:
             do {
                 int alt1=3;
                 int LA1_0 = input.LA(1);
 
-                if ( ((LA1_0>='\u0000' && LA1_0<='&')||(LA1_0>='(' && LA1_0<='[')||(LA1_0>=']' && LA1_0<='\uFFFF')) ) {
+                if ( ((LA1_0 >= '\u0000' && LA1_0 <= '&')||(LA1_0 >= '(' && LA1_0 <= '[')||(LA1_0 >= ']' && LA1_0 <= '\uFFFF')) ) {
                     alt1=1;
                 }
                 else if ( (LA1_0=='\\') ) {
@@ -179,14 +183,14 @@ public class CMISLexer extends Lexer {
             	case 1 :
             	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:856:17: ~ ( '\\'' | '\\\\' )
             	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+            	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
-
             	    }
             	    else {
             	        MismatchedSetException mse = new MismatchedSetException(null,input);
             	        recover(mse);
-            	        throw mse;}
+            	        throw mse;
+            	    }
 
 
             	    }
@@ -195,6 +199,7 @@ public class CMISLexer extends Lexer {
             	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:857:19: '\\\\' .
             	    {
             	    match('\\'); 
+
             	    matchAny(); 
 
             	    }
@@ -205,6 +210,7 @@ public class CMISLexer extends Lexer {
                 }
             } while (true);
 
+
             match('\''); 
 
             }
@@ -213,6 +219,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "QUOTED_STRING"
@@ -227,57 +234,62 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -286,6 +298,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "SELECT"
@@ -300,21 +313,22 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -323,6 +337,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "AS"
@@ -337,39 +352,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='M'||input.LA(1)=='m' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -378,6 +396,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "FROM"
@@ -392,39 +411,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='J'||input.LA(1)=='j' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -433,6 +455,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "JOIN"
@@ -447,48 +470,52 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -497,6 +524,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "INNER"
@@ -511,39 +539,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -552,6 +583,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "LEFT"
@@ -566,48 +598,52 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -616,6 +652,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "OUTER"
@@ -630,21 +667,22 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -653,6 +691,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "ON"
@@ -667,48 +706,52 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='W'||input.LA(1)=='w' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='H'||input.LA(1)=='h' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -717,6 +760,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "WHERE"
@@ -731,21 +775,22 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -754,6 +799,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "OR"
@@ -768,30 +814,32 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -800,6 +848,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "AND"
@@ -814,30 +863,32 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -846,6 +897,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "NOT"
@@ -860,21 +912,22 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -883,6 +936,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "IN"
@@ -897,39 +951,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='K'||input.LA(1)=='k' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -938,6 +995,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "LIKE"
@@ -952,21 +1010,22 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -975,6 +1034,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "IS"
@@ -989,39 +1049,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1030,6 +1093,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "NULL"
@@ -1044,30 +1108,32 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='Y'||input.LA(1)=='y' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1076,6 +1142,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "ANY"
@@ -1090,75 +1157,82 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1167,6 +1241,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "CONTAINS"
@@ -1181,76 +1256,84 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             match('_'); 
+
             if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1259,6 +1342,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "IN_FOLDER"
@@ -1273,58 +1357,64 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='N'||input.LA(1)=='n' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             match('_'); 
+
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1333,6 +1423,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "IN_TREE"
@@ -1347,48 +1438,52 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1397,6 +1492,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "ORDER"
@@ -1411,21 +1507,22 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='B'||input.LA(1)=='b' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='Y'||input.LA(1)=='y' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1434,6 +1531,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "BY"
@@ -1448,30 +1546,32 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1480,6 +1580,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "ASC"
@@ -1494,39 +1595,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='D'||input.LA(1)=='d' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1535,6 +1639,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DESC"
@@ -1549,84 +1654,92 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='I'||input.LA(1)=='i' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='M'||input.LA(1)=='m' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='M'||input.LA(1)=='m' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='P'||input.LA(1)=='p' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1635,6 +1748,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "TIMESTAMP"
@@ -1649,39 +1763,42 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='T'||input.LA(1)=='t' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='U'||input.LA(1)=='u' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1690,6 +1807,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "TRUE"
@@ -1704,48 +1822,52 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='F'||input.LA(1)=='f' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='A'||input.LA(1)=='a' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1754,6 +1876,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "FALSE"
@@ -1768,48 +1891,52 @@ public class CMISLexer extends Lexer {
             {
             if ( input.LA(1)=='S'||input.LA(1)=='s' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='C'||input.LA(1)=='c' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='O'||input.LA(1)=='o' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='R'||input.LA(1)=='r' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
+
 
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
@@ -1818,6 +1945,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "SCORE"
@@ -1838,6 +1966,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "LPAREN"
@@ -1858,6 +1987,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "RPAREN"
@@ -1878,6 +2008,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "STAR"
@@ -1898,6 +2029,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "COMMA"
@@ -1913,12 +2045,14 @@ public class CMISLexer extends Lexer {
             match(".*"); 
 
 
+
             }
 
             state.type = _type;
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DOTSTAR"
@@ -1939,6 +2073,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DOT"
@@ -1954,12 +2089,14 @@ public class CMISLexer extends Lexer {
             match(".."); 
 
 
+
             }
 
             state.type = _type;
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DOTDOT"
@@ -1980,6 +2117,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "EQUALS"
@@ -2000,6 +2138,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "TILDA"
@@ -2015,12 +2154,14 @@ public class CMISLexer extends Lexer {
             match("<>"); 
 
 
+
             }
 
             state.type = _type;
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "NOTEQUALS"
@@ -2041,6 +2182,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "GREATERTHAN"
@@ -2061,6 +2203,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "LESSTHAN"
@@ -2076,12 +2219,14 @@ public class CMISLexer extends Lexer {
             match(">="); 
 
 
+
             }
 
             state.type = _type;
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "GREATERTHANOREQUALS"
@@ -2097,12 +2242,14 @@ public class CMISLexer extends Lexer {
             match("<="); 
 
 
+
             }
 
             state.type = _type;
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "LESSTHANOREQUALS"
@@ -2123,6 +2270,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "COLON"
@@ -2143,6 +2291,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DOUBLE_QUOTE"
@@ -2168,12 +2317,12 @@ public class CMISLexer extends Lexer {
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
-
                     }
                     else {
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
-                        throw mse;}
+                        throw mse;
+                    }
 
 
                     }
@@ -2181,7 +2330,9 @@ public class CMISLexer extends Lexer {
 
             }
 
+
             mDECIMAL_NUMERAL(); 
+
 
             }
 
@@ -2189,6 +2340,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DECIMAL_INTEGER_LITERAL"
@@ -2218,18 +2370,19 @@ public class CMISLexer extends Lexer {
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
-
                             }
                             else {
                                 MismatchedSetException mse = new MismatchedSetException(null,input);
                                 recover(mse);
-                                throw mse;}
+                                throw mse;
+                            }
 
 
                             }
                             break;
 
                     }
+
 
                     // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1555:9: ( DIGIT )+
                     int cnt4=0;
@@ -2238,16 +2391,24 @@ public class CMISLexer extends Lexer {
                         int alt4=2;
                         int LA4_0 = input.LA(1);
 
-                        if ( ((LA4_0>='0' && LA4_0<='9')) ) {
+                        if ( ((LA4_0 >= '0' && LA4_0 <= '9')) ) {
                             alt4=1;
                         }
 
 
                         switch (alt4) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1555:9: DIGIT
+                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
                     	    {
-                    	    mDIGIT(); 
+                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+                    	        input.consume();
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;
+                    	    }
+
 
                     	    }
                     	    break;
@@ -2261,23 +2422,34 @@ public class CMISLexer extends Lexer {
                         cnt4++;
                     } while (true);
 
+
                     mDOT(); 
+
+
                     // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1555:20: ( DIGIT )*
                     loop5:
                     do {
                         int alt5=2;
                         int LA5_0 = input.LA(1);
 
-                        if ( ((LA5_0>='0' && LA5_0<='9')) ) {
+                        if ( ((LA5_0 >= '0' && LA5_0 <= '9')) ) {
                             alt5=1;
                         }
 
 
                         switch (alt5) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1555:20: DIGIT
+                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
                     	    {
-                    	    mDIGIT(); 
+                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+                    	        input.consume();
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;
+                    	    }
+
 
                     	    }
                     	    break;
@@ -2286,6 +2458,7 @@ public class CMISLexer extends Lexer {
                     	    break loop5;
                         }
                     } while (true);
+
 
                     // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1555:27: ( EXPONENT )?
                     int alt6=2;
@@ -2299,6 +2472,7 @@ public class CMISLexer extends Lexer {
                             // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1555:27: EXPONENT
                             {
                             mEXPONENT(); 
+
 
                             }
                             break;
@@ -2324,12 +2498,12 @@ public class CMISLexer extends Lexer {
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
-
                             }
                             else {
                                 MismatchedSetException mse = new MismatchedSetException(null,input);
                                 recover(mse);
-                                throw mse;}
+                                throw mse;
+                            }
 
 
                             }
@@ -2337,7 +2511,10 @@ public class CMISLexer extends Lexer {
 
                     }
 
+
                     mDOT(); 
+
+
                     // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1561:13: ( DIGIT )+
                     int cnt8=0;
                     loop8:
@@ -2345,16 +2522,24 @@ public class CMISLexer extends Lexer {
                         int alt8=2;
                         int LA8_0 = input.LA(1);
 
-                        if ( ((LA8_0>='0' && LA8_0<='9')) ) {
+                        if ( ((LA8_0 >= '0' && LA8_0 <= '9')) ) {
                             alt8=1;
                         }
 
 
                         switch (alt8) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1561:13: DIGIT
+                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
                     	    {
-                    	    mDIGIT(); 
+                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+                    	        input.consume();
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;
+                    	    }
+
 
                     	    }
                     	    break;
@@ -2368,6 +2553,7 @@ public class CMISLexer extends Lexer {
                         cnt8++;
                     } while (true);
 
+
                     // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1561:20: ( EXPONENT )?
                     int alt9=2;
                     int LA9_0 = input.LA(1);
@@ -2380,6 +2566,7 @@ public class CMISLexer extends Lexer {
                             // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1561:20: EXPONENT
                             {
                             mEXPONENT(); 
+
 
                             }
                             break;
@@ -2405,18 +2592,19 @@ public class CMISLexer extends Lexer {
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
-
                             }
                             else {
                                 MismatchedSetException mse = new MismatchedSetException(null,input);
                                 recover(mse);
-                                throw mse;}
+                                throw mse;
+                            }
 
 
                             }
                             break;
 
                     }
+
 
                     // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1567:9: ( DIGIT )+
                     int cnt11=0;
@@ -2425,16 +2613,24 @@ public class CMISLexer extends Lexer {
                         int alt11=2;
                         int LA11_0 = input.LA(1);
 
-                        if ( ((LA11_0>='0' && LA11_0<='9')) ) {
+                        if ( ((LA11_0 >= '0' && LA11_0 <= '9')) ) {
                             alt11=1;
                         }
 
 
                         switch (alt11) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1567:9: DIGIT
+                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
                     	    {
-                    	    mDIGIT(); 
+                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+                    	        input.consume();
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;
+                    	    }
+
 
                     	    }
                     	    break;
@@ -2448,7 +2644,9 @@ public class CMISLexer extends Lexer {
                         cnt11++;
                     } while (true);
 
+
                     mEXPONENT(); 
+
 
                     }
                     break;
@@ -2458,6 +2656,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "FLOATING_POINT_LITERAL"
@@ -2467,25 +2666,26 @@ public class CMISLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1574:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '$' | '#' )* )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1575:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '$' | '#' )*
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1577:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '$' | '#' )* )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1578:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '$' | '#' )*
             {
-            if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1580:9: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '$' | '#' )*
+
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1583:9: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '$' | '#' )*
             loop13:
             do {
                 int alt13=2;
                 int LA13_0 = input.LA(1);
 
-                if ( ((LA13_0>='#' && LA13_0<='$')||(LA13_0>='0' && LA13_0<=':')||(LA13_0>='A' && LA13_0<='Z')||LA13_0=='_'||(LA13_0>='a' && LA13_0<='z')) ) {
+                if ( ((LA13_0 >= '#' && LA13_0 <= '$')||(LA13_0 >= '0' && LA13_0 <= ':')||(LA13_0 >= 'A' && LA13_0 <= 'Z')||LA13_0=='_'||(LA13_0 >= 'a' && LA13_0 <= 'z')) ) {
                     alt13=1;
                 }
 
@@ -2494,14 +2694,14 @@ public class CMISLexer extends Lexer {
             	case 1 :
             	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             	    {
-            	    if ( (input.LA(1)>='#' && input.LA(1)<='$')||(input.LA(1)>='0' && input.LA(1)<=':')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            	    if ( (input.LA(1) >= '#' && input.LA(1) <= '$')||(input.LA(1) >= '0' && input.LA(1) <= ':')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
             	        input.consume();
-
             	    }
             	    else {
             	        MismatchedSetException mse = new MismatchedSetException(null,input);
             	        recover(mse);
-            	        throw mse;}
+            	        throw mse;
+            	    }
 
 
             	    }
@@ -2519,6 +2719,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "ID"
@@ -2538,7 +2739,7 @@ public class CMISLexer extends Lexer {
                 int alt14=2;
                 int LA14_0 = input.LA(1);
 
-                if ( ((LA14_0>='\t' && LA14_0<='\n')||LA14_0=='\r'||LA14_0==' ') ) {
+                if ( ((LA14_0 >= '\t' && LA14_0 <= '\n')||LA14_0=='\r'||LA14_0==' ') ) {
                     alt14=1;
                 }
 
@@ -2547,14 +2748,14 @@ public class CMISLexer extends Lexer {
             	case 1 :
             	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             	    {
-            	    if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
+            	    if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
             	        input.consume();
-
             	    }
             	    else {
             	        MismatchedSetException mse = new MismatchedSetException(null,input);
             	        recover(mse);
-            	        throw mse;}
+            	        throw mse;
+            	    }
 
 
             	    }
@@ -2569,6 +2770,7 @@ public class CMISLexer extends Lexer {
                 cnt14++;
             } while (true);
 
+
              _channel = HIDDEN; 
 
             }
@@ -2577,6 +2779,7 @@ public class CMISLexer extends Lexer {
             state.channel = _channel;
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "WS"
@@ -2584,14 +2787,14 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "DECIMAL_NUMERAL"
     public final void mDECIMAL_NUMERAL() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1607:9: ( ZERO_DIGIT | NON_ZERO_DIGIT ( DIGIT )* )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1611:9: ( ZERO_DIGIT | NON_ZERO_DIGIT ( DIGIT )* )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
             if ( (LA16_0=='0') ) {
                 alt16=1;
             }
-            else if ( ((LA16_0>='1' && LA16_0<='9')) ) {
+            else if ( ((LA16_0 >= '1' && LA16_0 <= '9')) ) {
                 alt16=2;
             }
             else {
@@ -2599,35 +2802,47 @@ public class CMISLexer extends Lexer {
                     new NoViableAltException("", 16, 0, input);
 
                 throw nvae;
+
             }
             switch (alt16) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1608:9: ZERO_DIGIT
+                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1612:9: ZERO_DIGIT
                     {
                     mZERO_DIGIT(); 
+
 
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1609:11: NON_ZERO_DIGIT ( DIGIT )*
+                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1613:11: NON_ZERO_DIGIT ( DIGIT )*
                     {
                     mNON_ZERO_DIGIT(); 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1609:26: ( DIGIT )*
+
+
+                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1613:26: ( DIGIT )*
                     loop15:
                     do {
                         int alt15=2;
                         int LA15_0 = input.LA(1);
 
-                        if ( ((LA15_0>='0' && LA15_0<='9')) ) {
+                        if ( ((LA15_0 >= '0' && LA15_0 <= '9')) ) {
                             alt15=1;
                         }
 
 
                         switch (alt15) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1609:26: DIGIT
+                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
                     	    {
-                    	    mDIGIT(); 
+                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+                    	        input.consume();
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;
+                    	    }
+
 
                     	    }
                     	    break;
@@ -2642,8 +2857,10 @@ public class CMISLexer extends Lexer {
                     break;
 
             }
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DECIMAL_NUMERAL"
@@ -2651,23 +2868,25 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "DIGIT"
     public final void mDIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1614:9: ( ZERO_DIGIT | NON_ZERO_DIGIT )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1615:9: ( ZERO_DIGIT | NON_ZERO_DIGIT )
             // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             {
-            if ( (input.LA(1)>='0' && input.LA(1)<='9') ) {
+            if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "DIGIT"
@@ -2675,15 +2894,17 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "ZERO_DIGIT"
     public final void mZERO_DIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1621:9: ( '0' )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1622:9: '0'
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1622:9: ( '0' )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1623:9: '0'
             {
             match('0'); 
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "ZERO_DIGIT"
@@ -2691,15 +2912,25 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "NON_ZERO_DIGIT"
     public final void mNON_ZERO_DIGIT() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1627:9: ( '1' .. '9' )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1628:9: '1' .. '9'
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1628:9: ( '1' .. '9' )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             {
-            matchRange('1','9'); 
+            if ( (input.LA(1) >= '1' && input.LA(1) <= '9') ) {
+                input.consume();
+            }
+            else {
+                MismatchedSetException mse = new MismatchedSetException(null,input);
+                recover(mse);
+                throw mse;
+            }
+
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "NON_ZERO_DIGIT"
@@ -2707,15 +2938,17 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "PLUS"
     public final void mPLUS() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1633:9: ( '+' )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1634:9: '+'
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1634:9: ( '+' )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1635:9: '+'
             {
             match('+'); 
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "PLUS"
@@ -2723,15 +2956,17 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "MINUS"
     public final void mMINUS() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1639:9: ( '-' )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1640:9: '-'
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1640:9: ( '-' )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1641:9: '-'
             {
             match('-'); 
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "MINUS"
@@ -2739,23 +2974,25 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "E"
     public final void mE() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1645:9: ( ( 'e' | 'E' ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1646:9: ( 'e' | 'E' )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1646:9: ( ( 'e' | 'E' ) )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
-
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
                 recover(mse);
-                throw mse;}
+                throw mse;
+            }
 
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "E"
@@ -2763,16 +3000,21 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "EXPONENT"
     public final void mEXPONENT() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1658:9: ( E SIGNED_INTEGER )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1659:9: E SIGNED_INTEGER
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1659:9: ( E SIGNED_INTEGER )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1660:9: E SIGNED_INTEGER
             {
             mE(); 
+
+
             mSIGNED_INTEGER(); 
+
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "EXPONENT"
@@ -2780,10 +3022,10 @@ public class CMISLexer extends Lexer {
     // $ANTLR start "SIGNED_INTEGER"
     public final void mSIGNED_INTEGER() throws RecognitionException {
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1664:9: ( ( PLUS | MINUS )? ( DIGIT )+ )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1665:9: ( PLUS | MINUS )? ( DIGIT )+
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1665:9: ( ( PLUS | MINUS )? ( DIGIT )+ )
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1666:9: ( PLUS | MINUS )? ( DIGIT )+
             {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1665:9: ( PLUS | MINUS )?
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1666:9: ( PLUS | MINUS )?
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -2796,12 +3038,12 @@ public class CMISLexer extends Lexer {
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
-
                     }
                     else {
                         MismatchedSetException mse = new MismatchedSetException(null,input);
                         recover(mse);
-                        throw mse;}
+                        throw mse;
+                    }
 
 
                     }
@@ -2809,23 +3051,32 @@ public class CMISLexer extends Lexer {
 
             }
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1669:9: ( DIGIT )+
+
+            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1670:9: ( DIGIT )+
             int cnt18=0;
             loop18:
             do {
                 int alt18=2;
                 int LA18_0 = input.LA(1);
 
-                if ( ((LA18_0>='0' && LA18_0<='9')) ) {
+                if ( ((LA18_0 >= '0' && LA18_0 <= '9')) ) {
                     alt18=1;
                 }
 
 
                 switch (alt18) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1669:9: DIGIT
+            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             	    {
-            	    mDIGIT(); 
+            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
+            	        input.consume();
+            	    }
+            	    else {
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        recover(mse);
+            	        throw mse;
+            	    }
+
 
             	    }
             	    break;
@@ -2842,8 +3093,10 @@ public class CMISLexer extends Lexer {
 
             }
 
+
         }
         finally {
+        	// do for sure before leaving
         }
     }
     // $ANTLR end "SIGNED_INTEGER"
@@ -2858,12 +3111,14 @@ public class CMISLexer extends Lexer {
                 {
                 mQUOTED_STRING(); 
 
+
                 }
                 break;
             case 2 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:24: SELECT
                 {
                 mSELECT(); 
+
 
                 }
                 break;
@@ -2872,12 +3127,14 @@ public class CMISLexer extends Lexer {
                 {
                 mAS(); 
 
+
                 }
                 break;
             case 4 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:34: FROM
                 {
                 mFROM(); 
+
 
                 }
                 break;
@@ -2886,12 +3143,14 @@ public class CMISLexer extends Lexer {
                 {
                 mJOIN(); 
 
+
                 }
                 break;
             case 6 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:44: INNER
                 {
                 mINNER(); 
+
 
                 }
                 break;
@@ -2900,12 +3159,14 @@ public class CMISLexer extends Lexer {
                 {
                 mLEFT(); 
 
+
                 }
                 break;
             case 8 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:55: OUTER
                 {
                 mOUTER(); 
+
 
                 }
                 break;
@@ -2914,12 +3175,14 @@ public class CMISLexer extends Lexer {
                 {
                 mON(); 
 
+
                 }
                 break;
             case 10 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:64: WHERE
                 {
                 mWHERE(); 
+
 
                 }
                 break;
@@ -2928,12 +3191,14 @@ public class CMISLexer extends Lexer {
                 {
                 mOR(); 
 
+
                 }
                 break;
             case 12 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:73: AND
                 {
                 mAND(); 
+
 
                 }
                 break;
@@ -2942,12 +3207,14 @@ public class CMISLexer extends Lexer {
                 {
                 mNOT(); 
 
+
                 }
                 break;
             case 14 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:81: IN
                 {
                 mIN(); 
+
 
                 }
                 break;
@@ -2956,12 +3223,14 @@ public class CMISLexer extends Lexer {
                 {
                 mLIKE(); 
 
+
                 }
                 break;
             case 16 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:89: IS
                 {
                 mIS(); 
+
 
                 }
                 break;
@@ -2970,12 +3239,14 @@ public class CMISLexer extends Lexer {
                 {
                 mNULL(); 
 
+
                 }
                 break;
             case 18 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:97: ANY
                 {
                 mANY(); 
+
 
                 }
                 break;
@@ -2984,12 +3255,14 @@ public class CMISLexer extends Lexer {
                 {
                 mCONTAINS(); 
 
+
                 }
                 break;
             case 20 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:110: IN_FOLDER
                 {
                 mIN_FOLDER(); 
+
 
                 }
                 break;
@@ -2998,12 +3271,14 @@ public class CMISLexer extends Lexer {
                 {
                 mIN_TREE(); 
 
+
                 }
                 break;
             case 22 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:128: ORDER
                 {
                 mORDER(); 
+
 
                 }
                 break;
@@ -3012,12 +3287,14 @@ public class CMISLexer extends Lexer {
                 {
                 mBY(); 
 
+
                 }
                 break;
             case 24 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:137: ASC
                 {
                 mASC(); 
+
 
                 }
                 break;
@@ -3026,12 +3303,14 @@ public class CMISLexer extends Lexer {
                 {
                 mDESC(); 
 
+
                 }
                 break;
             case 26 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:146: TIMESTAMP
                 {
                 mTIMESTAMP(); 
+
 
                 }
                 break;
@@ -3040,12 +3319,14 @@ public class CMISLexer extends Lexer {
                 {
                 mTRUE(); 
 
+
                 }
                 break;
             case 28 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:161: FALSE
                 {
                 mFALSE(); 
+
 
                 }
                 break;
@@ -3054,12 +3335,14 @@ public class CMISLexer extends Lexer {
                 {
                 mSCORE(); 
 
+
                 }
                 break;
             case 30 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:173: LPAREN
                 {
                 mLPAREN(); 
+
 
                 }
                 break;
@@ -3068,12 +3351,14 @@ public class CMISLexer extends Lexer {
                 {
                 mRPAREN(); 
 
+
                 }
                 break;
             case 32 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:187: STAR
                 {
                 mSTAR(); 
+
 
                 }
                 break;
@@ -3082,12 +3367,14 @@ public class CMISLexer extends Lexer {
                 {
                 mCOMMA(); 
 
+
                 }
                 break;
             case 34 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:198: DOTSTAR
                 {
                 mDOTSTAR(); 
+
 
                 }
                 break;
@@ -3096,12 +3383,14 @@ public class CMISLexer extends Lexer {
                 {
                 mDOT(); 
 
+
                 }
                 break;
             case 36 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:210: DOTDOT
                 {
                 mDOTDOT(); 
+
 
                 }
                 break;
@@ -3110,12 +3399,14 @@ public class CMISLexer extends Lexer {
                 {
                 mEQUALS(); 
 
+
                 }
                 break;
             case 38 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:224: TILDA
                 {
                 mTILDA(); 
+
 
                 }
                 break;
@@ -3124,12 +3415,14 @@ public class CMISLexer extends Lexer {
                 {
                 mNOTEQUALS(); 
 
+
                 }
                 break;
             case 40 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:240: GREATERTHAN
                 {
                 mGREATERTHAN(); 
+
 
                 }
                 break;
@@ -3138,12 +3431,14 @@ public class CMISLexer extends Lexer {
                 {
                 mLESSTHAN(); 
 
+
                 }
                 break;
             case 42 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:261: GREATERTHANOREQUALS
                 {
                 mGREATERTHANOREQUALS(); 
+
 
                 }
                 break;
@@ -3152,12 +3447,14 @@ public class CMISLexer extends Lexer {
                 {
                 mLESSTHANOREQUALS(); 
 
+
                 }
                 break;
             case 44 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:298: COLON
                 {
                 mCOLON(); 
+
 
                 }
                 break;
@@ -3166,12 +3463,14 @@ public class CMISLexer extends Lexer {
                 {
                 mDOUBLE_QUOTE(); 
 
+
                 }
                 break;
             case 46 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:317: DECIMAL_INTEGER_LITERAL
                 {
                 mDECIMAL_INTEGER_LITERAL(); 
+
 
                 }
                 break;
@@ -3180,6 +3479,7 @@ public class CMISLexer extends Lexer {
                 {
                 mFLOATING_POINT_LITERAL(); 
 
+
                 }
                 break;
             case 48 :
@@ -3187,12 +3487,14 @@ public class CMISLexer extends Lexer {
                 {
                 mID(); 
 
+
                 }
                 break;
             case 49 :
                 // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:1:367: WS
                 {
                 mWS(); 
+
 
                 }
                 break;
@@ -3278,8 +3580,8 @@ public class CMISLexer extends Lexer {
         "\1\43\1\uffff\1\43\3\uffff\2\43\3\uffff\2\43\1\uffff\5\43\1\uffff"+
         "\3\43\1\uffff\1\43\2\uffff";
     static final String DFA19_maxS =
-        "\1\176\1\uffff\15\172\4\uffff\1\71\2\uffff\1\76\1\75\2\uffff\1"+
-        "\71\2\145\2\uffff\2\172\2\uffff\24\172\16\uffff\1\145\3\172\1\uffff"+
+        "\1\176\1\uffff\15\172\4\uffff\1\71\2\uffff\1\76\1\75\2\uffff\1\71"+
+        "\2\145\2\uffff\2\172\2\uffff\24\172\16\uffff\1\145\3\172\1\uffff"+
         "\7\172\2\uffff\3\172\1\uffff\1\172\1\uffff\4\172\1\uffff\5\172\3"+
         "\uffff\13\172\1\uffff\7\172\1\uffff\1\172\1\uffff\3\172\2\uffff"+
         "\3\172\1\uffff\1\172\1\uffff\1\172\1\uffff\1\172\3\uffff\2\172\3"+
@@ -3319,16 +3621,16 @@ public class CMISLexer extends Lexer {
             "\2\41\13\uffff\13\41\6\uffff\15\41\1\55\3\41\1\56\2\41\1\54"+
             "\5\41\4\uffff\1\41\1\uffff\15\41\1\55\3\41\1\56\2\41\1\54\5"+
             "\41",
-            "\2\41\13\uffff\13\41\6\uffff\7\41\1\57\22\41\4\uffff\1\41"+
-            "\1\uffff\7\41\1\57\22\41",
+            "\2\41\13\uffff\13\41\6\uffff\7\41\1\57\22\41\4\uffff\1\41\1"+
+            "\uffff\7\41\1\57\22\41",
             "\2\41\13\uffff\13\41\6\uffff\16\41\1\60\5\41\1\61\5\41\4\uffff"+
             "\1\41\1\uffff\16\41\1\60\5\41\1\61\5\41",
             "\2\41\13\uffff\13\41\6\uffff\16\41\1\62\13\41\4\uffff\1\41"+
             "\1\uffff\16\41\1\62\13\41",
-            "\2\41\13\uffff\13\41\6\uffff\30\41\1\63\1\41\4\uffff\1\41"+
-            "\1\uffff\30\41\1\63\1\41",
-            "\2\41\13\uffff\13\41\6\uffff\4\41\1\64\25\41\4\uffff\1\41"+
-            "\1\uffff\4\41\1\64\25\41",
+            "\2\41\13\uffff\13\41\6\uffff\30\41\1\63\1\41\4\uffff\1\41\1"+
+            "\uffff\30\41\1\63\1\41",
+            "\2\41\13\uffff\13\41\6\uffff\4\41\1\64\25\41\4\uffff\1\41\1"+
+            "\uffff\4\41\1\64\25\41",
             "\2\41\13\uffff\13\41\6\uffff\10\41\1\65\10\41\1\66\10\41\4"+
             "\uffff\1\41\1\uffff\10\41\1\65\10\41\1\66\10\41",
             "",
@@ -3483,21 +3785,21 @@ public class CMISLexer extends Lexer {
             "\41\1\uffff\21\41\1\u0081\10\41",
             "\2\41\13\uffff\13\41\6\uffff\21\41\1\u0082\10\41\4\uffff\1"+
             "\41\1\uffff\21\41\1\u0082\10\41",
-            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u0083\25\41\4\uffff\1"+
-            "\41\1\uffff\4\41\1\u0083\25\41",
+            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u0083\25\41\4\uffff\1\41"+
+            "\1\uffff\4\41\1\u0083\25\41",
             "",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
             "\41",
-            "\2\41\13\uffff\13\41\6\uffff\1\u0085\31\41\4\uffff\1\41\1"+
-            "\uffff\1\u0085\31\41",
+            "\2\41\13\uffff\13\41\6\uffff\1\u0085\31\41\4\uffff\1\41\1\uffff"+
+            "\1\u0085\31\41",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
             "\41",
-            "\2\41\13\uffff\13\41\6\uffff\22\41\1\u0087\7\41\4\uffff\1"+
-            "\41\1\uffff\22\41\1\u0087\7\41",
+            "\2\41\13\uffff\13\41\6\uffff\22\41\1\u0087\7\41\4\uffff\1\41"+
+            "\1\uffff\22\41\1\u0087\7\41",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
             "\41",
-            "\2\41\13\uffff\13\41\6\uffff\23\41\1\u0089\6\41\4\uffff\1"+
-            "\41\1\uffff\23\41\1\u0089\6\41",
+            "\2\41\13\uffff\13\41\6\uffff\23\41\1\u0089\6\41\4\uffff\1\41"+
+            "\1\uffff\23\41\1\u0089\6\41",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
             "\41",
             "",
@@ -3508,8 +3810,8 @@ public class CMISLexer extends Lexer {
             "\41",
             "\2\41\13\uffff\13\41\6\uffff\13\41\1\u008d\16\41\4\uffff\1"+
             "\41\1\uffff\13\41\1\u008d\16\41",
-            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u008e\25\41\4\uffff\1"+
-            "\41\1\uffff\4\41\1\u008e\25\41",
+            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u008e\25\41\4\uffff\1\41"+
+            "\1\uffff\4\41\1\u008e\25\41",
             "",
             "",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
@@ -3522,32 +3824,32 @@ public class CMISLexer extends Lexer {
             "\2\41\13\uffff\13\41\6\uffff\10\41\1\u0092\21\41\4\uffff\1"+
             "\41\1\uffff\10\41\1\u0092\21\41",
             "",
-            "\2\41\13\uffff\13\41\6\uffff\23\41\1\u0093\6\41\4\uffff\1"+
-            "\41\1\uffff\23\41\1\u0093\6\41",
+            "\2\41\13\uffff\13\41\6\uffff\23\41\1\u0093\6\41\4\uffff\1\41"+
+            "\1\uffff\23\41\1\u0093\6\41",
             "",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
             "\41",
             "",
             "",
             "",
-            "\2\41\13\uffff\13\41\6\uffff\3\41\1\u0095\26\41\4\uffff\1"+
-            "\41\1\uffff\3\41\1\u0095\26\41",
-            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u0096\25\41\4\uffff\1"+
-            "\41\1\uffff\4\41\1\u0096\25\41",
+            "\2\41\13\uffff\13\41\6\uffff\3\41\1\u0095\26\41\4\uffff\1\41"+
+            "\1\uffff\3\41\1\u0095\26\41",
+            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u0096\25\41\4\uffff\1\41"+
+            "\1\uffff\4\41\1\u0096\25\41",
             "",
             "",
             "",
             "\2\41\13\uffff\13\41\6\uffff\15\41\1\u0097\14\41\4\uffff\1"+
             "\41\1\uffff\15\41\1\u0097\14\41",
-            "\2\41\13\uffff\13\41\6\uffff\1\u0098\31\41\4\uffff\1\41\1"+
-            "\uffff\1\u0098\31\41",
+            "\2\41\13\uffff\13\41\6\uffff\1\u0098\31\41\4\uffff\1\41\1\uffff"+
+            "\1\u0098\31\41",
             "",
-            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u0099\25\41\4\uffff\1"+
-            "\41\1\uffff\4\41\1\u0099\25\41",
+            "\2\41\13\uffff\13\41\6\uffff\4\41\1\u0099\25\41\4\uffff\1\41"+
+            "\1\uffff\4\41\1\u0099\25\41",
             "\2\41\13\uffff\13\41\6\uffff\32\41\4\uffff\1\41\1\uffff\32"+
             "\41",
-            "\2\41\13\uffff\13\41\6\uffff\22\41\1\u009b\7\41\4\uffff\1"+
-            "\41\1\uffff\22\41\1\u009b\7\41",
+            "\2\41\13\uffff\13\41\6\uffff\22\41\1\u009b\7\41\4\uffff\1\41"+
+            "\1\uffff\22\41\1\u009b\7\41",
             "\2\41\13\uffff\13\41\6\uffff\14\41\1\u009c\15\41\4\uffff\1"+
             "\41\1\uffff\14\41\1\u009c\15\41",
             "\2\41\13\uffff\13\41\6\uffff\21\41\1\u009d\10\41\4\uffff\1"+

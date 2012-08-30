@@ -657,7 +657,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco JCR TCK"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco JCR TCK ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco JCR TCK ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
@@ -1361,7 +1361,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Share"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco Share ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco Share ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
@@ -1531,7 +1531,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Web Editor"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco Web Editor ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco Web Editor ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
@@ -1697,7 +1697,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Sample Customer Site"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco Sample Customer Site ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco Sample Customer Site ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
@@ -1780,7 +1780,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Repository"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco Repository ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco Repository ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
@@ -1973,7 +1973,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Sample Website"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco Sample Website ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco Sample Website ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
@@ -2351,7 +2351,7 @@
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Web Quick Start"/>
              <attribute name="Specification-Version" value="${version.number}"/>
-             <attribute name="Implementation-Title" value="Alfresco Web Quick Start ${version.edition}"/>
+             <attribute name="Implementation-Title" value="Alfresco Web Quick Start ${file.name.codeline}"/>
              <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>

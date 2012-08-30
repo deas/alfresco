@@ -29,7 +29,8 @@
     * YUI Library aliases
     */
    var Dom = YAHOO.util.Dom,
-       Event = YAHOO.util.Event;
+       Event = YAHOO.util.Event,
+       Bubbling = YAHOO.Bubbling;
 
    /**
     * Alfresco Slingshot aliases
@@ -47,7 +48,8 @@
    {
       Alfresco.AdvancedSearch.superclass.constructor.call(this, "Alfresco.AdvancedSearch", htmlId, ["button", "container"]);
       
-      YAHOO.Bubbling.on("beforeFormRuntimeInit", this.onBeforeFormRuntimeInit, this);
+      Bubbling.on("beforeFormRuntimeInit", this.onBeforeFormRuntimeInit, this);
+      Bubbling.on("afterFormRuntimeInit", this.onAfterFormRuntimeInit, this);
       
       return this;
    };
@@ -298,6 +300,9 @@
                   }
                }
             }
+
+            Bubbling.fire("formContentsUpdated");
+
          }
       },
       
@@ -343,7 +348,19 @@
             this.repopulateCurrentForm();
          }
       },
-      
+
+      /**
+       * Event handler called when the "afterFormRuntimeInit" event is received
+       */
+      onAfterFormRuntimeInit: function ADVSearch_onAfterFormRuntimeInit(layer, args)
+      {
+         // extract the current form runtime - so we can reference it later
+         this.currentForm.runtime = args[1].runtime;
+         var form = (Dom.get(this.currentForm.runtime.formId));
+         Event.removeListener(form, "submit");
+         form.setAttribute("onsubmit", "return false;");
+      },
+
       /**
        * Search text box ENTER key event handler
        * 

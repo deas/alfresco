@@ -225,6 +225,12 @@
             <value>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</value>
             <value>application/vnd.openxmlformats-officedocument.presentationml.presentation</value>
             <value>application/vnd.openxmlformats-officedocument.wordprocessingml.document</value>
+            <value>application/vnd.ms-word.document.macroenabled.12</value>
+            <value>application/vnd.ms-word.template.macroEnabled.12</value>
+            <value>application/vnd.ms-excel.sheet.macroEnabled.12</value>
+            <value>application/vnd.ms-excel.template.macroEnabled.12</value>
+            <value>application/vnd.ms-powerpoint.presentation.macroEnabled.12</value>
+            <value>application/vnd.ms-powerpoint.template.macroEnabled.12</value>
          </list>
       </property>
    </bean>
