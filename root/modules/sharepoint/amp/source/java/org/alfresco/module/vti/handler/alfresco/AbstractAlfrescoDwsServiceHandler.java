@@ -346,9 +346,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         dwsData.setDescription(nodeService.getProperty(dwsInfo.getNodeRef(), ContentModel.PROP_DESCRIPTION).toString());
 
         // setting the Documents list for current document workspace site
-        List<DocumentBean> dwsContent = new ArrayList<DocumentBean>();
-
-        doGetDwsContentRecursive(dwsInfo, dwsContent);
+        List<DocumentBean> dwsContent = doGetDwsDocuments(dwsInfo);
         dwsData.setDocumentsList(dwsContent);
         
         // setting the Links list for current document workspace site
@@ -795,6 +793,14 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
      */
     protected abstract List<LinkBean> doGetDwsLinks(FileInfo fileInfo);
 
+    /**
+     * Get the document list
+     * 
+     * @param fileInfo document workspace site file info ({@link FileInfo})
+     * @return list of DocumentBean objects
+     */
+    protected abstract List<DocumentBean> doGetDwsDocuments(FileInfo fileInfo);
+    
     /**
      * Get type of alfresco document workspace site (Folder or Site)
      * 

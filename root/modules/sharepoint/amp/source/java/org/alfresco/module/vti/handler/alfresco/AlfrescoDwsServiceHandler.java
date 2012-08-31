@@ -346,6 +346,17 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     }
 
     /**
+     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doGetDwsDocuments(FileInfo)
+     */
+    @Override
+    protected List<DocumentBean> doGetDwsDocuments(FileInfo fileInfo)
+    {
+        List<DocumentBean> dwsContent = new ArrayList<DocumentBean>();
+        doGetDwsContentRecursive(fileInfo, dwsContent);
+        return dwsContent;
+    }
+
+    /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doListDwsMembers(org.alfresco.service.cmr.model.FileInfo)
      */
     public List<MemberBean> doListDwsMembers(FileInfo dwsFileInfo)
