@@ -398,6 +398,7 @@
          <!-- Download document -->
          <action id="document-download" type="link" label="actions.document.download">
             <param name="href">{downloadUrl}</param>
+            <evaluator>evaluator.doclib.action.downloadBrowser</evaluator>
          </action>
 
          <!-- View document in browser -->

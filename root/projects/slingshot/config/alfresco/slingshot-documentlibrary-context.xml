@@ -213,6 +213,9 @@
    <bean id="evaluator.doclib.action.notEditBrowser" parent="evaluator.doclib.action.notBrowser">
       <property name="regex" value=".*iPad;.*Safari/.*" />
    </bean>
+   <bean id="evaluator.doclib.action.downloadBrowser" parent="evaluator.doclib.action.notBrowser">
+      <property name="regex" value=".*iPad;.*Safari/.*" />
+   </bean>
    <bean id="evaluator.doclib.action.notUploadBrowser" parent="evaluator.doclib.action.notBrowser">
       <property name="regex" value=".*iPad; CPU OS 5_.*Safari/.*" />
    </bean>
