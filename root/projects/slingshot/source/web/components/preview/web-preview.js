@@ -276,7 +276,12 @@
             }
 
             // Tell user that the content can't be displayed
-            var message = this.msg("label.noPreview", this.getContentUrl(true));
+            var noPreviewLabel = "label.noPreview";
+            if (YAHOO.env.ua.ios)
+            {
+               noPreviewLabel = "label.noPreview.ios";
+            }
+            var message = this.msg(noPreviewLabel, this.getContentUrl(true));
             for (i = 0, il = messages.length; i < il; i++)
             {
                message += '<br/>' + messages[i];
