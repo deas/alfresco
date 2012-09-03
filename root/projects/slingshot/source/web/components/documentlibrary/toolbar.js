@@ -308,6 +308,13 @@
                var li = document.createElement("li");
                li.innerHTML = '<a href="#"><span>' + this.msg("menu.create-content.by-template-node") + '</span></a>';
 
+               // Make sure to stop clicks on the sub menu link to close the entire menu
+               YAHOO.util.Event.addListener(Selector.query("a", li, true), "click", function(e)
+               {
+                  Event.preventDefault(e);
+                  Event.stopEvent(e);
+               });
+
                // Create placeholder menu
                var div = document.createElement("div");
                div.innerHTML = '<div class="bd"><ul></ul></div>';
