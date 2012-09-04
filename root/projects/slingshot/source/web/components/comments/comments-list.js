@@ -246,7 +246,8 @@
          // register the submitButton
          var submitButton = new YAHOO.widget.Button(rowId + "-submit",
          {
-            type: "submit"
+            type: "submit",
+            disabled: true
          });
          submitButton.set("label", this.msg(editMode ? 'button.save' : 'button.addComment'));
 
@@ -299,7 +300,7 @@
          var commentForm = new Alfresco.forms.Form(formId);
          commentForm.setShowSubmitStateDynamically(true, false);
          commentForm.addValidation(rowId + "-content", Alfresco.forms.validation.mandatory, null);
-         commentForm.setSubmitElements(this.widgets.submitButton);
+         commentForm.setSubmitElements(submitButton);
          commentForm.setAjaxSubmitMethod(editMode ? Alfresco.util.Ajax.PUT : Alfresco.util.Ajax.POST);
          commentForm.setAJAXSubmit(true,
          {
