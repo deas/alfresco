@@ -141,6 +141,8 @@ public class MimetypeMap implements MimetypeService
 
     public static final String MIMETYPE_OUTLOOK_MSG = "application/vnd.ms-outlook";
 
+    public static final String MIMETYPE_VISIO = "application/vnd.visio";
+
     // Adobe
     public static final String MIMETYPE_APPLICATION_ILLUSTRATOR = "application/illustrator";
 

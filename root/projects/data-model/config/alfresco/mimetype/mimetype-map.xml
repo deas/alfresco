@@ -108,7 +108,7 @@
          <mimetype mimetype="application/acp" display="Alfresco Content Package">
             <extension>acp</extension>
          </mimetype>
-         <mimetype mimetype="application/visio" display="Microsoft Visio">
+         <mimetype mimetype="application/vnd.visio" display="Microsoft Visio">
             <extension>vsd</extension>
          </mimetype>
          <mimetype mimetype="application/vnd.adobe.xdp+xml" display="Adobe Acrobat XML Data Package">
