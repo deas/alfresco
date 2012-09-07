@@ -203,7 +203,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-install-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>2.4</version>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -219,7 +219,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.5.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -239,11 +239,11 @@
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12.2</version>
+                <version>2.12.3</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.2</version>
+                <version>2.12.3</version>
                 <configuration>
                     <!-- To prevent tests alfresco.log to be created in project roots and bother while synchronizing with SCM -->
                     <workingDirectory>${project.build.directory}</workingDirectory>
@@ -345,7 +345,7 @@
         </plugin>
         <plugin>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.5</version>
+            <version>2.5.1</version>
             <configuration>
                 <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
             </configuration>
@@ -365,7 +365,7 @@
         </plugin>
         <plugin>
             <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.12.2</version>
+            <version>2.12.3</version>
         </plugin>
         <plugin>
             <artifactId>maven-pmd-plugin</artifactId>
@@ -586,47 +586,6 @@
                         </execution>
                     </executions>    
                 </plugin>                            
-            </plugins>
-        </build>
-    </profile>
-
-       <!--  
-        | Profile to enable explicitly during release / deploy to attach sources/javadocs
-        | Disabled by default to keep the build quick. Add here stuff like pgp signatures, etc.
-        -->
-    <profile>
-        <id>release</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals><goal>jar</goal></goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                     <artifactId>maven-javadoc-plugin</artifactId>
-                     <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals><goal>jar</goal></goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </build>
     </profile>
