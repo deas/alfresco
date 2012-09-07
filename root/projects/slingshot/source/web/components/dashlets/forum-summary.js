@@ -114,8 +114,9 @@
          // Load preferences
          var prefs = this.services.preferences.get();
          
-         for each(var filter in this.options.filters)
+         for(var i = 0; i < this.options.filters.length; i++)
          {
+            var filter = this.options.filters[i];
             var button = Alfresco.util.createYUIButton(this, filter.name, this.onFilterChanged,
             {
                type: "menu",
@@ -127,8 +128,9 @@
             
             if (selectedOption !== null)
             {
-               for each(var option in filter.options)
+               for(var j = 0; j < filter.options.length; j++)
                {
+                  var option = filter.options[j];
                   if(option.value == selectedOption)
                   {
                      button.set("label", this.msg("filter." + filter.name + "." + option.label));
@@ -272,8 +274,9 @@
       {
          var parameters = "";
          
-         for each(filter in this.options.filters)
+         for(var i = 0; i < this.options.filters.length; i++)
          {
+            var filter = this.options.filters[i];
             var filterValue = this.options.filterPreferences[PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name];
             parameters += filter.name + "=" + filterValue + "&";
          }
@@ -315,7 +318,7 @@
             var preferences = this.services.preferences;
             preferences.set(filterPrefName, menuItem.value);
             
-            button.set("label", menuItem.element.textContent);
+            button.set("label", menuItem.srcElement.text);
             button.value = menuItem.value;
             
             //Finally update the topics list
