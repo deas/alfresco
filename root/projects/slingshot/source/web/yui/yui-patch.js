@@ -162,7 +162,7 @@
       var Event = YAHOO.util.Event;
 
       // Fake an object that pretends to be an event so we can set it's pageX & pageY coords
-      var createMouseEvent = function(e)
+      var createMouseEvent = function(e, preventDefault, stopPropagation)
       {
          var event = {
             type: e.type,
@@ -173,20 +173,28 @@
          };
 
          // Make sure the event can stop bubbling
-         var orgEvent = e;
-         if (e.stopPropagation)
-         {
-            event.stopPropagation = function()
-            {
-               orgEvent.stopPropagation();
-            };
-         }
+         var orgEvent = e,
+            pd = YAHOO.lang.isBoolean(preventDefault) ? preventDefault : true,
+            sp = YAHOO.lang.isBoolean(stopPropagation) ? stopPropagation : true;
          if (e.preventDefault)
          {
             event.preventDefault = function()
             {
-               orgEvent.preventDefault();
+               if (pd)
+               {
+                  orgEvent.preventDefault();
+               }
             }
+         }
+         if (e.stopPropagation)
+         {
+            event.stopPropagation = function()
+            {
+               if (sp)
+               {
+               orgEvent.stopPropagation();
+               }
+            };
          }
 
          // Android always sets the pageY but the pageX is always 0, pick it from the targetTouches instead
@@ -233,6 +241,15 @@
             this._lastTouchPageY = event.pageY;
          };
 
+         // Add in a "proxy" mouseup listener
+         var original_handleMouseUp = this.handleMouseUp;
+         this.handleMouseUp = function(e)
+         {
+            // Create a faked event so that we can make sure event propagation isn't stopped
+            var event = createMouseEvent(e, false, false);
+            original_handleMouseUp.call(this, event);
+         };
+
          // Add our own proxy touch listeners
          Event.on(document, "touchend", this.handleMouseUp, this, true);
          Event.on(document, "touchmove", this.handleMouseMove, this, true);
@@ -245,7 +262,7 @@
 
             // Stop listening to mouse events
             Event.removeListener(s, "mouseup",  this.handleMouseUp);
-            Event.removeListener(s, "mouseover",  this.handleMouseMove)
+            Event.removeListener(s, "mouseover",  this.handleMouseMove);
 
             // Start listening to touch events
             Event.on(s, "touchend",  this.handleMouseUp, this, true);
@@ -260,7 +277,7 @@
             if (isDrop)
             {
                // Create a fake event object with all attributes the drag drop classes seem to use
-               event = createMouseEvent(e);
+               event = createMouseEvent(e, false, false);
                event.pageX = this._lastTouchPageX;
                event.pageY = this._lastTouchPageY;
             }
@@ -302,7 +319,7 @@
          YAHOO.util.DragDrop.prototype.handleMouseDown = function(e, oDD)
          {
             // Create a faked event with pageX and pageY attributes to keep yui happy
-            var event = createMouseEvent(e);
+            var event = createMouseEvent(e, false, false);
 
             // Make sure to save the touch coords since the "touchend" event always have pageX and pageY set to 0
             this._lastTouchPageX = event.pageX;
