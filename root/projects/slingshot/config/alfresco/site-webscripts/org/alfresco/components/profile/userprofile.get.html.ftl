@@ -16,7 +16,7 @@
    <@inlineScript group="profile">
       (function()
       {
-         Alfresco.util.renderRelativeTime("${el}-body")
+         Alfresco.util.renderRelativeTime("${el}-body");
       })();
    </@>
 </@>

@@ -10,7 +10,7 @@
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      Alfresco.util.renderRelativeTime("${args.htmlid}")
+      Alfresco.util.renderRelativeTime("${args.htmlid}");
    </@>
 </@>
 
