@@ -1,4 +1,16 @@
 <#include "../form/form.dependencies.inc">
+<#assign jobName = page.url.args.jobName!"">
+<#assign mode = (jobName = "")?string("create", "edit")>
+<#assign action = url.context + "/proxy/alfresco/api/replication-definition" + (jobName = "")?string("s", "/" + jobName?url)>
+<#assign intervalPeriods =
+{
+   "Second": msg("option.seconds"),
+   "Minute": msg("option.minutes"),
+   "Hour": msg("option.hours"),
+   "Day": msg("option.days"),
+   "Week": msg("option.weeks"),
+   "Month": msg("option.months")
+}>
 
 <@markup id="css" >
    <#-- CSS Dependencies -->
@@ -11,6 +23,7 @@
    <@script type="text/javascript" src="${url.context}/res/components/admin/replication-job.js" group="admin"/>
 </@>
 
+
 <@markup id="widgets">
    <#if mode == "edit" && !(jobDetail.name??)>
       <div class="error">${msg("message.no-job-details", jobName)}</div>
@@ -21,18 +34,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign jobName = page.url.args.jobName!"">
-      <#assign mode = (jobName = "")?string("create", "edit")>
-      <#assign action = url.context + "/proxy/alfresco/api/replication-definition" + (jobName = "")?string("s", "/" + jobName?url)>
-      <#assign intervalPeriods =
-      {
-         "Second": msg("option.seconds"),
-         "Minute": msg("option.minutes"),
-         "Hour": msg("option.hours"),
-         "Day": msg("option.days"),
-         "Week": msg("option.weeks"),
-         "Month": msg("option.months")
-      }>
+      
       <#if mode == "edit" && !(jobDetail.name??)>
          <div class="error">${msg("message.no-job-details", jobName)}</div>
       <#else>

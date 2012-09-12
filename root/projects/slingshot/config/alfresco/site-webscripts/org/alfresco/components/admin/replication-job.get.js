@@ -28,14 +28,24 @@ function main()
       }
    }
    
+   var scheduleStart = "";
+   if (jobDetail && jobDetail.schedule && jobDetail.schedule.start && jobDetail.schedule.start.iso8601)
+   {
+      scheduleStart = jobDetail.schedule.start.iso8601;
+   }
+   var targetName = "";
+   if (jobDetail.targetName)
+   {
+      targetName = jobDetail.targetName;
+   }
    var replicationJob = {
       id: "ReplicationJob",
       name: "Alfresco.component.ReplicationJob",
       options : {
          jobName : jobName,
          payload : payload,
-         targetName : jobDetail.targetName,
-         scheduleStart :jobDetail.schedule.start.iso8601
+         targetName : targetName,
+         scheduleStart : scheduleStart
       },
    };
    
