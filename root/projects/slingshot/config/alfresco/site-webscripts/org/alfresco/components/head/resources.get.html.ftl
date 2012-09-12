@@ -75,7 +75,7 @@
       Alfresco.constants.PROXY_FEED_URI = window.location.protocol + "//" + window.location.host + "${url.context}/proxy/alfresco-feed/";
       Alfresco.constants.THEME = "${theme}";
       Alfresco.constants.URL_CONTEXT = "${url.context}/";
-      Alfresco.constants.URL_RESCONTEXT = "${url.context}/";
+      Alfresco.constants.URL_RESCONTEXT = "${url.context}/res/";
       Alfresco.constants.URL_PAGECONTEXT = "${url.context}/page/";
       Alfresco.constants.URL_SERVICECONTEXT = "${url.context}/service/";
       Alfresco.constants.URL_FEEDSERVICECONTEXT = "${url.context}/feedservice/";
