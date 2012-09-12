@@ -140,7 +140,8 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
     //  Close the file
 
     dbCtx.getFileLoader().closeFile(sess, file);
-
+    file.setClosed( true);
+    
     //  Access the JDBC file
     
     DBNetworkFile jdbcFile = null;
@@ -182,6 +183,23 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
         else if ( Debug.EnableInfo && hasDebug())
         	Debug.println("** File close, file=" + file.getFullName() + ", openCount=" + fstate.getOpenCount());
         
+        // Check if there is an oplock on the file
+        
+        if ( jdbcFile.hasOpLock()) {
+        	
+        	// Release the oplock
+        	
+            OpLockInterface flIface = (OpLockInterface) this;
+            OpLockManager oplockMgr = flIface.getOpLockManager(sess, tree);
+            
+            oplockMgr.releaseOpLock( jdbcFile.getOpLock().getPath());
+
+            //  DEBUG
+            
+            if ( Debug.EnableInfo && hasDebug())
+              Debug.println("Released oplock for closed file, file=" + jdbcFile.getFullName());
+        }
+
         // Clear the access token
         
         file.setAccessToken( null);
@@ -1222,6 +1240,8 @@ public class DBDiskDriver implements DiskInterface, DiskSizeInterface, DiskVolum
 	
 	    jdbcFile.setFileDetails(finfo);
 	    jdbcFile.setFileState( dbCtx.getStateCache().getFileStateProxy( fstate));
+	    
+	    jdbcFile.openFile( false);
 	        
 	    // Set the granted file access
 	    

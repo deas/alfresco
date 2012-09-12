@@ -1066,6 +1066,21 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			return;
 		}
 
+		// Check if there is an existing data session
+		
+		if ( m_dataSess != null) {
+			
+			// DEBUG
+			
+			if ( Debug.EnableInfo && hasDebug(DBG_DATAPORT))
+				debugPrintln("Releasing existing data session, sess=" + m_dataSess);
+			
+			// Release the current data session
+			
+			getFTPServer().releaseDataSession(m_dataSess);
+			m_dataSess = null;
+		}
+		
 		// Create an active data session, the actual socket connection will be made later
 
 		m_dataSess = getFTPServer().allocateDataSession(this, addr, port);
@@ -1096,6 +1111,21 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			return;
 		}
 
+		// Check if there is an existing data session
+		
+		if ( m_dataSess != null) {
+			
+			// DEBUG
+			
+			if ( Debug.EnableInfo && hasDebug(DBG_DATAPORT))
+				debugPrintln("Releasing existing data session, sess=" + m_dataSess);
+			
+			// Release the current data session
+			
+			getFTPServer().releaseDataSession(m_dataSess);
+			m_dataSess = null;
+		}
+		
 		// Create a passive data session
 
 		try {
@@ -1346,6 +1376,12 @@ public class FTPSrvSession extends SrvSession implements Runnable {
             }
         }
         catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)) {
+                debugPrintln(" Error reading file list, " + ex.toString());
+            }
+            // always need logging - this is unexpected 
+            debugPrintln(ex);
+
             // Failed to send file listing
             sendFTPResponse(451, "Error reading file list");
     	}
@@ -1447,6 +1483,12 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			sendFTPResponse(226, "Closing data connection");
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+            
+                debugPrintln(" Error reading file list, " + ex.toString());
+            }
+            debugPrintln(ex);
+            
 
 			// Failed to send file listing
 
@@ -1591,6 +1633,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			sendFTPResponse(226, "Closing data connection");
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error reading file list, " + ex.toString());
+            }
+            debugPrintln(ex);
+            
 
 			// Failed to send file listing
 
@@ -1984,6 +2031,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			dataSock = m_dataSess.getSocket();
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error reading file list, " + ex.toString());
+            }
+            debugPrintln(ex);
 		}
 
 		if ( dataSock == null) {
@@ -2108,8 +2159,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 			// DEBUG
 
-			if ( Debug.EnableInfo && hasDebug(DBG_ERROR))
+			if ( Debug.EnableInfo && hasDebug(DBG_ERROR)) {
 				debugPrintln(" Error during transfer, " + ex.toString());
+				debugPrintln(ex);
+			}
+			
 
 			// Close the data socket to the client
 
@@ -2136,7 +2190,6 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 		catch (Exception ex) {
 
 			// DEBUG
-
 			if ( Debug.EnableInfo && hasDebug(DBG_ERROR))
 				debugPrintln(" Error during transfer, " + ex.toString());
 
@@ -2451,8 +2504,9 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 
 			// DEBUG
 
-			if ( Debug.EnableInfo && hasDebug(DBG_ERROR))
+			if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
 				debugPrintln(" Error during transfer, " + ex.toString());
+			}
 			debugPrintln( ex);
 
 			// Indicate that there was an error during transmission of the file data
@@ -2570,6 +2624,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error deleting file, " + ex.toString());
+            }
+            debugPrintln(ex);
 			sendFTPResponse(450, "File action not taken");
 			return;
 		}
@@ -2662,6 +2720,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error renaming file from, " + ex.toString());
+            }
+            debugPrintln(ex);
 			sendFTPResponse(450, "File action not taken");
 			return;
 		}
@@ -2770,6 +2832,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error rename to, " + ex.toString());
+            }
+            debugPrintln(ex);
 			sendFTPResponse(450, "File action not taken");
 			return;
 		}
@@ -2873,6 +2939,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error creating directory, " + ex.toString());
+            }
+            debugPrintln(ex);
 			sendFTPResponse(450, "Failed to create directory");
 			return;
 		}
@@ -2975,6 +3045,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error deleting directory, " + ex.toString());
+            }
+            debugPrintln(ex);
 			sendFTPResponse(550, "Failed to delete directory");
 			return;
 		}
@@ -3062,6 +3136,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 				debugPrintln("Mlst ftp=" + ftpPath.getFTPPath() + ", share=" + ftpPath.getShareName() + ", info=" + finfo);
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error retrieving file information, " + ex.toString());
+            }
+            debugPrintln(ex);
 			sendFTPResponse(550, "Error retrieving file information");
 		}
 	}
@@ -3209,6 +3287,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 		catch (Exception ex) {
 
 			// Failed to send file listing
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error reading file list, " + ex.toString());
+            }
+            debugPrintln(ex);
+            
 
 			sendFTPResponse(451, "Error reading file list");
 		}
@@ -3581,6 +3664,11 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 						+ finfo.getSize());
 		}
 		catch (Exception ex) {
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Error retriving file size, " + ex.toString());
+            }
+            debugPrintln(ex);
+            
 			sendFTPResponse(550, "Error retrieving file size");
 		}
 	}
@@ -3742,7 +3830,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
             }
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            if ( Debug.EnableInfo && hasDebug(DBG_ERROR)){
+                debugPrintln(" Faile to negotiate SSL/TLS, " + ex.toString());
+            }
+                debugPrintln(ex);
             
             m_sslEngine = null;
             sendFTPResponse( 421, "Failed to negotiate SSL/TLS");

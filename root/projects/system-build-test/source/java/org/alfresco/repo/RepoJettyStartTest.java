@@ -73,10 +73,11 @@ public class RepoJettyStartTest extends TestCase
             ssl_connector.setPort(8443);
             ssl_connector.setHost(JETTY_LOCAL_IP);
             ssl_connector.setKeystoreType("JCEKS");
-            ssl_connector.setKeystore("keystore/ssl.keystore");
+            ssl_connector.setKeystore("keystore/ssl.repo.client.keystore");
+            
             ssl_connector.setKeyPassword("kT9X6oe68t");
             ssl_connector.setTruststoreType("JCEKS");
-            ssl_connector.setTruststore("keystore/ssl.truststore");
+            ssl_connector.setTruststore("keystore/ssl.repo.client.truststore");
             ssl_connector.setTrustPassword("kT9X6oe68t");
             ssl_connector.setAllowRenegotiate(true);
             ssl_connector.setNeedClientAuth(true);
@@ -103,7 +104,7 @@ public class RepoJettyStartTest extends TestCase
            
             HashLoginService loginService = new HashLoginService();
             loginService.setName("Repository");
-            loginService.putUser("CN=Alfresco Repository Client, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB", new Password("jyw8x/dn3NZEy362NIp9A2wjBYfOV96vrod6toGv1+RvcRM0I4UXpZpSQjr8T5ZO3URFb70KIaVnY0aayuuktmqFwMJrzZaBw7eDyWoRbKh1l+77myJcYKohq8csZml+X2sCn7YXbyHBWbSAERJR3iZ7NVIjs+vI20whOcrCriY="), new String[]{"repoclient"});
+            loginService.putUser("CN=Alfresco Repository Client, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB", new Password("2ieQnz2ZOA69gNmTJYBeYrZcqyJnY46maii7LsI9gjr53KJ8/+TZSxCyLXD7mwG28aEU5VErcA/KS4wCHHA+SARkNLRcnRlaZkd0QGWlFGnYFUNZnlU1fpJQ4lw2JDlsjU3LBYestw90UvAJwAQ5DkNjGaR2egKhOJ2fP93bfgU="), new String[]{"repoclient"});
             sh.setLoginService(loginService);
             
             webAppContext.setWar(warPath);

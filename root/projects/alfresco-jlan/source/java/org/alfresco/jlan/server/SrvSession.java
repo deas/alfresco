@@ -590,4 +590,23 @@ public abstract class SrvSession {
 	{
 	    this.driverState = driverState;
 	}
+
+	/**
+	 * Set the Driver State.   A place for the content driver to 
+	 * store state in the session.
+	 * @param driverState
+	 */
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		
+		str.append("[Session id=");
+		str.append( getSessionId());
+		str.append( ",unique=");
+		str.append( getUniqueId());
+		str.append(",proto=");
+		str.append( getProtocolName());
+		str.append( "]");
+		
+		return str.toString();
+	}
 }

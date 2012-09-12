@@ -1443,30 +1443,6 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             // ignore
         }
 
-        // fix up for unexpanded locales - they do not need expansaion just replacement
-
-        for (int j = 0; j < list.size(); j++)
-        {
-            org.apache.lucene.analysis.Token test = list.get(j);
-            if(test.termLength() > 0)
-            {
-                if(test.termBuffer()[0] == '\u0000')
-                {
-                    test.termBuffer()[0] = '{';
-                    TERM : for(int i = 0; i < test.termLength(); i++)
-                    {
-                        if(test.termBuffer()[i] == '\u0000')
-                        {
-                            test.termBuffer()[i] = '}';
-                            break TERM;
-                        }
-                    }
-                    // boundary not found switch back ...
-                    test.termBuffer()[0] = '\u0000';
-                }
-            }
-        }
-
         // find the positions of any escaped * and ? and ignore them
 
         Set<Integer> wildcardPoistions = getWildcardPositions(testText);
@@ -4983,20 +4959,22 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             if (propertyQName.equals(ContentModel.PROP_USER_USERNAME) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME))
             {
-                // nasty work around for solr support for user and group look up as we can not support lowercased identifiers ion the model
+                // nasty work around for solr support for user and group look up as we can not support lowercased identifiers in the model
                 if(isLucene())
                 {
                     return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
                 }
             }
 
+            boolean withWildCards = propertyQName.equals(ContentModel.PROP_USER_USERNAME) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME);
+            
             BooleanQuery booleanQuery = new BooleanQuery();
             MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
             List<Locale> locales = searchParameters.getLocales();
             List<Locale> expandedLocales = new ArrayList<Locale>();
             for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
             {
-                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, false));
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, withWildCards));
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
@@ -5238,13 +5216,15 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 throw new UnsupportedOperationException("Functions are not supported agaisnt special text fields");
             }
 
+            boolean withWildCards = propertyQName.equals(ContentModel.PROP_USER_USERNAME) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME);
+            
             BooleanQuery booleanQuery = new BooleanQuery();
             MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
             List<Locale> locales = searchParameters.getLocales();
             List<Locale> expandedLocales = new ArrayList<Locale>();
             for (Locale locale : (((locales == null) || (locales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : locales))
             {
-                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, false));
+                expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, withWildCards));
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {

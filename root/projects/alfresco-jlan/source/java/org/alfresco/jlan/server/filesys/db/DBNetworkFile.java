@@ -19,6 +19,8 @@
 
 package org.alfresco.jlan.server.filesys.db;
 
+import java.io.IOException;
+
 import org.alfresco.jlan.server.filesys.NetworkFile;
 import org.alfresco.jlan.server.filesys.cache.FileState;
 import org.alfresco.jlan.server.filesys.cache.FileStateProxy;
@@ -165,11 +167,18 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 		setFileSize(info.getSize());
 		setAttributes(info.getFileAttributes());
 		
-		if ( info.getCreationDateTime() != 0L)
+		if ( info.getCreationDateTime() > 0L)
 			setCreationDate( info.getCreationDateTime());
 		
-		if ( info.getModifyDateTime() != 0L)
+		if ( info.getModifyDateTime() > 0L)
 			setModifyDate(info.getModifyDateTime());
+		else
+			setModifyDate( getCreationDate());
+		
+		if ( info.getAccessDateTime() > 0L)
+			setAccessDate(info.getAccessDateTime());
+		else
+			setAccessDate( getModifyDate());
 	}
 		
 	/**
@@ -211,4 +220,17 @@ public abstract class DBNetworkFile extends NetworkFile implements NetworkFileSt
 	public final void setLoader(FileLoader loader) {
 		m_loader = loader;
 	}
+	/**
+	 * Open the file
+	 * 
+	 * @param createFlag boolean
+	 * @exception IOException
+	 */
+	public void openFile(boolean createFlag)
+		throws IOException {
+		
+		
+		setClosed( false);
+	}
+	
 }

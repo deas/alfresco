@@ -52,7 +52,7 @@ public class AbstractSolrCachingScorer extends Scorer
         }
         else
         {
-            this.matches = new BitDocSet();
+            this.matches = new BitDocSet(new OpenBitSet(solrIndexReader.maxDoc()));
             for (DocIterator it = in.iterator(); it.hasNext(); /* */)
             {
                 matches.addUnique(it.nextDoc());

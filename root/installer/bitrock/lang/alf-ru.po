@@ -173,7 +173,7 @@ msgid "Installation directory path is too long. The maximum number of characters
 msgstr "Слишком длинный путь к каталогу установки. Максимально допустимое число символов - ${base_installdir_max_characters}."
 
 msgid "Installation Folder"
-msgstr "Каталог для установки"
+msgstr "Директория для установки"
 
 msgid "Installation folder cannot contain spaces."
 msgstr "В имени каталога для установки не может быть пробелов."

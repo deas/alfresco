@@ -48,7 +48,7 @@
         <setInstallerVariable name="imagemagick_distribution_folder_unix" value="${binaries_folder}/ImageMagick6.5.6-10" />
         <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.6.0_33" />
         <setInstallerVariable name="openoffice_distribution_folder" value="${binaries_folder}/libreoffice-3.5" />
-        <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.2" />
+        <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.1-jp" />
         <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat-6.0.35" />
 
 

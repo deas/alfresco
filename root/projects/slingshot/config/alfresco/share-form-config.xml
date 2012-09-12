@@ -931,26 +931,47 @@
             <field-visibility>
                <show id="email.inbound.enabled" />
                <show id="email.inbound.unknownUser" />
-               <show id="email.server.allowed.senders" />
-               <show id="email.server.blocked.senders" />
-               <show id="email.server.domain" />
+               
                <show id="email.server.enabled" />
+               <show id="email.server.allowed.senders" />
+               <show id="email.server.blocked.senders" />       
+               <show id="email.server.domain" />
                <show id="email.server.port" />
+               <show id="email.server.connections.max" />
+               <show id="email.server.enableTLS" />
+               <show id="email.server.requireTLS" />
+               <show id="email.server.hideTLS" />
+               
             </field-visibility>
             <appearance>
-               <set id="inbound" appearance="title" label-id="form.set.general"
+               <set id="inbound" appearance="title" label-id="email-inbound.set.service"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="inbound-server" appearance="title" label-id="email-inbound.set.server"
+                    template="/org/alfresco/components/form/2-column-set.ftl" />
+               <set id="inbound-tls" appearance="title" label-id="email-inbound.set.tls"
+                    template="/org/alfresco/components/form/3-column-set.ftl" />     
                <field id="email.inbound.enabled" label-id="email-inbound.field.email.inbound.enabled" set="inbound">
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
                <field id="email.inbound.unknownUser" label-id="email-inbound.field.email.inbound.unknownUser" set="inbound" />
-               <field id="email.server.allowed.senders" label-id="email-inbound.field.email.server.allowed.senders" set="inbound" />
-               <field id="email.server.blocked.senders" label-id="email-inbound.field.email.server.blocked.senders" set="inbound" />
-               <field id="email.server.domain" label-id="email-inbound.field.email.server.domain" set="inbound" />
-               <field id="email.server.enabled" label-id="email-inbound.field.email.server.enabled" set="inbound">
+               <field id="email.server.allowed.senders" label-id="email-inbound.field.email.server.allowed.senders" set="inbound-server" />
+               <field id="email.server.blocked.senders" label-id="email-inbound.field.email.server.blocked.senders" set="inbound-server" />
+               <field id="email.server.enabled" label-id="email-inbound.field.email.server.enabled" set="inbound-server">
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
-               <field id="email.server.port" label-id="email-inbound.field.email.server.port" set="inbound" />
+               <field id="email.server.domain" label-id="email-inbound.field.email.server.domain" set="inbound-server" />
+               <field id="email.server.port" label-id="email-inbound.field.email.server.port" set="inbound-server" />
+               <field id="email.server.connections.max" label-id="email-inbound.field.email.server.connections.max" set="inbound-server" />
+               
+               <field id="email.server.enableTLS" label-id="email-inbound.field.email.server.enableTLS" set="inbound-tls" >
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="email.server.requireTLS" label-id="email-inbound.field.email.server.requireTLS" set="inbound-tls" >
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+               <field id="email.server.hideTLS" label-id="email-inbound.field.email.server.hideTLS" set="inbound-tls" >
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
             </appearance>
          </form>
       </forms>
@@ -963,10 +984,12 @@
             <field-visibility>
                <show id="mail.host"/>
                <show id="mail.port" />
-               <show id="mail.protocol" />
                <show id="mail.encoding" />
+               <show id="mail.from.enabled" />
                <show id="mail.from.default" />
+               <show id="mail.protocol" />
                <show id="mail.smtp.auth" />
+               <show id="mail.smtps.auth" />
                <show id="mail.username" />
                <show id="mail.password" for-mode="edit" />
                <show id="mail.testmessage.send" />
@@ -985,10 +1008,17 @@
                <field id="mail.port" label-id="email-outbound.field.mail.port" />
                <field id="mail.protocol" label-id="email-outbound.field.mail.protocol" />
                <field id="mail.encoding" label-id="email-outbound.field.mail.encoding" />
+               <field id="mail.from.enabled" label-id="email-outbound.field.mail.from.enabled">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
                <field id="mail.from.default" label-id="email-outbound.field.mail.from.default" />
                <field id="mail.smtp.auth" label-id="email-outbound.field.mail.smtp.auth" set="auth">
                   <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
                </field>
+               <field id="mail.smtps.auth" label-id="email-outbound.field.mail.smtps.auth" set="auth">
+                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+               </field>
+           
                <field id="mail.username" label-id="email-outbound.field.mail.username" set="auth" />
                <field id="mail.password" label-id="email-outbound.field.mail.password" set="auth">
                   <control>
@@ -1012,9 +1042,6 @@
          <form>
             <field-visibility>
                <show id="imap.server.enabled" />
-               <show id="imap.config.home.folderPath" />
-               <show id="imap.config.home.store" />
-               <show id="imap.config.home.rootPath" />
                <show id="imap.mail.from.default" />
                <show id="imap.mail.to.default" />
                <show id="imap.server.attachments.extraction.enabled" />

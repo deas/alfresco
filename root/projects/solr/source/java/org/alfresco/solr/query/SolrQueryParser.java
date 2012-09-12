@@ -201,12 +201,6 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         return new SolrCachingAuxDocQuery(query);
     }
 
-    protected Query create(String queryText)
-    {
-        Query query = super.createPrimaryParentQuery(queryText);
-        return new SolrCachingAuxDocQuery(query);
-    }
-
     /**
      * @param arg0
      * @param arg1

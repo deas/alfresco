@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Document Library "Permissions" module for Document Library.
  * 
@@ -26,8 +26,8 @@
 (function()
 {
    /**
-   * YUI Library aliases
-   */
+    * YUI Library aliases
+    */
    var Dom = YAHOO.util.Dom;
 
    /**
@@ -426,7 +426,6 @@
          this._hideDialog();
       },
 
-
       /**
        * PRIVATE FUNCTIONS
        */
@@ -470,23 +469,40 @@
          var defaultRoles = this.options.files[0].node.permissions.roles,
             permissions;
 
+         // Process role permissions by splitting into [0=Allowed, 1=Group, 2=Role]
+         //                                       e.g. ALLOWED;GROUP_site_test_SiteManager;SiteManager
          for (i = 0, j = defaultRoles.length; i < j; i++)
          {
             permissions = defaultRoles[i].split(";");
+            // test to see if there is a picker in the UI for the given group
             if (permissions[1] in this.rolePickers)
             {
-               this.rolePickers[permissions[1]].set("name", permissions[2]);
-               // it's possible that an odd collection of permissions have been set - one that is not defined
-               // as a well known Share role combination - so all for that possibility i.e. no msg available
-               var msg = this.msg("role." + permissions[2]);
-               if (msg === "role." + permissions[2])
+               // test to ensure a relevant Site role is displayed,
+               // else store as hidden role so we don't lose the ACL when setting new permissions
+               if (permissions[2].indexOf("Site") === 0)
                {
-                  msg = permissions[2];
+                  this.rolePickers[permissions[1]].set("name", permissions[2]);
+                  // it's possible that an odd collection of permissions have been set - one that is not defined
+                  // as a well known Share role combination - so all for that possibility i.e. no msg available
+                  var msg = this.msg("role." + permissions[2]);
+                  if (msg === "role." + permissions[2])
+                  {
+                     msg = permissions[2];
+                  }
+   
+                  this.rolePickers[permissions[1]].set("label", msg);
                }
-
-               this.rolePickers[permissions[1]].set("label", msg);
+               else
+               {
+                  this.hiddenRoles[permissions[1]] =
+                  {
+                     user: permissions[1],
+                     role: permissions[2]
+                  };
+               }
             }
-            else if (permissions[1] != "GROUP_EVERYONE" || this.options.isSitePublic)
+            // only manage special GROUP_EVERYONE for a site if it is public
+            else if (permissions[1] !== "GROUP_EVERYONE" || this.options.isSitePublic)
             {
                this.hiddenRoles[permissions[1]] =
                {
@@ -559,7 +575,7 @@
             if (this.rolePickers.hasOwnProperty(picker))
             {
                role = this.rolePickers[picker].get("name");
-               if ((role != "") && (role != "None"))
+               if (role && role !== "None")
                {
                   params.push(
                   {

@@ -120,6 +120,8 @@ public abstract class NetworkFile {
 	// File status flags
 
 	private int m_flags;
+	
+	private boolean m_force;
 
 	// Oplock details
 	
@@ -984,6 +986,14 @@ public abstract class NetworkFile {
 	public boolean allowsOpenCloseViaNetworkFile() {
 		return true;
 	}
+	
+    public boolean isForce() {
+	    return m_force;
+	}
+    
+    public void setForce(boolean force){
+        this.m_force = force;
+    }
 	
 	/**
 	 * Return the file details as a string

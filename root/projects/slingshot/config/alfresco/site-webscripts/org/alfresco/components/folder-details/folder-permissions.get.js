@@ -24,23 +24,25 @@ function setPermissions(folderDetails)
          permParts = rawPerms[i].split(";");
          group = permParts[1];
          permission = permParts[2];
-         if (group.indexOf("_SiteManager") != -1)
+         if (group.search("_SiteManager$") !== -1)
          {
             model.managers = permission;
          }
-         else if (group.indexOf("_SiteCollaborator") != -1)
+         else if (group.search("_SiteCollaborator$") !== -1)
          {
             model.collaborators = permission;
          }
-         else if (group.indexOf("_SiteContributor") != -1)
+         else if (group.search("_SiteContributor$") !== -1)
          {
             model.contributors = permission;
          }
-         else if (group.indexOf("_SiteConsumer") != -1)
+         else if (group.search("_SiteConsumer$") !== -1)
          {
             model.consumers = permission;
          }
-         else if (group.indexOf("GROUP_EVERYONE") == 0 && permission !== "ReadPermissions")
+         // there can be multiple permissions per group - but this is not handled well in the UI
+         // here we ensure only Site ACLs for GROUP_EVERYONE are displayed in the UI
+         else if (group === "GROUP_EVERYONE" && permission.indexOf("Site") === 0)
          {
             model.everyone = permission;
          }

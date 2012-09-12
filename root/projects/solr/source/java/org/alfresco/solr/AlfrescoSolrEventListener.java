@@ -164,7 +164,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         CacheEntry[] indexedByDocId = new CacheEntry[newReader.maxDoc()];
         HashSet<String> globalReaders = new HashSet<String>();
-        OpenBitSet allLeafDocs = new OpenBitSet();
+        OpenBitSet allLeafDocs = new OpenBitSet(newReader.maxDoc());
         long[] aclIdByDocId = new long[newReader.maxDoc()];
         long[] txByDocId = new long[newReader.maxDoc()];
         long[] aclTxByDocId = new long[newReader.maxDoc()];
@@ -176,7 +176,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
       
 
-        OpenBitSet deleted = new OpenBitSet();
+        OpenBitSet deleted = new OpenBitSet(newReader.maxDoc());
         OwnerIdManager ownerIdManager = new OwnerIdManager();
 
         HashMap<Long, CacheEntry> unmatchedByDBID = new HashMap<Long, CacheEntry>();
@@ -331,7 +331,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     if (forceCheckCache || checkCache.get())
                     {
                         CacheEntry[] checkIndexedByDocId = new CacheEntry[newReader.maxDoc()];
-                        OpenBitSet checkAllLeafDocs = new OpenBitSet();
+                        OpenBitSet checkAllLeafDocs = new OpenBitSet(newReader.maxDoc());
                         long[] checkAclIdByDocId = new long[newReader.maxDoc()];
                         long[] checkTxIdByDocId = new long[newReader.maxDoc()];
                         long[] checkAclTxIdByDocId = new long[newReader.maxDoc()];
@@ -735,7 +735,24 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF, indexedOderedByOwnerIdThenDoc);
         
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_ID_MANAGER, ownerIdManager);
+        
+        try
+        {
+            if(currentSearcher != null)
+            {
+                newSearcher.warm(currentSearcher);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        
     }
+    
+    
+   
+    
 
     /**
      * @param hasNew

@@ -25,6 +25,7 @@ import java.util.HashSet;
 import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.AclLookUp;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
+import org.alfresco.solr.ContextAwareQuery;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Query;
@@ -54,12 +55,12 @@ public class SolrCachingAuxDocScorer extends AbstractSolrCachingScorer
         // translate reults to leaf docs
         // build ordered doc list
 
-        DocSet auxDocSet = searcher.getDocSet(query);
+        DocSet auxDocSet = searcher.getDocSet(new ContextAwareQuery(query, null));
 
         CacheEntry[] indexedByDocId = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
 
         // List<ScoreDoc> auxDocs = pathCollector.getDocs();
-        OpenBitSet translated = new OpenBitSet();
+        OpenBitSet translated = new OpenBitSet(searcher.getReader().maxDoc());
 
         if (auxDocSet instanceof BitDocSet)
         {

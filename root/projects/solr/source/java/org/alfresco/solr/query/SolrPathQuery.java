@@ -166,8 +166,9 @@ public class SolrPathQuery extends Query
                 }
                 else
                 {
+                    stringBuilder.append("{");
                     stringBuilder.append(pathStructuredFieldPositions.get(i).getTermText() == null ? "*" : pathStructuredFieldPositions.get(i).getTermText());
-                    stringBuilder.append(":");
+                    stringBuilder.append("}:");
                     stringBuilder.append(pathStructuredFieldPositions.get(i+1).getTermText() == null ? "*" : pathStructuredFieldPositions.get(i+1).getTermText());
                     
                 }

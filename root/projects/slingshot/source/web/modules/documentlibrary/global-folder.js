@@ -276,14 +276,14 @@
          siteTreeContainerTypes: {},
 
          /**
-          * People API
+          * Sites API
           *
-          * The URL to the API that returns person information
+          * The URL to the API that returns site information
           *
-          * @property peopleAPI
+          * @property sitesAPI
           * @type {String} Absolute URL
           */
-         peopleAPI: Alfresco.constants.PROXY_URI + "api/people/",
+         sitesAPI: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
 
 
          /**
@@ -1069,7 +1069,7 @@
          
          var config =
          {
-            url: this.options.peopleAPI + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites",
+            url: this.options.sitesAPI,
             responseContentType: Alfresco.util.Ajax.JSON,
             successCallback:
             {

@@ -22,6 +22,8 @@ import java.io.IOException;
 
 import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
+import org.alfresco.solr.ContextAwareQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -50,7 +52,9 @@ public class SolrCachingPathScorer extends AbstractSolrCachingScorer
         // PathCollector pathCollector = new PathCollector();
         // searcher.search(solrPathQuery, pathCollector);
 
-        DocSet answer = (DocSet)searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_PATH_CACHE, solrPathQuery);
+        Query key = new SolrCachingPathQuery(solrPathQuery);
+        
+        DocSet answer = (DocSet)searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_PATH_CACHE, key);
         if(answer != null)
         {
             return new SolrCachingPathScorer(similarity, answer, reader);
@@ -61,7 +65,7 @@ public class SolrCachingPathScorer extends AbstractSolrCachingScorer
         CacheEntry[] indexedByDocId = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
 
         // List<ScoreDoc> auxDocs = pathCollector.getDocs();
-        OpenBitSet translated = new OpenBitSet();
+        OpenBitSet translated = new OpenBitSet(searcher.getReader().maxDoc());
 
         if (docSet instanceof BitDocSet)
         {
@@ -84,7 +88,7 @@ public class SolrCachingPathScorer extends AbstractSolrCachingScorer
         }
 
         BitDocSet toCache =  new BitDocSet(translated);
-        searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_PATH_CACHE, solrPathQuery, toCache);
+        searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_PATH_CACHE, key, toCache);
         return new SolrCachingPathScorer(similarity, toCache, reader);
     }
 }

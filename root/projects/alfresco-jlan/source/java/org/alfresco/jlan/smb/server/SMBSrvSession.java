@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,6 +34,7 @@ import org.alfresco.jlan.netbios.NetBIOSName;
 import org.alfresco.jlan.netbios.NetBIOSSession;
 import org.alfresco.jlan.netbios.RFCNetBIOSProtocol;
 import org.alfresco.jlan.server.SrvSession;
+import org.alfresco.jlan.server.SrvSessionList;
 import org.alfresco.jlan.server.auth.AuthenticatorException;
 import org.alfresco.jlan.server.auth.ICifsAuthenticator;
 import org.alfresco.jlan.server.filesys.DeferredPacketException;
@@ -2150,6 +2152,84 @@ public class SMBSrvSession extends SrvSession implements Runnable {
     {
         return true;
     }
+
+	/**
+	 * Disconnect other client sessions from the same address/client
+	 * 
+	 * @return int
+	 */
+	public final int disconnectClientSessions() {
+		
+		// Check the session list for other sessions from this client address
+		
+		SrvSessionList sessList = getSMBServer().getSessions();
+		int discCnt = 0;
+		
+		if ( sessList != null) {
+			
+			// Search for sessions matching the clients address/name
+			
+			Enumeration<SrvSession> enumSess = sessList.enumerateSessions();
+			boolean addrMatch = false;
+			String addrStr = null;
+			
+			while ( enumSess.hasMoreElements()) {
+				
+				// Get the current session
+				
+				SMBSrvSession curSess = (SMBSrvSession) enumSess.nextElement();
+				addrMatch = false;
+				
+				// Check for an address/client name match
+				
+				if ( curSess.getSessionId() != getSessionId()) {
+					
+					// Check the IP address
+					
+					if ( hasRemoteAddress() && curSess.hasRemoteAddress()) {
+						
+						// Check if the IP addresses match
+						
+						if ( getRemoteAddress().equals( curSess.getRemoteAddress())) {
+							addrMatch = true;
+							addrStr = getRemoteAddress().getHostAddress();
+						}
+					}
+					else if ( hasRemoteName() && curSess.hasRemoteName()) {
+						
+						// Check if the remote NetBIOS names match
+						
+						if ( getRemoteName().equals( curSess.getRemoteName())) {
+							addrMatch = true;
+							addrStr = getRemoteName();
+						}
+					}
+				}
+				
+				// Check if the session matches the current session address/client name
+				
+				if ( addrMatch == true) {
+					
+					// DEBUG
+					
+					if ( Debug.EnableInfo && hasDebug(DBG_NEGOTIATE))
+						debugPrintln("Disconnect existing session from " + addrStr + ", sess=" + curSess);
+						
+					// Disconnect the existing session
+					
+					curSess.closeSession();
+					
+					// Update the disconnected session count
+					
+					discCnt++;
+				}
+			}
+		}
+		
+		// Return the count of sessions disconnected
+		
+		return discCnt;
+	}
 
 	/**
 	 * Set the hostname the client used to mount a network drive

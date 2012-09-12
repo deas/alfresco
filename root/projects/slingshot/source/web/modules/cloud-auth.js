@@ -290,6 +290,11 @@
       // Login is only valid if the server could be contacted
       if (response.json.loginValid === true)
       {
+         // Fire event to inform any listening components that the data is ready
+         YAHOO.Bubbling.fire("authDetailsAvailable",
+         {
+          authDetails: response.json
+         });
          this.callAuthCallback();
       } else if (response.json.loginValid === false && response.json.remoteSystemAvailable === true)
       {

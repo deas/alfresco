@@ -61,6 +61,10 @@ ftsQuery:
 "-10" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM -10))))"
 "cm_content.mimetype:\"text/plain\"" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PHRASE \"text/plain\" (FIELD_REF cm_content.mimetype)))))"
 "10.10.pdf" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM 10 . 10 . pdf))))"
+"TYPE:cm:content" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM content (FIELD_REF cm (PREFIX TYPE))))))"
+"TYPE:content" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (TERM content (FIELD_REF TYPE)))))"
+"TYPE:\"cm:content\"" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PHRASE \"cm:content\" (FIELD_REF TYPE)))))"
+"TYPE:\"content\"" -> "(DISJUNCTION (CONJUNCTION (DEFAULT (PHRASE \"content\" (FIELD_REF TYPE)))))"
 
 
 ftsDisjunction:

@@ -78,7 +78,7 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
             aclDocSet = searcher.getDocSet(new TermQuery(new Term("READER", authority)));
         }
         
-        BitDocSet readableDocSet = new BitDocSet();
+        BitDocSet readableDocSet = new BitDocSet(new OpenBitSet(searcher.getReader().maxDoc()));
 
         AlfrescoSolrEventListener.AclLookUp key = new AlfrescoSolrEventListener.AclLookUp(0);
         

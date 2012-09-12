@@ -3,8 +3,6 @@
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/jetty-7.0/servlet-api-2.5.jar"/>
-	<classpathentry kind="lib" path="/RepoBM/lib/sardine/sardine-146-patched.jar"/>
-	<classpathentry kind="lib" path="/RepoBM/build/classes"/>
 	<classpathentry kind="lib" path="/Web-Client/build/dist"/>
 	<classpathentry kind="lib" path="/Remote API/build/classes"/>
 	<classpathentry kind="lib" path="/Web Service Client/build/classes" sourcepath="/Web Service Client"/>
@@ -13,10 +11,8 @@
 			<accessrule kind="nonaccessible" pattern="org.springframework.*3.0.0.jar"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="/RepoBM/lib/sardine/httpclient-4.0.3.jar"/>
-	<classpathentry kind="lib" path="/RepoBM/lib/sardine/httpcore-4.1.jar"/>
 	<classpathentry kind="lib" path="/SOLR/build/classes" sourcepath="/SOLR"/>
-	<classpathentry kind="lib" path="/DataModel/build/classes"/>
+	<classpathentry kind="lib" path="/DataModel/build/classes" sourcepath="/DataModel"/>
 	<classpathentry kind="lib" path="/Core/build/classes"/>
 	<classpathentry kind="lib" path="keystore"/>
 	<classpathentry kind="lib" path="lib/jetty-7.0/jetty-ajp-7.3.0.v20110203.jar"/>

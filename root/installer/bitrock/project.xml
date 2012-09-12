@@ -185,6 +185,7 @@
         <actionGroup>
             <actionList>
                 <renameFile origin="${installdir}/manager-osx.app" destination="${installdir}/Application Manager.app" />
+                <addFilesToUninstaller files="${installdir}/Application Manager.app" />
             </actionList>
             <ruleList>
                 <platformTest type="osx" />
@@ -470,6 +471,8 @@
 
         <deleteFile path="${installdir}/tomcat" />
         <deleteFile path="${installdir}/common/share/terminfo" />
+        <deleteFile path="${installdir}/common/share" />
+        <deleteFile path="${installdir}/common" />
         <deleteFile path="${installdir}/postgresql" />
         <deleteFile path="${installdir}/properties.ini" />
         <deleteFile path="${installdir}" >

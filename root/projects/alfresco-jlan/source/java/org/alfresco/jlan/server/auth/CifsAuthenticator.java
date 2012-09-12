@@ -102,6 +102,11 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 
 	protected ServerConfigurationAccessor m_config;
 
+	// Cleanup sessions from the same client address/name if a session setup using virtual circuit zero
+	// is received
+	
+	private boolean m_sessCleanup = true;
+	
 	// Debug output enable
 
 	private boolean m_debug;
@@ -574,6 +579,20 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 			client.setGuest(isGuest);
 		sess.setLoggedOn(true);
 
+		// Check for virtual circuit zero, disconnect any other sessions from this client
+		
+		if ( vcNum == 0 && hasSessionCleanup()) {
+		
+			// Disconnect other sessions from this client, cleanup any open files/locks/oplocks
+			
+			int discCnt = sess.disconnectClientSessions();
+
+			// DEBUG
+
+			if ( discCnt > 0 && Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+				Debug.println("[SMB] Disconnected " + discCnt + " existing sessions from client, sess=" + sess);
+		}
+		
 		// Check if there is a chained commmand with the session setup request (usually a TreeConnect)
 		
 		SMBSrvPacket respPkt = reqPkt;
@@ -719,6 +738,24 @@ public abstract class CifsAuthenticator implements ICifsAuthenticator {
 		m_extendedSecurity = extSec;
 	}
 
+	/**
+	 * Cleanup existing sessions from the same client address/name
+	 * 
+	 * @return boolean
+	 */
+	public final boolean hasSessionCleanup() {
+		return m_sessCleanup;
+	}
+	
+	/**
+	 * Enable/disable session cleanup when a new logon is received using virtual circuit zero
+	 * 
+	 * @param ena boolean
+	 */
+	public void setSessionCleanup( boolean ena) {
+		m_sessCleanup = ena;
+	}
+    
 	/* (non-Javadoc)
      * @see org.alfresco.jlan.server.auth.ICifsAuthenticator#closeAuthenticator()
      */

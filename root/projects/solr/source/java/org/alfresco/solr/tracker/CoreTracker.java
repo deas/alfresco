@@ -121,6 +121,7 @@ import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.SolrInputField;
 import org.apache.solr.core.CloseHook;
 import org.apache.solr.core.SolrCore;
+import org.apache.solr.core.SolrInfoMBean;
 import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.BinaryField;
 import org.apache.solr.schema.CopyField;
@@ -934,9 +935,12 @@ public class CoreTracker implements CloseHook
 
                 if (docCount > batchCount)
                 {
-                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-                    docCount = 0;
-                    requiresCommit = false;
+                    if(getRegisteredSearcherCount() < 2)
+                    {
+                        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                        docCount = 0;
+                        requiresCommit = false;
+                    }
                 }
             }
             if (requiresCommit || ( docCount > 0))
@@ -1085,9 +1089,12 @@ public class CoreTracker implements CloseHook
 
                 if (docCount > batchCount)
                 {
-                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-                    docCount = 0;
-                    requiresCommit = false;
+                    if(getRegisteredSearcherCount() < 2)
+                    {
+                        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                        docCount = 0;
+                        requiresCommit = false;
+                    }
                 }
             }
             if (requiresCommit || (docCount > 0))
@@ -1185,6 +1192,13 @@ public class CoreTracker implements CloseHook
 
     public void trackRepository() throws IOException, AuthenticationException, JSONException
     {
+        int registeredSearcherCount = getRegisteredSearcherCount();
+        if(registeredSearcherCount > 1)
+        {
+            log.info(".... skipping tracking registered searcher count = " + registeredSearcherCount);
+            return;
+        }
+        
         trackModels();
 
         RefCounted<SolrIndexSearcher> refCounted = null;
@@ -1351,8 +1365,11 @@ public class CoreTracker implements CloseHook
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-                    docCount = 0;
+                    if(getRegisteredSearcherCount() < 2)
+                    {
+                        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                        docCount = 0;
+                    }
                 }
             }
             // reorder and find first last before hole
@@ -1752,7 +1769,6 @@ public class CoreTracker implements CloseHook
             {
                 actualTimeStep = 1000*60*60*24*32L;
             }
-            startTime += actualTimeStep;
         }
         while( ((aclChangeSets.getAclChangeSets().size() == 0)  && (startTime < endTime)) || ((aclChangeSets.getAclChangeSets().size() > 0) && alreadyFoundChangeSets(changeSetsFound, aclChangeSets)));
 
@@ -3516,6 +3532,28 @@ public class CoreTracker implements CloseHook
         return out;
     }
 
+    protected int getRegisteredSearcherCount()
+    {
+        HashSet<String> keys = new HashSet<String>();
+        for(String  key : core.getInfoRegistry().keySet())
+        {
+            SolrInfoMBean mBean = core.getInfoRegistry().get(key);
+            if(mBean != null)
+            {
+                if(mBean.getName().equals(SolrIndexSearcher.class.getName()))
+                {
+                    if(!key.equals("searcher"))
+                    {
+                        keys.add(key);
+                    }
+                }
+            }
+        }
+
+        log.info(".... registered Searchers for "+core.getName()+" = "+keys.size());
+        return keys.size();
+    }
+    
     public NodeReport checkNodeCommon(NodeReport nodeReport)
     {
         // In Index

@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchParameters;
@@ -106,8 +107,7 @@ public abstract class AbstractQParser extends QParser
                 }
                 catch (IOException e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new AlfrescoRuntimeException("IO Error parsing query parameters", e);
                 }
             }
         }

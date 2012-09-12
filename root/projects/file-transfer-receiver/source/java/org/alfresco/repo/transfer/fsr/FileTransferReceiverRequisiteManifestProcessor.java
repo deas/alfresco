@@ -76,7 +76,7 @@ public class FileTransferReceiverRequisiteManifestProcessor extends AbstractMani
         //Skip over any nodes that are not parented with a cm:contains association or 
         //are not content nodes (we don't need their content)
         if (!ContentModel.ASSOC_CONTAINS.equals(node.getPrimaryParentAssoc().getTypeQName()) ||
-                !ContentModel.TYPE_CONTENT.equals(node.getType()))
+                !ContentModel.TYPE_CONTENT.equals(node.getAncestorType()))
         {
             return;
         }

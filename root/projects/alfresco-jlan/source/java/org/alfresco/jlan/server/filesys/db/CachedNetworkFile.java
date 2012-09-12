@@ -152,6 +152,10 @@ public class CachedNetworkFile extends DBNetworkFile {
 			// Open the temporary file
 
 			m_cacheFile.openFile();
+			
+			// Mark the file as open
+			
+			setClosed( false);
 		}
 		catch (FileNotFoundException ex) {
 			if ( DEBUG) {

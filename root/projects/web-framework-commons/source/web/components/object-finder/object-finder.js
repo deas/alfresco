@@ -2339,6 +2339,10 @@
          {
             if (p_key.toLowerCase() == "icon")
             {
+               if (item.parentType == null && item.parent && item.parent.type)
+               {
+                  item.parentType = item.parent.type;
+               }
                return '<img src="' + me.getIconURL(item, iconSize) + '" width="' + iconSize + '" alt="' + $html(item.description) + '" title="' + $html(item.name) + '" />'; 
             }
             return $html(p_value);

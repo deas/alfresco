@@ -150,6 +150,21 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 		super.initialize(config, params);
 
+		// Check if session cleanup should be disabled, when a session setup request is received
+		// on virtual circuit zero
+		
+		if ( params.getChild("disableSessionCleanup") != null) {
+			
+			// Disable session cleanup
+			
+			setSessionCleanup( false);
+
+			// Debug
+
+			if ( Debug.EnableInfo && hasDebug())
+				Debug.println("[SMB] Disabled session cleanup (for virtual circuit zero logons)");
+		}
+		
         // Check if Java API Kerberos debug output should be enabled
         
         if ( params.getChild("kerberosDebug") != null) {
@@ -794,6 +809,20 @@ public class EnterpriseCifsAuthenticator extends CifsAuthenticator implements Ca
 
 		if ( loggedOn == true) {
 
+			// Check for virtual circuit zero, disconnect any other sessions from this client
+			
+			if ( vcNum == 0 && hasSessionCleanup()) {
+			
+				// Disconnect other sessions from this client, cleanup any open files/locks/oplocks
+				
+				int discCnt = sess.disconnectClientSessions();
+
+				// DEBUG
+
+				if ( discCnt > 0 && Debug.EnableInfo && sess.hasDebug(SMBSrvSession.DBG_NEGOTIATE))
+					Debug.println("[SMB] Disconnected " + discCnt + " existing sessions from client, sess=" + sess);
+			}
+			
 			// Clear any stored session setup object for the logon
 
 			sess.removeSetupObject(client.getProcessId());

@@ -47,8 +47,9 @@
             Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE
          ],
          targetNetwork: "-default-",
+         targetUserid: '',
          templateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/documentlibrary/cloud-folder",
-         sitesAPITemplate: Alfresco.constants.PROXY_URI + "cloud/sites?network={network}",
+         sitesAPITemplate: Alfresco.constants.PROXY_URI + "cloud/people/{userid}/sites?network={network}",
          containersAPITemplate: Alfresco.constants.PROXY_URI + "cloud/doclib/containers/?network={network}",
          treeNodeAPITemplate: "cloud/doclib/treenode/site/{site}/{container}{path}?children={evaluateChildFoldersSite}&max={maximumFolderCountSite}&network={network}",
          templateFailMessage: Alfresco.util.message("message.sync.unavailable"),
@@ -61,6 +62,7 @@
       if (htmlId != "null")
       {
          YAHOO.Bubbling.on("networkSelected", this._populateSitePicker, this);
+         YAHOO.Bubbling.on("authDetailsAvailable", this.onAuthDetailsAvailable, this);
       }
 
       return this;
@@ -346,7 +348,8 @@
       {
          var substitutionOptions =
          {
-            network: this.options.targetNetwork
+            network: this.options.targetNetwork,
+            userid: this.options.targetUserid
          };
 
          this.options.sitesAPI = YAHOO.lang.substitute(this.options.sitesAPITemplate, substitutionOptions);
@@ -391,6 +394,18 @@
                this._updateSelectedNode(node);
             }
          }
+      },
+
+      /**
+       * Called once the Auth details have been returned
+       *
+       * @method onRemoveListItem
+       * @param event {string} Event fired
+       * @param args {object} Event parameters
+       */
+      onAuthDetailsAvailable: function cloudFolder_onAuthDetailsAvailable(event, args)
+      {
+         this.options.targetUserid = args[1].authDetails.username;
       }
 
    });

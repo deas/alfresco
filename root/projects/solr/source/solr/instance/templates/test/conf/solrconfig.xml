@@ -25,7 +25,7 @@
 <config>
 
   <alfresco>
-    <track>false</track>
+    <track>${enable.alfresco.tracking}</track>
   </alfresco>
 
   <!-- Set this to 'false' if you want solr to continue working after it has 
@@ -322,10 +322,12 @@
            and old cache.
          -->
     <filterCache
-      class="solr.FastLRUCache"
+      class="org.alfresco.solr.FilteringFastLRUCache"
       size="${solr.filterCache.size:512}"
       initialSize="${solr.filterCache.initialSize:512}"
-      autowarmCount="0"/>
+      autowarmCount="${solr.filterCache.autowarmCount:128}"
+      regenerator="org.alfresco.solr.FilterCacheRegenerator"
+    />
 
     <!-- Cache used to hold field values that are quickly accessible
          by document id.  The fieldValueCache is created by default
@@ -352,8 +354,7 @@
     <documentCache
       class="solr.LRUCache"
       size="${solr.documentCache.size:512}"
-      initialSize="${solr.documentCache.initialSize:512}"
-      autowarmCount="0"/>
+      initialSize="${solr.documentCache.initialSize:512}" />
 
     <!-- If true, stored fields that are not requested will be loaded lazily.
       This can result in a significant speed improvement if the usual case is to
@@ -388,14 +389,16 @@
       class="solr.FastLRUCache"
       size="${solr.authorityCache.size:512}"
       initialSize="${solr.authorityCache.initialSize:512}"
-      autowarmCount="0"
+      autowarmCount="${solr.authorityCache.autowarmCount:128}"
+      regenerator="org.alfresco.solr.FilterCacheRegenerator"
     />
 
     <cache name="alfrescoPathCache"
       class="solr.FastLRUCache"
       size="${solr.pathCache.size:512}"
       initialSize="${solr.pathCache.initialSize:512}"
-      autowarmCount="0"
+      autowarmCount="${solr.pathCache.autowarmCount:128}"
+      regenerator="org.alfresco.solr.FilterCacheRegenerator"
     />
 
     <listener event="newSearcher" class="org.alfresco.solr.AlfrescoSolrEventListener">
@@ -418,7 +421,7 @@
          requests matching documents 10 through 19, and queryWindowSize is 50,
          then documents 0 through 49 will be collected and cached.  Any further
          requests in that range can be satisfied via the cache.  -->
-    <queryResultWindowSize>20</queryResultWindowSize>
+    <queryResultWindowSize>${solr.queryResultWindowSize:50}</queryResultWindowSize>
 
     <!-- Maximum number of documents to cache for any entry in the
          queryResultCache. -->

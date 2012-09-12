@@ -315,6 +315,7 @@ public class TreeConnection {
         //  Access the disk interface and close the file
 
         DiskInterface disk = (DiskInterface) m_shareDev.getInterface();
+        m_files[idx].setForce(true);
         disk.closeFile(sess, this, m_files[idx]);
         m_files[idx].setClosed(true);
       }

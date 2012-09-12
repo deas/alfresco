@@ -36,7 +36,6 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
-import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
@@ -46,7 +45,6 @@ import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
-import org.alfresco.solr.tracker.CoreTracker.BoundedDeque;
 import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
 import org.alfresco.util.TraceableThreadFactory;
 import org.apache.lucene.index.Term;
@@ -319,8 +317,11 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    waitAndIndexTransactions(transactionsIndexed);
-                    docCount = 0;
+                    if(getRegisteredSearcherCount() < 2)
+                    {
+                        waitAndIndexTransactions(transactionsIndexed);
+                        docCount = 0;
+                    }
                 }
             }
             if (!txBatch.isEmpty())
@@ -561,21 +562,24 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
                 if (aclCount > batchCount)
                 {
-                    waitForAsynchronousReindexing();
-                    for (AclChangeSet set : changeSetsIndexed)
+                    if(getRegisteredSearcherCount() < 2)
                     {
-                        indexAclTransaction(set, true);
-                        if (set.getCommitTimeMs() > state.lastIndexedChangeSetCommitTime)
+                        waitForAsynchronousReindexing();
+                        for (AclChangeSet set : changeSetsIndexed)
                         {
-                            state.lastIndexedChangeSetCommitTime = set.getCommitTimeMs();
-                            state.lastIndexedChangeSetId = set.getId();
-                        }
-                        trackerStats.addChangeSetAcls((int) (set.getAclCount()));
+                            indexAclTransaction(set, true);
+                            if (set.getCommitTimeMs() > state.lastIndexedChangeSetCommitTime)
+                            {
+                                state.lastIndexedChangeSetCommitTime = set.getCommitTimeMs();
+                                state.lastIndexedChangeSetId = set.getId();
+                            }
+                            trackerStats.addChangeSetAcls((int) (set.getAclCount()));
 
+                        }
+                        changeSetsIndexed.clear();
+                        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                        aclCount = 0;
                     }
-                    changeSetsIndexed.clear();
-                    core.getUpdateHandler().commit(new CommitUpdateCommand(false));
-                    aclCount = 0;
                 }
             }
             if (!changeSetBatch.isEmpty())

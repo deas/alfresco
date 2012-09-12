@@ -89,9 +89,22 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
         }
         catch (WebDAVServerException e)
         {
-            if (logger.isDebugEnabled())
+            logger.debug(e);
+
+            if (response.isCommitted())
             {
-                logger.debug("Exception while executing WebDAV method", e);
+                logger.warn("Could not return the status code to the client as the response has already been committed!", e);
+            }
+            else
+            {
+                try
+                {
+                    response.sendError(e.getHttpStatusCode());
+                }
+                catch (IOException e1)
+                {
+                    throw new RuntimeException(e1);
+                }
             }
         }
     }

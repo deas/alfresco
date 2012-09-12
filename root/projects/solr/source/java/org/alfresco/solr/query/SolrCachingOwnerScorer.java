@@ -25,6 +25,7 @@ import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.solr.AlfrescoSolrEventListener.OwnerLookUp;
 import org.apache.lucene.search.Similarity;
+import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexReader;
@@ -51,7 +52,7 @@ public class SolrCachingOwnerScorer extends AbstractSolrCachingScorer
         // translate reults to leaf docs
         // build ordered doc list
 
-        BitDocSet authorityOwnedDocs = new BitDocSet();
+        BitDocSet authorityOwnedDocs = new BitDocSet(new OpenBitSet(searcher.getReader().maxDoc()));
 
         HashMap<String, OwnerLookUp> ownerLookUp = (HashMap<String, OwnerLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
                 AlfrescoSolrEventListener.KEY_OWNER_LOOKUP);

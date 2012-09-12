@@ -91,6 +91,11 @@ public class NTTime {
 	 */
 	public final static long toJavaDate(long ntDate) {
 		
+		// Do not convert zero values
+		
+		if ( ntDate == 0L)
+			return 0L;
+		
 		//	Convert the NT 64bit 100ns time value to a Java milliseconds value
 		
 		long jDate = (ntDate - TIME_CONVERSION) / 10000L;

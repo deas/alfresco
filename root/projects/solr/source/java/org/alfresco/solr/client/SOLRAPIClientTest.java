@@ -167,6 +167,7 @@ public class SOLRAPIClientTest extends TestCase
             cmisDictionaryService.setCmisMapping(cmisMapping);
             cmisDictionaryService.setDictionaryService(dictionaryComponent);
             cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
+            cmisDictionaryService.setSingletonCache(new MemoryCache<String, CMISStrictDictionaryService.DictionaryRegistry>());
 
             RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
             luceneBuilderMapping.setDictionaryService(dictionaryComponent);
@@ -238,6 +239,7 @@ public class SOLRAPIClientTest extends TestCase
         // TODO i18n
         KeyStoreParameters keyStoreParameters = new KeyStoreParameters("SSL Key Store", "JCEKS", null, "ssl-keystore-passwords.properties", "ssl.repo.client.keystore");
         KeyStoreParameters trustStoreParameters = new KeyStoreParameters("SSL Trust Store", "JCEKS", null, "ssl-truststore-passwords.properties", "ssl.repo.client.truststore");
+ 
         SSLEncryptionParameters sslEncryptionParameters = new SSLEncryptionParameters(keyStoreParameters, trustStoreParameters);
 
         HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType("https"), sslEncryptionParameters, keyResourceLoader, null, null, "localhost", 8080,
