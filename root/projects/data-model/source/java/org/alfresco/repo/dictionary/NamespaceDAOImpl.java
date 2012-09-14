@@ -238,9 +238,9 @@ public class NamespaceDAOImpl implements NamespaceDAO
      */
     public Collection<String> getPrefixes()
     {      
-        if (! tenantService.isTenantUser())
+        if (!(AuthenticationUtil.isMtEnabled() && tenantService.isTenantUser()))
         {
-            return Collections.unmodifiableCollection(getPrefixesCtx().keySet());
+            return Collections.unmodifiableCollection(getPrefixesCtx(TenantService.DEFAULT_DOMAIN).keySet());
         }
         else
         {
@@ -420,6 +420,10 @@ public class NamespaceDAOImpl implements NamespaceDAO
             
             if (namespaceRegistry != null)
             {
+                if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+                {
+                    this.defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
+                }
                 return namespaceRegistry; // return cached config
             }
         }

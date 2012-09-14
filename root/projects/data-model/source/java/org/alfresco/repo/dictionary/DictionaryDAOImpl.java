@@ -1029,6 +1029,10 @@ public class DictionaryDAOImpl implements DictionaryDAO
             
             if (dictionaryRegistry != null)
             {
+                if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+                {
+                    defaultDictionaryRegistryThreadLocal.set(dictionaryRegistry);
+                }
                 return dictionaryRegistry; // return cached config
             }
         }
