@@ -225,7 +225,7 @@ function getDoclist()
    */
    for each (item in items)
    {
-      if (item.workingCopy.isWorkingCopy)
+      if (item.workingCopy && item.workingCopy.isWorkingCopy)
       {
          var workingCopySource = String(item.workingCopy.sourceNodeRef);
          for (var i = 0, ii = items.length; i < ii; i++)
