@@ -55,6 +55,43 @@
             </div>
          </div>
          
+         <div id="${el}-help" class="yui-g theme-bg-color-2 help hidden">
+            <span class="title">${msg("help.title")}</span>
+            <div class="yui-u first">
+               <span class="subtitle">${msg("help.subtitle1")}</span>
+               <span>${msg("help.info1")}</span>
+               <span class="example">${msg("help.example1")}</span>
+               <span>${msg("help.result1")}</span>
+               <span>${msg("help.info2")}</span>
+               <span class="example">${msg("help.example2")}</span>
+               <span>${msg("help.result2")}</span>
+               <span>${msg("help.info3")}</span>
+               <span class="example">${msg("help.example3")}</span>
+               <span>${msg("help.result3")}</span>
+               <span>${msg("help.info4")}</span>
+               <span class="example">${msg("help.example4")}</span>
+               <span>${msg("help.result4")}</span>
+               <span>${msg("help.info5")}</span>
+               <span class="example">${msg("help.example5")}</span>
+            </div>
+            <div class="yui-u">
+               <span class="subtitle">${msg("help.subtitle2")}</span>
+               <span>${msg("help.info6")}</span>
+               <span class="example">${msg("help.example6")}</span>
+               <span>${msg("help.result6")}</span>
+               <span>${msg("help.info7")}</span>
+               <span class="example">${msg("help.example7")}</span>
+               <span>${msg("help.result7")}</span>
+               <span>${msg("help.info8")}</span>
+               <span>${msg("help.info9")}</span>
+               <span class="example">${msg("help.example9")}</span>
+               <span>${msg("help.result9")}</span>
+               <span>${msg("help.info10")}</span>
+               <span class="example">${msg("help.example10")}</span>
+               <span>${msg("help.result10")}</span>
+            </div>
+         </div>
+         
          <div id="${el}-results" class="results"></div>
          
          <div id="${el}-search-bar-bottom" class="yui-gc search-bar search-bar-bottom theme-bg-color-3 hidden">

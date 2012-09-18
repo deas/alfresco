@@ -287,3 +287,28 @@
    margin: 0;
    padding: 0;
 }
+
+/* help text */
+.search .help span
+{
+   display: block;
+   padding: 0.5em;
+}
+
+.search .help .title
+{
+   font-size: 116%;
+   margin-bottom: -0.25em;
+}
+
+.search .help .subtitle
+{
+   font-weight: bold;
+}
+
+.search .help .example
+{
+   font-style: italic;
+   margin-top: -0.5em;
+   margin-bottom: -0.5em;
+}

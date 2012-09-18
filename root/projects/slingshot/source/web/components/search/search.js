@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Search component.
  * 
@@ -509,6 +509,12 @@
                {
                   Dom.removeClass(me.id + "-paginator-top", "hidden");
                   Dom.removeClass(me.id + "-search-bar-bottom", "hidden");
+               }
+               
+               // display help text if no results were found
+               if (me.resultsCount === 0)
+               {
+                  Dom.removeClass(me.id + "-help", "hidden");
                }
             }
             // Must return true to have the "Loading..." message replaced by the error message
