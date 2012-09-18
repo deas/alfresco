@@ -1621,7 +1621,24 @@
       }
       return html;
    };
-   
+
+   /**
+    * Generate "Quickshare" UI
+    *
+    * @method generateQuickShare
+    * @param scope {object} DocumentLibrary instance
+    * @param record {object} File record
+    * @return {string} HTML mark-up for Comments UI
+    */
+   Alfresco.DocumentList.generateQuickShare = function DL_generateQuickShare(scope, record)
+   {
+      // Create QuickShare widget (will returns its own markup)
+      return new Alfresco.QuickShare().setOptions({
+         nodeRef: record.jsNode.nodeRef,
+         displayName: record.displayName
+      }).display(record.jsNode.properties.qshare_sharedId, record.jsNode.properties.qshare_sharedBy);
+   };
+
    /**
     * Generate User Profile link
     *
@@ -2758,7 +2775,6 @@
          this.registerRenderer("social", function(record)
          {
             var jsNode = record.jsNode,
-               properties = jsNode.properties,
                html = "";
             
             /* Favourite / Likes / Comments */
@@ -2767,6 +2783,10 @@
             if (jsNode.permissions.user.CreateChildren)
             {
                html += '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateComments(this, record) + '</span>';
+            }
+            if (!record.node.isContainer)
+            {
+               html += '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateQuickShare(this, record) + '</span>';
             }
 
             return html;

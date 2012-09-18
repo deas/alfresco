@@ -353,7 +353,7 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
    /**
     * Like constructor.
     *
-    * @param {String} el The HTML id of the parent element
+    * @param {String} el The HTML id of the container element hosting the widget
     * @return {Alfresco.Like} The new Like instance
     * @constructor
     */
@@ -607,7 +607,7 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
    /**
     * Favourite constructor.
     *
-    * @param {String} el The HTML id of the parent element
+    * @param {String|HTMLElement} el The HTML id of the container element hosting the widget
     * @return {Alfresco.Favourite} The new Favourite instance
     * @constructor
     */
@@ -782,6 +782,634 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
 
    });
 })();
+
+/**
+ * QuickShare widget class.
+ * Makes it possible to share a document using a public link
+ *
+ * Usage examples:
+ *
+ * el.innerHTML = new Alfresco.QuickShare().setOptions({ nodeRef: nodeRef, displayName: displayName }).display(sharedId, sharedBy);
+ * new Alfresco.QuickShare(el).setOptions({ nodeRef: nodeRef, displayName: displayName }).display(sharedId, sharedBy);
+ * new Alfresco.QuickShare("uniqueDomId").setOptions({ nodeRef: nodeRef, displayName: displayName }).display(sharedId, sharedBy)
+ *
+ * @namespace Alfresco
+ * @class Alfresco.QuickShare
+ */
+(function()
+{
+   /**
+    * YUI Library aliases
+    */
+   var Dom = YAHOO.util.Dom,
+      Selector = YAHOO.util.Selector;
+
+   /**
+    * Alfresco Slingshot aliases
+    */
+   var $html = Alfresco.util.encodeHTML,
+      $combine = Alfresco.util.combinePaths;
+
+   /**
+    * Favourite constructor.
+    *
+    * @param {String|HTMLElement|null} el (Optional) The HTML id of the parent element, the element OR null if markup shall be inserted
+    * @return {Alfresco.QuickShare} The new QuickShare instance
+    * @constructor
+    */
+   Alfresco.QuickShare = function QuickShare_constructor(el)
+   {
+      var id;
+      if (el)
+      {
+         if (YAHOO.lang.isString(el))
+         {
+            // Assume an html id was used
+            id = el;
+            el = Dom.get(el);
+         }
+         else if (!el.getAttribute("id"))
+         {
+            // Make sure element has a unique id so it can use the onReady callback
+            id = Alfresco.util.generateDomId(el);
+         }
+         YAHOO.util.Dom.addClass(el, "item-social");
+      }
+      else
+      {
+         // Make sure element has a unique id so it can use the onReady callback
+         id = Alfresco.util.generateDomId();
+      }
+
+      // Call superclass constructor
+      Alfresco.QuickShare.superclass.constructor.call(this, "Alfresco.QuickShare", id, ["json"]);
+
+      if (el)
+      {
+         // Save a reference to the base element
+         this.widgets.spanEl = el;
+      }
+
+      // Make prototype attributes instance attribetus
+      this._sharedId = null;
+      this._sharedBy = null;
+      this._menuWasAlreadyOpened = false;
+      this._initialDisplay = true;
+
+      return this;
+   };
+
+   YAHOO.extend(Alfresco.QuickShare, Alfresco.component.Base,
+   {
+
+      /**
+       * Object container for initialization options
+       *
+       * @property options
+       * @type object
+       */
+      options:
+      {
+         /**
+          * Reference to the current document
+          *
+          * @property nodeRef
+          * @type String
+          */
+         nodeRef: null,
+
+         /**
+          * Display name of the current document
+          *
+          * @property displayName
+          * @type String
+          */
+         displayName: null
+      },
+
+      /**
+       * The shareId if shared
+       *
+       * @property _sharedId
+       * @type String
+       * @private
+       */
+      _sharedId: null,
+
+      /**
+       * An object representing the person who share the node, if shared.
+       * Contains userName & displayName
+       *
+       * @property _sharedBy
+       * @type Object
+       * @private
+       */
+      _sharedBy: null,
+
+      /**
+       * Keeps track if the menu is showed or not
+       *
+       * @property _menuWasAlreadyOpened
+       * @type boolean
+       * @default false
+       */
+      _menuWasAlreadyOpened: false,
+
+      /**
+       * Keeps track if we are calling the display method for the first time or not
+       *
+       * @property _initialDisplay
+       * @type boolean
+       * @default true
+       */
+      _initialDisplay: true,
+
+      /**
+       * Used after options has been set to activate the widget and also to update it if its state has changed.
+       *
+       * @method display
+       * @param shareId {String}
+       * @param sharedBy {Object} containing username and displayName attributes
+       * @return {String} html markup for rendering the widget, can be used if no element was provided in the constructor
+       */
+      display: function(shareId, sharedBy)
+      {
+         // Update state
+         this._sharedId = shareId;
+         this._sharedBy = sharedBy;
+
+         // Prepare html to use if this widget that should be inserted
+         var innerHTML = this._render(),
+            html = '<span id="' + this.id + '" class="item-social">' + innerHTML + '</span>';
+
+         // Update ui if element already has been created
+         if (this.widgets.spanEl && this._initialDisplay)
+         {
+            this.widgets.spanEl.innerHTML = innerHTML;
+         }
+         else if (this.widgets.spanEl)
+         {
+            var i18n = "quickshare.document.";
+            if (this._sharedId)
+            {
+               this.widgets.action.setAttribute("title", this.msg(i18n + "shared.tip", this._sharedBy.displayName));
+               this.widgets.action.innerHTML = this.msg(i18n + "shared.label");
+               Dom.addClass(this.widgets.action, "enabled");
+               Dom.addClass(this.widgets.indicator, "enabled");
+            }
+            else
+            {
+               this.widgets.action.setAttribute("title", this.msg(i18n + "share.tip"));
+               this.widgets.action.innerHTML = this.msg(i18n + "share.label");
+               Dom.removeClass(this.widgets.action, "enabled");
+               Dom.removeClass(this.widgets.indicator, "enabled");
+            }
+         }
+         this._initialDisplay = false;
+
+         // Returns the markup for this widget so it can be inserted
+         return html;
+      },
+
+      /**
+       * Create html that represent a quickshare widget
+       *
+       * @method render
+       * @return {String} html markup for the part inside the base element of the widget
+       */
+      _render: function QuickShare_render()
+      {
+         var i18n = "quickshare.document.",
+            tip = this.msg(i18n + "share.tip"),
+            label = this.msg(i18n + "share.label"),
+            linkCss = "quickshare-action",
+            indicatorCss = "quickshare-indicator";
+
+         if (this._sharedId)
+         {
+            // The widhet was eneabled, make sure the intial rendering shows that
+            tip = this.msg(i18n + "shared.tip", this._sharedBy.displayName);
+            label = this.msg(i18n + "shared.label");
+            linkCss += " enabled";
+            indicatorCss += " enabled";
+         }
+
+         var html = '<a href="#" class="' + linkCss + '" title="' + tip + '">' + label + '</a>';
+         html += '<span class="' + indicatorCss + '">&nbsp;</span>';
+         return html;
+      },
+
+      /**
+       * Called once the base element is found in the Dom
+       */
+      onReady: function()
+      {
+         // Store reference to base el if it wasn't provided in constructor
+         this.widgets.spanEl = Dom.get(this.id);
+
+         // Create service instance
+         this.services.quickshare = new Alfresco.service.QuickShare();
+
+         // Save reference to link and make it behave differetnly depending on the widgets state
+         this.widgets.action = Selector.query("a.quickshare-action", this.widgets.spanEl, true);
+         Alfresco.util.useAsButton(this.widgets.action, function(e)
+         {
+            if (!this._sharedId)
+            {
+               this.services.quickshare.share(this.options.nodeRef,
+               {
+                  successCallback:
+                  {
+                     fn: function(response)
+                     {
+                        // Redraw the widget
+                        var share = response.json;
+                        this.display(share.sharedId, Alfresco.constants.USERNAME);
+
+                        // Open the menu
+                        this.showMenu();
+                     }, scope: this
+                  },
+                  failureMessage: this.msg("quickshare.document.share.failure")
+               });
+            }
+            else
+            {
+               if (this._menuWasAlreadyOpened)
+               {
+                  this._menuWasAlreadyOpened = false;
+               }
+               else
+               {
+                  this.showMenu();
+               }
+            }
+
+            YAHOO.util.Event.preventDefault(e);
+         }, null, this);
+         YAHOO.util.Event.addListener(this.widgets.action, "mousedown", function()
+         {
+            this._menuWasAlreadyOpened = this.widgets.overlay && this.widgets.overlay.cfg.getProperty("visible");
+         }, null, this);
+
+         this.widgets.indicator = Selector.query("span.quickshare-indicator", this.widgets.spanEl, true);
+      },
+
+      /**
+       * Shows the menu dialog
+       *
+       * @method showMenu
+       */
+      showMenu: function()
+      {
+         if (!this.widgets.overlay)
+         {
+            var overlayEl = document.createElement("div");
+            Dom.addClass(overlayEl, "yuimenu");
+            Dom.addClass(overlayEl, "quickshare-action-menu");
+
+            overlayEl.innerHTML = '' +
+               '<div class="bd">' +
+               '  <span class="section">' +
+               '     <label for="' + this.id + '-input">' + this.msg("quickshare.link.label") + ':</label> <input id="' + this.id + '-input" type="text" tabindex="0"/>' +
+               '     <a href="#" class="quickshare-action-view">' + this.msg("quickshare.view.label") + '</a>' +
+               '     <a href="#" class="quickshare-action-unshare">' + this.msg("quickshare.unshare.label") + '</a>' +
+               '  </span>' +
+               '  <span class="section">' +
+               '     <label>' + this.msg("quickshare.linkshare.label") + ':</label> <span class="quickshare-linkshare"></span>' +
+               '  </span>' +
+               '</div>';
+
+            this.widgets.overlay = Alfresco.util.createYUIOverlay(overlayEl,
+            {
+               context: [
+                  this.widgets.action,
+                  "tl",
+                  "bl",
+                  ["beforeShow", "windowResize"]
+               ],
+               effect:
+               {
+                  effect: YAHOO.widget.ContainerEffect.FADE,
+                  duration: 0.1
+               },
+               visible: false
+            }, {
+               type: YAHOO.widget.Menu
+            });
+            this.widgets.overlay.render(Dom.get("doc3"));
+
+            this.widgets.unshare = Selector.query("a.quickshare-action-unshare", overlayEl, true);
+            Alfresco.util.useAsButton(this.widgets.unshare, function(e)
+            {
+               this.services.quickshare.unshare(this._sharedId,
+               {
+                  successCallback:
+                  {
+                     fn: function(response)
+                     {
+                        // Redraw the widget as unshared
+                        this.display();
+
+                        // Hide the menu
+                        this.widgets.overlay.hide();
+                     }, scope: this
+                  },
+                  failureMessage: this.msg("quickshare.document.unshare.failure")
+               });
+               YAHOO.util.Event.preventDefault(e);
+            }, null, this);
+
+            // Save references to overlay elements
+            this.widgets.link = Selector.query("input", overlayEl, true);
+            this.widgets.view = Selector.query("a.quickshare-action-view", overlayEl, true);
+            this.widgets.linkshare = Selector.query(".quickshare-linkshare", overlayEl, true);
+
+            // Make sure input is focused when displayed
+            YAHOO.util.Event.addListener(this.widgets.link, "focus", this.widgets.link.select, null, this.widgets.link);
+            YAHOO.util.Event.addListener(this.widgets.link, "mouseover", this.widgets.link.select, null, this.widgets.link);
+            YAHOO.util.Event.addListener(this.widgets.link, "click", this.widgets.link.select, null, this.widgets.link);
+            YAHOO.util.Event.addListener(this.widgets.link, "keydown", this.widgets.link.select, null, this.widgets.link);
+            YAHOO.util.Event.addListener(this.widgets.link, "keyup", this.widgets.link.select, null, this.widgets.link);
+            Alfresco.util.createBalloon(this.widgets.link, {
+               text: this.msg("quickshare.link.tooltip" + (YAHOO.env.ua.os == "macintosh" ? ".mac" : ""))
+            }, "mouseover", "mouseout");
+            this.widgets.overlay.showEvent.subscribe(function (p_event, p_args)
+            {
+               this.widgets.link.focus();
+            }, this, true);
+         }
+
+         // Update info
+         var url = YAHOO.lang.substitute(Alfresco.constants.QUICKSHARE_URL, { sharedId: this._sharedId });
+         if (url.indexOf("/") == 0)
+         {
+            url = window.location.protocol + "//" + window.location.host + url;
+         }
+         this.widgets.link.value = url;
+         this.widgets.view.setAttribute("href", url);
+
+         this.widgets.linkshare.innerHTML = new Alfresco.LinkShare().setOptions({
+            shareUrl: url,
+            displayName: this.options.displayName
+         }).display();
+
+         // Show overlay
+         this.widgets.overlay.show();
+      }
+
+   });
+})();
+
+/**
+ * LinkShare widget class.
+ *
+ * Usage examples:
+ *
+ * el.innerHTML = new Alfresco.LinkShare().setOptions({shareUrl: url, displayName: displayName}).display();
+ * new Alfresco.LinkShare(el).setOptions({shareUrl: url, displayName: displayName}).display();
+ * new Alfresco.LinkShare("uniqueDomId").setOptions({shareUrl: url, displayName: displayName}).display();
+ *
+ * @namespace Alfresco
+ * @class Alfresco.LinkShare
+ */
+(function()
+{
+   /**
+    * YUI Library aliases
+    */
+   var Dom = YAHOO.util.Dom,
+      Selector = YAHOO.util.Selector;
+
+   /**
+    * Alfresco Slingshot aliases
+    */
+   var $html = Alfresco.util.encodeHTML,
+      $combine = Alfresco.util.combinePaths;
+
+   /**
+    * LinkShare constructor.
+    *
+    * @param {String|HTMLElement|null} el (Optional) The HTML id of the parent element, the element OR null if markup shall be inserted
+    * @return {Alfresco.LinkShare} The new Favourite instance
+    * @constructor
+    */
+   Alfresco.LinkShare = function LinkShare_constructor(el)
+   {
+      var id;
+      if (el)
+      {
+         if (YAHOO.lang.isString(el))
+         {
+            // Assume an html id was provided
+            id = el;
+            el = Dom.get(el);
+         }
+         else if (!el.getAttribute("id"))
+         {
+            // Make sure element has a unique id so it can use the onReady callback
+            id = Alfresco.util.generateDomId(el);
+         }
+         YAHOO.util.Dom.addClass(el, "item-social");
+      }
+      else
+      {
+         // Make sure element has a unique id so it can use the onReady callback
+         id = Alfresco.util.generateDomId();
+      }
+
+      // Call super class
+      Alfresco.LinkShare.superclass.constructor.call(this, "Alfresco.LinkShare", id);
+
+      // Save reference to base element
+      if (el)
+      {
+         this.widgets.spanEl = el;
+      }
+      return this;
+   };
+
+   YAHOO.extend(Alfresco.LinkShare, Alfresco.component.Base,
+   {
+      /**
+       * Object container for initialization options
+       *
+       * @property options
+       * @type object
+       */
+      options:
+      {
+         /**
+          * The actions that can be performed on the shareUrl.
+          *
+          * @property actions
+          * @type Array
+          * @default As defined in Alfresco.constants.LINKSHARE_ACTIONS
+          */
+         actions: null,
+
+         /**
+          * The url to share
+          *
+          * @property shareUrl
+          * @type String
+          */
+         shareUrl: null,
+
+         /**
+          * The display name of the content that is being shared
+          *
+          * @property displayName
+          * @type String
+          */
+         displayName: null
+      },
+
+      /**
+       * Used after options has been set to activate the widget and also to update it if its state has changed.
+       *
+       * @method display
+       * @return {String} html markup for rendering the widget, can be used if no element was provided in the constructor
+       */
+      display: function()
+      {
+         // Prepare html to use if this widget that should be inserted
+         var innerHTML = this._render(),
+            html = '<span id="' + this.id + '" class="linkshare item-social">' + innerHTML + '</span>';
+
+         // Update ui if element already has been created
+         if (this.widgets.spanEl)
+         {
+            this.widgets.spanEl.innerHTML = innerHTML;
+         }
+
+         // Returns the markup for this widget so it can be inserted
+         return html;
+      },
+
+      /**
+       * Create html that represent a quickshare button
+       *
+       * @method render
+       */
+      _render: function LinkShare_render()
+      {
+         var actions = this.options.actions || Alfresco.constants.LINKSHARE_ACTIONS,
+            html = '',
+            action;
+
+         // Sort actions
+         actions.sort(this.sortActions);
+
+         // Render actions
+         for (var i = 0; i < actions.length; i++)
+         {
+            action = actions[i];
+            action.type = action.type || "link";
+            if (YAHOO.lang.isObject(!this.actionTypes[action.type]))
+            {
+               throw new Error("action with id '" + action.id + "' is using an unknown action type: '" + action.type + "'");
+            }
+            if (YAHOO.lang.isFunction(this.actionTypes[action.type].render))
+            {
+               html += '<span class="linkshare-action">';
+               html += this.actionTypes[action.type].render.call(this, action);
+               html += '</span>';
+            }
+         }
+
+         // Return actions markup
+         return html;
+      },
+
+      /**
+       * Sorter that compares action using the index attribute
+       *
+       * @param a1 {Object} An action object
+       * @param a2 {Object} An action object
+       * @return {int}
+       */
+      sortActions: function(a1, a2)
+      {
+         return (a1.index > a2.index) ? 1 : (a1.index < a2.index) ? -1 : 0;
+      },
+
+      /**
+       * The action types available.
+       */
+      actionTypes:
+      {
+         /**
+          * Default action type that renders link with standard href attributes
+          */
+         "link":
+         {
+            /**
+             * Returns the markup required for a linkshare action of type link.
+             *
+             * @param action {Object} Action descriptor
+             * @return {String} html to render
+             */
+            render: function(action)
+            {
+               // Resolve link label
+               var i18n = "linkshare.action." + action.id + ".",
+                  tmp = document.createElement("span"),
+                  link = document.createElement("a");
+
+               // Resolve href param from config
+               var label = this._getLabel(action),
+                  href = this._resolveParamValue(action, "href", encodeURIComponent),
+                  target = this._resolveParamValue(action, "target");
+
+               Dom.addClass(link, "linkshare-action-" + action.id);
+               link.setAttribute("title", label);
+               link.setAttribute("href", href);
+               if (target)
+               {
+                  link.setAttribute("target", target);
+               }
+               link.innerHTML = "&nbsp;";
+               tmp.appendChild(link);
+
+               // Return action html
+               return tmp.innerHTML;
+            }
+         }
+      },
+
+      _getLabel: function(action)
+      {
+         return this.msg(action.label || ("linkshare.action." + action.id + ".label"), this.options.shareUrl, this.options.displayName)
+      },
+
+      _resolveParamValue: function(action, name, tokenEncoder)
+      {
+         var v = action.params[name];
+         if (v)
+         {
+            var a = action;
+            return YAHOO.lang.substitute(v, {}, this.bind(function(token)
+            {
+               // If label use it, otherwise look in options and finally treat it as a msg key
+               var value = '';
+               if (this.options[token])
+               {
+                  value = this.options[token];
+               }
+               else
+               {
+                  value = this.msg("linkshare.action." + a.id + "." + token, this.options.shareUrl, this.options.displayName);
+               }
+               return tokenEncoder(value);
+            }));
+         }
+         return v;
+      }
+
+   });
+})();
+
 
 /**
  * Alfresco Resizer.

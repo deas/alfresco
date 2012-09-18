@@ -129,6 +129,19 @@
          </#list>
       };
       Alfresco.constants.HTML_EDITOR = 'tinyMCE';
+      <#if config.scoped["Social"]["quickshare"].getChildValue("url")??>
+      Alfresco.constants.QUICKSHARE_URL = "${config.scoped["Social"]["quickshare"].getChildValue("url")?replace("{context}", url.context)?js_string}";
+      </#if>
+      <#if config.scoped["Social"]["linkshare"].childrenMap["action"]??>
+      Alfresco.constants.LINKSHARE_ACTIONS = [
+         <#list config.scoped["Social"]["linkshare"].childrenMap["action"] as a>
+         {
+         id: "${a.attributes["id"]}", type: "${a.attributes["type"]}", index: ${a.attributes["index"]},
+         params: { <#list a.childrenMap["param"] as p>"${p.attributes["name"]}": "${p.value?js_string}"<#if p_has_next>,</#if></#list> }
+         }<#if a_has_next>,</#if>
+         </#list>
+      ];
+      </#if>
    </@>
 </@>
 

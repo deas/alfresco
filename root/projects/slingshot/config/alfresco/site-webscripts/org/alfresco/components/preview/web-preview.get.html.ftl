@@ -1,5 +1,5 @@
 <@markup id="css" >
-   <#-- CSS Dependencies -->
+<#-- CSS Dependencies -->
    <@link href="${url.context}/res/components/preview/web-preview.css" group="${dependencyGroup}"/>
    <@link href="${url.context}/res/components/preview/WebPreviewerHTML.css" group="${dependencyGroup}" />
    <@link href="${url.context}/res/components/preview/Audio.css" group="${dependencyGroup}" />
@@ -7,7 +7,7 @@
 </@>
 
 <@markup id="js">
-   <#-- JavaScript Dependencies -->
+<#-- JavaScript Dependencies -->
    <@script src="${url.context}/res/components/preview/web-preview.js" group="${dependencyGroup}"/>
    <@script src="${url.context}/res/components/preview/WebPreviewer.js" group="${dependencyGroup}"/>
    <@script src="${url.context}/res/js/flash/extMouseWheel.js" group="${dependencyGroup}"/>
@@ -29,11 +29,11 @@
    <@uniqueIdDiv>
       <#if node??>
          <#assign el=args.htmlid?html>
-         <div id="${el}-body" class="web-preview">
-            <div id="${el}-previewer-div" class="previewer">
-               <div class="message"><#if (node?exists)>${msg("label.preparingPreviewer")}</#if></div>
-            </div>
+      <div id="${el}-body" class="web-preview">
+         <div id="${el}-previewer-div" class="previewer">
+            <div class="message"><#if (node?exists)>${msg("label.preparingPreviewer")}</#if></div>
          </div>
+      </div>
       </#if>
    </@>
 </@>

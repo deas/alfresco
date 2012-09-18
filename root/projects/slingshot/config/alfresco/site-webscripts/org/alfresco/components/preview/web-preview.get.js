@@ -38,74 +38,58 @@ function getPluginConditions(xmlConfig)
    }
 }
 
-function getDocumentNode(nodeRef, defaultValue)
+function getNodeMetadata(proxy, api, nodeRef)
 {
 
-   var metadata = AlfrescoUtil.getMetaData(nodeRef, {});
-   if (metadata.properties)
+   var result = remote.connect(proxy).get("/" + api + "/node/" + nodeRef.replace(/:\//g, "") + "/metadata"),
+      node;
+   if (result.status == 200)
    {
-      var node = {},
-         mcns = "{http://www.alfresco.org/model/content/1.0}",
-         content = metadata.properties[mcns + "content"];
-
-      node.name = metadata.properties[mcns + "name"];
-      node.mimeType = metadata.mimetype;
-      if (content)
-      {
-         var size = content.substring(content.indexOf("size=") + 5);
-         size = size.substring(0, size.indexOf("|"));
-         node.size = size;
-      }
-      else
-      {
-         node.size = "0";
-      }
-      node.thumbnailModifications = metadata.properties[mcns + "lastThumbnailModification"];
-      if (node.thumbnailModifications == null)
-      {
-         node.thumbnailModifications = [];
-      }
-      
-      node.thumbnails = AlfrescoUtil.getThumbnails(nodeRef);
-      return node;
+      var nodeMetadata = eval('(' + result + ')');
+      node = {};
+      node.name = nodeMetadata.title || nodeMetadata.name;
+      node.mimeType = nodeMetadata.mimetype;
+      node.size = nodeMetadata.size || "0";
+      node.thumbnailModifications = nodeMetadata.lastThumbnailModificationData;
+      node.thumbnails = nodeMetadata.thumbnailDefinitions;
    }
-   else
-   {
-      return defaultValue;
-   }
+   return node;
 }
 
 function main()
 {
    // Populate model with parameters
    AlfrescoUtil.param("nodeRef");
+   AlfrescoUtil.param("api", "api");
+   AlfrescoUtil.param("proxy", "alfresco");
 
    // Populate model with data from repo
-   var pluginConditions; 
-   var documentNode = getDocumentNode(model.nodeRef, null);
-   if (documentNode)
+   var nodeMetadata = getNodeMetadata(model.proxy, model.api, model.nodeRef);
+   if (nodeMetadata)
    {
       // Populate model with data from node and config
-      model.node = documentNode;
-      pluginConditions = getPluginConditions(new XML(config.script));
+      model.node = nodeMetadata;
+      var pluginConditions = getPluginConditions(new XML(config.script));
       model.pluginConditionsJSON = jsonUtils.toJSONString(pluginConditions);
+
+      // Widget instantiation metadata...
+      var webPreview = {
+         id : "WebPreview",
+         name : "Alfresco.WebPreview",
+         options : {
+            thumbnailModification : model.node.thumbnailModifications,
+            nodeRef : model.nodeRef,
+            name : model.node.name,
+            mimeType : model.node.mimeType,
+            size: model.node.size,
+            thumbnails : model.node.thumbnails,
+            pluginConditions : model.pluginConditionsJSON,
+            api: model.api,
+            proxy: model.proxy
+         }
+      };
+      model.widgets = [webPreview];
    }
-   
-   // Widget instantiation metadata...
-   var webPreview = {
-      id : "WebPreview", 
-      name : "Alfresco.WebPreview",
-      options : {
-         thumbnailModification : model.node.thumbnailModifications,
-         nodeRef : model.nodeRef,
-         name : model.node.name,
-         mimeType : model.node.mimeType,
-         size: model.node.size,
-         thumbnails : model.node.thumbnails,
-         pluginConditions : model.pluginConditionsJSON
-      }
-   };
-   model.widgets = [webPreview];
 }
 
 // Start the webscript

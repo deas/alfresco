@@ -115,6 +115,15 @@
          showComments: true,
 
          /**
+          * Flag indicating whether or not to show show quickshare
+          *
+          * @property showQuickShare
+          * @type boolean
+          * @default: true
+          */
+         showQuickShare: true,
+
+         /**
           * Flag indicating whether or not to show download button
           *
           * @property showDownload
@@ -146,7 +155,25 @@
           * @property isContainer
           * @type boolean
           */
-        isContainer: false
+         isContainer: false,
+
+         /**
+          * Shared id if the node has been shared (only possible for documents at them moment)
+          *
+          * @property sharedId
+          * @type string
+          * @default null
+          */
+         sharedId: null,
+
+         /**
+          * The user that shared the node
+          *
+          * @property sharedBy
+          * @type string
+          * @default null
+          */
+         sharedBy: null
       },
 
       /**
@@ -181,6 +208,16 @@
             }).display(this.options.isFavourite);
          }
 
+         if (this.options.showQuickShare)
+         {
+            // Create favourite widget
+            new Alfresco.QuickShare(this.id + '-quickshare').setOptions(
+                  {
+                     nodeRef: this.options.nodeRef,
+                     displayName: this.options.displayName
+                  }).display(this.options.sharedId, this.options.sharedBy);
+         }
+         
          // Parse the date
          var dateEl = Dom.get(this.id + '-modifyDate');
          dateEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(dateEl.innerHTML), Alfresco.util.message("date-format.default"));
@@ -197,7 +234,7 @@
 
          var url = 'components/node-details/node-header?nodeRef={nodeRef}&rootPage={rootPage}' +
             '&rootLabelId={rootLabelId}&showFavourite={showFavourite}&showLikes={showLikes}' +
-            '&showComments={showComments}&showDownload={showDownload}&showPath={showPath}' +
+            '&showComments={showComments}&showQuickShare={showQuickShare}&showDownload={showDownload}&showPath={showPath}' +
             (this.options.siteId ? '&site={siteId}' :  '');
 
          this.refresh(url);

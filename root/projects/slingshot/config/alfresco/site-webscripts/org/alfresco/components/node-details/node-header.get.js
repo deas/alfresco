@@ -9,6 +9,7 @@ function main()
    AlfrescoUtil.param("showFavourite", "true");
    AlfrescoUtil.param("showLikes", "true");
    AlfrescoUtil.param("showComments", "true");
+   AlfrescoUtil.param("showQuickShare", "true");
    AlfrescoUtil.param("showDownload", "true");
    AlfrescoUtil.param("showPath", "true");
    var nodeDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
@@ -18,41 +19,43 @@ function main()
       model.node = nodeDetails.item.node;
       model.isContainer = nodeDetails.item.node.isContainer;
       model.paths = AlfrescoUtil.getPaths(nodeDetails, model.rootPage, model.rootLabelId);
+      model.showQuickShare = (!model.isContainer && model.showComments).toString();
       model.showComments = ((nodeDetails.item.node.permissions.user["CreateChildren"] || false) && model.showComments).toString();
       model.showDownload = (!model.isContainer && model.showDownload).toString();
       var count = nodeDetails.item.node.properties["fm:commentCount"];
       model.commentCount = (count != undefined ? count : null);
-   }
-   
-   
-   // Widget instantiation metadata...
-   var likes = {};
-   if (model.item.likes != null)
-   {
-      likes.isLiked = model.item.likes.isLiked || false;
-      likes.totalLikes = model.item.likes.totalLikes || 0;
-   }
 
-   var nodeHeader = {
-      id : "NodeHeader", 
-      name : "Alfresco.component.NodeHeader",
-      options : {
-         nodeRef : model.nodeRef,
-         siteId : model.site,
-         rootPage : model.rootPage,
-         rootLabelId : model.rootLabelId,
-         showFavourite : Boolean(model.showFavourite),
-         showLikes : Boolean(model.showLikes),
-         showComments : Boolean(model.showComments),
-         showDownload : Boolean(model.showDownload),
-         showPath : Boolean(model.showPath),
-         displayName : (model.item.displayName != null) ? model.item.displayName : model.item.fileName,
-         likes : likes,
-         isFavourite : Boolean(model.item.isFavourite || false),
-         isContainer : Boolean(model.isContainer)
+      // Widget instantiation metadata...
+      var likes = {};
+      if (model.item.likes != null)
+      {
+         likes.isLiked = model.item.likes.isLiked || false;
+         likes.totalLikes = model.item.likes.totalLikes || 0;
       }
-   };
-   model.widgets = [nodeHeader];
+
+      var nodeHeader = {
+         id : "NodeHeader",
+         name : "Alfresco.component.NodeHeader",
+         options : {
+            nodeRef : model.nodeRef,
+            siteId : model.site,
+            rootPage : model.rootPage,
+            rootLabelId : model.rootLabelId,
+            showFavourite : Boolean(model.showFavourite),
+            showLikes : Boolean(model.showLikes),
+            showComments : Boolean(model.showComments),
+            showDownload : Boolean(model.showDownload),
+            showPath : Boolean(model.showPath),
+            displayName : (model.item.displayName != null) ? model.item.displayName : model.item.fileName,
+            likes : likes,
+            isFavourite : Boolean(model.item.isFavourite || false),
+            isContainer : Boolean(model.isContainer),
+            sharedId: model.item.node.properties["qshare:sharedId"] || null,
+            sharedBy: model.item.node.properties["qshare:sharedBy"] || null
+         }
+      };
+      model.widgets = [nodeHeader];
+   }
 }
 
 main();

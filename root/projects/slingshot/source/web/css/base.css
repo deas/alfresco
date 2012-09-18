@@ -15,6 +15,19 @@ blockquote
    margin: 0 2em;
 }
 
+.tiny
+{
+   font-size: 80%;
+}
+
+.alfresco-share .sticky-wrapper ul,
+.yui-overlay ul
+{
+   padding: 0;
+   margin-left:  0;
+   list-style-position: inside;
+}
+
 #bd
 {
    padding-bottom: 2em;
@@ -48,7 +61,7 @@ blockquote
 
 .sticky-wrapper,
 .sticky-footer,
-yui-panel-container,
+.balloon,
 #lightbox,
 #ygddfdiv
 {
@@ -93,15 +106,17 @@ yui-panel-container,
    display: none !important;
 }
 
+/* Share pages */
+
 .alfresco-share .sticky-wrapper p,
-.yui-panel-container p
+.yui-overlay p
 {
    padding-top: 3px;
    padding-bottom: 3px;
 }
 
 .alfresco-share .sticky-wrapper hr,
-.yui-panel-container hr
+.yui-overlay hr
 {
    height: 1px;
    margin-top: 5px;
@@ -112,7 +127,7 @@ yui-panel-container,
 }
 
 .sticky-wrapper fieldset,
-.yui-panel-container fieldset,
+.yui-overlay fieldset,
 .login-panel fieldset
 {
    border: 0;
@@ -456,10 +471,11 @@ span.navigation-separator-alt
 .sticky-wrapper input[type="text"],
 .sticky-wrapper input[type="password"],
 .sticky-wrapper textarea,
-.yui-panel-container select,
-.yui-panel-container input[type="text"],
-.yui-panel-container input[type="password"],
-.yui-panel-container textarea
+.yui-overlay select,
+.yui-overlay input[type="file"],
+.yui-overlay input[type="text"],
+.yui-overlay input[type="password"],
+.yui-overlay textarea
 {
    padding: 2px;
    width: 15em;
@@ -609,6 +625,8 @@ textarea.wide
    margin: 1em 10px 15px;
    padding: 15px;
    position: relative;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
    border-radius: 10px;
    /* outline radius for mozilla/firefox only */
    -moz-box-shadow: 0 0 10px #000;
@@ -1153,6 +1171,81 @@ form.insitu-edit a
    background-image: url(../components/images/imap-fav-selected-16.png);
 }
 
+.item-social a.quickshare-action
+{
+   background-image: url(../components/images/quickshare-action-16.png);
+}
+.item-social a.quickshare-action.enabled,
+.item-social a.quickshare-action.enabled:active,
+.item-social a.quickshare-action.enabled:hover
+{
+   padding-left: 20px;
+   background-image: url(../components/images/quickshare-action-enabled-16.png);
+}
+.item-social .quickshare-indicator
+{
+   display: none;
+}
+.item-social .quickshare-indicator.enabled
+{
+   display: inline;
+   background: no-repeat url(../components/images/quickshare-indicator-16.png) center center;
+   padding: 0.5em;
+}
+.quickshare-action-menu .bd
+{
+   padding: 0.75em 1em 0 1em;
+}
+.quickshare-action-menu .bd input
+{
+   margin-left: 0.5em;
+   margin-right: 0.5em;
+}
+.quickshare-action-menu .bd .section
+{
+   display: block;
+   margin-bottom: 0.75em;
+}
+.quickshare-action-menu .bd label
+{
+   min-width: 6em;
+   display: inline-block;
+}
+.quickshare-action-unshare
+{
+   margin-left: 0.5em;
+}
+.quickshare-linkshare
+{
+   padding-left: 0.5em;
+}
+
+.linkshare-action a,
+.linkshare-action a:active,
+.linkshare-action a:hover
+{
+   text-decoration: none !important;
+   padding: 0.5em 0.75em;
+   background-position: center center;
+   background-repeat: no-repeat;
+}
+.linkshare-action-email
+{
+   background-image: url(../components/images/social-email-16.png);
+}
+.linkshare-action-facebook
+{
+   background-image: url(../components/images/social-facebook-16.png);
+}
+.linkshare-action-twitter
+{
+   background-image: url(../components/images/social-twitter-16.png);
+}
+.linkshare-action-google-plus
+{
+   background-image: url(../components/images/social-google-16.png);
+}
+
 .item-social a.enabled
 {
    height: 16px;
@@ -1164,6 +1257,7 @@ form.insitu-edit a
 {
    background-image: url(../components/images/delete-16.png);
 }
+
 
 span.item-social.item-separator,
 .detail-social span.item-separator
@@ -1345,3 +1439,203 @@ span.item-social.item-separator,
    background-image: url(blank.gif);
    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../components/images/lightbox/overlay.png", sizingMethod="scale");
 }
+
+
+.inlineItemReadOnly
+{
+   background-color: #DCEAF4;
+   color: #4F94C9;
+   padding: 0.1em, 0.3em;
+   margin-right: 0.5em;
+}
+
+.inlineItemEdit
+{
+   font-weight: normal;
+   padding: 0.3em 0.3em 0 0.3em;
+   min-height: 2em;
+}
+
+.invalid .inlineItemEdit input[type="text"]
+{
+   background-color: inherit;
+}
+
+
+.inlineItemEditItem
+{
+   background-color: #EEE;
+   color: #333;;
+   padding: 0.2em 0.3em;
+   margin-right: 0.5em;
+   margin-bottom: 0.3em;
+   display: inline-block;
+   cursor: pointer;
+}
+
+.inlineItemEditItemPrimed
+{
+   background-color: #DCEAF4;
+   color: #4F94C9;
+}
+
+.inlineItemEditItem img
+{
+   vertical-align: bottom;
+   margin-left: 0.3em;
+}
+
+.inlineItemEdit input[type="text"]:focus
+{
+   outline: none;
+   width: inherit;
+}
+
+.inlineItemEdit input[type="text"]
+{
+   width: 0;
+   position: static;
+   border: none !important;
+   padding-bottom: 0.5em;
+   padding-top: 0.3em;
+   padding-left: 0.3em;
+}
+
+.inlineItemEditItemSelection
+{
+   vertical-align: bottom;
+   padding-bottom: 0.2em;
+   margin-left: 0.3em;
+}
+
+.inlineItemEditAutoCompleteWrapper
+{
+   padding: 0 0 2em;
+   width: 12em;
+}
+
+.inlineItemEditAutoComplete
+{
+   width: inherit !important;
+}
+
+.inlineItemEditAutoComplete .yui-ac-content
+{
+   border: 1px solid #C5D6E2 !important;
+}
+
+.inlineItemEditAutoComplete li.yui-ac-highlight
+{
+   background-color: #DCEAF4 !important;
+   color: #515D6B !important;
+}
+
+.passwordStrengthMeter span,
+.passwordStrengthMeter ul
+{
+   float: left;
+   margin-top: 0.75em;
+   margin-bottom: 0.75em;
+   padding-left: 0;
+   margin-right: 0.5em;
+   font-size: 75%;
+}
+
+.passwordStrengthMeter li
+{
+   margin-left: 0.25em;
+   float: left;
+   border: 1px solid #CCCCCC;
+   background-color: #EEEEEE;
+   width: 2.7em;
+   height: 1em;
+   list-style: none;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-weak li.passwordStrengthMeterStrength-1
+{
+   background-color: #FBA101;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-medium li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-medium li.passwordStrengthMeterStrength-2
+{
+   background-color: #FFE118;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-3
+{
+   background-color: #8ADC00;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-3,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-4
+{
+   background-color: #46B31B;
+}
+
+
+/* Company Brand Styling for "public" pages */
+
+.brand-bgcolor-1
+{
+   background-color: #53a3db;
+}
+
+.brand-bgcolor-2
+{
+   background-color: #3e76be;
+}
+
+.brand-bgcolor-3
+{
+   background-color: #95c62c;
+}
+
+.brand-bgcolor-4
+{
+   background-color: #4db440;
+}
+
+.brand-bgcolor-5
+{
+   background-color: #ffe800;
+}
+
+.brand-bgcolor-6
+{
+   background-color: #faa200;
+}
+
+.brand-bg-1,
+body.brand-bg-1 .sticky-wrapper
+{
+   background: -moz-linear-gradient(top, #fff 0%, #f0f4fb 100%); /* FF3.6+ */
+   background: -webkit-gradient(linear, left 10, left bottom, color-stop(0%,#fff), color-stop(100%,#f0f4fb)); /* Chrome,Safari4+ */
+   background: -webkit-linear-gradient(top, #fff 0%,#f0f4fb 100%); /* Chrome10+,Safari5.1+ */
+   background: -o-linear-gradient(top, #fff 0%,#f0f4fb 100%); /* Opera 11.10+ */
+   background: -ms-linear-gradient(top, #fff 0%,#f0f4fb 100%); /* IE10+ */
+   background: linear-gradient(top, #fff 0%,#f0f4fb 100%); /* W3C */
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#f0f4fb',GradientType=0 ); /* IE6-9 */
+   background-repeat: no-repeat;
+   background-attachment: fixed;
+   background-position: 0px 7.4em; /* Right below the public header */
+}
+
+.sticky-wrapper a.brand-button,
+.yui-overlay a.brand-button,
+.sticky-wrapper a.brand-button:hover,
+.yui-overlay a.brand-button:hover,
+.sticky-wrapper a.brand-button:visited,
+.yui-overlay a.brand-button:visited
+{
+   border-radius: 0.5em;
+   padding: 0.5em 0.75em;
+   margin: 0 0.5em;
+   color: #ffffff;
+}
+

@@ -3,16 +3,18 @@
       <#-- CSS Dependencies -->
       <@link href="${url.context}/res/components/node-details/node-header.css" group="node-header"/>
    </@>
-   
+
    <@markup id="js">
       <#-- JavaScript Dependencies -->
       <@script src="${url.context}/res/components/node-details/node-header.js" group="node-header"/>
    </@>
-   
+
    <@markup id="widgets">
+      <#if item??>
       <@createWidgets group="node-header"/>
+      </#if>
    </@>
-   
+
    <@markup id="html">
       <@uniqueIdDiv>
          <#if item??>
@@ -20,7 +22,7 @@
             <#assign id = args.htmlid?html>
             <#if !isContainer>
                <#assign fileExtIndex = item.fileName?last_index_of(".")>
-               <#assign fileExt = (fileExtIndex > -1)?string(item.fileName?substring(fileExtIndex + 1)?lower_case, "generic")>
+                        <#assign fileExt = (fileExtIndex > -1)?string(item.fileName?substring(fileExtIndex + 1)?lower_case, "generic")>
             </#if>
             <#assign displayName = (item.displayName!item.fileName)?html>
             <#assign itemType = isContainer?string("folder", "document")>
@@ -101,6 +103,9 @@
                      <span class="item item-separator item-social">
                         <a href="#" name="@commentNode" rel="${nodeRef?js_string}" class="theme-color-1 comment ${id}" title="${msg("comment.${itemType}.tip")}" tabindex="0">${msg("comment.${itemType}.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
                      </span>
+                     </#if>
+                     <#if showQuickShare == "true">
+                     <span id="${id}-quickshare" class="item item-separator"></span>
                      </#if>
                   </div>
                </div>

@@ -1966,6 +1966,88 @@ Alfresco.util.createYUIPanel = function(p_el, p_params, p_custom)
 };
 
 /**
+ * Wrapper to create a YUI Overlay with common attributes, as follows:
+ * <pre>
+ *   modal: false,
+ *   draggable false,
+ *   close: false,
+ *   visible: false,
+ *   iframe: false
+ * </pre>
+ *
+ * All supplied object parameters are passed to the panel constructor
+ * e.g. var overlay = Alfresco.util.createYUIOverlay(Dom.get(this.id),
+ * {
+ *    effect:
+ *    {
+ *       effect: YAHOO.widget.ContainerEffect.FADE,
+ *       duration: 0.25
+ *    }
+ * }, { render: false });
+ *
+ * @method Alfresco.util.createYUIOverlay
+ * @param p_el {string|HTMLElement} The element ID representing the Panel or the element representing the Panel
+ * @param p_params {object} Optional extra/overridden object parameters to pass to Panel constructor:
+ * @param p_custom {object} Optional parameters to customise Panel creation:
+ * <pre>
+ *    render {boolean} By default the new Overlay will be rendered to document.body. Set to false to prevent this.
+ *    type {object} Use to override YAHOO.widget.Overlay default type
+ * </pre>
+ * @return {YAHOO.widget.Overlay|flags.type} New Overlay instance
+ * @static
+ */
+Alfresco.util.createYUIOverlay = function(p_el, p_params, p_custom)
+{
+   // Default constructor parameters
+   var overlay,
+         params =
+         {
+            modal: false,
+            draggable: false,
+            close: false,
+            visible: false,
+            iframe: false
+         },
+         custom =
+         {
+            render: true,
+            type: YAHOO.widget.Overlay
+         };
+
+   // Any extra/overridden constructor parameters?
+   if (typeof p_params == "object")
+   {
+      params = YAHOO.lang.merge(params, p_params);
+   }
+   // Any customisation?
+   if (typeof p_custom == "object")
+   {
+      custom = YAHOO.lang.merge(custom, p_custom);
+   }
+
+   // Create and return the overlay
+   overlay = new (custom.type)(p_el, params);
+
+   var PREVENT_SCROLLBAR_FIX = (YAHOO.widget.Module.prototype.platform === "mac" && 0 < YAHOO.env.ua.gecko && YAHOO.env.ua.gecko < 2);
+   if (PREVENT_SCROLLBAR_FIX)
+   {
+      // Prevent Mac Firefox 3.x scrollbar bugfix from being applied by YUI
+      overlay.hideEvent.unsubscribe(overlay.hideMacGeckoScrollbars, overlay, true);
+      overlay.showEvent.unsubscribe(overlay.showMacGeckoScrollbars, overlay, true);
+      overlay.hideMacGeckoScrollbars = function (){ Dom.replaceClass(this.element, "prevent-scrollbars", "hide-scrollbars"); },
+            overlay.showMacGeckoScrollbars = function(){ Dom.replaceClass(this.element, "hide-scrollbars", "prevent-scrollbars"); };
+   }
+
+   if (custom.render)
+   {
+      overlay.render(document.body);
+   }
+
+   return overlay;
+};
+
+
+/**
  * Creates an "information balloon tooltip" UI control attached to a passed-in element.
  * This is similar to the standard balloon UI Control, but designed for better legibility of larger amounts of information
  *
@@ -2046,7 +2128,7 @@ Alfresco.util.createBalloon = function(p_context, p_params)
     */
    Alfresco.widget.Balloon = function(p_context, p_params)
    {
-      var balloon = new YAHOO.widget.Overlay(Alfresco.util.generateDomId(),
+      var balloon = Alfresco.util.createYUIOverlay(Alfresco.util.generateDomId(),
       {
          context:
          [
@@ -2065,15 +2147,6 @@ Alfresco.util.createBalloon = function(p_context, p_params)
          }
       });
       
-      if (PREVENT_SCROLLBAR_FIX)
-      {
-         // Prevent Mac Firefox 3.x scrollbar bugfix from being applied by YUI
-         balloon.hideEvent.unsubscribe(balloon.hideMacGeckoScrollbars, balloon, true);
-         balloon.showEvent.unsubscribe(balloon.showMacGeckoScrollbars, balloon, true);
-         balloon.hideMacGeckoScrollbars = function (){ Dom.replaceClass(this.element, "prevent-scrollbars", "hide-scrollbars"); },
-         balloon.showMacGeckoScrollbars = function(){ Dom.replaceClass(this.element, "hide-scrollbars", "prevent-scrollbars"); };
-      }
-
       var wrapper = document.createElement("div"),
          arrow = document.createElement("div");
 
@@ -7504,6 +7577,67 @@ Alfresco.service.BaseService.prototype =
       remove: function Ratings_remove(node, responseConfig)
       {
          this._jsonCall(Alfresco.util.Ajax.DELETE, this._url(node) + "/" + encodeURIComponent(this._ratingScheme), null, responseConfig);
+      }
+   });
+})();
+
+/**
+ * Alfresco QuickShare  Service.
+ *
+ * @namespace Alfresco.service
+ * @class Alfresco.service.QuickShare
+ */
+(function()
+{
+   /**
+    * Ratings Service constructor.
+    *
+    * @return {Alfresco.service.QuickShare} The new Alfresco.service.QuickShare  instance
+    * @constructor
+    */
+   Alfresco.service.QuickShare = function QuickShare_constructor()
+   {
+      return Alfresco.service.QuickShare.superclass.constructor.call(this);
+   };
+
+   YAHOO.extend(Alfresco.service.QuickShare, Alfresco.service.BaseService,
+   {
+      /**
+       * Helper method for creating urls
+       *
+       * @method _url
+       * @param action Part of the url
+       * @param id {string} NodeRef or sharedId
+       * @return {string} The base url to the ratings webscripts
+       * @protected
+       */
+      _url: function QuickShare_url(action, id)
+      {
+         return Alfresco.constants.PROXY_URI + "api/internal/shared/" + action + "/" + id;
+      },
+
+      /**
+       * Sets a user rating on the specified NodeRef
+       *
+       * @method set
+       * @param node {NodeRef|string} Node reference
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      share: function QuickShare_set(node, responseConfig)
+      {
+         this._jsonCall(Alfresco.util.Ajax.POST, this._url("share", (node + "").replace(":/", "")), {}, responseConfig);
+      },
+
+      /**
+       * Stop the node from being share.
+       *
+       * @method unshare
+       * @param sharedId {string} Id to the share to remove
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      unshare: function QuickShare_remove(sharedId, responseConfig)
+      {
+         this._jsonCall(Alfresco.util.Ajax.DELETE, this._url("unshare", sharedId), null, responseConfig);
       }
    });
 })();

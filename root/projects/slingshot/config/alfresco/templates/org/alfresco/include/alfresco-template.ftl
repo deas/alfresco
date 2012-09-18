@@ -90,9 +90,9 @@
    Template "templateBody" macro.
    Pulls in main template body.
 -->
-<#macro templateBody>
+<#macro templateBody type="">
 <#if !PORTLET>
-<body id="Share" class="yui-skin-${theme} alfresco-share">
+<body id="Share" class="yui-skin-${theme} alfresco-share ${type}">
 </#if>
    <div class="sticky-wrapper">
       <div id="doc3">

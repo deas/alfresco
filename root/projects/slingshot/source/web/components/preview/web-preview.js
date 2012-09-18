@@ -121,7 +121,26 @@
           * @property pluginConditions
           * @type Array
           */
-         pluginConditions: []
+         pluginConditions: [],
+
+         /**
+          * The base to the rest api call for the node's content or thumbnails
+          *
+          * @property api
+          * @type string
+          * @default "api"
+          */
+         api: "api",
+
+         /**
+          * The proxy to use for the rest api call for the node's content or thumbnails.
+          * I.e. "alfresco" (or "alfresco-noauth" for public content & pages)
+          *
+          * @property proxy
+          * @type string
+          * @default "alfresco"
+          */
+         proxy: "alfresco"
       },
 
       /**
@@ -322,10 +341,11 @@
        */
       getContentUrl: function WP_getContentUrl(download)
       {
-         var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
+         var proxy = Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
+            nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime();
          download = download ? "a=true" : "a=false";
-         return Alfresco.constants.PROXY_URI + "api/node/content/" + nodeRefAsLink + "/" + this.options.name + "?c=force&" + noCache + "&" + download
+         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/" + this.options.name + "?c=force&" + noCache + "&" + download
       },
 
       /**
@@ -339,9 +359,10 @@
        */
       getThumbnailUrl: function WP_getThumbnailUrl(thumbnail, fileSuffix)
       {
-         var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
-               noCache = "noCache=" + new Date().getTime(),
-               force = "c=force";
+         var proxy = Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
+            nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
+            noCache = "noCache=" + new Date().getTime(),
+            force = "c=force";
          
          // Check to see if last modification data is available for the thumbnail...
          for (var i = 0; i < this.options.thumbnailModification.length; i++)
@@ -352,7 +373,7 @@
                break;
             }
          }
-         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + force + "&" + noCache
+         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + force + "&" + noCache
       },
 
       /**
