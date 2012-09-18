@@ -9,7 +9,7 @@ function main()
    if (documentDetails)
    {
       model.document = documentDetails;
-      model.allowMetaDataUpdate = documentDetails.item.node.permissions.user["Write"] || false;
+      model.allowMetaDataUpdate = (!documentDetails.item.node.isLocked && documentDetails.item.node.permissions.user["Write"]) || false;
    }
    
    // Widget instantiation metadata...
