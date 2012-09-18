@@ -31,7 +31,7 @@
          <#assign el=args.htmlid?html>
       <div id="${el}-body" class="web-preview">
          <div id="${el}-previewer-div" class="previewer">
-            <div class="message"><#if (node?exists)>${msg("label.preparingPreviewer")}</#if></div>
+            <div class="message"></div>
          </div>
       </div>
       </#if>

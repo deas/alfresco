@@ -109,6 +109,18 @@ public class SlingshotEvaluatorUtil {
      * Returns the current site id OR null if we aren't in a site
      *
      * @param context
+     * @return The current page id OR null if it doesn't exist
+     */
+    public String getPageId(RequestContext context)
+    {
+        // Look for pageId
+        return context.getPageId();
+    }
+
+    /**
+     * Returns the current site id OR null if we aren't in a site
+     *
+     * @param context
      * @return The current site id OR null if we aren't in a site
      */
     protected String getSite(RequestContext context)

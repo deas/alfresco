@@ -24,9 +24,9 @@
    color: #666;
 }
 
-.quickshare-error p.generic-icon
+.quickshare-error p.broken-file-icon
 {
-   padding-left: 4em;
-   background: url(../images/generic-file-48.png) no-repeat 1em 0;
-   min-height: 3em;
+   padding-left: 5em;
+   background: url(../images/broken-file.png) no-repeat 1em 0;
+   min-height: 4em;
 }

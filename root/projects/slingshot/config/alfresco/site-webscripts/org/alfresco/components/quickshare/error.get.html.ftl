@@ -4,6 +4,6 @@
    </@markup>
    <@markup id="message">
       <hr/>
-      <p class="message generic-icon">${msg("message")}</p>
+      <p class="message broken-file-icon">${msg("message")}</p>
    </@markup>
 </div>

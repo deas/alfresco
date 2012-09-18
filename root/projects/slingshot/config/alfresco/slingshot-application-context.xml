@@ -235,6 +235,9 @@
    </bean>
 
    <!-- Component extensibility evaluators -->
+   <bean id="page.component.evaluator" class="org.alfresco.web.extensibility.SlingshotPageComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
    <bean id="site.component.evaluator" class="org.alfresco.web.extensibility.SlingshotSiteComponentElementEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>

@@ -35,6 +35,7 @@
     */
    var Dom = YAHOO.util.Dom,
       Event = YAHOO.util.Event,
+      Selector = YAHOO.util.Selector,
       Element = YAHOO.util.Element,
       KeyListener = YAHOO.util.KeyListener;
 
@@ -219,6 +220,9 @@
       {
          // Save a reference to the HTMLElement displaying texts so we can alter the texts later
          this.widgets.previewerElement = Dom.get(this.id + "-previewer-div");
+
+         // Display the preparing previewer message
+         Selector.query(".message", this.widgets.previewerElement, true).innerHTML = this.msg("label.preparingPreviewer");
 
          // Parameter nodeRef is mandatory
          if (this.options.nodeRef === undefined)

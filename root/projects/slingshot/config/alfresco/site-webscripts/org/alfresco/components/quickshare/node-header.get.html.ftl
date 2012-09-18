@@ -11,7 +11,7 @@
 
    <#-- Modified -->
    <div>
-      ${msg("label.modified-by-user-on-date", modifierFirstName?html, modifierLastName?html, "<span id='${el}-modifyDate'>${modifyDate}</span>")}
+      ${msg("label.modified-by-user-on-date", (modifierFirstName!"")?html, (modifierLastName!"")?html, "<span id='${el}-modifyDate'>${modifyDate}</span>")}
       <script type="text/javascript">
          var dateEl = YAHOO.util.Dom.get('${el}-modifyDate');
          dateEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(dateEl.innerHTML), Alfresco.util.message("date-format.default"));
