@@ -249,6 +249,17 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="install-amps-in-dir" description="Installs all AMP files in a dir into the given WAR file or exploded dir">
+		<attribute name="ampfilesdir" />
+		<attribute name="warfile" />
+		<sequential>
+			<java dir="." fork="true" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java" failonerror="true">
+				<classpath refid="classpath.compile"/>
+				<arg line="install @{ampfilesdir} @{warfile} -directory -force -verbose -nobackup"/>
+			</java>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="minimize-javascript">
 		<attribute name="sourcedir" />
 		<attribute name="destdir" />

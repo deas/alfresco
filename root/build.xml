@@ -676,6 +676,11 @@
       <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/classes/META-INF" verbose="${copy.verbose}">
          <fileset dir="${dir.project.remoteapi.src.metainf}"/>
       </copy>
+
+      <!-- Installing auto apply repository AMPs into repository WAR -->
+      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.repo}"
+                               warfile="${dir.deploy.tomcat.webclient}" />
+
    </target>
    
    <target name="deploy-webclient-changes" depends="init">
@@ -778,6 +783,10 @@
                  to="\1.get_en.properties"/>
       </copy>
 
+      <!-- Installing auto apply Share AMPs into Share WAR -->
+      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
+                               warfile="${dir.deploy.tomcat.application.slingshot}" />
+   
    </target>
 
    <target name="minimize-slingshot-deployed-javascript" depends="init">

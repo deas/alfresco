@@ -1418,8 +1418,13 @@
       <copy todir="${dir.project.slingshot.assemble}/yui">
          <fileset dir="${dir.project.slingshot.src.web}/yui" />
       </copy>
-   </target>  
-   
+   	
+      <!-- Install auto apply Share AMPs into Share WAR -->
+      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
+                               warfile="${dir.project.slingshot.assemble}" />
+   	
+   </target>
+
    <target name="minimize-slingshot-javascript"
            depends="init">
       <echo>Merging selected Slingshot Javascript files...</echo>
@@ -1898,6 +1903,11 @@
          <fileset dir="${dir.project.jlan.dist}" 
                   includes="${file.name.jar.jlan}" />
       </copy>
+
+      <!-- Install auto apply repository AMPs into repository WAR -->
+      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.repo}"
+                               warfile="${dir.project.webclient.assemble}" />
+
    </target>
 
    <!--
