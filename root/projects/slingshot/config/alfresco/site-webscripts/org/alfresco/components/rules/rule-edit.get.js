@@ -1,11 +1,10 @@
 function main()
 {
    var ruleNodeRef = page.url.args.nodeRef,
-      ruleId = page.url.args.ruleId,
-      connector = remote.connect("alfresco"),
-      rule = null,
-      result,
-      data;
+       ruleId = page.url.args.ruleId,
+       connector = remote.connect("alfresco"),
+       rule = null,
+       result;
 
    // Load rule to edit of given in url
    if (ruleNodeRef && ruleId)
@@ -13,12 +12,10 @@ function main()
       result = connector.get("/api/node/" + ruleNodeRef.replace("://", "/") + "/ruleset/rules/" + ruleId);
       if (result.status == 200)
       {
-         data = eval('(' + result + ')');
-         rule = jsonUtils.toJSONString(data);
-         model.ruleTitle = data.title;
+         rule = eval('(' + result + ')');
+         model.ruleTitle = rule.title;
       }
    }
-   model.rule = rule;
 
    // Load constraints
    result = connector.get("/api/actionConstraints");
@@ -36,7 +33,7 @@ function main()
             model.scripts = constraint.values;
          }
       }
-      model.constraints = jsonUtils.toJSONString(constraintsObj);
+      model.constraints = constraintsObj;
    }
 
    // Repository Library root node
@@ -51,18 +48,17 @@ function main()
    
    // Widget instantiation metadata...
    var ruleEdit = {
-      id : "RuleEdit", 
-      name : "Alfresco.RuleEdit",
-      options : {
-         nodeRef : (page.url.args.nodeRef != null) ? page.url.args.nodeRef : "",
-         siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
+      id: "RuleEdit", 
+      name: "Alfresco.RuleEdit",
+      options: {
+         nodeRef: (page.url.args.nodeRef != null) ? page.url.args.nodeRef : "",
+         siteId: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
-      
    };
    
-   if (model.rule)
+   if (rule)
    {
-      ruleEdit.options.rule = model.rule;
+      ruleEdit.options.rule = rule;
    }
    if (model.constraints)
    {
@@ -73,4 +69,3 @@ function main()
 }
 
 main();
-
