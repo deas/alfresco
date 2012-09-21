@@ -3873,12 +3873,6 @@
          // Get the name of the viewRenderer from the order array as YUI button likes to work with an index
          this.options.viewRendererName = this.options.viewRendererNames[e.newValue.index];
          this.services.preferences.set(PREF_VIEW_RENDERER, this.options.viewRendererName);
-         // Clear out deprecated simpleView preference if it exists
-         if (this.options.simpleView != null)
-         {
-            this.services.preferences.set(PREF_SIMPLE_VIEW, null);
-            this.options.simpleView = null;
-         }
          YAHOO.Bubbling.fire("metadataRefresh");
          if (e)
          {
