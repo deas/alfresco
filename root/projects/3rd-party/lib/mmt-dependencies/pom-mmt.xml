@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.alfresco</groupId>
+    <artifactId>alfresco-mmt</artifactId>
+    <version>VERSION</version>
+
+    <properties>
+        <truezip.version>7.5.5</truezip.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.schlichtherle.truezip</groupId>
+            <artifactId>truezip-file</artifactId>
+            <version>${truezip.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.schlichtherle.truezip</groupId>
+            <artifactId>truezip-driver-zip</artifactId>
+            <version>${truezip.version}</version>
+            <exclusions>
+               <exclusion>
+                  <artifactId>bcprov-jdk16</artifactId>
+                  <groupId>org.bouncycastle</groupId>
+               </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.safehaus.jug</groupId>
+            <artifactId>jug</artifactId>
+            <version>2.0.0</version>
+            <classifier>asl</classifier>
+        </dependency> 
+    </dependencies>
+</project>

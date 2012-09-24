@@ -176,7 +176,7 @@
                         <div id="${args.htmlid}-moreVersionInfo-div-${version_index}" class="moreInfo" <#if version_index != 0>style="display: none;"</#if>>
                            <div class="info">
                               <span class="meta-label">${msg("label.title")}</span>
-                              <span class="meta-value">${version.name?html}</span>
+                        <span class="meta-value">${version.title?html}</span>
                            </div>
                            <div class="info">
                               <span class="meta-label">${msg("label.creator")}</span>
@@ -212,7 +212,7 @@
                      <div class="links">
                      <#if result.links??>
                         <#list result.links as link>
-                           <div><span><a href="${url.context}/page/site/${page.url.templateArgs.site}/wiki-page?title=${link?replace(" ", "_")}">${link}</a></span></div>
+                           <div><span><a href="${url.context}/page/site/${page.url.templateArgs.site}/wiki-page?title=${link?replace(" ", "_")?html}">${link}</a></span></div>
                         </#list>
                      </#if>
                      </div>

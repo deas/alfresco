@@ -88,7 +88,7 @@
           <description>Name</description>
           <type>d:text</type>
           <protected>false</protected>
-          <mandatory>false</mandatory>
+          <mandatory>true</mandatory>
           <multiple>false</multiple>
           <index enabled="true">
             <tokenised>both</tokenised>

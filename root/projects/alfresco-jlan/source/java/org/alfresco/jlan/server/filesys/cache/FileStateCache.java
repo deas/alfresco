@@ -516,7 +516,7 @@ public abstract class FileStateCache {
 	 * Initialize the file state cache
 	 * 
 	 * @param config ConfigElement
-	 * @param srvConfig ServerConfiguration
+	 * @param srvConfig ServerConfiguration - not used
 	 * @throws InvalidConfigurationException
 	 */
 	public void initializeCache( ConfigElement config, ServerConfiguration srvConfig)

@@ -514,6 +514,20 @@ public class LocalOpLockDetails extends OpLockDetailsAdapter {
 	}
 	
 	/**
+	 * Check if there is an oplock break in progress for this oplock
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasBreakInProgress() {
+		
+		// Check if the oplock break time has been set but the failed oplock flag is clear
+		
+		if ( m_opBreakTime != 0L && hasOplockBreakFailed() == false)
+			return true;
+		return false;
+	}
+	
+	/**
 	 * Finalize, check if there are any deferred requests in the list
 	 */
 	public void finalize() {
@@ -562,7 +576,9 @@ public class LocalOpLockDetails extends OpLockDetailsAdapter {
 		
 		if ( hasOplockBreakFailed())
 			str.append(" BreakFailed");
-
+		else if ( hasBreakInProgress())
+			str.append(" BreakInProgress");
+		
 		str.append("]");
 		
 		return str.toString();

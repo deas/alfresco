@@ -32,6 +32,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.Operator;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.util.Pair;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
@@ -50,10 +51,11 @@ import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Andy
- *
  */
 public abstract class AbstractQParser extends QParser
 {
+    private static char[] SEPARATORS = new char[] { ':', ',', '-', '!', '+', '=', ';', '~', '/' };
+
     protected final static Logger log = LoggerFactory.getLogger(AbstractQParser.class);
 
     private static final String ALFRESCO_JSON = "ALFRESCO_JSON";
@@ -73,9 +75,11 @@ public abstract class AbstractQParser extends QParser
         super(qstr, localParams, params, req);
     }
 
-    protected SearchParameters getSearchParameters()
+    protected Pair<SearchParameters, Boolean> getSearchParameters()
     {
         SearchParameters searchParameters = new SearchParameters();
+        
+        Boolean isFilter = Boolean.FALSE;
 
         Iterable<ContentStream> streams = req.getContentStreams();
 
@@ -116,10 +120,12 @@ public abstract class AbstractQParser extends QParser
         {
             try
             {
-                if(getString() != null)
+                if (getString() != null)
                 {
                     if (getString().equals(AUTHORITY_FILTER_FROM_JSON))
                     {
+                        isFilter =Boolean.TRUE;
+                        
                         ArrayList<String> tenantList = new ArrayList<String>(1);
                         JSONArray tenants = json.getJSONArray("tenants");
                         for (int i = 0; i < tenants.length(); i++)
@@ -136,39 +142,77 @@ public abstract class AbstractQParser extends QParser
                             authorityList.add(authorityString);
                         }
 
+                        char separator = getSeparator(authorityList);
+
                         StringBuilder authQuery = new StringBuilder();
-                        for(String tenant : tenantList)
+                        for (String tenant : tenantList)
                         {
-                            for(String authority : authorityList)
+                            for (String authority : authorityList)
                             {
-                                if (authQuery.length() > 0)
+                                if (separator == 0)
                                 {
-                                    authQuery.append(" ");
-                                }
-                                switch(AuthorityType.getAuthorityType(authority))
-                                {
-                                case USER:
-                                    authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
-                                    break;
-                                case GROUP:
-                                case EVERYONE:
-                                case GUEST:
-                                    if(tenant.length() == 0)
+                                    if (authQuery.length() > 0)
                                     {
-                                        // Default tenant matches 4.0 
+                                        authQuery.append(" ");
+                                    }
+                                    switch (AuthorityType.getAuthorityType(authority))
+                                    {
+                                    case USER:
                                         authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                        break;
+                                    case GROUP:
+                                    case EVERYONE:
+                                    case GUEST:
+                                        if (tenant.length() == 0)
+                                        {
+                                            // Default tenant matches 4.0
+                                            authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                        }
+                                        else
+                                        {
+                                            authQuery.append("|AUTHORITY:\"").append(authority).append("@").append(tenant).append("\"");
+                                        }
+                                        break;
+                                    default:
+                                        authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                        break;
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    if(authQuery.length() == 0)
                                     {
-                                        authQuery.append("|AUTHORITY:\"").append(authority).append("@").append(tenant).append("\"");
+                                        authQuery.append("|AUTHSET:\"");
                                     }
-                                    break;
-                                default:
-                                    authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
-                                    break;
+                                    switch (AuthorityType.getAuthorityType(authority))
+                                    {
+                                    case USER:
+                                        authQuery.append(separator).append(authority);
+                                        break;
+                                    case GROUP:
+                                    case EVERYONE:
+                                    case GUEST:
+                                        if (tenant.length() == 0)
+                                        {
+                                            // Default tenant matches 4.0
+                                            authQuery.append(separator).append(authority);
+                                        }
+                                        else
+                                        {
+                                            authQuery.append(separator).append(authority).append("@").append(tenant);
+                                        }
+                                        break;
+                                    default:
+                                        authQuery.append(separator).append(authority);
+                                        break;
+                                    }
                                 }
 
                             }
+                        }
+                        if(separator != 0)
+                        {
+                            authQuery.append("\"");
                         }
 
                         if (authQuery.length() > 0)
@@ -178,6 +222,8 @@ public abstract class AbstractQParser extends QParser
                     }
                     else if (getString().equals(TENANT_FILTER_FROM_JSON))
                     {
+                        isFilter =Boolean.TRUE;
+                        
                         ArrayList<String> tenantList = new ArrayList<String>(1);
                         JSONArray tenants = json.getJSONArray("tenants");
                         for (int i = 0; i < tenants.length(); i++)
@@ -187,24 +233,25 @@ public abstract class AbstractQParser extends QParser
                         }
 
                         StringBuilder tenantQuery = new StringBuilder();
-                        for(String tenant : tenantList)
+                        for (String tenant : tenantList)
                         {
                             if (tenantQuery.length() > 0)
                             {
                                 tenantQuery.append(" ");
                             }
 
-                            if(tenant.length() > 0)
+                            if (tenant.length() > 0)
 
                             {
                                 tenantQuery.append("|TENANT:\"").append(tenant).append("\"");
                             }
                             else
                             {
-                                // TODO: Need to check for the default tenant or no tenant (4.0) or we force a reindex requirement later ...
+                                // TODO: Need to check for the default tenant or no tenant (4.0) or we force a reindex
+                                // requirement later ...
                                 // Better to add default tenant to the 4.0 index
                                 tenantQuery.append("|TENANT:\"").append("_DEFAULT_").append("\"");
-                                //tenantQuery.append(" |(+ISNODE:T -TENANT:*)");
+                                // tenantQuery.append(" |(+ISNODE:T -TENANT:*)");
                             }
 
                         }
@@ -266,9 +313,9 @@ public abstract class AbstractQParser extends QParser
             }
         }
 
-        if(json != null)
+        if (json != null)
         {
-            if(log.isDebugEnabled())
+            if (log.isDebugEnabled())
             {
                 log.debug(json.toString());
             }
@@ -279,13 +326,13 @@ public abstract class AbstractQParser extends QParser
             searchParameters.setQuery(getString());
         }
 
-        if(searchParameters.getLocales().size() == 0)
+        if (searchParameters.getLocales().size() == 0)
         {
             searchParameters.addLocale(I18NUtil.getLocale());
         }
 
         String defaultField = getParam(CommonParams.DF);
-        if(defaultField != null)
+        if (defaultField != null)
         {
             searchParameters.setDefaultFieldName(defaultField);
         }
@@ -293,6 +340,29 @@ public abstract class AbstractQParser extends QParser
         // searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
         searchParameters.setNamespace(NamespaceService.CONTENT_MODEL_1_0_URI);
 
-        return searchParameters;
+        return new Pair<SearchParameters, Boolean>(searchParameters, isFilter);
+    }
+
+    /**
+     * @param authorityList
+     * @return
+     */
+    private char getSeparator(ArrayList<String> authorityList)
+    {
+        StringBuilder builder = new StringBuilder();
+        for(String auth : authorityList)
+        {
+            builder.append(auth);
+        }
+       String test = builder.toString();
+       
+       for(int i = 0; i < SEPARATORS.length; i++)
+       {
+           if(test.indexOf(SEPARATORS[i]) == -1)
+           {
+               return SEPARATORS[i];
+           }
+       }
+       return 0;
     }
 }

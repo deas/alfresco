@@ -148,4 +148,11 @@ public interface OpLockDetails {
 	 * @param lockTyp int
 	 */
 	public void setLockType( int lockTyp);
+	
+	/**
+	 * Check if there is an oplock break in progress for this oplock
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasBreakInProgress();
 }

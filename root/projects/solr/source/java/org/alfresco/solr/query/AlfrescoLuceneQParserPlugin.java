@@ -18,39 +18,21 @@
  */
 package org.alfresco.solr.query;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Locale;
-
-import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
-import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.SearchParameters;
-import org.alfresco.service.cmr.search.SearchParameters.Operator;
-import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.ContextAwareQuery;
+import org.alfresco.util.Pair;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.common.util.ContentStream;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QParserPlugin;
-import org.apache.solr.search.QueryParsing;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Andy
@@ -94,14 +76,16 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws ParseException
         {
-            SearchParameters searchParameters = getSearchParameters();
+            Pair<SearchParameters, Boolean> searchParametersAndFilter = getSearchParameters();
+            SearchParameters searchParameters = searchParametersAndFilter.getFirst();
+            Boolean isFilter = searchParametersAndFilter.getSecond();
 
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
             
             AbstractLuceneQueryParser lqp = AlfrescoSolrDataModel.getInstance(id).getLuceneQueryParser(searchParameters, indexReader);
             Query query = lqp.parse(searchParameters.getQuery());
-            ContextAwareQuery contextAwareQuery = new ContextAwareQuery(query, searchParameters);
+            ContextAwareQuery contextAwareQuery = new ContextAwareQuery(query, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
             return contextAwareQuery;
         }
     }

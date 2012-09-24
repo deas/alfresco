@@ -88,6 +88,7 @@ import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
 import org.alfresco.util.ISO9075;
+import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.lucene.analysis.Analyzer;
@@ -1061,8 +1062,11 @@ public class AlfrescoSolrDataModel
         return luceneContext;
     }
 
-    public Query getFTSQuery(SearchParameters searchParameters, IndexReader indexReader) throws ParseException
+    public Query getFTSQuery(Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader) throws ParseException
     {
+        SearchParameters searchParameters = searchParametersAndFilter.getFirst();
+        Boolean isFilter = searchParametersAndFilter.getSecond();
+        
         QueryModelFactory factory = new LuceneQueryModelFactory();
         AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(namespaceDAO, dictionaryComponent, NamespaceService.CONTENT_MODEL_1_0_URI);
 
@@ -1106,7 +1110,7 @@ public class AlfrescoSolrDataModel
         Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
         // query needs some search parameters fro correct caching ....
 
-        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
+        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
         return contextAwareQuery;
     }
 
@@ -1158,9 +1162,12 @@ public class AlfrescoSolrDataModel
         return functionContext;
     }
 
-    public Query getCMISQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery)
+    public Query getCMISQuery(CMISQueryMode mode,  Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery)
             throws ParseException
     {
+        SearchParameters searchParameters = searchParametersAndFilter.getFirst();
+        Boolean isFilter = searchParametersAndFilter.getSecond();
+        
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
         CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
 
@@ -1170,7 +1177,7 @@ public class AlfrescoSolrDataModel
         LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
 
-        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, searchParameters);
+        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
         return contextAwareQuery;
     }
 

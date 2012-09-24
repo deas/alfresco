@@ -181,6 +181,34 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
     {
         return createNoMatchQuery();
     }
+    
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createOwnerSetQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
+    }
+
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createReaderSetQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
+    }
+
+    /**
+     * @param queryText
+     * @return
+     */
+    protected Query createAuthoritySetQuery(String queryText) throws ParseException
+    {
+        return createNoMatchQuery();
+    }
+    
 
     protected Query createAssocTypeQNameQuery(String queryText) throws SAXPathException
     {

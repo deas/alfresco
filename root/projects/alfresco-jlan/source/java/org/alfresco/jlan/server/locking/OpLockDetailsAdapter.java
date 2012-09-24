@@ -181,4 +181,13 @@ public class OpLockDetailsAdapter implements OpLockDetails {
 	public void setLockType( int lockTyp) {
 		throw new RuntimeException( "OplockDetailsAdapter.setLockType() needs override");
 	}
+	
+	/**
+	 * Check if there is an oplock break in progress for this oplock
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasBreakInProgress() {
+		return false;
+	}
 }

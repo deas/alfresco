@@ -17,10 +17,10 @@
       <app:uifacets></app:uifacets>
     </view:aspects>
     <view:properties>
-      <cm:description>Deployed Web Projects. Content deployed from an WCM Authoring environment.</cm:description>
+      <cm:description>${spaces.web_deployed.description}</cm:description>
       <app:icon>space-icon-default</app:icon>
-      <cm:title>Deployed Web Projects</cm:title>
-      <cm:name>Web Deployed</cm:name>
+      <cm:title>${spaces.web_deployed.name}</cm:title>
+      <cm:name>${spaces.web_deployed.name}</cm:name>
     </view:properties>
   </cm:folder>
 </view:view>

@@ -26,6 +26,7 @@ import org.alfresco.repo.search.impl.querymodel.impl.functions.PropertyAccessor;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.util.Pair;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
@@ -79,7 +80,8 @@ public class CmisQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws ParseException
         {   
-            SearchParameters searchParameters = getSearchParameters();
+            Pair<SearchParameters, Boolean> searchParametersAndFilter = getSearchParameters();
+            SearchParameters searchParameters = searchParametersAndFilter.getFirst();
             // these could either be checked & set here, or in the SolrQueryParser constructor
 
             String id = req.getSchema().getResourceLoader().getInstanceDir();
@@ -156,7 +158,7 @@ public class CmisQParserPlugin extends QParserPlugin
 
            
             
-            return AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader, queryModelQuery);
+            return AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery);
         }
     }
 

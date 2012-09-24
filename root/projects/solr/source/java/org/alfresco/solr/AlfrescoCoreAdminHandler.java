@@ -81,6 +81,7 @@ import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.CachingDateFormat.SimpleDateFormatAndResolution;
 import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.ISO9075;
+import org.alfresco.util.Pair;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.search.Query;
@@ -6623,7 +6624,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
         // Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
         long start = System.nanoTime();
-        Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
+        Query query = dataModel.getFTSQuery(new Pair<SearchParameters, Boolean>(searchParameters, Boolean.FALSE), solrIndexSearcher.getIndexReader());
         TopDocs docs = solrIndexSearcher.search(query, count * 2 + 10);
         long end = System.nanoTime();
         if (count != null)

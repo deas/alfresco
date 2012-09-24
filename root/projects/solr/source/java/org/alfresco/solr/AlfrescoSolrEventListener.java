@@ -121,6 +121,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static String KEY_CHECK_CACHE = "KEY_CHECK_CACHE";
     
     public static String KEY_OWNER_ID_MANAGER = "KEY_OWNER_ID_MANAGER";
+    
+    public static String KEY_READER_TO_ACL_IDS_LOOKUP = "KEY_READER_TO_ACL_IDS_LOOKUP";
 
     private NamedList args;
 
@@ -710,6 +712,72 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 throw e;
             }
         }
+        
+        // cache readers and acl doc ids
+        
+        HashMap<String, long[]> readerToAclIds = new HashMap<String, long[]>();
+        
+        try
+        {
+            IndexReader reader = newSearcher.getReader();
+            TermEnum termEnum = reader.terms(new Term("READER", ""));
+            TermDocs termDocs = null;
+            do
+            {
+                Term term = termEnum.term();
+                if (term == null)
+                {
+                    break;
+                }
+                if (term.field().equals("READER"))
+                {
+                    ArrayList<Long> aclIds = new ArrayList<Long>();                    
+                    String currentReader = term.text();
+                    
+                    if (termDocs == null)
+                    {
+                        termDocs = reader.termDocs(term);
+                    }
+                    else
+                    {
+                        termDocs.seek(term);
+                    }
+                    while (termDocs.next())
+                    {
+                        int currentDoc = termDocs.doc();
+                        long acl = aclIdByDocId[currentDoc];
+                        aclIds.add(acl);
+                    }
+                    
+                    long[] aclsAsArray = new long[aclIds.size()];
+                    int index = 0;
+                    for(Long longAcl : aclIds)
+                    {
+                        aclsAsArray[index++] = longAcl.longValue();
+                    }
+                    
+                    readerToAclIds.put(currentReader, aclsAsArray);
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            if (termDocs != null)
+            {
+                termDocs.close();
+            }
+            termEnum.close();
+        }
+        catch (IOException e1)
+        {
+
+        }
+        
+        
+        // transform to readers to acl ids
 
         endTime = System.nanoTime();
         log.info("Derived caches rebuilt in " + ((endTime - startTime) / (1.0e9)));
@@ -735,6 +803,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF, indexedOderedByOwnerIdThenDoc);
         
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_ID_MANAGER, ownerIdManager);
+        
+        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_READER_TO_ACL_IDS_LOOKUP, readerToAclIds);
         
         try
         {

@@ -167,7 +167,7 @@
          this.widgets.form = new Alfresco.forms.Form(this.id + "-form");
          var form = this.widgets.form;
          form.addValidation(this.id + "-title", Alfresco.forms.validation.mandatory, null, "blur");
-         form.addValidation(this.id + "-title", Alfresco.forms.validation.nodeName, null, "keyup");
+         form.addValidation(this.id + "-title", Alfresco.forms.validation.wikiTitle, null, "keyup");
          form.addValidation(this.id + "-title", Alfresco.forms.validation.length,
          {
             max: 256,
@@ -264,18 +264,18 @@
        */      
       onPageCreated: function WikiCreateForm_onPageCreated(e)
       {
-         var name = "Main_Page"; // safe default
+         var title = "Main_Page"; // safe default
          
          var obj = YAHOO.lang.JSON.parse(e.serverResponse.responseText);
          if (obj)
          {
-            name = obj.name;
+            title = obj.title;
          }
       
          this._showUnloadDialog = false; // Ensure that the dialog warning about leaving the page isn't shown on save requests.
          
          // Redirect to the page that has just been created
-         window.location =  Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/wiki-page?title=" + encodeURIComponent(name);
+         window.location =  Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/wiki-page?title=" + encodeURIComponent(title);
       },
 
       /**

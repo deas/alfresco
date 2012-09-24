@@ -2131,6 +2131,22 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 				// Check if the file token indicates an oplock was granted, or the file open count is now zero
 				
 				if ( openCnt == 0 || hcToken.getOpLockType() != OpLock.TypeNone) {
+
+					// Check if the oplock has a break in progress, the client may be closing the file to release the oplock
+					// rather than acknowledging the oplock break
+					
+					if ( perNode.getOpLock().hasBreakInProgress()) {
+
+						// Inform cluster nodes that an oplock has been released
+					
+						OpLockMessage oplockMsg = new OpLockMessage( ClusterMessage.AllNodes, ClusterMessageType.OpLockBreakNotify, fstate.getPath());
+						m_clusterTopic.publish( oplockMsg);
+
+						// DEBUG
+						
+						if ( hasDebugLevel( DebugFileAccess | DebugOplock))
+							Debug.println( "Sent oplock break notify for in-progress break, file closed to release oplock, state=" + fstate);
+					}
 					
 					// Clear the local oplock
 					

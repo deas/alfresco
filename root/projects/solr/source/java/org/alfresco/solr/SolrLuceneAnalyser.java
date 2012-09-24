@@ -486,7 +486,10 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
                     case DEFAULT:
                     case TOKENISE:
                         DataTypeDefinition dataType = dictionaryService.getDataType(DataTypeDefinition.TEXT);
-                        return loadAnalyzer(dataType);
+                        if(dataType != null)
+                        {
+                            return loadAnalyzer(dataType);
+                        }
                     default:
                         throw new UnsupportedOperationException();
                     }

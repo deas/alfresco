@@ -64,15 +64,6 @@
       <version>1.4</version>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
-    </dependency>
-     <!-- This is now deployed at:
-        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/hibernate/hibernate/3.2.6.ga/
-        | toghether with the original POM from hibernate 3.2.6.ga to avoid breaking the correct dependency chain 
-        -->
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
       <version>3.2.6-alfresco-patched</version>
@@ -178,6 +169,15 @@
       <artifactId>jta</artifactId>
       <version>1.0.1b</version>
     </dependency>
+
+    <!-- provided dependencies -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Test only dependencies, as popped up while running mvn test -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -196,16 +196,16 @@
       <artifactId>junit-dep</artifactId>
       <scope>test</scope>
     </dependency>
-     <!-- This is now deployed at:
-        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/commons-dbcp/commons-dbcp/1.4/
-        | toghether with the original POM from mybatis 1.4 to avoid breaking the correct dependency chain 
-        -->
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
       <version>1.5.5</version>
       <scope>test</scope>
     </dependency>
+     <!-- This is now deployed at:
+        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/commons-dbcp/commons-dbcp/1.4/
+        | toghether with the original POM from mybatis 1.4 to avoid breaking the correct dependency chain 
+        -->
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>

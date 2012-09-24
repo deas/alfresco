@@ -140,6 +140,9 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_OWNER = "OWNER";
     public static final String FIELD_READER = "READER";
     public static final String FIELD_AUTHORITY = "AUTHORITY";
+    public static final String FIELD_OWNERSET = "OWNERSET";
+    public static final String FIELD_READERSET = "READERSET";
+    public static final String FIELD_AUTHORITYSET = "AUTHSET";
     public static final String FIELD_TXID = "TXID";
     public static final String FIELD_INTXID = "INTXID";
     public static final String FIELD_ACLTXID = "ACLTXID";
@@ -809,13 +812,25 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 return createOwnerQuery(queryText);
             }
+            else if (field.equals(FIELD_OWNERSET))
+            {
+                return createOwnerSetQuery(queryText);
+            }
             else if (field.equals(FIELD_READER))
             {
                 return createReaderQuery(queryText);
             }
+            else if (field.equals(FIELD_READERSET))
+            {
+                return createReaderSetQuery(queryText);
+            }
             else if (field.equals(FIELD_AUTHORITY))
             {
                 return createAuthorityQuery(queryText);
+            }
+            else if (field.equals(FIELD_AUTHORITYSET))
+            {
+                return createAuthoritySetQuery(queryText);
             }
             else if (field.equals(FIELD_ISROOT))
             {
@@ -1012,6 +1027,25 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
      */
     protected abstract Query createAuthorityQuery(String queryText) throws ParseException;
 
+    /**
+     * @param queryText
+     * @return
+     */
+    protected abstract Query createOwnerSetQuery(String queryText) throws ParseException;
+
+    /**
+     * @param queryText
+     * @return
+     */
+    protected abstract Query createReaderSetQuery(String queryText) throws ParseException;
+
+    /**
+     * @param queryText
+     * @return
+     */
+    protected abstract Query createAuthoritySetQuery(String queryText) throws ParseException;
+
+    
     /**
      * @param queryText
      * @return

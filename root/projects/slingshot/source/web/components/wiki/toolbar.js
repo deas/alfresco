@@ -230,7 +230,7 @@
          
          var renameForm = new Alfresco.forms.Form(this.id + "-renamePageForm");
          renameForm.addValidation(this.id + "-renameTo", Alfresco.forms.validation.mandatory, null, "blur");
-         renameForm.addValidation(this.id + "-renameTo", Alfresco.forms.validation.nodeName, null, "keyup");
+         renameForm.addValidation(this.id + "-renameTo", Alfresco.forms.validation.wikiTitle, null, "keyup");
          renameForm.addValidation(this.id + "-renameTo", Alfresco.forms.validation.length,
          {
             max: 256,
@@ -474,10 +474,10 @@
          var response = YAHOO.lang.JSON.parse(e.serverResponse.responseText);
          if (response)
          {
-            if (!YAHOO.lang.isUndefined(response.name))
+            if (!YAHOO.lang.isUndefined(response.title))
             {
                // Change the location bar
-               window.location = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/wiki-page?title=" + encodeURIComponent(response.name);
+               window.location = Alfresco.constants.URL_PAGECONTEXT + "site/" + this.options.siteId + "/wiki-page?title=" + encodeURIComponent(response.title);
             } 
             else
             {

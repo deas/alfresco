@@ -39,10 +39,10 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.CharStream;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermRangeQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
@@ -720,6 +720,33 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
     public boolean addContentCrossLocaleWildcards()
     {
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#createOwnerSetQuery(java.lang.String)
+     */
+    @Override
+    protected org.apache.lucene.search.Query createOwnerSetQuery(String queryText) throws ParseException
+    {
+        return new SolrOwnerSetQuery(queryText);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#createReaderSetQuery(java.lang.String)
+     */
+    @Override
+    protected org.apache.lucene.search.Query createReaderSetQuery(String queryText) throws ParseException
+    {
+        return new SolrReaderSetQuery(queryText);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser#createAuthoritySetQuery(java.lang.String)
+     */
+    @Override
+    protected org.apache.lucene.search.Query createAuthoritySetQuery(String queryText) throws ParseException
+    {
+        return new SolrAuthoritySetQuery(queryText);
     }
 
 }
