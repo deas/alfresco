@@ -420,10 +420,6 @@ public class NamespaceDAOImpl implements NamespaceDAO
             
             if (namespaceRegistry != null)
             {
-                if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-                {
-                    this.defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
-                }
                 return namespaceRegistry; // return cached config
             }
         }
