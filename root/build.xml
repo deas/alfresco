@@ -122,7 +122,7 @@
          <pathelement location="${dir.project.webframeworkcommons.classes}" />
          <pathelement location="${dir.project.webclient.classes}" />
          <pathelement location="${dir.project.webserviceclient.classes}" />
-         <pathelement location="${dir.project.3rdparty.lib}/junit-dep-4.10.jar" />
+         <pathelement location="${dir.project.3rdparty.lib}/junit-dep-4.11-SNAPSHOT-20120805-1225.jar" />
          <!-- <pathelement location="${alf.build.location.data}"/> -->
          
          <pathelement location="${dir.project.datamodel.config}" />

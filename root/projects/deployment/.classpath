@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="config"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.10.jar" sourcepath="/3rd Party/src/junit-4.10-src.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11-SNAPSHOT-20120805-1225.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

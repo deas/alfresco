@@ -43,7 +43,7 @@
 		<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
 		<include name="json.jar" />
 		<include name="devenv/org.springframework.test-3.0.5.RELEASE.jar" />
-		<include name="junit-dep-4.10.jar" />
+		<include name="junit-dep-4.11-SNAPSHOT-20120805-1225.jar" />
 		<include name="jta.jar" />
 		<include name="commons/commons-dbcp-1.4-patched.jar" />
 		<include name="mybatis-3.0.4.jar" />
