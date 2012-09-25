@@ -19,10 +19,12 @@ if (following.status == 200)
    
    if (model.activeUserProfile)
    {
-	   var followers = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/followers/count");
-	   if(followers.status == 200)
-	   {
-	      model.followers = eval('(' + followers + ')').count;
-	   }
+      var followers = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/followers/count");
+      if(followers.status == 200)
+      {
+         model.followers = eval('(' + followers + ')').count;
+      }
+
+      model.syncEnabled = (syncMode.getValue() != "OFF");
    } 
 }
