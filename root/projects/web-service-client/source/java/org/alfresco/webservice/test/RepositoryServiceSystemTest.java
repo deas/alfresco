@@ -60,7 +60,10 @@ import org.alfresco.webservice.util.Utils;
 import org.alfresco.webservice.util.WebServiceFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
 {
     private static Log logger = LogFactory.getLog(RepositoryServiceSystemTest.class);
@@ -81,7 +84,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testFetchMoreAndbatchSize() throws Exception
+    public void test01FetchMoreAndbatchSize() throws Exception
     {
     	long NUMBEER_CREATED_FILES = 14;
     	long fetchRows = 0;
@@ -169,7 +172,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Tests the getStores method
      */
-    public void testGetStores() throws Exception
+    public void test02GetStores() throws Exception
     {
         Store[] stores = WebServiceFactory.getRepositoryService().getStores();
         assertNotNull("Stores array should not be null", stores);
@@ -179,7 +182,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Tests the query service call
      */
-    public void testQuery() throws Exception
+    public void test03Query() throws Exception
     {
         //Query query = new Query(QueryLanguageEnum.lucene, "*");
         Query query = new Query(Constants.QUERY_LANG_LUCENE,
@@ -246,7 +249,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      *  Tests that Query returns all the properties for matching nodes
      */
-    public void testALF649() throws Exception
+    public void test04ALF649() throws Exception
     {
         Query query = new Query(Constants.QUERY_LANG_LUCENE,
                 "( +@\\{http\\://www.alfresco.org/1.0\\}name:test*) OR  TEXT:test*");
@@ -340,7 +343,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Tests the queryParents service method
      */
-    public void testQueryParents() throws Exception
+    public void test05QueryParents() throws Exception
     {
         // query for all the child nodes of the root
         Reference node = BaseWebServiceSystemTest.rootReference;
@@ -415,7 +418,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Tests the queryChildren service method
      */
-    public void testQueryChildren() throws Exception
+    public void test06QueryChildren() throws Exception
     {
         // query for all the child nodes of the root
         Reference node = BaseWebServiceSystemTest.rootReference;
@@ -461,7 +464,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Tests the queryAssociated service method
      */
-    public void testQueryAssociated() throws Exception
+    public void test07QueryAssociated() throws Exception
     {
         Association association = new Association(Constants.createQNameString(
                 Constants.NAMESPACE_CONTENT_MODEL, "attachments"),
@@ -510,7 +513,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Tests the describe service method
      */
-    public void testDescribe() throws Exception
+    public void test08Describe() throws Exception
     {
         // get hold of a node we know some info about so we can test the
         // returned values (the Alfresco Tutorial PDF)
@@ -587,8 +590,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
         // check the aspects
         ClassDefinition[] aspectDefs = nodeDef.getAspects();
         assertNotNull("aspects should not be null", aspectDefs);
-        // TODO: fix this - appears to rely on previous methods running in a specific order (3 is returned now)
-        //assertEquals("There should be 4 aspects", 4, aspectDefs.length);
+        assertEquals("There should be 4 aspects", 4, aspectDefs.length);
 
         for (ClassDefinition aspectDef : aspectDefs)
         {
@@ -616,7 +618,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testPredicateQuery() throws Exception
+    public void test09PredicateQuery() throws Exception
     {
         // define a query to add to the predicate (get everything that mentions
         // 'test')
@@ -657,7 +659,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testPathReference() throws Exception
+    public void test10PathReference() throws Exception
     {
         // setup a predicate to find the test folder using an xpath
         Reference ref = new Reference();
@@ -700,7 +702,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testUpdate() throws Exception
+    public void test11Update() throws Exception
     {
         CMLCreate create = new CMLCreate();
         create.setId("id1");
@@ -837,7 +839,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
     }
     
     // Test for creation with space in file name
-    public void testADB12()
+    public void test12ADB12()
     	throws Exception
     {
     	String fileName = "this is my file.txt";
@@ -901,7 +903,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
         assertNotNull(folderReference);
     }
     
-    public void testGet() 
+    public void test13Get() 
         throws Exception
     {
         Predicate predicate = new Predicate(null, BaseWebServiceSystemTest.store, null);
@@ -929,7 +931,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
      * Test that the uuid and path are both returned in a Reference object
      * @throws Exception
      */
-    public void testGetPath() throws Exception
+    public void test14GetPath() throws Exception
     {      
       Predicate predicate = new Predicate(new Reference[]{BaseWebServiceSystemTest.folderReference}, null, null);   
       Node[] nodes = WebServiceFactory.getRepositoryService().get(predicate);
@@ -949,7 +951,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
       
     }    
     
-    public void testPropertySetGet() throws Exception
+    public void test15PropertySetGet() throws Exception
     {
         // Load a dynamic custom model using the cm:dictionaryModel type
         CMLCreate create = new CMLCreate();
@@ -1056,7 +1058,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
         }
     }
     
-    public void testFolderCreate()
+    public void test16FolderCreate()
         throws Exception
     {
         Reference newFolder = createFolder(BaseWebServiceSystemTest.rootReference, "123TestFolder");
@@ -1065,7 +1067,7 @@ public class RepositoryServiceSystemTest extends BaseWebServiceSystemTest
         assertNotNull(newFolder2);
     }
     
-    public void testPathLookup()
+    public void test17PathLookup()
         throws Exception
     {
         Reference newFolder = createFolder(BaseWebServiceSystemTest.rootReference, "A Test Folder");

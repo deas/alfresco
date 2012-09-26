@@ -38,10 +38,13 @@ import org.alfresco.webservice.util.Constants;
 import org.alfresco.webservice.util.WebServiceFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
 /** 
  * @author Roy Wetherall
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
 {
     private static Log logger = LogFactory.getLog(AccessControlServiceSystemTest.class);
@@ -99,7 +102,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
     /**
      * Test getting, setting and removing permissions
      */
-    public void xtestGetSetRemoveACEs() throws Exception
+    public void test1GetSetRemoveACEs() throws Exception
     {
         // Resolve the predicate and create the test users
         Predicate predicate = new Predicate(new Reference[]{BaseWebServiceSystemTest.contentReference}, null, null);
@@ -190,7 +193,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testGetPermissions() throws Exception
+    public void test2GetPermissions() throws Exception
     {
         // Create predicate
         Predicate predicate = new Predicate(new Reference[]{BaseWebServiceSystemTest.contentReference}, null, null);
@@ -221,7 +224,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testGetClassPermissions() throws Exception
+    public void test3GetClassPermissions() throws Exception
     {
         // Get the permissions that can be set
         GetClassPermissionsResult[] results = this.accessControlService.getClassPermissions(new String[]{Constants.TYPE_FOLDER});
@@ -250,7 +253,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testHasPermissions() throws Exception
+    public void test4HasPermissions() throws Exception
     {
         Predicate predicate = convertToPredicate(BaseWebServiceSystemTest.contentReference);
         
@@ -269,7 +272,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
      * 
      * @throws Exception
      */
-    public void testSetInheritPermissions() throws Exception
+    public void test5SetInheritPermissions() throws Exception
     {
         ACL[] acls = this.accessControlService.setInheritPermission(convertToPredicate(BaseWebServiceSystemTest.contentReference), false);
         assertNotNull(acls);
@@ -283,7 +286,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
      * Test setOwnable and getOwnable
      * @throws Exception
      */
-    public void testSetGetOwnable() throws Exception
+    public void test6SetGetOwnable() throws Exception
     {
         // Create a couple of users
         createUsers();
@@ -319,7 +322,7 @@ public class AccessControlServiceSystemTest extends BaseWebServiceSystemTest
     // -> remove Authorities (groups and users)
     // -> delete groups
     
-    public void testCreateAuthorities()
+    public void test7CreateAuthorities()
     	throws Exception
     {
     	// Create two root authorities ...
