@@ -11,17 +11,16 @@ function main()
    }
    
    var linkEdit = {
-      id : "LinkEdit", 
-      name : "Alfresco.LinkEdit",
-      options : {
-         siteId : page.url.templateArgs.site != null,
-         containerId : "links",
-         editMode : editMode,
-         linkId : linkId
+      id: "LinkEdit", 
+      name: "Alfresco.LinkEdit",
+      options: {
+         siteId: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
+         containerId: "links",
+         editMode: editMode,
+         linkId: linkId
       }
    };
    model.widgets = [linkEdit];
 }
 
 main();
-
