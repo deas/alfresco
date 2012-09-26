@@ -139,7 +139,7 @@ public class InviteHelper implements InitializingBean
         {
             public Void doWork() throws Exception
             {
-                if (false==authenticationService.getAuthenticationEnabled(invitee))
+            	if (authenticationService.isAuthenticationMutable(invitee))
                 {
                     authenticationService.setAuthenticationEnabled(invitee, true);
                 }
