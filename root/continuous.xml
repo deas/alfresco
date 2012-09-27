@@ -724,7 +724,7 @@
         </exec>
     </target>
     
-    <target name="osx-installer">
+    <target name="osx-32-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-osx.txt" failifexecutionfails="false">
             <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
         </exec>
@@ -736,6 +736,18 @@
         </tar>
     </target>
     
+    <target name="osx-64-bit-installer">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-osx64.txt" failifexecutionfails="false">
+            <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx64}" binaries_folder="${installer.build.binaries.osx64}"'/>
+        </exec>
+        <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx64}.tar.gz"
+             longfile="gnu"
+             compression="gzip">
+            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.installer.osx64}"
+                        prefix="${file.name.dist.installer.osx64}" mode="755"/>
+        </tar>
+    </target>
+
     <target name="osx-deployment-installer">
         <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-osx.txt" failifexecutionfails="false">
             <arg line='${installer.build.type} deployment.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
@@ -773,9 +785,13 @@
             depends="continuous-init, set-build-number, set-bitrock-builder">    
         <antcall target="windows-deployment-installer"/>
     </target>
-    <target name="build-osx-installer"
+    <target name="build-osx-32-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder"> 
-        <antcall target="osx-installer"/>            
+        <antcall target="osx-32-bit-installer"/>            
+    </target>
+    <target name="build-osx-64-bit-installer"
+            depends="continuous-init, set-build-number, set-bitrock-builder"> 
+        <antcall target="osx-64-bit-installer"/>            
     </target>
     <target name="build-osx-deployment-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder">    
@@ -797,7 +813,8 @@
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
-            <antcall target="osx-installer"/>
+            <antcall target="osx-32-bit-installer"/>
+            <antcall target="osx-64-bit-installer"/>
             <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-deployment-installer"/>
