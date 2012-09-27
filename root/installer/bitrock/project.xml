@@ -164,6 +164,7 @@
         <!-- AMP extensions -->
 	<include file="alfresco-sharepoint.xml" />
 	<include file="alfresco-wcmqs.xml" />
+	<include file="alfresco-googledocs.xml" />
 	<include file="base-unix-service.xml" />
 
 	<include file="openoffice.xml"/>

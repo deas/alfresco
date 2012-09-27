@@ -40,6 +40,8 @@
         <setInstallerVariable name="alfresco_awe_war_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/awe.war" />
         <setInstallerVariable name="alfresco_awe_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartwebsite/config/alfresco" />
         <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartclientapi/config/alfresco" />
+        <setInstallerVariable name="alfresco_googledocs_source_file" value="${binaries_folder}/../../googledocs/alfresco-googledocs-repo-2.0.0-5.amp" />
+        <setInstallerVariable name="alfresco_googledocs_share_source_file" value="${binaries_folder}/../../googledocs/alfresco-googledocs-share-2.0.0-5.amp" />
 
         <!-- Binaries -->
         <setInstallerVariable name="common_distribution_folder" value="${binaries_folder}/common-20120810" />

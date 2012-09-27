@@ -378,7 +378,7 @@
                 <setInstallerVariable name="component(postgresservice).selected" value="1" />
                 <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="1" />
                 <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="1" />
-                <componentSelection select="openofficecomponent,alfrescosharepoint,alfrescowmqs"/>
+                <componentSelection select="openofficecomponent,alfrescosharepoint,alfrescowmqs,alfrescogoogledocs"/>
 
 		<actionGroup>
 		    <actionList>
