@@ -11,7 +11,7 @@
    <generator>Alfresco Share DocumentLibrary</generator>
 <#assign proxyLink=absurl(url.context) + "/proxy/alfresco-feed/">
    <image>
-      <title>Alfresco Share - ${msg("feed.filter." + filter!"path")}</title>
+      <title>Alfresco Share - ${msg("feed.filter." + filter!"path", filterData)}</title>
       <url>${absurl(url.context)}/themes/default/images/logo.png</url>
       <link>${absurl(url.context)}/</link>
    </image>

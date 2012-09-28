@@ -51,6 +51,7 @@ public interface WebSiteModel
     public static final QName TYPE_PUBLISH_QUEUE_ENTRY = QName.createQName(NAMESPACE, "publishqueueentry");
     public static final QName PROP_QUEUED_NODE = QName.createQName(NAMESPACE, "queuedNode");
     public static final QName PROP_QUEUED_NODE_FOR_REMOVAL = QName.createQName(NAMESPACE, "queuedNodeForRemoval");
+    public static final QName PROP_FAILED_ATTEMPTS_COUNT = QName.createQName(NAMESPACE, "failedAttemptsCount");
 
     // ws:section type
     public static final QName TYPE_SECTION = QName.createQName(NAMESPACE, "section");

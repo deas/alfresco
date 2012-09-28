@@ -1102,7 +1102,10 @@
       <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip">
        <zipfileset dir="${dir.project.webserviceclient.docs.java}" />
       </zip>
-      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-webframeworkcommons.zip">
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-jlan-embed-doc.zip">
+       <zipfileset dir="${dir.project.jlan.docs.java}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip">
        <zipfileset dir="${dir.project.webframeworkcommons.docs.java}" />
       </zip>
       
@@ -1255,6 +1258,12 @@
       </zip>
       <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-deployment-src.zip">
          <zipfileset dir="${dir.project.deployment.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-web-framework-commons-src.zip">
+         <zipfileset dir="${dir.project.webframeworkcommons.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-jlan-embed-src.zip">
+         <zipfileset dir="${dir.project.jlan.src}" />
       </zip>
 
       <!-- -->

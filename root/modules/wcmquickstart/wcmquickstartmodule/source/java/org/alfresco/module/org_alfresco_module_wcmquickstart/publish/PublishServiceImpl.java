@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -38,10 +39,12 @@ import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.transfer.NodeCrawler;
 import org.alfresco.service.cmr.transfer.NodeCrawlerFactory;
 import org.alfresco.service.cmr.transfer.TransferDefinition;
+import org.alfresco.service.cmr.transfer.TransferFailureException;
 import org.alfresco.service.cmr.transfer.TransferService2;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.GUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +60,7 @@ public class PublishServiceImpl implements PublishService
         DEFAULT_ASPECTS_TO_EXCLUDE.add("fm:discussable");
     }
     
+    private TransactionService transactionService;
     private SiteHelper siteHelper;
     private NodeService nodeService;
     private TransferService2 transferService;
@@ -66,6 +70,7 @@ public class PublishServiceImpl implements PublishService
     private NodeCrawlerConfigurer crawlerConfigurer;
     private String transferTargetName = "Internal Target";
     private Set<String> aspectsToExclude = DEFAULT_ASPECTS_TO_EXCLUDE;
+    private int maxPublishAttempts = 3;
 
     public void setSiteHelper(SiteHelper siteHelper)
     {
@@ -117,6 +122,17 @@ public class PublishServiceImpl implements PublishService
         {
             this.aspectsToExclude = new TreeSet<String>(aspectsToExclude);
         }
+    }
+
+    
+    public void setTransactionService(TransactionService transactionService)
+    {
+        this.transactionService = transactionService;
+    }
+
+    public void setMaxPublishAttempts(int maxPublishAttempts)
+    {
+        this.maxPublishAttempts = maxPublishAttempts;
     }
 
     public void enqueuePublishedNodes(final NodeRef... nodes)
@@ -231,7 +247,44 @@ public class PublishServiceImpl implements PublishService
                     }
                     def.setExcludedAspects(aspectQNames);
                     
-                    transferService.transfer(transferTargetName, def);
+                    try
+                    {
+                        transferService.transfer(transferTargetName, def);
+                    }
+                    catch (TransferFailureException e)
+                    {
+                        final List<ChildAssociationRef> finalPublishedNodes = publishedNodes;
+                        transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<Object>()
+                        {
+
+                            @Override
+                            public Object execute() throws Throwable
+                            {
+                                for (ChildAssociationRef childRef : finalPublishedNodes)
+                                {
+                                    Integer failedAttCount = (Integer) nodeService.getProperty(childRef.getChildRef(), WebSiteModel.PROP_FAILED_ATTEMPTS_COUNT);
+                                    if (failedAttCount == null)
+                                    {
+                                        failedAttCount = 0;
+                                    }
+
+                                    failedAttCount++;
+                                    if (failedAttCount == maxPublishAttempts)
+                                    {
+                                        nodeService.deleteNode(childRef.getChildRef());
+                                    }
+                                    else
+                                    {
+                                        nodeService.setProperty(childRef.getChildRef(), WebSiteModel.PROP_FAILED_ATTEMPTS_COUNT, failedAttCount);
+                                    }
+                                }
+                                return null;
+                            }
+
+                        }, false, true);
+
+                        throw e;
+                    }
     
                     // If we get here then the transfer must have completed. Delete
                     // the queue entries that we have processed

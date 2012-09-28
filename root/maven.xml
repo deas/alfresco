@@ -129,7 +129,9 @@
 
         <!-- Web Service Client -->
         <mvndeploy file="${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}"
-            artifactId="alfresco-web-service-client" />
+            artifactId="alfresco-web-service-client"
+            sources="${dir.continuous.assemble.sdk}/src/alfresco-web-service-client-src.zip" 
+            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip" />
 
         <!-- Web Editor JAR -->
         <mvndeploy file="${dir.project.webeditor.dist}/${file.name.jar.webeditor}"
@@ -188,7 +190,9 @@
 
         <!-- JLAN Embed -->
         <mvndeploy file="${dir.project.jlan.dist}/${file.name.jar.jlan}"
-            artifactId="alfresco-jlan-embed" />
+            artifactId="alfresco-jlan-embed"
+            sources="${dir.continuous.assemble.sdk}/src/alfresco-jlan-embed-src.zip"
+            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-jlan-embed-doc.zip" />
 
         <!-- Mbeans -->
         <mvndeploy file="${dir.project.mbeans.dist}/${file.name.jar.mbeans}"
@@ -218,7 +222,9 @@
 
         <!-- Web Framework Commons -->
         <mvndeploy file="${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"
-            artifactId="alfresco-web-framework-commons" />
+            artifactId="alfresco-web-framework-commons"
+            sources="${dir.continuous.assemble.sdk}/src/alfresco-web-framework-commons-src.zip"
+            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip" />
     </target>
             
     <target name="maven-deploy-webclient-webapp" description="Deploys Alfresco Explorer related WAR to a Maven repository">

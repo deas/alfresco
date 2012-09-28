@@ -35,6 +35,10 @@
         <property name="nodeCrawlerFactory" ref="NodeCrawlerFactory" />
         <property name="crawlerConfigurer" ref="wqsmodule_publishingCrawlerConfigurer" />
         <property name="aspectsToExclude" ref="wqsmodule_aspectsNotToPublish" />
+        <property name="transactionService" ref="TransactionService" />
+        <property name="maxPublishAttempts">
+            <value>${wcmqs.maxPublishAttempts}</value>
+        </property>
     </bean>
     
     

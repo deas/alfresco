@@ -15,7 +15,11 @@ function main()
          {
             model.filter = args[arg];
          }
-      }
+         if (arg == "filterData")
+         {
+            model.filterData = args[arg];
+         }
+   }
    }
    if (remoteArgs != "")
    {
