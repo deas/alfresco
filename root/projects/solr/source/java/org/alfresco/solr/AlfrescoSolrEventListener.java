@@ -44,6 +44,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrEventListener;
+import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.FastLRUCache;
 import org.apache.solr.search.SolrCache;
 import org.apache.solr.search.SolrIndexReader;
@@ -123,6 +124,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static String KEY_OWNER_ID_MANAGER = "KEY_OWNER_ID_MANAGER";
     
     public static String KEY_READER_TO_ACL_IDS_LOOKUP = "KEY_READER_TO_ACL_IDS_LOOKUP";
+    
+    public static String KEY_PUBLIC_DOC_SET = "KEY_PUBLIC_DOC_SET";
 
     private NamedList args;
 
@@ -553,7 +556,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         // build lookups
 
-        HashMap<AclLookUp, AclLookUp> alcLookUp = new HashMap<AclLookUp, AclLookUp>();
+        HashMap<AclLookUp, AclLookUp> aclLookUp = new HashMap<AclLookUp, AclLookUp>();
 
         AclLookUp currentAclLookUp = null;
         for (int i = 0; i < indexedOderedByAclIdThenDoc.length; i++)
@@ -576,7 +579,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         // acl id has changed - new set
                         currentAclLookUp.setEnd(i);
                         AclLookUp next = new AclLookUp(entry.getAclid(), i);
-                        alcLookUp.put(currentAclLookUp, currentAclLookUp);
+                        aclLookUp.put(currentAclLookUp, currentAclLookUp);
                         currentAclLookUp = next;
                     }
                 }
@@ -587,7 +590,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 if (currentAclLookUp != null)
                 {
                     currentAclLookUp.setEnd(i);
-                    alcLookUp.put(currentAclLookUp, currentAclLookUp);
+                    aclLookUp.put(currentAclLookUp, currentAclLookUp);
                 }
                 break;
             }
@@ -595,7 +598,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         if (currentAclLookUp != null)
         {
             currentAclLookUp.setEnd(indexedOderedByAclIdThenDoc.length);
-            alcLookUp.put(currentAclLookUp, currentAclLookUp);
+            aclLookUp.put(currentAclLookUp, currentAclLookUp);
         }
 
         Arrays.sort(indexedOderedByOwnerIdThenDoc, new Comparator<CacheEntry>()
@@ -715,8 +718,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         
         // cache readers and acl doc ids
         
-        HashMap<String, long[]> readerToAclIds = new HashMap<String, long[]>();
-        
+        HashMap<String, HashSet<Long>> readerToAclIds = new HashMap<String, HashSet<Long>>();
+        BitDocSet publicDocSet = new BitDocSet(new OpenBitSet(newReader.maxDoc()));
+  
         try
         {
             IndexReader reader = newSearcher.getReader();
@@ -731,9 +735,11 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
                 if (term.field().equals("READER"))
                 {
-                    ArrayList<Long> aclIds = new ArrayList<Long>();                    
                     String currentReader = term.text();
-                    
+
+
+
+                    ArrayList<Long> aclIds = new ArrayList<Long>();   
                     if (termDocs == null)
                     {
                         termDocs = reader.termDocs(term);
@@ -748,15 +754,27 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         long acl = aclIdByDocId[currentDoc];
                         aclIds.add(acl);
                     }
-                    
-                    long[] aclsAsArray = new long[aclIds.size()];
-                    int index = 0;
+
+                    AclLookUp key = new AclLookUp(0);
+                    HashSet<Long> aclsAsSet = new HashSet<Long>(aclIds.size(), 1f);
                     for(Long longAcl : aclIds)
                     {
-                        aclsAsArray[index++] = longAcl.longValue();
+                        aclsAsSet.add(longAcl);
+                        if(currentReader.equals("GROUP_EVERYONE"))
+                        {
+                            key.setAclid(longAcl);
+                            AlfrescoSolrEventListener.AclLookUp value = aclLookUp.get(key);
+                            if(value != null)
+                            {
+                                for(int i = value.getStart(); i < value.getEnd(); i++)
+                                {
+                                    publicDocSet.add(indexedOderedByAclIdThenDoc[i].getLeaf());
+                                }
+                            }
+                        }
                     }
-                    
-                    readerToAclIds.put(currentReader, aclsAsArray);
+
+                    readerToAclIds.put(currentReader, aclsAsSet);                    
 
                 }
                 else
@@ -796,7 +814,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ALL_LEAF_DOCS, allLeafDocs);
 
-        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_LOOKUP, alcLookUp);
+        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_LOOKUP, aclLookUp);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF, indexedOderedByAclIdThenDoc);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_LOOKUP, ownerLookUp);
@@ -805,6 +823,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_ID_MANAGER, ownerIdManager);
         
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_READER_TO_ACL_IDS_LOOKUP, readerToAclIds);
+        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_PUBLIC_DOC_SET, publicDocSet);
         
         try
         {

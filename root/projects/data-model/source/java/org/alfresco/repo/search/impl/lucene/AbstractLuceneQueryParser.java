@@ -4936,6 +4936,39 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
 
         }
+        else if (expandedFieldName.endsWith(FIELD_ENCODING_SUFFIX))
+        {
+            if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
+            {
+                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+            }
+
+        }
+        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_STATUS_SUFFIX))
+        {
+            if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
+            {
+                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+            }
+
+        }
+        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_TIME_SUFFIX))
+        {
+            if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
+            {
+                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+            }
+
+        }
+        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
+        {
+            if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
+            {
+                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+            }
+
+        }
+        
 
         // Already in expanded form
 

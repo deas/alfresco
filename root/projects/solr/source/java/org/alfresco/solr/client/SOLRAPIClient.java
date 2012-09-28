@@ -1361,9 +1361,9 @@ public class SOLRAPIClient
 //            try
 //            {
 	            this.content = response.getContentAsStream();
-	            this.transformStatusStr = response.getHeader("XAlfresco-transformStatus");
-	            this.transformException = response.getHeader("XAlfresco-transformException");
-	            String tmp = response.getHeader("XAlfresco-transformDuration");
+	            this.transformStatusStr = response.getHeader("X-Alfresco-transformStatus");
+	            this.transformException = response.getHeader("X-Alfresco-transformException");
+	            String tmp = response.getHeader("X-Alfresco-transformDuration");
 	            this.transformDuration = (tmp != null ? Long.valueOf(tmp) : null);
 //            }
 //            finally

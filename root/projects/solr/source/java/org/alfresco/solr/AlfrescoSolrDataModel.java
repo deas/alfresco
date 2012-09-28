@@ -190,7 +190,7 @@ public class AlfrescoSolrDataModel
         addAdditionalContentField(".mimetype", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".encoding", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".contentDocId", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addAdditionalContentField(".transformationException", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addAdditionalContentField(".transformationException", Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".transformationTime", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".transformationStatus", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addAdditionalContentField(".__", Store.NO, Index.ANALYZED, TermVector.NO, false);

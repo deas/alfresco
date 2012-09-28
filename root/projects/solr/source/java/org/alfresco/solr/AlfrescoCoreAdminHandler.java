@@ -3385,10 +3385,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         rsp.add("Access", report);
 
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 0, null, null, null, null, null, "{!afts}|AUTHORITY:guest");
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 0, null, null, null, null, null, "{!afts}|AUTHSET:\":guest\"");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 3, null, null, null, null, null, "{!afts}|AUTHORITY:cmis");
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 3, null, null, null, null, null, "{!afts}|AUTHSET:\":cmis\"");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 11, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|OWNER:andy");
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|OWNERSET:\":andy\"");
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|AUTHORITY:andy");
+        testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":andy\"");
 
     }
 
@@ -6160,8 +6164,28 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHORITY:noodle");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHORITY:ood");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, "{!afts}|AUTHORITY:GROUP_EVERYONE");
-
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null, "{!afts}|AUTHORITY:andy |AUTHORITY:bob |AUTHORITY:cid");
+        
+        
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":andy\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":bob\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":cid\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":dave\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":eoin\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":fred\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":gail\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":hal\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":ian\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":jake\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":kara\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":loon\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":mike\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":noodle\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHSET:\":ood\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, "{!afts}|AUTHSET:\":GROUP_EVERYONE\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null, "{!afts}|AUTHSET:\":andy\" |AUTHSET:\":bob\" |AUTHSET:\":cid\"");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null, "{!afts}|AUTHSET:\":andy:bob:cid\"");
     }
 
     private void checkPaging(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException

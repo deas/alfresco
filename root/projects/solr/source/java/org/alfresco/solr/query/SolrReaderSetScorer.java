@@ -48,12 +48,11 @@ public class SolrReaderSetScorer extends AbstractSolrCachingScorer
 
         String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
 
-
-        HashMap<String, long[]> readerToAclIds = (HashMap<String, long[]>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_READER_TO_ACL_IDS_LOOKUP);
+        HashMap<String, HashSet<Long>> readerToAclIds = (HashMap<String, HashSet<Long>>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_READER_TO_ACL_IDS_LOOKUP);
         long[] aclByDocId = (long[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_ID_BY_DOC_ID);
         HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp> lookups = (HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_LOOKUP);
         AlfrescoSolrEventListener.CacheEntry[] aclThenLeafOrderedEntries = ( AlfrescoSolrEventListener.CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
-
+        BitDocSet publicDocSet = (BitDocSet) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_PUBLIC_DOC_SET);
 
         //        DocSet aclDocSet;
         //        if(auths.length > 1)
@@ -70,20 +69,24 @@ public class SolrReaderSetScorer extends AbstractSolrCachingScorer
         //            aclDocSet = searcher.getDocSet(new TermQuery(new Term("READER", auths[0])));
         //        }
 
+        DocSet readableDocSet = new BitDocSet(new OpenBitSet(searcher.getReader().maxDoc()));
+        
         HashSet<Long> acls = new HashSet<Long>();
         for(String auth : auths)
         {
-            long[] aclIds = readerToAclIds.get(auth);
-            if(aclIds != null)
+            if(auth.equals("GROUP_EVERYONE"))
             {
-                for(long acl : aclIds)
+                readableDocSet = readableDocSet.union(publicDocSet);
+            }
+            else
+            {
+                HashSet<Long> aclIds = readerToAclIds.get(auth);
+                if(aclIds != null)
                 {
-                    acls.add(acl);
+                    acls.addAll(aclIds);
                 }
             }
         }
-
-        BitDocSet readableDocSet = new BitDocSet(new OpenBitSet(searcher.getReader().maxDoc()));
 
         AlfrescoSolrEventListener.AclLookUp key = new AlfrescoSolrEventListener.AclLookUp(0);
 
