@@ -158,6 +158,7 @@
     <dependency.junit.version>4.11-20120805-1225</dependency.junit.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.0-SNAPSHOT</dependency.surf.version>
+    <dependency.activiti.version>5.10-alf-20120918</dependency.activiti.version>
   </properties>
   
   <dependencyManagement>
