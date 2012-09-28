@@ -116,6 +116,11 @@
    background-image: url(images/document-request-sync-16.png);
 }
 
+.toolbar .onActionDownload
+{
+   background-image: url(actions/document-download-16.png);
+}
+
 /* Navigation Bar */
 
 .toolbar .nav-bar

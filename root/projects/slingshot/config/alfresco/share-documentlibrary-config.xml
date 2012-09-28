@@ -743,6 +743,11 @@
             <evaluator>evaluator.doclib.action.isSyncedFromLocal</evaluator>
          </action>
 
+         <!-- Download folder -->
+         <action id="folder-download" type="javascript" label="actions.document.download" icon="document-download">
+            <param name="function">onActionFolderDownload</param>
+         </action>
+
       </actions>
 
 
@@ -821,7 +826,8 @@
          </actionGroup>
 
          <actionGroup id="folder-browse">
-            <action index="100" id="folder-view-details" />
+            <action index="100" id="folder-download"/>
+            <action index="105" id="folder-view-details" />
             <action index="110" id="document-edit-properties" icon="folder-edit-properties" label="actions.folder.edit-metadata" />
             <action index="120" id="document-approve" icon="folder-approve" />
             <action index="130" id="document-reject" icon="folder-reject" />

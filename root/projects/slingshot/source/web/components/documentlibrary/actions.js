@@ -1747,6 +1747,45 @@
       onCloudIndirectSyncFailedIndicatorAction: function dlA_onCloudIndirectSyncFailedIndicatorAction(record, target)
       {
          this.onCloudSyncIndicatorAction(record, target);
+      },
+
+      /**
+       * Triggers the archiving and download of a single folders contents
+       *
+       * @method onActionFolderDownload
+       * @param record {object} Object literal representing the folder to be actioned
+       */
+      onActionFolderDownload: function dlA_onActionFolderDownload(record) {
+         
+         var downloadDialog = Alfresco.getArchiveAndDownloadInstance(),
+             config = { nodesToArchive: [{"nodeRef": record.nodeRef}],
+                        archiveName: record.fileName };
+         downloadDialog.show(config);
+      },
+      
+      /**
+       * Triggers the archiving and download of the currently selected documents/folders.
+       * 
+       * @method onActionDownload
+       * @param record {array} The list of selected records.
+       */
+      onActionDownload: function dla_onActionDownload(record) {
+         var downloadDialog = Alfresco.getArchiveAndDownloadInstance(),
+             config = { nodesToArchive: [] };
+         
+         if (record.length == 1)
+         {
+            config.nodesToArchive.push({"nodeRef": record[0].nodeRef});
+            config.archiveName = record[0].fileName;
+         }
+         else
+         {
+            for (var i=0; i<record.length; i++)
+            {
+               config.nodesToArchive.push({"nodeRef": record[i].nodeRef})
+            }
+         }
+         downloadDialog.show(config);
       }
    };
 })();

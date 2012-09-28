@@ -627,14 +627,17 @@ Alfresco.util.BYTES_GB = 1073741824;
  *
  * @method Alfresco.util.formatFileSize
  * @param fileSize {number} File size in bytes
+ * @param decimalPlaces {int} number of decimal places
  * @return {string} The file size in a readable form, i.e 1.2mb
  * @static
  * @throws {Error}
  */
-Alfresco.util.formatFileSize = function(fileSize)
+Alfresco.util.formatFileSize = function(fileSize, decimalPlaces)
 {
+   var decimalPlaces = decimalPlaces || 0;
    if (typeof fileSize == "string")
    {
+      fileSize = fileSize.replace(/,/gi,"");
       fileSize = parseInt(fileSize, 10);
    }
    
@@ -644,16 +647,16 @@ Alfresco.util.formatFileSize = function(fileSize)
    }
    else if (fileSize < Alfresco.util.BYTES_MB)
    {
-      fileSize = Math.round(fileSize / Alfresco.util.BYTES_KB);
+      fileSize = (fileSize / Alfresco.util.BYTES_KB).toFixed(decimalPlaces);
       return fileSize + " " + Alfresco.util.message("size.kilobytes");
    }
    else if (fileSize < Alfresco.util.BYTES_GB)
    {
-      fileSize = Math.round(fileSize / Alfresco.util.BYTES_MB);
+      fileSize = (fileSize / Alfresco.util.BYTES_MB).toFixed(decimalPlaces);
       return fileSize + " " + Alfresco.util.message("size.megabytes");
    }
 
-   fileSize = Math.round(fileSize / Alfresco.util.BYTES_GB);
+   fileSize = (fileSize / Alfresco.util.BYTES_GB).toFixed(decimalPlaces);
    return fileSize + " " + Alfresco.util.message("size.gigabytes");
 };
 

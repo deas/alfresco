@@ -89,6 +89,10 @@
          <region-id>dnd-upload</region-id>
          <url>/components/upload/dnd-upload</url>
       </component>
+      <component>
+         <region-id>archive-and-download</region-id>
+         <url>/components/download/archive</url>
+      </component>
 
       <!-- Custom Code -->
       <component>
