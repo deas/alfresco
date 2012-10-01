@@ -150,11 +150,27 @@ public class BridgeTableTest extends TestCase
         assertEquals(0, bridgeTable.getDescendants("F").size());
     }
 
+//    @Test
+//    public void test_1M()
+//    {
+//     // 1M = 21 
+//        for (int i = 0; i < 20; i++) 
+//        { 
+//            BridgeTable<String> bridgeTable = new BridgeTable<String>();
+//            long start = System.nanoTime(); 
+//            bridgeTable.addLinks(getTreeLinks(i)); 
+//            long end = System.nanoTime(); 
+//            double elapsed = ((end - start) / 1e9);
+//            System.out.println("" + bridgeTable.size() + " in " + elapsed);
+//            assertTrue(elapsed < 60);
+//        } 
+//    }
+    
     @Test
-    public void test_1M()
+    public void test_16k()
     {
      // 1M = 21 
-        for (int i = 0; i < 20; i++) 
+        for (int i = 0; i < 15; i++) 
         { 
             BridgeTable<String> bridgeTable = new BridgeTable<String>();
             long start = System.nanoTime(); 
@@ -166,16 +182,45 @@ public class BridgeTableTest extends TestCase
         } 
     }
     
+//    @Test
+//    public void test_1000x1000()
+//    {
+//        BridgeTable<String> bridgeTable = new BridgeTable<String>();
+//        HashSet<Pair<String, String>> links = new HashSet<Pair<String, String>>(); 
+//        for (int i = 0; i < 10; i++) 
+//        { 
+//            for (int j = 0; j < 100; j++) 
+//            { 
+//                links.addAll(getTreeLinks(10)); 
+//            } 
+//
+//            
+//            long start = System.nanoTime(); 
+//            bridgeTable.addLinks(links); 
+//            long end = System.nanoTime(); 
+//            System.out.println("Trees " + bridgeTable.size() + " in " + ((end - start) / 1e9)); 
+//
+//            start = System.nanoTime(); 
+//            for (String key : bridgeTable.keySet()) 
+//            { 
+//                bridgeTable.getAncestors(key); 
+//            } 
+//            end = System.nanoTime(); 
+//            System.out.println("By key " + bridgeTable.size() + " in " + ((end - start) / 1e9)); 
+//        } 
+//    }
+    
+    
     @Test
-    public void test_1000x1000()
+    public void test_100x100()
     {
         BridgeTable<String> bridgeTable = new BridgeTable<String>();
         HashSet<Pair<String, String>> links = new HashSet<Pair<String, String>>(); 
         for (int i = 0; i < 10; i++) 
         { 
-            for (int j = 0; j < 100; j++) 
+            for (int j = 0; j < 10; j++) 
             { 
-                links.addAll(getTreeLinks(10)); 
+                links.addAll(getTreeLinks(7)); 
             } 
 
             
