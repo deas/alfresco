@@ -236,5 +236,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-driver-zip-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-driver-zip-7.5.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/mmt-dependencies/truezip-swing-7.5.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.4-complete.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/concurrentlinkedhashmap-lru-1.2.jar" sourcepath="/Users/mward/.m2/repository/com/googlecode/concurrentlinkedhashmap/concurrentlinkedhashmap-lru/1.2/concurrentlinkedhashmap-lru-1.2-sources.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
