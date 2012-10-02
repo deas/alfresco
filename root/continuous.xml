@@ -766,9 +766,9 @@
         </exec>      
     </target>
     
-    <target name="linux-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-linux.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} deployment.xml linux ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux}"'/>
+    <target name="linux-64-bit-deployment-installer">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-linux64.txt" failifexecutionfails="true">
+            <arg line='${installer.build.type} deployment.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux64}"'/>
         </exec>
     </target>
     
@@ -801,9 +801,9 @@
             depends="continuous-init, set-build-number, set-bitrock-builder">   
         <antcall target="linux-64-bit-installer"/>            
     </target>
-    <target name="build-linux-deployment-installer"
+    <target name="build-linux-64-bit-deployment-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder">    
-        <antcall target="linux-deployment-installer"/>
+        <antcall target="linux-64-bit-deployment-installer"/>
     </target>
             
    <!-- Build installers in parallel -->
@@ -817,7 +817,7 @@
             <antcall target="osx-64-bit-installer"/>
             <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
-            <antcall target="linux-deployment-installer"/>
+            <antcall target="linux-64-bit-deployment-installer"/>
         </parallel>
    </target>
    
