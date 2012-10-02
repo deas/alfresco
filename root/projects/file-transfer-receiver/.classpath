@@ -41,7 +41,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/3rd Party/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/hibernate-3.2.6-patched.jar" sourcepath="/3rd Party/src/hibernate-3.2.6-patched-src.zip"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/ehcache-core-2.0.0.jar" sourcepath="/3rd Party/src/ehcache-core-2.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jug-asl-2.0.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
