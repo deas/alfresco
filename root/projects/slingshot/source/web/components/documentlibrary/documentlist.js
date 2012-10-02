@@ -3822,22 +3822,29 @@
 
          if (eventTarget)
          {
+            var me = this;
             this.options.sortField = eventTarget.value;
             this.widgets.sortField.set("label", eventTarget.cfg.getProperty("text"));
-            this.services.preferences.set(PREF_SORT_FIELD, this.options.sortField);
-
-            // Default sort order configured?
-            var title = eventTarget.srcElement.getAttribute("title");
-            if (title === "true" || title === "false")
-            {
-               this.options.sortAscending = (title === "false");
-               // onSortAscending will fire the metadatRefresh event
-               this.onSortAscending();
-            }
-            else
-            {
-               YAHOO.Bubbling.fire("metadataRefresh");
-            }
+            this.services.preferences.set(PREF_SORT_FIELD, this.options.sortField, {
+               successCallback:
+               {
+                  fn: function()
+                  {
+                     // Default sort order configured?
+                     var title = eventTarget.srcElement.getAttribute("title");
+                     if (title === "true" || title === "false")
+                     {
+                        me.options.sortAscending = (title === "false");
+                        // onSortAscending will fire the metadatRefresh event
+                        me.onSortAscending();
+                     }
+                     else
+                     {
+                        YAHOO.Bubbling.fire("metadataRefresh");
+                     }
+                  }
+               }
+            });
          }
          Event.preventDefault(domEvent);
       },
