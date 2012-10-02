@@ -46,7 +46,7 @@
       <div class="header">
          <span class="header-left">
             <span class="logo">
-               <a href="#" onclick="${jsid}.showAboutShare(); return false;"><img src="${url.context}<#if logo?? && logo?length!=0>/proxy/alfresco/api/node/${logo?replace('://','/')}/content<#else>/res/themes/${theme}/images/${defaultlogo}</#if>" alt="Alfresco Share" /></a>
+               <a href="${url.context}"><img src="${url.context}<#if logo?? && logo?length!=0>/proxy/alfresco/api/node/${logo?replace('://','/')}/content<#else>/res/themes/${theme}/images/${defaultlogo}</#if>" alt="Alfresco Share" /></a>
             </span>
             <span class="logo-spacer">&nbsp;</span>
             <span id="${id}-appItems" class="app-items hidden"><@header.renderItems config.global.header.appItems id "app" /></span>
