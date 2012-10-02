@@ -9,7 +9,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/docs/apidocs"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/3rd Party/lib/ehcache-core-2.0.0.jar" sourcepath="/3rd Party/src/ehcache-core-2.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/json.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/slf4j-log4j12-1.5.11.jar"/>
@@ -36,5 +35,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11-SNAPSHOT-20120805-1225.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-collections-3.2.1.jar" sourcepath="/3rd Party/src/commons-collections-3.2.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/ehcache-core-2.0.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
