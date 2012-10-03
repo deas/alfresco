@@ -45,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.springframework.extensions.config.Config;
+import org.springframework.extensions.config.ConfigElement;
 import org.springframework.extensions.config.ConfigService;
 import org.springframework.extensions.surf.FrameworkUtil;
 import org.springframework.extensions.surf.RequestContext;
@@ -54,6 +55,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.extensions.surf.util.StringBuilderWriter;
 import org.springframework.extensions.webscripts.AbstractMessageHelper;
 import org.springframework.extensions.webscripts.Cache;
+import org.springframework.extensions.webscripts.ConfigModel;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScript;
@@ -326,11 +328,25 @@ public class FormUIGet extends DeclarativeWebScript
     protected FormConfigElement getFormConfig(String itemId, String formId)
     {
         FormConfigElement formConfig = null;
+        FormsConfigElement formsConfig = null;
+        RequestContext requestContext = ThreadLocalRequestContext.getRequestContext();
+        ConfigModel extendedTemplateConfigModel = requestContext.getExtendedTemplateConfigModel(null);
         
-        if (this.configService != null)
+        if(extendedTemplateConfigModel != null) {
+        	@SuppressWarnings("unchecked")
+	        Map<String, ConfigElement> configs = (Map<String, ConfigElement>) extendedTemplateConfigModel.getScoped().get(itemId);
+	        formsConfig = (FormsConfigElement) configs.get(CONFIG_FORMS);
+        }
+        
+        if(formsConfig == null)
         {
-            Config configResult = this.configService.getConfig(itemId);
-            FormsConfigElement formsConfig = (FormsConfigElement)configResult.getConfigElement(CONFIG_FORMS);
+        	Config configResult = this.configService.getConfig(itemId);
+            formsConfig = (FormsConfigElement)configResult.getConfigElement(CONFIG_FORMS);
+        }
+        
+        if (formsConfig != null)
+        {
+           // Extract the form we are looking for
             if (formsConfig != null)
             {
                 // try and retrieve the specified form 
@@ -350,7 +366,6 @@ public class FormUIGet extends DeclarativeWebScript
         {
             logger.warn("Could not lookup form configuration as configService has not been set");
         }
-        
         return formConfig;
     }
     
