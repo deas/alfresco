@@ -29,7 +29,7 @@
         <setInstallerVariable name="component(java).canBeEdited" value="0" />
 	<setInstallerVariable name="component(java).detailedDescription" value="Java Component required to run the Alfresco server." />
         <setInstallerVariable name="component(java).parameter(java_required_jdk).value" value="1" />
-        <setInstallerVariable name="component(java).parameter(java_min_version).value" value="1.6.0_22" />
+        <setInstallerVariable name="component(java).parameter(java_min_version).value" value="1.7.0_07" />
         <setInstallerVariable name="component(java).parameter(java_required_or_abort).value" value="1" />
        
         <setInstallerVariable name="component(tomcat).parameter(tomcat_dirname).value" value="tomcat" />
