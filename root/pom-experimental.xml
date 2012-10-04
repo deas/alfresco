@@ -95,8 +95,6 @@
     <module>projects/web-framework-commons</module>
     <module>projects/jndi-client</module>
     <module>projects/catalina-virtual</module>
-    <module>enterpriseprojects/repository</module>
-    <module>enterpriseprojects/remote-api</module>
     <module>projects/web-client</module>
     <module>projects/web-service-client</module>
     <module>projects/slingshot</module>
@@ -622,6 +620,20 @@
                 </plugin>                            
             </plugins>
         </build>
+    </profile>
+    <!-- Profile to build alfresco-enterprise -->
+    <profile>
+        <id>enterprise</id>
+        <activation>
+             <property>
+                 <name>alfresco.enterprise</name>
+                 <value>true</value>    
+             </property>
+        </activation>
+        <modules>
+            <module>enterpriseprojects/repository</module>
+            <module>enterpriseprojects/remote-api</module>
+        </modules>
     </profile>
   </profiles>
 
