@@ -16,22 +16,6 @@
                 <platformTest type="osx"/>
             </ruleList>
         </setInstallerVariable>
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable>
-                    <name>component(java).parameter(java_min_version).value</name>
-                    <value>1.5.0</value>
-                </setInstallerVariable>
-
-<!--<setInstallerVariable>
-		    <name>component(java).parameter(java_max_version).value</name>
-		    <value>1.5</value>
-		</setInstallerVariable>-->
-            </actionList>
-            <ruleList>
-                <compareText text="${java_installation_type}" logic="equals" value="existing"/>
-            </ruleList>
-        </actionGroup>
     </initializationActionList>
 </component>
 
