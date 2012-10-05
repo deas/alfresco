@@ -32,7 +32,7 @@ public class UTF8Normalizer {
 
   // Normalizer method type
   
-  public enum NormalizerType { Unknown, Java5, Java6, IBMICU };
+  public enum NormalizerType { Unknown, Java5, Java6or7, IBMICU };
   
   // Type of normalizer method
   
@@ -89,9 +89,9 @@ public class UTF8Normalizer {
           normStr = (String) m_method.invoke( null, utf8str, false, 0);
           break;
           
-        // Java6
+        // Java6 or 7
           
-        case Java6:
+        case Java6or7:
           
           // Call the normalize(CharSequence, Normalizer.Form) method
           
@@ -189,7 +189,7 @@ public class UTF8Normalizer {
       catch (NoSuchMethodException ex) {
       }
     }
-    else if ( javaVer.equals("1.6")) {
+    else if ( javaVer.equals("1.6") || javaVer.equals( "1.7")) {
       
       try {
         
@@ -216,7 +216,7 @@ public class UTF8Normalizer {
         // Check if the method is valid
         
         if ( m_method != null) {
-          m_type = NormalizerType.Java6;
+          m_type = NormalizerType.Java6or7;
           return;
         }
       }
