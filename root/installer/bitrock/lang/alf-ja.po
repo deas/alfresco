@@ -696,3 +696,9 @@ msgstr "次の手順を表示"
 
 msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
 msgstr "最低1024 MBのメモリが必要です。お使いのコンピュータのメモリは${machine_total_memory} MBです。"
+
+msgid "Google Docs Integration"
+msgstr "Google Docsの統合"
+
+msgid "Include Google Docs Integration Features."
+msgstr "Google Docsの統合機能が含まれています。"

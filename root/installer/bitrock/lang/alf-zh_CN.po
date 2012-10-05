@@ -696,3 +696,9 @@ msgstr "显示后续步骤"
 
 msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
 msgstr "Alfresco 建议使用至少 1024MB 的内存。 检测到 ${machine_total_memory}MB。"
+
+msgid "Google Docs Integration"
+msgstr "Google Docs 集成"
+
+msgid "Include Google Docs Integration Features."
+msgstr "包括 Google Docs 集成功能。"

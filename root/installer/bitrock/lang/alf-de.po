@@ -696,3 +696,9 @@ msgstr "Nächste Schritte"
 
 msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
 msgstr "Alfresco empfiehlt mindestens 1024 MB Speicher. ${machine_total_memory} MB erkannt."
+
+msgid "Google Docs Integration"
+msgstr "Integration von Google Docs"
+
+msgid "Include Google Docs Integration Features."
+msgstr "Funktionen zur Integration von Google Docs einschließen."
