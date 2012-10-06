@@ -520,11 +520,11 @@ msgstr "Недостаточно свободного пространства �
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "Это установщик для 64-разрядной Windows.  Загрузите версию для 32-разрядной Windows."
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 5.0 или более поздней. Установите совместимую версию Java и повторите попытку."
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "Этот выпуск был помещен в пакет для выполнения в среде Java SE версии 7 или более поздней. Установите совместимую версию Java и повторите попытку."
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 5.0. Установите совместимую версию Java и повторите попытку."
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "Этот выпуск был помещен в пакет для выполнения в среде Java SE версии 7. Установите совместимую версию Java и повторите попытку."
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 6.0 или более поздней. Установите совместимую версию Java и повторите попытку."

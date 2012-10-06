@@ -520,11 +520,11 @@ msgstr "L'espace libre dans ${installdir} est insuffisant. Vous avez besoin d'au
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "Ce programme est conçu pour Windows 64 bits.  Veuillez télécharger la version Windows 32 bits."
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "Cette version a été conçue pour s'exécuter sur J2SE 5.0 ou version ultérieure. Veuillez installer une version Java compatible et réessayer."
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "Cette version a été conçue pour s'exécuter sur Java SE 7 ou version ultérieure. Veuillez installer une version Java compatible et réessayer."
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "Cette version a été conçue pour s'exécuter sur J2SE 5.0. Veuillez installer une version Java compatible et réessayer."
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "Cette version a été conçue pour s'exécuter sur Java SE 7. Veuillez installer une version Java compatible et réessayer."
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "Cette version a été conçue pour s'exécuter sur J2SE 6.0 ou version ultérieure. Veuillez installer une version Java compatible et réessayer."

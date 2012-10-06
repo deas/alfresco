@@ -520,11 +520,11 @@ msgstr "Im Verzeichnis ${installdir} ist nicht genügend Speicherplatz frei. Fü
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "Diese Installationsdatei ist für Windows 64 Bit.  Bitte laden Sie die 32-Bit-Version von Windows herunter."
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "Diese Version ist für die Ausführung unter J2SE 5.0 oder einer neueren Version freigegeben. Bitte installieren Sie eine kompatible Java-Version, und versuchen Sie es erneut."
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "Diese Version ist für die Ausführung unter Java SE 7 oder einer neueren Version freigegeben. Bitte installieren Sie eine kompatible Java-Version, und versuchen Sie es erneut."
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "Diese Version ist zur Ausführung unter J2SE 5.0 freigegeben. Bitte installieren Sie eine kompatible Java-Version, und versuchen Sie es erneut."
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "Diese Version ist zur Ausführung unter Java SE 7 freigegeben. Bitte installieren Sie eine kompatible Java-Version, und versuchen Sie es erneut."
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "Diese Version ist für die Ausführung unter J2SE 6.0 oder einer neueren Version freigegeben. Bitte installieren Sie eine kompatible Java-Version, und versuchen Sie es erneut."

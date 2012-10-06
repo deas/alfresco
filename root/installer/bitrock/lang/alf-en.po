@@ -520,11 +520,11 @@ msgstr "There is not enough free space on ${installdir}. You need at least ${bas
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."

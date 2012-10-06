@@ -21,7 +21,7 @@ Copyrighted by BitRock
                 <autodetectJava>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on Java SE 7. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -37,7 +37,7 @@ Copyrighted by BitRock
                 <autodetectJava>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on Java SE 7. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -53,7 +53,7 @@ Copyrighted by BitRock
 
 <!-- Compatible java version -->
 <autodetectJava>
-                    <customErrorMessage>This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again.</customErrorMessage>
                     <validVersionList>
                         <validVersion>
                             <maxVersion/>

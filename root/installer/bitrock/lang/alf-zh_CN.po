@@ -520,11 +520,11 @@ msgstr "${installdir} 上没有足够的可用空间。 您需要至少 ${base_n
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "此安装程序适用于 Windows 64 位。  请下载 Windows 32 位版本。"
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "此版本打包后在 J2SE 5.0 或更高版本上运行。 请安装兼容的 Java 版本并重试。"
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "此版本打包后在 Java SE 7 或更高版本上运行。 请安装兼容的 Java 版本并重试。"
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "此版本打包后在 J2SE 5.0 上运行。 请安装兼容的 Java 版本并重试。"
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "此版本打包后在 Java SE 7 上运行。 请安装兼容的 Java 版本并重试。"
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "此版本打包后在 J2SE 6.0 或更高版本上运行。 请安装兼容的 Java 版本并重试。"

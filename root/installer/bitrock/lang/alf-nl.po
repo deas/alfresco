@@ -520,11 +520,11 @@ msgstr "Er is niet genoeg beschikbare ruimte op ${installdir}. U hebt ten minste
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "Dit installatieprogramma is voor 64-bits Windows. Download de 32-bits Windows-versie."
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "Deze versie is verpakt voor uitvoering op J2SE 5.0 of later. Installeer een compatibele Java-versie en probeer het opnieuw."
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "Deze versie is verpakt voor uitvoering op Java SE 7 of later. Installeer een compatibele Java-versie en probeer het opnieuw."
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "Deze versie is verpakt voor uitvoering op J2SE 5.0. Installeer een compatibele Java-versie en probeer het opnieuw."
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "Deze versie is verpakt voor uitvoering op Java SE 7. Installeer een compatibele Java-versie en probeer het opnieuw."
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "Deze versie is verpakt voor uitvoering op J2SE 6.0 of later. Installeer een compatibele Java-versie en probeer het opnieuw."

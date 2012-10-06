@@ -520,11 +520,11 @@ msgstr "${installdir} に十分な空き領域がありません。${product_ful
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "このインストーラはWindows 64ビット用です。 Windows 32ビットバージョンをダウンロードしてください。"
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "このリリースはJ2SE 5.0以上で実行するようにパッケージ化されています。互換性のあるJavaバージョンをインストールしてから、操作をやり直してください。"
+msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
+msgstr "このリリースはJava SE 7以上で実行するようにパッケージ化されています。互換性のあるJavaバージョンをインストールしてから、操作をやり直してください。"
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "このリリースはJ2SE 5.0で実行するようにパッケージ化されています。互換性のあるJavaバージョンをインストールしてから、操作をやり直してください。"
+msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
+msgstr "このリリースはJava SE 7で実行するようにパッケージ化されています。互換性のあるJavaバージョンをインストールしてから、操作をやり直してください。"
 
 msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
 msgstr "このリリースはJ2SE 6.0以上で実行するようにパッケージ化されています。互換性のあるJavaバージョンをインストールしてから、操作をやり直してください。"
