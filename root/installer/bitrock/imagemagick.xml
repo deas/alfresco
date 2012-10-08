@@ -49,7 +49,7 @@ System variables provided by this component:
                 <platformTest type="unix"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="imagemagick_root_directory" value="${installdir}/imagemagick">
+        <setInstallerVariable name="imagemagick_root_directory" value="${installdir}\imagemagick">
             <ruleList>
                 <platformTest type="windows"/>
             </ruleList>
@@ -86,8 +86,6 @@ MAGICK_CONFIGURE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagi
 export MAGICK_CONFIGURE_PATH
 MAGICK_CODER_MODULE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/modules-Q16/coders"
 export MAGICK_CODER_MODULE_PATH
-GS_LIB="${imagemagick_root_directory}/share/ghostscript/fonts"
-export GS_LIB
 
 </value>
             <ruleList>
@@ -111,6 +109,15 @@ set GS_LIB=${imagemagick_root_directory.dos}\lib
             <ruleList>
                 <platformTest type="windows"/>
                 <isTrue value="${imagemagick_ghostscriptwin_included}" />
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="IMAGEMAGICK_ENV_VAR">
+            <value>${IMAGEMAGICK_ENV_VAR}
+GS_LIB="${imagemagick_root_directory}/share/ghostscript/fonts"
+export GS_LIB
+</value>
+            <ruleList>
+                <platformTest type="unix"/>
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="ENV_VAR">
@@ -152,6 +159,37 @@ set GS_LIB=${imagemagick_root_directory.dos}\lib
                 <distributionDirectory origin="${imagemagick_distribution_folder_unix}/share" />
             </distributionFileList>
             <actionList>
+                <actionGroup>
+                    <actionList>
+                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/" >
+			    <ruleList>
+				<fileExists path="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type.xml" />
+			    </ruleList>
+			</copyFile>
+                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type-ghostscript.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/" >
+			    <ruleList>
+				<fileExists path="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type-ghostscript.xml" />
+			    </ruleList>
+			</copyFile>
+                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/delegates.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/" >
+			    <ruleList>
+				<fileExists path="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/delegates.xml" />
+			    </ruleList>
+			</copyFile>
+                        <substitute>
+                            <files>${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/type-ghostscript.xml</files>
+                             <substitutionList>
+                                 <substitution>
+                                     <pattern>/usr/share/fonts/default/Type1</pattern>
+                                     <value>${common_root_directory}/share/ghostscript/fonts</value>
+                                 </substitution>
+                             </substitutionList>
+                        </substitute>
+                    </actionList>
+                    <ruleList>
+                        <fileTest path="${common_root_directory}/share/ghostscript/fonts" condition="exists" />
+                    </ruleList>
+                </actionGroup>
                 <substitute>
                     <type>exact</type>		    
                     <files>*</files>
