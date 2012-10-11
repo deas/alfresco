@@ -19,14 +19,13 @@
             <plugin>
                 <groupId>org.jibx</groupId>
                 <artifactId>maven-jibx-plugin</artifactId>
+                <version>1.2.4.5</version>
                 <configuration>
                     <load>true</load>
                     <schemaBindingDirectory>${maven.build.layout.jibx.bindings.folder}</schemaBindingDirectory>
                     <includeSchemaBindings>
                         <includeSchemaBinding>m2binding.xml</includeSchemaBinding>
                     </includeSchemaBindings>
-                    <verbose>false</verbose>
-                    <verify>false</verify>
                  </configuration>
                  <executions>
                     <execution>
@@ -36,6 +35,34 @@
                         </goals>
                     </execution>
                 </executions>
+                <!-- Can't make this plugin to run in version 1.2.3. Using latest version with 1.2.3 jars... -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>jibx-tools</artifactId>
+                        <version>${dependency.jibx.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>jibx-schema</artifactId>
+                        <version>${dependency.jibx.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>jibx-extras</artifactId>
+                        <version>${dependency.jibx.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>jibx-bind</artifactId>
+                        <version>${dependency.jibx.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>jibx-run</artifactId>
+                        <version>${dependency.jibx.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!--  Create a jar of test classes, to be reused later in repository -->
