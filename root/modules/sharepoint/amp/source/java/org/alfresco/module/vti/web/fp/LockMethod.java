@@ -127,14 +127,17 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
             }
             catch (FileNotFoundException e)
             {
-                //That will be handled in the super.executeImpl();
+                // That will be handled in the super.executeImpl();
             }
             if (lockNodeInfo != null)
             {
-              if (getNodeService().hasAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE) == false)
-              {
-                  getNodeService().addAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE, Collections.<QName,Serializable>singletonMap(ContentModel.PROP_VERSION_TYPE, VersionType.MAJOR));
-              }
+                if (getNodeService().hasAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE) == false)
+                {
+                    getNodeService().addAspect(
+                                lockNodeInfo.getNodeRef(),
+                                ContentModel.ASPECT_VERSIONABLE,
+                                Collections.<QName,Serializable>singletonMap(ContentModel.PROP_VERSION_TYPE, VersionType.MAJOR));
+                }
             }
             
             super.executeImpl();
