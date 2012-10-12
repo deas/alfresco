@@ -344,12 +344,6 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             }
             else
             {
-                if (getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
-                {
-                    // adds 'versionable' aspect and saves current version
-                    getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
-                }
-
                 // original document writer
                 writer = getContentService().getWriter(resourceNodeRef, ContentModel.PROP_CONTENT, true);
 
@@ -364,6 +358,12 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             if (getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT))
             {
                 getNodeService().removeAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT);
+            }
+            
+            if (workingCopyNodeRef == null && getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
+            {
+                // adds 'versionable' aspect and saves current version
+                getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
             }
 
             tx.commit();

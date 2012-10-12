@@ -19,6 +19,9 @@
 
 package org.alfresco.module.vti.web.fp;
 
+import java.io.Serializable;
+import java.util.Collections;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.model.ContentModel;
@@ -28,6 +31,7 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.QName;
 import org.dom4j.io.OutputFormat;
 import org.springframework.extensions.surf.util.URLDecoder;
@@ -67,11 +71,6 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
 
         ContentWriter writer = getFileFolderService().getWriter(lockNodeInfo.getNodeRef());
         writer.putContent("");
-
-        if (getNodeService().hasAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE) == false)
-        {
-            getNodeService().addAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE, null);
-        }
 
         if (getNodeService().hasAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_AUTHOR) == false)
         {
@@ -120,6 +119,24 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     {
         try
         {
+            FileInfo lockNodeInfo = null;
+            try
+            {
+                // Check if the path exists
+                lockNodeInfo = getNodeForPath(getRootNodeRef(), getPath(), m_request.getServletPath());
+            }
+            catch (FileNotFoundException e)
+            {
+                //That will be handled in the super.executeImpl();
+            }
+            if (lockNodeInfo != null)
+            {
+              if (getNodeService().hasAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE) == false)
+              {
+                  getNodeService().addAspect(lockNodeInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE, Collections.<QName,Serializable>singletonMap(ContentModel.PROP_VERSION_TYPE, VersionType.MAJOR));
+              }
+            }
+            
             super.executeImpl();
         }
         catch (AccessDeniedException e) 
