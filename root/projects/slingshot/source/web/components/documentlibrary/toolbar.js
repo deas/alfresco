@@ -1106,7 +1106,10 @@
                {
                   paths = ["/"];
                }
-               this.widgets.folderUp.set("disabled", paths.length < 2);
+               if (this.widgets.folderUp)
+               {
+                  this.widgets.folderUp.set("disabled", paths.length < 2);
+               }
             }
             else
             {
