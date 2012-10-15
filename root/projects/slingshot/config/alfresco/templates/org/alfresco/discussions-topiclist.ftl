@@ -1,19 +1,24 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
+   <@markup id="resizer">
    <script type="text/javascript">//<![CDATA[
       new Alfresco.widget.Resizer("Discussions-TopicList");
    //]]></script>
+   </@>
    <!-- General Discussion Assets -->
    <@script type="text/javascript" src="${url.context}/res/components/blog/blogdiscussions-common.js"></@script>
    <@script type="text/javascript" src="${url.context}/res/components/discussions/discussions-common.js"></@script>
 </@>
 
 <@templateBody>
+   <@markup id="alf-hd">
    <div id="alf-hd">
       <@region id="header" scope="global" />
       <@region id="title" scope="template" />
       <@region id="navigation" scope="template" />
    </div>
+   </@>
+   <@markup id="bd">
    <div id="bd">
       <div class="yui-t1" id="alfresco-discussions-topiclist">
          <div id="yui-main">
@@ -28,10 +33,13 @@
          </div>
       </div>
    </div>
+   </@>
 </@>
 
 <@templateFooter>
+   <@markup id="alf-ft">
    <div id="alf-ft">
       <@region id="footer" scope="global" />
    </div>
+   </@>
 </@>

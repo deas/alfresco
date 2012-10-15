@@ -1,5 +1,6 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
+   <@markup id="resizer">
    <script type="text/javascript">//<![CDATA[
       new Alfresco.widget.Resizer("Calendar").setOptions(
       {
@@ -8,14 +9,18 @@
          initialWidth: 215
       });
    //]]></script>
+   </@>
 </@>
 
 <@templateBody>
+   <@markup id="alf-hd">
    <div id="alf-hd">
       <@region id="header" scope="global" />
       <@region id="title" scope="template" />
       <@region id="navigation" scope="template" />
    </div>
+   </@>
+   <@markup id="bd">
    <div id="bd">
       <div class="yui-t1" id="alfresco-calendar">
          <div id="yui-main">
@@ -30,11 +35,14 @@
          </div>
       </div>
    </div>
+   </@>
 </@>
 
 <@templateFooter>
+   <@markup id="alf-ft">
    <div id="alf-ft">
       <@region id="footer" scope="global" />
    </div>
+   </@>
 </@>
 

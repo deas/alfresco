@@ -1,15 +1,20 @@
 <#include "include/alfresco-template.ftl" />
 <@templateHeader>
+   <@markup id="resizer">
    <script type="text/javascript">//<![CDATA[
       new Alfresco.widget.Resizer("MyWorkflows");
    //]]></script>
+   </@>
 </@>
 
 <@templateBody>
+   <@markup id="alf-hd">
    <div id="alf-hd">
-   <@region id="header" scope="global" />
-   <@region id="task-title" scope="template" />
+      <@region id="header" scope="global" />
+      <@region id="task-title" scope="template" />
    </div>
+   </@>
+   <@markup id="bd">
    <div id="bd">
       <div class="yui-t1" id="alfresco-mytasks">
          <div id="yui-main">
@@ -27,10 +32,13 @@
          </div>
       </div>
    </div>
+   </@>
 </@>
 
 <@templateFooter>
+   <@markup id="alf-ft">
    <div id="alf-ft">
       <@region id="footer" scope="global" />
    </div>
+   </@>
 </@>

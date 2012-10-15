@@ -4,11 +4,14 @@
 </@>
 
 <@templateBody>
+   <@markup id="alf-hd">
    <div id="alf-hd">
       <@region id="header" scope="global" />
       <@region id="title" scope="template" />
       <@region id="navigation" scope="template" />
    </div>
+   </@>
+   <@markup id="bd">
    <div id="bd">
       <@region id="path" scope="template" />
       <@region id="rules-header" scope="template" />
@@ -32,7 +35,9 @@
          <@region id="rules-none" scope="template" />
       </#if>
    </div>
+   </@>
 
+   <@markup id="folder-rules">
    <script type="text/javascript">//<![CDATA[
    new Alfresco.FolderRules().setOptions(
    {
@@ -89,10 +94,13 @@
       }<#else>null</#if>
    });
    //]]></script>
+   </@>
 </@>
 
 <@templateFooter>
+   <@markup id="alf-ft">
    <div id="alf-ft">
       <@region id="footer" scope="global" />
    </div>
+   </@>
 </@>

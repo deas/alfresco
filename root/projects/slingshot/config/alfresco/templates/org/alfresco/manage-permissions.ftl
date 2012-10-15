@@ -5,16 +5,20 @@
 </@>
 
 <@templateBody>
+   <@markup id="alf-hd">
    <div id="alf-hd">
       <@region id="header" scope="global" />
       <@region id="title" scope="template" />
       <@region id="navigation" scope="template" />
    </div>
+   </@>
+   <@markup id="bd">
    <div id="bd">
       <@region id="path" scope="template" />
       <@region id="manage-permissions" scope="template" />
    </div>
-
+   </@>
+   <@markup id="manage-permissions">
    <script type="text/javascript">//<![CDATA[
    new Alfresco.template.ManagePermissions().setOptions(
    {
@@ -23,10 +27,13 @@
       rootNode: "${(config.scoped["RepositoryLibrary"]["root-node"].getValue())!"alfresco://company/home"}"
    });
    //]]></script>
+   </@>
 </@>
 
 <@templateFooter>
+   <@markup id="alf-ft">
    <div id="alf-ft">
       <@region id="footer" scope="global" />
    </div>
+   </@>
 </@>

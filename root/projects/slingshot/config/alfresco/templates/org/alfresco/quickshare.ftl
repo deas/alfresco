@@ -12,7 +12,9 @@
 </#if>
 
 <@templateFooter>
+   <@markup id="alf-ft">
    <div id="alf-ft">
       <@region id="footer" scope="global"/>
    </div>
+   </@>
 </@templateFooter>
