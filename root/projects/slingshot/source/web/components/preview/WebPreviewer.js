@@ -13,6 +13,7 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer = function(wp, attributes)
    this.wp = wp;
    this.attributes = YAHOO.lang.merge(Alfresco.util.deepCopy(this.attributes), attributes);
    this.swfDiv = null;
+   this.fullWindowMode = false;
    return this;
 };
 
@@ -55,6 +56,14 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
     * @private
     */
    swfDiv: null,
+
+   /**
+    * Remember if we are in full window mode or not, if we are we shall not sync position with the previewer placeholder
+    *
+    * @type Boolean
+    * @private
+    */
+   fullWindowMode: false,
 
    /**
     * Tests if the plugin can be used in the users browser.
@@ -150,6 +159,8 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
 
       // Place the real flash preview div on top of the shadow div
       this.synchronizeSwfDivPosition();
+
+      YAHOO.lang.later(500, this, this.synchronizeSwfDivPosition , [] , true);
    },
 
    /**
@@ -193,6 +204,7 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
       {
          if (event.event.type == "onFullWindowClick")
          {
+            this.fullWindowMode = true;
             var clientRegion = YAHOO.util.Dom.getClientRegion();
             this.swfDiv.setStyle("left", clientRegion.left + "px");
             this.swfDiv.setStyle("top", clientRegion.top + "px");
@@ -201,6 +213,7 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
          }
          else if (event.event.type == "onFullWindowEscape")
          {
+            this.fullWindowMode = false;
             this.synchronizeSwfDivPosition();
          }
       }
@@ -262,12 +275,15 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
     */
    synchronizeSwfDivPosition: function WebPreviewer_synchronizePosition()
    {
-      var sourceYuiEl = new YAHOO.util.Element(this.wp.getPreviewerElement());
-      var region = YAHOO.util.Dom.getRegion(sourceYuiEl.get("id"));
-      this.swfDiv.setStyle("left", region.left + "px");
-      this.swfDiv.setStyle("top", region.top + "px");
-      this.swfDiv.setStyle("width", region.width + "px");
-      this.swfDiv.setStyle("height", region.height + "px");
+      if (!this.fullWindowMode)
+      {
+         var sourceYuiEl = new YAHOO.util.Element(this.wp.getPreviewerElement());
+         var region = YAHOO.util.Dom.getRegion(sourceYuiEl.get("id"));
+         this.swfDiv.setStyle("left", region.left + "px");
+         this.swfDiv.setStyle("top", region.top + "px");
+         this.swfDiv.setStyle("width", region.width + "px");
+         this.swfDiv.setStyle("height", region.height + "px");
+      }
    }
 
 };
