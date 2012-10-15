@@ -373,7 +373,7 @@
          {
             if (this.options.thumbnailModification[i].indexOf(thumbnail) != -1)
             {
-               noCache = "lastModified=" + this.options.thumbnailModification[i];
+               noCache = "lastModified=" + encodeURIComponent(this.options.thumbnailModification[i]);
                break;
             }
          }
