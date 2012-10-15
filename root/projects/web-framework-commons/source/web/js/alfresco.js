@@ -839,6 +839,66 @@ Alfresco.util.getFileExtension = function(filePath)
 };
 
 /**
+ * Loads a webscript into a target element.
+ *
+ * @method loadWebscript
+ * @param config
+ * @param config.method {String} (Optional) Defaults to "GET"
+ * @param config.url {String} The url to the webscript to load
+ * @param config.properties {Object} An object literal with the webscript parameters
+ * @param config.target {HTMLElement|String|null} The html element that will contain the new webscript.
+ *        If null a div with the hidden class will be appended to the body.
+ */
+Alfresco.util.loadWebscript = function (config)
+{
+   // Help creating a target & htmlid if none has been provided
+   var c = Alfresco.util.deepCopy(config);
+   c.method = c.method || Alfresco.util.Ajax.GET;
+   c.properties = c.properties || {};
+   c.properties.htmlid = c.properties.htmlid || Alfresco.util.generateDomId();
+
+   // Load the form for the specific workflow
+   Alfresco.util.Ajax.request(
+   {
+      method: c.method,
+      url: c.url,
+      dataObj: c.properties,
+      successCallback:
+      {
+         fn: function loadWebscript_successCallback(response, config)
+         {
+            // Split markup and script elements
+            var result = Alfresco.util.Ajax.sanitizeMarkup(response.serverResponse.responseText);
+
+            // Create temporary element to insert html
+            var wrapper = document.createElement("div");
+            wrapper.innerHTML = result[0];
+            if (!YAHOO.util.Selector.query("#" + c.properties.htmlid, wrapper, true))
+            {
+               wrapper.setAttribute("id", c.properties.htmlid);
+            }
+            var target = YAHOO.util.Dom.get(c.target);
+            if (!target)
+            {
+               target = document.createElement("div");
+               YAHOO.util.Dom.addClass(target, "hidden");
+               document.body.appendChild(target);
+            }
+            target.appendChild(wrapper);
+
+            // Run the js code from the webscript's <script> elements
+            window.setTimeout(result[1], 0);
+         },
+         scope: this,
+         obj: config
+      },
+      failureMessage: Alfresco.util.message("message.failure"),
+      scope: this,
+      execScripts: false
+   });
+};
+
+/**
  * Returns the windows scroll position that later can be used for i.e. window.scrollTo.
  *
  * @method Alfresco.util.getScrollPosition
