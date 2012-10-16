@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -139,6 +139,8 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                                 cb.register();
                                 configservice.reset();
                             }
+                            if (logger.isDebugEnabled())
+                                logger.debug("Current EditionInfo: " + EDITIONINFO);
                         }
                         else
                         {
@@ -149,7 +151,10 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                                 outputInfo = true;
                             }
                             // set a value so scripts have something to work with - the interceptor will retry later
-                            ThreadLocalRequestContext.getRequestContext().setValue(EDITION_INFO, new EditionInfo());
+                            EditionInfo info = new EditionInfo();
+                            ThreadLocalRequestContext.getRequestContext().setValue(EDITION_INFO, info);
+                            if (logger.isDebugEnabled())
+                                logger.debug("Current EditionInfo: " + info);
                         }
                     }
                 }
@@ -199,12 +204,14 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
         private final long users;
         private final long documents;
         private final String edition;
+        private final boolean response;
         
         EditionInfo()
         {
             this.users = -1L;
             this.documents = -1L;
             this.edition = UNKNOWN_EDITION;
+            this.response = false;
         }
         
         EditionInfo(String response) throws JSONException
@@ -213,6 +220,7 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
             this.users = json.optLong("users", -1L);
             this.documents = json.optLong("documents", -1L);
             this.edition = json.getString("licenseMode");
+            this.response = true;
         }
         
         public long getUsers()
@@ -229,11 +237,21 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
         {
             return this.edition;
         }
+        
+        /**
+         * @return true if the Edition info object was constuctor from a server response,
+         *         false if this is a default construction - used until the server responds.
+         */
+        public boolean getValidResponse()
+        {
+            return this.response;
+        }
 
         @Override
         public String toString()
         {
-            return "Users: " + this.users + "  Documents: " + this.documents + "  Edition: " + this.edition;
+            return "Users: " + this.users + "  Documents: " + this.documents +
+                   "  Edition: " + this.edition + "  Built from server response: " + this.response;
         }
     }
 }

@@ -86,6 +86,8 @@ MAGICK_CONFIGURE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagi
 export MAGICK_CONFIGURE_PATH
 MAGICK_CODER_MODULE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/modules-Q16/coders"
 export MAGICK_CODER_MODULE_PATH
+GS_LIB="${imagemagick_root_directory}/share/ghostscript/fonts"
+export GS_LIB
 
 </value>
             <ruleList>

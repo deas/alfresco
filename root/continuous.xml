@@ -203,7 +203,7 @@
          <fileset dir="${dir.continuous.dist}" 
                   includes="*.MD5"/>
       </delete>
-      <checksum>
+      <checksum format="MD5SUM">
          <fileset dir="${dir.continuous.dist}"/>
       </checksum>
    </target>
@@ -1091,7 +1091,38 @@
       <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip">
        <zipfileset dir="${dir.project.webframeworkcommons.docs.java}" />
       </zip>
-      
+
+      <!-- -->
+      <!-- Config jars -->
+      <!-- -->
+      <mkdir dir="${dir.continuous.assemble.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-config.zip"
+          basedir="${dir.project.datamodel.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-config.zip"
+          basedir="${dir.project.repository.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-remote-api-config.zip"
+          basedir="${dir.project.remoteapi.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip"
+          basedir="${dir.project.webframeworkcommons.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-client-config.zip"
+          basedir="${dir.project.remoteapi.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-share-config.zip"
+          basedir="${dir.project.slingshot.config}" />
+
+      <!-- -->
+      <!-- Test resources jars -->
+      <!-- -->
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-core-test-resources.zip"
+          basedir="${dir.project.core.src}/${dir.name.test.resources}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-test-resources.zip"
+          basedir="${dir.project.repository.src}/${dir.name.test.resources}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-remote-api-test-resources.zip"
+          basedir="${dir.project.remoteapi.src}/${dir.name.test.resources}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip"
+          basedir="${dir.project.webframeworkcommons.src}/${dir.name.test.resources}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-client-test-resources.zip"
+          basedir="${dir.project.webclient.src}/${dir.name.test.resources}" />
+
       <!-- Taglib -->
       <mkdir dir="${dir.continuous.assemble.sdk}/doc/taglib" />
       <zip destfile="${dir.continuous.assemble.sdk}/doc/taglib/alfresco-taglib-doc.zip">

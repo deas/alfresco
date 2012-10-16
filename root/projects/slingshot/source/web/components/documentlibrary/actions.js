@@ -617,7 +617,8 @@
          "application/vnd.ms-excel.sheet.macroenabled.12": "Excel.Sheet",
          "application/vnd.ms-excel.template.macroenabled.12": "Excel.Sheet",
          "application/vnd.ms-excel.addin.macroenabled.12": "Excel.Sheet",
-         "application/vnd.ms-excel.sheet.binary.macroenabled.12": "Excel.Sheet"
+         "application/vnd.ms-excel.sheet.binary.macroenabled.12": "Excel.Sheet",
+         "application/vnd.visio": "Visio.Drawing"
       },
 
       /**
@@ -751,6 +752,8 @@
          // Try each version of the SharePoint control in turn, newest first
          try
          {
+            if (appProgID === "Visio.Drawing")
+               throw ("Visio should be invoked using activeXControl.EditDocument2.");
             activeXControl = new ActiveXObject(controlProgID + ".3");
             return activeXControl.EditDocument3(window, record.onlineEditUrl, true, appProgID);
          }
@@ -812,6 +815,8 @@
          
          try
          {
+            if (appProgID === "Visio.Drawing") 
+               throw ("Visio should be invoked using activeXControl.EditDocument2.");
             return plugin.EditDocument3(window, record.onlineEditUrl, true, appProgID);
          }
          catch(e)

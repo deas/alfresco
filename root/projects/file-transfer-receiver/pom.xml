@@ -8,14 +8,14 @@
     <name>Alfresco File Transfer Receiver</name>
     <parent>
         <artifactId>alfresco-parent</artifactId>
-        <groupId>org.alfresco</groupId>
+        <groupId>org.alfresco.enterprise</groupId>
         <version>4.2-SNAPSHOT</version>
         <relativePath>../../pom-experimental.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.alfresco</groupId>
+            <groupId>org.alfresco.enterprise</groupId>
             <artifactId>alfresco-remote-api</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -38,14 +38,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.alfresco</groupId>
+            <groupId>org.alfresco.enterprise</groupId>
             <artifactId>alfresco-repository</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.alfresco</groupId>
+            <groupId>org.alfresco.enterprise</groupId>
             <artifactId>alfresco-deployment</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>

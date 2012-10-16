@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -29,12 +29,12 @@ import javax.servlet.http.HttpSession;
 import org.alfresco.module.vti.handler.AuthenticationHandler;
 import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.handler.SiteMemberMappingException;
-import org.alfresco.module.vti.handler.UserGroupServiceHandler;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.repo.SessionUser;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
-import org.alfresco.service.cmr.security.PersonService;
+import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AccessStatus;
+import org.alfresco.service.cmr.security.PermissionService;
 
 /**
  * Default implementation of web authentication. Delegates to a authentication handler in the core alfresco
@@ -47,11 +47,11 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
     private final static String USER_SESSION_ATTRIBUTE = "_vtiAuthTicket";
 
     private MethodHandler vtiHandler;
-    private UserGroupServiceHandler vtiUserGroupServiceHandler;
-    private PersonService personService;
     private org.alfresco.repo.webdav.auth.AuthenticationDriver delegate;
+    private PermissionService permissionService;
+    private VtiPathHelper pathHelper;
 
-    public boolean isSiteMember(HttpServletRequest request, String alfrescoContext, final String username)
+    public boolean isRequestValidForCurrentUser(HttpServletRequest request, String alfrescoContext)
     {
         String uri = request.getRequestURI();
 
@@ -63,33 +63,39 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
         if (targetUri.equals("/") || targetUri.equals("") || targetUri.startsWith("/_vti_inf.html") || targetUri.startsWith("/_vti_bin/") || targetUri.startsWith("/resources/"))
             return true;
 
-        String dwsName = null;
-
+        // Validate this uri is within an existent site
+        String[] decompsedUrls;
         try
         {
-            String[] decompsedUrls = vtiHandler.decomposeURL(uri, alfrescoContext);
-            dwsName = decompsedUrls[0].substring(decompsedUrls[0].lastIndexOf("/") + 1);
-
-            final String buf = dwsName;
-
-            RunAsWork<Boolean> isSiteMemberRunAsWork = new RunAsWork<Boolean>()
-            {
-
-                public Boolean doWork() throws Exception
-                {
-                    return vtiUserGroupServiceHandler.isUserMember(buf, personService.getUserIdentifier(username));
-                }
-
-            };
-
-            return AuthenticationUtil.runAs(isSiteMemberRunAsWork, AuthenticationUtil.SYSTEM_USER_NAME).booleanValue();
+            decompsedUrls = vtiHandler.decomposeURL(uri, alfrescoContext);
         }
         catch (Exception e)
         {
-            if (dwsName == null)
-                throw new SiteMemberMappingException(VtiHandlerException.DOES_NOT_EXIST);
-            else
+            throw new SiteMemberMappingException(VtiHandlerException.DOES_NOT_EXIST);
+        }
+        
+        try
+        {            
+            // Anything that resides in a site folder called "_vti_bin" (e.g. "_vti_bin/_vti_aut/author.dll") is a part
+            // of the Frontpage extensions and needs to be ignored
+            if (decompsedUrls[1].startsWith("_vti_bin"))
+            {
+                return true;
+            }            
+            
+            // Anything else must be resolvable as a readable document
+            FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(targetUri);
+            if (documentFileInfo == null)
+            {
                 return false;
+            }
+            NodeRef nodeRef = documentFileInfo.getNodeRef();
+            AccessStatus canRead = permissionService.hasPermission(nodeRef, PermissionService.READ_CONTENT);
+            return AccessStatus.ALLOWED == canRead;
+        }
+        catch (Exception e)
+        {
+            return false;
         }
     }
     
@@ -108,7 +114,7 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
             {
                 return null;
             }
-            if(isSiteMember(request, alfrescoContext, user.getUserName()))
+            if(isRequestValidForCurrentUser(request, alfrescoContext))
             {
                 return user;
             }
@@ -127,13 +133,14 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
         this.vtiHandler = vtiHandler;
     }
     
-    public void setVtiUserGroupServiceHandler(UserGroupServiceHandler vtiUserGroupServiceHandler)
+    public void setPermissionService(PermissionService permissionService)
     {
-        this.vtiUserGroupServiceHandler = vtiUserGroupServiceHandler;
+        this.permissionService = permissionService;
+    }
+
+    public void setPathHelper(VtiPathHelper pathHelper)
+    {
+        this.pathHelper = pathHelper;
     }
     
-    public void setPersonService(PersonService personService) 
-    {
-        this.personService = personService;
-    }
 }

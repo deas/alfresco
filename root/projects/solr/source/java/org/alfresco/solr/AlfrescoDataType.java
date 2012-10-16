@@ -25,10 +25,14 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -49,6 +53,7 @@ import org.apache.lucene.document.Field.TermVector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 import org.apache.solr.core.Config;
+import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.request.TextResponseWriter;
 import org.apache.solr.request.XMLWriter;
 import org.apache.solr.schema.FieldType;
@@ -107,18 +112,38 @@ public class AlfrescoDataType extends FieldType
         return AlfrescoSolrDataModel.getInstance(id).getSortField(field, reverse);
     }
 
+    private void initLogging(SolrResourceLoader solrResourceLoader) 
+    {;
+        try
+        {
+            Class clazz = Class.forName("org.apache.log4j.PropertyConfigurator");
+            Method method = clazz.getMethod("configure", Properties.class);
+            InputStream is = solrResourceLoader.openResource("log4j.properties");
+            Properties p = new Properties();
+            p.load(is);
+            method.invoke(null, p);
+            is = solrResourceLoader.openResource("log4j-solr.properties");
+            p = new Properties();
+            p.load(is);
+            method.invoke(null, p);
+        }
+        catch (ClassNotFoundException e)
+        {
+           return;
+        }
+        catch (Throwable e)
+        {
+            log.info("Failed to load log4j-solr.properties", e);
+        }
+        
+        
+    }
+    
     @Override
     protected void init(IndexSchema schema, Map<String, String> args)
     {
-        // Hack to set the default loggin level down ...
-        for(Enumeration<String> loggerNames = LogManager.getLogManager().getLoggerNames(); loggerNames.hasMoreElements(); /**/)
-        {
-            java.util.logging.Logger logger = LogManager.getLogManager().getLogger(loggerNames.nextElement());
-            if (logger != null)
-            {
-               logger.setLevel(Level.WARNING);
-            }
-        }
+        
+        initLogging(schema.getResourceLoader());
         
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
         id = schema.getResourceLoader().getInstanceDir();

@@ -44,7 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -119,6 +119,8 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.SolrInputField;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CloseHook;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
@@ -182,8 +184,6 @@ public class CoreTracker implements CloseHook
     // encryption related parameters
     private String secureCommsType; // "none", "https"
 
-    private String cipherAlgorithm;
-
     private String keyStoreType;
 
     private String keyStoreProvider;
@@ -191,11 +191,7 @@ public class CoreTracker implements CloseHook
     private String passwordFileLocation;
 
     private String keyStoreLocation;
-
-    private Long messageTimeout;
-
-    private String macAlgorithm;
-
+    
     // ssl
     private String sslKeyStoreType;
 
@@ -213,6 +209,8 @@ public class CoreTracker implements CloseHook
 
     private String sslTrustStorePasswordFileLocation;
 
+    // index contrl
+    
     // http client
 
     private int maxTotalConnections = 40;
@@ -248,7 +246,41 @@ public class CoreTracker implements CloseHook
     private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
 
     protected TrackerStats trackerStats = new TrackerStats();
+    
+    //
+    
+    private boolean runPostModelLoadInit = true;
+    
+    private HashSet<StoreRef> indexedStores = new  HashSet<StoreRef>();
+    
+    private HashSet<String> indexedTenants = new  HashSet<String>();
+    
+    private HashSet<QName> indexedDataTypes = new  HashSet<QName>();
+    
+    private HashSet<QName> indexedTypes = new  HashSet<QName>();
+    
+    private HashSet<QName> indexedAspects = new  HashSet<QName>();
+    
+    private HashSet<String> indexedFields = new  HashSet<String>();
 
+    //
+    
+    private HashSet<StoreRef> ignoredStores = new  HashSet<StoreRef>();
+    
+    private HashSet<String> ignoredTenants = new  HashSet<String>();
+    
+    private HashSet<QName> ignoredDataTypes = new  HashSet<QName>();
+    
+    private HashSet<QName> ignoredTypes = new  HashSet<QName>();
+    
+    private HashSet<QName> ignoredAspects = new  HashSet<QName>();
+    
+    private HashSet<String> ignoredFields = new  HashSet<String>();
+    
+    // 
+    
+    private boolean transformContent = true;
+    
     public long getLastIndexedTxCommitTime()
     {
         return state.lastIndexedTxCommitTime;
@@ -313,146 +345,38 @@ public class CoreTracker implements CloseHook
 
         boolean storeAll = false;
 
-        try
-        {
-            List<String> lines = core.getResourceLoader().getLines("solrcore.properties");
-            for (String line : lines)
-            {
-                if ((line.length() == 0) || (line.startsWith("#")))
-                {
-                    continue;
-                }
-                String[] split = line.split("=", 2);
-                if (split.length != 2)
-                {
-                    return;
-                }
-                if (split[0].equals("alfresco.host"))
-                {
-                    alfrescoHost = split[1];
-                }
-                else  if (split[0].equals("alfresco.port"))
-                {
-                    alfrescoPort = Integer.parseInt(split[1]);
-                }
-                else  if (split[0].equals("alfresco.port.ssl"))
-                {
-                    alfrescoPortSSL = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.baseUrl"))
-                {
-                    baseUrl = split[1];
-                }
-                else if (split[0].equals("alfresco.cron"))
-                {
-                    cron = split[1];
-                }
-                else if (split[0].equals("alfresco.stores"))
-                {
-                    // Store ref may contain \: as this is written as Java properties but then read by SOLR ...
-                    String storeRefString = split[1];
-                    storeRefString = storeRefString.replace("\\:", ":");
-                    storeRef = new StoreRef(storeRefString);
-                }
-                else if (split[0].equals("alfresco.lag"))
-                {
-                    lag = Long.parseLong(split[1]);
-                }
-                else if (split[0].equals("alfresco.hole.retention"))
-                {
-                    holeRetention = Long.parseLong(split[1]);
-                }
-                else if (split[0].equals("alfresco.batch.count"))
-                {
-                    batchCount = Long.parseLong(split[1]);
-                }
-                else if (split[0].equals("alfresco.storeAll"))
-                {
-                    storeAll = Boolean.parseBoolean(split[1]);
-                }
-                else if (split[0].equals("alfresco.encryption.cipherAlgorithm"))
-                {
-                    cipherAlgorithm = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.keystore.type"))
-                {
-                    keyStoreType = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.keystore.provider"))
-                {
-                    keyStoreProvider = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.keystore.passwordFileLocation"))
-                {
-                    passwordFileLocation = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.keystore.location"))
-                {
-                    keyStoreLocation = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.keystore.type"))
-                {
-                    sslKeyStoreType = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.keystore.provider"))
-                {
-                    sslKeyStoreProvider = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.keystore.location"))
-                {
-                    sslKeyStoreLocation = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.keystore.passwordFileLocation"))
-                {
-                    sslKeyStorePasswordFileLocation = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.truststore.type"))
-                {
-                    sslTrustStoreType = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.truststore.provider"))
-                {
-                    sslTrustStoreProvider = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.truststore.location"))
-                {
-                    sslTrustStoreLocation = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.ssl.truststore.passwordFileLocation"))
-                {
-                    sslTrustStorePasswordFileLocation = split[1];
-                }
-                else if (split[0].equals("alfresco.encryption.messageTimeout"))
-                {
-                    messageTimeout = Long.parseLong(split[1]);
-                }
-                else if (split[0].equals("alfresco.encryption.macAlgorithm"))
-                {
-                    macAlgorithm = split[1];
-                }
-                else if (split[0].equals("alfresco.secureComms"))
-                {
-                    secureCommsType = split[1];
-                }
-                else if (split[0].equals("alfresco.maxTotalConnections"))
-                {
-                    maxTotalConnections = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.maxHostConnections"))
-                {
-                    maxHostConnections = Integer.parseInt(split[1]);
-                }
-            }
-        }
-        catch (IOException e1)
-        {
-            throw new AlfrescoRuntimeException("Error reading alfrecso core config for " + core.getName());
-        }
-
         SolrResourceLoader loader = core.getSchema().getResourceLoader();
         id = loader.getInstanceDir();
         dataModel = AlfrescoSolrDataModel.getInstance(id);
         dataModel.setStoreAll(storeAll);
+        
+        Properties p = core.getResourceLoader().getCoreProperties();
+        alfrescoHost = p.getProperty("alfresco.host", "localhost");
+        alfrescoPort = Integer.parseInt(p.getProperty("alfresco.port", "8080"));
+        alfrescoPortSSL = Integer.parseInt(p.getProperty("alfresco.port.ssl", "8443"));
+        baseUrl = p.getProperty("alfresco.baseUrl", "/alfresco");
+        cron =  p.getProperty("alfresco.cron", "0/15 * * * * ? *");
+        storeRef = new StoreRef(p.getProperty("alfresco.stores"));
+        lag = Integer.parseInt(p.getProperty("alfresco.lag", "1000"));
+        holeRetention = Integer.parseInt(p.getProperty("alfresco.hole.retention", "3600000"));
+        batchCount = Integer.parseInt(p.getProperty("alfresco.batch.count", "1000"));
+        storeAll = Boolean.parseBoolean(p.getProperty("alfresco.storeAll", "false"));
+        keyStoreType = p.getProperty("alfresco.encryption.keystore.type", "JCEKS");
+        keyStoreProvider = p.getProperty("alfresco.encryption.keystore.provider");
+        passwordFileLocation = p.getProperty("alfresco.encryption.keystore.passwordFileLocation");
+        keyStoreLocation = p.getProperty("alfresco.encryption.keystore.location");
+        sslKeyStoreType = p.getProperty("alfresco.encryption.ssl.keystore.type");
+        sslKeyStoreProvider = p.getProperty("alfresco.encryption.ssl.keystore.provider", "");
+        sslKeyStoreLocation = p.getProperty("alfresco.encryption.ssl.keystore.location", "ssl.repo.client.keystore");
+        sslKeyStorePasswordFileLocation = p.getProperty("alfresco.encryption.ssl.keystore.passwordFileLocation", "ssl-keystore-passwords.properties");
+        sslTrustStoreType = p.getProperty("alfresco.encryption.ssl.truststore.type", "JCEKS");
+        sslTrustStoreProvider = p.getProperty("alfresco.encryption.ssl.truststore.provider", "");
+        sslTrustStoreLocation = p.getProperty("alfresco.encryption.ssl.truststore.location", "ssl.repo.client.truststore");
+        sslTrustStorePasswordFileLocation = p.getProperty("alfresco.encryption.ssl.truststore.passwordFileLocation", "ssl-truststore-passwords.properties");
+        secureCommsType = p.getProperty("alfresco.secureComms", "https");
+        maxTotalConnections = Integer.parseInt(p.getProperty("alfresco.maxTotalConnections", "40"));
+        maxHostConnections = Integer.parseInt(p.getProperty("alfresco.maxHostConnections", "40"));
+        transformContent = Boolean.parseBoolean(p.getProperty("alfresco.index.transformContent", "true"));
 
         client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(), dataModel.getNamespaceDAO());
 
@@ -1938,9 +1862,166 @@ public class CoreTracker implements CloseHook
         long end = System.nanoTime();
 
         trackerStats.addModelTime(end-start);
+        
+        if(true == runPostModelLoadInit)
+        {
+            Properties p = core.getResourceLoader().getCoreProperties();
+            for(Object key : p.keySet())
+            {
+                String stringKey = (String)key;
+                if(stringKey.startsWith("alfresco.index.store"))
+                {
+                    StoreRef store = new StoreRef(p.getProperty(stringKey));
+                    indexedStores.add(store);
+                }
+                if(stringKey.startsWith("alfresco.ignore.store"))
+                {
+                    StoreRef store = new StoreRef(p.getProperty(stringKey));
+                    ignoredStores.add(store);
+                }
+                if(stringKey.startsWith("alfresco.index.tenant"))
+                {
+                    indexedTenants.add(p.getProperty(stringKey));
+                }
+                if(stringKey.startsWith("alfresco.ignore.tenant"))
+                {
+                    ignoredTenants.add(p.getProperty(stringKey));
+                }
+                if(stringKey.startsWith("alfresco.index.datatype"))
+                {
+                    QName qname = expandQName(p.getProperty(stringKey));
+                    indexedDataTypes.add(qname);
+                }
+                if(stringKey.startsWith("alfresco.ignore.datatype"))
+                {
+                    QName qname = expandQName(p.getProperty(stringKey));
+                    ignoredDataTypes.add(qname);
+                }
+                if(stringKey.startsWith("alfresco.index.type"))
+                {
+                    QName qname = expandQName(p.getProperty(stringKey));
+                    indexedTypes.add(qname);
+                }
+                if(stringKey.startsWith("alfresco.ignore.type"))
+                {
+                    QName qname = expandQName(p.getProperty(stringKey));
+                    ignoredTypes.add(qname);
+                }
+                if(stringKey.startsWith("alfresco.index.aspect"))
+                {
+                    QName qname = expandQName(p.getProperty(stringKey));
+                    indexedAspects.add(qname);
+                }
+                if(stringKey.startsWith("alfresco.ignore.aspect"))
+                {
+                    QName qname = expandQName(p.getProperty(stringKey));
+                    ignoredAspects.add(qname);
+                }
+                if(stringKey.startsWith("alfresco.index.field"))
+                {
+                    String name = expandName(p.getProperty(stringKey));
+                    indexedFields.add(name);
+                }
+                if(stringKey.startsWith("alfresco.ignore.field"))
+                {
+                    String name = expandName(p.getProperty(stringKey));
+                    ignoredFields.add(name);
+                }
+            }
+            runPostModelLoadInit = false;
+        }
+
+    }
+    
+    QName expandQName(String qName)
+    {
+        String expandedQName = qName;
+        if (qName.startsWith("@"))
+        {
+            return expandQName(qName.substring(1));
+        }
+        else if (qName.startsWith("{"))
+        {
+            expandedQName = expandQNameImpl(qName);
+        }
+        else if (qName.contains(":"))
+        {
+            expandedQName = expandQNameImpl(qName);
+        }
+        else if (AlfrescoSolrDataModel.nonDictionaryFields.get(qName) == null)
+        {
+            expandedQName = expandQNameImpl(qName);
+        }
+        return QName.createQName(expandedQName);
 
     }
 
+    String expandQNameImpl(String q)
+    {
+        String eq = q;
+        // Check for any prefixes and expand to the full uri
+        if (q.charAt(0) != '{')
+        {
+            int colonPosition = q.indexOf(':');
+            if (colonPosition == -1)
+            {
+                // use the default namespace
+                eq = "{" + dataModel.getNamespaceDAO().getNamespaceURI("") + "}" + q;
+            }
+            else
+            {
+                // find the prefix
+                eq = "{" + dataModel.getNamespaceDAO().getNamespaceURI(q.substring(0, colonPosition)) + "}" + q.substring(colonPosition + 1);
+            }
+        }
+        return eq;
+    }
+
+    String expandName(String qName)
+    {
+        String expandedQName = qName;
+        if (qName.startsWith("@"))
+        {
+            return expandName(qName.substring(1));
+        }
+        else if (qName.startsWith("{"))
+        {
+            expandedQName = expandQNameImpl(qName);
+        }
+        else if (qName.contains(":"))
+        {
+            expandedQName = expandQNameImpl(qName);
+        }
+        else if (AlfrescoSolrDataModel.nonDictionaryFields.get(qName) == null)
+        {
+            expandedQName = expandQNameImpl(qName);
+        }
+        return expandedQName;
+
+    }
+
+    String expandNameImpl(String q)
+    {
+        String eq = q;
+        // Check for any prefixes and expand to the full uri
+        if (q.charAt(0) != '{')
+        {
+            int colonPosition = q.indexOf(':');
+            if (colonPosition == -1)
+            {
+                // use the default namespace
+                eq = "{" + dataModel.getNamespaceDAO().getNamespaceURI("") + "}" + q;
+            }
+            else
+            {
+                // find the prefix
+                eq = "{" + dataModel.getNamespaceDAO().getNamespaceURI(q.substring(0, colonPosition)) + "}" + q.substring(colonPosition + 1);
+            }
+        }
+        return eq;
+    }
+
+    
     /**
      * @param alfrescoModelDir
      * @param modelName
@@ -2575,17 +2656,33 @@ public class CoreTracker implements CloseHook
     private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, NodeMetaData nodeMetaData, QName propertyQName,
             ContentPropertyValue contentPropertyValue) throws AuthenticationException, IOException
             {
+        
+        if(indexedDataTypes.size() > 0 && !indexedDataTypes.contains(DataTypeDefinition.CONTENT))
+        {
+            return;
+        }
+        if(ignoredDataTypes.contains(DataTypeDefinition.CONTENT))
+        {
+            return;
+        }
+        
+        
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
 
+        if(false == transformContent)
+        {
+            return;
+        }
+        
         long start = System.nanoTime();
         GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
-
+        
         InputStreamReader isr = null;
         InputStream ris = response.getContent();
         File temp = null;
@@ -3728,39 +3825,39 @@ public class CoreTracker implements CloseHook
         }
     }
 
-    public List<Long> getNodesForDbTransaction(Long txid)
-    {
-
-        try
-        {
-            ArrayList<Long> answer = new ArrayList<Long>();
-            GetNodesParameters gnp = new GetNodesParameters();
-            ArrayList<Long> txs = new ArrayList<Long>();
-            txs.add(txid);
-            gnp.setTransactionIds(txs);
-            gnp.setStoreProtocol(storeRef.getProtocol());
-            gnp.setStoreIdentifier(storeRef.getIdentifier());
-            List<Node> nodes;
-            nodes = client.getNodes(gnp, Integer.MAX_VALUE);
-            for (Node node : nodes)
-            {
-                answer.add(node.getId());
-            }
-            return answer;
-        }
-        catch (IOException e)
-        {
-            throw new AlfrescoRuntimeException("Failed to get nodes", e);
-        }
-        catch (JSONException e)
-        {
-            throw new AlfrescoRuntimeException("Failed to get nodes", e);
-        }
-        catch (AuthenticationException e)
-        {
-            throw new AlfrescoRuntimeException("Failed to get nodes", e);
-        }
-    }
+//    public List<Long> getNodesForDbTransaction(Long txid)
+//    {
+//
+//        try
+//        {
+//            ArrayList<Long> answer = new ArrayList<Long>();
+//            GetNodesParameters gnp = new GetNodesParameters();
+//            ArrayList<Long> txs = new ArrayList<Long>();
+//            txs.add(txid);
+//            gnp.setTransactionIds(txs);
+//            gnp.setStoreProtocol(storeRef.getProtocol());
+//            gnp.setStoreIdentifier(storeRef.getIdentifier());
+//            List<Node> nodes;
+//            nodes = client.getNodes(gnp, Integer.MAX_VALUE);
+//            for (Node node : nodes)
+//            {
+//                answer.add(node.getId());
+//            }
+//            return answer;
+//        }
+//        catch (IOException e)
+//        {
+//            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+//        }
+//        catch (JSONException e)
+//        {
+//            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+//        }
+//        catch (AuthenticationException e)
+//        {
+//            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+//        }
+//    }
 
     /**
      * @param acltxid
@@ -3992,4 +4089,92 @@ public class CoreTracker implements CloseHook
         }
 
     }
+
+    /**
+     * @return
+     * @throws IOException 
+     */
+    public NamedList<Object> getCoreStats() throws IOException
+    {
+        NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            OpenBitSet allLeafDocs = (OpenBitSet) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
+            coreSummary.add("Alfresco Nodes in Index",allLeafDocs.cardinality());
+            coreSummary.add("Searcher", solrIndexSearcher.getStatistics());
+            Map<String, SolrInfoMBean> infoRegistry = core.getInfoRegistry();
+            for(String key : infoRegistry.keySet())
+            {
+                SolrInfoMBean infoMBean = infoRegistry.get(key);
+                if(key.equals("/alfresco"))
+                {
+                    coreSummary.add("/alfresco", fixStats(infoMBean.getStatistics()));
+                }
+                if(key.equals("/afts"))
+                {
+                    coreSummary.add("/afts",  fixStats(infoMBean.getStatistics()));
+                }
+                if(key.equals("/cmis"))
+                {
+                    coreSummary.add("/cmis",  fixStats(infoMBean.getStatistics()));
+                }
+                if(key.equals("filterCache"))
+                {
+                    coreSummary.add("/filterCache", infoMBean.getStatistics());
+                }
+                if(key.equals("queryResultCache"))
+                {
+                    coreSummary.add("/queryResultCache", infoMBean.getStatistics());
+                }
+                if(key.equals("alfrescoAuthorityCache"))
+                {
+                    coreSummary.add("/alfrescoAuthorityCache", infoMBean.getStatistics());
+                }
+                if(key.equals("alfrescoPathCache"))
+                {
+                    coreSummary.add("/alfrescoPathCache", infoMBean.getStatistics());
+                }
+
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+
+
+        return coreSummary;
+    }
+
+    /**
+     * @param statistics
+     * @return
+     */
+    private NamedList<Object> fixStats(NamedList<Object> namedList)
+    {
+        int sz = namedList.size();
+
+        for (int i=0; i<sz; i++) 
+        {
+            String key = namedList.getName(i);
+            Object value = namedList.getVal(i);
+            if(value instanceof Number)
+            {
+                Number number = (Number)value;
+                if(Float.isInfinite(number.floatValue()) || Float.isNaN(number.floatValue()) || Double.isInfinite(number.doubleValue()) || Double.isNaN(number.doubleValue()))
+                {
+                    namedList.setVal(i, null);
+                }
+            }
+        }
+        return namedList;
+    }
+    
 }

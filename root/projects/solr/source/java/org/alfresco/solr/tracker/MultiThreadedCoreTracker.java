@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -119,68 +120,19 @@ public class MultiThreadedCoreTracker extends CoreTracker
     {
         super(adminHandler, core);
 
-        try
-        {
-            List<String> lines = core.getResourceLoader().getLines("solrcore.properties");
-            for (String line : lines)
-            {
-                if ((line.length() == 0) || (line.startsWith("#")))
-                {
-                    continue;
-                }
-                String[] split = line.split("=", 2);
-                if (split.length != 2)
-                {
-                    return;
-                }
-
-                if (split[0].equals("alfresco.enableMultiThreadedTracking"))
-                {
-                    enableMultiThreadedTracking = Boolean.parseBoolean(split[1]);
-                }
-                else if (split[0].equals("alfresco.corePoolSize"))
-                {
-                    corePoolSize = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.maximumPoolSize"))
-                {
-                    maximumPoolSize = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.keepAliveTime"))
-                {
-                    keepAliveTime = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.threadPriority"))
-                {
-                    threadPriority = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.threadDaemon"))
-                {
-                    threadDaemon = Boolean.parseBoolean(split[1]);
-                }
-                else if (split[0].equals("alfresco.workQueueSize"))
-                {
-                    workQueueSize = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.transactionDocsBatchSize"))
-                {
-                    transactionDocsBatchSize = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.changeSetAclsBatchSize"))
-                {
-                    changeSetAclsBatchSize = Integer.parseInt(split[1]);
-                }
-                else if (split[0].equals("alfresco.aclBatchSize"))
-                {
-                    aclBatchSize = Integer.parseInt(split[1]);
-                }
-            }
-        }
-        catch (IOException e1)
-        {
-            throw new AlfrescoRuntimeException("Error reading alfrecso core config for " + core.getName());
-        }
-
+        Properties p = core.getResourceLoader().getCoreProperties();
+        enableMultiThreadedTracking = Boolean.parseBoolean(p.getProperty("alfresco.enableMultiThreadedTracking", "true"));
+        corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
+        maximumPoolSize = Integer.parseInt(p.getProperty("alfresco.maximumPoolSize", "-1"));
+        keepAliveTime = Integer.parseInt(p.getProperty("alfresco.keepAliveTime", "120"));
+        threadPriority = Integer.parseInt(p.getProperty("alfresco.threadPriority", "5"));
+        threadDaemon = Boolean.parseBoolean(p.getProperty("alfresco.threadDaemon", "true"));
+        workQueueSize = Integer.parseInt(p.getProperty("alfresco.workQueueSize", "-1"));
+        transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
+        changeSetAclsBatchSize = Integer.parseInt(p.getProperty("alfresco.changeSetAclsBatchSize", "100"));
+        aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));
+        
+        
         if (enableMultiThreadedTracking)
         {
 

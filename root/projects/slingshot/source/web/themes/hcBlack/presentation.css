@@ -867,6 +867,7 @@ body.yui-skin-hcBlack .categoryview .selected,
 body.yui-skin-hcBlack .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected
 {
    background-color: #000;
+   color: #f9f9f9;
 }
 
 /* these rules need to be separate from the above for ie6 */

@@ -269,6 +269,7 @@
             <value>application/vnd.ms-excel.template.macroenabled.12</value>
             <value>application/vnd.ms-powerpoint.presentation.macroenabled.12</value>
             <value>application/vnd.ms-powerpoint.template.macroenabled.12</value>
+            <value>application/vnd.visio</value>
          </list>
       </property>
    </bean>

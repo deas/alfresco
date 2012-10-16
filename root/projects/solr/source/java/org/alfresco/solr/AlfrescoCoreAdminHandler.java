@@ -7081,10 +7081,12 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
      * @param values
      * @param tracker
      * @param report
+     * @throws IOException 
      */
-    private void addCoreSummary(String cname, boolean detail, boolean hist, boolean values, CoreTracker tracker, NamedList<Object> report)
+    private void addCoreSummary(String cname, boolean detail, boolean hist, boolean values, CoreTracker tracker, NamedList<Object> report) throws IOException
     {
         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
+        coreSummary.addAll(tracker.getCoreStats());
         long lastIndexTxCommitTime = tracker.getLastIndexedTxCommitTime();
         long lastIndexedTxId = tracker.getLastIndexedTxId();
         long lastTxCommitTimeOnServer = tracker.getLastTxCommitTimeOnServer();

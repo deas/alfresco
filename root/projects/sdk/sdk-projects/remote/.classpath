@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="dependencies/activation.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/axis-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/bcprov-jdk15-137.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/commons-discovery-0.2.jar"/>

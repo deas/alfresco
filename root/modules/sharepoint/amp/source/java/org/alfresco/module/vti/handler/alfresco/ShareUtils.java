@@ -29,6 +29,7 @@ import org.alfresco.repo.SessionUser;
 import org.alfresco.repo.admin.SysAdminParams;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -465,10 +466,13 @@ public class ShareUtils
                 logger.debug("Trying to delete site with name: " + shortName);
 
             int status = httpClient.executeMethod(deleteSiteMethod);
-            deleteSiteMethod.getResponseBody();
-
             if (logger.isDebugEnabled())
                 logger.debug("Delete site method returned status: " + status);
+            if (status != HttpStatus.SC_OK) 
+            {
+                throw new RuntimeException("Failed to delete site with name: " + shortName + ". Returned status is: " + status);
+            }
+            deleteSiteMethod.getResponseBody();
         }
         catch (Exception e)
         {

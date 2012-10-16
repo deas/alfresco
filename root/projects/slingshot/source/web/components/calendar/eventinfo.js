@@ -189,9 +189,17 @@
             correctScope: true
          });
          this.widgets.escapeListener.enable();
-         if (Dom.get(this.id+"-edit-available") == null && this.widgets.deleteButton != null)
+         if (Dom.get(this.id+"-edit-available") == null)
          {
-            this.widgets.deleteButton.set("disabled", true);
+            if (this.widgets.deleteButton)
+            {
+               this.widgets.deleteButton.set("disabled", true);
+            }
+            if (this.widgets.editButton)
+            {
+               this.widgets.editButton.set("disabled", true);
+            }
+
          }
          //convert iso date to readable human text
          var dateElIds = [this.id+'-startdate',this.id+'-enddate'];

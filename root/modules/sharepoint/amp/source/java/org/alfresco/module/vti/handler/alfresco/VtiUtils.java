@@ -43,6 +43,7 @@ public class VtiUtils
     private static final SimpleDateFormat browserDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
     
     private static Pattern macClientPattern = Pattern.compile(".*Microsoft Document Connection.*");
+    private static Pattern office2010ClientPattern = Pattern.compile(".*Microsoft Office Core Storage Infrastructure.*");
     private static Pattern validNamePattern = Pattern.compile("[^#]+");
     
     static
@@ -236,5 +237,13 @@ public class VtiUtils
         
         // TODO Should we do this check only once, and cache it?
         return (userAgent != null && macClientPattern.matcher(userAgent).matches());
+    }
+    
+    public static boolean isOffice2010ClientRequest(HttpServletRequest request)
+    {
+        String userAgent = request.getHeader(HEADER_USER_AGENT);
+        
+        // TODO Should we do this check only once, and cache it?
+        return (userAgent != null && office2010ClientPattern.matcher(userAgent).matches());
     }
 }

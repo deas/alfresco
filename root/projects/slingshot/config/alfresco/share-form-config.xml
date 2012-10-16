@@ -312,6 +312,11 @@
                <show id="app:editInline" force="true" />
             </field-visibility>
             <appearance>
+               <field id="cm:name">
+                 <control>
+                    <control-param name="maxLength">255</control-param>
+                 </control>
+               </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
@@ -1446,5 +1451,53 @@
          </form>
       </forms>
    </config>
-
+   
+  <!-- CLOUD-796 / ALF-16226 - for custom content type (after being sync'ed) - is there a better way -->
+   <config evaluator="aspect" condition="sync:syncSetMemberNode">
+      <forms>
+         <form>
+            <field-visibility>
+                <hide id="sync:otherNodeRefString" />
+                <hide id="sync:remoteModified" />
+                <hide id="sync:remoteModifier" />
+                <hide id="sync:syncRequested" />
+                <hide id="sync:directSync" />
+                <hide id="sync:syncOwner" />
+                <hide id="sync:syncTime" />
+                <hide id="sync:syncLock" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+   <config evaluator="aspect" condition="sync:synced">
+      <forms>
+         <form>
+            <field-visibility>
+                <hide id="sync:thisVersionLabel" />
+                <hide id="sync:remoteVersionLabel" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+   <config evaluator="aspect" condition="sync:failed">
+      <forms>
+         <form>
+            <field-visibility>
+                <hide id="sync:errorCode" />
+                <hide id="sync:errorDetails" />
+                <hide id="sync:errorTime" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+   <config evaluator="aspect" condition="sync:transientError">
+      <forms>
+         <form>
+            <field-visibility>
+                <hide id="sync:transientErrorCode" />
+            </field-visibility>
+         </form>
+      </forms>
+   </config>
+   
 </alfresco-config>

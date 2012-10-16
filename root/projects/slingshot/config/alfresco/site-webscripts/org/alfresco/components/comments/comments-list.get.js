@@ -10,7 +10,7 @@ function getActivityParameters(nodeRef, defaultValue)
       {
          return (
          {
-            itemTitle: metadata.properties[cm + 'title'] || metadata.properties[cm + 'name'],
+            itemTitle: metadata.properties[cm + 'name'],
             page: 'document-details',
             pageParams:
             {
@@ -22,7 +22,7 @@ function getActivityParameters(nodeRef, defaultValue)
       {
          return (
          {
-            itemTitle: metadata.properties[cm + 'title'] || metadata.properties[cm + 'name'],
+            itemTitle: metadata.properties[cm + 'name'],
             page: 'folder-details',
             pageParams:
             {
@@ -47,7 +47,7 @@ function getActivityParameters(nodeRef, defaultValue)
       {
          return (
          {
-            itemTitle: metadata.properties[cm + 'title'] || metadata.properties[cm + 'name'],
+            itemTitle: metadata.properties[cm + 'title'],
             page: 'blog-postview',
             pageParams:
             {

@@ -428,7 +428,7 @@ public class PropfindMethod extends WebDAVMethod
         xml.endElement(WebDAV.DAV_NS, WebDAV.XML_DISPLAYNAME, WebDAV.XML_NS_DISPLAYNAME);
 
         // Generate a lock status report, if locked
-        if (workingCopy != null && VtiUtils.isMacClientRequest(m_request))
+        if (workingCopy != null && (VtiUtils.isMacClientRequest(m_request) || VtiUtils.isOffice2010ClientRequest(m_request)))
         {
             // Office 2008/2011 for Mac assumes that checkouted node is locked node
             generateFakeLockDiscoveryResponseForWorkingCopy(xml, workingCopy, isDir);

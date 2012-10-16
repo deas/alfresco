@@ -19,6 +19,10 @@
 package org.alfresco.web.scripts;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.site.EditionInterceptor;
@@ -33,7 +37,6 @@ import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.Response;
-
 /**
  * Slingleton scripting host object provided to retrieve the value of the
  * Sync Mode configuration from the Alfresco repository.
@@ -64,6 +67,7 @@ public class SyncModeConfig extends SingletonValueProcessorExtension<String> imp
         final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
         String edition = ((EditionInfo)rc.getValue(EditionInterceptor.EDITION_INFO)).getEdition();
         
+                       // Sync requires Enterprise features. Sync config is missing on other editions, so default to off.
         if (EditionInterceptor.ENTERPRISE_EDITION.equals(edition))
         {
             // initiate a call to retrieve the sync mode from the repository
@@ -84,6 +88,7 @@ public class SyncModeConfig extends SingletonValueProcessorExtension<String> imp
                     {
                         logger.error("Unexpected response from '/enterprise/sync/config' - did not contain expected 'syncMode' value.");
                     }
+
                 }
                 catch (JSONException e)
                 {

@@ -454,8 +454,7 @@ public class LeafScorer extends Scorer
                     {
                         leafTp.seek(new Term("ISNODE", "T"));
                     }
-                    leafTp.skipTo(target);
-                    if((leafTp.doc() == target)||(level0 != null))
+                    if((leafTp.skipTo(target) && leafTp.doc() == target)||(level0 != null))
                     {
                         allNodesCandiates.set(tp.doc());
                     }

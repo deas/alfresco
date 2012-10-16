@@ -1,6 +1,5 @@
 /**
  *  Adapter for tinyMCE html editor (http://tinymce.moxiecode.com).
- * 
  */
 Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
 {
@@ -11,7 +10,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
       init: function RichEditorManager_tinyMCE_init(id, config)
       {
          config.mode = 'exact';
-         config.relative_urls = false;
+         config.relative_urls = true;
          config.elements = id;
          
          // Ensure that we use the <font> tag for font colour, size and type. Even though it is deprecated we

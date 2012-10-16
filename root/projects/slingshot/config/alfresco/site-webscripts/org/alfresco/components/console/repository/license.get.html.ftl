@@ -21,6 +21,11 @@
                      </div>
                   </div>
                </div>
+               <div class="yui-g">
+                  <div class="viewmode-field">
+                     ${msg("license.field.Info")}
+                  </div>
+               </div>
             </div>
          </div>
       </div>

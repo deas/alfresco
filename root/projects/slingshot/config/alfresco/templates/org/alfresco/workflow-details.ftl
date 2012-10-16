@@ -20,19 +20,6 @@
          <@region id="data-actions" scope="page" />
       </div>
    </div>
-   </@>
-   <#if page.url.args.nodeRef??>
-   <@markup id="document-details">
-      <script type="text/javascript">//<![CDATA[
-      new Alfresco.DocumentDetails().setOptions(
-      {
-         nodeRef: new Alfresco.util.NodeRef("${page.url.args.nodeRef?js_string}"),
-         siteId: "${page.url.templateArgs.site!""}",
-         rootNode: "${(config.scoped["RepositoryLibrary"]["root-node"].getValue())!"alfresco://company/home"}"
-      });
-      //]]></script>
-   </@>
-   </#if>
 </@>
 
 <@templateFooter>

@@ -89,7 +89,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-parser-0.4.0-incubating.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cxf-2.2.2-patched.jar" sourcepath="src/apache-cxf-2.2.2-patched-src.zip"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/geronimo-activation_1.1_spec-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-annotation_1.0_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-ws-metadata_2.0_spec-1.1.2.jar"/>
@@ -162,7 +161,6 @@
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-modeler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxb-impl-2.1.11.jar"/>
 	<classpathentry kind="lib" path="lib/jaxws-api-2.1.jar"/>

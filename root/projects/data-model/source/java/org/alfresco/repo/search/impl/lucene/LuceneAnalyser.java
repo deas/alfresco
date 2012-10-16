@@ -104,6 +104,10 @@ public class LuceneAnalyser extends AbstractAnalyzer
         {
             analyser = new VerbatimAnalyser(false);
         }
+        else if (fieldName.equals("LEAFID"))
+        {
+            analyser = new VerbatimAnalyser(false);
+        }
         else if (fieldName.equals(LuceneQueryParser.FIELD_DBID))
         {
             analyser = new LongAnalyser();

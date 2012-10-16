@@ -5,13 +5,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-   <title>Alfresco Share - ${msg("feed.filter." + filter!"path")}</title>
+   <title>Alfresco Share - ${msg("feed.filter." + filter!"path", filterData)}</title>
    <link>${absurl(url.context)}/</link>
    <description>Alfresco Document List</description>
    <generator>Alfresco Share DocumentLibrary</generator>
 <#assign proxyLink=absurl(url.context) + "/proxy/alfresco-feed/">
    <image>
-      <title>Alfresco Share - ${msg("feed.filter." + filter!"path", filterData)}</title>
+      <title>Alfresco Share - ${msg("feed.filter." + filter!"path")}</title>
       <url>${absurl(url.context)}/themes/default/images/logo.png</url>
       <link>${absurl(url.context)}/</link>
    </image>
