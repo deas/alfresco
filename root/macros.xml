@@ -242,7 +242,7 @@
 		<attribute name="ampfile" />
 		<attribute name="warfile" />
 		<sequential>
-			<java dir="." fork="true" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java">
+			<java dir="." fork="false" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java">
 				<classpath refid="classpath.compile"/>
 				<arg line="install @{ampfile} @{warfile} -force -verbose -nobackup"/>
 			</java>
@@ -253,7 +253,7 @@
 		<attribute name="ampfilesdir" />
 		<attribute name="warfile" />
 		<sequential>
-			<java classname="org.alfresco.repo.module.tool.ModuleManagementTool" failonerror="true">
+			<java dir="." fork="false" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java" failonerror="true">
 				<classpath refid="classpath.compile"/>
 				<arg line="install @{ampfilesdir} @{warfile} -directory -force -verbose -nobackup"/>
 			</java>
