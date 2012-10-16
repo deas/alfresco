@@ -31,6 +31,21 @@ import org.springframework.extensions.surf.util.URLEncoder;
 public class DefaultDoclistDataUrlResolver implements DoclistDataUrlResolver
 {
     /**
+     * The base path to the repository doclist webscript.
+     */
+    public String basePath = null;
+
+    /**
+     * The base path to the repository doclist webscript.
+     *
+     * @param basePath
+     */
+    public void setBasePath(String basePath)
+    {
+        this.basePath = basePath;
+    }
+
+    /**
      * Returns the url to the repository doclist webscript to use.
      *
      * @param webscript The repository doclib2 webscript tp use, i.e. doclist or node
@@ -40,7 +55,7 @@ public class DefaultDoclistDataUrlResolver implements DoclistDataUrlResolver
      */
     public String resolve(String webscript, String params, HashMap<String, String> args)
     {
-        return "/slingshot/doclib2/" + webscript + "/" + URLEncoder.encodeUri(params) + getArgsAsParameters(args);
+        return basePath + "/" + webscript + "/" + URLEncoder.encodeUri(params) + getArgsAsParameters(args);
     }
 
     /**

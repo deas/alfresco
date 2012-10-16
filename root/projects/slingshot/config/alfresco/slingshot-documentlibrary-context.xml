@@ -7,7 +7,9 @@
    <!-- Document Library Doclist Data URl Resolver -->
    <!--                                            -->
 
-   <bean id="resolver.doclib.doclistDataUrl" class="org.alfresco.web.resolver.doclib.DefaultDoclistDataUrlResolver" />
+   <bean id="resolver.doclib.doclistDataUrl" class="org.alfresco.web.resolver.doclib.DefaultDoclistDataUrlResolver">
+      <property name="basePath" value="/slingshot/doclib2"/>
+   </bean>
 
 
    <!--                                            -->
