@@ -253,7 +253,7 @@
 		<attribute name="ampfilesdir" />
 		<attribute name="warfile" />
 		<sequential>
-			<java dir="." fork="true" classname="org.alfresco.repo.module.tool.ModuleManagementTool" jvm="${env.JAVA_HOME}/bin/java" failonerror="true">
+			<java classname="org.alfresco.repo.module.tool.ModuleManagementTool" failonerror="true">
 				<classpath refid="classpath.compile"/>
 				<arg line="install @{ampfilesdir} @{warfile} -directory -force -verbose -nobackup"/>
 			</java>
