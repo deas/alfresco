@@ -8,14 +8,14 @@
     <name>Alfresco JNDI Client</name>
     <parent>
         <artifactId>alfresco-parent</artifactId>
-        <groupId>org.alfresco.enterprise</groupId>
+        <groupId>org.alfresco</groupId>
         <version>4.2-SNAPSHOT</version>
         <relativePath>../../pom-experimental.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.alfresco.enterprise</groupId>
+            <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
             <version>${project.version}</version>
         </dependency>

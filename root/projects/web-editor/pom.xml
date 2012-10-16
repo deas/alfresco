@@ -8,7 +8,7 @@
     <name>Alfresco Web Editor</name>
     <parent>
         <artifactId>alfresco-parent</artifactId>
-        <groupId>org.alfresco.enterprise</groupId>
+        <groupId>org.alfresco</groupId>
         <version>4.2-SNAPSHOT</version>
         <relativePath>../../pom-experimental.xml</relativePath>
     </parent>
