@@ -18,18 +18,30 @@
  */
 package org.alfresco.web.extensibility;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.extensions.surf.RequestContext;
+import org.springframework.extensions.surf.ServletUtil;
 import org.springframework.extensions.surf.WebFrameworkServiceRegistry;
+import org.springframework.extensions.surf.exception.ConnectorServiceException;
 import org.springframework.extensions.webscripts.ScriptRemote;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.connector.Connector;
+import org.springframework.extensions.webscripts.connector.CredentialVault;
+import org.springframework.extensions.webscripts.connector.Credentials;
 import org.springframework.extensions.webscripts.connector.Response;
-
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Utility class for evaluators to pick values from the request and get site information etc.
@@ -152,6 +164,7 @@ public class SlingshotEvaluatorUtil {
      * @param siteId The id of the site to retrieve the sitePreset for.
      * @return The site's sitePreset OR null if something goes wrong.
      */
+    @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
     protected String getSitePreset(RequestContext context, String siteId)
     {
         // Get the preset request cache
@@ -213,5 +226,210 @@ public class SlingshotEvaluatorUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Determines whether or not the current user is a member of the supplied group.
+     *
+     * @param context
+     * @param groupName
+     * @return
+     */
+    @SuppressWarnings({ "rawtypes" })
+    public boolean isMemberOfGroups(RequestContext context, List<String> groups, boolean memberOfAllGroups)
+    {
+        // Initialise the default result to be null... we're intentionally using a Boolean object over boolean
+        // primitive to give us access to the third value of null. This allows us to determine whether or not
+        // any membership information has actually been processed (e.g. when NO groups have been specified).
+        Boolean isMember = null;
+
+        // We're going to store GROUP membership in the HttpSession as this changes infrequently but will be
+        // accessing SITE membership for every request. Surf will ensure that requests are cached for each
+        // page so we are not making the same request more than once per page. Site membership can change more
+        // frequently so we need to be sure that the information we have is up-to-date.
+        HttpSession session = ServletUtil.getSession();
+        org.json.simple.JSONArray groupsList = null;
+        String GROUP_MEMBERSHIPS = "AlfGroupMembershipsKey";
+
+        // Get the current site
+        String currentSite = getSite(context);
+
+        // Get all the group membership first so that we don't perform this operation multiple times... check
+        // the HttpSession and if it's not already available then make a request for it and cache it for future
+        // reference. Note that we're ONLY caching the current users membership information.
+        Object _cachedGroupMemberships = session.getAttribute(GROUP_MEMBERSHIPS);
+        if (_cachedGroupMemberships instanceof org.json.simple.JSONArray)
+        {
+            groupsList = (org.json.simple.JSONArray) _cachedGroupMemberships;
+        }
+        else
+        {
+            try
+            {
+                // Get the Site membership information...
+                CredentialVault cv = context.getCredentialVault();
+                if (cv != null)
+                {
+                    Credentials creds = cv.retrieve("alfresco");
+                    if (creds == null)
+                    {
+                        // User is not logged in anymore
+                        return false;
+                    }
+                    String userName = creds.getProperty("cleartextUsername").toString();
+                    Connector connector = context.getServiceRegistry().getConnectorService().getConnector("alfresco", userName, ServletUtil.getSession());
+                    Response res = connector.call("/api/people/" + context.getUserId() + "?groups=true");
+                    if (res.getStatus().getCode() == Status.STATUS_OK)
+                    {
+                        String response = res.getResponse();
+                        org.json.simple.parser.JSONParser p = new org.json.simple.parser.JSONParser();
+                        Object o2 = p.parse(response);
+                        if (o2 instanceof org.json.simple.JSONObject)
+                        {
+                            org.json.simple.JSONObject jsonRes = (org.json.simple.JSONObject) o2;
+                            groupsList = (org.json.simple.JSONArray) jsonRes.get("groups");
+                            session.setAttribute(GROUP_MEMBERSHIPS, groupsList);
+                        }
+                    }
+                }
+            }
+            catch (ConnectorServiceException e)
+            {
+                e.printStackTrace();
+            }
+            catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        // Work through the supplied list of groups to determine whether or not the current user is a member of them...
+        for (String groupName: groups)
+        {
+            boolean isMemberOfCurrentGroup = false;
+            if (groupName != null)
+            {
+                // If the requested groupName begins with "Site" then this indicates that we are looking
+                // for a site specific group such as "SiteConsumer" and we therefore need to modify the
+                // group name to reflect the current site. If we are not currently viewing a site then
+                // we will automatically indicate that the user is not a member (how can they be a member
+                // of the current site if they're not in a site?) and move onto the next group...
+                if (groupName.startsWith("Site"))
+                {
+                    if (currentSite == null)
+                    {
+                        isMember = false;
+                    }
+                    else
+                    {
+                        // We're going to rely on URI tokens to determine if we're viewing a site - it's the
+                        // best data available from the RequestContext.
+                        try
+                        {
+                            CredentialVault cv = context.getCredentialVault();
+                            if (cv != null)
+                            {
+                                Credentials creds = cv.retrieve("alfresco");
+                                if (creds == null)
+                                {
+                                    // User is not logged in anymore
+                                    return false;
+                                }
+                                String userName = creds.getProperty("cleartextUsername").toString();
+                                Connector connector = context.getServiceRegistry().getConnectorService().getConnector("alfresco", userName, ServletUtil.getSession());
+                                Response res = connector.call("/api/sites/" + currentSite + "/memberships/" + context.getUserId());
+                                if (res.getStatus().getCode() == Status.STATUS_OK)
+                                {
+                                    String response = res.getResponse();
+                                    org.json.simple.parser.JSONParser p = new org.json.simple.parser.JSONParser();
+                                    Object o2 = p.parse(response);
+                                    if (o2 instanceof org.json.simple.JSONObject)
+                                    {
+                                        org.json.simple.JSONObject jsonRes = (org.json.simple.JSONObject) o2;
+                                        String siteMembership = (String) jsonRes.get("role");
+                                        isMemberOfCurrentGroup = siteMembership.equals(groupName);
+                                    }
+                                }
+                                else
+                                {
+                                    // When the user is NOT a member of the site the request will actually return a 404 (rather than a 200)
+                                    // so on any request that fails we will assume they are not a member of the site.
+                                    isMemberOfCurrentGroup = false;
+                                }
+                            }
+                        }
+                        catch (ConnectorServiceException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                else if (groupsList != null)
+                {
+                    // Check for regular GROUP membership... all non-site groups MUST begin "GROUP"...
+                    Iterator i = groupsList.iterator();
+                    while (i.hasNext())
+                    {
+                        org.json.simple.JSONObject group = (org.json.simple.JSONObject) i.next();
+                        String currGroupName = group.get("itemName").toString();
+                        if (currGroupName.equals(groupName))
+                        {
+                            isMemberOfCurrentGroup = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Handle the requested membership logic and make a quick exit if possible...
+            if (memberOfAllGroups)
+            {
+                isMember = (isMember == null) ? isMemberOfCurrentGroup : isMember && isMemberOfCurrentGroup;
+                if (!isMember)
+                {
+                    // Break out of the main loop if the user must be a member of all groups and is not
+                    // a member of at least one of them. There is no point in checking the remaining groups
+                    break;
+                }
+            }
+            else
+            {
+                isMember = (isMember == null) ? isMemberOfCurrentGroup :  isMember || isMemberOfCurrentGroup;
+                if (isMember)
+                {
+                    // Break out of the main loop if the user is a member of at least one group as that
+                    // is all that is required.
+                    break;
+                }
+            }
+        }
+        return isMember;
+    }
+
+    /**
+     * Gets the list of groups to check for membership of. This assumes that the groups have been
+     * provided as a comma delimited string and will convert that string into a List removing trailing
+     * whitespace along the way.
+     *
+     * @param context
+     * @param evaluationProperties
+     * @return
+     */
+    public List<String> getGroups(String groupsParm)
+    {
+        List<String> groups = new ArrayList<String>();
+        if (groupsParm != null)
+        {
+            String[] groupsArr = groupsParm.split(",");
+            for (String group: groupsArr)
+            {
+                groups.add(group.trim());
+            }
+        }
+        return groups;
     }
 }

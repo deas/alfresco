@@ -44,7 +44,7 @@ import java.util.Map;
  * Example:
  * </p>
  *
- * <pre>{@code<evaluator>portlet.module.evaluator</evaluator>}</pre>
+ * <pre>{@code<evaluator type="portlet.module.evaluator"/>}</pre>
  *
  * <p>
  * Will return true of we are viewed from inside a portal otherwise false.
@@ -55,10 +55,11 @@ import java.util.Map;
  * </p>
  *
  * <pre>{@code
- * <evaluator>portlet.module.evaluator</evaluator>
- * <evaluatorProperties>
- *     <portletUrls>regexp mathing a portlet url</portletUrls>
- * </evaluatorProperties>
+ * <evaluator type="portlet.module.evaluator">
+ *    <params>
+ *       <portletUrls>regexp mathing a portlet url</portletUrls>
+ *    </params>
+ * </evaluator>
  * }</pre>
  *
  * <p>

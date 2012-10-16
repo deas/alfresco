@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.extensibility.ExtensionModuleEvaluator;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -35,13 +36,16 @@ import java.util.Map;
  *
  * <p>
  * Makes it possible to decide if we are viewed specific sites based on their ids and sitePreset ids by matching them
- * against the regexps inside the {@code<sites>} and {@code<sitePresets>} parameters.
+ * against the regexps inside the {@code<sites>} and {@code<sitePresets>} parameters and the comma separated groups list
+ * in the {@code<groups>} parameter. The {@code<groupsRelation>} parameter decides if the groups list shall be
+ * matched using "and" or "or", allowed values are: AND and OR.
  * </p>
  *
  * <p>
  * Note! If we are outside a side (i.e. a "global/non-site-page"  page: i.e. the "Repository browser", A users dashboard or the
  * "My Workflows" page the evaluator will return <code>true</code> by default. To change this behaviour you can set
  * {@code<applyForNonSites>} to false, which means the evaluator will return true ONLY when inside a site.
+ * Note that the {@code<groups>} parameter still applies even
  * </p>
  * <p>
  * Note! The regexp is expressed without using the surrounding // characters.
@@ -52,10 +56,12 @@ import java.util.Map;
  * </p>
  *
  * <pre>{@code
- * <evaluator>site.module.evaluator</evaluator>
- * <evaluatorProperties>
- *     <sitePresets>rm-site-dashboard</sitePresets>
- * </evaluatorProperties>
+ * <evaluator type="site.module.evaluator">
+ *    <params>
+ *       <sitePresets>rm-site-dashboard</sitePresets>
+ *       <applyForNonSites>false</applyForNonSites>
+ *     </params>
+ * </evaluator>
  * }</pre>
  *
  * <p>
@@ -67,14 +73,35 @@ import java.util.Map;
  * </p>
  *
  * <pre>{@code
- * <evaluator>site.module.evaluator</evaluator>
- * <evaluatorProperties>
- *     <sites>rm|photos</sitePresets>
- * </evaluatorProperties>
+ * <evaluator type="site.module.evaluator">
+ *    <params>
+ *       <sites>rm|photos</sitePresets>
+ *    </params>
+ * </evaluator>
  * }</pre>
  *
  * <p>
- * Will return true if we are inside a site with a site id of "rm" or "photos".
+ * Will return true if we are inside a site with a site id of "rm" or "photos" OR if we are on a global page.
+ * </p>
+ *
+ *
+ * <p>
+ * Example 3:
+ * </p>
+ *
+ * <pre>{@code
+ * <evaluator type="site.module.evaluator">
+ *    <params>
+ *       <sites>.*</sites>
+ *       <applyForNonSites>false</applyForNonSites>
+ *       <groups>SiteManager,SiteCollaborator</groups>
+ *       <groupsRelation>OR</groupsRelation>
+ *    </params>
+ * </evaluator>
+ * }</pre>
+ *
+ * <p>
+ * Will return true as long as we are in a site and the user is a SiteManager or SiteCollaborator.
  * </p>
  *
  * @author ewinlof
@@ -87,6 +114,9 @@ public class SlingshotSiteModuleEvaluator implements ExtensionModuleEvaluator
     public static final String SITE_PRESET_FILTER = "sitePresets";
     public static final String SITE_FILTER = "sites";
     public static final String APPLY_FOR_NON_SITES = "applyForNonSites";
+    public static final String GROUPS = "groups";
+    public static final String GROUPS_RELATION = "groupsRelation";
+    public static final String GROUPS_RELATION_AND = "AND";
 
     protected SlingshotEvaluatorUtil util = null;
 
@@ -117,25 +147,66 @@ public class SlingshotSiteModuleEvaluator implements ExtensionModuleEvaluator
         // If we are in a site use site filters
         if (siteId != null)
         {
-            // SITE FILTER
+            // Test site filter
             if (!siteId.matches(util.getEvaluatorParam(params, SITE_FILTER, ".*")))
             {
                 return false;
             }
 
-            // SITE PRESET FILTER
+            // Test silePresets filter
             String sitePreset = util.getSitePreset(context, siteId);
             if (sitePreset == null || !sitePreset.matches(util.getEvaluatorParam(params, SITE_PRESET_FILTER, ".*")))
             {
                 return false;
             }
 
-            // SITE PASSED BOTH SITE ID & SITE PRESET FILTERS
+            // Test groups filter
+            if (!isUserInGroups(context, params))
+            {
+                return false;
+            }
+
+            // SITE PASSED BOTH SITE ID & SITE PRESET & GROUP FILTERS
             return true;
         }
 
-        // We are not inside a site, see if we shall apply the module anyhow
-        return util.getEvaluatorParam(params, APPLY_FOR_NON_SITES, "true").equals("true");
+        // We are not in a site, test if we shall apply the module anyway
+        if (!util.getEvaluatorParam(params, APPLY_FOR_NON_SITES, "true").equals("true"))
+        {
+            return false;
+        }
+
+        // Test groups filter
+        if (!isUserInGroups(context, params))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks to see whether or not the current user satisfies the group membership requirements
+     * specified.
+     *
+     * @param context
+     * @param params
+     * @return true if groups param is empty or user is a member of the specified groups (honouring the groupsRelation parameter)
+
+     */
+    protected boolean isUserInGroups(RequestContext context, Map<String, String> params)
+    {
+        String groupsParam = util.getEvaluatorParam(params, GROUPS, ".*");
+        if (groupsParam.equals(".*"))
+        {
+            // Any group is fine, no need to test
+            return true;
+        }
+
+        String relationParam = params.get(GROUPS_RELATION);
+        boolean memberOfAllGroups = (relationParam != null && relationParam.trim().equalsIgnoreCase(GROUPS_RELATION_AND));
+        List<String> groups = util.getGroups(groupsParam);
+        return util.isMemberOfGroups(context, groups, memberOfAllGroups);
     }
 
 }

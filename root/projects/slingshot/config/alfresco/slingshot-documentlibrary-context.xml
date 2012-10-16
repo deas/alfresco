@@ -174,6 +174,39 @@
       <property name="negateOutput" value="true" />
    </bean>
 
+   <bean id="evaluator.doclib.action.groupMembership" class="org.alfresco.web.evaluator.HasGroupMembershipsEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+
+   <bean id="evaluator.doclib.action.isSiteManager" parent="evaluator.doclib.action.groupMembership">
+      <property name="groups">
+         <list>
+            <value>SiteManager</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.isSiteCollaborator" parent="evaluator.doclib.action.groupMembership">
+      <property name="groups">
+         <list>
+            <value>SiteCollaborator</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.isSiteContributor" parent="evaluator.doclib.action.groupMembership">
+      <property name="groups">
+         <list>
+            <value>SiteContributor</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.isSiteConsumer" parent="evaluator.doclib.action.groupMembership">
+      <property name="groups">
+         <list>
+            <value>SiteConsumer</value>
+         </list>
+      </property>
+   </bean>
+
    <!-- Inline Edit -->
    <bean id="evaluator.doclib.action.inlineEditAspect" parent="evaluator.doclib.action.hasAspect">
       <property name="aspects">
