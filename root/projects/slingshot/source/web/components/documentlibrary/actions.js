@@ -868,6 +868,16 @@
        * successMessage - The msg key to use when the repo action succeded (i.e. message.extract-metadata.success)
        * failure - The name of the callback function
        * failureMessage - The msg key to use when the repo action failed (i.e. message.extract-metadata.failure)
+       * * - All remaining parameters will be treated as repo action parameters
+       *
+       * Example:
+       * <action id="addAspectExample" type="javascript">
+       *    <param name="function">onActionSimpleRepoAction</param>
+       *    <param name="action">add-features</param>
+       *    <param name="aspect-name">rd:status</param>
+       *    <param name="successMessage">addAspectExample.success</param>
+       *    <param name="failureMessage">addAspectExample.failure</param>
+       * </action>
        *
        * @method onActionSimpleRepoAction
        * @param record {object} Object literal representing the file or folder to be actioned
@@ -876,7 +886,17 @@
       {
          // Get action params
          var params = this.getAction(record, owner).params,
-            displayName = record.displayName;
+            displayName = record.displayName,
+            namedParams = ["function", "action", "success", "successMessage", "failure", "failureMessage"],
+            repoActionParams = {};
+
+         for (var name in params)
+         {
+            if (params.hasOwnProperty(name) && !Alfresco.util.arrayContains(namedParams, name))
+            {
+               repoActionParams[name] = params[name];
+            }
+         }
 
          // Prepare genericAction config
          var config =
@@ -905,7 +925,8 @@
                dataObj:
                {
                   actionedUponNode: record.nodeRef,
-                  actionDefinitionName: params.action
+                  actionDefinitionName: params.action,
+                  parameterValues: repoActionParams
                }
             }
          };
