@@ -172,7 +172,7 @@
        */
       onReady: function FolderActions_onReady()
       {
-         var me = this;
+         var componentId = this.id;
          
          // Asset data
          this.recordData = this.options.folderDetails.item;
@@ -208,6 +208,7 @@
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
+               var me = Alfresco.util.ComponentManager.get(componentId);
                var action = owner.title;
                if (typeof me[action] == "function")
                {
