@@ -723,19 +723,7 @@
             <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.name.build}/${file.name.dist.deployment.win}" -out "${dir.continuous.dist}/${file.name.dist.deployment.win}" -t "${url.signcode.timestamp}"'/>
         </exec>
     </target>
-    
-    <target name="osx-32-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-osx.txt" failifexecutionfails="false">
-            <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx}" binaries_folder="${installer.build.binaries.osx86}"'/>
-        </exec>
-        <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx}.tar.gz"
-             longfile="gnu"
-             compression="gzip">
-            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.installer.osx}"
-                        prefix="${file.name.dist.installer.osx}" mode="755"/>
-        </tar>
-    </target>
-    
+
     <target name="osx-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-osx64.txt" failifexecutionfails="false">
             <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx64}" binaries_folder="${installer.build.binaries.osx64}"'/>
@@ -785,10 +773,6 @@
             depends="continuous-init, set-build-number, set-bitrock-builder">    
         <antcall target="windows-deployment-installer"/>
     </target>
-    <target name="build-osx-32-bit-installer"
-            depends="continuous-init, set-build-number, set-bitrock-builder"> 
-        <antcall target="osx-32-bit-installer"/>            
-    </target>
     <target name="build-osx-64-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder"> 
         <antcall target="osx-64-bit-installer"/>            
@@ -813,7 +797,6 @@
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
-            <antcall target="osx-32-bit-installer"/>
             <antcall target="osx-64-bit-installer"/>
             <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
