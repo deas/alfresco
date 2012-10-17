@@ -1354,6 +1354,10 @@
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
+   	
+      <!-- Install auto apply Share AMPs into Share WAR -->
+      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
+                               warfile="${dir.project.slingshot.dist}/${file.name.war.slingshot}" />
    </target>
 
    <target name="assemble-slingshot-war" 
@@ -1418,10 +1422,6 @@
       <copy todir="${dir.project.slingshot.assemble}/yui">
          <fileset dir="${dir.project.slingshot.src.web}/yui" />
       </copy>
-   	
-      <!-- Install auto apply Share AMPs into Share WAR -->
-      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
-                               warfile="${dir.project.slingshot.assemble}" />
    	
    </target>
 
@@ -1778,6 +1778,10 @@
              <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
+
+      <!-- Install auto apply repository AMPs into repository WAR -->
+      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.repo}"
+                               warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
    </target>
 
    <target name="assemble-webclient-war" 
@@ -1789,11 +1793,11 @@
                   excludes="WEB-INF/**" />
       </copy>
       
-      <java classname="CommentStripper" 
+      <echo>Calling CommentStripper on jsp...</echo>
+      <java jar="${dir.project.3rdparty.lib}/${dir.name.devenv}/comment-stripper.jar" 
             dir="${dir.project.webclient.assemble}" 
             fork="yes">
          <arg line="-l -t -r .jsp" />
-         <classpath refid="classpath.compile" />
       </java>
 
       <copy todir="${dir.project.webclient.assemble}/wsdl">
@@ -1903,10 +1907,6 @@
          <fileset dir="${dir.project.jlan.dist}" 
                   includes="${file.name.jar.jlan}" />
       </copy>
-
-      <!-- Install auto apply repository AMPs into repository WAR -->
-      <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.repo}"
-                               warfile="${dir.project.webclient.assemble}" />
 
    </target>
 
