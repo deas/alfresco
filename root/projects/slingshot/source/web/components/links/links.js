@@ -20,11 +20,9 @@
 /**
  * Links component
  *
- *
  * @namespace Alfresco
  * @class Alfresco.Links
  */
-
 (function()
 {
    /**
@@ -273,8 +271,10 @@
             elCell.innerHTML = '<input class="checkbox-column" type="checkbox" />';
             elCell.firstChild.onclick = function()
             {
-               var count = me.getSelectedLinks().length;
-               me.widgets.linksMenu.set("disabled", count === 0);
+               var arr = me.getSelectedLinks();
+               // Add 'Delete' item to 'Selected Items' menu, if 'delete' permission is true
+               me.addItemToSelectedMenu(arr);
+               me.widgets.linksMenu.set("disabled", arr.length === 0);
             };
          };
 
@@ -863,6 +863,8 @@
             ipt.checked = !ipt.checked;
             isDisable = ipt.checked ? true : isDisable;
          }
+         // Add 'Delete' item to 'Selected Items' menu, if 'delete' permission is true
+         this.addItemToSelectedMenu(this.getSelectedLinks());
          this.widgets.linksMenu.set("disabled", !isDisable);
       },
 
@@ -877,6 +879,8 @@
          {
             rows[i].cells[0].getElementsByTagName('input')[0].checked = true;
          }
+         // Add 'Delete' item to 'Selected Items' menu, if 'delete' permission is true
+         this.addItemToSelectedMenu(this.getSelectedLinks());
       },
 
       /**
@@ -1040,6 +1044,58 @@
          });
       },
 
+      /**
+       * Add 'Delete' item to 'Selected Items' menu.
+       * @param arr 
+       * @method addItemToSelectedMenu
+       */
+      addItemToSelectedMenu: function Links_addItemToSelectedMenu(arr)
+      {
+         if (this.checkPermissionSelectedLinks(arr))
+         {
+            var element = Dom.get(this.id + "-selectedItems-menu");
+            if (element.hasChildNodes() && Dom.getElementsByClassName("delete-item", "a")[0] == null)
+            {
+               var elementUl = element.getElementsByTagName("ul")[0];
+
+               var tagLi = document.createElement("li");     
+               tagLi.innerHTML = "<a class='delete-item' rel='delete' href='#'><span class='links-action-delete'>" + this.msg("links.delete") + "</span></a>";
+
+               var lastTagLi = Dom.getLastChild(elementUl);
+
+               if (lastTagLi == null)
+               {
+                  elementUl.appendChild(tagLi);
+               }
+               else
+               {
+                  Dom.insertBefore(tagLi, lastTagLi);
+               }
+            }
+         }
+      },
+
+      /**
+       * Check 'delete' permission of selected links
+       *
+       * @method checkPermissionSelectedLinks
+       * @param arr
+       * @return {boolean} 'delete' permission of selected links
+       */
+      checkPermissionSelectedLinks: function Links_checkPermissionSelectedLinks(arr)
+      {
+        var result = false;
+        for (var i = 0; i < arr.length; i++)
+        {
+           result = arr[i]._oData.permissions["delete"];
+           if (!result)
+           {
+              break;
+           }
+        }
+        return result;
+      },
+     
       /**
        * Gets the array of selected links.
        *

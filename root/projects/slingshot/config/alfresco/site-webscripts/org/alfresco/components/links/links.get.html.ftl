@@ -29,7 +29,6 @@
                <div id="${args.htmlid}-selectedItems-menu" class="yuimenu">
                   <div class="bd">
                      <ul>
-                        <li><a class="delete-item" rel="delete" href="#"><span class="links-action-delete">${msg("links.delete")}</span></a></li>
                         <li><a class="deselect-item" rel="" href="#"><span class="links-action-deselect-all">${msg("links.deselectAll")}</span></a></li>
                      </ul>
                   </div>
