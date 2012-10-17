@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -263,7 +263,8 @@
                };
 
                // Send the query to the server
-               parent.widgets.dataSource.sendRequest(me._buildSearchParams(parent.searchTerm),
+               // ... with hint to use CQ for user admin page (note: passed via searchTerm in lieu of a change in the /api/people API)
+               parent.widgets.dataSource.sendRequest(me._buildSearchParams(parent.searchTerm + " [hint:useCQ]"),
                {
                   success: successHandler,
                   failure: failureHandler,
