@@ -12,9 +12,7 @@
    <import file="${alfresco.basedir}/projects.xml" />
    <import file="${alfresco.basedir}/maven.xml" />
 
-   <!-- For support of the script tag, we have to choose between -->
-   <!-- supporting Java 1.5 or Ant 1.6, and we've opted for -->
-   <!-- Java 1.5. (Ant 1.6 fails to be able to load the BSF or -->
+   <!-- For support of the script tag (Ant 1.6 fails to load the BSF or -->
    <!-- JSR-223 jars from anywhere other than the ant lib directory) -->
    <fail message="Ant 1.7 or higher is required to build. ${ant.version} detected">
      <!-- antversion tag not available in 1.6 which is unhelpful -->
@@ -22,6 +20,9 @@
    </fail>
    <fail message="Ant 1.7 or higher is required to build. ${ant.version} detected">
      <condition><not><antversion atleast="1.7" /></not></condition>
+   </fail>
+   <fail message="Java 7 is required to build. ${java.version} detected">
+     <condition><not><contains string="${java.version}" substring="1.7"/></not></condition>
    </fail>
 
    <target name="init">
@@ -52,12 +53,6 @@
       
       <echo>user.home = ${user.home}</echo>
       <echo>version.number = ${version.number}</echo>
-
-      <!-- Where to get BSF/Rhino from if on Java 1.5 -->
-      <condition property="classpath.bsf_javascript" else=""
-           value="${dir.project.3rdparty.lib}/bsf-2.4.0.jar:${dir.project.3rdparty.lib}/rhino-js-1.6R7.jar:${dir.project.3rdparty.lib}/commons/commons-logging-1.1.jar">
-         <equals arg1="${ant.java.version}" arg2="1.5" />
-      </condition>
 
       <path id="classpath.compile">
          <fileset dir="${dir.project.3rdparty.lib}">
