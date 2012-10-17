@@ -2302,11 +2302,15 @@
       {
          // Reload the node's metadata
          var jsNode = record.jsNode,
-            nodeRef = jsNode.nodeRef;
-
+            nodeRef = jsNode.nodeRef,
+            webscriptPath = "components/documentlibrary/data";
+         if ($isValueSet(this.options.siteId))
+         {
+            webscriptPath += "/site/" + encodeURIComponent(this.options.siteId)
+         }
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.URL_SERVICECONTEXT + "components/documentlibrary/data/node/" + nodeRef.uri +
+            url: Alfresco.constants.URL_SERVICECONTEXT + webscriptPath + "/node/" + nodeRef.uri +
                   "?filter=" + encodeURIComponent(this.currentFilter.filterId) +
                   "&view=" + this.actionsView + "&noCache=" + new Date().getTime(),
             successCallback:

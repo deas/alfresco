@@ -367,9 +367,14 @@
                fn: function dlA_onActionDetails_success(response)
                {
                   // Reload the node's metadata
+                  var webscriptPath = "components/documentlibrary/data";
+                  if ($isValueSet(this.options.siteId))
+                  {
+                     webscriptPath += "/site/" + encodeURIComponent(this.options.siteId)
+                  }
                   Alfresco.util.Ajax.request(
                   {
-                     url: $combine(Alfresco.constants.URL_SERVICECONTEXT, "components/documentlibrary/data/node/", jsNode.nodeRef.uri) + "?view=" + this.actionsView,
+                     url: $combine(Alfresco.constants.URL_SERVICECONTEXT, webscriptPath, "/node/", jsNode.nodeRef.uri) + "?view=" + this.actionsView,
                      successCallback:
                      {
                         fn: function dlA_onActionDetails_refreshSuccess(response)
