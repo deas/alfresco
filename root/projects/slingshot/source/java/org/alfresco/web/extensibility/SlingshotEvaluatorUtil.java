@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.ServletUtil;
+import org.springframework.extensions.surf.UserFactory;
 import org.springframework.extensions.surf.WebFrameworkServiceRegistry;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
 import org.springframework.extensions.webscripts.ScriptRemote;
@@ -276,7 +277,7 @@ public class SlingshotEvaluatorUtil {
                         // User is not logged in anymore
                         return false;
                     }
-                    String userName = creds.getProperty("cleartextUsername").toString();
+                    String userName = (String)session.getAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID);
                     Connector connector = context.getServiceRegistry().getConnectorService().getConnector("alfresco", userName, ServletUtil.getSession());
                     Response res = connector.call("/api/people/" + context.getUserId() + "?groups=true");
                     if (res.getStatus().getCode() == Status.STATUS_OK)
