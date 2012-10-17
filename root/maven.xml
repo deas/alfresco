@@ -8,8 +8,9 @@
     |  
     | Accepted properties:
     | ____________________
-    | -DisRelease=[true|false] ==> Switches between a RELEASE and SNAPSHOT deployment (default: SNAPSHOT) 
+    | -Dmaven.isRelease=[true|false] ==> Switches between a RELEASE and SNAPSHOT deployment (default: SNAPSHOT) 
     | -Dmaven.custom.label=customLabel ==> Adds a suffix to artifacts, e.g. for branch deployment
+    | -Dmaven.dryRun ==> calls install instead of deploy, to test before uploading
     |
     | Usage:
     | ______
@@ -65,6 +66,11 @@
         <condition property="maven.isRelease">
             <istrue value="${env.bamboo_deploy_as_release}"/>
         </condition>
+        <condition property="maven.command"
+            value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file"
+             else="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file">
+            <isset property="maven.dryRun"/>
+        </condition>
     </target>
 	
     <!-- Conditionally calls set-build-number. Fails if not in continuous.xml environment -->
@@ -82,7 +88,7 @@
     	<echo>Configured Snapshot deployment of Alfresco ${file.name.edition} ${version.number} to ${maven.repo.url} as ${maven.group.id} alfresco-* ${maven.version.number} artifacts</echo>
     </target>
 
-    <!-- Configures for release deployment in case it's a release ==> -DisRelease=true -->
+    <!-- Configures for release deployment in case it's a release ==> -Dmaven.isRelease=true -->
     <target name="configure-release-deployment" if="maven.isRelease" depends="configure-custom-version,configure-empty-custom-version">
     	<echo>Configuring Maven Release deployment</echo>
     	<property name="maven.repo.url" value="${maven.repository.url}" />
@@ -106,50 +112,56 @@
 
     <target name="maven-deploy-amps" description="Deploys additional Alfresco AMPs to a Maven repository">
         <!-- SPP -->
-        <mvndeploy file="${dir.module.spp.dist}/${file.name.amp.spp}"
-            artifactId="alfresco-spp" />
+        <mvndeploypom file="${dir.module.spp.dist}/${file.name.amp.spp}"
+            artifactId="alfresco-spp"
+            pomFile="${dir.module.spp}/pom.xml" />
 
-        <!-- FDK Repo AMP -->
+        <!-- FDK Repo AMP  - TODO: add pom.xml? -->
         <mvndeploy file="${dir.project.fdk.repo.dist}/${file.name.amp.fdk}"
             artifactId="alfresco-fdk-repo" />
 
-        <!-- WCM Quickstart Repo -->
+        <!-- WCM Quickstart Repo - TODO: add pom.xml? -->
         <mvndeploy file="${dir.module.wcmquickstart.dist}/${file.name.amp.wcmquickstart}"
             artifactId="alfresco-wcm-quickstart-repo" />
 
-        <!-- WCM Quickstart Share -->
+        <!-- WCM Quickstart Share - TODO: add pom.xml? -->
         <mvndeploy file="${dir.module.wcmquickstart-share.dist}/${file.name.amp.wcmquickstart-share}"
             artifactId="alfresco-wcm-quickstart-share" />
     </target>
 
     <target name="maven-deploy-extras" description="Deploys additional Alfresco JARs/WARs/ZIPs to a Maven repository">
         <!-- WCM Quickstart webapp -->
-        <mvndeploy file="${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}"
-            artifactId="alfresco-wcm-quickstart" />
+        <mvndeploypom file="${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}"
+            artifactId="alfresco-wcm-quickstart"
+            pomFile="${dir.project.wcmquickstart-webapp}/pom.xml" />
 
         <!-- Web Service Client -->
-        <mvndeploy file="${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}"
+        <mvndeploypom file="${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}"
             artifactId="alfresco-web-service-client"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-web-service-client-src.zip" 
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip" />
+            classifiers="sources,javadoc"
+            types="jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-web-service-client-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-service-client-doc.zip"
+            pomFile="${dir.project.webserviceclient}/pom.xml" />
 
         <!-- Web Editor JAR -->
-        <mvndeploy file="${dir.project.webeditor.dist}/${file.name.jar.webeditor}"
-            artifactId="alfresco-webeditor" />
+        <mvndeploypom file="${dir.project.webeditor.dist}/${file.name.jar.webeditor}"
+            artifactId="alfresco-webeditor"
+            pomFile="${dir.project.webeditor}/pom.xml" />
 
-        <!-- Web Editor taglib -->
+        <!-- Web Editor taglib - TODO: add pom.xml? -->
         <mvndeploy file="${dir.project.webeditor.dist}/${file.name.jar.webeditor.taglib}"
             artifactId="alfresco-webeditor-taglib" />
 
         <!-- Web Editor plugin -->
-        <mvndeploy file="${dir.project.webeditorplugin.dist}/${file.name.jar.webeditor.plugin}"
-            artifactId="alfresco-webeditor-plugin" />
+        <mvndeploypom file="${dir.project.webeditorplugin.dist}/${file.name.jar.webeditor.plugin}"
+            artifactId="alfresco-webeditor-plugin"
+            pomFile="${dir.project.webeditorplugin}/pom.xml" />
 
         <!-- MMT classes: slim jar, with dependencies in pom.xml -->
-        <copy file="${dir.project.3rdparty.lib}/mmt-dependencies/pom-mmt.xml" todir="${dir.continuous.assemble.mmt}" />
+        <copy file="${dir.project.3rdparty.lib}/mmt-dependencies/pom-mmt.xml" todir="${dir.continuous.assemble.mmt}" overwrite="true" />
         <replace file="${dir.continuous.assemble.mmt}/pom-mmt.xml" summary="true"
             token="VERSION" value="${maven.version.number}" failOnNoReplacements="true" />
-        <mvndeploy file="${dir.continuous.assemble.mmt}/main/main.jar"
+        <mvndeploypom file="${dir.continuous.assemble.mmt}/main/main.jar"
             artifactId="alfresco-mmt"
             pomFile="${dir.continuous.assemble.mmt}/pom-mmt.xml" />
         <!-- MMT classes -->
@@ -170,88 +182,121 @@
     </target>
 
     <target name="maven-deploy-webclient-jars" description="Deploys Alfresco Explorer related JARs to a Maven repository">
+        <!-- Parent POM -->
+        <mvndeploy artifactId="alfresco-parent"
+            file="${alfresco.basedir}/pom-experimental.xml" />
+
         <!-- Core -->
-        <mvndeploy file="${dir.project.core.dist}/${file.name.jar.core}"
+        <mvndeploypom file="${dir.project.core.dist}/${file.name.jar.core}"
             artifactId="alfresco-core"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-core-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip" />
+            classifiers="sources,javadoc,test-resources"
+            types="jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-core-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip,${dir.continuous.assemble.config}/alfresco-core-test-resources.zip"
+            pomFile="${dir.project.core}/pom.xml" />
 
         <!-- Datamodel -->
-        <mvndeploy file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"
+        <mvndeploypom file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"
             artifactId="alfresco-data-model"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-datamodel-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip" />
+            classifiers="sources,javadoc,config"
+            types="jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-datamodel-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip,${dir.continuous.assemble.config}/alfresco-datamodel-config.zip"
+            pomFile="${dir.project.datamodel}/pom.xml" />
 
         <!-- Deployment -->
-        <mvndeploy file="${dir.project.deployment.dist}/${file.name.jar.deployment}"
+        <mvndeploypom file="${dir.project.deployment.dist}/${file.name.jar.deployment}"
             artifactId="alfresco-deployment"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-deployment-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-deployment-doc.zip" />
+            classifiers="sources,javadoc"
+            types="jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-deployment-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-deployment-doc.zip"
+            pomFile="${dir.project.deployment}/pom.xml" />
 
         <!-- JLAN Embed -->
-        <mvndeploy file="${dir.project.jlan.dist}/${file.name.jar.jlan}"
+        <mvndeploypom file="${dir.project.jlan.dist}/${file.name.jar.jlan}"
             artifactId="alfresco-jlan-embed"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-jlan-embed-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-jlan-embed-doc.zip" />
+            classifiers="sources,javadoc"
+            types="jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-jlan-embed-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-jlan-embed-doc.zip"
+            pomFile="${dir.project.jlan}/pom.xml" />
 
         <!-- Mbeans -->
-        <mvndeploy file="${dir.project.mbeans.dist}/${file.name.jar.mbeans}"
-            artifactId="alfresco-mbeans" />
+        <mvndeploypom file="${dir.project.mbeans.dist}/${file.name.jar.mbeans}"
+            artifactId="alfresco-mbeans"
+            pomFile="${dir.project.mbeans}/pom.xml" />
 
         <!-- Remote API -->
-        <mvndeploy file="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}"
+        <mvndeploypom file="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}"
             artifactId="alfresco-remote-api"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-remote-api-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-remote-api-doc.zip" />
+            classifiers="sources,javadoc,config,test-resources"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-remote-api-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-remote-api-doc.zip,${dir.continuous.assemble.config}/alfresco-remote-api-config.zip,${dir.continuous.assemble.config}/alfresco-remote-api-test-resources.zip"
+            pomFile="${dir.project.remoteapi}/pom.xml" />
 
         <!-- Repository -->
-        <mvndeploy file="${dir.project.repository.dist}/${file.name.jar.repository}"
+        <mvndeploypom file="${dir.project.repository.dist}/${file.name.jar.repository}"
             artifactId="alfresco-repository"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-repository-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-repository-doc.zip" />
+            classifiers="sources,javadoc,config,test-resources"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-repository-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-repository-doc.zip,${dir.continuous.assemble.config}/alfresco-repository-config.zip,${dir.continuous.assemble.config}/alfresco-repository-test-resources.zip"
+            pomFile="${dir.project.repository}/pom.xml" />
 
         <!-- WDR Deployment -->
-        <mvndeploy file="${dir.project.wdrdeployment.dist}/${file.name.jar.wdrdeployment}"
-            artifactId="alfresco-wdr-deployment" />
+        <mvndeploypom file="${dir.project.wdrdeployment.dist}/${file.name.jar.wdrdeployment}"
+            artifactId="alfresco-wdr-deployment"
+            pomFile="${dir.project.wdrdeployment}/pom.xml" />
 
         <!-- Web Client -->
-        <mvndeploy file="${dir.project.webclient.dist}/${file.name.jar.webclient}"
+        <mvndeploypom file="${dir.project.webclient.dist}/${file.name.jar.webclient}"
             artifactId="alfresco-web-client"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-web-client-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip" />
+            classifiers="sources,javadoc"
+            types="jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-web-client-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip"
+            pomFile="${dir.project.webclient}/pom.xml" />
 
         <!-- Web Framework Commons -->
-        <mvndeploy file="${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"
+        <mvndeploypom file="${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"
             artifactId="alfresco-web-framework-commons"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-web-framework-commons-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip" />
+            classifiers="sources,javadoc,config,test-resources"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-web-framework-commons-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip"
+            pomFile="${dir.project.webframeworkcommons}/pom.xml" />
     </target>
             
     <target name="maven-deploy-webclient-webapp" description="Deploys Alfresco Explorer related WAR to a Maven repository">
-        <mvndeploy file="${dir.project.webclient.dist}/${file.name.war.webclient}"
-            artifactId="alfresco" />
+        <mvndeploypom file="${dir.project.webclient.dist}/${file.name.war.webclient}"
+            classifiers="sources,javadoc,classes,config,test-resources"
+            types="jar,jar,jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-web-client-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip,${dir.project.webclient.dist}/${file.name.jar.webclient},${dir.continuous.assemble.config}/alfresco-web-client-config.zip,${dir.continuous.assemble.config}/alfresco-web-client-test-resources.zip"
+            artifactId="alfresco"
+            pomFile="${dir.project.webclient}/pom.xml" />
     </target>
 
     <target name="maven-deploy-slingshot-jars" description="Deploys Alfresco Share related JARs to a Maven repository">
         <!-- Share JAR -->
-        <mvndeploy file="${dir.project.slingshot.dist}/${file.name.jar.slingshot}"
+        <mvndeploypom file="${dir.project.slingshot.dist}/${file.name.jar.slingshot}"
             artifactId="alfresco-share"
-            sources="${dir.continuous.assemble.sdk}/src/alfresco-share-src.zip"
-            javadoc="${dir.continuous.assemble.sdk}/doc/alfresco-share-doc.zip" />
+            classifiers="sources,javadoc"
+            types="jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-share-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-share-doc.zip"
+            pomFile="${dir.project.slingshot}/pom.xml" />
 
-        <!-- FDK Client JAR  -->
+        <!-- FDK Client JAR  - TODO: add pom.xml? -->
         <mvndeploy file="${dir.project.fdk.client.dist}/${file.name.jar.fdk}"
             artifactId="alfresco-fdk-client" />
     </target>
 
     <target name="maven-deploy-slingshot-webapp" description="Deploys Alfresco Share related WAR to a Maven repository">
-        <mvndeploy file="${dir.project.slingshot.dist}/${file.name.war.slingshot}"
-            artifactId="share" />
+        <mvndeploypom file="${dir.project.slingshot.dist}/${file.name.war.slingshot}"
+            artifactId="share"
+            classifiers="sources,javadoc,classes,config"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.sdk}/src/alfresco-share-src.zip,${dir.continuous.assemble.sdk}/doc/alfresco-share-doc.zip,${dir.project.slingshot.dist}/${file.name.jar.slingshot},${dir.continuous.assemble.config}/alfresco-share-config.zip"
+            pomFile="${dir.project.slingshot}/pom.xml" />
     </target>
 
     <target name="maven-deploy-solr-jars" description="Deploys Solr related JARs to a Maven repository">
-        <mvndeploy file="${dir.project.solr.dist}/${file.name.jar.solr}"
-            artifactId="alfresco-solr-integration" />
+        <mvndeploypom file="${dir.project.solr.dist}/${file.name.jar.solr}"
+            artifactId="alfresco-solr-integration"
+            pomFile="${dir.project.solr}/pom.xml" />
     </target>
 
     <target name="maven-deploy-solr-webapp" description="Deploys Solr related webapp to a Maven Repository">
@@ -259,42 +304,30 @@
             artifactId="alfresco-solr" />
     </target>
 
+    <!-- DEPLOYMENT MACROS -->
     <macrodef name="mvndeploy">
         <attribute name="file" />
         <attribute name="artifactId" />
         <attribute name="classifier" default="" />
-        <attribute name="sources" default="NONE" />
-        <attribute name="javadoc" default="NONE" />
-        <attribute name="pomFile" default="NONE" />
         <sequential>
             <echo>
             Deploying @{file}
             as ${maven.group.id}:@{artifactId}:${maven.version.number}...</echo>
 
             <local name="fileabsolute" />
-            <local name="sourceUpload" />
-            <local name="javadocUpload" />
-            <local name="pomUpload" />
+            <local name="extension.tmp" />
             <local name="extension" />
             <property name="fileabsolute" location="@{file}" />
-            <condition property="sourceUpload" value="-Dsources=@{sources}" else="">
-                <not> <equals arg1="@{sources}" arg2="NONE"/> </not>
-            </condition>
-            <condition property="javadocUpload" value="-Djavadoc=@{javadoc}" else="">
-                <not> <equals arg1="@{javadoc}" arg2="NONE"/> </not>
-            </condition>
-            <condition property="pomUpload" value="-DpomFile=@{pomFile}" else="">
-                <not> <equals arg1="@{pomFile}" arg2="NONE"/> </not>
-            </condition>
-            <pathconvert property="extension">
+            <pathconvert property="extension.tmp">
                 <fileset file="@{file}"/>
                 <mapper type="regexp" from="^.*\.(.*)$$" to="\1"/>
             </pathconvert>
+            <condition property="extension" value="pom" else="${extension.tmp}">
+                <equals arg1="${extension.tmp}" arg2="xml"/>
+            </condition>
+
             <artifact:mvn>
-<!-- for tests
-                <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file"/>
--->
-                <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
+                <arg value="${maven.command}"/>
                 <arg value="-Dfile=${fileabsolute}"/>
                 <arg value="-DgroupId=${maven.group.id}"/>
                 <arg value="-DartifactId=@{artifactId}"/>
@@ -305,8 +338,60 @@
                 <arg value="-Dclassifier=@{classifier}"/>
                 <arg value="-s"/>
                 <arg value="${maven.settings.file}"/>
-                <arg line="${sourceUpload} ${javadocUpload} ${pomUpload}"/>
             </artifact:mvn>
+
+        </sequential>
+    </macrodef>
+
+    <macrodef name="mvndeploypom">
+        <attribute name="file" />
+        <attribute name="artifactId" />
+        <attribute name="pomFile" />
+        <attribute name="classifiers" default="" />
+        <attribute name="files" default="" />
+        <attribute name="types" default="" />
+        <sequential>
+            <echo>
+            Deploying @{file}
+            as ${maven.group.id}:@{artifactId}:${maven.version.number}... @{classifiers}</echo>
+
+            <local name="fileabsolute" />
+            <local name="extension" />
+            <local name="sideArtifacts" />
+            <property name="fileabsolute" location="@{file}" />
+            <pathconvert property="extension">
+                <fileset file="@{file}"/>
+                <mapper type="regexp" from="^.*\.(.*)$$" to="\1"/>
+            </pathconvert>
+            <condition property="sideArtifacts" value="-Dclassifiers=@{classifiers} -Dfiles=@{files} -Dtypes=@{types}" else="">
+                <length string="@{classifiers}" when="greater" length="0" />
+            </condition>
+
+            <!-- Remove SNAPSHOT in POM version if necessary -->
+            <condition property="pomVersion" value="${maven.version.number}-SNAPSHOT" else="${maven.version.number}">
+                <istrue value="${maven.isRelease}" />
+            </condition>
+            <replace file="@{pomFile}" summary="true" token="${pomVersion}" value="${maven.version.number}" >
+                <filename name="@{pomFile}"/>
+            </replace>
+
+            <artifact:mvn>
+                <arg value="${maven.command}"/>
+                <arg value="-Dfile=${fileabsolute}"/>
+                <arg value="-DgroupId=${maven.group.id}"/>
+                <arg value="-DartifactId=@{artifactId}"/>
+                <arg value="-Dversion=${maven.version.number}"/>
+                <arg value="-Dpackaging=${extension}"/>
+                <arg value="-DpomFile=@{pomFile}"/>
+                <arg value="-Durl=${maven.repo.url}"/>
+                <arg value="-DrepositoryId=${maven.repo.id}"/>
+                <arg value="-s"/>
+                <arg value="${maven.settings.file}"/>
+                <arg line="${sideArtifacts}"/>
+            </artifact:mvn>
+
+            <!-- Revert change in pom done above -->
+            <replace file="@{pomFile}" summary="true" token="${maven.version.number}" value="${pomVersion}" />
         </sequential>
     </macrodef>
 
