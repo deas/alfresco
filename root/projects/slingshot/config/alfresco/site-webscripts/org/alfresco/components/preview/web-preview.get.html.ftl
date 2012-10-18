@@ -21,7 +21,7 @@
    </@>
 
    <@markup id="widgets">
-      <#if node?? && node?exists>
+      <#if node??>
          <@createWidgets group="${dependencyGroup}"/>
       </#if>
    </@>

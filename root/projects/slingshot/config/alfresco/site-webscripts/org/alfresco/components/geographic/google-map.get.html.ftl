@@ -9,7 +9,7 @@
 </@>
 
 <@markup id="widgets">
-   <#if documentDetailsJSON??>
+   <#if documentDetails??>
       <@createWidgets group="geographic"/>
    </#if>
 </@>
@@ -22,7 +22,7 @@
             <tr><th><span title="${msg("label.exif_${property}.description")}">${msg("label.exif_${property}.title")}</span></th><td>${properties["exif:" + property]?string?html}</td></tr>
          </#if>
       </#macro>
-      <#if documentDetailsJSON??>
+      <#if documentDetails??>
          <#assign id = args.htmlid?html>
          <div class="google-map">
             <div id="${id}-map" class="map"></div>

@@ -13,8 +13,7 @@ function main()
    });
    if (documentDetails)
    {
-      model.documentDetails = documentDetails;
-      model.documentDetailsJSON = jsonUtils.toJSONString(documentDetails);
+      model.documentDetails = true;
       doclibCommon();
    }
    
@@ -30,7 +29,7 @@ function main()
          containerId : model.container,
          rootNode : model.rootNode,
          replicationUrlMapping : (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}",
-         documentDetails : model.documentDetails,
+         documentDetails : documentDetails,
          repositoryBrowsing : (model.rootNode != null),
          syncMode : model.syncMode != null ? model.syncMode : "",         
       }
@@ -39,5 +38,3 @@ function main()
 }
 
 main();
-
-

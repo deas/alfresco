@@ -20,7 +20,7 @@ function main()
          }
       }
       model.document = documentDetails.item;
-      model.documentDetailsJSON = jsonUtils.toJSONString(documentDetails);
+      model.documentDetails = true;
       doclibCommon();
    }
    
@@ -37,4 +37,3 @@ function main()
 }
 
 main();
-

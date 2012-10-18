@@ -20,7 +20,7 @@
    
    <@markup id="html">
       <@uniqueIdDiv>
-         <#if folderDetailsJSON??>
+         <#if folderDetails??>
             <#assign el=args.htmlid?js_string>
             <div id="${el}-body" class="folder-actions folder-details-panel">
                <h2 id="${el}-heading" class="thin dark">

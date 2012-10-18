@@ -12,7 +12,7 @@
    <#assign el=args.htmlid?js_string>
    
    <@markup id="widgets">
-      <#if documentDetailsJSON??>
+      <#if documentDetails??>
          <@createWidgets group="document-details"/>
          <@inlineScript group="document-details">
             YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
@@ -24,7 +24,7 @@
    
    <@markup id="html">
       <@uniqueIdDiv>
-         <#if documentDetailsJSON??>
+         <#if documentDetails??>
             <#assign el=args.htmlid?js_string>
             <div id="${el}-body" class="document-actions document-details-panel">
                <h2 id="${el}-heading" class="thin dark">

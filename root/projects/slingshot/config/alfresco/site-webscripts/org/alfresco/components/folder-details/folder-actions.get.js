@@ -13,8 +13,7 @@ function main()
    });
    if (folderDetails)
    {
-      model.folderDetails = folderDetails;
-      model.folderDetailsJSON = jsonUtils.toJSONString(folderDetails);
+      model.folderDetails = true;
       doclibCommon();
    }
    
@@ -31,7 +30,7 @@ function main()
          rootNode : Boolean(model.rootNode),
          replicationUrlMapping : (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}",
          repositoryBrowsing : (model.rootNode != null),
-         folderDetails : model.folderDetails,
+         folderDetails : folderDetails,
          syncMode : model.syncMode != null ? model.syncMode : ""
       }
    };
@@ -39,4 +38,3 @@ function main()
 }
 
 main();
-

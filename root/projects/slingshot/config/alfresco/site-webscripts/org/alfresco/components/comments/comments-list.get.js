@@ -89,13 +89,10 @@ function main()
    }
 
    var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
+   var activityParameters = null;
    if (documentDetails)
    {
-      var activityParameters = getActivityParameters(model.nodeRef, null);
-      if (activityParameters)
-      {
-         model.activityParameterJSON = jsonUtils.toJSONString(activityParameters);
-      }
+      activityParameters = getActivityParameters(model.nodeRef, null);
    }
    else
    {
@@ -112,7 +109,7 @@ function main()
          nodeRef : model.nodeRef,
          siteId : model.site,
          maxItems : parseInt(model.maxItems),
-         activity :  model.activityParameterJSON,
+         activity :  activityParameters,
          editorConfig : {
             inline_styles: false,
             convert_fonts_to_spans: Boolean(false),

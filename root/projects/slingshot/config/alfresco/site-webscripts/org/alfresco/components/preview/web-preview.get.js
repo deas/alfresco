@@ -68,22 +68,22 @@ function main()
    if (nodeMetadata)
    {
       // Populate model with data from node and config
-      model.node = nodeMetadata;
+      model.node = true;
       var pluginConditions = getPluginConditions(new XML(config.script));
-      model.pluginConditionsJSON = jsonUtils.toJSONString(pluginConditions);
+      var pluginConditionsJSON = jsonUtils.toJSONString(pluginConditions);
 
       // Widget instantiation metadata...
       var webPreview = {
          id : "WebPreview",
          name : "Alfresco.WebPreview",
          options : {
-            thumbnailModification : model.node.thumbnailModifications,
+            thumbnailModification : nodeMetadata.thumbnailModifications,
             nodeRef : model.nodeRef,
-            name : model.node.name,
-            mimeType : model.node.mimeType,
-            size: model.node.size,
-            thumbnails : model.node.thumbnails,
-            pluginConditions : model.pluginConditionsJSON,
+            name : nodeMetadata.name,
+            mimeType : nodeMetadata.mimeType,
+            size: nodeMetadata.size,
+            thumbnails : nodeMetadata.thumbnails,
+            pluginConditions : pluginConditionsJSON,
             api: model.api,
             proxy: model.proxy
          }
@@ -95,7 +95,5 @@ function main()
 // Start the webscript
 main();
 
-
 // Set the group from the component property...
 model.dependencyGroup =  (args.dependencyGroup != null) ? args.dependencyGroup : "web-preview";
-
