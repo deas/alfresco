@@ -779,9 +779,10 @@
       </copy>
 
       <!-- Installing auto apply Share AMPs into Share WAR -->
+      <!-- Temporarily commented, waiting for a fix on MMT
       <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
                                warfile="${dir.deploy.tomcat.application.slingshot}" />
-   
+      -->
    </target>
 
    <target name="minimize-slingshot-deployed-javascript" depends="init">
