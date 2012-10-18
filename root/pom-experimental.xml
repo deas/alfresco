@@ -5,7 +5,7 @@
 <!-- 
     |  Prerequisites:
     | - Either run with -Dmaven.test.skip=true or a PostgreSQL instance should be running 
-    | - export MAVEN_OPTS="-Xmx1G -Xms1G"
+    | - export MAVEN_OPTS="-Xmx1G -Xms1G -XX:MaxPermSize=256m"
     -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -24,14 +24,14 @@
   </organization>
   <licenses>
     <license>
-      <name>GNU Lesser General Public License v3.0 or later</name>
-      <url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</url>
+      <name>${maven.license.name}</name>
+      <url>${maven.license.url}</url>
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</connection>
-    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</developerConnection>
-    <url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</url>
+    <connection>${maven.scm.connection}</connection>
+    <developerConnection>${maven.scm.developerConnection}</developerConnection>
+    <url>${maven.scm.url}</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -47,10 +47,10 @@
   </prerequisites>
 
   <repositories>
-    <!-- Pointing to Alfresco Private repository, as it contains both Community and Enteprise dependencies -->
+    <!-- Pointing to Alfresco repository group. Value is switched between community and enterprise -->
     <repository>
       <id>alfresco-internal</id>
-      <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
+      <url>${maven.repository.url}</url>
     </repository>
     <!-- Snapshot repository for Spring Surf -->
     <repository>
@@ -69,12 +69,12 @@
       <!-- For now internal releases repositories -->
       <repository>
           <id>alfresco-internal</id>
-          <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+          <url>${maven.distributionManagement.url}</url>
       </repository>
       <!-- For now internal snapshot repositories -->
       <snapshotRepository>
           <id>alfresco-internal-snapshots</id>
-          <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+          <url>${maven.distributionManagement.snapshot.url}</url>
       </snapshotRepository>      
       <site>      
           <id>alfresco-site</id>
@@ -146,6 +146,16 @@
     <sonar.exclusions></sonar.exclusions>
     <sonar.skippedModules></sonar.skippedModules>
     <sonar.branch>HEAD</sonar.branch>
+
+    <!-- Community build specific properties -->
+    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
+    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
+    <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
+    <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/public</maven.repository.url>
+    <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</maven.distributionManagement.snapshot.url>
+    <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/releases</maven.distributionManagement.url>
+    <maven.license.name>GNU Lesser General Public License v3.0 or later</maven.license.name>
+    <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
 
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
@@ -629,7 +639,19 @@
             <module>enterpriseprojects/repository</module>
             <module>enterpriseprojects/remote-api</module>
         </modules>
+        <properties>
+            <!-- Enterprise specific properties -->
+            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
+            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
+            <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
+            <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
+            <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</maven.distributionManagement.snapshot.url>
+            <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</maven.distributionManagement.url>
+            <maven.license.name>Alfresco Enterprise License</maven.license.name>
+            <maven.license.url>http://www.alfresco.com/legal</maven.license.url>
+        </properties>
     </profile>
+    
   </profiles>
 
 </project>
