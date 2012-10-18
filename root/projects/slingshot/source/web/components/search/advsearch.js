@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Advanced Search component.
  * 
@@ -297,12 +297,24 @@
                      {
                         element.value = savedValue;
                      }
+                     
+                     // reverse value setting doesn't work with checkboxes because of the 
+                     // hidden field used to store the underlying field value
+                     if (element.type === "hidden")
+                     {
+                     	// hidden fields could be a part of a checkbox in the Forms runtime
+                     	// so look if there is a checkbox attached this hidden field and set the value
+                     	var chk = Dom.get(element.id + "-entry");
+                     	if (chk && chk.type === "checkbox")
+                     	{
+                     	   chk.checked = (savedValue === "true");
+                     	}
+                     }
                   }
                }
             }
-
+            
             Bubbling.fire("formContentsUpdated");
-
          }
       },
       
