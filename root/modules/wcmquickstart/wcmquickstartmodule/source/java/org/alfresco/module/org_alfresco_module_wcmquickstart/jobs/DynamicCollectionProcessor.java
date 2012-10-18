@@ -23,6 +23,7 @@ import java.util.Date;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.WebassetCollectionHelper;
+import org.alfresco.repo.admin.RepositoryState;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
@@ -57,6 +58,18 @@ public class DynamicCollectionProcessor implements WebSiteModel
     
     /** Webasset Collection Helper */
     private WebassetCollectionHelper collectionHelper;
+    
+    /** Repository State */
+    private RepositoryState repositoryState;
+    
+    /**
+     * Sets the repository state
+     * @param repositoryState   repository state
+     */
+    public void setRepositoryState(RepositoryState repositoryState)
+    {
+        this.repositoryState = repositoryState;
+    }
     
     /**
      * Set search service
@@ -99,6 +112,14 @@ public class DynamicCollectionProcessor implements WebSiteModel
      */
     public void run()
     {
+        if (repositoryState.isBootstrapping())
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("DynamicCollection processor can not be executed while the repository is bootstrapping");
+            }
+            return;
+        }
         AuthenticationUtil.runAs(new RunAsWork<Object>()
         {
             @Override

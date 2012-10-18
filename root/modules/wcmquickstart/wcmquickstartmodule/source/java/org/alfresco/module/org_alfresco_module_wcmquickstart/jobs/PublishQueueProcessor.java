@@ -19,6 +19,7 @@ package org.alfresco.module.org_alfresco_module_wcmquickstart.jobs;
 
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.publish.PublishService;
+import org.alfresco.repo.admin.RepositoryState;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
@@ -44,9 +45,18 @@ public class PublishQueueProcessor
     private TransactionService transactionService;
     private SearchService searchService;
     private PublishService publishService;
+    private RepositoryState repositoryState;
 
     public void run()
     {
+        if (repositoryState.isBootstrapping())
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("PublishQueue processor can not be executed while the repository is bootstrapping");
+            }
+            return;
+        }
         AuthenticationUtil.runAs(new RunAsWork<Object>()
         {
             @Override
@@ -100,5 +110,10 @@ public class PublishQueueProcessor
     public void setPublishService(PublishService publishService)
     {
         this.publishService = publishService;
+    }
+
+    public void setRepositoryState(RepositoryState repositoryState)
+    {
+        this.repositoryState = repositoryState;
     }
 }

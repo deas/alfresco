@@ -19,6 +19,7 @@ package org.alfresco.module.org_alfresco_module_wcmquickstart.jobs;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
+import org.alfresco.repo.admin.RepositoryState;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
@@ -46,9 +47,18 @@ public class AvailabilityProcessor
     private SearchService searchService;
     private NodeService nodeService;
     private BehaviourFilter behaviourFilter;
+    private RepositoryState repositoryState;
     
     public void run()
     {
+        if (repositoryState.isBootstrapping())
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Availability processor can not be executed while the repository is bootstrapping");
+            }
+            return;
+        }
         txHelper.doInTransaction(new RetryingTransactionCallback<Object>()
         {
             @Override
@@ -129,4 +139,8 @@ public class AvailabilityProcessor
         this.behaviourFilter = behaviourFilter;
     }
     
+    public void setRepositoryState(RepositoryState repositoryState)
+    {
+        this.repositoryState = repositoryState;
+    }
 }

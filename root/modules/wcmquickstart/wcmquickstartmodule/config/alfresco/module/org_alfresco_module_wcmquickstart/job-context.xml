@@ -24,6 +24,7 @@
       <property name="nodeService" ref="nodeService" />
       <property name="searchService" ref="searchService" />
       <property name="txHelper" ref="retryingTransactionHelper" />
+      <property name="repositoryState" ref="repositoryState"/>
    </bean>
 
    <bean id="feedbackProcessorHandler" abstract="true" init-method="init">
@@ -54,6 +55,7 @@
                   <property name="searchService" ref="searchService" />
                   <property name="txHelper" ref="retryingTransactionHelper" />
                   <property name="behaviourFilter" ref="policyBehaviourFilter" />
+                  <property name="repositoryState" ref="repositoryState"/>
                </bean>
             </property>
             <property name="targetMethod" value="run" />
@@ -76,6 +78,7 @@
                   <property name="searchService" ref="searchService" />
                   <property name="transactionService" ref="TransactionService" />
                   <property name="publishService" ref="org_alfresco_module_wcmquickstart_publishingService" />
+                  <property name="repositoryState" ref="repositoryState"/>
                </bean>
             </property>
             <property name="targetMethod" value="run" />
@@ -100,6 +103,7 @@
                   <property name="transactionService" ref="TransactionService" />
                   <property name="nodeService" ref="nodeService" />
                   <property name="collectionHelper" ref="org_alfresco_module_wcmquickstart_collectionHelper" />
+                  <property name="repositoryState" ref="repositoryState"/>
                </bean>
             </property>
             <property name="targetMethod" value="run" />

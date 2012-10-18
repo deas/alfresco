@@ -22,6 +22,7 @@ import java.util.TreeMap;
 
 import org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.feedback.FeedbackProcessorHandler;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
+import org.alfresco.repo.admin.RepositoryState;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -59,6 +60,9 @@ public class FeedbackProcessor
     /** Map of feedback processors */
     private Map<String, FeedbackProcessorHandler> handlers = new TreeMap<String, FeedbackProcessorHandler>();
 
+    /** Repository State */
+    private RepositoryState repositoryState;
+
     /**
      * Register a feedback processor handler
      * @param handler   feedback processor handler
@@ -74,6 +78,14 @@ public class FeedbackProcessor
      */
     public void run()
     {
+        if (repositoryState.isBootstrapping())
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Feedback processor can not be executed while the repository is bootstrapping");
+            }
+            return;
+        }
         AuthenticationUtil.runAs(new RunAsWork<Object>()
         {
             @Override
@@ -189,5 +201,14 @@ public class FeedbackProcessor
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
+    }
+
+    /**
+     * Sets the repository state
+     * @param repositoryState   repository state
+     */
+    public void setRepositoryState(RepositoryState repositoryState)
+    {
+        this.repositoryState = repositoryState;
     }
 }
