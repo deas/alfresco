@@ -255,7 +255,7 @@
 		<sequential>
 			<java classname="org.alfresco.repo.module.tool.ModuleManagementTool" failonerror="true">
 				<classpath refid="classpath.compile"/>
-				<arg line="install @{ampfilesdir} @{warfile} -directory -force -verbose -nobackup"/>
+				<arg line="install @{ampfilesdir} @{warfile} -directory -verbose -nobackup"/>
 			</java>
 		</sequential>
 	</macrodef>
