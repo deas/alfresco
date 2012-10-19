@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>alfresco-jlan</artifactId>
+            <artifactId>alfresco-jlan-embed</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
