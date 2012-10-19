@@ -250,50 +250,61 @@
                // Conditions are valid, now create plugins and make sure they can run in this environment
                for (var pi = 0, pil = condition.plugins.length; pi < pil; pi++)
                {
-                  // Create plugin
                   pluginDescriptor = condition.plugins[pi];
-                  plugin = new Alfresco.WebPreview.prototype.Plugins[pluginDescriptor.name](this, pluginDescriptor.attributes);
-
-                  // Special case to ignore the WebPreviewer plugin on iOS - we don't want to report output either
-                  // as the output is simply an HTML message unhelpfully informing the user to install Adobe Flash
-                  if (YAHOO.env.ua.ios && pluginDescriptor.name === "WebPreviewer")
+                  // Check the plugin constructor actually exists, in case client-side dependencies
+                  // have not been loaded (ALF-12798)
+                  if (typeof Alfresco.WebPreview.prototype.Plugins[pluginDescriptor.name] == "function")
                   {
-                     continue;
-                  }
+                     // Create plugin
+                     plugin = new Alfresco.WebPreview.prototype.Plugins[pluginDescriptor.name](this, pluginDescriptor.attributes);
 
-                  // Make sure it may run in this browser...
-                  var report = plugin.report();
-                  if (report)
-                  {
-                     // ...the plugin can't be used in this browser, save report and try another plugin
-                     messages.push(report);
+                     // Special case to ignore the WebPreviewer plugin on iOS - we don't want to report output either
+                     // as the output is simply an HTML message unhelpfully informing the user to install Adobe Flash
+                     if (YAHOO.env.ua.ios && pluginDescriptor.name === "WebPreviewer")
+                     {
+                        continue;
+                     }
+
+                     // Make sure it may run in this browser...
+                     var report = plugin.report();
+                     if (report)
+                     {
+                        // ...the plugin can't be used in this browser, save report and try another plugin
+                        messages.push(report);
+                     }
+                     else
+                     {
+                        // ...yes, the plugin can be used in this browser, lets store a reference to it.
+                        this.plugin = plugin;
+
+                        // Ask the plugin to display the node
+                        var markup;
+                        try
+                        {
+                           Dom.addClass(this.widgets.previewerElement, pluginDescriptor.name);
+                           markup = plugin.display();
+                           if (markup)
+                           {
+                              // Insert markup if plugin provided it
+                              this.widgets.previewerElement.innerHTML = markup;
+                           }
+
+                           // Finally! We found a plugin that works and didn't crash
+                           return;
+                        }
+                        catch(e)
+                        {
+                           // Oops a plugin failure, log it and try the next one instead...
+                           Alfresco.logger.error('Error, Alfresco.WebPreview.Plugins.' + pluginDescriptor.name + ' failed to display: ' + e);
+                           messages.push(this.msg("label.error", pluginDescriptor.name, e.message));                        
+                        }
+                     }
                   }
                   else
                   {
-                     // ...yes, the plugin can be used in this browser, lets store a reference to it.
-                     this.plugin = plugin;
-
-                     // Ask the plugin to display the node
-                     var markup;
-                     try
-                     {
-                        Dom.addClass(this.widgets.previewerElement, pluginDescriptor.name);
-                        markup = plugin.display();
-                        if (markup)
-                        {
-                           // Insert markup if plugin provided it
-                           this.widgets.previewerElement.innerHTML = markup;
-                        }
-
-                        // Finally! We found a plugin that works and didn't crash
-                        return;
-                     }
-                     catch(e)
-                     {
-                        // Oops a plugin failure, log it and try the next one instead...
-                        Alfresco.logger.error('Error, Alfresco.WebPreview.Plugins.' + pluginDescriptor.name + ' failed to display: ' + e);
-                        messages.push(this.msg("label.error", pluginDescriptor.name, e.message));                        
-                     }
+                     // Plugin could not be instantiated, log it and try the next one instead...
+                     Alfresco.logger.error('Error, Alfresco.WebPreview.Plugins.' + pluginDescriptor.name + ' does not exist');
+                     messages.push(this.msg("label.errorMissing", pluginDescriptor.name));
                   }
                }
             }

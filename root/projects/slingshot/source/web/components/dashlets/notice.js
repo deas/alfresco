@@ -1,0 +1,197 @@
+/**
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
+ * http://www.alfresco.com/legal/licensing
+ */
+ 
+/**
+ * Notice dashlet component.
+ * 
+ * @namespace Alfresco
+ * @class Alfresco.dashlet.Notice
+ */
+(function()
+{
+   /**
+    * YUI Library aliases
+    */
+   var Dom = YAHOO.util.Dom,
+      Event = YAHOO.util.Event;
+
+   /**
+    * Alfresco Slingshot aliases
+    */
+   var $html = Alfresco.util.encodeHTML,
+      $combine = Alfresco.util.combinePaths,
+      $encodeHTML = Alfresco.util.encodeHTML;
+
+
+   /**
+    * Notice dashlet constructor.
+    * 
+    * @param {String} htmlId The HTML id of the parent element
+    * @return {Alfresco.dashlet.Notice} The new component instance
+    * @constructor
+    */
+   Alfresco.dashlet.Notice = function Notice_constructor(htmlId)
+   {
+      return Alfresco.dashlet.Notice.superclass.constructor.call(this, "Alfresco.dashlet.Notice", htmlId);
+   };
+
+   /**
+    * Extend from Alfresco.component.Base and add class implementation
+    */
+   YAHOO.extend(Alfresco.dashlet.Notice, Alfresco.component.Base,
+   {
+      /**
+       * Object container for initialization options
+       *
+       * @property options
+       * @type object
+       */
+      options:
+      {
+         /**
+          * The component id.
+          *
+          * @property componentId
+          * @type string
+          */
+         componentId: ""
+      },
+
+      /**
+       * Fired by YUI when parent element is available for scripting
+       * 
+       * @method onReady
+       */
+      onReady: function Notice_onReady()
+      {
+      },
+
+      /**
+       * YUI WIDGET EVENT HANDLERS
+       * Handlers for standard events fired from YUI widgets, e.g. "click"
+       */
+
+      /**
+       * Configuration click handler
+       *
+       * @method onConfigClick
+       * @param e {object} HTML event
+       */
+      onConfigClick: function Notice_onConfigClick(e)
+      {
+         var actionUrl = Alfresco.constants.URL_SERVICECONTEXT + "modules/dashlet/config/" + encodeURIComponent(this.options.componentId);
+         
+         Event.stopEvent(e);
+         
+         if (!this.configDialog)
+         {
+            this.configDialog = new Alfresco.module.SimpleDialog(this.id + "-configDialog").setOptions(
+            {
+               width: "50em",
+               templateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/notice/config", 
+               actionUrl: actionUrl,
+               onSuccess:
+               {
+                  fn: function Notice_onConfigFeed_callback(response)
+                  {
+                     // Refresh the dashlet
+                     var title = Dom.get(this.configDialog.id + "-title").value,
+                        text = Dom.get(this.configDialog.id + "-text").value;
+                     // Write the title and text into the dashlet
+                     Dom.get(this.id + "-title").innerHTML = $encodeHTML(title != "" ? title : this.msg("notice.defaultTitle"));
+                     Dom.get(this.id + "-text").innerHTML = text != "" ? text : "<p>" + this.msg("notice.defaultText") + "</p>";
+                  },
+                  scope: this
+               },
+               doSetupFormsValidation:
+               {
+                  fn: function Notice_doSetupForm_callback(form)
+                  {
+                     Dom.get(this.configDialog.id + "-title").value = this.options.title;
+                     Dom.get(this.configDialog.id + "-text").value = this.options.text;
+                     if (!this.configDialog.editor)
+                     {
+                        this.configDialog.editor = new Alfresco.util.RichEditor("tinyMCE", this.configDialog.id + "-text",
+                        {
+                           height: 150,
+                           width: 404,
+                           inline_styles: false,
+                           convert_fonts_to_spans: false,
+                           theme: 'advanced',
+                           theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,|,link,unlink,anchor,image,code,removeformat,|,forecolor,backcolor",
+                           theme_advanced_toolbar_location: "top",
+                           theme_advanced_toolbar_align: "left",
+                           theme_advanced_statusbar_location: "bottom",
+                           theme_advanced_resizing: true,
+                           theme_advanced_buttons2: null,
+                           theme_advanced_buttons3: null,
+                           theme_advanced_path: false,
+                           language: 'en',
+                           extended_valid_elements: "a[href|target|name],font[face|size|color|style],span[class|align|style],div[class|align|style]"
+                        });
+                        this.configDialog.editor.render();
+                        this.configDialog.editor.subscribe("onKeyUp", this._onTextContentChange, this.configDialog, true);
+                        this.configDialog.editor.subscribe("onChange", this._onTextContentChange, this.configDialog, true);
+                     }
+                  },
+                  scope: this
+               },
+               doBeforeFormSubmit:
+               {
+                  fn: function Notice_doBeforeFormSubmit_callback(form)
+                  {
+                     this.configDialog.editor.save();
+                  },
+                  scope: this
+               }
+            });
+         }
+         else
+         {
+            this.configDialog.setOptions(
+            {
+               actionUrl: actionUrl
+            });
+         }
+         this.configDialog.show();
+      },
+      
+      /**
+       * Handles the content being changed in the TinyMCE control.
+       * 
+       * @method _onTextContentChange
+       * @param type
+       * @param args
+       * @param obj
+       * @private
+       */
+      _onTextContentChange: function Notice__onTextContentChange(type, args, obj)
+      {
+         // save the current contents of the editor to the underlying textarea
+         this.editor.save();
+      }
+      
+   });
+})();

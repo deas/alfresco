@@ -2205,18 +2205,29 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
          }
          this._hiddenOnResize = {};
          
+         var height = parseInt(Dom.getStyle(this.dashlet, "height"), 10) - this.heightDelta;
+         
          Alfresco.util.Ajax.jsonRequest(
          {
             method: "POST",
             url: Alfresco.constants.URL_SERVICECONTEXT + "modules/dashlet/config/" + this.dashletId,
             dataObj:
             {
-               height: parseInt(Dom.getStyle(this.dashlet, "height"), 10) - this.heightDelta
+               height: height
             },
             successCallback: function(){},
             successMessage: null,
             failureCallback: function(){},
             failureMessage: null
+         });
+         
+         // Fire a Bubbling event to notify any listeners on the dashlet, e.g. to refresh maps
+         YAHOO.Bubbling.fire("dashletResizeEnd", {
+            eventGroup: this.dashletId,
+            dashletId: this.dashletId,
+            htmlId: this.id,
+            height: height,
+            heightDelta: this.heightDelta
          });
       }
    };

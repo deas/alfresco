@@ -189,7 +189,16 @@
           * @type int
           * @default 3
           */
-         splitActionsAt: 3
+         splitActionsAt: 3,
+         
+         /**
+          * Width of the modal dialog used to display the edit item form
+          * 
+          * @property editDialogWidth
+          * @type string
+          * @default "34em"
+          */
+         editDialogWidth: "34em"
       },
 
       /**
@@ -1351,7 +1360,7 @@
          var editDetails = new Alfresco.module.SimpleDialog(this.id + "-editDetails");
          editDetails.setOptions(
          {
-            width: "34em",
+            width: this.options.editDialogWidth,
             templateUrl: templateUrl,
             actionUrl: null,
             destroyOnHide: true,

@@ -81,7 +81,16 @@
            * @type string
            * @default ""
            */
-          siteId: ""
+          siteId: "",
+          
+          /**
+           * Width of the modal dialog used to display the new item form
+           * 
+           * @property newItemDialogWidth
+           * @type string
+           * @default "33em"
+           */
+          newItemDialogWidth: "33em"
       },
 
       /**
@@ -161,7 +170,7 @@
 
          createRow.setOptions(
          {
-            width: "33em",
+            width: this.options.newItemDialogWidth,
             templateUrl: templateUrl,
             actionUrl: null,
             destroyOnHide: true,
