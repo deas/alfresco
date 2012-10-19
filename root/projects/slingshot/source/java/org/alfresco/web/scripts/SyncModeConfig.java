@@ -67,7 +67,7 @@ public class SyncModeConfig extends SingletonValueProcessorExtension<String> imp
         final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
         String edition = ((EditionInfo)rc.getValue(EditionInterceptor.EDITION_INFO)).getEdition();
         
-                       // Sync requires Enterprise features. Sync config is missing on other editions, so default to off.
+        // Sync requires Enterprise features. Sync config is missing on other editions, so default to off.
         if (EditionInterceptor.ENTERPRISE_EDITION.equals(edition))
         {
             // initiate a call to retrieve the sync mode from the repository
@@ -88,7 +88,6 @@ public class SyncModeConfig extends SingletonValueProcessorExtension<String> imp
                     {
                         logger.error("Unexpected response from '/enterprise/sync/config' - did not contain expected 'syncMode' value.");
                     }
-
                 }
                 catch (JSONException e)
                 {
