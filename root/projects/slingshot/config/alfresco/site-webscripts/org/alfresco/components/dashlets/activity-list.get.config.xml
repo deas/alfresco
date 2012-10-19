@@ -21,6 +21,10 @@
    <style type="org.alfresco.documentlibrary.files-deleted" css="document" />
    <style type="org.alfresco.documentlibrary.file-updated" css="document" />
    <style type="org.alfresco.documentlibrary.files-updated" css="document" />
+   <style type="org.alfresco.documentlibrary.folder-added" css="document" />
+   <style type="org.alfresco.documentlibrary.folder-deleted" css="document" />
+   <style type="org.alfresco.documentlibrary.folders-added" css="document" />
+   <style type="org.alfresco.documentlibrary.folders-deleted" css="document" />
    <style type="org.alfresco.documentlibrary.google-docs-checkout" css="document" />
    <style type="org.alfresco.documentlibrary.google-docs-checkin" css="document" />
    <style type="org.alfresco.documentlibrary.inline-edit" css="document" />

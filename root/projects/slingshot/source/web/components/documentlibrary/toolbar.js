@@ -604,7 +604,18 @@
             {
                fn: function DLTB_onNewFolder_success(response)
                {
+                  var activityData;
                   var folderName = response.config.dataObj["prop_cm_name"];
+                  var folderNodeRef = response.json.persistedObject;
+                  
+                  activityData =
+                  {
+                     fileName: folderName,
+                     nodeRef: folderNodeRef,
+                     path: this.currentPath + (this.currentPath !== "/" ? "/" : "") + folderName
+                  };
+                  this.modules.actions.postActivity(this.options.siteId, "folder-added", "documentlibrary", activityData);
+                  
                   YAHOO.Bubbling.fire("folderCreated",
                   {
                      name: folderName,
@@ -888,8 +899,9 @@
          var fnSuccess = function DLTB__oADC_success(data, records)
          {
             var result;
-            var successCount = 0;
-
+            var successFileCount = 0;
+            var successFolderCount = 0;
+            
             // Did the operation succeed?
             if (!data.json.overallSuccess)
             {
@@ -899,16 +911,23 @@
                });
                return;
             }
-
+            
             YAHOO.Bubbling.fire("filesDeleted");
-
+            
             for (i = 0, ii = data.json.totalResults; i < ii; i++)
             {
                result = data.json.results[i];
                
                if (result.success)
                {
-                  successCount++;
+                  if (result.type == "folder")
+                  {
+                     successFolderCount++;
+                  }
+                  else
+                  {
+                     successFileCount++;
+                  }
                   
                   YAHOO.Bubbling.fire(result.type == "folder" ? "folderDeleted" : "fileDeleted",
                   {
@@ -917,11 +936,13 @@
                   });
                }
             }
-
+            
             // Activities, in Site mode only
             if (Alfresco.util.isValueSet(this.options.siteId))
             {
                var activityData;
+               var successCount = successFolderCount + successFileCount;
+               
                if (successCount > 0)
                {
                   if (successCount < this.options.groupActivitiesAt)
@@ -935,19 +956,41 @@
                            nodeRef: data.json.results[i].nodeRef,
                            path: this.currentPath
                         };
-                        this.modules.actions.postActivity(this.options.siteId, "file-deleted", "documentlibrary", activityData);
+                        
+                        if (data.json.results[i].type == "folder")
+                        {
+                           this.modules.actions.postActivity(this.options.siteId, "folder-deleted", "documentlibrary", activityData);
+                        }
+                        else
+                        {
+                           this.modules.actions.postActivity(this.options.siteId, "file-deleted", "documentlibrary", activityData);
+                        }
                      }
                   }
                   else
                   {
-                     // grouped into one message
-                     activityData =
+                     if (successFileCount > 0)
                      {
-                        fileCount: successCount,
-                        path: this.currentPath,
-                        parentNodeRef : this.doclistMetadata.parent.nodeRef
-                     };
-                     this.modules.actions.postActivity(this.options.siteId, "files-deleted", "documentlibrary", activityData);
+                        // grouped into one message
+                        activityData =
+                        {
+                           fileCount: successFileCount,
+                           path: this.currentPath,
+                           parentNodeRef : this.doclistMetadata.parent.nodeRef
+                        };
+                        this.modules.actions.postActivity(this.options.siteId, "files-deleted", "documentlibrary", activityData);
+                     }
+                     if (successFolderCount > 0)
+                     {
+                        // grouped into one message
+                        activityData =
+                        {
+                           fileCount: successFolderCount,
+                           path: this.currentPath,
+                           parentNodeRef : this.doclistMetadata.parent.nodeRef
+                        };
+                        this.modules.actions.postActivity(this.options.siteId, "folders-deleted", "documentlibrary", activityData);
+                     }
                   }
                }
             }

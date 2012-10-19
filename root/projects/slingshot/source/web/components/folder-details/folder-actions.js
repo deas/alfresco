@@ -245,6 +245,18 @@
          {
             success:
             {
+               activity:
+               {
+                  siteId: this.options.siteId,
+                  activityType: "folder-deleted",
+                  page: "documentlibrary",
+                  activityData:
+                  {
+                     fileName: fileName,
+                     path: path,
+                     nodeRef: nodeRef.toString()
+                  }
+               },
                callback:
                {
                   fn: function FolderActions_oADC_success(data)
