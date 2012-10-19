@@ -613,7 +613,7 @@
          }
          var dnd = new Alfresco.DnD(imgId, scope);
       },
-      
+
       /**
        * Description/detail custom datacell formatter
        *
@@ -679,7 +679,7 @@
                   {
                      if (jsNode.hasProperty(p_key))
                      {
-                        value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                        value = '<span class="item">' + label + scope.renderProperty(jsNode.properties[p_key]) + '</span>';
                      }
                   }
 
@@ -719,7 +719,7 @@
                      if (jsNode.hasProperty(p_key))
                      {
                         value = '<div class="filename">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record);
-                        value += label + $html(jsNode.properties[p_key]) + '</a></span></div>';
+                        value += label + scope.renderProperty(jsNode.properties[p_key]) + '</a></span></div>';
                      }
                   }
 
@@ -799,7 +799,7 @@
                   {
                      if (jsNode.hasProperty(p_key))
                      {
-                        value = '<span class="item">' + label + $html(jsNode.properties[p_key]) + '</span>';
+                        value = '<span class="item">' + label + scope.renderProperty(jsNode.properties[p_key]) + '</span>';
                      }
                   }
 
@@ -2476,6 +2476,72 @@
                scope.viewRenderers[scope.options.viewRendererName].renderCellActions(scope, elCell, oRecord, oColumn, oData);
             }
          };
+      },
+
+
+      /**
+       * Renders a node property value as best as it can using the rules described below:
+       *
+       * String - As is
+       * boolean - As is
+       * Number -  As is
+       * Object - Will be inspected for the following attributes:
+       * - iso8601: Will format and render date using systems default format
+       * - displayName & username: Will render the displayName as a user profile link
+       * - displayName: Will render the displayName
+       * - title: Will render the title
+       * - name: Will render the name
+       * Array - Number of items in the array
+       *
+       * Note! This method should be used as a last resort when no specific property renderers have been registered
+       * for the property.
+       *
+       * @method renderProperty
+       * @param property
+       * return {String} html escaped string
+       */
+      renderProperty: function(property)
+      {
+         if (YAHOO.lang.isString(property))
+         {
+            return $html(property);
+         }
+         else if (YAHOO.lang.isArray(property))
+         {
+            return property.length;
+         }
+         else if (YAHOO.lang.isBoolean(property))
+         {
+            return property;
+         }
+         else if (YAHOO.lang.isNumber(property))
+         {
+            return property;
+         }
+         else if (YAHOO.lang.isObject(property))
+         {
+            if (property.hasOwnProperty("iso8601"))
+            {
+               return $date(property.iso8601);
+            }
+            else if (property.hasOwnProperty("userName") && property.hasOwnProperty("displayName"))
+            {
+               return Alfresco.util.userProfileLink(property.userName, property.displayName);
+            }
+            else if (property.hasOwnProperty("displayName"))
+            {
+               return $html(property.displayName || "");
+            }
+            else if (property.hasOwnProperty("title"))
+            {
+               return $html(property.title || "");
+            }
+            else if (property.hasOwnProperty("name"))
+            {
+               return $html(property.name || "");
+            }
+         }
+         return "";
       },
 
       /**
