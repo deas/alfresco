@@ -82,6 +82,8 @@ public class AuthenticationUtil implements InitializingBean
     
     public static void setMtEnabled(boolean mtEnabled)
     {
+        if (s_logger.isDebugEnabled())
+            s_logger.debug("MT is enabled: " + mtEnabled);
         AuthenticationUtil.mtEnabled = mtEnabled;
     }
 
@@ -209,10 +211,14 @@ public class AuthenticationUtil implements InitializingBean
         }
         else
         {
+            if (s_logger.isDebugEnabled())
+                s_logger.debug("Setting fully authenticated principal: " + authentication.getName());
             Context context = ContextHolder.getContext();
             AlfrescoSecureContext sc = null;
             if ((context == null) || !(context instanceof AlfrescoSecureContext))
             {
+                if (s_logger.isDebugEnabled())
+                    s_logger.debug("Creating new secure context.");
                 sc = new AlfrescoSecureContextImpl();
                 ContextHolder.setContext(sc);
             }
@@ -281,10 +287,14 @@ public class AuthenticationUtil implements InitializingBean
         }
         else
         {
+            if (s_logger.isDebugEnabled())
+                s_logger.debug("Setting RunAs principal: " + authentication.getName());
             Context context = ContextHolder.getContext();
             AlfrescoSecureContext sc = null;
             if ((context == null) || !(context instanceof AlfrescoSecureContext))
             {
+                if (s_logger.isDebugEnabled())
+                    s_logger.debug("Creating new secure context.");
                 sc = new AlfrescoSecureContextImpl();
                 ContextHolder.setContext(sc);
             }
@@ -295,7 +305,8 @@ public class AuthenticationUtil implements InitializingBean
             authentication.setAuthenticated(true);
             if (sc.getRealAuthentication() == null)
             {
-                // There is no authentication in action
+                if (s_logger.isDebugEnabled())
+                    s_logger.debug("There is no fully authenticated prinipal. Setting fully authenticated principal: " + authentication.getName());
                 sc.setRealAuthentication(authentication);
             }
             sc.setEffectiveAuthentication(authentication);
@@ -468,6 +479,8 @@ public class AuthenticationUtil implements InitializingBean
      */
     public static void clearCurrentSecurityContext()
     {
+        if (s_logger.isDebugEnabled())
+            s_logger.debug("Removing the current security information.");
         ContextHolder.setContext(null);
         InMemoryTicketComponentImpl.clearCurrentSecurityContext();
         

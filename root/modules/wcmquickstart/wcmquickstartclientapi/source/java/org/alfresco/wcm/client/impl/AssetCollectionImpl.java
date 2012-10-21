@@ -19,6 +19,7 @@ package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class AssetCollectionImpl extends ResourceBaseImpl implements AssetCollec
 	@Override
 	public List<Asset> getAssets()
 	{
-		return assets;
+        return Collections.unmodifiableList(assets);
 	}
 
 	public void setAssets(List<Asset> assets)
@@ -110,7 +111,7 @@ public class AssetCollectionImpl extends ResourceBaseImpl implements AssetCollec
 
     public List<String> getAssetIds()
     {
-        return assetIds;
+        return Collections.unmodifiableList(assetIds);
     }
 
     public void setAssetIds(List<String> assetIds)

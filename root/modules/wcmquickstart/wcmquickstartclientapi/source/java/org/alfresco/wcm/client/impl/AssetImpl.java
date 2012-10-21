@@ -22,10 +22,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.wcm.client.Asset;
 import org.alfresco.wcm.client.ContentStream;
@@ -49,15 +52,27 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
 
     private List<String> parentSectionIds = Collections.emptyList();
 
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private Lock writeLock = lock.writeLock();
+    private Lock readLock = lock.readLock();
+
     @SuppressWarnings("unchecked")
     @Override
     public void setProperties(Map<String, Serializable> props)
     {
-        super.setProperties(props);
-        Serializable relations = props.get(RELATIONSHIPS_PROP_NAME);
-        if (relations != null)
+        this.writeLock.lock();
+        try
         {
-            relationships = (Map<String, List<String>>) relations;
+            super.setProperties(props);
+            Serializable relations = props.get(RELATIONSHIPS_PROP_NAME);
+            if (relations != null)
+            {
+                relationships = Collections.unmodifiableMap((Map<String, List<String>>) relations);
+            }
+        }
+        finally
+        {
+            this.writeLock.unlock();
         }
     }
 
@@ -72,21 +87,39 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
          * collection as a query is performed. In mitigation the results are
          * cached within the object.
          */
-        if (relatedAssets == null)
+        this.readLock.lock();
+        try
         {
-            Map<String, List<Asset>> assetMap = new TreeMap<String, List<Asset>>();
-            for (Entry<String, List<String>> entry : getRelationships().entrySet())
+            if (relatedAssets == null)
             {
-                List<String> relatedAssetIds = entry.getValue();
-                if (relatedAssetIds != null)
+                Map<String, List<Asset>> assetMap = new TreeMap<String, List<Asset>>();
+                for (Entry<String, List<String>> entry : getRelationships().entrySet())
                 {
-                    List<Asset> assets = getAssetFactory().getAssetsById(relatedAssetIds);
-                    if (assets.size() > 0)
-                        assetMap.put(entry.getKey(), assets);
+                    List<String> relatedAssetIds = entry.getValue();
+                    if (relatedAssetIds != null)
+                    {
+                        List<Asset> assets = getAssetFactory().getAssetsById(relatedAssetIds);
+                        if (assets.size() > 0)
+                            assetMap.put(entry.getKey(), assets);
+                    }
                 }
+                relatedAssets = Collections.unmodifiableMap(assetMap);
             }
-            relatedAssets = assetMap;
+            return relatedAssets;
         }
+        finally
+        {
+            this.readLock.unlock();
+        }
+    }
+
+    /**
+     * Returns a map of all related assets stored in an Asset.
+     * Unlike getRelatedAssets(), this method can return null if the related assets were not cached within Asset.
+     * @return Map of Assets lists keyed by relationship name.
+     */
+    public Map<String, List<Asset>> getCachedRelatedAssets()
+    {
         return relatedAssets;
     }
 
@@ -96,14 +129,22 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
     @Override
     public List<Asset> getRelatedAssets(String relationshipName)
     {
-        List<String> relatedAssetIds = getRelationships().get(relationshipName);
-        if (relatedAssetIds == null)
+        this.readLock.lock();
+        try
         {
-            return Collections.emptyList();
+            List<String> relatedAssetIds = getRelationships().get(relationshipName);
+            if (relatedAssetIds == null)
+            {
+                return Collections.emptyList();
+            }
+            else
+            {
+                return getAssetFactory().getAssetsById(relatedAssetIds);
+            }
         }
-        else
+        finally  
         {
-            return getAssetFactory().getAssetsById(relatedAssetIds);
+            this.readLock.unlock();
         }
     }
 
@@ -113,13 +154,21 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
     @Override
     public Asset getRelatedAsset(String relationshipName)
     {
-        Asset result = null;
-        List<String> relatedAssetIds = getRelationships().get(relationshipName);
-        if (relatedAssetIds != null && !relatedAssetIds.isEmpty())
+        this.readLock.lock();
+        try
         {
-            result = getAssetFactory().getAssetById(relatedAssetIds.get(0));
+            Asset result = null;
+            List<String> relatedAssetIds = getRelationships().get(relationshipName);
+            if (relatedAssetIds != null && !relatedAssetIds.isEmpty())
+            {
+                result = getAssetFactory().getAssetById(relatedAssetIds.get(0));
+            }
+            return result;
         }
-        return result;
+        finally
+        {
+            this.readLock.unlock();
+        }
     }
 
     /**
@@ -130,17 +179,25 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
      */
     public void setParentSectionIds(Collection<String> sectionIds)
     {
-        if (sectionIds != null)
+        this.writeLock.lock();
+        try
         {
-            this.parentSectionIds = new ArrayList<String>(sectionIds);
-            if (!sectionIds.isEmpty())
+            if (sectionIds != null)
             {
-                setPrimarySectionId(parentSectionIds.get(0));
+                this.parentSectionIds = Collections.unmodifiableList(new LinkedList<String>(sectionIds));
+                if (!sectionIds.isEmpty())
+                {
+                    setPrimarySectionId(parentSectionIds.get(0));
+                }
+            }
+            else
+            {
+                parentSectionIds = Collections.emptyList();
             }
         }
-        else
+        finally
         {
-            parentSectionIds = new ArrayList<String>();
+            this.writeLock.unlock();
         }
     }
 
@@ -208,16 +265,42 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
 
     private Map<String, List<String>> getRelationships()
     {
-        if (relationships == null)
+        this.readLock.lock();
+        try
         {
-            relationships = getAssetFactory().getSourceRelationships(getId());
+            if (relationships == null)
+            {
+                this.readLock.unlock();
+                this.writeLock.lock();
+                try
+                {
+                    if (relationships == null)
+                    {
+                        relationships = getAssetFactory().getSourceRelationships(getId());
+                        if (relationships != null)
+                        {
+                            relationships = Collections.unmodifiableMap(relationships);
+                        }
+                    }
+                }
+                finally
+                {
+                    this.readLock.lock();
+                    this.writeLock.unlock();
+                }
+            }
+            return relationships;
         }
-        return relationships;
+        finally
+        {
+            this.readLock.unlock();
+        }
     }
 
     @Override
     public Map<String, Rendition> getRenditions()
     {
+        // Already returns unmodifiable map
         return getAssetFactory().getRenditions(getId());
     }
 }

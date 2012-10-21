@@ -19,6 +19,7 @@ package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -66,6 +67,7 @@ public abstract class ResourceBaseImpl implements Resource
 	    id = (String)properties.get(PropertyIds.OBJECT_ID);
 	    typeId = (String)properties.get(PropertyIds.OBJECT_TYPE_ID);
 	    name = (String)properties.get(PropertyIds.NAME);
+	    properties = Collections.unmodifiableMap(properties);
 	}
 	
     /**
@@ -101,7 +103,7 @@ public abstract class ResourceBaseImpl implements Resource
     @Override
     public String getType()
     {
-        return (String)getProperties().get(PropertyIds.OBJECT_TYPE_ID);
+        return (String)properties.get(PropertyIds.OBJECT_TYPE_ID);
     }
     
 	/**

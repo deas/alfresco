@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -77,7 +78,7 @@ public class SectionImpl extends ResourceBaseImpl implements Section
     @Override
     public List<Section> getSections()
     {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     /**
@@ -106,7 +107,7 @@ public class SectionImpl extends ResourceBaseImpl implements Section
     @Override
     public List<Tag> getTags()
     {
-        return tags;
+        return Collections.unmodifiableList(tags);
     }
 
     /**
@@ -124,7 +125,7 @@ public class SectionImpl extends ResourceBaseImpl implements Section
      */
     public Map<String, String> getTemplateMappings()
     {
-        return configMap;
+        return Collections.unmodifiableMap(configMap);
     }
 
     @Override
