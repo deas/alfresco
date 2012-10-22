@@ -345,11 +345,10 @@
        */
       getContentUrl: function WP_getContentUrl(download)
       {
-         var proxy = Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
-            nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
+         var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime();
          download = download ? "a=true" : "a=false";
-         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/" + this.options.name + "?c=force&" + noCache + "&" + download
+         return Alfresco.constants.PROXY_URI + this.options.api + "/node/" + nodeRefAsLink + "/content/" + this.options.name + "?c=force&" + noCache + "&" + download
       },
 
       /**
@@ -363,8 +362,7 @@
        */
       getThumbnailUrl: function WP_getThumbnailUrl(thumbnail, fileSuffix)
       {
-         var proxy = Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
-            nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
+         var nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime(),
             force = "c=force";
          
@@ -377,7 +375,7 @@
                break;
             }
          }
-         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + force + "&" + noCache
+         return Alfresco.constants.PROXY_URI + this.options.api + "/node/" + nodeRefAsLink + "/content/thumbnails/" + thumbnail + (fileSuffix ? "/suffix" + fileSuffix : "") + "?" + force + "&" + noCache
       },
 
       /**
