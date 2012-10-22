@@ -105,7 +105,7 @@
         | NOTE: This goal assumes the artifacts have already been built at an earlier stage. Use maven-build-deploy to build and deploy at once.
         | See beginning of this file for full usage instructions. 
         -->
-    <target name="maven-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-env-prerequisites, maven-deploy-webclient, maven-deploy-slingshot, maven-deploy-solr, maven-deploy-amps, maven-deploy-extras" /> 
+    <target name="maven-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-env-prerequisites, maven-deploy-webclient, maven-deploy-slingshot, maven-deploy-solr, maven-deploy-amps, maven-deploy-extras, maven-deploy-platform-distribution-pom" /> 
 
     <target name="maven-deploy-webclient" description="Deploys Alfresco Explorer related JARs/WARs to a Maven repository" depends="maven-deploy-webclient-jars, maven-deploy-webclient-webapp" />
 
