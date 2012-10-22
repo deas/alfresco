@@ -42,6 +42,7 @@
       <@region id="flash-upload" scope="template" />
       <@region id="file-upload" scope="template" />
       <@region id="dnd-upload" scope="template" />
+      <@region id="archive-and-download" scope="template"/>
    </div>
    <@region id="doclib-custom" scope="template"/>
    </@>
