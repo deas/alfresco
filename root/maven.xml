@@ -57,12 +57,15 @@
     </target>
 	
     <!-- Aggregator target putting together all configs/tasks needed for maven-deploy. Fails if build number is unset, requires continous.xml -->
-    <target name="maven-env-prerequisites" depends="fail-if-build-number-is-unset">
+    <target name="maven-env-prerequisites" depends="fail-if-build-number-is-unset,configure-snapshot-deployment,configure-release-deployment">
 	    <!-- Defining the maven ant tasks at runtime -->
-        <path id="maven-ant-tasks.classpath" path="${dir.project.3rdparty.lib}/maven-ant-tasks-2.1.3.jar" />
+        <path id="maven-ant-tasks.classpath" path="${dir.project.3rdparty.lib}/devenv/maven-ant-tasks-2.1.3.jar" />
         <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
         <!-- Configuring the settings location -->
         <property name="maven.settings.file" value="${dir.name.binaries}/build-classpath/settings.xml"/>
+    	<!-- Configuring the platform distribution pom location -->
+    	<property name="dir.project.sdk.maven.platform" value="${dir.project.sdk}/alfresco-platform-distribution"/>
+    	<property name="maven.platform.pom.file" value="${dir.project.sdk.maven.platform}/pom.xml"/>
         <condition property="maven.isRelease">
             <istrue value="${env.bamboo_deploy_as_release}"/>
         </condition>
@@ -102,7 +105,7 @@
         | NOTE: This goal assumes the artifacts have already been built at an earlier stage. Use maven-build-deploy to build and deploy at once.
         | See beginning of this file for full usage instructions. 
         -->
-    <target name="maven-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-env-prerequisites,configure-snapshot-deployment, configure-release-deployment, maven-deploy-webclient, maven-deploy-slingshot, maven-deploy-solr, maven-deploy-amps, maven-deploy-extras" /> 
+    <target name="maven-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-env-prerequisites, maven-deploy-webclient, maven-deploy-slingshot, maven-deploy-solr, maven-deploy-amps, maven-deploy-extras" /> 
 
     <target name="maven-deploy-webclient" description="Deploys Alfresco Explorer related JARs/WARs to a Maven repository" depends="maven-deploy-webclient-jars, maven-deploy-webclient-webapp" />
 
@@ -302,6 +305,18 @@
     <target name="maven-deploy-solr-webapp" description="Deploys Solr related webapp to a Maven Repository">
         <mvndeploy file="${dir.continuous.dist}/${file.name.dist.solr}.zip"
             artifactId="alfresco-solr" />
+    </target>
+
+    <target name="maven-deploy-platform-distribution-pom" description="Deploys Alfresco Platform distribution POM after replacing appropriate tokens" depends="maven-env-prerequisites">
+        <delete dir="${dir.project.sdk.maven.platform}/${dir.name.build}" failonerror="false"/>
+        <mkdir dir="${dir.project.sdk.maven.platform}/${dir.name.build}"/>
+        <copy todir="${dir.project.sdk.maven.platform}/${dir.name.build}" file="${dir.project.sdk.maven.platform}/pom.xml"/>
+        <replace file="${dir.project.sdk.maven.platform}/${dir.name.build}/pom.xml">
+            <replacefilter  token="@@maven.group.id@@" value="${maven.group.id}"/>
+            <replacefilter  token="@@maven.version.number@@" value="${maven.version.number}"/>
+        </replace>
+        <mvndeploy artifactId="alfresco-platform-distribution"
+            file="${dir.project.sdk.maven.platform}/${dir.name.build}/pom.xml" />        
     </target>
 
     <!-- DEPLOYMENT MACROS -->

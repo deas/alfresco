@@ -40,3 +40,19 @@ Getting Started
 Please refer to Alfresco's on-line SDK documentation located at:
 
 http://wiki.alfresco.com/wiki/Alfresco_SDK
+
+
+==================
+Alfresco Maven SDK
+==================
+A Maven based SDK is maintained by the Community at
+
+http://wiki.alfresco.com/wiki/Maven_Alfresco_SDK 
+
+This SDK leverages the officially supported Alfresco Artifacts Repository at
+
+https://artifacts.alfresco.com
+
+For more documentation on the repository and Enterprise access refer to
+
+http://wiki.alfresco.com/wiki/Alfresco_Artifacts_Repository
