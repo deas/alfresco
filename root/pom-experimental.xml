@@ -1,12 +1,16 @@
-<!-- ****************************************************** -->
-<!-- ** Experimental Maven build - use at your own risk! ** -->
-<!-- ****************************************************** -->
-
-<!-- 
-    |  Prerequisites:
-    | - Either run with -Dmaven.test.skip=true or a PostgreSQL instance should be running 
-    | - export MAVEN_OPTS="-Xmx1G -Xms1G -XX:MaxPermSize=256m"
-    -->
+<!-- ********************************************************* -->
+<!-- **              Alfresco Parent POM                    ** -->
+<!-- **                                                     ** -->
+<!-- ** This Maven build is NOT usable to build Alfresco,   ** -->
+<!-- ** you should use the standard Ant build for that.     ** -->
+<!-- ** This POM is instead used to produce POMs to develop ** -->
+<!-- ** against Alfresco with Maven. POMs, dependencies and ** -->
+<!-- ** projects information are up to date and released    ** -->
+<!-- ** together with the official Alfresco artifacts at    ** -->
+<!---**          https://artifacts.alfresco.com.            ** -->  
+<!---** Fox the SDK and Maven project samples check         ** -->
+<!---** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
+<!-- ********************************************************* -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
