@@ -152,4 +152,7 @@ if (!user.isGuest)
 {
    main();
 }
-
+else
+{
+   getTwisterPrefs();
+}
