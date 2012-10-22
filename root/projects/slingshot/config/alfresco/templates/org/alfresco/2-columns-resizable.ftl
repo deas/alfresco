@@ -18,6 +18,7 @@
       <@region id="header" scope="global"/>
       <@region id="title" scope="page"/>
    </div>
+   </@>
    <@markup id="bd">
    <div id="bd">
       <div class="yui-t1">
