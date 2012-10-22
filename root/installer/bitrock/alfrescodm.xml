@@ -328,7 +328,7 @@
             <substitutionList>
                 <substitution>
                     <pattern>&lt;Context&gt;</pattern>
-                    <value>&lt;Context useHttpOnly="false"&gt;
+                    <value>&lt;Context&gt;
 &lt;Valve className="org.apache.catalina.authenticator.SSLAuthenticator" securePagesWithPragma="false" /&gt;
 </value>
                 </substitution>
