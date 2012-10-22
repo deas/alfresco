@@ -20,6 +20,7 @@
          <@region id="data-actions" scope="page" />
       </div>
    </div>
+   </@>
 </@>
 
 <@templateFooter>
