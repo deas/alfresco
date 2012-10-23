@@ -198,7 +198,16 @@
           * @type string
           * @default "34em"
           */
-         editDialogWidth: "34em"
+         editDialogWidth: "34em",
+         
+         /**
+          * Width of the actions column, in pixels
+          * 
+          * @property editDialogWidth
+          * @type int
+          * @default 80
+          */
+         actionsColumnWidth: 80
       },
 
       /**
@@ -916,7 +925,7 @@
 
          // Add actions as last column
          columnDefinitions.push(
-            { key: "actions", label: this.msg("label.column.actions"), sortable: false, formatter: this.fnRenderCellActions(), width: 80 }
+            { key: "actions", label: this.msg("label.column.actions"), sortable: false, formatter: this.fnRenderCellActions(), width: parseInt(this.options.actionsColumnWidth, 10) }
          );
 
          // DataTable definition
