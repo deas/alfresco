@@ -20,7 +20,7 @@ div.my-sites .yui-dt-data tr.yui-dt-even,
 div.my-sites .yui-dt-data tr.yui-dt-odd,
 div.my-sites .yui-dt-data tr.yui-dt-highlighted
 {
-   background-color: #ffffff;
+   background-color: transparent;
    cursor: default;
 }
 
