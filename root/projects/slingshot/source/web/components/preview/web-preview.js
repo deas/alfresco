@@ -356,7 +356,7 @@
        */
       getContentUrl: function WP_getContentUrl(download)
       {
-         var proxy = Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
+         var proxy = window.location.protocol + "//" + window.location.host + Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
             nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime();
          download = download ? "a=true" : "a=false";
@@ -374,7 +374,7 @@
        */
       getThumbnailUrl: function WP_getThumbnailUrl(thumbnail, fileSuffix)
       {
-         var proxy = Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
+         var proxy = window.location.protocol + "//" + window.location.host + Alfresco.constants.URL_CONTEXT + "proxy/" + this.options.proxy + "/",
             nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime(),
             force = "c=force";
