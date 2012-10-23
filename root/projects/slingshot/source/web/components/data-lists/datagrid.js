@@ -60,6 +60,7 @@
       this.currentPage = 1;
       this.totalRecords = 0;
       this.showingMoreActions = false;
+      this.hideMoreActionsFn = null;
       this.currentFilter =
       {
          filterId: "all",
@@ -252,6 +253,15 @@
        * @default null
        */
       currentActionsMenu: null,
+
+      /**
+       * "More Actions" pop-up handler
+       *
+       * @property hideMoreActionsFn
+       * @type function
+       * @default null
+       */
+      hideMoreActionsFn: null,
 
       /**
        * Whether "More Actions" pop-up is currently visible.
@@ -1193,10 +1203,38 @@
          // Don't hide unless the More Actions drop-down is showing, or a dialog mask is present
          if (!this.showingMoreActions || Dom.hasClass(document.body, "masked"))
          {
+            if (this.hideMoreActionsFn)
+            {
+               this.hideMoreActionsFn.call(this);
+            }
             // Just hide the action links, rather than removing them from the DOM
             Dom.addClass(elActions, "hidden");
             this.deferredActionsMenu = null;
          }
+      },
+
+      /**
+       * Show more actions pop-up.
+       *
+       * @method onActionShowMore
+       * @param record {object} Object literal representing DL item to be actioned
+       * @param elMore {element} DOM Element of "More Actions" link
+       */
+      onActionShowMore: function DataGrid_onActionShowMore(record, elMore)
+      {
+         // Fix "More Actions" hover style
+         Dom.addClass(elMore.firstChild, "highlighted");
+
+         // Get the pop-up div, sibling of the "More Actions" link
+         var elMoreActions = Dom.getNextSibling(elMore);
+         Dom.removeClass(elMoreActions, "hidden");
+         this.hideMoreActionsFn = function DL_oASM_fnHidePopup()
+         {
+            this.hideMoreActionsFn = null;
+            
+            Dom.removeClass(elMore.firstChild, "highlighted");
+            Dom.addClass(elMoreActions, "hidden");
+         };
       },
 
       /**
