@@ -35,6 +35,7 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
+import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Default implementation of web authentication. Delegates to a authentication handler in the core alfresco
@@ -53,7 +54,7 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
 
     public boolean isRequestValidForCurrentUser(HttpServletRequest request, String alfrescoContext)
     {
-        String uri = request.getRequestURI();
+        String uri = URLDecoder.decode(request.getRequestURI());
 
         if (request.getMethod().equalsIgnoreCase("OPTIONS"))
             return true;

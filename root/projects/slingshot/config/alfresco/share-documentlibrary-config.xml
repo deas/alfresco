@@ -524,6 +524,7 @@
             </permissions>
             <evaluator>evaluator.doclib.action.upload</evaluator>
             <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Inline edit -->
@@ -534,7 +535,8 @@
             </permissions>
             <!-- aspect check (app:inlineeditable), mimetype check (text/plain, text/html, text/xml) -->
             <evaluator>evaluator.doclib.action.inlineEdit</evaluator>
-            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator> 
+            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Edit online -->
@@ -546,6 +548,7 @@
             <!-- vti module check, mimetype check, userAgent check -->
             <evaluator>evaluator.doclib.action.onlineEdit</evaluator>
             <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Edit offline -->

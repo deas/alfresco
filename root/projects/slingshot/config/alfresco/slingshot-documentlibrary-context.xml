@@ -221,6 +221,7 @@
             <value>text/plain</value>
             <value>text/html</value>
             <value>text/xml</value>
+            <value>application/x-javascript</value>
          </list>
       </property>
    </bean>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,38 +18,23 @@
  */
 package org.alfresco.repo.web.scripts.dictionary;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.namespace.QName;
-import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
- * 
  * Webscript to get the Propertydefinitions for a given classname eg. =>cm_person
  * 
- * @author Saravanan Sellathurai
+ * @author Saravanan Sellathurai, Viachaslau Tsikhanovich
  */
 
-public class PropertiesGet extends DictionaryWebServiceBase
+public class PropertiesGet extends AbstractPropertiesGet
 {
-	private static final String MODEL_PROP_KEY_PROPERTY_DETAILS = "propertydefs";
-	private static final String DICTIONARY_CLASS_NAME = "classname";
-	private static final String PARAM_NAME = "name";
-	private static final String REQ_URL_TEMPL_VAR_NAMESPACE_PREFIX = "nsp";
+    private static final String DICTIONARY_CLASS_NAME = "classname";
 	
-	/**
-     * @Override  method from DeclarativeWebScript 
-     */
-    protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache)
+    @Override
+    protected QName getClassQName(WebScriptRequest req)
     {
         QName classQName = null;
         String className = req.getServiceMatch().getTemplateVars().get(DICTIONARY_CLASS_NAME);
@@ -62,71 +47,7 @@ public class PropertiesGet extends DictionaryWebServiceBase
                 throw new WebScriptException(Status.STATUS_NOT_FOUND, "Check the className - " + className + " - parameter in the URL");
             }
         }
-        
-        String[] names = req.getParameterValues(PARAM_NAME);
-        
-        String namespacePrefix = req.getParameter(REQ_URL_TEMPL_VAR_NAMESPACE_PREFIX);        
-        String namespaceURI = null;
-        if (namespacePrefix != null)
-        {
-            namespaceURI = this.namespaceService.getNamespaceURI(namespacePrefix);
-        }
-        
-        Map<QName, PropertyDefinition> propMap = null;
-        if (classQName == null)
-        {
-            if (names != null)
-            {
-                propMap = new HashMap<QName, PropertyDefinition>(names.length);
-                for (String name : names)
-                {
-                    QName propQName = QName.createQName(name, namespaceService);
-                    PropertyDefinition propDef = dictionaryservice.getProperty(propQName);
-                    if (propDef != null)
-                    {
-                        propMap.put(propQName, propDef);
-                    }
-                }
-            }
-            else
-            {
-                Collection<QName> propQNames = dictionaryservice.getAllProperties(null);
-                propMap = new HashMap<QName, PropertyDefinition>(propQNames.size());
-                for (QName propQName : propQNames)
-                {
-                    propMap.put(propQName, dictionaryservice.getProperty(propQName));
-                }
-            }
-            
-        }
-        else
-        {
-            // Get all the property definitions for the class
-            propMap = dictionaryservice.getClass(classQName).getProperties();            
-        }
-        
-        // Filter the properties by URI
-        List<PropertyDefinition> props = new ArrayList<PropertyDefinition>(propMap.size());
-        for (Map.Entry<QName, PropertyDefinition> entry : propMap.entrySet())
-        {
-            if ((namespaceURI != null && 
-                 namespaceURI.equals(entry.getKey().getNamespaceURI()) == true) ||
-                namespaceURI == null)
-            {
-                props.add(entry.getValue());   
-            }
-        }
-        
-        // Order property definitions by title
-        Collections.sort(props, new DictionaryComparators.PropertyDefinitionComparator());
-        
-        // Pass list of property definitions to template
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put(MODEL_PROP_KEY_PROPERTY_DETAILS, props);
-        return model;
-         
+        return classQName;
     }
-    
-    
-   
+            
 }

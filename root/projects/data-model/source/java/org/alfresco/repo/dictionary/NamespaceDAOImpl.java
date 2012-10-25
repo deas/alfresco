@@ -154,34 +154,6 @@ public class NamespaceDAOImpl implements NamespaceDAO
         }
     }
     
-    /**
-     * Resets the namespaces (by re-initialising the dictionary)
-     */
-    private NamespaceRegistry reset(String tenantDomain)
-    {
-        if (dictionaryDAO == null)
-        {
-            // Unexpected
-            throw new AlfrescoRuntimeException("Dictionary should be registered in order to perform reset");
-        }
-        
-        if (logger.isTraceEnabled()) 
-        {
-            logger.trace("Resetting namespaces ...");
-        }
-        
-        dictionaryDAO.init();
-        
-        NamespaceRegistry namespaceRegistry = getNamespaceRegistry(tenantDomain);
-        
-        if (logger.isTraceEnabled()) 
-        {
-            logger.trace("... resetting namespaces completed");
-        }
-        
-        return namespaceRegistry;
-    }
-    
     private NamespaceRegistry initNamespaceRegistry(String tenantDomain)
     {
         // create threadlocal, if needed
@@ -412,32 +384,43 @@ public class NamespaceDAOImpl implements NamespaceDAO
             return namespaceRegistry; // return local namespaceRegistry
         }
         
+        // Ensure the dictionary registry has been initialized for this tenant (does nothing if already initialized)
+        String currentUserDomain = tenantService.getCurrentUserDomain();
+        if (currentUserDomain.equals(tenantDomain))
+        {
+            dictionaryDAO.init();
+        }
+        else
+        {
+            AuthenticationUtil.runAs(new RunAsWork<Void>()
+            {
+                @Override
+                public Void doWork() throws Exception
+                {
+                    dictionaryDAO.init();
+                    return null;
+                }
+            }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
+        }
+        
         try
         {
             // check cache second - return if set
             readLock.lock();
             namespaceRegistry = namespaceRegistryCache.get(tenantDomain);
             
-            if (namespaceRegistry != null)
-            {
-                return namespaceRegistry; // return cached config
-            }
         }
         finally
         {
             readLock.unlock();
         }
-        
-        // reset caches - may have been invalidated (e.g. in a cluster)
-        namespaceRegistry = reset(tenantDomain);
-        
+
         if (namespaceRegistry == null)
-        {     
-            // unexpected
-            throw new AlfrescoRuntimeException("Failed to get namespaceRegistry " + tenantDomain);
+        {
+            throw new IllegalStateException("dictionaryDAO.init() called, yet no namespace registry for domain " + tenantDomain);
         }
-        
-        return namespaceRegistry;
+
+        return namespaceRegistry; // return cached config
     }
     
     // create threadlocal

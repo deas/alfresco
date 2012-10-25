@@ -19,8 +19,6 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.net.URLDecoder;
-
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -32,6 +30,7 @@ import org.dom4j.Element;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
+import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Class for handling CheckIn soap method
@@ -87,7 +86,7 @@ public class CheckInFileEndpoint extends AbstractEndpoint
            throw new VtiSoapException("pageUrl must be supplied", 0x82000001l);
         }
         
-        String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
+        String docPath = URLDecoder.decode(docE.getTextTrim());
         if(docPath.indexOf(host) == -1 || docPath.indexOf(context) == -1)
         {
            throw new VtiSoapException("Invalid URI: The format of the URI could not be determined", -1);

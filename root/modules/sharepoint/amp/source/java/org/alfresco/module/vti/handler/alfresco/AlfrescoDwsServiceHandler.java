@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.DwsException;
 import org.alfresco.module.vti.handler.VtiHandlerException;
@@ -55,6 +56,7 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -215,7 +217,33 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             String doc = req.getParameter("doc");
             if (doc != null)
             {
-                redirectTo = redirectTo + "?nodeRef=" + doc;
+                final String[] docParts = doc.split("/");
+                final String docSiteName = docParts[1];
+
+                String docNodeRefID = AuthenticationUtil.runAs(new RunAsWork<String>()
+                {
+                    public String doWork() throws Exception
+                    {
+                        SiteInfo siteInfo = siteService.getSite(docSiteName);
+                        List<String> docPathElements = new ArrayList<String>();
+                        for (int i = 2; i < docParts.length; i++)
+                        {
+                            docPathElements.add(docParts[i]);
+                        }
+                        String nodeRefID = null;
+                        try
+                        {
+                            nodeRefID = fileFolderService.resolveNamePath(siteInfo.getNodeRef(), docPathElements).getNodeRef().getId();
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            throw new AlfrescoRuntimeException("Cannot find file for extract node information", e);
+                        }
+                        return nodeRefID;
+                    }
+                }, authenticationComponent.getSystemUserName());
+
+                redirectTo = redirectTo + "?nodeRef=workspace://SpacesStore/" + docNodeRefID;
             }
             if (logger.isDebugEnabled())
                 logger.debug("Redirection URI: " + redirectTo);
@@ -277,12 +305,20 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     /**
      * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doGetDwsLinks(org.alfresco.service.cmr.model.FileInfo)
      */
-    public List<LinkBean> doGetDwsLinks(FileInfo fileInfo)
+    public List<LinkBean> doGetDwsLinks(final FileInfo fileInfo)
     { 
         
         if (!siteService.hasContainer(fileInfo.getName(), "links"))
         {            
-            siteService.createContainer(fileInfo.getName(), "links", ContentModel.TYPE_FOLDER, null);            
+            AuthenticationUtil.runAs(new RunAsWork<Object>()
+            {
+                public Object doWork() throws Exception
+                {
+                    siteService.createContainer(fileInfo.getName(), "links", ContentModel.TYPE_FOLDER, null);            
+                    return null;
+                }
+            }, authenticationComponent.getSystemUserName());
+
         }
         
         List<LinkBean> linkList = new ArrayList<LinkBean>();

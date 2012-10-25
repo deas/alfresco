@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,13 +18,6 @@
  */
 package org.alfresco.repo.web.scripts.dictionary;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.alfresco.service.cmr.dictionary.AssociationDefinition;
-import org.alfresco.service.cmr.dictionary.ClassDefinition;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.namespace.QName;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
@@ -32,48 +25,26 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
  * Webscript to get the Classdefinitions for a classname eg. =>cm_author
- * @author Saravanan Sellathurai
+ * @author Saravanan Sellathurai, Viachaslau Tsikhanovich
  */
 
-public class ClassGet extends DictionaryWebServiceBase
+public class ClassGet extends AbstractClassGet
 {	
-	private static final String MODEL_PROP_KEY_CLASS_DETAILS = "classdefs";
-	private static final String MODEL_PROP_KEY_PROPERTY_DETAILS = "propertydefs";
-	private static final String MODEL_PROP_KEY_ASSOCIATION_DETAILS = "assocdefs";
-	private static final String DICTIONARY_CLASS_NAME = "className";
+    private static final String DICTIONARY_CLASS_NAME = "className";
     
     /**
-     * @Override  method from DeclarativeWebScript 
+     * @Override method from AbstractClassGet
      */
-    protected Map<String, Object> executeImpl(WebScriptRequest req, Status status)
+    @Override
+    protected QName getClassQname(WebScriptRequest req)
     {
         String className = req.getServiceMatch().getTemplateVars().get(DICTIONARY_CLASS_NAME);
-        
-        Map<String, Object> model = new HashMap<String, Object>(3);
-        QName classQname = null;
-        Map<QName, ClassDefinition> classdef = new HashMap<QName, ClassDefinition>();
-        Map<QName, Collection<PropertyDefinition>> propdef = new HashMap<QName, Collection<PropertyDefinition>>();
-        Map<QName, Collection<AssociationDefinition>> assocdef = new HashMap<QName, Collection<AssociationDefinition>>();
-        
         //validate the classname and throw appropriate error message
-        if(isValidClassname(className) == true)
+        if (isValidClassname(className) == false)
         {
-        	classQname = QName.createQName(getFullNamespaceURI(className));
-        	classdef.put(classQname, this.dictionaryservice.getClass(classQname));
-        	propdef.put(classQname, this.dictionaryservice.getClass(classQname).getProperties().values());
-    		assocdef.put(classQname, this.dictionaryservice.getClass(classQname).getAssociations().values());
+            throw new WebScriptException(Status.STATUS_NOT_FOUND, "Check the classname - " + className + " - parameter in the URL");
         }
-        else
-        {
-        	throw new WebScriptException(Status.STATUS_NOT_FOUND, "Check the classname - " + className + " - parameter in the URL");
-        }
-        
-        model.put(MODEL_PROP_KEY_CLASS_DETAILS, classdef.values());
-        model.put(MODEL_PROP_KEY_PROPERTY_DETAILS, propdef.values());
-        model.put(MODEL_PROP_KEY_ASSOCIATION_DETAILS, assocdef.values());
-        
-        return model;
-         
+        return QName.createQName(getFullNamespaceURI(className));
     }
     
 }

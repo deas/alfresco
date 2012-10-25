@@ -427,23 +427,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             }            
         }
         
-        String role = siteService.getMembersRole(serviceName, getAuthenticationService().getCurrentUserName());
-        if (role.equals(SiteModel.SITE_CONSUMER))
-        {
-            throw new VtiHandlerException(VtiHandlerException.OWSSVR_ERRORACCESSDENIED);
-        }
-
         FileInfo fileFileInfo = getPathHelper().resolvePathFileInfo(serviceName + "/" + documentName);
         AlfrescoMethodHandler.assertValidFileInfo(fileFileInfo);
         AlfrescoMethodHandler.assertFile(fileFileInfo);
 
-        String author = (String) getNodeService().getProperty(fileFileInfo.getNodeRef(), ContentModel.PROP_CREATOR);
-
-        if (role.equals(SiteModel.SITE_CONTRIBUTOR) && !author.equals(getAuthenticationService().getCurrentUserName()))
-        {
-            throw new VtiHandlerException(VtiHandlerException.OWSSVR_ERRORACCESSDENIED);
-        }
-        
         FileInfo documentFileInfo = fileFileInfo;
 
         if (getOptionSet.contains(GetOption.none))
@@ -460,7 +447,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                 }
                 catch (AccessDeniedException e)
                 {
-                    throw e;
+                	 throw new VtiHandlerException(VtiHandlerException.OWSSVR_ERRORACCESSDENIED, e);
                 }
                 catch (RuntimeException e)
                 {
@@ -482,12 +469,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             }
             catch (AccessDeniedException e)
             {
-                // open document in read-only mode without cheking out (in case if user open content of other user)
-                Document document = new Document();
-                document.setPath(documentName);
-                ContentReader contentReader = getFileFolderService().getReader(documentFileInfo.getNodeRef());
-                document.setInputStream(contentReader.getContentInputStream());
-                return document;
+            	 throw new VtiHandlerException(VtiHandlerException.OWSSVR_ERRORACCESSDENIED, e);
             }
         }
 

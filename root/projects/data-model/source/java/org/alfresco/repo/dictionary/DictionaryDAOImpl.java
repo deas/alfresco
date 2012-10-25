@@ -138,7 +138,8 @@ public class DictionaryDAOImpl implements DictionaryDAO
      */
     public void init()
     {
-        initDictionary(tenantService.getCurrentUserDomain());
+        // Only init if we don't already have a registry for this domain. Use reset to reinit.
+        getDictionaryRegistry(tenantService.getCurrentUserDomain());
     }
     
     /**
@@ -1037,13 +1038,30 @@ public class DictionaryDAOImpl implements DictionaryDAO
             readLock.unlock();
         }
         
-        if (logger.isTraceEnabled())
+        try
         {
-            logger.trace("getDictionaryRegistry: not in cache (or threadlocal) - re-init ["+Thread.currentThread().getId()+"]"+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
+            // Double check cache with write lock
+            writeLock.lock();
+            dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
+            
+            if (dictionaryRegistry != null)
+            {
+                return dictionaryRegistry; // return cached config
+            }
+
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("getDictionaryRegistry: not in cache (or threadlocal) - re-init ["+Thread.currentThread().getId()+"]"+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
+            }
+            
+            // reset caches - may have been invalidated (e.g. in a cluster)
+            dictionaryRegistry = initDictionary(tenantDomain);
         }
-        
-        // reset caches - may have been invalidated (e.g. in a cluster)
-        dictionaryRegistry = initDictionary(tenantDomain);
+        finally
+        {
+            writeLock.unlock();
+        }
+
         
         if (dictionaryRegistry == null)
         {     
