@@ -1,6 +1,5 @@
 <@markup id="css" >
    <#-- No CSS Dependencies -->
-   <@link href="" group=""/>
 </@>
 
 <@markup id="js">

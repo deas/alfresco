@@ -19,6 +19,10 @@ function main()
    {
       dataLoader.options.failureMessageKey = args.failureMessageKey;
    }
+   if (args.eventName != null)
+   {
+      dataLoader.options.eventName = args.eventName;
+   }
    model.widgets = [dataLoader];
 }
 
