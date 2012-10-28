@@ -432,55 +432,79 @@ public class LeafScorer extends Scorer
             Arrays.sort(parents);
 
             position = 0;
-            self = new int[10000];
+            self = null;
             ordered = new ArrayList<String>(selfIds.size());
             ordered.addAll(selfIds.keySet());
             Collections.sort(ordered);
-            reader.termDocs(new Term("ISNODE", "T"));
             TermDocs leafTp = null;
             for (String id : ordered)
             {
-                // tp.seek(new Term("ID", id));
-                TermPositions tp = reader.termPositions(new Term("ID", id));
-                while (tp.next())
+                boolean found = false;
+                
+                // Optimization: jump straight to leaves using leafid. Can't use this if level0 or using self axis
+                if (level0 == null && !sfps[sfps.length - 1].linkSelf())
                 {
-                    int target = tp.doc();
-                    // should order and then check leafyness after
-                    if(leafTp == null)
+                    TermDocs td = reader.termDocs(new Term("LEAFID", id));
+                    while (td.next())
                     {
-                        leafTp = reader.termDocs(new Term("ISNODE", "T"));
+                        found = true;
+                        allNodesCandiates.set(td.doc());
                     }
-                    else
+                    td.close();
+                }
+
+                // General case plus fallback for indexes without LEAFID
+                if (!found)
+                {
+                    if (self == null)
                     {
-                        leafTp.seek(new Term("ISNODE", "T"));
+                        self = new int[10000];
                     }
-                    if((leafTp.skipTo(target) && leafTp.doc() == target)||(level0 != null))
+
+                    // tp.seek(new Term("ID", id));
+                    TermPositions tp = reader.termPositions(new Term("ID", id));
+                    while (tp.next())
                     {
-                        allNodesCandiates.set(tp.doc());
-                    }
-                    Counter counter = selfIds.get(id);
-                    for (int i = 0; i < counter.count; i++)
-                    {
-                        self[position++] = tp.doc();
-                        if (position == self.length)
+                        int target = tp.doc();
+                        // should order and then check leafyness after
+                        if(leafTp == null)
                         {
-                            old = self;
-                            self = new int[old.length * 2];
-                            System.arraycopy(old, 0, self, 0, old.length);
+                            leafTp = reader.termDocs(new Term("ISNODE", "T"));
+                        }
+                        else
+                        {
+                            leafTp.seek(new Term("ISNODE", "T"));
+                        }
+                        if((leafTp.skipTo(target) && leafTp.doc() == target)||(level0 != null))
+                        {
+                            allNodesCandiates.set(tp.doc());
+                        }
+                        Counter counter = selfIds.get(id);
+                        for (int i = 0; i < counter.count; i++)
+                        {
+                            self[position++] = tp.doc();
+                            if (position == self.length)
+                            {
+                                old = self;
+                                self = new int[old.length * 2];
+                                System.arraycopy(old, 0, self, 0, old.length);
+                            }
                         }
                     }
+                    tp.close();
                 }
-                tp.close();
-
             }
             if(leafTp != null)
             {
                 leafTp.close();
             }
-            old = self;
-            self = new int[position];
-            System.arraycopy(old, 0, self, 0, position);
-            Arrays.sort(self);
+            if (self != null)
+            {
+                old = self;
+                self = new int[position];
+                System.arraycopy(old, 0, self, 0, position);
+                Arrays.sort(self);
+            }
 
             position = 0;
             cats = new int[10000];

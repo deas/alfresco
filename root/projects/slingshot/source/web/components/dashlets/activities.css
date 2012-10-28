@@ -26,7 +26,6 @@
 
 .activities .new-day span
 {
-   background-color: #f9fcfd;
    font-size: 108%;
    padding-right: 0.5em;
    position: relative;
@@ -63,10 +62,6 @@
 .activities .activity .time
 {
    font-size: 93%;
-}
-
-.activities .activity .detail
-{
 }
 
 .activities .activity .detail .item-link

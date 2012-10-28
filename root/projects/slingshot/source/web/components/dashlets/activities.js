@@ -296,6 +296,8 @@
                lastDay = "";
             Dom.getElementsByClassName("relativeDate", "span", this.activityList, function()
             {
+               Dom.addClass(this, "body");
+               
                // Get the relative Date
                var activityDay = Alfresco.util.relativeDate(this.innerHTML,
                   {

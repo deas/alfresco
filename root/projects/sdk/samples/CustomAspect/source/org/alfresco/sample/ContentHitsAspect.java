@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,27 +19,31 @@
 package org.alfresco.sample;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.alfresco.repo.content.ContentServicePolicies;
 import org.alfresco.repo.node.NodeServicePolicies;
+import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
-import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.repo.transaction.AlfrescoTransactionSupport;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
+import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.transaction.TransactionListener;
 import org.alfresco.repo.transaction.TransactionListenerAdapter;
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
+import org.alfresco.repo.transaction.TransactionalResourceHelper;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -75,6 +79,7 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
     private PolicyComponent policyComponent;
     private BehaviourFilter policyFilter;
     private NodeService nodeService;
+    private TenantService tenantService;
     private TransactionService transactionService;
     private ThreadPoolExecutor threadExecuter;
     private TransactionListener transactionListener;
@@ -115,6 +120,17 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
+    }
+    
+    /**
+     * Sets the tenant service.
+     * 
+     * @param tenantService
+     *            the tenant service
+     */
+    public void setTenantService(TenantService tenantService)
+    {
+        this.tenantService = tenantService;
     }
 
     /**
@@ -184,14 +200,8 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
         // Bind the listener to the transaction
         AlfrescoTransactionSupport.bindListener(transactionListener);
         // Get the set of nodes read
-        @SuppressWarnings("unchecked")
-        Set<NodeRef> readNodeRefs = (Set<NodeRef>) AlfrescoTransactionSupport.getResource(KEY_CONTENT_HITS_READS);
-        if (readNodeRefs == null)
-        {
-            readNodeRefs = new HashSet<NodeRef>(5);
-            AlfrescoTransactionSupport.bindResource(KEY_CONTENT_HITS_READS, readNodeRefs);
-        }
-        readNodeRefs.add(nodeRef);
+        Set<Pair<NodeRef, String>> readNodeRefPairs = TransactionalResourceHelper.getSet(KEY_CONTENT_HITS_READS);
+        readNodeRefPairs.add(new Pair<NodeRef, String>(nodeRef, tenantService.getCurrentUserDomain()));
     }
 
     /**
@@ -204,14 +214,8 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
         // Bind the listener to the transaction
         AlfrescoTransactionSupport.bindListener(transactionListener);
         // Get the set of nodes written
-        @SuppressWarnings("unchecked")
-        Set<NodeRef> writeNodeRefs = (Set<NodeRef>) AlfrescoTransactionSupport.getResource(KEY_CONTENT_HITS_WRITES);
-        if (writeNodeRefs == null)
-        {
-            writeNodeRefs = new HashSet<NodeRef>(5);
-            AlfrescoTransactionSupport.bindResource(KEY_CONTENT_HITS_WRITES, writeNodeRefs);
-        }
-        writeNodeRefs.add(nodeRef);
+        Set<Pair<NodeRef, String>> writeNodeRefPairs = TransactionalResourceHelper.getSet(KEY_CONTENT_HITS_WRITES);
+        writeNodeRefPairs.add(new Pair<NodeRef, String>(nodeRef, tenantService.getCurrentUserDomain()));
     }
     
     private class ContentHitsTransactionListener extends TransactionListenerAdapter
@@ -220,25 +224,17 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
         public void afterCommit()
         {
             // Get all the nodes that need their read counts incremented
-            @SuppressWarnings("unchecked")
-            Set<NodeRef> readNodeRefs = (Set<NodeRef>) AlfrescoTransactionSupport.getResource(KEY_CONTENT_HITS_READS);
-            if (readNodeRefs != null)
+            Set<Pair<NodeRef, String>> readNodeRefPairs = TransactionalResourceHelper.getSet(KEY_CONTENT_HITS_READS);
+            for (Pair<NodeRef, String> nodeRefPair : readNodeRefPairs)
             {
-                for (NodeRef nodeRef : readNodeRefs)
-                {
-                    Runnable runnable = new ContentHitsReadCountIncrementer(nodeRef);
-                    threadExecuter.execute(runnable);
-                }
+                Runnable runnable = new ContentHitsReadCountIncrementer(nodeRefPair.getFirst(), nodeRefPair.getSecond());
+                threadExecuter.execute(runnable);
             }
-            @SuppressWarnings("unchecked")
-            Set<NodeRef> writeNodeRefs = (Set<NodeRef>) AlfrescoTransactionSupport.getResource(KEY_CONTENT_HITS_WRITES);
-            if (writeNodeRefs != null)
+            Set<Pair<NodeRef, String>> writeNodeRefPairs = TransactionalResourceHelper.getSet(KEY_CONTENT_HITS_WRITES);
+            for (Pair<NodeRef, String> nodeRefPair : writeNodeRefPairs)
             {
-                for (NodeRef nodeRef : readNodeRefs)
-                {
-                    Runnable runnable = new ContentHitsWriteCountIncrementer(nodeRef);
-                    threadExecuter.execute(runnable);
-                }
+                Runnable runnable = new ContentHitsWriteCountIncrementer(nodeRefPair.getFirst(), nodeRefPair.getSecond());
+                threadExecuter.execute(runnable);
             }
         }
     }
@@ -250,18 +246,20 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
      */
     private class ContentHitsReadCountIncrementer implements Runnable
     {
-        private NodeRef nodeRef;
-        private ContentHitsReadCountIncrementer(NodeRef nodeRef)
+        private final NodeRef nodeRef;
+        private final String currentUserDomain;
+        private ContentHitsReadCountIncrementer(NodeRef nodeRef, String currentUserDomain)
         {
             this.nodeRef = nodeRef;
+            this.currentUserDomain = currentUserDomain;
         }
         /**
          * Increments the read count on the node
          */
         public void run()
         {
-            RetryingTransactionHelper txnHelper = transactionService.getRetryingTransactionHelper();
-            RetryingTransactionCallback<Integer> callback = new RetryingTransactionCallback<Integer>()
+            final RetryingTransactionHelper txnHelper = transactionService.getRetryingTransactionHelper();
+            final RetryingTransactionCallback<Integer> callback = new RetryingTransactionCallback<Integer>()
             {
                 public Integer execute() throws Throwable
                 {
@@ -285,7 +283,15 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
             };
             try
             {
-                Integer newCount = txnHelper.doInTransaction(callback, false, true);
+                Integer newCount = AuthenticationUtil.runAs(new RunAsWork<Integer>()
+                {
+                    @Override
+                    public Integer doWork() throws Exception
+                    {
+                        return txnHelper.doInTransaction(callback, false, true);
+                    }
+                }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), this.currentUserDomain));
+                 
                 // Done
                 if (logger.isDebugEnabled())
                 {
@@ -321,18 +327,20 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
      */
     private class ContentHitsWriteCountIncrementer implements Runnable
     {
-        private NodeRef nodeRef;
-        private ContentHitsWriteCountIncrementer(NodeRef nodeRef)
+        private final NodeRef nodeRef;
+        private final String currentUserDomain;
+        private ContentHitsWriteCountIncrementer(NodeRef nodeRef, String currentUserDomain)
         {
             this.nodeRef = nodeRef;
+            this.currentUserDomain = currentUserDomain;
         }
         /**
          * Increments the write count on the node
          */
         public void run()
         {
-            RetryingTransactionHelper txnHelper = transactionService.getRetryingTransactionHelper();
-            RetryingTransactionCallback<Integer> callback = new RetryingTransactionCallback<Integer>()
+            final RetryingTransactionHelper txnHelper = transactionService.getRetryingTransactionHelper();
+            final RetryingTransactionCallback<Integer> callback = new RetryingTransactionCallback<Integer>()
             {
                 public Integer execute() throws Throwable
                 {
@@ -356,7 +364,14 @@ public class ContentHitsAspect implements ContentServicePolicies.OnContentReadPo
             };
             try
             {
-                Integer newCount = txnHelper.doInTransaction(callback, false, true);
+                Integer newCount = AuthenticationUtil.runAs(new RunAsWork<Integer>()
+                {
+                    @Override
+                    public Integer doWork() throws Exception
+                    {
+                        return txnHelper.doInTransaction(callback, false, true);
+                    }
+                }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), this.currentUserDomain));
                 // Done
                 if (logger.isDebugEnabled())
                 {
