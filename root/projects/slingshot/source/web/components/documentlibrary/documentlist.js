@@ -2265,6 +2265,17 @@
          // DocLib Actions module
          this.modules.actions = new Alfresco.module.DoclibActions();
 
+         // Resize event handler - adjusts the filename container DIV to a size relative to the container width
+         Event.addListener(window, "resize", function() 
+         { 
+            var width = (Dom.getViewportWidth() - 545) + "px",
+                nodes = YAHOO.util.Selector.query('h3.filename', this.id + "-documents");
+            for (var i=0; i<nodes.length; i++)
+            {
+               nodes[i].parentNode.style.width = width;
+            }
+         }, this, true);
+
          // Continue only when History Manager fires its onReady event
          YAHOO.util.History.onReady(this.onHistoryManagerReady, this, true);
 
@@ -3125,7 +3136,7 @@
             { key: "nodeRef", label: "Select", sortable: false, formatter: this.fnRenderCellSelected(), width: 16 },
             { key: "status", label: "Status", sortable: false, formatter: this.fnRenderCellStatus(), width: 16 },
             { key: "thumbnail", label: "Preview", sortable: false, formatter: this.fnRenderCellThumbnail(), width: 100 },
-            { key: "fileName", label: "Description", sortable: false, formatter: this.fnRenderCellDescription() },
+            { key: "fileName", label: "Description", sortable: false, formatter: this.fnRenderCellDescription(), width: (Dom.getViewportWidth() - 545) },
             { key: "actions", label: "Actions", sortable: false, formatter: this.fnRenderCellActions(), width: 200 }
          ];
 

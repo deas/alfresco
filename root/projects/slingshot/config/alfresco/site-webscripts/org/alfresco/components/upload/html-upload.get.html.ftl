@@ -20,6 +20,10 @@
             <span id="${el}-title-span"></span>
          </div>
          <div class="bd">
+            <p id="${el}-singleUploadTip-span">${msg("label.singleUploadTip")}</p>
+            <p id="${el}-singleUpdateTip-span">${msg("label.singleUpdateTip")}</p>
+         </div>
+         <div class="bd">
             <form id="${el}-htmlupload-form"
                   method="post" enctype="multipart/form-data" accept-charset="utf-8"
                   action="${url.context}/proxy/alfresco/api/upload.html">
@@ -36,8 +40,6 @@
                <input type="hidden" id="${el}-successScope-hidden" name="successScope" value=""/>
                <input type="hidden" id="${el}-failureCallback-hidden" name="failureCallback" value=""/>
                <input type="hidden" id="${el}-failureScope-hidden" name="failureScope" value=""/>
-               <p id="${el}-singleUploadTip-span">${msg("label.singleUploadTip")}</p>
-               <p id="${el}-singleUpdateTip-span">${msg("label.singleUpdateTip")}</p>
                <div>
                   <div class="yui-g">
                      <h2>${msg("section.file")}</h2>

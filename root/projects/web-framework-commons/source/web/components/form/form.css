@@ -138,10 +138,9 @@
    border: 1px solid #cacaca;
    display: none;
    font-size: 77%;
-   -moz-border-radius: 5px;
-   -webkit-border-radius: 5px;
+   border-radius: 5px;
 }
-   
+
 .form-container .viewmode-field
 {
    margin-bottom: 0.7em;
@@ -156,6 +155,7 @@
 .form-container .viewmode-value
 {
    color: #333333;
+   word-wrap: break-word;
 }
 
 .form-container .invalid

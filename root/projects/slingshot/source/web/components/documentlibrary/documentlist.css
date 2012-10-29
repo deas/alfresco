@@ -400,6 +400,7 @@ body .doclist tr.yui-dt-highlighted
    font-weight: normal;
    padding-bottom: 0.2em;
    padding-left: 20px;
+   word-wrap: break-word;
 }
 
 .doclist .documents .filename span.title

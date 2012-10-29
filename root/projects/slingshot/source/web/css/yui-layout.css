@@ -38,6 +38,12 @@
    width: 28%;
 }
 
+.alfresco-share .yui-panel .hd
+{
+   line-height: 1.5;
+   word-wrap: break-word;
+}
+
 .alfresco-share .yui-panel .hd,
 .alfresco-share .yui-panel .bdft,
 .alfresco-share .yui-panel .bd div.form-buttons,

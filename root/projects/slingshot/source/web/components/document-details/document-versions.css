@@ -29,8 +29,7 @@
 .document-versions .version-list h3
 {
    margin-bottom: 0.5em;
-   float: left;
-   width: auto;
+   word-wrap: break-word;
 }
 
 .document-versions .version-list h3 .document-version

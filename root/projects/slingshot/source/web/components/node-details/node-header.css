@@ -6,6 +6,7 @@
 .node-header h1
 {
    padding: 0.5em 0 0.2em;
+   word-wrap: break-word;
 }
 
 .node-header h1 .document-version

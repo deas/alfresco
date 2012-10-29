@@ -343,6 +343,7 @@ span.navigation-separator-alt
 {
    padding-left: 0.5em;
    margin-bottom: 0.75em;
+   word-wrap: break-word;
 }
 
 .share-form .form-container

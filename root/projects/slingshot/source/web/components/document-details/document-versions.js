@@ -162,6 +162,17 @@
                }
             }
          });
+         
+         // Resize event handler - adjusts the filename container DIV to a size relative to the container width
+         Event.addListener(window, "resize", function() 
+         { 
+            var width = (Dom.getViewportWidth() * 0.25) + "px",
+                nodes = YAHOO.util.Selector.query('h3.thin', this.id + "-body");
+            for (var i=0; i<nodes.length; i++)
+            {
+               nodes[i].style.width = width;
+            }
+         }, this, true);
       },
 
       /**
@@ -189,7 +200,7 @@
          html += '   <span class="document-version">' + $html(doc.label) + '</span>';
          html += '</div>';
          html += '<div class="version-panel-right">';
-         html += '   <h3 class="thin dark">' + $html(doc.name) +  '</h3>';
+         html += '   <h3 class="thin dark" style="width:' + (Dom.getViewportWidth() * 0.25) + 'px;">' + $html(doc.name) +  '</h3>';
          html += '   <span class="actions">';
          if (this.options.allowNewVersionUpload)
          {
