@@ -263,6 +263,7 @@
                   // create object to represent member
                   member = memberData.authority;
                   member.role = memberData.role;
+                  member.isMemberOfGroup = memberData.isMemberOfGroup;
                   
                   // add member to list
                   items.push(member);
@@ -529,6 +530,7 @@
                {
                    container: me.id + '-button-' + userName,
                    label: me._msg("site-members.uninvite"),
+                   disabled: oRecord.getData("isMemberOfGroup"),
                    onclick:
                    {
                       fn: me.doRemove,
