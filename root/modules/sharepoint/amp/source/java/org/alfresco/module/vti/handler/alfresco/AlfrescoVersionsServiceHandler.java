@@ -488,4 +488,22 @@ public class AlfrescoVersionsServiceHandler implements VersionsServiceHandler
         boolean versionable = nodeService.hasAspect(documentFileInfo.getNodeRef(), ContentModel.ASPECT_VERSIONABLE);
         return versionable;
     }
+
+    @Override
+    public String makeCurrentVersionURL(String host, String context, String dws, String fileName)
+    {
+        return host + context + dws + "/" + fileName.trim();
+    }
+
+    @Override
+    public String makeVersionURL(String host, String context, String dws, DocumentVersionBean version)
+    {
+        return host + context + dws + version.getUrl();
+    }
+
+    @Override
+    public String makeDocumentDetailsURL(String host, String context, String dws, String fileName)
+    {
+        return host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName;
+    }
 }

@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.alfresco.module.vti.handler.VersionsServiceHandler;
 import org.alfresco.module.vti.metadata.model.DocumentVersionBean;
+import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.repo.tenant.TenantUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -93,7 +95,7 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
         boolean versioned = handler.isVersionable(dws + "/" + fileName);
         String versionedStr = versioned ? "1" : "0";
         results.addElement("versioning").addAttribute("enabled", versionedStr);
-        results.addElement("settings").addAttribute("url", host + context + dws + "/documentDetails.vti?doc=" + dws + "/" + fileName);
+        results.addElement("settings").addAttribute("url", handler.makeDocumentDetailsURL(host, context, dws, fileName));
 
         boolean isCurrent = true;
         for (DocumentVersionBean version : versions)
@@ -103,14 +105,14 @@ public abstract class AbstractVersionEndpoint extends AbstractEndpoint
             {
                 // prefix @ means that it is current working version, it couldn't be restored or deleted
                 result.addAttribute("version", "@" + version.getVersion());
-                String url = host + context + dws + "/" + fileName.trim();
+                String url = handler.makeCurrentVersionURL(host, context, dws, fileName);
                 result.addAttribute("url", url);
                 isCurrent = false;
             }
             else
             {
                 result.addAttribute("version", version.getVersion());
-                String url = host + context + dws + version.getUrl();
+                String url = handler.makeVersionURL(host, context, dws, version);
                 result.addAttribute("url", url);
             }
             

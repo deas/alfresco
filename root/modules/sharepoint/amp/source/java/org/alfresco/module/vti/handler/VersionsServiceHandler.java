@@ -84,4 +84,11 @@ public interface VersionsServiceHandler
      * @return true if versionable, false otherwise.
      */
     public boolean isVersionable(String fileName);
+    
+    
+    public String makeCurrentVersionURL(String host, String context, String dws, String fileName);
+    
+    public String makeVersionURL(String host, String context, String dws, DocumentVersionBean version);
+    
+    public String makeDocumentDetailsURL(String host, String context, String dws, String fileName);    
 }
