@@ -1370,6 +1370,7 @@
       YAHOO.Bubbling.on("registerRenderer", this.onRegisterRenderer, this);
       YAHOO.Bubbling.on("registerViewRenderer", this.onRegisterViewRenderer, this);
       YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
+      YAHOO.Bubbling.on("resizerChanged", this.onResizerChanged, this);
       // File actions which may be part of a multi-file action set
       YAHOO.Bubbling.on("fileCopied", this.onFileAction, this);
       YAHOO.Bubbling.on("fileDeleted", this.onFileAction, this);
@@ -2266,15 +2267,7 @@
          this.modules.actions = new Alfresco.module.DoclibActions();
 
          // Resize event handler - adjusts the filename container DIV to a size relative to the container width
-         Event.addListener(window, "resize", function() 
-         { 
-            var width = (Dom.getViewportWidth() - 545) + "px",
-                nodes = YAHOO.util.Selector.query('h3.filename', this.id + "-documents");
-            for (var i=0; i<nodes.length; i++)
-            {
-               nodes[i].parentNode.style.width = width;
-            }
-         }, this, true);
+         Event.addListener(window, "resize", this._resizeRowContainers, this, true);
 
          // Continue only when History Manager fires its onReady event
          YAHOO.util.History.onReady(this.onHistoryManagerReady, this, true);
@@ -2300,7 +2293,7 @@
              eventGroup: this.id
          });
       },
-
+      
       /**
        * Insitu Editor callback function
        *
@@ -3131,12 +3124,14 @@
          var me = this;
 
          // DataTable column defintions
+         var fpanel = Dom.get("alf-filters"),
+             offset = (fpanel ? parseInt(fpanel.style.width, 10) : 160) + 390;
          var columnDefinitions =
          [
             { key: "nodeRef", label: "Select", sortable: false, formatter: this.fnRenderCellSelected(), width: 16 },
             { key: "status", label: "Status", sortable: false, formatter: this.fnRenderCellStatus(), width: 16 },
             { key: "thumbnail", label: "Preview", sortable: false, formatter: this.fnRenderCellThumbnail(), width: 100 },
-            { key: "fileName", label: "Description", sortable: false, formatter: this.fnRenderCellDescription(), width: (Dom.getViewportWidth() - 545) },
+            { key: "fileName", label: "Description", sortable: false, formatter: this.fnRenderCellDescription(), width: (Dom.getViewportWidth() - offset) },
             { key: "actions", label: "Actions", sortable: false, formatter: this.fnRenderCellActions(), width: 200 }
          ];
 
@@ -4718,11 +4713,40 @@
 
          this.services.preferences[fnPref].call(this.services.preferences, prefKey, nodeRef, responseConfig);
       },
+      
+      /**
+       * Handler to inform of a resize to resizable panel
+       *
+       * @method onResizerChanged
+       * @private
+       */
+      onResizerChanged: function DL_onResizerChanged()
+      {
+         this._resizeRowContainers();
+      },
 
 
       /**
        * PRIVATE FUNCTIONS
        */
+
+      /**
+       * Helper to resize the container elements for each row to ensure the wrapping
+       * of long filenames is correctly maintained when the window or filters panel is resized.s
+       * 
+       * @method _resizeRowContainers
+       */
+      _resizeRowContainers: function DL__resizeRowContainers()
+      {
+         var fpanel = Dom.get("alf-filters"),
+             offset = (fpanel ? parseInt(fpanel.style.width, 10) : 160) + 390,
+             width = (Dom.getViewportWidth() - offset) + "px",
+             nodes = YAHOO.util.Selector.query('h3.filename', this.id + "-documents");
+         for (var i=0; i<nodes.length; i++)
+         {
+            nodes[i].parentNode.style.width = width;
+         }
+      },
 
       /**
        * Resets the YUI DataTable errors to our custom messages

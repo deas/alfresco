@@ -1634,6 +1634,11 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
             Dom.setStyle(this.options.divRight, "margin-left", 8 + width + "px");
          }
 
+         YAHOO.Bubbling.fire("resizerChanged",
+         {
+             width: width
+         });
+
          // Callback
          this.onResizeNotification();
       },
