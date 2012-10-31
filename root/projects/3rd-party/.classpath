@@ -33,8 +33,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator-1.4.0.jar" sourcepath="src/commons-validator-1.4.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.3-20120801.jar" sourcepath="src/tika-core-1.3-20120801.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.3-20120801.jar" sourcepath="src/tika-parsers-1.3-20120801.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.3-20121030.jar" sourcepath="src/tika-core-1.3-20121030.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.3-20121030.jar" sourcepath="src/tika-parsers-1.3-20121030.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.2-20120518.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.2-20120518.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xz-1.0.jar" sourcepath="src/xz-1.0-sources.jar"/>
