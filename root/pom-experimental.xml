@@ -171,6 +171,7 @@
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.0-SNAPSHOT</dependency.surf.version>
     <dependency.activiti.version>5.10-alf-20120918</dependency.activiti.version>
+    <dependency.poi.version>3.9-beta1-20120801</dependency.poi.version>
   </properties>
   
   <dependencyManagement>
@@ -386,7 +387,7 @@
         </plugin>
         <plugin>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.5.1</version>
+            <version>2.6</version>
             <configuration>
                 <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
             </configuration>
