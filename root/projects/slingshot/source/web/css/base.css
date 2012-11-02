@@ -232,7 +232,7 @@ h1.sub-title
    clear: left;
    margin: 0 -10px;
    min-height: 1em;
-   padding: 5px 0 7px;
+   padding: 5px 0 6px;
 }
 
 span.navigation-separator,
@@ -281,7 +281,7 @@ span.navigation-separator-alt
 {
    clear: both;
    margin: 0 -10px;
-   height: 34px;
+   height: 35px;
    padding: 0;
 }
 

@@ -310,12 +310,12 @@
    background-image: url(images/document-cloud-unsync-16.png);
 }
 
-.toolbar .hide-navbar span.first-child
+.toolbar .hide-navbar .yui-button-checked span.first-child
 {
    background-image: url(images/navbar-show-16.png);
 }
 
-.toolbar .hide-navbar .yui-button-checked span.first-child
+.toolbar .hide-navbar span.first-child
 {
    background-image: url(images/navbar-hide-16.png);
 }

@@ -18,14 +18,14 @@
 
 /* search bar */
 
-.sent-invites .search-bar
+.sent-invites .search-controls
 {
    border-bottom: 1px dashed #c0c0c0;
    min-height: 2em;
    padding: 0.5em;
 }
 
-.sent-invites .search-bar div
+.sent-invites .search-controls div
 {
    float: left;
 }
@@ -84,32 +84,10 @@
    background-color: transparent;
 }
 
-/*.sent-invites .yui-dt-first
-{
-   background-color: #F7F7F7;
-}*/
-
 .sent-invites tr.yui-dt-odd
 {
    background-color: #ffffff;
 }
-
-/**
- * If an element with "position: relative;" is used inside
- * another element with "overflow: scroll;" IE takes the inner element "out of
- * the flow" which makes statically positioned on the screen ignoring to be
- * hidden and following the scrollbar.
- *
- * In this component, position relative is used for the progress bars, but
- * a YUI button is also used which causes the same problem.
- *
- * If the outer element also has "position: relative;" it works though.
- */
-
-/*.sent-invites .results .yui-dt-bd
-{
-   position:relative;
-}*/
 
 .sent-invites .pending
 {
@@ -138,11 +116,6 @@
 {
    height: 100%;
 }
-
-/*.sent-invites .send-to {
-   font-size: 116%;
-   margin: 5px 0px 10px 0px;
-}*/
 
 .sent-invites .attr-label
 {

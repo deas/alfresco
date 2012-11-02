@@ -16,8 +16,8 @@
    <@markup id="html">
       <@uniqueIdDiv>
          <#assign el=args.htmlid?html>
-         <div id="${el}-body" class="people-finder list">
-            <div class="title"><label for="${el}-search-text">${msg("title")}</label></div>
+         <div id="${el}-body" class="people-finder list theme-color-1">
+            <div class="title theme-color-2">${msg("title")}</div>
             <div class="finder-wrapper">
                <div class="search-bar theme-bg-color-3">
                   <div class="search-text"><input type="text" id="${el}-search-text" name="-" value="" maxlength="256" tabindex="0"/></div>
@@ -54,7 +54,7 @@
                      <span>${msg("help.result7")}</span>
                   </div>
                </div>
-               <div id="${el}-results" class="results hidden"></div>
+               <div id="${el}-results" class="results hidden theme-bg-color-6"></div>
             </div>
          </div>
       </@>

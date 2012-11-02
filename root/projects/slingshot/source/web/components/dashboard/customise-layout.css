@@ -76,7 +76,7 @@
 {
    width: 25em;
    float: left;
-   margin:0em 2em 3em;
+   margin: 0em 2em 3em;
    text-align: left;
 }
 
@@ -95,20 +95,19 @@
 .customise-layout .layoutBox
 {
    background-color: #f7f7f7;
-   text-align:center;
+   text-align: center;
 }
 
 /* Center the layout image */
 .customise-layout .layoutIcon
 {
-   padding:1em;
-   vertical-align:middle;
-   height:10em;
+   padding: 1em;
+   vertical-align: middle;
+   height: 10em;
    cursor: pointer;   
 }
 
-/* Add a bit of green around the current layout */
 .customise-layout div.currentLayout .layoutIcon
 {
-   background-color:#EDFAEB;
+   border-bottom: 1px solid #ccc;
 }

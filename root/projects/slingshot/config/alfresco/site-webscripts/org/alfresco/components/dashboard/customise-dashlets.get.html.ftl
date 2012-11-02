@@ -53,7 +53,7 @@
             <div>
                <div class="text">
                   <a class="closeLink" href="#" id="${args.htmlid}-closeAddDashlets-link">${msg("link.close")}</a>
-                  <h3 class="padded">${msg("section.addDashlets")}</h3>
+                  <h3 class="padded theme-color-1">${msg("section.addDashlets")}</h3>
                </div>
                <ul id="${args.htmlid}-column-ul-0" class="availableList">
                <#list availableDashlets as dashlet>

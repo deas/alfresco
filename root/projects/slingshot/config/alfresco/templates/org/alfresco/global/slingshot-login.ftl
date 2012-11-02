@@ -14,13 +14,13 @@
                <label id="txt-username" for="username"></label>
             </div>
             <div style="padding-top:4px">
-               <input type="text" id="username" name="username" maxlength="255" style="width:200px" value="<#if lastUsername??>${lastUsername?html}</#if>" />
+               <input type="text" id="username" name="username" maxlength="255" value="<#if lastUsername??>${lastUsername?html}</#if>" />
             </div>
             <div style="padding-top:12px">
                <label id="txt-password" for="password"></label>
             </div>
             <div style="padding-top:4px">
-               <input type="password" id="password" name="password" maxlength="255" style="width:200px"/>
+               <input type="password" id="password" name="password" maxlength="255" />
             </div>
             <div style="padding-top:16px">
                <input type="submit" id="btn-login" class="login-button" />

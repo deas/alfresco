@@ -173,7 +173,7 @@
 
       <#-- Action Set "More" template -->
       <div id="${id}-moreActions">
-         <div class="internal-show-more" title="onActionShowMore"><a href="#" class="show-more" title="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
+         <div class="internal-show-more" id="onActionShowMore"><a href="#" class="show-more" alt="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
          <div class="more-actions hidden"></div>
       </div>
 

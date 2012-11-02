@@ -2194,7 +2194,7 @@
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               if (typeof me[owner.title] === "function")
+               if (typeof me[owner.id] === "function")
                {
                   args[1].stop = true;
                   var elIdentifier = args[1].target;
@@ -2203,7 +2203,7 @@
                      elIdentifier = me.viewRenderers[me.options.viewRendererName].getDataTableRecordIdFromRowElement(me, args[1].target);
                   }
                   var record = me.widgets.dataTable.getRecord(elIdentifier).getData();
-                  me[owner.title].call(me, record, owner);
+                  me[owner.id].call(me, record, owner);
                }
             }
             return true;

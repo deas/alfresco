@@ -6,7 +6,6 @@
 <@markup id="js">
    <#-- JavaScript Dependencies -->
    <@script src="${url.context}/res/components/site-members/site-groups.js" group="site-members"/>
-   
 </@>
 
 <@markup id="widgets">

@@ -227,16 +227,16 @@
             if (owner !== null)
             {
                var me = Alfresco.util.ComponentManager.get(componentId);
-               if (typeof me[owner.title] === "function")
+               if (typeof me[owner.id] === "function")
                {
                   args[1].stop = true;
                   try
                   {
-                     me[owner.title].call(me, me.recordData, owner);
+                     me[owner.id].call(me, me.recordData, owner);
                   }
                   catch (e)
                   {
-                     Alfresco.logger.error("DocumentActions_fnActionHandler", owner.title, e);
+                     Alfresco.logger.error("DocumentActions_fnActionHandler", owner.id, e);
                   }
                }
             }

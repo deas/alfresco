@@ -25,13 +25,6 @@
    border-right-style: none;
 }
 
-/*
-.current-values.object-finder-list table td.yui-dt-col-nodeRef
-{
-   width: 54px;
-}
-*/
-
 .current-values.object-finder-list table td.yui-dt-empty .yui-dt-liner
 {
    display: block;
@@ -200,13 +193,9 @@
    padding: 0.3em 1em 0.4em 0.5em;
 }
 
-.object-finder .picker-header .search .search-button
-{
-}
-
 .object-finder .picker-items
 {
-   border: 2px solid #aaa;
+   border: 1px solid #ccc;
    height: 20em;
    overflow-x: auto;
    overflow-y: scroll;

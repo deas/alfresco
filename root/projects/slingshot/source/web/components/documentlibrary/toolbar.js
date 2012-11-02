@@ -388,7 +388,7 @@
          this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar,
          {
             type: "checkbox",
-            checked: this.options.hideNavBar
+            checked: !this.options.hideNavBar
          });
          if (this.widgets.hideNavBar !== null)
          {
@@ -1059,7 +1059,7 @@
        */
       onHideNavBar: function DLTB_onHideNavBar(e, p_obj)
       {
-         this.options.hideNavBar = this.widgets.hideNavBar.get("checked");
+         this.options.hideNavBar = !this.widgets.hideNavBar.get("checked");
          this.widgets.hideNavBar.set("title", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
          Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
          this.services.preferences.set(PREF_HIDE_NAVBAR, this.options.hideNavBar);

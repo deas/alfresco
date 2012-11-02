@@ -56,6 +56,11 @@ div.dashlet.dynamic-welcome
    margin-bottom: 12px;
 }
 
+.welcome-border-container
+{
+   border-right: solid 1px #FFEA5B;
+}
+
 .welcome-right-container
 {
    clear: left;
@@ -71,7 +76,6 @@ div.dashlet.dynamic-welcome
    width: 100%;
    position: relative;
    right: 25%;
-   border-right: solid 1px #FFEA5B;
 }
 
 .welcome-middle-left-container
@@ -81,7 +85,6 @@ div.dashlet.dynamic-welcome
    width: 100%;
    position: relative;
    right: 25%;
-   border-right: solid 1px #FFEA5B;
 }
 
 .welcome-left-container
@@ -90,7 +93,6 @@ div.dashlet.dynamic-welcome
    width: 100%;
    position: relative;
    right: 25%;
-   border-right: solid 1px #FFEA5B;
 }
 
 .welcome-details-column
@@ -134,7 +136,6 @@ div.dashlet.dynamic-welcome
 {
    height: 100%;
    margin-left: 74px;
-   margin-right: 30px;
    position: relative;
 }
 

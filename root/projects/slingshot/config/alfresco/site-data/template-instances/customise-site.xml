@@ -9,6 +9,12 @@
           <url>/components/title/collaboration-title</url>
        </component>
 
+       <!-- Navigation -->
+       <component>
+          <region-id>navigation</region-id>
+          <url>/components/navigation/collaboration-navigation</url>
+       </component>
+
        <!-- Customise Pages -->
        <component>
           <region-id>customise-pages</region-id>

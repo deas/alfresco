@@ -18,7 +18,7 @@
    <@uniqueIdDiv>
       <#if allowEmailInvite>
          <div id="${args.htmlid}-body" class="inviteusersbyemail">
-            <div class="title">${msg("addemail.title")}</div>
+            <div class="title theme-color-2">${msg("addemail.title")}</div>
             <div class="byemailbody">  
                <table class="byemailuser">
                   <tr>

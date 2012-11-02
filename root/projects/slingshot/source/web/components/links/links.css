@@ -130,7 +130,6 @@
 
 .links-header .links-infobar
 {
-   background-color: #F8F8F8;
    border-bottom: 1px dashed #C0C0C0;
    height: 2em;
    padding: 0.5em;
@@ -166,7 +165,6 @@
 
 .links-header .links-toolbar
 {
-   background-color: #E3EAEC;
    clear: both;
    height: 2em;
    padding: 0.5em;
@@ -182,15 +180,9 @@
 {
    color: #333333;
    float: left;
-   font-family: Helvetica,Trebuchet,sans-serif;
    font-size: 123.1%;
    font-weight: normal;
-   padding: 4px 10px;
-}
-
-.links-filter
-{
-   
+   padding: 6px 10px;
 }
 
 .links-filter h2
@@ -237,12 +229,12 @@
 
 .links-header .links-titlebar
 {
-   background-color: #E9EDEF;
-   border-bottom: 1px solid #C7CCCE;
-   height: 2em;
-   padding: 0.5em;
+   border-bottom: thin solid #ccc;
+   height: 3em;
+   padding-right: 10px;
+   padding-top: 0.5em;
 }
-
+   
 .links-action-delete
 {
    background-repeat: no-repeat;
@@ -308,7 +300,6 @@
 
 .nodeStatus-isUpdate
 {
-   font-family: Trebuchet, sans-serif;
    font-weight: normal;
    font-size: 131%;
    line-height: 130%;
@@ -406,7 +397,6 @@
 {
    border-collapse: separate;
    border-spacing: 0;
-   font-family: arial;
    font-size: inherit;
 }
 

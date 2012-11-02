@@ -193,8 +193,8 @@
 .profile .content,
 .profile .people
 {
-   margin: 0 1.15em;
-   border: 1px solid #CBCBCB;
+   margin: 0 1.15em !important;
+   border: 1px solid #ccc;
    border-width: 0 1px 1px 1px;
 }
 

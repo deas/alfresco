@@ -1,5 +1,6 @@
 <@markup id="css" >
    <#-- CSS Dependencies -->
+   <@link href="${url.context}/res/components/profile/profile.css" group="profile"/>
    <@link href="${url.context}/res/components/profile/changepassword.css" group="profile"/>
 </@>
 
@@ -15,7 +16,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign el=args.htmlid?html>
-      <div id="${el}-body" class="password">
+      <div id="${el}-body" class="profile password">
          <form id="${el}-form" action="${url.context}/service/components/profile/change-password" method="post">
             <div class="header-bar">${msg("label.changepassword")}</div>
             <div class="row">

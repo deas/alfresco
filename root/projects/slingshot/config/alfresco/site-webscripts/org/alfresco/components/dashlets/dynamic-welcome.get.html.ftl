@@ -33,9 +33,9 @@
                </div>
                <div>
                   <div class="welcome-right-container">
-               <div class="welcome-middle-right-container">
-                  <div class="welcome-middle-left-container">
-                     <div class="welcome-left-container">
+               <div class="welcome-middle-right-container welcome-border-container">
+                  <div class="welcome-middle-left-container welcome-border-container">
+                     <div class="welcome-left-container welcome-border-container">
                   <#list columns as column>
                      <#if column??>
                      <div class="welcome-details-column welcome-details-column-${column_index}">
