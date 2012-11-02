@@ -102,7 +102,7 @@ public final class NodeRef implements EntityRef, Serializable
         int lastForwardSlash = nodeRef.lastIndexOf('/');
         if(lastForwardSlash == -1)
         {
-            throw new AlfrescoRuntimeException("Invalid node ref - does not contain forward slash: " + nodeRef);
+            throw new MalformedNodeRefException("Invalid node ref - does not contain forward slash: " + nodeRef);
         }
         this.storeRef = new StoreRef(nodeRef.substring(0, lastForwardSlash));
         this.id = nodeRef.substring(lastForwardSlash+1);
