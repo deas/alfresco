@@ -79,6 +79,11 @@
    padding-top: 0.5em;
 }
 
+.rule-config ul.rule-config-body div.name select
+{
+   width: auto;
+}
+
 .rule-config ul.rule-config-body div.name select optgroup
 {
    padding-top: 0.25em;
@@ -132,10 +137,15 @@
    margin-left: 0.5em;
 }
 
-.rule-config ul.rule-config-body div.parameters input[type=text],
-.rule-config ul.rule-config-body div.parameters select
+.rule-config ul.rule-config-body div.parameters input[type=text]
 {
    width: 13em;
+   margin-left: 0.5em;
+}
+
+.rule-config ul.rule-config-body div.parameters select
+{
+   width: auto;
    margin-left: 0.5em;
 }
 

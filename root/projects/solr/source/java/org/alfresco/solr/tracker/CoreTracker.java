@@ -859,7 +859,7 @@ public class CoreTracker implements CloseHook
 
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 2)
+                    if(getRegisteredSearcherCount() < 3)
                     {
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
@@ -1013,7 +1013,7 @@ public class CoreTracker implements CloseHook
 
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 2)
+                    if(getRegisteredSearcherCount() < 3)
                     {
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
@@ -1117,7 +1117,7 @@ public class CoreTracker implements CloseHook
     public void trackRepository() throws IOException, AuthenticationException, JSONException
     {
         int registeredSearcherCount = getRegisteredSearcherCount();
-        if(registeredSearcherCount > 1)
+        if(registeredSearcherCount > 2)
         {
             log.info(".... skipping tracking registered searcher count = " + registeredSearcherCount);
             return;
@@ -1289,7 +1289,7 @@ public class CoreTracker implements CloseHook
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 2)
+                    if(getRegisteredSearcherCount() < 3)
                     {
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;

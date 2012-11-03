@@ -269,7 +269,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 2)
+                    if(getRegisteredSearcherCount() < 3)
                     {
                         waitAndIndexTransactions(transactionsIndexed);
                         docCount = 0;
@@ -514,7 +514,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
                 if (aclCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 2)
+                    if(getRegisteredSearcherCount() < 3)
                     {
                         waitForAsynchronousReindexing();
                         for (AclChangeSet set : changeSetsIndexed)

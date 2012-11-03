@@ -149,39 +149,38 @@ public class AlfrescoSolrDataModel
 
     static
     {
-
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true); // Must store
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LID, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TX, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LINKASPECT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PATH, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TX, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_LINKASPECT, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PATH, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ANCESTOR, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCONTAINER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCATEGORY, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_QNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCONTAINER, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCATEGORY, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_QNAME, Store.NO, Index.ANALYZED, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISROOT, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISNODE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISNODE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false); // Must store
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, Store.NO, Index.ANALYZED, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TYPE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASPECT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_DBID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_DBID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false); // Must store
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false); // Must store
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_INTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false); // Must store
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_INACLTXID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK, Store.YES, Index.NO, TermVector.NO, false);
 
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ACLID, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false); // Must store
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_READER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_OWNER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_OWNER, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true); // Must store
 
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
 

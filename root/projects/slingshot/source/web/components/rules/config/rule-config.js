@@ -1952,8 +1952,8 @@
          {
             paramEl = paramEls[i];
             paramName = paramEl.getAttribute("param");
-            paramValue = this._getValue(paramEl, paramDef);
             paramDef = this._getParamDef(configDef, paramName);
+            paramValue = this._getValue(paramEl, paramDef);
             if (paramDef)
             {
                if (paramDef.isMultiValued && paramValue && !YAHOO.lang.isArray(paramValue))
@@ -1963,7 +1963,7 @@
                // Convert string to proper type
                if (YAHOO.lang.isArray(paramValue))
                {
-                  for (var j = 0, jl = paramValue; j < jl; j++)
+                  for (var j = 0, jl = paramValue.length; j < jl; j++)
                   {
                      paramValue[j] = this._convertType(paramValue[j], paramDef.type);
                   }
