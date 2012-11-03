@@ -530,7 +530,8 @@
             fileName = record.location.file,
             filePath = $combine(path, fileName),
             displayName = record.displayName,
-            nodeRef = jsNode.nodeRef;
+            nodeRef = jsNode.nodeRef,
+            parentNodeRef = this.getParentNodeRef(record);
 
          this.modules.actions.genericAction(
          {
@@ -539,13 +540,14 @@
                activity:
                {
                   siteId: this.options.siteId,
-                  activityType: "file-deleted",
+                  activityType: jsNode.isContainer ? "folder-deleted" : "file-deleted",
                   page: "documentlibrary",
                   activityData:
                   {
                      fileName: fileName,
                      path: path,
-                     nodeRef: nodeRef.toString()
+                     nodeRef: nodeRef.toString(),
+                     parentNodeRef: parentNodeRef.toString()
                   }
                },
                event:

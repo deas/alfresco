@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -236,8 +236,10 @@
       _onActionDeleteConfirm: function FolderActions__onActionDeleteConfirm(asset)
       {
          var path = asset.location.path,
+            fileName = asset.fileName,
             displayName = asset.displayName,
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
+            parentNodeRef = new Alfresco.util.NodeRef(asset.parent.nodeRef),
             callbackUrl = Alfresco.util.isValueSet(this.options.siteId) ? "documentlibrary" : "repository",
             encodedPath = path.length > 1 ? "?path=" + encodeURIComponent(path) : "";
          
@@ -254,7 +256,8 @@
                   {
                      fileName: fileName,
                      path: path,
-                     nodeRef: nodeRef.toString()
+                     nodeRef: nodeRef.toString(),
+                     parentNodeRef: parentNodeRef.toString()
                   }
                },
                callback:
