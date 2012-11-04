@@ -310,13 +310,17 @@
     <target name="maven-deploy-platform-distribution-pom" description="Deploys Alfresco Platform distribution POM after replacing appropriate tokens" depends="maven-env-prerequisites">
         <delete dir="${dir.project.sdk.maven.platform}/${dir.name.build}" failonerror="false"/>
         <mkdir dir="${dir.project.sdk.maven.platform}/${dir.name.build}"/>
-        <copy todir="${dir.project.sdk.maven.platform}/${dir.name.build}" file="${dir.project.sdk.maven.platform}/pom.xml"/>
+        <copy todir="${dir.project.sdk.maven.platform}/${dir.name.build}" overwrite="true">
+            <fileset dir="${dir.project.sdk.maven.platform}" includes="**" excludes="build"/>
+        </copy>
         <replace file="${dir.project.sdk.maven.platform}/${dir.name.build}/pom.xml">
             <replacefilter  token="@@maven.group.id@@" value="${maven.group.id}"/>
             <replacefilter  token="@@maven.version.number@@" value="${maven.version.number}"/>
+            <replacefilter  token="@@maven.edition@@" value="${file.name.edition}"/>
+            <replacefilter  token="@@maven.site.url@@" value="${maven.repository.site.url}"/>
+            <replacefilter  token="@@maven.site.id@@" value="${maven.repository.id}"/>
         </replace>
-        <mvndeploy artifactId="alfresco-platform-distribution"
-            file="${dir.project.sdk.maven.platform}/${dir.name.build}/pom.xml" />        
+        <mvndeploy artifactId="alfresco-platform-distribution" file="${dir.project.sdk.maven.platform}/${dir.name.build}/pom.xml" />
     </target>
 
     <!-- DEPLOYMENT MACROS -->
