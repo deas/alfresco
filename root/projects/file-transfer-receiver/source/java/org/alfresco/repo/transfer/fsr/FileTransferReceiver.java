@@ -160,31 +160,39 @@ public class FileTransferReceiver implements TransferReceiver
             List<TransferManifestProcessor> commitProcessors = 
                 manifestProcessorFactory.getCommitProcessors(FileTransferReceiver.this, fTransferId);
 
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser parser = saxParserFactory.newSAXParser();
-            File snapshotFile = getSnapshotFile(fTransferId);
-
-            if (snapshotFile.exists())
+            try
             {
-                if (log.isDebugEnabled())
+                SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+                SAXParser parser = saxParserFactory.newSAXParser();
+                File snapshotFile = getSnapshotFile(fTransferId);
+
+                if (snapshotFile.exists())
                 {
-                    log.debug("Processing manifest file:" + snapshotFile.getAbsolutePath());
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Processing manifest file:" + snapshotFile.getAbsolutePath());
+                    }
+                    // We parse the file as many times as we have processors
+                    for (TransferManifestProcessor processor : commitProcessors)
+                    {
+                        XMLTransferManifestReader reader = new XMLTransferManifestReader(processor);
+                        parser.parse(snapshotFile, reader);
+                        parser.reset();
+                    }
                 }
-                // We parse the file as many times as we have processors
-                for (TransferManifestProcessor processor : commitProcessors)
+                else
                 {
-                    XMLTransferManifestReader reader = new XMLTransferManifestReader(processor);
-                    parser.parse(snapshotFile, reader);
-                    parser.reset();
+                    progressMonitor.logException(fTransferId,
+                            "Unable to start commit. No snapshot file received", new TransferException(
+                                    MSG_NO_SNAPSHOT_RECEIVED, new Object[] { fTransferId }));
                 }
             }
-            else
+            catch (Exception ex)
             {
-                progressMonitor.logException(fTransferId,
-                        "Unable to start commit. No snapshot file received", new TransferException(
-                                MSG_NO_SNAPSHOT_RECEIVED, new Object[] { fTransferId }));
+                progressMonitor.logException(transferId, "Caught exception while committing the transfer", ex);
             }
 
+            //Was there an error? If so, change the transfer status to "ERROR" and throw the exception
             Throwable error = progressMonitor.getProgress(transferId).getError();
             if (error != null)
             {
@@ -200,23 +208,12 @@ public class FileTransferReceiver implements TransferReceiver
             }
 
             /**
-             * Successfully committed
+             * If we get to this point then the commit has taken place without error.
              */
             progressMonitor.updateStatus(transferId, TransferProgress.Status.COMPLETE);
             if (log.isDebugEnabled())
             {
                 log.debug("Commit success transferId=" + transferId);
-            }
-        }
-        catch (Exception ex)
-        {
-            if (TransferException.class.isAssignableFrom(ex.getClass()))
-            {
-                throw (TransferException) ex;
-            }
-            else
-            {
-                throw new TransferException(MSG_ERROR_WHILE_COMMITTING_TRANSFER, ex);
             }
         }
         finally
