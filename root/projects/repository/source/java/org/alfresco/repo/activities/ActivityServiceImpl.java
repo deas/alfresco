@@ -21,7 +21,6 @@ package org.alfresco.repo.activities;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,15 +39,14 @@ import org.alfresco.service.cmr.activities.ActivityPostService;
 import org.alfresco.service.cmr.activities.ActivityService;
 import org.alfresco.service.cmr.activities.FeedControl;
 import org.alfresco.service.cmr.repository.AssociationRef;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthorityService;
+import org.alfresco.service.cmr.security.NoSuchPersonException;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.service.namespace.RegexQNamePattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -312,20 +310,20 @@ public class ActivityServiceImpl implements ActivityService, InitializingBean
                 }
                 else
                 {
-                    // Get the avatar for the user id, set it in the activity feed and update the cache
-                    NodeRef avatarNodeRef = null;
-                    NodeRef postPerson = this.personService.getPerson(activityFeed.getPostUserId());
-                    List<AssociationRef> assocRefs = this.nodeService.getTargetAssocs(postPerson, ContentModel.ASSOC_AVATAR);
-                    if (!assocRefs.isEmpty())
-                    {
-                        avatarNodeRef = assocRefs.get(0).getTargetRef();
-                        activityFeed.setPostUserAvatarNodeRef(avatarNodeRef);
+                	NodeRef avatarNodeRef = null;
+                    List<AssociationRef> assocRefs = null;
+                    try {
+                        NodeRef postPerson = this.personService.getPerson(activityFeed.getPostUserId());
+                        assocRefs = this.nodeService.getTargetAssocs(postPerson, ContentModel.ASSOC_AVATAR);
+                        if (!assocRefs.isEmpty())
+                        {
+                            // Get the avatar for the user id, set it in the activity feed and update the cache
+                        	avatarNodeRef = assocRefs.get(0).getTargetRef();
+                        }
+                    } catch (NoSuchPersonException e) {
+                    	logger.warn("Bummer : " + e.getMessage()); // User may be gone
                     }
-                    else
-                    {
-                        activityFeed.setPostUserAvatarNodeRef(null);
-                    }
-                    
+                    activityFeed.setPostUserAvatarNodeRef(null);
                     // Update the cache (setting null if there is no avatar for the user)...
                     userIdToAvatarNodeRefCache.put(activityFeed.getPostUserId(), avatarNodeRef);
                 }
