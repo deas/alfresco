@@ -152,6 +152,15 @@
 	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.4-patched.jar" sourcepath="src/wss4j-1.5.4-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-api-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-bindings-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-impl-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.8.0.jar" sourcepath="src/chemistry-opencmis-commons-api-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.8.0.jar" sourcepath="src/chemistry-opencmis-commons-impl-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.8.0.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.8.0.jar" sourcepath="src/chemistry-opencmis-server-support-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.8.0.jar" sourcepath="src/chemistry-opencmis-test-browser-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.8.0.jar" sourcepath="src/chemistry-opencmis-test-tck-0.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.7.0-patched.jar" sourcepath="src/pdfbox-1.7.0-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.7.0.jar"/>
@@ -215,15 +224,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1-patched.jar" sourcepath="src/PDFRenderer-0.9.1-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.7.0.jar" sourcepath="src/chemistry-opencmis-client-api-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.7.0.jar" sourcepath="src/chemistry-opencmis-client-bindings-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.7.0.jar" sourcepath="src/chemistry-opencmis-client-impl-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.7.0.jar" sourcepath="src/chemistry-opencmis-commons-impl-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.7.0.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.7.0.jar" sourcepath="src/chemistry-opencmis-server-support-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.7.0.jar" sourcepath="src/chemistry-opencmis-test-browser-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.7.0.jar" sourcepath="src/chemistry-opencmis-test-tck-0.7.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.7.0.jar" sourcepath="src/chemistry-opencmis-commons-api-0.7.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hazelcast-1.9.4.6.jar" sourcepath="src/hazelcast-1.9.4.6-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-dep-4.11-SNAPSHOT-20120805-1225.jar"/>
