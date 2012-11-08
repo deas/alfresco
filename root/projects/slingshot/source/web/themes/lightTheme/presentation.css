@@ -873,6 +873,7 @@ body.yui-skin-lightTheme .doclist .more-actions a:hover
 body.yui-skin-lightTheme .doclist div.more-actions
 {
    border: 1px solid #ccc;
+   box-shadow: 3px 3px 6px #ccc;
 }
 
 body.yui-skin-lightTheme .doclist .action-set a:active,
@@ -1015,7 +1016,7 @@ body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-lightTheme .detail .tag a,
 .yui-skin-lightTheme .document-tags .tag
 {
-   background-color: #333;
+   background-color: #eee;
 }
 
 .cmis .body a
@@ -1452,11 +1453,6 @@ div.theme-bg-color-7
 .search-controls div
 {
    padding-top: 0.25em;
-}
-
-.web-preview .Image
-{
-   box-shadow: 3px 3px 9px #ccc;
 }
 
 .help .subtitle
