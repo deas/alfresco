@@ -27,7 +27,7 @@ function main()
          nodeRef : model.nodeRef,
          siteId : (model.site != null) ? model.site : null,
          containerId : model.container,
-         rootNode : Boolean(model.rootNode),
+         rootNode : model.rootNode,
          replicationUrlMapping : (model.replicationUrlMappingJSON != null) ? model.replicationUrlMappingJSON : "{}",
          repositoryBrowsing : (model.rootNode != null),
          folderDetails : folderDetails,

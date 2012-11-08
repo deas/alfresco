@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Folder actions component.
  * 
@@ -208,8 +208,8 @@
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               var me = Alfresco.util.ComponentManager.get(componentId);
-               var action = owner.title;
+               var me = Alfresco.util.ComponentManager.get(componentId),
+                   action = owner.id;
                if (typeof me[action] == "function")
                {
                   args[1].stop = true;
