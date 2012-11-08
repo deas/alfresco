@@ -30,7 +30,7 @@
          <#if document.workingCopy??>
             <!-- Don't display links since this nodeRef points to one of a working copy pair -->
          <#else>
-            <div id="${el}-body" class="document-links document-details-panel">
+         <div id="${el}-body" class="document-links document-details-panel">
             <h2 id="${el}-heading" class="thin dark">${msg("header")}</h2>
             <div class="panel-body">
                <!-- Current page url - (javascript will prefix with the current browser location) -->
@@ -40,6 +40,7 @@
                   <a href="#" name=".onCopyLinkClick" class="${el} hidden">${msg("page.copy")}</a>
                </div>
             </div>
+         </div>
          </#if>
       </#if>
    </@>
