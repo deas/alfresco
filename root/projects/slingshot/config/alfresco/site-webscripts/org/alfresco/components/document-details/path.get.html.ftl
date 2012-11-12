@@ -16,7 +16,7 @@
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />
       <#assign el=args.htmlid?html>
-      <div class="path-nav">
+      <div class="path-nav theme-bg-color-2">
          <span class="heading">${msg("path.location")}:</span>
          <span id="${el}-defaultPath" class="path-link"><a href="${siteURL("documentlibrary")}">${msg("path.documents")}</a></span>
          <span id="${el}-path"></span>
@@ -24,4 +24,3 @@
       <div id="${el}-status" class="status-banner hidden"></div>
    </@>
 </@>
-
