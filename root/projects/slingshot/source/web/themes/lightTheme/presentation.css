@@ -335,6 +335,12 @@ h4 .lighter
    background-color: transparent;
 }
 
+#prompt .bd
+{
+   border-bottom-left-radius: 0;
+   border-bottom-right-radius: 0;
+}
+
 /* Data Lists: DataTable (Needs to appear before yui-dt-highlighted rule) */
 
 .yui-skin-lightTheme .datagrid tr.yui-dt-even
