@@ -8,7 +8,7 @@ function main()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : "blog",
-         editMode : Boolean(page.url.args.postId != null),
+         editMode : (page.url.args.postId != null),
          postId : (page.url.args.postId != null) ? page.url.args.postId : "",
          editorConfig : {
             width: "700",

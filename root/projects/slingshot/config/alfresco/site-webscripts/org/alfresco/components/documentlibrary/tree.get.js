@@ -1,4 +1,9 @@
-function widgets()
+/**
+ * Main entrypoint for component webscript logic
+ *
+ * @method main
+ */
+function main()
 {
    var evaluateChildFolders = "true",
        maximumFolderCount = "-1";
@@ -21,7 +26,7 @@ function widgets()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : template.properties.container != null ? template.properties.container : "documentLibrary",
-         evaluateChildFolders : Boolean(evaluateChildFolders),
+         evaluateChildFolders : (evaluateChildFolders == "true"),
          maximumFolderCount : parseInt(maximumFolderCount),
          setDropTargets : true
       }
@@ -29,4 +34,4 @@ function widgets()
    model.widgets = [docListTree];
 }
 
-widgets();
+main();

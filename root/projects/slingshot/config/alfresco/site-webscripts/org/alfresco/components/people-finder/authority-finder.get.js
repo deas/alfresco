@@ -29,7 +29,7 @@ function main()
          siteId : siteId,
          minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : "3"),
          maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : "100"),
-         setFocus : Boolean((args.setFocus != null) ? args.setFocus : "false"),
+         setFocus : (args.setFocus == "true"),
          addButtonSuffix : (args.addButtonSuffix != null) ? args.addButtonSuffix : "",
          dataWebScript : { _alfValue : "dataWebScript", _alfType: "REFERENCE"},
          viewMode : { _alfValue : "Alfresco.AuthorityFinder.VIEW_MODE_DEFAULT", _alfType: "REFERENCE"},
@@ -40,4 +40,3 @@ function main()
 }
 
 main();
-

@@ -53,7 +53,7 @@ function main()
          roles : model.siteRoles,
          minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength),
          maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults),
-         setFocus : Boolean((args.setFocus != null) ? args.setFocus : "false")
+         setFocus : (args.setFocus == "true")
       }
    };
 

@@ -61,7 +61,7 @@ function main()
       options : {
          userId : user.name,
          profile : {
-            isEditable : Boolean(model.isEditable),
+            isEditable : model.isEditable,
             name : (model.profile.name != null) ? model.profile.name : "",
             lastName : (model.profile.lastName != null) ? model.profile.lastName : "",
             firstName : (model.profile.firstName != null) ? model.profile.firstName : "",

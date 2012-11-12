@@ -267,6 +267,7 @@ h4 .lighter
 {
    border-bottom: medium none;
    box-shadow: 3px 3px 6px #666;
+   border-radius: 6px;
 }
 
 .yui-skin-lightTheme .mask
@@ -281,7 +282,6 @@ h4 .lighter
 {
    color: #333;
    background: #eee;
-   border-bottom: 1px solid #ccc;
    border-left-color: #ccc;
    border-right-color: #ccc;
 }
@@ -292,6 +292,10 @@ h4 .lighter
    font-size: 123.1%;
    font-weight: normal;
    border-bottom: 1px solid #ccc;
+   border-top-left-radius: 6px;
+   border-top-right-radius: 6px;
+   line-height: 2em;
+   border-bottom: 1px solid #ccc;
 }
 
 .yui-skin-lightTheme .yui-panel .form-buttons,
@@ -299,6 +303,8 @@ h4 .lighter
 {
    font-size: 100%;
    border-top: 1px solid #ccc;
+   border-bottom-left-radius: 6px;
+   border-bottom-right-radius: 6px;
 }
 
 .yui-skin-lightTheme .yui-panel div.form-fields
@@ -310,6 +316,8 @@ h4 .lighter
 {
    border-top: 1px solid #ccc;
    padding: 5px;
+   border-bottom-left-radius: 6px;
+   border-bottom-right-radius: 6px;
 }
 
 .yui-skin-lightTheme .yui-panel .bd
@@ -318,6 +326,8 @@ h4 .lighter
    background-color: #fff;
    border-left-color: #ccc;
    border-right-color: #ccc;
+   border-bottom-left-radius: 6px;
+   border-bottom-right-radius: 6px;
 }
 
 .yui-skin-lightTheme .yui-panel .bd .yui-resize .yui-resize-handle
@@ -1479,4 +1489,10 @@ div.theme-bg-color-7
 .usedDashlet
 {
    background-color: #eee !important;
+}
+
+.path-nav .heading
+{
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal !important;
 }

@@ -18,7 +18,7 @@ function main()
          startDate : model.viewArgs.view.startDate,
          endDate : model.viewArgs.view.endDate,
          titleDate : model.viewArgs.view.titleDate,
-         permitToCreateEvents : Boolean(model.viewArgs.permitToCreateEvents),
+         permitToCreateEvents : model.viewArgs.permitToCreateEvents,
          truncateLength : parseInt(100),
          fcOpts : 
          {

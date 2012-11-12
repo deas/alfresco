@@ -12,7 +12,7 @@ function main()
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          minSearchTermLength : parseInt((args.minSearchTermLength != null) ? args.minSearchTermLength : defaultMinSearchTermLength),
          maxSearchResults : parseInt((args.maxSearchResults != null) ? args.maxSearchResults : defaultMaxSearchResults),
-         setFocus : Boolean((args.setFocus != null) ? args.setFocus : "false")
+         setFocus: (args.setFocus == "true")
       }
    };
    model.widgets = [sentInvites];

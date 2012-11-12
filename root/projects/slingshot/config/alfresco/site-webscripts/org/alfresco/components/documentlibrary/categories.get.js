@@ -17,11 +17,10 @@ function main()
       name : "Alfresco.DocListCategories",
       options : {
          nodeRef : "alfresco://category/root", 
-         evaluateChildFolders : Boolean(evaluateChildFolders)
+         evaluateChildFolders : (evaluateChildFolders == "true")
       }
    };
    model.widgets = [categories];
 }
 
 main();
-

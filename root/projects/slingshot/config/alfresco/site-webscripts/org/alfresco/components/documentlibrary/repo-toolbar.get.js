@@ -16,11 +16,11 @@ function widgets()
       name: "Alfresco.RepositoryDocListToolbar",
       options: {
          rootNode: toolbar.rootNode != null ? toolbar.rootNode : "",
-         hideNavBar: Boolean(toolbar.preferences.hideNavBar != null ? toolbar.preferences.hideNavBar != null : "false"),
-         googleDocsEnabled: Boolean(toolbar.googleDocsEnabled != null ? toolbar.googleDocsEnabled : "false"),
+         hideNavBar: Boolean(toolbar.preferences.hideNavBar),
+         googleDocsEnabled: toolbar.googleDocsEnabled,
          repositoryBrowsing: toolbar.rootNode != null,
-         useTitle: Boolean(useTitle),
-         createContentByTemplateEnabled: Boolean(model.createContentByTemplateEnabled),
+         useTitle: (useTitle == "true"),
+         createContentByTemplateEnabled: model.createContentByTemplateEnabled,
          createContentActions: model.createContent
       }
    };

@@ -41,15 +41,15 @@ function main()
             siteId : model.site,
             rootPage : model.rootPage,
             rootLabelId : model.rootLabelId,
-            showFavourite : Boolean(model.showFavourite),
-            showLikes : Boolean(model.showLikes),
-            showComments : Boolean(model.showComments),
-            showDownload : Boolean(model.showDownload),
-            showPath : Boolean(model.showPath),
+            showFavourite : (model.showFavourite == "true"),
+            showLikes : (model.showLikes == "true"),
+            showComments : (model.showComments == "true"),
+            showDownload : (model.showDownload == "true"),
+            showPath : (model.showPath == "true"),
             displayName : (model.item.displayName != null) ? model.item.displayName : model.item.fileName,
             likes : likes,
-            isFavourite : Boolean(model.item.isFavourite || false),
-            isContainer : Boolean(model.isContainer),
+            isFavourite : (model.item.isFavourite || false),
+            isContainer : model.isContainer,
             sharedId: model.item.node.properties["qshare:sharedId"] || null,
             sharedBy: model.item.node.properties["qshare:sharedBy"] || null
          }
@@ -59,4 +59,3 @@ function main()
 }
 
 main();
-

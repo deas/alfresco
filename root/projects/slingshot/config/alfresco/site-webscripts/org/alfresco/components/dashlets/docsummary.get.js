@@ -52,7 +52,7 @@ function main()
       options : {
          filter : model.preferences.filter != null ? model.preferences.filter : "recentlyModifiedByMe",
          validFilters : model.filters,
-         simpleView : Boolean(model.preferences.simpleView != null ? model.preferences.simpleView : false), 
+         simpleView : (model.preferences.simpleView == true), 
          maxItems : parseInt(model.maxItems)
       }
    };

@@ -1,10 +1,10 @@
 function main()
 {
    var dataLoader = {
-      id : "DataLoader", 
-      name : "Alfresco.DataLoader",
-      options : {
-         url : (args.url != null) ? args.url : ""
+      id: "DataLoader", 
+      name: "Alfresco.DataLoader",
+      options: {
+         url: (args.url != null) ? args.url : ""
       }
    };
    if (args.eventData != null)
@@ -13,7 +13,7 @@ function main()
    }
    if (args.useProxy != null)
    {
-      dataLoader.options.useProxy = Boolean(args.useProxy);
+      dataLoader.options.useProxy = (args.useProxy == "true");
    }
    if (args.failureMessageKey != null)
    {
