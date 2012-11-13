@@ -202,19 +202,17 @@ h4 .lighter
 {
    border: 1px solid #ccc;
    background-color: #fff;
-   box-shadow: 3px 3px 6px #ccc;
+   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
    border-radius: 6px;
 }
 
 .dashlet .title
 {
    border-bottom: 1px solid #ccc;
-   /*color: #333;*/
-   /* dark title bar */
-   background-color: #333;
+   background-color: #eee;
    border-top-left-radius: 6px;
    border-top-right-radius: 6px;
-   color: #fff;
+   color: #333;
 }
 
 .dashlet .feed
@@ -266,7 +264,7 @@ h4 .lighter
 .yui-skin-lightTheme .yui-panel
 {
    border-bottom: medium none;
-   box-shadow: 3px 3px 6px #666;
+   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
    border-radius: 6px;
 }
 
@@ -368,14 +366,14 @@ h4 .lighter
 .yui-skin-lightTheme .yui-dt-data tr.yui-dt-highlighted td.yui-dt-asc,
 .yui-skin-lightTheme .yui-dt-data tr.yui-dt-highlighted td.yui-dt-desc
 {
-   background-color: #ddd;
+   background-color: #eee;
    cursor: auto;
 }
 
 .yui-skin-lightTheme .yui-dt-message,
 .yui-skin-lightTheme .yui-dt-message tr.yui-dt-highlighted
 {
-   background-color: white;
+   background-color: #fff;
 }
 
 /* Style the default message  */
@@ -476,7 +474,7 @@ span.navigation-item a.active-page:visited
 span.navigation-item a:hover
 {
    color: #000;
-   background-color: #ccc;
+   background-color: #eee;
 }
 
 span.navigation-separator
@@ -807,9 +805,11 @@ body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
 body.yui-skin-lightTheme .yuimenu .bd
 {
    border: 1px solid #ccc;
-   box-shadow: 3px 3px 6px #ccc;
+   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
    padding: 3px;
    font-size: 108%;
+   border-bottom-left-radius: 6px;
+   border-bottom-right-radius: 6px;
 }
 
 .yui-skin-lightTheme .yui-menu-shadow-visible
@@ -831,7 +831,7 @@ body.yui-skin-lightTheme .yuimenuitemlabel
 
 body.yui-skin-lightTheme .yuimenu .bd ul li.yuimenuitem-selected
 {
-   background-color: #ccc;
+   background-color: #eee;
 }
 
 body.yui-skin-lightTheme .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel,
@@ -883,13 +883,14 @@ body.yui-skin-lightTheme .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabl
 body.yui-skin-lightTheme .doclist .more-actions a:active,
 body.yui-skin-lightTheme .doclist .more-actions a:hover
 {
-   background-color: #ccc;
+   background-color: #eee;
+   color: #333;
 }
 
 body.yui-skin-lightTheme .doclist div.more-actions
 {
    border: 1px solid #ccc;
-   box-shadow: 3px 3px 6px #ccc;
+   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
 body.yui-skin-lightTheme .doclist .action-set a:active,
@@ -965,14 +966,14 @@ body.yui-skin-lightTheme .treeview .selected,
 body.yui-skin-lightTheme .categoryview .selected,
 body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected
 {
-   background-color: #ccc;
+   background-color: #eee;
 }
 
 /* these rules need to be separate from the above for ie6 */
 .yui-skin-lightTheme .treeview .selected > table,
 .yui-skin-lightTheme .categoryview .selected > table
 {
-   background-color: #ccc;
+   background-color: #eee;
 }
 
 .yui-skin-lightTheme .filter a.disabled,
@@ -984,7 +985,7 @@ body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-lightTheme .tags a.disabled:hover,
 .yui-skin-lightTheme .tags a.disabled:visited
 {
-   color: #aaa;
+   color: #ccc;
    cursor: not-allowed;
 }
 
@@ -1211,7 +1212,7 @@ div.theme-bg-color-7
 
 .theme-bg-selected
 {
-   background-color: #ccc;
+   background-color: #eee;
 }
 
 /* Theme border type/colors */
@@ -1345,7 +1346,7 @@ div.theme-bg-color-7
 .global-folder .container-picker a:active,
 .global-folder .container-picker a:hover
 {
-   background-color: #ccc !important;
+   background-color: #eee !important;
 }
 
 .global-folder .site-picker a,
@@ -1418,7 +1419,7 @@ div.theme-bg-color-7
 .customise-pages-page-list-item img
 {
    border-radius: 6px;
-   box-shadow: 3px 3px 6px #ccc;
+   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
 /** search boxes for site, people and members finders */
@@ -1498,6 +1499,12 @@ div.theme-bg-color-7
 }
 
 .path-nav .heading
+{
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal !important;
+}
+
+.doclist .info-banner
 {
    font-family: Open Sans Bold, Arial, sans-serif;
    font-weight: normal !important;
