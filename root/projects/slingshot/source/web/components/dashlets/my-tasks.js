@@ -181,7 +181,7 @@
                config:
                {
                   containers: [this.id + "-paginator"],
-                  template: "{FirstPageLink} {PreviousPageLink} <strong>{CurrentPageReport}</strong> {NextPageLink} {LastPageLink}",
+                  template: "{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}",
                   firstPageLinkLabel: "&lt;&lt;",
                   previousPageLinkLabel: "&lt;",
                   nextPageLinkLabel: "&gt;",

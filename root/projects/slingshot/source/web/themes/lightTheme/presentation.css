@@ -891,6 +891,8 @@ body.yui-skin-lightTheme .doclist div.more-actions
 {
    border: 1px solid #ccc;
    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+   border-bottom-left-radius: 6px;
+   border-bottom-right-radius: 6px;
 }
 
 body.yui-skin-lightTheme .doclist .action-set a:active,
@@ -1508,4 +1510,10 @@ div.theme-bg-color-7
 {
    font-family: Open Sans Bold, Arial, sans-serif;
    font-weight: normal !important;
+}
+
+/* saved and site search dashlets */
+table td.thumbnail img
+{
+   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
 }
