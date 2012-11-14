@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,27 +19,17 @@
 package org.alfresco.module.vti.web.actions;
 
 import java.io.IOException;
-import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.web.VtiAction;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.tenant.TenantService;
-import org.alfresco.repo.tenant.TenantUtil;
-import org.alfresco.repo.tenant.TenantUtil.TenantRunAsWork;
 import org.alfresco.repo.webdav.ActivityPostProducer;
 import org.alfresco.repo.webdav.ActivityPoster;
-import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVMethod;
 import org.alfresco.repo.webdav.WebDAVServerException;
-import org.alfresco.service.ServiceRegistry;
-import org.alfresco.service.cmr.security.AuthenticationService;
-import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,17 +44,10 @@ import org.apache.commons.logging.LogFactory;
 */
 public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecutor
 {
-    private static final long serialVersionUID = 8916126506309290108L;
-
     protected VtiPathHelper pathHelper;
 
     protected WebDAVHelper webDavHelper;
 
-    protected ServiceRegistry serviceRegistry;
-
-    protected AuthenticationService authenticationService;
-
-    protected TenantService tenantService;
     
     private static Log logger = LogFactory.getLog(VtiWebDavAction.class);
 
@@ -177,35 +160,5 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
     public void setWebDavHelper(WebDAVHelper webDavHelper)
     {
         this.webDavHelper = webDavHelper;
-    }
-
-    /**
-     * <p>ServiceRegistry setter.</p>
-     *
-     * @param serviceRegistry {@link ServiceRegistry}.    
-     */
-    public void setServiceRegistry(ServiceRegistry serviceRegistry)
-    {
-        this.serviceRegistry = serviceRegistry;
-    }
-
-    /**
-     * <p>AuthenticationService setter.</p>
-     *
-     * @param authenticationService {@link AuthenticationService}.    
-     */
-    public void setAuthenticationService(AuthenticationService authenticationService)
-    {
-        this.authenticationService = authenticationService;
-    }
-
-    /**
-     * Sets the TenantService used by this class.
-     * 
-     * @param tenantService {@link TenantService}
-     */
-    public void setTenantService(TenantService tenantService)
-    {
-        this.tenantService = tenantService;
     }
 }

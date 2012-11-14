@@ -100,9 +100,9 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.9-beta1-20120801.jar" sourcepath="src/poi-3.9-beta1-20120801.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.9-beta1-20120801.jar" sourcepath="src/poi-3.9-beta1-20120801.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.9-beta1-20120801.jar" sourcepath="src/poi-3.9-beta1-20120801.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.9-beta1-20121109-patched.jar" sourcepath="src/poi-3.9-beta1-20121109-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.9-beta1-20121109.jar" sourcepath="src/poi-3.9-beta1-20121109-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.9-beta1-20121109.jar" sourcepath="src/poi-3.9-beta1-20121109-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>

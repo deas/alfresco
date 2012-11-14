@@ -306,9 +306,7 @@
     
     <bean id="abstractDAVAction" abstract="true">
         <property name="pathHelper" ref="vtiPathHelper"/>
-        <property name="serviceRegistry" ref="ServiceRegistry"/>
         <property name="webDavHelper" ref="sppDAVHelper"/>
-        <property name="authenticationService" ref="AuthenticationService"/>
         <property name="activityPoster" ref="vtiActivityPoster"/>
     </bean>
     

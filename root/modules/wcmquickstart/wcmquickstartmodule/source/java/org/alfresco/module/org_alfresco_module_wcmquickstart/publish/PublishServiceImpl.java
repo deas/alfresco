@@ -220,7 +220,7 @@ public class PublishServiceImpl implements PublishService
                         nodesToTransfer.add(node);
                     }
                 }
-                if (!nodesToTransfer.isEmpty())
+                if (!nodesToTransfer.isEmpty() || !nodesToRemoveOnTransfer.isEmpty())
                 {
                     if (log.isDebugEnabled())
                     {

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -283,19 +284,15 @@ public class FormConfigElement extends ConfigElementAdapter
         // These objects will have no associated metadata.
         
         // Get field names that are visible in any mode.
-        List<String> fieldsVisibleInAnyMode = new ArrayList<String>();
+        Set<String> fieldsVisibleInAnyMode = new LinkedHashSet<String>();
         for (Mode m : Mode.values())
         {
             List<String> newFields = fieldVisibilityManager.getFieldNamesVisibleInMode(m);
             
-            // There is a lot of looping going on here, but we need to maintain the order
-            // of the field entries.
+            // Insertion order is not affected if an element is re-inserted into the LinkedHashSet
             if (newFields != null)
             {
-                for (String s : newFields)
-                {
-                    if (fieldsVisibleInAnyMode.contains(s) == false) fieldsVisibleInAnyMode.add(s);
-                }
+                fieldsVisibleInAnyMode.addAll(newFields);
             }
         }
         
@@ -520,7 +517,11 @@ public class FormConfigElement extends ConfigElementAdapter
         // the specified set
         for (String fieldName : visibleFields)
         {
-            final FormField formField = getFields().get(fieldName);
+            // get field defined in <appearance> block
+            final FormField appearanceField = this.fields.get(fieldName);
+            // if field defined only in <field-visibility>, create it without associated data.
+            final FormField formField = (appearanceField != null) ? appearanceField : new FormField(fieldName, null);
+            
             String set = null;
             if (formField != null)
             {

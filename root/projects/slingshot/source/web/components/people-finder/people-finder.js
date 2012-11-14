@@ -226,6 +226,14 @@
       isSearching: false,
       
       /**
+       * Is "Follow" action on server allowed
+       *
+       * @property followingAllowed
+       * @type Boolean
+       */
+      followingAllowed: false,
+      
+      /**
        * Map of the users the current user is following
        * 
        * @property following
@@ -272,6 +280,7 @@
                         }
                         me.following = following;
                      }
+                     me.followingAllowed = true;
                   },
                   scope: this
                }
@@ -520,7 +529,7 @@
                }
             }
             // Create the Follow/Unfollow buttons for the people
-            if (me.options.viewMode === Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE &&
+            if (me.followingAllowed && me.options.viewMode === Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE &&
                 me.options.userId !== userName)
             {
                var following = me.following[userName];

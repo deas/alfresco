@@ -38,10 +38,10 @@
             <ul id="${el}-availablePages-ul" class="page-list">
             <#list pages as page>
                <#if !page.used>
-                  <li id="${el}-page-${page.pageId?js_string}" class="customise-pages-page-list-item">
-                     <input type="hidden" name="pageId" value="${page.pageId?js_string}">
-                     <input type="hidden" name="sitePageTitle" value="${(page.sitePageTitle!"")?js_string}">
-                     <img src="${url.context}/res/components/images/page-${page.pageId?js_string}-64.png"
+            <li id="${el}-page-${page.pageId?html}" class="customise-pages-page-list-item">
+               <input type="hidden" name="pageId" value="${page.pageId?html}">
+               <input type="hidden" name="sitePageTitle" value="${(page.sitePageTitle!"")?html}">
+               <img src="${url.context}/res/components/images/page-${page.pageId?html}-64.png"
                           onerror="this.src='${url.context}/res/components/images/page-64.png'"
                           class="theme-border-3"/>
       
@@ -50,8 +50,8 @@
                      <h3 class="title">${(page.sitePageTitle!page.title)?html}</h3>
                      <div class="type">${page.title?html}</div>
                      <div class="actions">
-                        <a href="#" name=".onRenameClick" class="${el}" rel="${page.pageId?js_string}">${msg("link.rename")}</a> |
-                        <a href="#" name=".onRemoveClick" class="${el}" rel="${page.pageId?js_string}">${msg("link.remove")}</a>
+                  <a href="#" name=".onRenameClick" class="${el}" rel="${page.pageId?html}">${msg("link.rename")}</a> |
+                  <a href="#" name=".onRemoveClick" class="${el}" rel="${page.pageId?html}">${msg("link.remove")}</a>
                      </div>
                   </li>
                </#if>
@@ -68,10 +68,10 @@
             <ul id="${el}-currentPages-ul" class="page-list">
             <#list pages as page>
                <#if page.used>
-                  <li id="${el}-page-${page.pageId?js_string}" class="customise-pages-page-list-item">
-                     <input type="hidden" name="pageId" value="${page.pageId?js_string}">
-                     <input type="hidden" name="sitePageTitle" value="${(page.sitePageTitle!"")?js_string}">
-                     <img src="${url.context}/res/components/images/page-${page.pageId?js_string}-64.png"
+            <li id="${el}-page-${page.pageId?html}" class="customise-pages-page-list-item">
+               <input type="hidden" name="pageId" value="${page.pageId?html}">
+               <input type="hidden" name="sitePageTitle" value="${(page.sitePageTitle!"")?html}">
+               <img src="${url.context}/res/components/images/page-${page.pageId?html}-64.png"
                           onerror="this.src='${url.context}/res/components/images/page-64.png'"
                           class="theme-border-3"/>
       
@@ -80,8 +80,8 @@
                      <h3 class="title">${(page.sitePageTitle!page.title)?html}</h3>
                      <div class="type">${page.title?html}</div>
                      <div class="actions">
-                        <a href="#" name=".onRenameClick" class="${el}" rel="${page.pageId?js_string}">${msg("link.rename")}</a> |
-                        <a href="#" name=".onRemoveClick" class="${el}" rel="${page.pageId?js_string}">${msg("link.remove")}</a>
+                  <a href="#" name=".onRenameClick" class="${el}" rel="${page.pageId?html}">${msg("link.rename")}</a> |
+                  <a href="#" name=".onRemoveClick" class="${el}" rel="${page.pageId?html}">${msg("link.remove")}</a>
                      </div>
                   </li>
                </#if>

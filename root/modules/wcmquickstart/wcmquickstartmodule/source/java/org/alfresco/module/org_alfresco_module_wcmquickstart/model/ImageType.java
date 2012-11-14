@@ -5,6 +5,7 @@ package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
 import java.util.List;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.publish.PublishService;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.rendition.RenditionHelper;
 import org.alfresco.repo.content.ContentServicePolicies;
@@ -71,8 +72,11 @@ public class ImageType implements WebSiteModel,
     public void beforeDeleteNode(NodeRef nodeRef)
     {
         // Remove all referencing and referenced associations
-        removeAll(nodeService.getSourceAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
-        removeAll(nodeService.getTargetAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));        
+        if (!nodeService.hasAspect(nodeRef, ContentModel.ASPECT_PENDING_DELETE))
+        {
+            removeAll(nodeService.getSourceAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
+            removeAll(nodeService.getTargetAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));        
+        }
     }
     
     /**

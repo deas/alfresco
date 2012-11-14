@@ -778,6 +778,7 @@
             rows[i].cells[0].getElementsByTagName('input')[0].checked = false;
 
          }
+         this.addItemToSelectedMenu(this.getSelectedLinks());
       },
 
       /**
@@ -1051,25 +1052,51 @@
        */
       addItemToSelectedMenu: function Links_addItemToSelectedMenu(arr)
       {
-         if (this.checkPermissionSelectedLinks(arr))
+         var menu = this.widgets.linksMenu.getMenu();
+		 
+         if (menu.element.hasChildNodes())
          {
-            var element = Dom.get(this.id + "-selectedItems-menu");
-            if (element.hasChildNodes() && Dom.getElementsByClassName("delete-item", "a")[0] == null)
+            if (this.checkPermissionSelectedLinks(arr))
             {
-               var elementUl = element.getElementsByTagName("ul")[0];
-
-               var tagLi = document.createElement("li");     
-               tagLi.innerHTML = "<a class='delete-item' rel='delete' href='#'><span class='links-action-delete'>" + this.msg("links.delete") + "</span></a>";
-
-               var lastTagLi = Dom.getLastChild(elementUl);
-
-               if (lastTagLi == null)
+               if (Dom.getElementsByClassName("delete-item", "a")[0] == null)
                {
-                  elementUl.appendChild(tagLi);
+                  if (menu.getItems().length == 0)
+                  {
+                     var tagLi = document.createElement("li");  
+
+                     tagLi.innerHTML = "<a class='delete-item' rel='' href='#'><span class='links-action-delete'>" + this.msg("links.delete") + "</span></a>";
+
+                     var elementUl = menu.element.getElementsByTagName("ul")[0];
+
+                     var lastTagLi = Dom.getLastChild(elementUl);
+
+                     if (lastTagLi == null)
+                     {
+                        elementUl.appendChild(tagLi);
+                     }
+                     else
+                     {
+                        Dom.insertBefore(tagLi, lastTagLi);
+                     }
+                  }
+                  else
+                  {
+                     menu.getItem(0, 0).index = 1;
+                     // Add new menu item
+                     var deleteItem = menu.insertItem("<span class='links-action-delete'>" + this.linksDeleteName + "</span>",0,0);
+						
+                     //Add 'delete-item' class to the first place (for onMenuItemClick)
+                     var tagADelete = Dom.getFirstChild(deleteItem.element);
+                     var className = tagADelete.className;	
+                     tagADelete.className = 'delete-item ' + className;			
+                  }
                }
-               else
+            }
+            else
+            {
+               if (Dom.getElementsByClassName("delete-item", "a")[0] != null)
                {
-                  Dom.insertBefore(tagLi, lastTagLi);
+                  menu.removeItem(menu.getItem(0, 0), 0);
                }
             }
          }

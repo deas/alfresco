@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.publish.PublishService;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.rendition.RenditionHelper;
 import org.alfresco.repo.content.ContentServicePolicies;
@@ -49,7 +50,7 @@ import org.alfresco.service.namespace.RegexQNamePattern;
  */
 public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyNodePolicy,
         ContentServicePolicies.OnContentUpdatePolicy, NodeServicePolicies.OnAddAspectPolicy,
-        NodeServicePolicies.BeforeDeleteNodePolicy, NodeServicePolicies.OnDeleteNodePolicy
+        NodeServicePolicies.BeforeDeleteNodePolicy
 {
     /** Policy component */
     private PolicyComponent policyComponent;
@@ -136,8 +137,6 @@ public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyN
                 new JavaBehaviour(this, "onUpdatePropertiesEachEvent", NotificationFrequency.EVERY_EVENT));
         policyComponent.bindClassBehaviour(NodeServicePolicies.BeforeDeleteNodePolicy.QNAME, ASPECT_WEBASSET,
                 new JavaBehaviour(this, "beforeDeleteNode", NotificationFrequency.FIRST_EVENT));
-        policyComponent.bindClassBehaviour(NodeServicePolicies.OnDeleteNodePolicy.QNAME, ASPECT_WEBASSET,
-                new JavaBehaviour(this, "onDeleteNode", NotificationFrequency.TRANSACTION_COMMIT));
     }
 
     /**
@@ -229,16 +228,14 @@ public class WebAssetAspect implements WebSiteModel, CopyServicePolicies.OnCopyN
     @Override
     public void beforeDeleteNode(NodeRef nodeRef)
     {
-        // Remove all referencing associations
-        removeAll(nodeService.getSourceAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
-    }
-
-    @Override
-    public void onDeleteNode(ChildAssociationRef childAssocRef, boolean isNodeArchived)
-    {
-        NodeRef nodeRef = childAssocRef.getChildRef();
         // Enqueue nodes
         publishService.enqueueRemovedNodes(nodeRef);
+
+        // Remove all referencing associations (if this is a store move)
+        if (!nodeService.hasAspect(nodeRef, ContentModel.ASPECT_PENDING_DELETE))
+        {
+            removeAll(nodeService.getSourceAssocs(nodeRef, RegexQNamePattern.MATCH_ALL));
+        }
     }
 
     /**
