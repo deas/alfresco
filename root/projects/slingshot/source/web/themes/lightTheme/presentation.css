@@ -202,7 +202,7 @@ h4 .lighter
 {
    border: 1px solid #ccc;
    background-color: #fff;
-   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    border-radius: 6px;
 }
 
@@ -264,7 +264,7 @@ h4 .lighter
 .yui-skin-lightTheme .yui-panel
 {
    border-bottom: medium none;
-   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    border-radius: 6px;
 }
 
@@ -805,11 +805,16 @@ body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
 body.yui-skin-lightTheme .yuimenu .bd
 {
    border: 1px solid #ccc;
-   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    padding: 3px;
    font-size: 108%;
    border-bottom-left-radius: 6px;
    border-bottom-right-radius: 6px;
+}
+
+body.yui-skin-lightTheme .yuimenu .bd a:focus
+{
+   outline:none;
 }
 
 .yui-skin-lightTheme .yui-menu-shadow-visible
@@ -890,7 +895,7 @@ body.yui-skin-lightTheme .doclist .more-actions a:hover
 body.yui-skin-lightTheme .doclist div.more-actions
 {
    border: 1px solid #ccc;
-   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    border-bottom-left-radius: 6px;
    border-bottom-right-radius: 6px;
 }
@@ -1421,7 +1426,7 @@ div.theme-bg-color-7
 .customise-pages-page-list-item img
 {
    border-radius: 6px;
-   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /** search boxes for site, people and members finders */

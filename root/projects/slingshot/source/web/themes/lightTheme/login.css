@@ -37,7 +37,7 @@ input
    visibility: hidden;
    border: 1px solid #ccc;
    background-color: #fff;
-   box-shadow: 3px 3px 6px #ccc;
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    border-radius: 16px;
 }
 
