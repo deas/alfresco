@@ -1,5 +1,15 @@
 /* Site-wide Styles */
 
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner
+{
+    border: none;
+}
+button:focus {outline:none;}
+
 .sticky-wrapper,
 .sticky-footer
 {
@@ -683,6 +693,11 @@ body.yui-skin-yellowTheme .nodeEdit .onDeleteBlogPost a:hover
 body.yui-skin-yellowTheme .yuimenu .bd
 {
    border: 1px solid #d88119; 
+}
+
+body.yui-skin-yellowTheme .yuimenu .bd a:focus
+{
+   outline: none;
 }
 
 /* YUI Menu roll over state */

@@ -29,10 +29,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
 }
 button:focus {outline:none;}
 
-/**
- * Percents could work for IE, but for backCompat purposes, we are using keywords.
- * x-small is for IE6/7 quirks mode.
- */
 .yui-panel-container,
 .alfresco-share .sticky-wrapper,
 .login-panel
@@ -40,9 +36,6 @@ button:focus {outline:none;}
 	font:13px/1.231 Open Sans,arial,helvetica,clean,sans-serif;
 }
 
-/**
- * Nudge down to get to 13px equivalent for these form elements
- */ 
 .alfresco-share .sticky-wrapper select,
 .yui-panel-container select,
 .alfresco-share .sticky-wrapper input,
@@ -814,7 +807,7 @@ body.yui-skin-lightTheme .yuimenu .bd
 
 body.yui-skin-lightTheme .yuimenu .bd a:focus
 {
-   outline:none;
+   outline: none;
 }
 
 .yui-skin-lightTheme .yui-menu-shadow-visible
