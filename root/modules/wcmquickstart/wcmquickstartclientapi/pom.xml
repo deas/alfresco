@@ -8,8 +8,8 @@
     <name>Alfresco WCMQS Client API</name>
     <parent>
         <artifactId>alfresco-parent</artifactId>
-        <groupId>org.alfresco.enterprise</groupId>
-        <version>4.1.3-SNAPSHOT</version>
+        <groupId>org.alfresco</groupId>
+        <version>4.2.c-SNAPSHOT</version>
         <relativePath>../../../pom-experimental.xml</relativePath>
     </parent>
 
