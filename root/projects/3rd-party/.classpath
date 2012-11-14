@@ -188,8 +188,8 @@
 	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-802.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.2.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.10.jar" sourcepath="src/activiti-engine-5.10-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.10.jar" sourcepath="src/activiti-spring-5.10-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.10-14112012.jar" sourcepath="src/activiti-engine-5.10-14112012-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.10-14112012.jar" sourcepath="src/activiti-spring-5.10-14112012-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-youtube-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
