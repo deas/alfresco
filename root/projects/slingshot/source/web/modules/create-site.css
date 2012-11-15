@@ -10,5 +10,6 @@
 
 .create-site span.help
 {
-   font-size: 81%;   
+   font-size: 81%;
+   white-space: nowrap;
 }

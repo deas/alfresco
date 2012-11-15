@@ -866,7 +866,7 @@
       {
          // update the search results field
          var text;
-         var resultsCount = '<b>' + this.resultsCount + '</b>';
+         var resultsCount = "" + this.resultsCount;
          if (this.hasMoreResults)
          {
             text = this.msg("search.info.resultinfomore", resultsCount);

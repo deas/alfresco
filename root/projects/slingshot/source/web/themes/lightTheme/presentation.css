@@ -83,8 +83,14 @@ button:focus {outline:none;}
    font-family: Open Sans Condensed, Arial, sans-serif;
    font-size: 230%;
    font-weight: normal;
-   top: -2px;
+   top: -4px;
    left: 162px;
+}
+
+/** linked to h1 above - right margin for long name wrap */
+.page-title div.title
+{
+   margin-right: 162px;
 }
 
 h1.sub-title
@@ -698,12 +704,13 @@ span.mce_alfresco-linklibrary
 
 .yui-skin-lightTheme .yui-pg-container span
 {
-   color: #606060;
+   color: #333;
 }
 
 .yui-skin-lightTheme .yui-pg-container span.yui-pg-page.yui-pg-current-page
 {
-   color: #333333;
+   color: #333;
+   font-weight: normal;
 }
 
 .yui-skin-lightTheme .yui-pg-container a.yui-pg-first,
@@ -712,7 +719,7 @@ span.mce_alfresco-linklibrary
 .yui-skin-lightTheme .yui-pg-container a.yui-pg-next,
 .yui-skin-lightTheme .yui-pg-container a.yui-pg-last
 {
-   border-color: #CBCBCB;
+   border-color: #ccc;
    color: #333;
    text-decoration: none;
 }
@@ -1380,11 +1387,10 @@ div.theme-bg-color-7
    margin-top: -15px;
 }
 
-.profile .sites li p a,
-.profile .content li p a
+/* only target the user profile toolbar - not others e.g. doclib */
+.toolbar.userprofile
 {
-   font-family: Open Sans Bold, Arial, sans-serif;
-   font-weight: normal !important;
+   padding: 0 0 10px !important;
 }
 
 .search .itemname a
@@ -1514,4 +1520,14 @@ div.theme-bg-color-7
 table td.thumbnail img
 {
    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.people-finder
+{
+   margin-top: 0 !important;
+}
+
+.site-finder
+{
+   margin-top: 0 !important;
 }

@@ -278,20 +278,13 @@
 .profile .sites li p a,
 .profile .content li p a
 {
-   font-weight: bold;
    float: none;
    font-size: 108%;
 }
 
-.profile .sites p,
-.profile .content p
-{
-   float: left;
-}
-
 .profile .sites p
 {
-   margin: 1.5em 0;
+   margin: 0.5em 0 0 7em;
 }
 
 .profile .content p
@@ -303,6 +296,7 @@
 .profile .content li p span
 {
    display: block;
+   padding-top: 2px;
 }
 
 .profile .content li p span.relativeTime,
