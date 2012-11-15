@@ -11,11 +11,6 @@
 
 <@markup id="widgets">
    <@createWidgets group="profile"/>
-   <@inlineScript group="profile">
-      YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("${el}-body"), function() {
-         this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
-      })
-   </@>
 </@>
 
 <@markup id="html">
@@ -57,6 +52,10 @@
             </#if>
          </div>
       </div>
+      <script>
+         YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("${el}-body"), function() {
+            this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+         })
+      </script>
    </@>
 </@>
-

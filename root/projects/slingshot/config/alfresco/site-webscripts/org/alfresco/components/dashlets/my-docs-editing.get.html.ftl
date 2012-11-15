@@ -10,12 +10,6 @@
 
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
-   <@inlineScript group="dashlets">
-      YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("myEditingDocsDashlet") , function()
-      {
-         this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
-      })
-   </@>
 </@>
 
 <@markup id="html">
