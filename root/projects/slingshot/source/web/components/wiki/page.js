@@ -204,6 +204,9 @@
             this._setupPageDetails();
          }
          
+         //Append the Wiki page title to page title
+         document.title += $html(" \u00BB " + this.options.pageTitle);
+
          // Content area
          var pageText = Dom.get(this.id + "-page");
          if (pageText)
