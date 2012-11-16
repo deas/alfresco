@@ -81,7 +81,7 @@ button:focus {outline:none;}
 .yui-panel-container h1
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 230%;
+   font-size: 235%;
    font-weight: normal;
    top: -4px;
    left: 162px;
@@ -468,7 +468,7 @@ span.navigation-item a.active-page:visited
 {
    color: #000;
    font-family: Open Sans Bold, Arial, sans-serif;
-}/*TODO: bold Sans font!*/
+}
 
 span.navigation-item a:hover
 {
@@ -1302,7 +1302,18 @@ div.theme-bg-color-7
 
 .header .header-left .logo-spacer
 {
-   border-right: none !important;
+   border-right: 1px solid #ccc !important;
+   height: 40px !important;
+   width: 1px !important;
+   margin: 0 !important;
+   position: relative;
+   left: 165px;
+   top: 62px;
+}
+
+.header .app-items
+{
+   margin-left: 8px;
 }
 
 .header .app-items span.yui-button span.first-child button
@@ -1385,6 +1396,12 @@ div.theme-bg-color-7
 .profile .sites li.first, .profile .content li.first, .profile .people li.first
 {
    margin-top: -15px;
+   border-top: 0 none !important;
+}
+
+.profile .sites li, .profile .content li, .profile .people li
+{
+   border-top: 1px solid #ccc !important;
 }
 
 /* only target the user profile toolbar - not others e.g. doclib */
