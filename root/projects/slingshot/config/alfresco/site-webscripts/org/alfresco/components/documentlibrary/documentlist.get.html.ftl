@@ -9,6 +9,7 @@
 <@markup id="js">
    <#-- JavaScript Dependencies -->
    <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/documentlist.js" group="documentlibrary"/>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/documentlist-views.js" group="documentlibrary"/>
 </@>
 
 <@markup id="widgets">
