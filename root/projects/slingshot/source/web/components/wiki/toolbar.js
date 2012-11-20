@@ -184,38 +184,10 @@
             type: "link"
          });
          
-         this.popups.deleteDialog = Alfresco.util.createYUIPanel("deleteDialog", 
-         {
-            width: "20em",
-            text: '<div class="yui-u"><br />' + this._msg("panel.confirm.delete-msg") + '<br /><br /></div>',
-            buttons: [
-            {
-               text: this._msg("button.delete"),
-               handler:
-               {
-                  fn: this.onConfirm,
-                  scope: this
-               }
-            },
-            {
-               text: this._msg("button.cancel"),
-               handler:
-               {
-                  fn: this.onCancel,
-                  scope: this
-               },
-               isDefault: true
-            }]
-         },
-         {
-            type: YAHOO.widget.SimpleDialog
-         });
-         this.popups.deleteDialog.setHeader(this._msg("panel.confirm.header"));
-         
          // Create the rename panel
          var renamePanel = Dom.get(this.id + "-renamepanel"),
             clonedRenamePanel = renamePanel.cloneNode(true);
-            
+         
          renamePanel.parentNode.removeChild(renamePanel);
          
          this.popups.renamePanel = Alfresco.util.createYUIPanel(clonedRenamePanel,
@@ -360,8 +332,35 @@
          if (title)
          {
             this.options.title = title;
-            this.popups.deleteDialog.show();
+            this._deletePage();
          }
+      },
+      
+      _deletePage: function WikiToolbar__deletePage()
+      {
+         var me = this;
+         Alfresco.util.PopupManager.displayPrompt(
+         {
+            title: this._msg("panel.confirm.header"),
+            text: this._msg("panel.confirm.delete-msg"),
+            buttons: [
+            {
+               text: this._msg("button.delete"),
+               handler: function()
+               {
+                  this.destroy();
+                  me.onConfirm();
+               }
+            },
+            {
+               text: this._msg("button.cancel"),
+               handler: function()
+               {
+                  this.destroy();
+               },
+               isDefault: true
+            }]
+         });
       },
       
       /**
@@ -384,18 +383,6 @@
             },
             failureMessage: this._msg("load.fail")
          });
-      },
-      
-      /**
-       * Fired when the user decides not to delete a page.
-       * Hides the confirmation dialog.
-       *
-       * @method onCancel
-       * @param e {object} DomEvent
-       */
-      onCancel: function WikiToolbar_onCancel(e)
-      {
-         this.popups.deleteDialog.hide();
       },
       
       /**
@@ -558,7 +545,7 @@
        */
       onDeleteClick: function WikiToolbar_onDeleteClick(e)
       {
-         this.popups.deleteDialog.show();
+         this._deletePage();
       },
 
       /**
