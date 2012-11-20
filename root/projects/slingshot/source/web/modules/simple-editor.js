@@ -171,7 +171,7 @@ Alfresco.util.createImageEditor = function(id, options)
             {
                // Construct the link, the title of the document will be the label...
                var selectedItem = payload[1].items[i],
-                   nodeRef = selectedItem.nodeRef,
+                   nodeRef = encodeURIComponent(selectedItem.nodeRef),
                    label = selectedItem.name;
                var link = Alfresco.util.siteURL("document-details?nodeRef=" + nodeRef);
                var html = '<a href="' + link + '">' + label + '</a> ';
