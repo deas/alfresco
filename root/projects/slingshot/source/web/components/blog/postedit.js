@@ -308,9 +308,6 @@
             crop: true
          }, "keyup");
 
-         // Text is mandatory
-         this.widgets.postForm.addValidation(this.id + "-content", Alfresco.forms.validation.mandatory, null);
-
          this.widgets.postForm.setShowSubmitStateDynamically(true, false);
          if (this.widgets.publishButton)
          {
@@ -345,16 +342,6 @@
             {
                //Put the HTML back into the text area
                this.widgets.editor.save();
-
-               // Make sure the user has written a text
-               if (Dom.get(this.id + "-content").value.length === 0)
-               {
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: Alfresco.util.message("message.noText", this.name)
-                  });
-                  return;
-               }
 
                 // disable ui elements
                this.widgets.saveButton.set("disabled", true);

@@ -340,7 +340,6 @@
             crop: true
          }, "keyup");
          // Content
-         this.widgets.topicForm.addValidation(this.id + "-content", Alfresco.forms.validation.mandatory, null);
          this.widgets.topicForm.setSubmitElements(this.widgets.okButton);
          this.widgets.topicForm.setAJAXSubmit(true,
          {

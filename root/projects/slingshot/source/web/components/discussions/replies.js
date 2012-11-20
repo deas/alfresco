@@ -650,7 +650,6 @@
          this.widgets.form = new Alfresco.forms.Form(formId + "-form");
          var replyForm = this.widgets.form;
          replyForm.setShowSubmitStateDynamically(true, false);
-         replyForm.addValidation(formId + "-content", Alfresco.forms.validation.mandatory, null);         
          replyForm.setSubmitElements(this.widgets.okButton);
          if (isEdit)
          {

@@ -149,20 +149,6 @@
             type: "link"
          });
 
-         // Add validation to the rich text editor
-         this.widgets.validateOnZero = 0;
-         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
-         this.widgets.editor.subscribe(keyUpIdentifier, function (e)
-         {
-            this.widgets.validateOnZero++;
-            YAHOO.lang.later(1000, this, this.validateAfterEditorChange);
-         }, this, true);
-         var _this = this;
-         this.widgets.editor.getEditor().onSetContent.add(function(ed, e) {
-            _this.widgets.validateOnZero++;
-            YAHOO.lang.later(1000, _this, _this.validateAfterEditorChange);
-         });
-         
          // Create the form that does the validation/submit
          this.widgets.form = new Alfresco.forms.Form(this.id + "-form");
          var form = this.widgets.form;
@@ -173,9 +159,6 @@
             max: 256,
             crop: true
          }, "keyup");
-
-         // Content is mandatory
-         form.addValidation(this.id + "-content", Alfresco.forms.validation.mandatory, null);
 
          form.setShowSubmitStateDynamically(true);
          form.setSubmitElements(this.widgets.saveButton);
@@ -232,27 +215,6 @@
          this.tagLibrary.initialize(form);
          form.init();
          Dom.get(this.id + "-title").focus();
-      },
-
-      /**
-       * Called when a key was pressed in the rich text editor.
-       * Will trigger form validation after the last key stroke after a seconds pause.
-       *
-       * @method validateAfterEditorChange
-       */
-      validateAfterEditorChange: function WikiCreateForm_validateAfterEditorChange()
-      {
-         this.widgets.validateOnZero--;
-         if (this.widgets.validateOnZero == 0)
-         {
-            var oldLength = Dom.get(this.id + '-content').value.length;
-            this.widgets.editor.save();
-            var newLength = Dom.get(this.id + '-content').value.length;
-            if ((oldLength == 0 && newLength != 0) || (oldLength > 0 && newLength == 0))
-            {
-               this.widgets.form.updateSubmitElements();
-            }
-         }
       },
 
       /**
