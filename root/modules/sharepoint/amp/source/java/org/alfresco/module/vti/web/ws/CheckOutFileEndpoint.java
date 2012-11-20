@@ -19,6 +19,7 @@
 
 package org.alfresco.module.vti.web.ws;
 
+import java.net.URI;
 import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletResponse;
@@ -76,9 +77,6 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
-        String host = getHost(soapRequest);
-        String context = soapRequest.getAlfrescoContextName();
-
         // Get the pageUrl parameter from the request
         XPath xpath = new Dom4jXPath(buildXPath(prefix, "/CheckOutFile/pageUrl"));
         xpath.setNamespaceContext(nc);
@@ -88,7 +86,8 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
            throw new VtiSoapException("pageUrl must be supplied", 0x82000001l);
         }
         String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
-        docPath = docPath.substring(host.length() + context.length());
+        URI uri = URI.create(docPath);
+        docPath = uri.getPath();
         
         // Did they want to work on it locally?
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckOutFile/checkoutToLocal"));

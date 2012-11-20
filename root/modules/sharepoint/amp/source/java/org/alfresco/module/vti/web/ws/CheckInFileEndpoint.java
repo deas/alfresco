@@ -19,6 +19,7 @@
 
 package org.alfresco.module.vti.web.ws;
 
+import java.net.URI;
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.service.cmr.model.FileNotFoundException;
@@ -74,9 +75,6 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         nc.addNamespace(prefix, namespace);
         nc.addNamespace(soapUriPrefix, soapUri);
 
-        String host = getHost(soapRequest);
-        String context = soapRequest.getAlfrescoContextName();
-
         // getting pageUrl parameter from request
         XPath xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/pageUrl"));
         xpath.setNamespaceContext(nc);
@@ -87,11 +85,8 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         }
         
         String docPath = URLDecoder.decode(docE.getTextTrim());
-        if(docPath.indexOf(host) == -1 || docPath.indexOf(context) == -1)
-        {
-           throw new VtiSoapException("Invalid URI: The format of the URI could not be determined", -1);
-        }
-        docPath = docPath.substring(host.length() + context.length());
+        URI uri = URI.create(docPath);
+        docPath = uri.getPath();
 
         // Get the comment
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/comment"));

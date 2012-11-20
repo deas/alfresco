@@ -19,6 +19,8 @@
 
 package org.alfresco.module.vti.web.ws;
 
+import org.alfresco.module.vti.handler.alfresco.UrlHelper;
+
 
 /**
 * Interface that must implement all the Vti endpoints realizations
@@ -46,6 +48,8 @@ public interface VtiEndpoint
      */
     public String getNamespace();
     
+    public UrlHelper getUrlHelper();
+
     public String getResponseTagName();
 
     public String getResultTagName();

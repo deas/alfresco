@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.alfresco.module.vti.handler.alfresco.UrlHelper;
 import org.alfresco.module.vti.metadata.dic.Permission;
 import org.alfresco.module.vti.metadata.model.AssigneeBean;
 import org.alfresco.module.vti.metadata.model.DocumentBean;
@@ -64,6 +65,7 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
 
     protected String name;
     protected String namespace;
+    private UrlHelper urlHelper;
 
     /**
      * Endpoint name setter
@@ -86,6 +88,16 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
     }
 
     /**
+     * Provide the endpoint with a {@link UrlHelper}.
+     * 
+     * @param urlHelper
+     */
+    public void setUrlHelper(UrlHelper urlHelper)
+    {
+        this.urlHelper = urlHelper;
+    }
+
+    /**
      * @see org.alfresco.module.vti.web.ws.VtiEndpoint#getName()
      */
     public String getName()
@@ -101,6 +113,12 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
         return namespace;
     }
     
+    @Override
+    public UrlHelper getUrlHelper()
+    {
+        return urlHelper;
+    }
+
     /**
      * @return the response tag name
      */
@@ -152,9 +170,9 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
      * 
      * @param request Vti Soap Request ({@link VtiSoapRequest})      
      */ 
-    public static String getHost(VtiSoapRequest request)
+    public String getHost(VtiSoapRequest request)
     {
-        return request.getScheme() + "://" + request.getHeader("Host");
+        return getUrlHelper().getExternalURLHostOnly();
     }
 
     /**
@@ -200,7 +218,7 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
      * Get the (relative) file name that was requested.
      *  
      */
-    public static String getFileName(VtiSoapRequest soapRequest, XPath fileNamePath) throws Exception
+    public String getFileName(VtiSoapRequest soapRequest, XPath fileNamePath) throws Exception
     {
        Element fileNameE = (Element) fileNamePath.selectSingleNode(soapRequest.getDocument().getRootElement());
        String fileName = fileNameE.getText();

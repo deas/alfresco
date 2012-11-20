@@ -3,6 +3,13 @@
 
 <beans>
 
+    <bean id="vtiUrlHelper" class="org.alfresco.module.vti.handler.alfresco.DefaultUrlHelper">
+        <property name="externalPort" value="${vti.server.external.port}"/>
+        <property name="externalHost" value="${vti.server.external.host}"/>
+        <property name="externalProtocol" value="${vti.server.external.protocol}"/>
+        <property name="externalContextPath" value="${vti.server.external.contextPath}"/>
+    </bean>
+    
     <bean id="vtiResourceBundles" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
         <property name="resourceBundles">
             <list>
@@ -601,7 +608,11 @@
 
     <!-- Web service endpoints definition -->
 
-    <bean id="webUrlFromPageUrlEndpoint" class="org.alfresco.module.vti.web.ws.WebUrlFromPageUrlEndpoint">
+    <bean id="endpoint" abstract="true" class="org.alfresco.module.vti.web.ws.AbstractEndpoint">
+        <property name="urlHelper" ref="vtiUrlHelper"/>
+    </bean>
+    
+    <bean id="webUrlFromPageUrlEndpoint" class="org.alfresco.module.vti.web.ws.WebUrlFromPageUrlEndpoint" parent="endpoint">
         <constructor-arg ref="vtiHandler" />
         <property name="name">
             <value>WebUrlFromPageUrl</value>
@@ -611,7 +622,7 @@
         </property>
     </bean>
 
-    <bean id="getWebCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetWebCollectionEndpoint">
+    <bean id="getWebCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetWebCollectionEndpoint" parent="endpoint">
         <constructor-arg ref="vtiHandler" />
         <property name="name">
             <value>GetWebCollection</value>
@@ -621,7 +632,7 @@
         </property>
     </bean>
 
-    <bean id="checkOutFile" class="org.alfresco.module.vti.web.ws.CheckOutFileEndpoint">
+    <bean id="checkOutFile" class="org.alfresco.module.vti.web.ws.CheckOutFileEndpoint" parent="endpoint">
         <constructor-arg ref="checkOutCheckInServiceHandler"/>
         <property name="name">
             <value>CheckOutFile</value>
@@ -631,7 +642,7 @@
         </property>
     </bean>
 
-    <bean id="checkInFile" class="org.alfresco.module.vti.web.ws.CheckInFileEndpoint">
+    <bean id="checkInFile" class="org.alfresco.module.vti.web.ws.CheckInFileEndpoint" parent="endpoint">
         <constructor-arg ref="checkOutCheckInServiceHandler"/>
         <property name="name">
             <value>CheckInFile</value>
@@ -641,7 +652,7 @@
         </property>
     </bean>
 
-    <bean id="undoCheckOutFile" class="org.alfresco.module.vti.web.ws.UndoCheckOutFileEndpoint">
+    <bean id="undoCheckOutFile" class="org.alfresco.module.vti.web.ws.UndoCheckOutFileEndpoint" parent="endpoint">
         <constructor-arg ref="checkOutCheckInServiceHandler"/>
         <property name="name">
             <value>UndoCheckOut</value>
@@ -651,7 +662,7 @@
         </property>
     </bean>
 
-    <bean id="getDwsMetaDataEndpoint" class="org.alfresco.module.vti.web.ws.GetDwsMetaDataEndpoint">
+    <bean id="getDwsMetaDataEndpoint" class="org.alfresco.module.vti.web.ws.GetDwsMetaDataEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>GetDwsMetaData</value>
@@ -661,7 +672,7 @@
         </property>
     </bean>
 
-    <bean id="getDwsDataEndpoint" class="org.alfresco.module.vti.web.ws.GetDwsDataEndpoint">
+    <bean id="getDwsDataEndpoint" class="org.alfresco.module.vti.web.ws.GetDwsDataEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>GetDwsData</value>
@@ -671,7 +682,7 @@
         </property>
     </bean>
 
-    <bean id="canCreateDwsUrlEndpoint" class="org.alfresco.module.vti.web.ws.CanCreateDwsUrlEndpoint">
+    <bean id="canCreateDwsUrlEndpoint" class="org.alfresco.module.vti.web.ws.CanCreateDwsUrlEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>CanCreateDwsUrl</value>
@@ -681,7 +692,7 @@
         </property>
     </bean>
 
-    <bean id="createDwsEndpoint" class="org.alfresco.module.vti.web.ws.CreateDwsEndpoint">
+    <bean id="createDwsEndpoint" class="org.alfresco.module.vti.web.ws.CreateDwsEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>CreateDws</value>
@@ -691,7 +702,7 @@
         </property>
     </bean>
 
-    <bean id="getWebEndpoint" class="org.alfresco.module.vti.web.ws.GetWebEndpoint">
+    <bean id="getWebEndpoint" class="org.alfresco.module.vti.web.ws.GetWebEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>GetWeb</value>
@@ -701,7 +712,7 @@
         </property>
     </bean>
 
-    <bean id="getVersionsEndpoint" class="org.alfresco.module.vti.web.ws.GetVersionsEndpoint">
+    <bean id="getVersionsEndpoint" class="org.alfresco.module.vti.web.ws.GetVersionsEndpoint" parent="endpoint">
         <constructor-arg ref="versionsServiceHandler" />
         <property name="name">
             <value>GetVersions</value>
@@ -711,7 +722,7 @@
         </property>
     </bean>
 
-    <bean id="restoreVersionEndpoint" class="org.alfresco.module.vti.web.ws.RestoreVersionEndpoint">
+    <bean id="restoreVersionEndpoint" class="org.alfresco.module.vti.web.ws.RestoreVersionEndpoint" parent="endpoint">
         <constructor-arg ref="versionsServiceHandler" />
         <property name="name">
             <value>RestoreVersion</value>
@@ -721,7 +732,7 @@
         </property>
     </bean>
 
-    <bean id="deleteVersionEndpoint" class="org.alfresco.module.vti.web.ws.DeleteVersionEndpoint">
+    <bean id="deleteVersionEndpoint" class="org.alfresco.module.vti.web.ws.DeleteVersionEndpoint" parent="endpoint">
         <constructor-arg ref="versionsServiceHandler" />
         <property name="name">
             <value>DeleteVersion</value>
@@ -731,7 +742,7 @@
         </property>
     </bean>
 
-    <bean id="deleteAllVersionsEndpoint" class="org.alfresco.module.vti.web.ws.DeleteAllVersionsEndpoint">
+    <bean id="deleteAllVersionsEndpoint" class="org.alfresco.module.vti.web.ws.DeleteAllVersionsEndpoint" parent="endpoint">
         <constructor-arg ref="versionsServiceHandler" />
         <property name="name">
             <value>DeleteAllVersions</value>
@@ -741,7 +752,7 @@
         </property>
     </bean>
 
-    <bean id="addListEndpoint" class="org.alfresco.module.vti.web.ws.AddListEndpoint">
+    <bean id="addListEndpoint" class="org.alfresco.module.vti.web.ws.AddListEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>AddList</value>
@@ -751,7 +762,7 @@
         </property>
     </bean>
 
-    <bean id="deleteListEndpoint" class="org.alfresco.module.vti.web.ws.DeleteListEndpoint">
+    <bean id="deleteListEndpoint" class="org.alfresco.module.vti.web.ws.DeleteListEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>DeleteList</value>
@@ -761,7 +772,7 @@
         </property>
     </bean>
 
-    <bean id="getListTemplatesEndpoint" class="org.alfresco.module.vti.web.ws.GetListTemplatesEndpoint">
+    <bean id="getListTemplatesEndpoint" class="org.alfresco.module.vti.web.ws.GetListTemplatesEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler" />
         <property name="name">
             <value>GetListTemplates</value>
@@ -771,7 +782,7 @@
         </property>
     </bean>
 
-    <bean id="updateListItemsEndpoint" class="org.alfresco.module.vti.web.ws.UpdateListItemsEndpoint">
+    <bean id="updateListItemsEndpoint" class="org.alfresco.module.vti.web.ws.UpdateListItemsEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler" />
         <property name="namespaceService" ref="NamespaceService"/>
         <property name="name">
@@ -782,7 +793,7 @@
         </property>
     </bean>
 
-    <bean id="getUserLoginFromEmailEndpoint" class="org.alfresco.module.vti.web.ws.GetUserLoginFromEmailEndpoint">
+    <bean id="getUserLoginFromEmailEndpoint" class="org.alfresco.module.vti.web.ws.GetUserLoginFromEmailEndpoint" parent="endpoint">
         <constructor-arg ref="userGroupServiceHandler" />
         <property name="name">
             <value>GetUserLoginFromEmail</value>
@@ -792,7 +803,7 @@
         </property>
     </bean>
 
-    <bean id="addUserCollectionToRoleEndpoint" class="org.alfresco.module.vti.web.ws.AddUserCollectionToRoleEndpoint">
+    <bean id="addUserCollectionToRoleEndpoint" class="org.alfresco.module.vti.web.ws.AddUserCollectionToRoleEndpoint" parent="endpoint">
         <constructor-arg ref="userGroupServiceHandler" />
         <property name="name">
             <value>AddUserCollectionToRole</value>
@@ -802,7 +813,7 @@
         </property>
     </bean>
 
-    <bean id="createFolderEndpoint" class="org.alfresco.module.vti.web.ws.CreateFolderEndpoint">
+    <bean id="createFolderEndpoint" class="org.alfresco.module.vti.web.ws.CreateFolderEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>CreateFolder</value>
@@ -812,7 +823,7 @@
         </property>
     </bean>
 
-    <bean id="deleteFolderEndpoint" class="org.alfresco.module.vti.web.ws.DeleteFolderEndpoint">
+    <bean id="deleteFolderEndpoint" class="org.alfresco.module.vti.web.ws.DeleteFolderEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>DeleteFolder</value>
@@ -822,7 +833,7 @@
         </property>
     </bean>
 
-    <bean id="deleteDwsEndpoint" class="org.alfresco.module.vti.web.ws.DeleteDwsEndpoint">
+    <bean id="deleteDwsEndpoint" class="org.alfresco.module.vti.web.ws.DeleteDwsEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>DeleteDws</value>
@@ -832,7 +843,7 @@
         </property>
     </bean>
 
-    <bean id="renameDwsEndpoint" class="org.alfresco.module.vti.web.ws.RenameDwsEndpoint">
+    <bean id="renameDwsEndpoint" class="org.alfresco.module.vti.web.ws.RenameDwsEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>RenameDws</value>
@@ -842,7 +853,7 @@
         </property>
     </bean>
 
-    <bean id="removeDwsUserEndpoint" class="org.alfresco.module.vti.web.ws.RemoveDwsUserEndpoint">
+    <bean id="removeDwsUserEndpoint" class="org.alfresco.module.vti.web.ws.RemoveDwsUserEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler" />
         <property name="name">
             <value>RemoveDwsUser</value>
@@ -852,7 +863,7 @@
         </property>
     </bean>
 
-    <bean id="updateDwsDataEndpoint" class="org.alfresco.module.vti.web.ws.UpdateDwsDataEndpoint">
+    <bean id="updateDwsDataEndpoint" class="org.alfresco.module.vti.web.ws.UpdateDwsDataEndpoint" parent="endpoint">
         <constructor-arg ref="dwsServiceHandler"/>
         <property name="name">
             <value>UpdateDwsData</value>
@@ -862,7 +873,7 @@
         </property>
     </bean>
 
-    <bean id="getMeetingWorkspacesEndpoint" class="org.alfresco.module.vti.web.ws.GetMeetingWorkspacesEndpoint">
+    <bean id="getMeetingWorkspacesEndpoint" class="org.alfresco.module.vti.web.ws.GetMeetingWorkspacesEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>GetMeetingWorkspaces</value>
@@ -872,7 +883,7 @@
         </property>
     </bean>
 
-    <bean id="getMeetingsInformationEndpoint" class="org.alfresco.module.vti.web.ws.GetMeetingsInformationEndpoint">
+    <bean id="getMeetingsInformationEndpoint" class="org.alfresco.module.vti.web.ws.GetMeetingsInformationEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>GetMeetingsInformation</value>
@@ -882,7 +893,7 @@
         </property>
     </bean>
 
-    <bean id="createWorkspaceEndpoint" class="org.alfresco.module.vti.web.ws.CreateWorkspaceEndpoint">
+    <bean id="createWorkspaceEndpoint" class="org.alfresco.module.vti.web.ws.CreateWorkspaceEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>CreateWorkspace</value>
@@ -892,7 +903,7 @@
         </property>
     </bean>
 
-    <bean id="addMeetingEndpoint" class="org.alfresco.module.vti.web.ws.AddMeetingEndpoint">
+    <bean id="addMeetingEndpoint" class="org.alfresco.module.vti.web.ws.AddMeetingEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>AddMeeting</value>
@@ -902,7 +913,7 @@
         </property>
     </bean>
 
-    <bean id="addMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.AddMeetingFromICalEndpoint">
+    <bean id="addMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.AddMeetingFromICalEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>AddMeetingFromICal</value>
@@ -912,7 +923,7 @@
         </property>
     </bean>
 
-    <bean id="updateMeetingEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingEndpoint">
+    <bean id="updateMeetingEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>UpdateMeeting</value>
@@ -922,7 +933,7 @@
         </property>
     </bean>
 
-    <bean id="updateMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingFromICalEndpoint">
+    <bean id="updateMeetingFromICalEndpoint" class="org.alfresco.module.vti.web.ws.UpdateMeetingFromICalEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>UpdateMeetingFromICal</value>
@@ -932,7 +943,7 @@
         </property>
     </bean>
 
-    <bean id="removeMeetingEndpoint" class="org.alfresco.module.vti.web.ws.RemoveMeetingEndpoint">
+    <bean id="removeMeetingEndpoint" class="org.alfresco.module.vti.web.ws.RemoveMeetingEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>RemoveMeeting</value>
@@ -942,7 +953,7 @@
         </property>
     </bean>
 
-    <bean id="restoreMeetingEndpoint" class="org.alfresco.module.vti.web.ws.RestoreMeetingEndpoint">
+    <bean id="restoreMeetingEndpoint" class="org.alfresco.module.vti.web.ws.RestoreMeetingEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>RestoreMeeting</value>
@@ -952,7 +963,7 @@
         </property>
     </bean>
 
-    <bean id="setAttendeeResponseEndpoint" class="org.alfresco.module.vti.web.ws.SetAttendeeResponseEndpoint">
+    <bean id="setAttendeeResponseEndpoint" class="org.alfresco.module.vti.web.ws.SetAttendeeResponseEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>SetAttendeeResponse</value>
@@ -962,7 +973,7 @@
         </property>
     </bean>
 
-    <bean id="deleteWorkspaceEndpoint" class="org.alfresco.module.vti.web.ws.DeleteWorkspaceEndpoint">
+    <bean id="deleteWorkspaceEndpoint" class="org.alfresco.module.vti.web.ws.DeleteWorkspaceEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>DeleteWorkspace</value>
@@ -972,7 +983,7 @@
         </property>
     </bean>
 
-    <bean id="setWorkspaceTitleEndpoint" class="org.alfresco.module.vti.web.ws.SetWorkspaceTitleEndpoint">
+    <bean id="setWorkspaceTitleEndpoint" class="org.alfresco.module.vti.web.ws.SetWorkspaceTitleEndpoint" parent="endpoint">
         <constructor-arg ref="meetingServiceHandler"/>
         <property name="name">
             <value>SetWorkspaceTitle</value>
@@ -982,7 +993,7 @@
         </property>
     </bean>
 
-    <bean id="isClaimsModeEndpoint" class="org.alfresco.module.vti.web.ws.IsClaimsModeEndpoint">
+    <bean id="isClaimsModeEndpoint" class="org.alfresco.module.vti.web.ws.IsClaimsModeEndpoint" parent="endpoint">
         <property name="name">
             <value>IsClaimsMode</value>
         </property>
@@ -991,7 +1002,7 @@
         </property>
     </bean>
 
-    <bean id="getListCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetListCollectionEndpoint">
+    <bean id="getListCollectionEndpoint" class="org.alfresco.module.vti.web.ws.GetListCollectionEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler"/>
         <property name="name">
             <value>GetListCollection</value>
@@ -1001,7 +1012,7 @@
         </property>
     </bean>
     
-    <bean id="getListItemsEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemsEndpoint">
+    <bean id="getListItemsEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemsEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler"/>
         <constructor-arg ref="vtiHandler"/>
         <property name="pathHelper" ref="vtiPathHelper"/>
@@ -1012,7 +1023,7 @@
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>
         </property>
     </bean>
-    <bean id="getListItemChangesEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemChangesEndpoint">
+    <bean id="getListItemChangesEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemChangesEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler"/>
         <constructor-arg ref="vtiHandler"/>
         <property name="pathHelper" ref="vtiPathHelper"/>
@@ -1023,7 +1034,7 @@
             <value>http://schemas.microsoft.com/sharepoint/soap/</value>
         </property>
     </bean>
-    <bean id="getListItemChangesSinceTokenEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemChangesSinceTokenEndpoint">
+    <bean id="getListItemChangesSinceTokenEndpoint" class="org.alfresco.module.vti.web.ws.GetListItemChangesSinceTokenEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler"/>
         <constructor-arg ref="vtiHandler"/>
         <property name="pathHelper" ref="vtiPathHelper"/>
@@ -1035,7 +1046,7 @@
         </property>
     </bean>
     
-    <bean id="getListEndpoint" class="org.alfresco.module.vti.web.ws.GetListEndpoint">
+    <bean id="getListEndpoint" class="org.alfresco.module.vti.web.ws.GetListEndpoint" parent="endpoint">
         <constructor-arg ref="listServiceHandler"/>
         <property name="name">
             <value>GetList</value>
