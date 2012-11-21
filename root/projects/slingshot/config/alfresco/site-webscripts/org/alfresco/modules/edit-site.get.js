@@ -1,16 +1,28 @@
-// Call the repo for the sites profile
-var profile;
+/**
+ * Edit Site Details component GET method
+ */
 
-var json = remote.call("/api/sites/" + args.shortName);
-if (json.status == 200)
+function main()
 {
-   // Create javascript object from the repo response
-   var obj = eval('(' + json + ')');
-   if (obj)
+   // Call the repo for the sites profile
+   var profile,
+       json = remote.call("/api/sites/" + args.shortName);
+   if (json.status == 200)
    {
-      profile = obj;
+      // Create javascript object from the repo response
+      var obj = eval('(' + json + ')');
+      if (obj)
+      {
+         profile = obj;
+      }
    }
+   else
+   {
+      status.setCode(json.status, json.status.message);
+   }
+   
+   // Prepare the model
+   model.profile = profile;
 }
 
-// Prepare the model
-model.profile = profile;
+main();
