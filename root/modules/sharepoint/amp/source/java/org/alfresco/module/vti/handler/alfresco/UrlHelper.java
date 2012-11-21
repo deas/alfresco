@@ -21,6 +21,10 @@ package org.alfresco.module.vti.handler.alfresco;
 /**
  * Provides Sharepoint with URL help, e.g. retrieve base URL of Sharepoint server as
  * exposed in the outside world.
+ * <p>
+ * Trailing slashes are never present so as to give consistency between different context paths,
+ * e.g. "/" and "/alfresco". Otherwise it would be necessary to check for trailing slashes before appending
+ * to the returned paths.
  * 
  * @author Matt Ward
  */

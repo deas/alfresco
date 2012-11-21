@@ -355,7 +355,9 @@
     <bean id="vtiResourceAction" class="org.alfresco.module.vti.web.actions.VtiResourceAction">
     </bean>
 
-    <bean id="vtiPropfindAction" class="org.alfresco.module.vti.web.actions.VtiPropfindAction" parent="abstractDAVAction"/>
+    <bean id="vtiPropfindAction" class="org.alfresco.module.vti.web.actions.VtiPropfindAction" parent="abstractDAVAction">
+        <property name="urlHelper" ref="vtiUrlHelper"/>
+    </bean>
 
     <bean id="vtiPropPatchAction" class="org.alfresco.module.vti.web.actions.VtiPropPatchAction" parent="abstractDAVAction">
         <property name="ignoredProperties">

@@ -60,9 +60,13 @@ public class DefaultUrlHelper implements UrlHelper, InitializingBean
         pathBuilder.append(externalContextPath);
         if (pathWithinContext != null && pathWithinContext.length() > 0)
         {
-            pathBuilder.append('/');
+            if (!pathWithinContext.startsWith("/"))
+            {
+                addTrailingSlash(pathBuilder);
+            }
             pathBuilder.append(pathWithinContext);
         }
+        removeTrailingSlash(pathBuilder);
         final String path = pathBuilder.toString();
         
         URI uri;
@@ -78,6 +82,32 @@ public class DefaultUrlHelper implements UrlHelper, InitializingBean
         return uri.toString();
     }
     
+    /**
+     * Remove a trailing slash from the path, if present.
+     * 
+     * @param path
+     */
+    private void removeTrailingSlash(StringBuilder path)
+    {
+        if (path.charAt(path.length() - 1) == '/')
+        {
+            path.deleteCharAt(path.length() - 1);
+        }
+    }
+
+    /**
+     * Append a trailing slash to a path if one is not already present.
+     * 
+     * @param path
+     */
+    private void addTrailingSlash(StringBuilder path)
+    {
+        if (path.charAt(path.length() - 1) != '/')
+        {
+            path.append('/');
+        }
+    }
+
     @Override
     public String getExternalBaseURL()
     {   

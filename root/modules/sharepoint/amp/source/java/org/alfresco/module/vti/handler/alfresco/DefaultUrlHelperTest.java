@@ -55,6 +55,14 @@ public class DefaultUrlHelperTest
     }
 
     @Test
+    public void canGetExternalBaseURLWithRootContextPath() throws Exception
+    {
+        helper.setExternalContextPath("/");
+        helper.afterPropertiesSet();
+        assertEquals("https://sp.example.com:1234", helper.getExternalBaseURL());
+    }
+
+    @Test
     public void canGetExternalURLHostOnly()
     {
         assertEquals("https://sp.example.com:1234", helper.getExternalURLHostOnly());
@@ -67,6 +75,17 @@ public class DefaultUrlHelperTest
         assertEquals("https://sp.example.com:1234/theContextPath", helper.getExternalURL(""));        
         assertEquals("https://sp.example.com:1234/theContextPath/a", helper.getExternalURL("a"));        
         assertEquals("https://sp.example.com:1234/theContextPath/a/b", helper.getExternalURL("a/b"));        
+    }
+    
+    @Test
+    public void canGetExternalURLWithRootContextPath() throws Exception
+    {
+        helper.setExternalContextPath("/");
+        helper.afterPropertiesSet();
+        assertEquals("https://sp.example.com:1234", helper.getExternalURL(null));        
+        assertEquals("https://sp.example.com:1234", helper.getExternalURL(""));        
+        assertEquals("https://sp.example.com:1234/a", helper.getExternalURL("a"));        
+        assertEquals("https://sp.example.com:1234/a/b", helper.getExternalURL("a/b"));
     }
     
     

@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.module.vti.handler.alfresco.UrlHelper;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.repo.webdav.LockInfo;
 import org.alfresco.repo.webdav.WebDAV;
@@ -90,10 +91,12 @@ public class PropfindMethod extends WebDAVMethod
     private boolean containsCollblob = false;
 
     private String alfrescoContext;
+    private UrlHelper urlHelper;
 
-    public PropfindMethod(String alfrescoContex)
+    public PropfindMethod(String alfrescoContex, UrlHelper urlHelper)
     {
         this.alfrescoContext = alfrescoContex;
+        this.urlHelper = urlHelper;
         namespaceMap.put("urn:schemas-microsoft-com:office:office", "Office");
         namespaceMap.put("http://schemas.microsoft.com/repl/", "Repl");
         namespaceMap.put("urn:schemas-microsoft-com:", "Z");
@@ -136,6 +139,8 @@ public class PropfindMethod extends WebDAVMethod
                 m_response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
+            // TODO: this shouldn't assume the requested URL is the one exposed to the outside world
+            // (may be behind proxy). Change to parse properly.
             String docLibHref = URLDecoder.decode(m_request.getRequestURL().substring(0, m_request.getRequestURL().lastIndexOf("/")));
             m_response.setHeader(HEADER_MS_DOCLIB, docLibHref);
             return;
@@ -339,8 +344,7 @@ public class PropfindMethod extends WebDAVMethod
 
         // Build the href string for the current node
         String relativeUrl = getDAVHelper().getURLForPath(m_request, path, isFolder);
-        String strHRef = m_request.getScheme() + "://" + m_request.getServerName() +
-                    ":" + m_request.getServerPort() + relativeUrl;
+        String strHRef = urlHelper.getExternalURLHostOnly() + relativeUrl;
 
 
         if (nodeInfo.isFolder())
