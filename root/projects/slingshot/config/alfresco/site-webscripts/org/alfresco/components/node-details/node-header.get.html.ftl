@@ -25,10 +25,12 @@
                         <#assign fileExt = (fileExtIndex > -1)?string(item.fileName?substring(fileExtIndex + 1)?lower_case, "generic")>
             </#if>
             <#assign displayName = (item.displayName!item.fileName)?html>
+            <#assign modifyLabel = "label.modified-by-user-on-date">
             <#assign itemType = isContainer?string("folder", "document")>
             <div class="node-header">
                <!-- Message banner -->
                <#if item.workingCopy??>
+                  <#assign modifyLabel = "label.editing-started-on-date-by-user">
                   <#if item.workingCopy.isWorkingCopy??>
                      <#assign lockUser = node.properties["cm:workingCopyOwner"]>
                   <#else>
@@ -92,7 +94,7 @@
                      <#assign modifyUser = node.properties["cm:modifier"]>
                      <#assign modifyDate = node.properties["cm:modified"]>
                      <#assign modifierLink = userProfileLink(modifyUser.userName, modifyUser.displayName, 'class="theme-color-1"') >
-                     ${msg("label.modified-by-user-on-date", modifierLink, "<span id='${id}-modifyDate'>${modifyDate.iso8601}</span>")}
+                     ${msg(modifyLabel, modifierLink, "<span id='${id}-modifyDate'>${modifyDate.iso8601}</span>")}
                      <#if showFavourite == "true">
                      <span id="${id}-favourite" class="item item-separator"></span>
                      </#if>

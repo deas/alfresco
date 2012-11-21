@@ -54,6 +54,15 @@ function main()
             sharedBy: model.item.node.properties["qshare:sharedBy"] || null
          }
       };
+      
+      if(nodeDetails.item.workingCopy != null && nodeDetails.item.workingCopy.isWorkingCopy)
+      {
+         nodeHeader.options.showFavourite = false;
+         nodeHeader.options.showLikes = false;
+         model.showQuickShare = "false";
+         model.showComments = "false";
+      }
+      
       model.widgets = [nodeHeader];
    }
 }
