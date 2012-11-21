@@ -1288,6 +1288,11 @@ div.theme-bg-color-7
 
 /** Share component overrides */
 
+.footer .copyright
+{
+   font-size: 70% !important;
+}
+
 .header .header-left
 {
    margin-left: -160px;
@@ -1321,6 +1326,13 @@ div.theme-bg-color-7
    margin-bottom: 3px !important;
 }
 
+.header .user-items div.search-box
+{
+   border: 1px solid #ccc !important;
+   top: 5px !important;
+   padding: 2px;
+}
+
 .header .user-items div.search-box span.yui-button
 {
    height: 21px !important;
@@ -1343,7 +1355,7 @@ div.theme-bg-color-7
 
 .page-title div.links
 {
-   padding-top: 0;
+   padding-top: 6px;
 }
 
 .node-header h1
@@ -1467,13 +1479,15 @@ div.theme-bg-color-7
    padding-top: 0.2em;
 }
 
-.people-finder .search-bar
+.people-finder .search-bar,
+.group-finder .search-bar
 {
    border-bottom: 1px solid #ccc !important;
    height: 2.5em !important;
 }
 
-.people-finder .search-bar div
+.people-finder .search-bar div,
+.group-finder .search-bar div
 {
    padding-top: 0.2em;
 }
@@ -1537,14 +1551,4 @@ div.theme-bg-color-7
 table td.thumbnail img
 {
    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
-}
-
-.people-finder
-{
-   margin-top: 0 !important;
-}
-
-.site-finder
-{
-   margin-top: 0 !important;
 }
