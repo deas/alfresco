@@ -66,17 +66,18 @@
             <select id="${args.htmlid}-more-menu">
                <option value="editSite">${msg("link.editSite")}</option>
                <option value="customiseSite">${msg("link.customiseSite")}</option>
-               <option value="leaveSite">${msg("link.leave")}</option>         
-            </select> 
-         <#elseif userIsMember>
-            <input type="button" id="${args.htmlid}-more" name="${args.htmlid}-more" value="${msg("link.actions")}"/>    
+               <#if userIsDirectMember>
+               <option value="leaveSite">${msg("link.leave")}</option>
+               </#if>
+            </select>
+         <#elseif userIsDirectMember>
+            <input type="button" id="${args.htmlid}-more" name="${args.htmlid}-more" value="${msg("link.actions")}"/>
             <select id="${args.htmlid}-more-menu">
                <option value="leaveSite">${msg("link.leave")}</option>
-            </select> 
-         </#if>   
+            </select>
+         </#if>
          </div>
          <div style="clear: both"></div>
       </div>
    </@>
 </@>
-

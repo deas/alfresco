@@ -18,7 +18,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign activePage = page.url.templateArgs.pageid!"customise-user-dashboard">
-      <div class="page-title theme-bg-color-1 theme-border-1"><!-- ${activePage} -->
+      <div class="page-title theme-bg-color-1 theme-border-1"><#-- ${activePage} -->
          <div class="title">
             <h1 class="theme-color-3">${msg("header.dashboard", "<span>${userName}</span>")}</h1>
          </div>
@@ -33,5 +33,3 @@
       </div>
    </@>
 </@>
-
-

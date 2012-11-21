@@ -25,7 +25,8 @@ function main()
    
    // Call the repository to see if the user is site manager or not
    var userIsSiteManager = false,
-      userIsMember = false;
+       userIsMember = false,
+       userIsDirectMember = false;
 
    json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
    if (json.status == 200)
@@ -34,7 +35,8 @@ function main()
       if (obj)
       {
          userIsMember = true;
-         userIsSiteManager = obj.role == "SiteManager";
+         userIsDirectMember = !(obj.isMemberOfGroup);
+         userIsSiteManager = (obj.role == "SiteManager");
       }
    }
    
@@ -42,6 +44,7 @@ function main()
    model.profile = profile;
    model.userIsSiteManager = userIsSiteManager;
    model.userIsMember = userIsMember;
+   model.userIsDirectMember = userIsDirectMember;
    
    // Widget instantiation metadata...
    var collaborationTitle = {
@@ -57,4 +60,3 @@ function main()
 }
 
 main();
-

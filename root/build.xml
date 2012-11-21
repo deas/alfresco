@@ -778,10 +778,10 @@
                  to="\1.get_en.properties"/>
       </copy>
 
-      <!-- Installing auto apply Share AMPs into Share WAR -->
+      <!-- Installing auto apply Share AMPs into Share WAR
       <touch mkdirs="true" file="${dir.deploy.tomcat.application.slingshot}/META-INF/MANIFEST.MF" />
       <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
-                               warfile="${dir.deploy.tomcat.application.slingshot}" />
+                               warfile="${dir.deploy.tomcat.application.slingshot}" /> -->
    </target>
 
    <target name="minimize-slingshot-deployed-javascript" depends="init">
