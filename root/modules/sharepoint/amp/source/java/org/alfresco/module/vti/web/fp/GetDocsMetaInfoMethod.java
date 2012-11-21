@@ -19,6 +19,7 @@
 package org.alfresco.module.vti.web.fp;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -72,9 +73,20 @@ public class GetDocsMetaInfoMethod extends AbstractMethod
         for (int i = 0; i < urlList.size(); ++i)
         {
             String url = urlList.get(i);
-            if (url.startsWith(request.getScheme() + "://" + request.getHeader("Host") + context + "/" + serviceName + "/"))
+            URI uriObj = URI.create(url);
+            if (uriObj.isAbsolute())
             {
-                urlList.set(i, url.split(request.getScheme() + "://" + request.getHeader("Host") + context + "/" + serviceName + "/")[1]);
+                String relativeUrl = uriObj.getPath();
+                if (relativeUrl.length() > 1 && relativeUrl.startsWith("/"))
+                {
+                    // Remove preceding slash if one exists.
+                    relativeUrl = relativeUrl.substring(1);
+                }
+                if (relativeUrl.startsWith(serviceName))
+                {
+                    relativeUrl = relativeUrl.substring(serviceName.length());
+                }
+                urlList.set(i, relativeUrl);
             }
         }
         DocsMetaInfo docsMetaInfoList;
