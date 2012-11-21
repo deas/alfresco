@@ -30,13 +30,14 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class DefaultUrlHelper implements UrlHelper, InitializingBean
 {
+    private LocalHostNameProvider localHostNameProvider;
     private String externalProtocol;
     private String externalHost;
     private int externalPort;
     private String externalContextPath;
     private String baseURL;
     private String hostURL;
-
+    
     protected String makeExternalHostURL()
     {
         URI uri;
@@ -89,6 +90,12 @@ public class DefaultUrlHelper implements UrlHelper, InitializingBean
         return hostURL;
     }
     
+    
+    public void setLocalHostNameProvider(LocalHostNameProvider localHostNameProvider)
+    {
+        this.localHostNameProvider = localHostNameProvider;
+    }
+
     public void setExternalProtocol(String externalProtocol)
     {
         this.externalProtocol = externalProtocol;
@@ -115,6 +122,8 @@ public class DefaultUrlHelper implements UrlHelper, InitializingBean
     @Override
     public void afterPropertiesSet() throws Exception
     {
+        // Substitue special ${localname} token if necessary.
+        externalHost = localHostNameProvider.subsituteHost(externalHost);
         baseURL = getExternalURL("");
         hostURL = makeExternalHostURL();
     }

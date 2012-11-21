@@ -3,7 +3,10 @@
 
 <beans>
 
+    <bean id="hostNameProvider" class="org.alfresco.module.vti.handler.alfresco.DefaultLocalHostNameProvider"/>
+    
     <bean id="vtiUrlHelper" class="org.alfresco.module.vti.handler.alfresco.DefaultUrlHelper">
+        <property name="localHostNameProvider" ref="hostNameProvider"/>
         <property name="externalPort" value="${vti.server.external.port}"/>
         <property name="externalHost" value="${vti.server.external.host}"/>
         <property name="externalProtocol" value="${vti.server.external.protocol}"/>
