@@ -1,9 +1,12 @@
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+
 function main()
 {
 
    // Widget instantiation metadata...
    model.widgets = [];
    model.filters = getFilters();
+   model.userMembership = AlfrescoUtil.getSiteMembership(page.url.templateArgs.site);
    
    var forumSummary = {
       id: "ForumSummary",
