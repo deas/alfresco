@@ -40,9 +40,9 @@ function main()
    var pages = [];
    if (model.pageList != null)
    {
-      for (var p in model.pageList.pages)
+      for (var i=0; i<model.pageList.pages.length; i++)
       {
-         pages.push(p.name);
+         pages.push(model.pageList.pages[i].name);
       }
    }
 
