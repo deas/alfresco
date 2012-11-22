@@ -123,8 +123,8 @@
                {
                   fn: function Notice_doSetupForm_callback(form)
                   {
-                     Dom.get(this.configDialog.id + "-title").value = this.options.title;
-                     Dom.get(this.configDialog.id + "-text").value = this.options.text;
+                     Dom.get(this.configDialog.id + "-title").value = Dom.get(this.id + "-title").innerHTML;
+                     Dom.get(this.configDialog.id + "-text").value = Dom.get(this.id + "-text").innerHTML;
                      if (!this.configDialog.editor)
                      {
                         this.configDialog.editor = new Alfresco.util.RichEditor("tinyMCE", this.configDialog.id + "-text",
