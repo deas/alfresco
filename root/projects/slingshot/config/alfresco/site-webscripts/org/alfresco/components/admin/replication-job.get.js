@@ -20,11 +20,11 @@ function main()
    
    
    var payload = [];
-   if (jobDetail != null)
+   if (jobDetail && jobDetail.payload)
    {
-      for (var p in jobDetail)
+      for (var i = 0; i < jobDetail.payload.length; i++)
       {
-         payload.push(p.nodeRef);
+         payload.push(jobDetail.payload[i]["nodeRef"]);
       }
    }
    
@@ -42,7 +42,7 @@ function main()
       id: "ReplicationJob",
       name: "Alfresco.component.ReplicationJob",
       options : {
-         jobName : jobName,
+         jobName : jobName || "",
          payload : payload,
          targetName : targetName,
          scheduleStart : scheduleStart
