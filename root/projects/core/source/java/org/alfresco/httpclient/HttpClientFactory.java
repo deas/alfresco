@@ -104,6 +104,8 @@ public class HttpClientFactory
     private int maxTotalConnections = 40;
 
     private int maxHostConnections = 40;
+    
+    private int socketTimeout = 0;
 
     private int connectionTimeout = 0;
     
@@ -111,8 +113,10 @@ public class HttpClientFactory
     {
     }
 
-    public HttpClientFactory(SecureCommsType secureCommsType, SSLEncryptionParameters sslEncryptionParameters, KeyResourceLoader keyResourceLoader,
-    		KeyStoreParameters keyStoreParameters, MD5EncryptionParameters encryptionParameters, String host, int port, int sslPort, int maxTotalConnections, int maxHostConnections)
+    public HttpClientFactory(SecureCommsType secureCommsType, SSLEncryptionParameters sslEncryptionParameters,
+            KeyResourceLoader keyResourceLoader, KeyStoreParameters keyStoreParameters,
+            MD5EncryptionParameters encryptionParameters, String host, int port, int sslPort, int maxTotalConnections,
+            int maxHostConnections, int socketTimeout)
     {
     	this.secureCommsType = secureCommsType;
     	this.sslEncryptionParameters = sslEncryptionParameters;
@@ -124,6 +128,7 @@ public class HttpClientFactory
     	this.sslPort = sslPort;
     	this.maxTotalConnections = maxTotalConnections;
     	this.maxHostConnections = maxHostConnections;
+    	this.socketTimeout = socketTimeout;
     	init();
     }
 
@@ -236,6 +241,7 @@ public class HttpClientFactory
         HttpClientParams params = httpClient.getParams();
         params.setBooleanParameter(HttpConnectionParams.TCP_NODELAY, true);
         params.setBooleanParameter(HttpConnectionParams.STALE_CONNECTION_CHECK, true);
+        params.setSoTimeout(socketTimeout);
         HttpConnectionManagerParams connectionManagerParams = httpClient.getHttpConnectionManager().getParams();
         connectionManagerParams.setMaxTotalConnections(maxTotalConnections);
         connectionManagerParams.setDefaultMaxConnectionsPerHost(maxHostConnections);

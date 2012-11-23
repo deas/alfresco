@@ -216,6 +216,8 @@ public class CoreTracker implements CloseHook
     private int maxTotalConnections = 40;
 
     private int maxHostConnections = 40;
+    
+    private int socketTimeout = 0;
 
     private String id;
 
@@ -377,6 +379,7 @@ public class CoreTracker implements CloseHook
         maxTotalConnections = Integer.parseInt(p.getProperty("alfresco.maxTotalConnections", "40"));
         maxHostConnections = Integer.parseInt(p.getProperty("alfresco.maxHostConnections", "40"));
         transformContent = Boolean.parseBoolean(p.getProperty("alfresco.index.transformContent", "true"));
+        socketTimeout = Integer.parseInt(p.getProperty("alfresco.socketTimeout", "0"));
 
         client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(), dataModel.getNamespaceDAO());
 
@@ -411,7 +414,7 @@ public class CoreTracker implements CloseHook
         SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
         HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType(secureCommsType),
-                sslEncryptionParameters, keyResourceLoader, null, null, alfrescoHost, alfrescoPort, alfrescoPortSSL, maxTotalConnections, maxHostConnections);
+                sslEncryptionParameters, keyResourceLoader, null, null, alfrescoHost, alfrescoPort, alfrescoPortSSL, maxTotalConnections, maxHostConnections, socketTimeout);
         // TODO need to make port configurable depending on secure comms, or just make redirects
         // work
         AlfrescoHttpClient repoClient = httpClientFactory.getRepoClient(alfrescoHost, alfrescoPortSSL);

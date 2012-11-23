@@ -34,6 +34,7 @@
       Event = YAHOO.util.Event,
       KeyListener = YAHOO.util.KeyListener,
       $combine = Alfresco.util.combinePaths,
+      $html = Alfresco.util.encodeHTML,
       fromISO8601 = Alfresco.util.fromISO8601,
       toISO8601 = Alfresco.util.toISO8601,
       formatDate = Alfresco.util.formatDate,
@@ -318,7 +319,7 @@
          {
             noEscape: true,
             title: this._msg("message.confirm.delete.title"),
-            text: this._msg("message.confirm.delete", this.event.title, displayDate),
+            text: this._msg("message.confirm.delete", $html(this.event.title), displayDate),
             buttons: [
             {
                text: this._msg("button.delete"),

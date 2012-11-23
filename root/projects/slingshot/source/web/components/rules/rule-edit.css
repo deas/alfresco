@@ -80,13 +80,18 @@
 .rule-edit .form-field.scriptRef,
 .rule-edit .form-field.applyToChildren
 {
-   min-height: 2.5em;
-   line-height: 2.5em;
+   margin-top: 0.6em;
 }
 
 .rule-edit .form-field.scriptRef
 {
    margin-left: 1.6em;
+}
+
+.rule-edit .form-field.scriptRef select
+{
+   margin-top: 0.25em;
+   width: auto;
 }
 
 .rule-edit .main-buttons

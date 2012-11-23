@@ -293,7 +293,7 @@
                                  location: $html(event.where),
                                  uri: "/calendar/event/" + me.options.siteId + "/" + $html(event.name) + "?date=" + event.startAt.iso8601.split("T")[0],
                                  description: $html(event.description),
-                                 title: $html(event.title),
+                                 title: event.title,
                                  where: $html(event.where),
                                  url: Alfresco.constants.URL_CONTEXT + event.url
                               }, event));

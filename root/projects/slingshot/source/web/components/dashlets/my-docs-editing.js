@@ -138,6 +138,10 @@
                   this.renderContentItems(items["blogPosts"].items, "-blogposts", "blog-postview?postId=", "blogpost-32.png", elTemplate);
                   this.renderContentItems(items["wikiPages"].items, "-wikipages", "wiki-page?title=", "wikipage-32.png", elTemplate);
                   this.renderContentItems(items["forumPosts"].items, "-forumposts", "discussions-topicview?topicId=", "topicpost-32.png", elTemplate);
+                  Dom.getElementsByClassName("relativeTime", "span", Dom.get("myEditingDocsDashlet"), function()
+                  {
+                     this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+                  });
                },
                scope: this
             },

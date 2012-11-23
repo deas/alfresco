@@ -92,13 +92,21 @@
 		    <title>Admin Password</title>
             <explanation>Please give a password to use for the Alfresco administrator account.</explanation>
             <validationActionList>
-	        <throwError>
-                    <text>The length of the password must be greater than 3 characters</text>
-		    <ruleList>
-		        <compareTextLength text="${alfresco_admin_password}" logic="less" length="3"/>
-	            </ruleList>
-		</throwError>
-	    </validationActionList>
+				<throwError>
+					<text>The length of the password must be greater than 3 characters</text>
+					<ruleList>
+						<compareTextLength text="${alfresco_admin_password}" logic="less" length="3"/>
+					</ruleList>
+				</throwError>
+				<throwError>
+					<text>Password must not contain leading or trailing spaces</text>
+					<ruleList>
+						<regExMatch logic="matches" text="${alfresco_admin_password}">
+							<pattern>^\s|\s$</pattern>
+						</regExMatch>
+					</ruleList>
+				</throwError>
+	    	</validationActionList>
         </passwordParameter>
 
     </parameterList>

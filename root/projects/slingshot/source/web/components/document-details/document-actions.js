@@ -382,8 +382,15 @@
                {
                   fn: function DocumentActions_oACE_success(data)
                   {
-                     this.recordData.jsNode.setNodeRef(data.json.results[0].nodeRef);
-                     window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#editCancelled";
+                      var oldNodeRef = this.recordData.jsNode.nodeRef.nodeRef,
+                      newNodeRef = data.json.results[0].nodeRef;
+                      this.recordData.jsNode.setNodeRef(newNodeRef);
+                      window.location = this.getActionUrls(this.recordData).documentDetailsUrl + "#editCancelled";
+                      // ALF-16598 fix, page is not refreshed if only hash was changed, force page reload for cancel online editing
+                      if (oldNodeRef == newNodeRef)
+                      {
+                          window.location.reload();
+                      }
                   },
                   scope: this
                }

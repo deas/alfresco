@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -51,7 +51,7 @@ public class NamespaceDAOImpl implements NamespaceDAO
     private Lock readLock = lock.readLock();
     private Lock writeLock = lock.writeLock();
     
-    // Internal cache (clusterable)
+    // Internal cache (NON-clustered, NON-transactional)
     private SimpleCache<String, NamespaceRegistry> namespaceRegistryCache;
     
     // used to reset the cache
@@ -84,41 +84,45 @@ public class NamespaceDAOImpl implements NamespaceDAO
      */
     public void afterDictionaryInit()
     {
-        String tenantDomain = getTenantDomain();
+        String tenantDomain = getTenantDomain();        
+        NamespaceRegistry namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
         
-        try
+        if (namespaceRegistry == null)
         {
-            NamespaceRegistry namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
-            
-            if (namespaceRegistry == null)
-            {
-                // unexpected
-                throw new AlfrescoRuntimeException("Failed to init namespaceRegistry " + tenantDomain);
-            }
-            
+            readLock.lock();
             try
             {
-                writeLock.lock();
-                namespaceRegistryCache.put(tenantDomain, namespaceRegistry);
-            }
-            finally
-            {
-                writeLock.unlock();
-            }
-        }
-        finally
-        {
-            try
-            {
-                readLock.lock();
-                if (namespaceRegistryCache.get(tenantDomain) != null)
+                // No new registry has been set on the thread, so we expect one to be cached already
+                namespaceRegistry = namespaceRegistryCache.get(tenantDomain);
+                if (namespaceRegistry == null)
                 {
-                    removeNamespaceLocal(tenantDomain);
+                    throw new IllegalStateException("In afterDictionaryInit, yet no namespace registry for domain "
+                            + tenantDomain);
+                }
+                if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+                {
+                    defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
+                }
+                else
+                {
+                    namespaceRegistryThreadLocal.set(namespaceRegistry);
                 }
             }
             finally
             {
                 readLock.unlock();
+            }
+        }
+        else
+        {
+            writeLock.lock();
+            try
+            {
+                namespaceRegistryCache.put(tenantDomain, namespaceRegistry);
+            }
+            finally
+            {
+                writeLock.unlock();
             }
         }
     }
@@ -377,7 +381,7 @@ public class NamespaceDAOImpl implements NamespaceDAO
     {
         NamespaceRegistry namespaceRegistry =  null;
         
-        // check threadlocal first - return if set
+        // check threadlocal first - return if set (we must be in the middle of dictionary initialization)
         namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
         if (namespaceRegistry != null)
         {
@@ -385,42 +389,40 @@ public class NamespaceDAOImpl implements NamespaceDAO
         }
         
         // Ensure the dictionary registry has been initialized for this tenant (does nothing if already initialized)
-        String currentUserDomain = tenantService.getCurrentUserDomain();
-        if (currentUserDomain.equals(tenantDomain))
-        {
-            dictionaryDAO.init();
-        }
-        else
-        {
-            AuthenticationUtil.runAs(new RunAsWork<Void>()
-            {
-                @Override
-                public Void doWork() throws Exception
-                {
-                    dictionaryDAO.init();
-                    return null;
-                }
-            }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
-        }
-        
         try
         {
-            // check cache second - return if set
-            readLock.lock();
-            namespaceRegistry = namespaceRegistryCache.get(tenantDomain);
-            
+            String currentUserDomain = tenantService.getCurrentUserDomain();
+            if (currentUserDomain.equals(tenantDomain))
+            {
+                dictionaryDAO.init();
+            }
+            else
+            {
+                AuthenticationUtil.runAs(new RunAsWork<Void>()
+                {
+                    @Override
+                    public Void doWork() throws Exception
+                    {
+                        dictionaryDAO.init();
+                        return null;
+                    }
+                }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
+            }
+
+            // check threadlocal again - return if set
+            namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
+            if (namespaceRegistry != null)
+            {
+                return namespaceRegistry; // return local namespaceRegistry
+            }
         }
         finally
         {
-            readLock.unlock();
+            // Initialization complete - we must clear the thread local
+            removeNamespaceLocal(tenantDomain);
         }
 
-        if (namespaceRegistry == null)
-        {
-            throw new IllegalStateException("dictionaryDAO.init() called, yet no namespace registry for domain " + tenantDomain);
-        }
-
-        return namespaceRegistry; // return cached config
+        throw new IllegalStateException("dictionaryDAO.init() called, yet no namespace registry for domain " + tenantDomain);
     }
     
     // create threadlocal

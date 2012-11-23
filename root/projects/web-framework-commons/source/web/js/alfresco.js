@@ -2049,7 +2049,7 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
    YUIEvent.addListener(elController, "click", function(p_event, p_obj)
          {
             // Only expand/collapse if actual twister element is clicked (not for inner elements, i.e. twister actions)
-            if (p_event.target == p_event.currentTarget)
+            if (YUIEvent.getTarget(p_event) == elController)
             {
                // Update UI to new state
                var collapse = YUIDom.hasClass(p_obj.controller, config.CLASS_OPEN);

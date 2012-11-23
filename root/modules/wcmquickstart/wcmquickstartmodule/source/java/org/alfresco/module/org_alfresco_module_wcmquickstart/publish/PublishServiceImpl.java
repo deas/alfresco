@@ -164,7 +164,7 @@ public class PublishServiceImpl implements PublishService
                 log.debug("Request to enqueue these nodes for publishing: " + Arrays.asList(nodes));
             }
             NodeRef publishingQueue = siteHelper.getWebSiteContainer(nodes[0], PUBLISH_QUEUE_NAME);
-            if (publishingQueue != null)
+            if (publishingQueue != null && !nodeService.hasAspect(publishingQueue, ContentModel.ASPECT_PENDING_DELETE)) // DW
             {
                 for (NodeRef node : nodes)
                 {

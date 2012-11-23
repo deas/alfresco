@@ -243,7 +243,7 @@ public class SOLRAPIClientTest extends TestCase
         SSLEncryptionParameters sslEncryptionParameters = new SSLEncryptionParameters(keyStoreParameters, trustStoreParameters);
 
         HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType("https"), sslEncryptionParameters, keyResourceLoader, null, null, "localhost", 8080,
-                8443, 40, 40);
+                8443, 40, 40, 0);
         // TODO need to make port configurable depending on secure comms, or just make redirects
         // work
         AlfrescoHttpClient repoClient = httpClientFactory.getRepoClient("localhost", 8443);

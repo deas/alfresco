@@ -126,6 +126,12 @@ blockquote
    clear: both;
 }
 
+.alfresco-share .yui-menu-button-menu hr,
+.yui-overlay .yui-menu-button-menu hr
+{
+   width: auto;
+}
+
 .sticky-wrapper fieldset,
 .yui-overlay fieldset,
 .login-panel fieldset

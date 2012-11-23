@@ -97,6 +97,12 @@ public class DictionaryDAOImpl implements DictionaryDAO
     public void setDictionaryRegistryCache(SimpleCache<String, DictionaryRegistry> dictionaryRegistryCache)
     {
         this.dictionaryRegistryCache = dictionaryRegistryCache;
+        // We are reading straight through to a shared cache - make sure it starts empty to avoid weird behaviour in
+        // multi-context test suites that don't properly reset ehcache
+        if (dictionaryRegistryCache.get(TenantService.DEFAULT_DOMAIN) != null)
+        {
+            dictionaryRegistryCache.clear();
+        }
     }
     
     @Override 
@@ -139,7 +145,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
     public void init()
     {
         // Only init if we don't already have a registry for this domain. Use reset to reinit.
-        getDictionaryRegistry(tenantService.getCurrentUserDomain());
+        getDictionaryRegistry(tenantService.getCurrentUserDomain(), true);
     }
     
     /**
@@ -1013,6 +1019,12 @@ public class DictionaryDAOImpl implements DictionaryDAO
     // re-entrant (eg. via reset)
     private DictionaryRegistry getDictionaryRegistry(String tenantDomain)
     {
+        return getDictionaryRegistry(tenantDomain, false);
+    }
+
+    // re-entrant (eg. via reset)
+    private DictionaryRegistry getDictionaryRegistry(String tenantDomain, boolean init)
+    {
         DictionaryRegistry dictionaryRegistry = null;
         
         // check threadlocal first - return if set
@@ -1030,6 +1042,11 @@ public class DictionaryDAOImpl implements DictionaryDAO
             
             if (dictionaryRegistry != null)
             {
+                if (init)
+                {
+                    // Reset thread cache whilst we have this lock
+                    namespaceDAO.afterDictionaryInit();
+                }
                 return dictionaryRegistry; // return cached config
             }
         }
@@ -1046,6 +1063,11 @@ public class DictionaryDAOImpl implements DictionaryDAO
             
             if (dictionaryRegistry != null)
             {
+                if (init)
+                {
+                    // Reset thread cache whilst we have this lock
+                    namespaceDAO.afterDictionaryInit();
+                }
                 return dictionaryRegistry; // return cached config
             }
 

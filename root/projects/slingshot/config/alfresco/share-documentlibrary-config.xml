@@ -115,7 +115,7 @@
       -->
 
       <!--
-         Google Docs™ integration
+         Google Docs??? integration
       -->
       <google-docs>
          <!--
@@ -138,7 +138,7 @@
       -->
       <file-upload>
          <!--
-            Adobe Flash™
+            Adobe Flash???
             In certain environments, an HTTP request originating from Flash cannot be authenticated using an existing session.
             See: http://bugs.adobe.com/jira/browse/FP-4830
             For these cases, it is useful to disable the Flash-based uploader for Share Document Libraries.
@@ -524,7 +524,7 @@
             </permissions>
             <evaluator>evaluator.doclib.action.upload</evaluator>
             <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
-            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
+            <evaluator negate="true">evaluator.doclib.metadata.isLocked</evaluator>
          </action>
 
          <!-- Inline edit -->
@@ -648,6 +648,15 @@
             </permissions>
             <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
             <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator> 
+         </action>
+
+         <!-- Cancel editing (unlock) -->
+         <action id="document-cancel-editing-unlock" type="javascript" label="actions.document.cancel-editing">
+            <param name="function">onActionCancelEditing</param>
+            <permissions>
+               <permission allow="true">CancelCheckOut</permission>
+            </permissions>
+            <evaluator>evaluator.doclib.metadata.isLocked</evaluator> 
          </action>
 
          <!-- Manage folder rules -->
@@ -786,6 +795,7 @@
             <action index="270" id="document-delete" />
             <action index="280" id="document-assign-workflow" />
             <action index="290" id="document-cancel-editing" />
+            <action index="295" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
             <action index="320" id="document-view-in-source-repository" />
@@ -793,6 +803,7 @@
             <action index="340" id="document-cloud-unsync" />
             <action index="350" id="document-view-in-cloud" />
             <action index="360" id="document-request-sync"/>
+            <action index="370" id="document-manage-site-permissions" /> 
          </actionGroup>
 
          <actionGroup id="document-details">
@@ -815,6 +826,7 @@
             <action index="260" id="document-delete" />
             <action index="270" id="document-assign-workflow" />
             <action index="280" id="document-cancel-editing" />
+            <action index="285" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="290" id="document-manage-site-permissions" />
             <action index="300" id="document-manage-repo-permissions" />
             <action index="310" id="document-manage-aspects" />

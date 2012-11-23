@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
- * Site Members component.
+ * Site Groups Members component.
  * 
  * @namespace Alfresco
  * @class Alfresco.SiteGroups
@@ -678,7 +678,7 @@
                // show popup message to confirm
                Alfresco.util.PopupManager.displayMessage(
                {
-                  text: this._msg("site-groups.change-role-success", groupRole.group, groupRole.role)
+                  text: this._msg("site-groups.change-role-success", groupRole.groupDisplayName, this._msg("role." + groupRole.role))
                });
 
                // update the data and table
@@ -711,7 +711,7 @@
                   fn: success,
                   obj:
                   {
-                     group: group,
+                     groupDisplayName: data.displayName,
                      role: selectedRole,
                      recordIndex: recordIndex
                   },

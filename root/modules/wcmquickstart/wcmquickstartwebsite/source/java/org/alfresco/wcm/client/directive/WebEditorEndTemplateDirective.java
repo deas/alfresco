@@ -70,13 +70,15 @@ public class WebEditorEndTemplateDirective extends AbstractTemplateDirective
                 out.write("WEF.ConfigRegistry.registerConfig('org.springframework.extensions.webeditor.ui.ribbon',\n");
                 out.write("{ position: \"");
                 out.write(toolbarLocation);
-                out.write("\" });\n");
+                out.write("\" });");
                 
                 // add in custom configuration
                 // render JavaScript to configure toolbar and edit icons
                 List<MarkedContent> markedContent = AlfrescoTagUtil.getMarkedContent(request);
                 
-                out.write("WEF.ConfigRegistry.registerConfig('org.alfresco.awe',{id:'awe',name:'awe',editables:[\n");
+                out.write("\nvar urlParts = window.location.href.split(\"/\");");
+                out.write("\nvar categoryRootUrl =  urlParts[0] + \"//\" + urlParts[2] + \"/\" + urlParts[3] + \"/\" + urlParts[4] + \"/index.html\";");
+                out.write("\nWEF.ConfigRegistry.registerConfig('org.alfresco.awe',{id:'awe',name:'awe',editables:[\n");
                 boolean first = true;
                 for (MarkedContent content : markedContent)
                 {
@@ -97,7 +99,7 @@ public class WebEditorEndTemplateDirective extends AbstractTemplateDirective
                     out.write(encode(content.getContentTitle()));
                     out.write("\",\n   nested: ");
                     out.write(Boolean.toString(content.isNested()));
-                    out.write(",\n   redirectUrl: window.location.href");
+                    out.write(",\n   redirectUrl: categoryRootUrl");
                     if (content.getFormId() != null)
                     {
                         out.write(",\n   formId: \"");

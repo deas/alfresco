@@ -112,8 +112,13 @@
    </bean>
 
    <!-- Locked / Working Copy Banner -->
-   <bean id="evaluator.doclib.metadata.isLocked" parent="evaluator.doclib.action.propertyNotNull">
-      <property name="property" value="cm:lockOwner"/>
+   <bean id="evaluator.doclib.metadata.isLocked" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.indicator.locked" />
+            <ref bean="evaluator.doclib.indicator.lockOwner" />
+         </list>
+      </property>
    </bean>
    <bean id="evaluator.doclib.metadata.isBeingEdited" parent="evaluator.doclib.action.propertyNotNull">
       <property name="property" value="cm:workingCopyOwner"/>
@@ -354,8 +359,13 @@
       </property>
    </bean>
    
-   <bean id="evaluator.doclib.action.isLocked" parent="evaluator.doclib.action.propertyNotNull">
-      <property name="property" value="cm:lockOwner"/>
+   <bean id="evaluator.doclib.action.isLocked" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.metadata.isLocked" />
+            <ref bean="evaluator.doclib.action.isWorkingCopy" />
+         </list>
+      </property>
    </bean>
    
    <bean id="evaluator.doclib.action.notEditable" parent="evaluator.doclib.action.chainedMatchOne">

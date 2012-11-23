@@ -84,11 +84,13 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
                 return true;
             }            
             
-            // Anything else must be resolvable as a readable document
+            // Anything else should be resolvable as a readable document
             FileInfo documentFileInfo = pathHelper.resolvePathFileInfo(targetUri);
             if (documentFileInfo == null)
             {
-                return false;
+                // ALF-16757: If we got nothing back without a security exception then the path doesn't actually exist
+                // as a document and should be accessible
+                return true;
             }
             NodeRef nodeRef = documentFileInfo.getNodeRef();
             AccessStatus canRead = permissionService.hasPermission(nodeRef, PermissionService.READ_CONTENT);
