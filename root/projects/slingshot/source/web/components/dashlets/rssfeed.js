@@ -206,8 +206,7 @@
                   {
                      form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.mandatory, null, "keyup");
                      form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.url, null, "keyup");
-                     form.setShowSubmitStateDynamically(true, false);
-                     
+
                      Dom.get(this.configDialog.id + "-url").value = this.options.feedURL;
                      
                      var select = Dom.get(this.configDialog.id + "-limit"), options = select.options, option, i, j;

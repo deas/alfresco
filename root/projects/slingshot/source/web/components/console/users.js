@@ -649,33 +649,35 @@
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-create-form");
             form.setSubmitElements([parent.widgets.createuserOkButton, parent.widgets.createuserAnotherButton]);
-            form.setShowSubmitStateDynamically(true);
-            
+
             // Form field validation
             form.addValidation(parent.id + "-create-firstname", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-create-email", Alfresco.forms.validation.mandatory, null, "keyup");
-            form.addValidation(parent.id + "-create-email", Alfresco.forms.validation.email, null, "keyup");
-            form.addValidation(parent.id + "-create-username", Alfresco.forms.validation.nodeName, null, "keyup");
+            form.addValidation(parent.id + "-create-email", Alfresco.forms.validation.email, null, "change", parent._msg("Alfresco.forms.validation.email.message"));
+            form.addValidation(parent.id + "-create-username", Alfresco.forms.validation.mandatory, null, "keyup");
+            form.addValidation(parent.id + "-create-username", Alfresco.forms.validation.nodeName, null, "keyup", parent._msg("Alfresco.forms.validation.nodeName.message"));
             form.addValidation(parent.id + "-create-username", Alfresco.forms.validation.length,
             {
                min: parent.options.minUsernameLength,
                max: 100,
                crop: true,
                includeWhitespace: false
-            }, "keyup");
+            }, "keyup", parent._msg("Alfresco.forms.validation.length.message"));
+            form.addValidation(parent.id + "-create-password", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-create-password", Alfresco.forms.validation.length,
             {
                min: parent.options.minPasswordLength,
                max: 100,
                crop: true
-            }, "keyup");
+            }, "change", parent._msg("Alfresco.forms.validation.length.message"));
+            form.addValidation(parent.id + "-create-verifypassword", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-create-verifypassword", Alfresco.forms.validation.length,
             {
                min: parent.options.minPasswordLength,
                max: 100,
                crop: true
-            }, "keyup");
-            
+            }, "change", parent._msg("Alfresco.forms.validation.length.message"));
+
             // Initialise the form
             form.init();
             this._form = form;
@@ -901,8 +903,7 @@
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-update-form");
             form.setSubmitElements(parent.widgets.updateuserSaveButton);
-            form.setShowSubmitStateDynamically(true);
-            
+
             // Form field validation
             form.addValidation(parent.id + "-update-firstname", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-update-email", Alfresco.forms.validation.mandatory, null, "keyup");
@@ -1225,11 +1226,8 @@
                
                // Make main panel area visible
                Dom.setStyle(parent.id + "-update-main", "visibility", "visible");
-
-
-
-
-               me._form.updateSubmitElements();
+               
+               me._form.validate();
             };
             
             // make an ajax call to get user details

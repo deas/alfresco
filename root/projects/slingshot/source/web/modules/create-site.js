@@ -130,9 +130,7 @@
 
          // Configure the forms runtime
          var createSiteForm = new Alfresco.forms.Form(this.id + "-form");
-
-         // Balloon validation messages
-         this.widgets.balloons = {};
+         this.widgets.form = createSiteForm;
 
          var elTitle = Dom.get(this.id + "-title"),
             elShortName = Dom.get(this.id + "-shortName");
@@ -155,17 +153,7 @@
             if (!this.shortNameEdited)
             {
                elShortName.value = this.safeURL(elTitle.value).substring(0, 72);
-            }
-         }, this, true);
-
-         this.widgets.balloons[this.id + "-title"] = Alfresco.util.createBalloon(elTitle);
-
-         // Remove the balloon after the text box has lost focus. This prevents multiple validation balloons overlapping.
-         Event.addListener(elTitle, "blur", function CreateSite_title_blur()
-         {
-            if (this.widgets.balloons[this.id + "-title"])
-            {
-               this.widgets.balloons[this.id + "-title"].hide();
+               createSiteForm.validate();
             }
          }, this, true);
 
@@ -194,17 +182,6 @@
             this.shortNameEdited = elShortName.value.length > 0;
          }, this, true);
 
-         this.widgets.balloons[this.id + "-shortName"] = Alfresco.util.createBalloon(elShortName);
-
-         // Remove the balloon after the text box has lost focus. This prevents multiple validation balloons overlapping.
-         Event.addListener(elShortName, "blur", function CreateSite_shortName_blur()
-         {
-            if (this.widgets.balloons[this.id + "-shortName"])
-            {
-               this.widgets.balloons[this.id + "-shortName"].hide();
-            }
-         }, this, true);
-
          /**
           * Description field
           */
@@ -215,23 +192,7 @@
             crop: true
          }, "keyup");
 
-         // Override Forms Runtime's error handling
-         var scope = this;
-         createSiteForm.addError = function CreateSite_form_addError(msg, field)
-         {
-            if (scope.widgets.panel.cfg.getProperty("visible"))
-            {
-               var balloon = scope.widgets.balloons[field.id];
-               if (balloon)
-               {
-                  balloon.html(msg);
-                  balloon.show();
-               }
-            }
-         };
-
          // The ok button is the submit button, and it should be enabled when the form is ready
-         createSiteForm.setShowSubmitStateDynamically(true, true);
          createSiteForm.setSubmitElements(this.widgets.okButton);
          createSiteForm.doBeforeFormSubmit =
          {
@@ -240,9 +201,8 @@
                var formEl = Dom.get(this.id + "-form");
                formEl.attributes.action.nodeValue = Alfresco.constants.URL_SERVICECONTEXT + "modules/create-site"; 
                
-               this.widgets.okButton.set("disabled", true);
                this.widgets.cancelButton.set("disabled", true);
-               
+
                // Site access
                var siteVisibility = "PUBLIC";
                if (this.widgets.isPublic.checked)
@@ -332,14 +292,6 @@
        */
       onCancelButtonClick: function CreateSite_onCancelButtonClick(type, args)
       {
-         for (var index in this.widgets.balloons)
-         {
-            if (this.widgets.balloons.hasOwnProperty(index))
-            {
-               this.widgets.balloons[index].hide();
-            }
-         }
-
          // Reset the form fields
          try
          {
@@ -409,7 +361,6 @@
       _adjustGUIAfterFailure: function CreateSite__adjustGUIAfterFailure(response)
       {
          this.widgets.feedbackMessage.destroy();
-         this.widgets.okButton.set("disabled", false);
          this.widgets.cancelButton.set("disabled", false);
          this.widgets.panel.show();
          var text = Alfresco.util.message("message.failure", this.name);
@@ -446,6 +397,9 @@
        */
       _showPanel: function CreateSite__showPanel()
       {
+         // Reset form before displaying it
+         this.widgets.form.reset();
+
          // Show the upload panel
          this.widgets.panel.show();
 

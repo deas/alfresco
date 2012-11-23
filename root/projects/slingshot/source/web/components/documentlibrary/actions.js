@@ -1377,8 +1377,7 @@
             p_form.addValidation(this.id + "-changeType-type", function fnValidateType(field, args, event, form, silent, message)
             {
                return field.options[field.selectedIndex].value !== "-";
-            }, null, "change");
-            p_form.setShowSubmitStateDynamically(true, false);
+            }, null, "change", null, { validationType: "mandatory" });
          };
 
          // Always create a new instance

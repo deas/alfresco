@@ -1529,6 +1529,7 @@
          else
          {
             var selectEl = document.createElement("select");
+            YAHOO.util.Dom.addClass(selectEl, "suppress-validation");
             selectEl.setAttribute("name", "-");
             selectEl.setAttribute("title", paramDef.displayLabel ? paramDef.displayLabel : paramDef.name);
             selectEl.setAttribute("param", paramDef.name);
@@ -1848,9 +1849,19 @@
          containerEl.appendChild(pathEl);
          return pathEl;
       },
-      
-      _addValidation: function (el, validator, configDef, event)
+
+      /**
+       *
+       * @param el
+       * @param validator
+       * @param configDef
+       * @param event
+       * @param isMandatoryValidator (Optional) Set to tru if another validator then Alfresco.forms.validation.mandatory is used
+       * @private
+       */
+      _addValidation: function (el, validator, configDef, event, isMandatoryValidator)
       {
+         var mandatory = validator == Alfresco.forms.validation.mandatory || isMandatoryValidator;
          if (el && validator && this.options.form)
          {
             var id = el.getAttribute("id") ? el.getAttribute("id") : Alfresco.util.generateDomId(el),
@@ -1877,7 +1888,7 @@
                   }
                }
                return valid;
-            }, validationArgs, event ? event : "keyup");
+            }, validationArgs, event ? event : "keyup", null, { validationType: mandatory ? "mandatory" :  "invalid" });
 
             /**
              * ...but also group together validator with other validators for the same config
@@ -1918,7 +1929,7 @@
                   Dom.addClass(configDef._id, "invalid");
                }
             }
-            this.options.form.updateSubmitElements();
+            this.options.form.validate();
          }
       },
 

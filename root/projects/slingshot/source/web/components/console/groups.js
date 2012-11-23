@@ -1318,7 +1318,6 @@
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-create-form");
             form.setSubmitElements([this.widgets.creategroupOkButton, this.widgets.creategroupAnotherButton]);
-            form.setShowSubmitStateDynamically(true);
 
             // Form field validation
             form.addValidation(parent.id + "-create-shortname", Alfresco.forms.validation.mandatory, null, "keyup");
@@ -1677,7 +1676,6 @@
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-update-form");
             form.setSubmitElements(this.widgets.updategroupSaveButton);
-            form.setShowSubmitStateDynamically(true);
 
             // Form field validation
             form.addValidation(parent.id + "-update-displayname", Alfresco.forms.validation.mandatory, null, "keyup");

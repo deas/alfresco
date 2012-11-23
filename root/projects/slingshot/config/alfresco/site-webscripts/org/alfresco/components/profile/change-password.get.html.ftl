@@ -21,15 +21,15 @@
             <div class="header-bar">${msg("label.changepassword")}</div>
             <div class="row">
                <span class="label"><label for="${el}-oldpassword">${msg("label.oldpassword")}:</label></span>
-               <span class="input"><input type="password" maxlength="255" size="30" id="${el}-oldpassword" /></span>
+               <span><input type="password" maxlength="255" size="30" id="${el}-oldpassword" /></span>
             </div>
             <div class="row">
                <span class="label"><label for="${el}-newpassword1">${msg("label.newpassword")}:</label></span>
-               <span class="input"><input type="password" maxlength="255" size="30" id="${el}-newpassword1" /></span>
+               <span><input type="password" maxlength="255" size="30" id="${el}-newpassword1" /></span>
             </div>
             <div class="row">
                <span class="label"><label for="${el}-newpassword2">${msg("label.confirmpassword")}:</label></span>
-               <span class="input"><input type="password" maxlength="255" size="30" id="${el}-newpassword2" /></span>
+               <span><input type="password" maxlength="255" size="30" id="${el}-newpassword2" /></span>
             </div>
             <hr/>
             <div class="buttons">

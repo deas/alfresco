@@ -226,7 +226,6 @@
          }, "keyup");
 
          // The ok button is the submit button, and it should be enabled when the form is ready
-         editSiteForm.setShowSubmitStateDynamically(true, false);
          editSiteForm.setSubmitElements(this.widgets.okButton);
          editSiteForm.doBeforeFormSubmit =
          {
@@ -250,7 +249,6 @@
                }
                this.widgets.siteVisibility.value = siteVisibility;
 
-               this.widgets.okButton.set("disabled", true);
                this.widgets.cancelButton.set("disabled", true);
                this.widgets.panel.hide();
                this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
@@ -364,7 +362,6 @@
       _adjustGUIAfterFailure: function CS__adjustGUIAfterFailure(response)
       {
          this.widgets.feedbackMessage.destroy();
-         this.widgets.okButton.set("disabled", false);
          this.widgets.cancelButton.set("disabled", false);
          this.widgets.panel.show();
          var text = Alfresco.util.message("message.failure", this.name);

@@ -182,7 +182,7 @@
                         {
                            return (field.value.length < 512);
                         }, null, "keyup");
-                     form.setShowSubmitStateDynamically(true, false);
+
 
                      /* Get the link title */
                      var elem = Dom.get(this.configDialog.id + "-webviewTitle");

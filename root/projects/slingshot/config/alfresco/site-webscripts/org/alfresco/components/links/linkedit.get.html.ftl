@@ -40,18 +40,18 @@
                </div>
                <div class="yui-gd">
                   <div class="yui-u first">
-                     <label for="${args.htmlid}-description">${msg("label.description")}:</label>
-                  </div>
-                  <div class="yui-u">
-                     <textarea class="wide" id="${args.htmlid}-description" type="textarea" rows="5" name="description" tabindex="0"></textarea>
-                  </div>
-               </div>
-               <div class="yui-gd">
-                  <div class="yui-u first">
                      <label for="${args.htmlid}-url">${msg("form.url")}:</label>
                   </div>
                   <div class="yui-u">
                      <input class="wide" id="${args.htmlid}-url" type="text" name="url" tabindex="0"/><span class="lbl dot">*</span>
+                  </div>
+               </div>
+               <div class="yui-gd">
+                  <div class="yui-u first">
+                     <label for="${args.htmlid}-description">${msg("label.description")}:</label>
+                  </div>
+                  <div class="yui-u">
+                     <textarea class="wide" id="${args.htmlid}-description" type="textarea" rows="5" name="description" tabindex="0"></textarea>
                   </div>
                </div>
                <div class="yui-gd">

@@ -418,7 +418,6 @@
          var doSetupFormsValidation = function sA_oACT_doSetupFormsValidation(p_form)
          {
             p_form.addValidation(this.id + "-edit-tag-name", Alfresco.forms.validation.mandatory, null, "keyup");
-            p_form.setShowSubmitStateDynamically(true, false);
          };
       
          var editTag = new Alfresco.module.SimpleDialog(this.id + "-edit-tag");

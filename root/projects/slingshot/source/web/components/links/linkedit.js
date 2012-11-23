@@ -263,7 +263,6 @@
             crop: true
          }, "blur");
 
-         this.widgets.linkForm.setShowSubmitStateDynamically(true, false);
          this.widgets.linkForm.setSubmitElements(this.widgets.okButton);
          this.widgets.linkForm.setAJAXSubmit(true,
          {
@@ -289,8 +288,6 @@
             fn: function(form, obj)
             {
                 // disable ui elements
-               this.widgets.okButton.set("disabled", true);
-
                this.widgets.cancelButton.set("disabled", true);
                
                // update the tags set in the form
@@ -349,8 +346,6 @@
       {
          response.config.failureMessage = this.msg("message.savelink.failure");
          // enable the buttons
-         this.widgets.okButton.set("disabled", false);
-
          this.widgets.cancelButton.set("disabled", false);
          
          // hide the wait message

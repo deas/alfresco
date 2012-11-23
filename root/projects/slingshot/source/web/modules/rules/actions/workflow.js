@@ -240,7 +240,6 @@
          form.addValidation(this.id + "-nodeRef", Alfresco.forms.validation.mandatory, null, "keyup");
 
          // The ok button is the submit button, and it should be enabled when the form is ready
-         form.setShowSubmitStateDynamically(true, false);
          form.setSubmitElements(this.widgets.okButton);
 
          // Stop the form from being submitted and fire and event from the collected information        
@@ -318,7 +317,7 @@
          this.widgets.destinationLocation.displayByNodeRef(workflowConfig.nodeRef);
 
          // Update submit elements & show the dialog
-         this.widgets.form.updateSubmitElements();
+         this.widgets.form.validate();
          this.widgets.dialog.show();
       },
 
@@ -392,7 +391,7 @@
                Dom.get(this.id + "-nodeRef").value = obj.selectedFolder.nodeRef;
                this.widgets.destinationLocation.displayByNodeRef(obj.selectedFolder.nodeRef);
             }
-            this.widgets.form.updateSubmitElements();
+            this.widgets.form.validate();
          }
       },
 

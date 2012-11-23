@@ -374,8 +374,7 @@
          });
          this.form.setSubmitAsJSON(true);
          this.form.setAjaxSubmitMethod(this.isCreateMode() ? "POST" : "PUT");
-         this.form.setShowSubmitStateDynamically(true, false);
-         
+
          // Intercept data just before AJAX submission
          this.form.doBeforeAjaxRequest =
          {
@@ -446,7 +445,7 @@
             Dom.addClass(this.widgets.scheduleContainer, "hidden");
          }
          
-         this.form.updateSubmitElements();
+         this.form.validate();
       },
       
       /**
@@ -459,7 +458,7 @@
        */
       onDatePickerMandatoryControlValueUpdated: function ReplicationJob_onDatePickerMandatoryControlValueUpdated(layer, args)
       {
-         this.form.updateSubmitElements();
+         this.form.validate();
       },
       
       /**

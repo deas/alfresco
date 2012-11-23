@@ -223,7 +223,6 @@
             
             
             var tagFormsRuntime = new Alfresco.forms.Form(formsRuntime.formId);
-            tagFormsRuntime.setShowSubmitStateDynamically(true, true);
             tagFormsRuntime.setSubmitElements(addTagButton);
             tagFormsRuntime.setAJAXSubmit(true);
             tagFormsRuntime.doBeforeAjaxRequest =

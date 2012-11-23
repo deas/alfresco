@@ -87,7 +87,7 @@
                         <#if tag_has_next><#assign tags = tags + ' '></#if>
                      </#list>
                   </#if>
-                  <input tabindex="10" type="text" size="30" class="rel_left" id="${el}-tag-input-field" value="${tags}"/>
+                  <input tabindex="10" type="text" size="30" class="rel_left suppress-validation" id="${el}-tag-input-field" value="${tags}"/>
                   <input tabindex="11" type="button" id="${el}-add-tag-button" value="${msg("button.add")}" />
                   <div class="bottom_taglist tags_box">
                      <a tabindex="12" href="#" id="${el}-load-popular-tags-link">${msg("taglibrary.populartagslink")}</a>

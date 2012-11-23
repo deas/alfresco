@@ -24,7 +24,7 @@ blockquote
 .yui-overlay ul
 {
    padding: 0;
-   margin-left:  0;
+   margin-left: 0;
    list-style-position: inside;
 }
 
@@ -61,7 +61,7 @@ blockquote
 
 .sticky-wrapper,
 .sticky-footer,
-.balloon,
+.yui-overlay,
 #lightbox,
 #ygddfdiv
 {
@@ -469,6 +469,7 @@ span.navigation-separator-alt
 }
 
 .sticky-wrapper select,
+.sticky-wrapper input[type="file"],
 .sticky-wrapper input[type="text"],
 .sticky-wrapper input[type="password"],
 .sticky-wrapper textarea,
@@ -480,11 +481,6 @@ span.navigation-separator-alt
 {
    padding: 2px;
    width: 15em;
-}
-
-.form-field input[type="text"]
-{
-   width: 30em;
 }
 
 input[type="text"].date-entry,
@@ -617,74 +613,10 @@ textarea.wide
 
 /* Balloon pop-up */
 
-.balloon
-{
-   background: #000;
-   background: rgba(0, 0, 0, 0.8);
-   color: #e8e8e8;
-   left: -10px;
-   margin: 1em 10px 15px;
-   padding: 15px;
-   position: relative;
-   -moz-border-radius: 10px;
-   -webkit-border-radius: 10px;
-   border-radius: 10px;
-   /* outline radius for mozilla/firefox only */
-   -moz-box-shadow: 0 0 10px #000;
-   -webkit-box-shadow: 0 0 10px #000;
-}
-
-.bd .balloon a,
-.bd .balloon a:link,
-.bd .balloon a:visited,
-.bd .balloon a:hover,
-.bd .balloon a:active
-{
-   color: white;
-}
-
 /* Mac/Firefox 3.6 fix override */
 .prevent-scrollbars
 {
    overflow: visible;
-}
-
-.balloon-arrow
-{
-   border-color: #000 transparent;
-   border-color: rgba(0, 0, 0, 0.8) transparent;
-   border-style: solid;
-   border-width: 15px 15px 0;
-   bottom: -15px;
-   left: 50px;
-   position: absolute;
-   width: 0;
-   height: 0;
-}
-
-.balloon .closeButton
-{
-   cursor: pointer;
-   color: #888;
-   float: right;
-   left: 6px;
-   position: relative;
-   top: -8px;
-}
-
-.balloon .text
-{
-   text-align: left;
-}
-
-.balloon .text ul
-{
-   padding-left: 2em;
-}
-
-.balloon .text ul li
-{
-   list-style: disc;
 }
 
 .info-balloon
@@ -1455,6 +1387,8 @@ span.item-social.item-separator,
    font-weight: normal;
    padding: 0.3em 0.3em 0 0.3em;
    min-height: 2em;
+   max-height: 8em;
+   overflow-y: auto;
 }
 
 .invalid .inlineItemEdit input[type="text"]
@@ -1462,16 +1396,21 @@ span.item-social.item-separator,
    background-color: inherit;
 }
 
-
 .inlineItemEditItem
 {
-   background-color: #EEE;
+   background-color: #eee;
    color: #333;;
    padding: 0.2em 0.3em;
    margin-right: 0.5em;
    margin-bottom: 0.3em;
    display: inline-block;
    cursor: pointer;
+   border-radius: 6px;
+}
+
+.inlineItemEditItem span
+{
+   margin-left: 0.1em;
 }
 
 .inlineItemEditItemPrimed
@@ -1511,7 +1450,6 @@ span.item-social.item-separator,
 
 .inlineItemEditAutoCompleteWrapper
 {
-   padding: 0 0 2em;
    width: 12em;
 }
 
@@ -1637,6 +1575,101 @@ body.brand-bg-1 .sticky-wrapper
    border-radius: 0.5em;
    padding: 0.5em 0.75em;
    margin: 0 0.5em;
-   color: #ffffff;
+   color: #fff;
 }
 
+.passwordStrengthMeter span,
+.passwordStrengthMeter ul
+{
+   float: left;
+   margin-top: 0.75em;
+   margin-bottom: 0.75em;
+   padding-left: 0;
+   margin-right: 0.5em;
+   font-size: 75%;
+}
+
+.passwordStrengthMeter li
+{
+   margin-left: 0.25em;
+   float: left;
+   border: 1px solid #ccc;
+   background-color: #eee;
+   width: 2.7em;
+   height: 1em;
+   list-style: none;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-weak li.passwordStrengthMeterStrength-1
+{
+   background-color: #FBA101;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-medium li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-medium li.passwordStrengthMeterStrength-2
+{
+   background-color: #FFE118;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-3
+{
+   background-color: #8ADC00
+}
+
+.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-3,
+.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-4
+{
+   background-color: #46B31B;
+}
+
+.passwordStrengthMeter span,
+.passwordStrengthMeter ul
+{
+   float: left;
+   margin-top: 0.75em;
+   margin-bottom: 0.75em;
+   padding-left: 0;
+   margin-right: 0.5em;
+   font-size: 75%;
+}
+
+.passwordStrengthMeter li
+{
+   margin-left: 0.25em;
+   float: left;
+   border: 1px solid #ccc;
+   background-color: #eee;
+   width: 2.7em;
+   height: 1em;
+   list-style: none;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-weak li.passwordStrengthMeterStrength-1
+{
+   background-color: #FBA101;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-medium li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-medium li.passwordStrengthMeterStrength-2
+{
+   background-color: #FFE118;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeterStrength-strong li.passwordStrengthMeterStrength-3
+{
+   background-color: #8ADC00;
+}
+
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-3,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-4
+{
+   background-color: #46B31B;
+}

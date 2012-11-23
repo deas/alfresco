@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-/*
- *** Alfresco.WikiToolbar
-*/
+
+/**
+ * Alfresco.WikiToolbar
+ */
 (function()
 {
    /**
@@ -207,9 +207,8 @@
          {
             max: 256,
             crop: true
-         }, "keyup");
+         }, "keyup", this._msg("Alfresco.forms.validation.length.message"));
          
-         renameForm.setShowSubmitStateDynamically(true);
          renameForm.setSubmitElements(renameSaveButton);
          renameForm.ajaxSubmitMethod = Alfresco.util.Ajax.POST;
          renameForm.doBeforeAjaxRequest =

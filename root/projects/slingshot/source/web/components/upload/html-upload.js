@@ -254,13 +254,11 @@
          }, { uploader: this }, "change");
 
          // The ok button is the submit button, and it should be enabled when the form is ready
-         form.setShowSubmitStateDynamically(true, false);
          form.setSubmitElements(this.widgets.uploadButton);
          form.doBeforeFormSubmit =
          {
             fn: function()
             {
-               this.widgets.uploadButton.set("disabled", true);
                this.widgets.cancelButton.set("disabled", true);
                this.widgets.panel.hide();
                this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
@@ -492,7 +490,6 @@
 
          this.widgets.cancelButton.set("disabled", false);
          this.widgets.filedata.value = null;
-         this.widgets.uploadButton.set("disabled", true);
 
          // Set the forms action url
          var formEl = Dom.get(this.id + "-htmlupload-form");

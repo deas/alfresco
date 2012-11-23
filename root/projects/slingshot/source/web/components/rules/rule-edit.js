@@ -198,7 +198,6 @@
          this.widgets.form = form;
          this.widgets.formEl = Dom.get(this.id + "-rule-form");
          form.setSubmitElements([this.widgets.createButton, this.widgets.createAnotherButton, this.widgets.saveButton]);
-         form.setShowSubmitStateDynamically(true);
          form.setSubmitAsJSON(true);
          form.doBeforeFormSubmit =
          {
@@ -470,9 +469,6 @@
       _toggleButtons: function RE__toggleButtons(disable)
       {
          this.widgets.cancelButton.set("disabled", disable);
-         this.widgets.saveButton.set("disabled", disable);
-         this.widgets.createButton.set("disabled", disable);
-         this.widgets.createAnotherButton.set("disabled", disable);
       },
 
       /**

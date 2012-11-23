@@ -246,8 +246,7 @@
          // register the submitButton
          var submitButton = new YAHOO.widget.Button(rowId + "-submit",
          {
-            type: "submit",
-            disabled: true
+            type: "submit"
          });
          submitButton.set("label", this.msg(editMode ? 'button.save' : 'button.addComment'));
 
@@ -261,8 +260,28 @@
 
          // instantiate the simple editor we use for the form
          var editor = new Alfresco.util.RichEditor(Alfresco.constants.HTML_EDITOR, rowId + '-content', this.options.editorConfig);
+         this.widgets.editor = editor;
          editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.comment"));
          editor.render();
+
+         // Add validation to the rich text editor
+         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
+         this.widgets.editor.subscribe(keyUpIdentifier, function (e)
+         {
+            /**
+             * Doing a form validation on every key stroke is process consuming, below we try to make sure we only do
+             * a form validation if it's necessarry.
+             * NOTE: Don't check for zero-length in commentsLength, due to HTML <br>, <span> tags, etc. possibly
+             * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
+             * be there even if the form looks empty.
+             */
+            if (this.widgets.editor.getContent().length < 20 || !this.widgets.commentForm.isValid())
+            {
+               // Submit was disabled and something has been typed, validate and submit will be enabled
+               this.widgets.editor.save();
+               this.widgets.commentForm.validate()
+            }
+         }, this, true);
 
          // This IE specific code addresses ALF-11666. Without this code it is not possible to paste and submit
          // a comment. The problem only occurred on the first post after loading the page, but this solution ensures
@@ -277,28 +296,9 @@
             });
          }
          
-         // Add validation to the editor
-         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
-         editor.subscribe(keyUpIdentifier, function (e)
-         {
-            /**
-             * Doing a form validation on every key stroke is process consuming, below we try to make sure we only do
-             * a form validation if it's necessarry.
-             * NOTE: Don't check for zero-length in commentsLength, due to HTML <br>, <span> tags, etc. possibly
-             * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
-             * be there even if the form looks empty.
-             */
-            if (editor.getContent().length < 20 || submitButton.get("disabled"))
-            {
-               // Submit was disabled and something has been typed, validate and submit will be enabled
-               editor.save();
-               commentForm.updateSubmitElements();
-            }
-         }, this, true);
-
          // create the form that does the validation/submit
          var commentForm = new Alfresco.forms.Form(formId);
-         commentForm.setShowSubmitStateDynamically(true, false);
+         this.widgets.commentForm = commentForm;
          commentForm.addValidation(rowId + "-content", Alfresco.forms.validation.mandatory, null);
          commentForm.setSubmitElements(submitButton);
          commentForm.setAjaxSubmitMethod(editMode ? Alfresco.util.Ajax.PUT : Alfresco.util.Ajax.POST);
@@ -312,7 +312,6 @@
                   Dom.addClass(formContainer, "hidden");
                   this._releaseBusy();
                   this.widgets.alfrescoDataTable.reloadDataTable();
-                  submitButton.set("disabled", false);
                   cancelButton.set("disabled", false);
                },
                scope: this
@@ -323,7 +322,6 @@
                fn: function CommentsList_success(response, args)
                {
                   this._releaseBusy();
-                  submitButton.set("disabled", false);
                   cancelButton.set("disabled", false);
                },
                scope: this
@@ -335,7 +333,6 @@
             fn: function(form)
             {
                this._setBusy(this.msg("message.wait"));
-               submitButton.set("disabled", true);
                cancelButton.set("disabled", true);
                // this.widgets.editor.disable();
                // Make sure the editors content is saved down to the form
@@ -508,6 +505,7 @@
          this.restoreEditForm();
          Dom.addClass(this.widgets.onAddCommentClick.get("element"), "hidden");
          this.widgets.addCommentEditor.setContent("");
+         this.widgets.addCommentEditor.save();
          Dom.removeClass(this.id + "-add-form-container", "hidden");
          this.widgets.addCommentEditor.focus();
       },

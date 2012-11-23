@@ -36,7 +36,7 @@
       </ul>
    </div>
    <div class="clear"></div>
-   <input type="text" size="30" class="rel_left" id="${htmlid}-tag-input-field" name="-" title="${msg("taglibrary.tip.help")}" />
+   <input type="text" size="30" class="rel_left suppress-validation" id="${htmlid}-tag-input-field" name="-" title="${msg("taglibrary.tip.help")}" />
    <input type="button" id="${htmlid}-add-tag-button" value="${msg("button.add")}" />
    <div class="clear"></div>
    <div class="bottom_taglist tags_box">

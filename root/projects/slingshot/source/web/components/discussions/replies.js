@@ -1,4 +1,23 @@
 /**
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
  * Discussion TopicReplies component.
  * 
  * @namespace Alfresco
@@ -627,29 +646,9 @@
          this.widgets.editor.addPageUnloadBehaviour(this._msg("message.unsavedChanges.reply"));
          this.widgets.editor.render();
          
-         // Add validation to the rich text editor
-         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
-         this.widgets.editor.subscribe(keyUpIdentifier, function (e)
-         {
-            /**
-             * Doing a form validation on every key stroke is process consuming, below we try to make sure we only do
-             * a form validation if it's necessarry.
-             * NOTE: Don't check for zero-length in commentsLength, due to HTML <br>, <span> tags, etc. possibly
-             * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
-             * be there even if the form looks empty.
-             */                       
-            if (this.widgets.editor.getContent().length < 20 || this.widgets.okButton.get("disabled"))
-            {
-               // Submit was disabled and something has been typed, validate and submit will be enabled
-               this.widgets.editor.save();
-               this.widgets.form.updateSubmitElements();
-            }
-         }, this, true);
-
          // create the form that does the validation/submit
          this.widgets.form = new Alfresco.forms.Form(formId + "-form");
          var replyForm = this.widgets.form;
-         replyForm.setShowSubmitStateDynamically(true, false);
          replyForm.setSubmitElements(this.widgets.okButton);
          if (isEdit)
          {
@@ -681,7 +680,6 @@
             fn: function(form, obj)
             {
                // disable buttons
-               this.widgets.okButton.set("disabled", true);
                this.widgets.cancelButton.set("disabled", true);
          
                //Put the HTML back into the text area
@@ -779,7 +777,6 @@
       onFormSubmitFailure: function TopicReplies_onFormSubmitFailure(response, obj)
       {
          // enable buttons
-         this.widgets.okButton.set("disabled", false);
          this.widgets.cancelButton.set("disabled", false);
          
          // hide message

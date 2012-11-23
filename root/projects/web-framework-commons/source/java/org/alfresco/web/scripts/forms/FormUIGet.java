@@ -1873,7 +1873,7 @@ public class FormUIGet extends DeclarativeWebScript
            {
                constraintMsg = fieldConstraintConfig.getMessage();
            }
-           
+
            // look for overridden validation handler
            if (fieldConstraintConfig.getValidationHandler() != null)
            {
@@ -1893,6 +1893,10 @@ public class FormUIGet extends DeclarativeWebScript
         else if (defaultConstraintConfig.getMessage() != null)
         {
             constraintMsg = defaultConstraintConfig.getMessage();
+        }
+        if (constraintMsg == null)
+        {
+            constraintMsg = retrieveMessage(validationHandler + ".message");
         }
         
         // add the message if there is one

@@ -85,7 +85,6 @@
          // Form definition
          var form = new Alfresco.forms.Form(this.id + "-form");
          form.setSubmitElements(this.widgets.ok);
-         form.setShowSubmitStateDynamically(true);
          form.setSubmitAsJSON(true);
          form.setAJAXSubmit(true,
          {
@@ -98,18 +97,20 @@
          
          // Form field validation
          form.addValidation(this.id + "-oldpassword", Alfresco.forms.validation.mandatory, null, "keyup");
+         form.addValidation(this.id + "-newpassword1", Alfresco.forms.validation.mandatory, null, "keyup");
          form.addValidation(this.id + "-newpassword1", Alfresco.forms.validation.length,
          {
             min: this.options.minPasswordLength,
             max: 255,
             crop: true
-         }, "keyup");
+         }, "change", this.msg("Alfresco.forms.validation.length.message.min"));
+         form.addValidation(this.id + "-newpassword2", Alfresco.forms.validation.mandatory, null, "keyup");
          form.addValidation(this.id + "-newpassword2", Alfresco.forms.validation.length,
          {
             min: this.options.minPasswordLength,
             max: 255,
             crop: true
-         }, "keyup");
+         }, "change", this.msg("Alfresco.forms.validation.length.message.min"));
          
          // Initialise the form
          form.init();

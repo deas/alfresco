@@ -15,7 +15,7 @@ version: 2.9.0
  * Percents could work for IE, but for backCompat purposes, we are using keywords.
  * x-small is for IE6/7 quirks mode.
  */
-.yui-panel-container,
+.yui-overlay,
 .alfresco-share .sticky-wrapper,
 .login-panel
 {
@@ -30,13 +30,13 @@ version: 2.9.0
  * Nudge down to get to 13px equivalent for these form elements
  */ 
 .alfresco-share .sticky-wrapper select,
-.yui-panel-container select,
+.yui-overlay select,
 .alfresco-share .sticky-wrapper input,
-.yui-panel-container input,
+.yui-overlay input,
 .alfresco-share .sticky-wrapper textarea,
-.yui-panel-container textarea,
+.yui-overlay textarea,
 .alfresco-share .sticky-wrapper button,
-.yui-panel-container button
+.yui-overlay button
 {
 	font:99% arial,helvetica,clean,sans-serif;
 }
@@ -45,7 +45,7 @@ version: 2.9.0
  * To help tables remember to inherit
  */
 .alfresco-share .sticky-wrapper table,
-.yui-panel-container table
+.yui-overlay table
 {
 	font-size:inherit;
 	font:100%;
@@ -55,15 +55,15 @@ version: 2.9.0
  * Bump up IE to get to 13px equivalent for these fixed-width elements
  */
 .alfresco-share .sticky-wrapper pre,
-.yui-panel-container pre,
+.yui-overlay pre,
 .alfresco-share .sticky-wrapper code,
-.yui-panel-container code,
+.yui-overlay code,
 .alfresco-share .sticky-wrapper kbd,
-.yui-panel-container kbd,
+.yui-overlay kbd,
 .alfresco-share .sticky-wrapper samp,
-.yui-panel-container samp,
+.yui-overlay samp,
 .alfresco-share .sticky-wrapper tt,
-.yui-panel-container tt
+.yui-overlay tt
 {
 	font-family:monospace;
 	*font-size:108%;
@@ -95,12 +95,6 @@ version: 2.9.0
 /**
  * Section: General Rules
  */
-
-.yui-panel-container,
-.alfresco-share .sticky-wrapper
-{
-	text-align: center;
-}
 
 /**
  * Section: Page Width Rules (#doc, #doc2, #doc3, #doc4)

@@ -55,7 +55,6 @@ html>body .node, .reply, .comment {
 }
 
 .node .nodeTitle a {
-  font-family: Helvetica, Trebuchet, sans-serif;
   font-weight: normal;
   font-size: 131%;
   line-height: 130%;
@@ -63,21 +62,18 @@ html>body .node, .reply, .comment {
 }
 
 .node .nodeStatus {
-  font-family: Trebuchet, sans-serif;
   font-weight: normal;
   font-size: 131%;
   line-height: 130%;
 }
 
 .nodeAttrLabel {
-  font-family: Arial, sans-serif;
   font-weight: normal;
   font-size: 100%;
   line-height: 130%;
   color: #606060;
 }
 .nodeAttrValue {
-  font-family: Arial, sans-serif;
   font-weight: normal;
   font-size: 100%;
   line-height: 130%;
@@ -87,18 +83,12 @@ html>body .node, .reply, .comment {
   color: #2b6eb5;
 }
 .node .userLink {
-  font-family: Arial, sans-serif;
-  font-weight: bold;
   font-size: 100%;
   line-height: 150%;
   color: #999999;
 }
-.node .userLink a {
-  color: #2b6eb5;
-}
 .nodeContent {
   padding-right: 40px;
-  font-family: Arial, sans-serif;
   font-weight: normal;
   font-size: 100%;
   line-height: 150%;
@@ -133,7 +123,6 @@ html>body .node, .reply, .comment {
 }
 
 
-
 /*************
  * EDIT BLOC *
 **************/
@@ -154,7 +143,6 @@ html>body .node, .reply, .comment {
   width: 200px;
 }
 .nodeEdit .action-link {
-  font-family: Arial, sans-serif;
   font-weight: normal;
   font-size: 93%;
   line-height: 150%;
@@ -229,9 +217,6 @@ html>body .node, .reply, .comment {
 }
 
 
-
-
-
 /*******************
  * WYSIWYG CONTENT *
 ********************/
@@ -250,7 +235,6 @@ html>body .node, .reply, .comment {
 .yuieditor ol li {
   list-style-type: decimal; 
 }
-
 
 
 /***********

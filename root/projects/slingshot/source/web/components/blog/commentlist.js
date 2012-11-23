@@ -628,20 +628,19 @@
              * NOTE: Don't check for zero-length in commentsLength, due to HTML <br>, <span> tags, etc. possibly
              * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
              * be there even if the form looks empty.
-             */                       
-            if (this.editData.widgets.editor.getContent().length < 20 || this.editData.widgets.okButton.get("disabled"))
+             */
+            if (this.editData.widgets.editor.getContent().length < 20 || !this.editData.widgets.commentForm.isValid())
             {
                // Submit was disabled and something has been typed, validate and submit will be enabled
                this.editData.widgets.editor.save();
-               this.editData.widgets.commentForm.updateSubmitElements();
+               this.editData.widgets.commentForm.validate();
             }
          }, this, true);
 
          // create the form that does the validation/submit
          var commentForm = new Alfresco.forms.Form(formId + "-form");
          this.editData.widgets.commentForm = commentForm;
-         commentForm.setShowSubmitStateDynamically(true, false);
-         commentForm.addValidation(formId + "-content", Alfresco.forms.validation.mandatory, null);         
+         commentForm.addValidation(formId + "-content", Alfresco.forms.validation.mandatory, null);
          commentForm.setSubmitElements(this.editData.widgets.okButton);
          commentForm.setAjaxSubmitMethod(Alfresco.util.Ajax.PUT);
          commentForm.setAJAXSubmit(true,
@@ -671,8 +670,6 @@
                   displayTime: 0
                });
                
-               this.editData.widgets.okButton.set("disabled", true);
-               this.editData.widgets.cancelButton.set("disabled", true);
                this.editData.widgets.editor.disable();
                 
                //Put the HTML back into the text area
@@ -711,8 +708,6 @@
       onEditFormSubmitFailure: function CommentList_onEditFormSubmitFailure(response)
       {
          this.editData.widgets.feedbackMessage.destroy();
-         this.editData.widgets.okButton.set("disabled", false);
-         this.editData.widgets.cancelButton.set("disabled", false);
          this.editData.widgets.editor.disable();
       },
       

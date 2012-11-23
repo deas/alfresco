@@ -105,7 +105,6 @@
           * @type string
           */
          topicId: ""
-
       },
       
       /**
@@ -310,28 +309,8 @@
          this.widgets.editor.addPageUnloadBehaviour(this._msg("message.unsavedChanges.discussion"));
          this.widgets.editor.render();
          
-         // Add validation to the editor
-         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
-         this.widgets.editor.subscribe(keyUpIdentifier, function (e)
-         {
-            /**
-             * Doing a form validation on every key stroke is process consuming, below we try to make sure we only do
-             * a form validation if it's necessarry.
-             * NOTE: Don't check for zero-length in commentsLength, due to HTML <br>, <span> tags, etc. possibly
-             * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
-             * be there even if the form looks empty.
-             */                       
-            if (this.widgets.editor.getContent().length < 20 || this.widgets.okButton.get("disabled"))
-            {
-               // Submit was disabled and something has been typed, validate and submit will be enabled
-               this.widgets.editor.save();
-               this.widgets.topicForm.updateSubmitElements();
-            }
-         }, this, true);
-
          // create the form that does the validation/submit
          this.widgets.topicForm = new Alfresco.forms.Form(this.id + "-form");
-         this.widgets.topicForm.setShowSubmitStateDynamically(true, false);
          // Title
          this.widgets.topicForm.addValidation(this.id + "-title", Alfresco.forms.validation.mandatory, null, "keyup");
          this.widgets.topicForm.addValidation(this.id + "-title", Alfresco.forms.validation.length,
@@ -366,7 +345,6 @@
             fn: function(form, obj)
             {
                // disable buttons
-               this.widgets.okButton.set("disabled", false);
                this.widgets.cancelButton.set("disabled", false);
                 
                //Put the HTML back into the text area
@@ -410,7 +388,6 @@
       onFormSubmitFailure: function CreateComment_onFormSubmitFailure()
       {
          // enable buttons
-         this.widgets.okButton.set("disabled", false);
          this.widgets.cancelButton.set("disabled", false);
          
          // hide message

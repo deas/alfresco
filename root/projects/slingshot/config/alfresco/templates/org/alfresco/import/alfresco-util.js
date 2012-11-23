@@ -124,6 +124,30 @@ var AlfrescoUtil =
       return rootNode;
    },
 
+   getSiteRoles: function getDocumentDetails(site)
+   {
+      var url = "/api/sites/" + encodeURIComponent(site) + "/roles",
+         result = remote.connect("alfresco").get(url);
+      if (result.status == 200)
+      {
+         var siteRoles = [];
+         var roles = eval('(' + result + ')').siteRoles;
+         for (var i = 0; i < roles.length; i++)
+         {
+            if (roles[i] != "None")
+            {
+               siteRoles.push({
+                  id: roles[i],
+                  name: msg.get("role." + roles[i])
+               });
+            }
+         }
+         return siteRoles;
+      }
+   
+      return null;
+   },
+
    getNodeDetails: function getNodeDetails(nodeRef, site, options)
    {
       if (nodeRef)

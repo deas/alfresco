@@ -105,6 +105,7 @@
    <@script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/modules/editors/yui_editor.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/js/forms-runtime.js" group="template-common"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/form/form.css" />
 </@>
 
 <@markup id="shareConstants">

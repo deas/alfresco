@@ -29,7 +29,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
 }
 button:focus {outline:none;}
 
-.yui-panel-container,
+.yui-overlay,
 .alfresco-share .sticky-wrapper,
 .login-panel
 {
@@ -37,13 +37,13 @@ button:focus {outline:none;}
 }
 
 .alfresco-share .sticky-wrapper select,
-.yui-panel-container select,
+.yui-overlay select,
 .alfresco-share .sticky-wrapper input,
-.yui-panel-container input,
+.yui-overlay input,
 .alfresco-share .sticky-wrapper textarea,
-.yui-panel-container textarea,
+.yui-overlay textarea,
 .alfresco-share .sticky-wrapper button,
-.yui-panel-container button
+.yui-overlay button
 {
 	font:99% Open Sans,arial,helvetica,clean,sans-serif;
 }
@@ -62,9 +62,9 @@ button:focus {outline:none;}
 .sticky-footer a,
 .sticky-footer a:visited,
 .sticky-footer a:hover,
-.yui-panel-container a,
-.yui-panel-container a:visited,
-.yui-panel-container a:hover
+.yui-overlay a,
+.yui-overlay a:visited,
+.yui-overlay a:hover
 {
    color: #000;
    text-decoration: none;
@@ -72,13 +72,13 @@ button:focus {outline:none;}
 
 .sticky-wrapper a:hover,
 .sticky-footer a:hover,
-.yui-panel-container a:hover
+.yui-overlay a:hover
 {
    text-decoration: underline;
 }
 
 .sticky-wrapper h1,
-.yui-panel-container h1
+.yui-overlay h1
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
    font-size: 235%;
@@ -99,7 +99,7 @@ h1.sub-title
 }
 
 .sticky-wrapper h2,
-.yui-panel-container h2
+.yui-overlay h2
 {
    font-size: 123.1%;
    font-weight: normal;
@@ -120,14 +120,14 @@ h2 .lighter
 }
 
 .sticky-wrapper h3,
-.yui-panel-container h3
+.yui-overlay h3
 {
    font-size: 108%;
    font-weight: normal !important;
 }
 
 .sticky-wrapper h4,
-.yui-panel-container h4
+.yui-overlay h4
 {
    font-weight: normal !important;
 }
@@ -161,21 +161,36 @@ h4 .lighter
    background-color: #fff;
 }
 
+.alfresco-guest .sticky-wrapper
+{
+   /* TODO: background image */
+   background-color: #fff;
+}
+
 .label
 {
 }
 
 .error
 {
+   color: red;
+}
+
+.alfresco-share .sticky-wrapper .error
+{
    background: white !important;
    color: red !important;
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal;
    padding: 0.2em 1em;
 }
 
-.error-alt
+.alfresco-share .sticky-wrapper .error-alt
 {
    background-color: red !important;
    color: white !important;
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal;
    padding: 0.2em 1em;
 }
 
@@ -192,7 +207,7 @@ h4 .lighter
 
 .faded
 {
-   color: #aaa;
+   color: #999;
 }
 
 /* DASHLETS */
@@ -553,14 +568,15 @@ span.navigation-separator-alt
    background: #eee;
 }
 
+.input,
 .sticky-wrapper input[type="text"],
 .sticky-wrapper input[type="password"],
 .sticky-wrapper textarea,
 .sticky-wrapper select,
-.yui-panel-container input[type="text"],
-.yui-panel-container input[type="password"],
-.yui-panel-container textarea,
-.yui-panel-container select,
+.yui-overlay input[type="text"],
+.yui-overlay input[type="password"],
+.yui-overlay textarea,
+.yui-overlay select,
 .form-element-border,
 .share-form .yui-dt table
 {
@@ -700,6 +716,29 @@ span.mce_alfresco-linklibrary
    background: none;
 }
 
+/* Override YUI Button styles for - attention button style */
+
+.yui-skin-lightTheme .alfresco-attention-yui-button,
+.yui-skin-lightTheme .alfresco-attention-yui-button span.first-child
+{
+   border-color: #e0b000;
+}
+
+.yui-skin-lightTheme .alfresco-attention-yui-button.yui-button
+{
+   background-position: 0 -2000px;
+}
+
+.yui-skin-lightTheme .alfresco-attention-yui-button.yui-button-hover
+{
+   background-position: 0 -2100px;
+}
+
+.yui-skin-lightTheme .alfresco-attention-yui-button.yui-button-disabled
+{
+   background-position: 0 -2200px;
+}
+
 /* Paginator link styling */
 
 .yui-skin-lightTheme .yui-pg-container span
@@ -825,6 +864,7 @@ body.yui-skin-lightTheme .yuimenu .bd a:focus
 .yui-skin-lightTheme .yuimenu h6
 {
    border: none;
+   font-family: Open Sans Bold, Arial, sans-serif;
 }
 
 /* YUI Menu roll over state */
@@ -1023,8 +1063,7 @@ body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-lightTheme .agendaview a,
 .yui-skin-lightTheme a.previousEvents,
 .yui-skin-lightTheme a.nextEvents,
-.yui-skin-default div.channels a,
-.yui-skin-default .info-balloon a
+.yui-skin-lightTheme div.channels a
 {
    color: #333;
 }
@@ -1207,6 +1246,12 @@ div.theme-bg-color-7
    background-color: #fff;
 }
 
+.theme-bg-color-8,
+div.theme-bg-color-8
+{
+   background-color: #fff;
+}
+
 .theme-bg-1
 {
    
@@ -1242,6 +1287,66 @@ div.theme-bg-color-7
 .theme-border-4
 {
    border: 1px solid #ccc;
+}
+
+/* Unauthenticated pages (inc login) */
+
+.alfresco-guest .theme-overlay
+{
+   width: 266px;
+   height: 252px;
+   padding-left: 24px;
+   font-family: Open Sans,Arial,Helvetica,sans-serif;
+   color: #333;
+   border: 1px solid #ccc;
+   background-color: #fff;
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
+   border-radius: 16px;
+}
+
+.login form
+{
+   padding-bottom: 0.75em;
+}
+
+.login input[type="text"],
+.login input[type="password"]
+{
+   width: 260px;
+}
+
+.login label
+{
+   padding-bottom: 2px;
+}
+
+.login .yui-button
+{
+   margin-left: 1px;
+   margin-top: 2px;
+}
+
+.theme-company-logo
+{
+   top: 20px;
+   height: 64px;
+   background: transparent url("./images/logo.png") no-repeat;
+}
+
+.theme-flow-arrow
+{
+   margin:  0;
+   padding: 0;
+	width: 50px;
+   height: 98px;
+   background: url(images/flow-arrow.png) no-repeat;
+}
+
+.balloon
+{
+   border-radius: 6px !important;
+   padding: 10px 12px !important;
+   font-size: 91%;
 }
 
 /* Meeting Places Code */
@@ -1341,6 +1446,7 @@ div.theme-bg-color-7
 .header .user-items div.yuimenu div.bd ul li.user-menuitem
 {
    background: none !important;
+   border-bottom: 1px solid #eee !important;
 }
 
 .header .app-items span.yui-button span.first-child button

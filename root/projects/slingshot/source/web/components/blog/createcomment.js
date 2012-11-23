@@ -252,18 +252,17 @@
              * NOTE: Don't check for zero-length in commentsLength, due to HTML <br>, <span> tags, etc. possibly
              * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
              * be there even if the form looks empty.
-             */                       
-            if (this.widgets.editor.getContent().length < 20 || this.widgets.okButton.get("disabled"))
+             */
+            if (this.widgets.editor.getContent().length < 20 || !this.widgets.commentForm.isValid())
             {
                // Submit was disabled and something has been typed, validate and submit will be enabled
                this.widgets.editor.save();
-               this.widgets.commentForm.updateSubmitElements();
+               this.widgets.commentForm.validate()
             }
          }, this, true);
 
          // create the form that does the validation/submit
          this.widgets.commentForm = new Alfresco.forms.Form(this.id + "-form");
-         this.widgets.commentForm.setShowSubmitStateDynamically(true, false);
          this.widgets.commentForm.addValidation(this.id + "-content", this._validateTextContent, null);
          this.widgets.commentForm.setSubmitElements(this.widgets.okButton);
          this.widgets.commentForm.setAJAXSubmit(true,
@@ -294,7 +293,6 @@
                this.widgets.editor.save();
 
                this.widgets.editor.disable();
-               this.widgets.okButton.set("disabled", true);
                this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
                {
                   text: Alfresco.util.message("message.creating", this.name),

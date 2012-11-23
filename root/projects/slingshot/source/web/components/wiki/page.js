@@ -17,8 +17,8 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- *** Alfresco.WikiPage
+/**
+ * Alfresco.WikiPage
  * 
  * @namespace Alfresco
  * @class Alfresco.WikiPage
@@ -376,7 +376,6 @@
          
          // create the form that does the validation/submit
          var form = new Alfresco.forms.Form(this.id + "-form");
-         form.setShowSubmitStateDynamically(true, false);
          form.setSubmitElements(saveButton);
          form.setAJAXSubmit(true,
          {

@@ -630,7 +630,6 @@
                      "obj": EditDialog
                   }, "focus");
 
-                  form.setShowSubmitStateDynamically(true, false);
                   form.setSubmitElements(EditDialog.widgets.okButton);
 
                   /**

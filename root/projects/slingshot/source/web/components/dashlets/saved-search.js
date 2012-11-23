@@ -289,7 +289,6 @@
                      fn: function SavedSearch_doSetupForm_callback(form)
                      {
                         form.addValidation(this.configDialog.id + "-searchTerm", Alfresco.forms.validation.mandatory, null, "keyup");
-                        form.setShowSubmitStateDynamically(true, false);
 
                         Dom.get(this.configDialog.id + "-searchTerm").value = this.options.searchTerm;
                         Dom.get(this.configDialog.id + "-limit").value = this.options.limit;

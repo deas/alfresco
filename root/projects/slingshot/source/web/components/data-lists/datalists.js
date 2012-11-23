@@ -521,7 +521,7 @@
                   Dom.removeClass(divs, selectedClass);
                   Dom.addClass(myDiv, selectedClass);
                   Dom.get(formFieldId).value = listType;
-                  p_form.updateSubmitElements();
+                  p_form.validate();
                   return false;
                };
             };
@@ -554,7 +554,7 @@
             {
                return (field.value.length > 0);
             };
-            p_form.addValidation(p_dialog.id + "-dataListItemType-field", fnValidateListChoice, null, null);
+            p_form.addValidation(p_dialog.id + "-dataListItemType-field", fnValidateListChoice, null, null, null, { validationType: "mandatory" });
          };
 
          var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&showCancelButton=true",

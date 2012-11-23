@@ -10,6 +10,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
 }
 button:focus {outline:none;}
 
+.yui-overlay,
 .sticky-wrapper,
 .sticky-footer
 {
@@ -24,9 +25,9 @@ button:focus {outline:none;}
 .sticky-footer a,
 .sticky-footer a:visited,
 .sticky-footer a:hover,
-.yui-panel-container a,
-.yui-panel-container a:visited,
-.yui-panel-container a:hover
+yui-overlay a,
+yui-overlay a:visited,
+yui-overlay a:hover
 {
    color: #000;
    text-decoration: none;
@@ -34,13 +35,13 @@ button:focus {outline:none;}
 
 .sticky-wrapper a:hover,
 .sticky-footer a:hover,
-.yui-panel-container a:hover
+yui-overlay a:hover
 {
    text-decoration: underline;
 }
 
 .sticky-wrapper h1,
-.yui-panel-container h1
+yui-overlay h1
 {
    font-family: Helvetica, Arial, sans-serif;
    font-size: 146.5%;
@@ -48,7 +49,7 @@ button:focus {outline:none;}
 }
 
 .sticky-wrapper h2,
-.yui-panel-container h2
+yui-overlay h2
 {
    font-size: 123.1%;
 }
@@ -69,13 +70,13 @@ h2 .lighter
 }
 
 .sticky-wrapper h3,
-.yui-panel-container h3
+yui-overlay h3
 {
    font-size: 108%;
 }
 
 .sticky-wrapper h4,
-.yui-panel-container h4
+yui-overlay h4
 {
    font-weight: bold;
 }
@@ -95,7 +96,8 @@ h3.dark
    color: #333333;
 }
 
-.sticky-wrapper hr
+.sticky-wrapper hr,
+.yui-overlay hr
 {
    color: #E4E4E4;
    background-color: #E4E4E4;
@@ -120,13 +122,18 @@ h3.dark
 
 .error
 {
+   color: red;
+}
+
+.alfresco-share .sticky-wrapper .error
+{
    background: white !important;
    color: red !important;
    font-weight: bold;
    padding: 0.2em 1em;
 }
 
-.error-alt
+.alfresco-share .sticky-wrapper .error-alt
 {
    background-color: red !important;
    color: white !important;
@@ -479,14 +486,15 @@ span.navigation-separator-alt
    background: #e4f7d4;
 }
 
+.input,
 .sticky-wrapper input[type="text"],
 .sticky-wrapper input[type="password"],
 .sticky-wrapper textarea,
 .sticky-wrapper select,
-.yui-panel-container input[type="text"],
-.yui-panel-container input[type="password"],
-.yui-panel-container textarea,
-.yui-panel-container select,
+.yui-overlay input[type="text"],
+.yui-overlay input[type="password"],
+.yui-overlay textarea,
+.yui-overlay select,
 .form-element-border,
 .share-form .yui-dt table   
 {
@@ -610,6 +618,30 @@ span.mce_alfresco-linklibrary
 {
    border-color: #286A99;
 }
+
+/* Override YUI Button styles for - attention button style */
+
+.yui-skin-default .alfresco-attention-yui-button,
+.yui-skin-default .alfresco-attention-yui-button span.first-child
+{
+   border-color: #e0b000;
+}
+
+.yui-skin-default .alfresco-attention-yui-button.yui-button
+{
+   background-position: 0 -2000px;
+}
+
+.yui-skin-default .alfresco-attention-yui-button.yui-button-hover
+{
+   background-position: 0 -2100px;
+}
+
+.yui-skin-default .alfresco-attention-yui-button.yui-button-disabled
+{
+   background-position: 0 -2200px;
+}
+
 
 /* Paginator link styling */
 
@@ -940,8 +972,7 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-default .agendaview a,
 .yui-skin-default a.previousEvents,
 .yui-skin-default a.nextEvents,
-.yui-skin-default div.channels a,
-.yui-skin-default .info-balloon a
+.yui-skin-default div.channels a
 {
    color: #4F94C9;
 }
@@ -1135,6 +1166,11 @@ div.theme-bg-color-7
    background-color: #F5FFF2;
 }
 
+.theme-bg-color-8,
+div.theme-bg-color-8
+{
+   background-color: #FFFFFF;
+}
 
 .theme-bg-1
 {
@@ -1155,6 +1191,40 @@ div.theme-bg-color-7
        center top,
        rgb(246,246,246) 0%,
        rgb(233,232,234) 100%
+   );
+}
+
+.theme-bg-3
+{
+   background-color: #CCCCCC;
+   background-image: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, rgb(204,204,204)),
+      color-stop(1, rgb(232,232,232))
+   );
+   background-image: -moz-linear-gradient(
+       center top,
+       rgb(204,204,204) 0%,
+       rgb(232,232,232) 100%
+   );
+}
+
+.theme-bg-4
+{
+   background-color: #33FF66;
+   background-image: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, rgb(51,255,102)),
+      color-stop(1, rgb(51,153,102))
+   );
+   background-image: -moz-linear-gradient(
+      top,
+      rgb(51,255,102) 0%,
+      rgb(51,153,102) 100%
    );
 }
 
@@ -1186,6 +1256,11 @@ div.theme-bg-color-7
    border: 1px solid #DDD6A0;
 }
 
+.theme-border-5
+{
+   border: 1px solid #c2c2c2;
+}
+
 .docfolder-label
 {
    overflow:auto;
@@ -1211,4 +1286,34 @@ div.theme-bg-color-7
    cursor: pointer;
    margin-left: 2px;
    text-decoration: none;
+}
+
+.alfresco-guest .theme-overlay
+{
+   background-image: url(images/overlay-bg.png);
+   background-repeat: no-repeat;
+   background-position: top right;
+   background-color: #fff;
+   box-shadow: 3px 3px 5px #555;
+}
+
+.alfresco-guest .sticky-wrapper
+{
+   background-color: #B4B4B4;
+}
+
+.theme-company-logo
+{
+   height: 64px;
+   width: 450px;
+   background: transparent url(images/logo.png) no-repeat;
+}
+
+.theme-flow-arrow
+{
+   margin:  0;
+   padding: 0;
+	width: 60px;
+   height: 98px;
+   background: url(images/flow-arrow.png) no-repeat;
 }

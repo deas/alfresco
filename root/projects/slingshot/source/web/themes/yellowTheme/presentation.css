@@ -10,6 +10,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
 }
 button:focus {outline:none;}
 
+.yui-overlay,
 .sticky-wrapper,
 .sticky-footer
 {
@@ -24,23 +25,23 @@ button:focus {outline:none;}
 .sticky-footer a,
 .sticky-footer a:visited,
 .sticky-footer a:hover,
-.yui-panel-container a,
-.yui-panel-container a:visited,
-.yui-panel-container a:hover
+.yui-overlay a,
+.yui-overlay a:visited,
+.yui-overlay a:hover
 {
    color: #000;
    text-decoration: none;
 }
 
 .sticky-wrapper a:hover,
-.sticky-footer a:hover,
-.yui-panel-container a:hover
+.yui-overlay a:hover,
+.sticky-footer a:hover
 {
    text-decoration: underline;
 }
 
 .sticky-wrapper h1,
-.yui-panel-container h1
+.yui-overlay h1
 {
    font-family: Helvetica, Arial, sans-serif;
    font-size: 140%;
@@ -48,7 +49,7 @@ button:focus {outline:none;}
 }
 
 .sticky-wrapper h2,
-.yui-panel-container h2
+.yui-overlay h2
 {
    font-size: 123.1%;
 }
@@ -67,13 +68,13 @@ h2 .lighter
 }
 
 .sticky-wrapper h3,
-.yui-panel-container h3
+.yui-overlay h3
 {
    font-size: 108%;
 }
 
 .sticky-wrapper h4,
-.yui-panel-container h4
+.yui-overlay h4
 {
    font-weight: bold;
 }
@@ -104,6 +105,11 @@ h4 .lighter
    background-color: #fff;
 }
 
+.alfresco-guest .sticky-wrapper
+{
+   background-color: #B4B4B4;
+}
+
 .label
 {
    font-weight: bold;
@@ -111,13 +117,18 @@ h4 .lighter
 
 .error
 {
+   color: red;
+}
+
+.alfresco-share .sticky-wrapper .error
+{
    background: white !important;
    color: red !important;
    font-weight: bold;
    padding: 0.2em 1em;
 }
 
-.error-alt
+.alfresco-share .sticky-wrapper .error-alt
 {
    background-color: red !important;
    color: white !important;
@@ -330,7 +341,7 @@ h4 .lighter
 
 .page-title
 {
-   background-color: #ffee9e;
+   background-color: #6CA5CE;
    color: white;
 }
 
@@ -461,14 +472,15 @@ span.navigation-separator-alt
    background: #fff7c9;
 }
 
+.input,
 .sticky-wrapper input[type="text"],
 .sticky-wrapper input[type="password"],
 .sticky-wrapper textarea,
 .sticky-wrapper select,
-.yui-panel-container input[type="text"],
-.yui-panel-container input[type="password"],
-.yui-panel-container textarea,
-.yui-panel-container select,
+.yui-overlay input[type="text"],
+.yui-overlay input[type="password"],
+.yui-overlay textarea,
+.yui-overlay select,
 .form-element-border,
 .share-form .yui-dt table
 {
@@ -593,6 +605,30 @@ span.mce_alfresco-linklibrary
 {
    border-color: #dab311;
 }
+
+/* Override YUI Button styles for - attention button style */
+
+.yui-skin-yellowTheme .alfresco-attention-yui-button,
+.yui-skin-yellowTheme .alfresco-attention-yui-button span.first-child
+{
+   border-color: #e0b000;
+}
+
+.yui-skin-yellowTheme .alfresco-attention-yui-button.yui-button
+{
+   background-position: 0 -2000px;
+}
+
+.yui-skin-yellowTheme .alfresco-attention-yui-button.yui-button-hover
+{
+   background-position: 0 -2100px;
+}
+
+.yui-skin-yellowTheme .alfresco-attention-yui-button.yui-button-disabled
+{
+   background-position: 0 -2200px;
+}
+
 
 /* Paginator link styling */
 
@@ -901,8 +937,7 @@ body.yui-skin-yellowTheme .yui-columnbrowser .yui-carousel-content li.yui-column
 .yui-skin-yellowTheme .agendaview a,
 .yui-skin-yellowTheme a.previousEvents,
 .yui-skin-yellowTheme a.nextEvents,
-.yui-skin-default div.channels a,
-.yui-skin-default .info-balloon a
+.yui-skin-yellowTheme div.channels a
 {
    color: #F6931C;
 }
@@ -1092,6 +1127,12 @@ div.theme-bg-color-7
    background-color: #F5FFF2;
 }
 
+.theme-bg-color-8,
+div.theme-bg-color-8
+{
+   background-color: #FFFFFF;
+}
+
 .theme-bg-1
 {
    
@@ -1139,4 +1180,29 @@ div.theme-bg-color-7
 .theme-border-4
 {
    border: 1px solid #DDD6A0;
+}
+
+.alfresco-guest .theme-overlay
+{
+   background-image: url(images/overlay-bg.png);
+   background-repeat: no-repeat;
+   background-position: top right;
+   background-color: #fff;
+   box-shadow: 3px 3px 5px #555;
+}
+
+.theme-company-logo
+{
+   height: 64px;
+   width: 450px;
+   background: transparent url(images/logo.png) no-repeat;
+}
+
+.theme-flow-arrow
+{
+   margin:  0;
+   padding: 0;
+	width: 50px;
+   height: 98px;
+   background: url(images/flow-arrow.png) no-repeat;
 }

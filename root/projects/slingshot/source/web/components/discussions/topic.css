@@ -111,13 +111,8 @@ html>body .node, .reply, .comment {
 }
 .node .userLink
 {
-  font-weight: bold;
   line-height: 150%;
   color: #999999;
-}
-.node .userLink a
-{
-  color: #2b6eb5;
 }
 .nodeContent
 {
@@ -165,7 +160,6 @@ html>body .node, .reply, .comment {
   width: 200px;
 }
 .nodeEdit .action-link {
-  font-family: Arial, sans-serif;
   font-weight: normal;
   font-size: 93%;
   line-height: 150%;

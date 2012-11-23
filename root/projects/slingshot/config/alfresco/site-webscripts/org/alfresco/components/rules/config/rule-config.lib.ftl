@@ -38,7 +38,7 @@
    </ul>
 </div>
 <div class="hidden">
-   <li id="${el}-configTemplate" class="config">
+   <li id="${el}-configTemplate" class="config suppress-validation">
       <input type="hidden" name="id" value=""/>
       <div class="actions">
          <span class="yui-button yui-push-button add-config">

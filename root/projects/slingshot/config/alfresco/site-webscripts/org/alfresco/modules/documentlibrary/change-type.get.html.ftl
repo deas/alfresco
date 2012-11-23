@@ -6,7 +6,7 @@
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-type">${msg("label.type")}:</label></div>
             <div class="yui-u">
-               <select id="${el}-type" type="text" name="type" tabindex="0">
+               <select id="${el}-type" type="text" name="type" tabindex="0" class="suppress-validation">
                   <option value="-">${msg("label.select")}</option>
                <#list types.selectable as t>
                   <option value="${t}">${msg("type." + t?replace(":", "_"))}</option>

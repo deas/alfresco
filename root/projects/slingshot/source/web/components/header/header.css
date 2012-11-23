@@ -170,6 +170,7 @@
 {
    background-repeat: no-repeat;
    border-width: 0px;
+   background-position: left center;
 }
 
 .header .user-items div.yuimenu div.bd ul li.yuimenuitem .yuimenuitemlabel
@@ -229,7 +230,7 @@
 {
    background-color: #fff;
    border-bottom: 1px dotted #dfdfdf;
-   min-height: 84px;
+   min-height: 9em;
 }
 
 .header .user-items a.avatar
@@ -253,6 +254,7 @@
 .header .user-items span.user-status div.user-status-time
 {
    width: 15em;
+   padding: 2px;
 }
 
 .header .user-items span.user-status span.yui-button
@@ -263,4 +265,9 @@
 .header .user-items span.user-status span.yui-button span.first-child
 {
    border-width: 0px 1px;
+}
+
+.header .yui-overlay
+{
+   text-align: left;
 }

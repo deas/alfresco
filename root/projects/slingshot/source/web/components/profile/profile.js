@@ -108,7 +108,6 @@
             var form = new Alfresco.forms.Form(this.id + "-form");
             this.widgets.form = form;
             form.setSubmitElements(this.widgets.save);
-            form.setShowSubmitStateDynamically(true);
             form.setSubmitAsJSON(true);
             form.setAJAXSubmit(true,
             {
@@ -173,7 +172,7 @@
          Dom.get(prefix + "companyfax").value = p.companyfax;
          Dom.get(prefix + "companyemail").value = p.companyemail;
          
-         this.widgets.form.updateSubmitElements();
+         this.widgets.form.validate();
          
          // Show edit panel
          Dom.removeClass(this.id + "-editview", "hidden");

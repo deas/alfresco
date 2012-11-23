@@ -312,3 +312,10 @@ div.historic-properties-viewer div.nav
    margin: 0;
    width: 20em;
 }
+
+/* MultiSelectAutoComplete */
+
+.inlineItemEdit input[type="text"]
+{
+   width: 8em;
+}

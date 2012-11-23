@@ -17,9 +17,9 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- *** Alfresco.WikiCreateForm
- *
+/**
+ * Alfresco.WikiCreateForm
+ * 
  * @namespace Alfresco
  * @class Alfresco.Wiki
  * @extends Alfresco.component.Base
@@ -52,7 +52,6 @@
    
    YAHOO.extend(Alfresco.WikiCreateForm, Alfresco.component.Base,
    {
-
       /**
        * Object container for initialization options
        *
@@ -160,7 +159,6 @@
             crop: true
          }, "keyup");
 
-         form.setShowSubmitStateDynamically(true);
          form.setSubmitElements(this.widgets.saveButton);
          form.setAJAXSubmit(true,
          {

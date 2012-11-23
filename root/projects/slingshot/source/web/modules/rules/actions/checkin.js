@@ -142,8 +142,6 @@
             crop: true
          }, "keyup");
 
-         // The ok button is the submit button, and it should be enabled when the form is ready
-         form.setShowSubmitStateDynamically(true, false);
          form.setSubmitElements(this.widgets.okButton);
 
          // Stop the form from being submitted and fire and event from the collected information
@@ -221,7 +219,7 @@
             minorEl.checked = false;
          }         
          Dom.get(this.id + "-comments").value = checkinConfig.comments ? checkinConfig.comments : "";
-         this.widgets.form.updateSubmitElements();
+         this.widgets.form.validate();
 
          // Show the dialog
          this.widgets.dialog.show();

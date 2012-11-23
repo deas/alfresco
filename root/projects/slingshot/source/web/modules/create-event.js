@@ -215,7 +215,6 @@ Alfresco.module.event.validation = Alfresco.module.event.validation || {};
             type: "submit"
          });
          
-         eventForm.setShowSubmitStateDynamically(true);
          eventForm.setSubmitElements(this.okButton);
 
          if (!this.options.eventURI) // Create
@@ -269,14 +268,6 @@ Alfresco.module.event.validation = Alfresco.module.event.validation || {};
          }
          
          eventForm.setSubmitAsJSON(true);
-         eventForm.doBeforeFormSubmit =
-         {
-            fn: function(form, obj)
-            {
-               this.okButton.set("disabled", true);
-            },
-            scope: this
-         };
          // We're in a popup, so need the tabbing fix
          eventForm.applyTabFix();
          eventForm.init();

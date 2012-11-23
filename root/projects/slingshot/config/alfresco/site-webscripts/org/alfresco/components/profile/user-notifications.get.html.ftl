@@ -21,7 +21,7 @@
             <div class="header-bar">${msg("label.notifications")}</div>
             <div class="row">
                <span class="label"><label for="user-notifications-email">${msg("label.emailnotification")}:</label></span>
-               <span class="input"><input type="checkbox" id="user-notifications-email" <#if !emailFeedDisabled>checked</#if>/></span>
+               <span><input type="checkbox" id="user-notifications-email" <#if !emailFeedDisabled>checked</#if>/></span>
             </div>
             <hr/>
             <div class="buttons">

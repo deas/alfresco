@@ -194,13 +194,11 @@
          this.widgets.form = form;
 
          // The ok button is the submit button, and it should be enabled when the form is ready
-         //form.setShowSubmitStateDynamically(true, false);
          form.setSubmitElements(this.widgets.okButton);
          form.doBeforeFormSubmit =
          {
             fn: function()
             {
-               this.widgets.okButton.set("disabled", true);
                this.widgets.cancelButton.set("disabled", true);
                this.widgets.panel.hide();
                this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
@@ -283,9 +281,6 @@
       {
          // Hide the current message display
          this.widgets.feedbackMessage.destroy();
-
-         // Make sure the ok button is enabled for next time
-         this.widgets.okButton.set("disabled", false);
 
          // Inform user that revert was successful
          Alfresco.util.PopupManager.displayMessage(

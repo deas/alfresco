@@ -8,7 +8,7 @@
          <div class="yui-gf">
             <div class="yui-u first">${msg("label.to")}:</div>
             <div class="yui-u">
-               <ul id="${el}-recipients" class="recipients"></ul>
+               <ul id="${el}-recipients" class="recipients suppress-validation"></ul>
                <button id="${el}-selectRecipients-button" tabindex="0">${msg("button.select")}</button>
             </div>
          </div>

@@ -288,15 +288,6 @@
          this.widgets.editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.blog"));
          this.widgets.editor.render();
 
-         // Add validation to the rich text editor
-         this.widgets.validateOnZero = 0;
-         var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === "YAHOO.widget.SimpleEditor") ? "editorKeyUp" : "onKeyUp";         
-         this.widgets.editor.subscribe(keyUpIdentifier, function (e)
-         {
-            this.widgets.validateOnZero++;
-            YAHOO.lang.later(1000, this, this.validateAfterEditorChange);
-         }, this, true);
-
          // Create the form that does the validation/submit
          this.widgets.postForm = new Alfresco.forms.Form(this.id + "-form");
 
@@ -308,7 +299,6 @@
             crop: true
          }, "keyup");
 
-         this.widgets.postForm.setShowSubmitStateDynamically(true, false);
          if (this.widgets.publishButton)
          {
             this.widgets.postForm.setSubmitElements([this.widgets.saveButton, this.widgets.publishExternalButton, this.widgets.publishButton]);            
@@ -344,12 +334,6 @@
                this.widgets.editor.save();
 
                 // disable ui elements
-               this.widgets.saveButton.set("disabled", true);
-               if (this.widgets.publishButton)
-               {
-                  this.widgets.publishButton.set("disabled", true);
-               }
-               this.widgets.publishExternalButton.set("disabled", true);
                this.widgets.cancelButton.set("disabled", true);
 
                // update the tags set in the form
@@ -371,27 +355,6 @@
          // finally display the form
          Dom.removeClass(this.id + "-div", "hidden");
          Dom.get(this.id + "-title").focus();
-      },
-
-      /**
-       * Called when a key was pressed in the rich text editor.
-       * Will trigger form validation after the last key stroke after a seconds pause.
-       *
-       * @method validateAfterEditorChange
-       */
-      validateAfterEditorChange: function BlogPostEdit_validateAfterEditorChange()
-      {
-         this.widgets.validateOnZero--;
-         if (this.widgets.validateOnZero === 0)
-         {
-            var oldLength = Dom.get(this.id + "-content").value.length;
-            this.widgets.editor.save();
-            var newLength = Dom.get(this.id + "-content").value.length;
-            if ((oldLength === 0 && newLength !== 0) || (oldLength > 0 && newLength === 0))
-            {
-               this.widgets.postForm.updateSubmitElements();
-            }
-         }
       },
 
       /**
@@ -494,12 +457,6 @@
       onFormSubmitFailure: function BlogPostEdit_onFormSubmitFailure()
       {
          // enable the buttons
-         this.widgets.saveButton.set("disabled", false);
-         if (this.widgets.publishButton)
-         {
-            this.widgets.publishButton.set("disabled", false);
-         }
-         this.widgets.publishExternalButton.set("disabled", false);
          this.widgets.cancelButton.set("disabled", false);
          
          // hide the wait message

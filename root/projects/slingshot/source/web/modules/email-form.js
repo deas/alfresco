@@ -193,16 +193,15 @@
           * but when a template is selected it will fill the message textare as well.
           * The validation for at least one recipient will be conencted to the subject field since
           * the recipient values are in hidden fields.
-          */         
-         form.addValidation(this.id + "-subject", this.mandatoryRecipients,
+          */
+         form.addValidation(this.id + "-recipients", this.mandatoryRecipients,
          {
             recipientsContainerEl: Dom.get(this.id + "-recipients")   
-         }, "keyup");
+         }, "keyup", null, { validationType: "mandatory" });
          form.addValidation(this.id + "-subject", Alfresco.forms.validation.mandatory, null, "keyup");
          form.addValidation(this.id + "-message", Alfresco.forms.validation.mandatory, null, "keyup");
 
          // The ok button is the submit button, and it should be enabled when the form is ready
-         form.setShowSubmitStateDynamically(true, false);
          form.setSubmitElements(this.widgets.okButton);
 
          // Add remove recipient click handler
@@ -213,7 +212,7 @@
             if (owner !== null)
             {
                owner.parentNode.removeChild(owner);
-               me.widgets.form.updateSubmitElements();
+               me.widgets.form.validate();
             }
             return true;
          };
@@ -383,7 +382,7 @@
          }
 
          // Update submit elements & show the dialog
-         this.widgets.form.updateSubmitElements();
+
          this.widgets.dialog.show();
       },
 
@@ -514,7 +513,7 @@
                   this.recipientsCache[recipient.itemName] = recipient.displayName;
                }
                this._renderRecipient(recipient.itemName);
-               this.widgets.form.updateSubmitElements();
+               this.widgets.form.validate();
             }
             // Close dialog
             this.widgets.authorityPicker.hide();
@@ -557,7 +556,7 @@
                   templateEl.value = template;
                   messageEl.value = response.serverResponse.responseText;
                   messageEl.setAttribute("readonly", true);
-                  this.widgets.form.updateSubmitElements();
+                  this.widgets.form.validate();
                },
                scope: this
             },
@@ -572,7 +571,7 @@
                   templateEl.value = "";
                   messageEl.value = "";
                   messageEl.removeAttribute("readonly");
-                  this.widgets.form.updateSubmitElements();
+                  this.widgets.form.validate();
                },
                scope: this
             }
@@ -592,7 +591,7 @@
          messageEl.value = "";
          messageEl.removeAttribute("readonly");
          Dom.get(this.id + "-template").value = "";
-         this.widgets.form.updateSubmitElements();
+         this.widgets.form.validate();
       },
 
       /**
