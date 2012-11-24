@@ -89,7 +89,13 @@ public class DefaultTypeConverterTest extends TestCase
         assertEquals("5", DefaultTypeConverter.INSTANCE.convert(String.class, Integer.valueOf("5")));
         assertEquals("6", DefaultTypeConverter.INSTANCE.convert(String.class, Long.valueOf("6")));
         assertEquals("7.1", DefaultTypeConverter.INSTANCE.convert(String.class, Float.valueOf("7.1")));
+        assertEquals("NaN", DefaultTypeConverter.INSTANCE.convert(String.class, Float.NaN));
+        assertEquals("-Infinity", DefaultTypeConverter.INSTANCE.convert(String.class, Float.NEGATIVE_INFINITY));
+        assertEquals("Infinity", DefaultTypeConverter.INSTANCE.convert(String.class, Float.POSITIVE_INFINITY));
         assertEquals("123.123", DefaultTypeConverter.INSTANCE.convert(String.class, Double.valueOf("123.123")));
+        assertEquals("NaN", DefaultTypeConverter.INSTANCE.convert(String.class, Double.NaN));
+        assertEquals("-Infinity", DefaultTypeConverter.INSTANCE.convert(String.class, Double.NEGATIVE_INFINITY));
+        assertEquals("Infinity", DefaultTypeConverter.INSTANCE.convert(String.class, Double.POSITIVE_INFINITY));
         assertEquals("1234567890123456789", DefaultTypeConverter.INSTANCE.convert(String.class, new BigInteger("1234567890123456789")));
         assertEquals("12345678901234567890.12345678901234567890", DefaultTypeConverter.INSTANCE.convert(String.class, new BigDecimal("12345678901234567890.12345678901234567890")));
         Date date = new Date();
@@ -121,7 +127,13 @@ public class DefaultTypeConverterTest extends TestCase
         assertEquals(Integer.valueOf("5"), DefaultTypeConverter.INSTANCE.convert(Integer.class, "5"));
         assertEquals(Long.valueOf("6"), DefaultTypeConverter.INSTANCE.convert(Long.class, "6"));
         assertEquals(Float.valueOf("7.1"), DefaultTypeConverter.INSTANCE.convert(Float.class, "7.1"));
+        assertEquals(Float.NaN, DefaultTypeConverter.INSTANCE.convert(Float.class, "NaN"));
+        assertEquals(Float.NEGATIVE_INFINITY, DefaultTypeConverter.INSTANCE.convert(Float.class, "-Infinity"));
+        assertEquals(Float.POSITIVE_INFINITY, DefaultTypeConverter.INSTANCE.convert(Float.class, "Infinity"));
         assertEquals(Double.valueOf("123.123"), DefaultTypeConverter.INSTANCE.convert(Double.class, "123.123"));
+        assertEquals(Double.NaN, DefaultTypeConverter.INSTANCE.convert(Double.class, "NaN"));
+        assertEquals(Double.NEGATIVE_INFINITY, DefaultTypeConverter.INSTANCE.convert(Double.class, "-Infinity"));
+        assertEquals(Double.POSITIVE_INFINITY, DefaultTypeConverter.INSTANCE.convert(Double.class, "Infinity"));
         assertEquals(new BigInteger("1234567890123456789"), DefaultTypeConverter.INSTANCE.convert(BigInteger.class, "1234567890123456789"));
         assertEquals(new BigDecimal("12345678901234567890.12345678901234567890"), DefaultTypeConverter.INSTANCE.convert(BigDecimal.class, "12345678901234567890.12345678901234567890"));
         GregorianCalendar cal = new GregorianCalendar();

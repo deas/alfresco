@@ -203,6 +203,8 @@
             {
                text: this.msg("message.success", successCount)
             });
+
+            YAHOO.Bubbling.fire("metadataRefresh");
          };
 
          // Failure callback function

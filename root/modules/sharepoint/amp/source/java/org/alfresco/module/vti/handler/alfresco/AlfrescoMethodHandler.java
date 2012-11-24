@@ -323,6 +323,13 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         // Get the working copy of it
         final NodeRef workingCopyNodeRef = getCheckOutCheckInService().getWorkingCopy(resourceNodeRef);
         
+        // ALF-15984
+        if (!expectedETagForNode(request, resourceNodeRef))
+        {
+            response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+            return;
+        }
+        
         // updates changes on the server
         
         UserTransaction tx = getTransactionService().getUserTransaction(false);
@@ -407,6 +414,40 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         {
             response.setContentType(mimetype);
         }
+    }
+    
+    // ALF-15984
+    /**
+     * Check a eTag from request
+     * 
+     * @param request
+     * @param node
+     * @return
+     */
+    private boolean expectedETagForNode(HttpServletRequest request, NodeRef node)
+    {
+        String ifHeader = request.getHeader(WebDAV.HEADER_IF);
+        String reqEtag = null;
+        // Extact eTag from request
+        if (ifHeader != null && ifHeader.indexOf("[") > -1 && ifHeader.indexOf("]") > -1)
+        {
+            reqEtag = ifHeader.substring(ifHeader.indexOf("[") + 1, ifHeader.indexOf("]"));
+        }
+        // Check eTag
+        if (reqEtag != null)
+        {
+            String guid = node.getId().toUpperCase();
+            Map<QName, Serializable> props = getNodeService().getProperties(node);
+            Date lastModified = (Date) props.get(ContentModel.PROP_MODIFIED);
+            // Construct eTag for node. It is based on nodeId and modifyDate of node
+            String nodeEtag = VtiUtils.constructETag(guid, lastModified);
+            // Compare eTag of request and node eTag
+            if (!reqEtag.equalsIgnoreCase(nodeEtag))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

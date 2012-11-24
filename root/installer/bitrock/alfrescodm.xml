@@ -357,6 +357,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile path="${installdir}/alfresco.log*"/>
+                <deleteFile path="${installdir}/webquickstart.log*" />
                 <deleteFile path="${installdir}/awe.log*" />
                 <deleteFile path="${installdir}/share.log*" />
                 <deleteFile path="${installdir}/solr.log*" />
