@@ -22,7 +22,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div class="dashlet rssfeed">
          <div class="title" id="${el}-title">${title!msg("label.header")}</div>
          <div class="toolbar">

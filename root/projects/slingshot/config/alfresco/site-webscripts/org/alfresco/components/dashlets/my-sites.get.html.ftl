@@ -18,9 +18,8 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign id = args.htmlid>
+      <#assign id = args.htmlid?html>
       <#assign dashboardconfig=config.scoped['Dashboard']['dashboard']>
-      <#assign jsid = args.htmlid?js_string>
       <div class="dashlet my-sites">
          <div class="title">${msg("header")}</div>
          <div class="toolbar flat-button">

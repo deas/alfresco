@@ -11,11 +11,6 @@
 
 <@markup id="widgets">
    <@createWidgets group="profile"/>
-   <@inlineScript group="profile">
-      (function() {
-         Alfresco.util.renderRelativeTime("${el}-body");
-      })();
-   </@>
 </@>
 
 <@markup id="html">
@@ -49,6 +44,7 @@
             </#if>
          </div>
       </div>
+      <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}");</script>
    </@>
 </@>
 

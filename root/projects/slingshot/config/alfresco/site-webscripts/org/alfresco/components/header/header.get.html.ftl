@@ -31,9 +31,6 @@
    </@>
 </@>
 
-<#assign id = args.htmlid?html>
-<#assign jsid = id?replace("-", "_")?js_string>
-
 <@markup id="html">
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />

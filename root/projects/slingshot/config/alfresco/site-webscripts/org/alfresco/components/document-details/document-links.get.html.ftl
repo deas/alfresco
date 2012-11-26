@@ -8,7 +8,6 @@
    <@script src="${url.context}/res/components/document-details/document-links.js" group="document-details"/>
 </@>
 
-<#assign el=args.htmlid?html>
 <@markup id="widgets">
    <#if document??>
       <#if document.workingCopy??>
@@ -16,8 +15,8 @@
       <#else>
          <@createWidgets group="document-details"/>
          <@inlineScript group="document-details">
-            YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-               Alfresco.util.createTwister("${el}-heading", "DocumentLinks");
+            YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+               Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentLinks");
             });
          </@>
       </#if>
@@ -26,6 +25,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
+      <#assign el=args.htmlid?html>
       <#if document??>
          <#if document.workingCopy??>
             <!-- Don't display links since this nodeRef points to one of a working copy pair -->

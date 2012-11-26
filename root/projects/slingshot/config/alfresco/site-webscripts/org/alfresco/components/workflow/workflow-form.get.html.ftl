@@ -16,9 +16,8 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?js_string>
-      <div id="${el}-body" class="workflow-form">
-      </div>
+      <#assign el=args.htmlid?html>
+      <div id="${el}-body" class="workflow-form"></div>
       <div class="hidden">
       <#--
        The workflow details page form is actually a form display of the workflow's start task AND data from the workflow itself.

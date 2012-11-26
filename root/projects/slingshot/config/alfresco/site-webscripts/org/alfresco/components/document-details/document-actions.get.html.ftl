@@ -8,15 +8,13 @@
       <#-- JavaScript Dependencies -->
       <@script type="text/javascript" src="${url.context}/res/components/document-details/document-actions.js" group="document-details" />
    </@>
-
-   <#assign el=args.htmlid?js_string>
    
    <@markup id="widgets">
       <#if documentDetails??>
          <@createWidgets group="document-details"/>
          <@inlineScript group="document-details">
-            YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-               Alfresco.util.createTwister("${el}-heading", "DocumentActions");
+            YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+               Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentActions");
             });
          </@>
       </#if>
@@ -24,8 +22,8 @@
    
    <@markup id="html">
       <@uniqueIdDiv>
+         <#assign el=args.htmlid?html>
          <#if documentDetails??>
-            <#assign el=args.htmlid?js_string>
             <div id="${el}-body" class="document-actions document-details-panel">
                <h2 id="${el}-heading" class="thin dark">
                   ${msg("heading")}

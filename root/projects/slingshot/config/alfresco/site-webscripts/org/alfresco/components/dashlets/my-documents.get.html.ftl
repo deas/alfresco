@@ -15,7 +15,6 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign id = args.htmlid>
-      <#assign jsid = args.htmlid?js_string>
       <#assign prefFilter = preferences.filter!"recentlyModifiedByMe">
       <#assign prefSimpleView = preferences.simpleView!true>
       <div class="dashlet my-documents">

@@ -52,10 +52,6 @@
             </#if>
          </div>
       </div>
-      <script>
-         YAHOO.util.Dom.getElementsByClassName("relativeTime", "span", document.getElementById("${el}-body"), function() {
-            this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
-         })
-      </script>
+      <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}-body");</script>
    </@>
 </@>

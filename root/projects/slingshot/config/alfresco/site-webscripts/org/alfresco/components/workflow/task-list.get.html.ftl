@@ -17,7 +17,7 @@
    <@uniqueIdDiv>
       <#import "workflow.lib.ftl" as workflow/>
       <#import "filter/filter.lib.ftl" as filter/>
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="task-list">
          <div class="yui-g task-list-bar flat-button">
             <div class="yui-u first">
@@ -33,5 +33,3 @@
       </div>
    </@>
 </@>
-
-

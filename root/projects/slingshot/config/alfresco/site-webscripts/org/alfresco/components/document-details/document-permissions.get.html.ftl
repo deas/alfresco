@@ -13,8 +13,8 @@
       <#if displayName??>
          <@createWidgets group="document-details"/>
          <@inlineScript group="document-details">
-            YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-               Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentPermissions");
+            YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+               Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentPermissions");
             });
          </@>
       </#if>

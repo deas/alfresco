@@ -23,7 +23,6 @@
       <input id="yui-history-field" type="hidden" />
       
       <#assign el=args.htmlid?html>
-      <#assign el=el>
       <div id="${el}-body" class="users">
       
          <!-- Search panel -->

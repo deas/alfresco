@@ -17,7 +17,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#if nodeRef??>
-         <#assign el=args.htmlid?js_string>
+         <#assign el=args.htmlid?html>
          <div id="${el}-body" class="comments-list">
             <h2 class="thin dark">${msg("header.comments")}</h2>
             <div id="${el}-add-comment">

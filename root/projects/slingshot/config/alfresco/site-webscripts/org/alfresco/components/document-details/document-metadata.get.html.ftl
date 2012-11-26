@@ -14,8 +14,8 @@
    <#if document??>
       <@createWidgets group="document-details"/>
       <@inlineScript group="document-details">
-         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-            Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentMetadata");
+         YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+            Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentMetadata");
          });
       </@>
    </#if>
@@ -26,7 +26,7 @@
       <#if document??>
          <!-- Parameters and libs -->
          <#include "../../include/alfresco-macros.lib.ftl" />
-         <#assign el=args.htmlid/>
+         <#assign el=args.htmlid?html>
          <!-- Markup -->
          <div class="document-metadata-header document-details-panel">
             <h2 id="${el}-heading" class="thin dark">

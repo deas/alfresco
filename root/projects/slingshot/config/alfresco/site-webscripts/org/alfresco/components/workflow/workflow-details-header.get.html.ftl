@@ -15,7 +15,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="form-manager workflow-details-header">
          <#if page.url.args.taskId??>
          <div class="links">
@@ -31,5 +31,3 @@
       </div>
    </@>
 </@>
-
-

@@ -17,7 +17,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="form-manager task-edit-header">
          <div class="actions">
             <span class="claim hidden">
@@ -33,7 +33,7 @@
          <h1>${msg("header")}: <span></span></h1>
          <div class="clear"></div>
          <div class="unassigned-message hidden theme-bg-color-2 theme-border-4"><span>${msg("message.unassigned")}</span></div>
-      
+         
          <!-- People Finder Dialog -->
          <div style="display: none;">
             <div id="${el}-reassignPanel" class="task-edit-header reassign-panel">
@@ -48,4 +48,3 @@
       </div>
    </@>
 </@>
-

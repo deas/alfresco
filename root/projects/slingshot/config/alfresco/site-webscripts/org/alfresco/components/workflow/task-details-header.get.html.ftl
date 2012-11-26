@@ -14,7 +14,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="form-manager task-details-header">
          <div class="links hidden">
             <span class="theme-color-2">${msg("label.taskDetails")}</span>
@@ -26,5 +26,3 @@
       </div>
    </@>
 </@>
-
-

@@ -16,7 +16,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="form-manager workflow-details-actions">
          <div id="${el}-cancel-button" class="actions hidden">
             <button id="${el}-cancel">${msg("button.cancelWorkflow")}</button>
@@ -27,5 +27,3 @@
       </div>
    </@>
 </@>
-
-

@@ -14,7 +14,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="task-list-toolbar toolbar">
          <div id="${el}-headerBar" class="header-bar flat-button theme-bg-2">
             <div class="left">
@@ -28,5 +28,3 @@
       </div>
    </@>
 </@>
-
-

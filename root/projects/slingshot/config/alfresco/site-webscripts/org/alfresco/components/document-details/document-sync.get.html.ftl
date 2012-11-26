@@ -1,7 +1,7 @@
 <#if documentDetails?? && syncEnabled>
    <!-- Parameters and libs -->
    <#include "../../include/alfresco-macros.lib.ftl" />
-   <#assign el=args.htmlid/>
+   <#assign el=args.htmlid>
 
    <!-- Markup -->
    <div class="document-sync document-details-panel">
@@ -13,13 +13,13 @@
       </h2>
       <div id="${el}-formContainer" class="document-sync-formContainer"></div>
       <script type="text/javascript">//<![CDATA[
-         Alfresco.util.createTwister("${el}-heading", "DocumentSync");
+         Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentSync");
       //]]></script>
    </div>
 
    <!-- Javascript instance -->
    <script type="text/javascript">//<![CDATA[
-      new Alfresco.DocumentSync("${el}").setOptions(
+      new Alfresco.DocumentSync("${args.htmlid?js_string}").setOptions(
       {
          nodeRef: "${nodeRef}",
          site: <#if site??>"${site?js_string}"<#else>null</#if>,

@@ -7,13 +7,12 @@
    <#-- No JavaScript Dependencies -->
 </@>
 
-<#assign el=args.htmlid?html>
 <@markup id="widgets">
    <#if allowMetaDataUpdate??>
       <@createWidgets group="document-details"/>
       <@inlineScript group="document-details">
-         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-            Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentTags");
+         YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+            Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentTags");
          });
       </@>
    </#if>
@@ -21,6 +20,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
+      <#assign el=args.htmlid?html>
       <#if allowMetaDataUpdate??>
          <#include "../../include/alfresco-macros.lib.ftl" />
          <div id="${el}-body" class="document-tags document-details-panel">
@@ -45,4 +45,3 @@
       </#if>
    </@>
 </@>
-

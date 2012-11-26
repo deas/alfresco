@@ -14,8 +14,8 @@
    <#if allowMetaDataUpdate??>
       <@createWidgets group="folder-details"/>
       <@inlineScript group="folder-details">
-         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-            Alfresco.util.createTwister("${args.htmlid}-heading", "FolderMetadata");
+         YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+            Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "FolderMetadata");
          });
       </@>
    </#if>
@@ -26,7 +26,7 @@
       <#if allowMetaDataUpdate??>
           <!-- Parameters and libs -->
           <#include "../../include/alfresco-macros.lib.ftl" />
-          <#assign el=args.htmlid/>
+          <#assign el=args.htmlid>
           <!-- Markup -->
           <div class="folder-metadata-header folder-details-panel">
              <h2 id="${el}-heading" class="thin dark">

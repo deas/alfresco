@@ -9,16 +9,13 @@
 
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
-   <@inlineScript group="dashlets"> 
-      Alfresco.util.renderRelativeTime("${args.htmlid}");
-   </@>
 </@>
 
 <@markup id="html">
    <@uniqueIdDiv>
       <div class="dashlet colleagues">
          <div class="title">${msg("header")}</div>
-         <#if userMembership.isManager>
+            <#if userMembership.isManager>
             <div class="toolbar flat-button">
                <div>
                   <span class="align-right yui-button-align">
@@ -30,7 +27,7 @@
                   </span>
                </div>
             </div>
-         </#if>
+            </#if>
          <div class="toolbar flat-button">
             <div>
                <div class="align-left paginator">
@@ -45,28 +42,29 @@
             </div>
          </div>
          <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-         <#if (memberships?size == 1 && memberships[0].authority.userName = user.id)>
-               <div class="info">
-                  <h3>${msg("empty.title")}</h3>
+            <#if (memberships?size == 1 && memberships[0].authority.userName = user.id)>
+            <div class="info">
+               <h3>${msg("empty.title")}</h3>
+            </div>
+            </#if>
+            <#list memberships as m>
+            <div class="detail-list-item">
+               <div class="avatar">
+                  <#assign avatarNodeRef>${m.authority.avatarNode!"avatar"}</#assign>
+                  <img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${avatarNodeRef?string?replace('://','/')}" alt="Avatar" />
                </div>
-         </#if>
-         <#list memberships as m>
-               <div class="detail-list-item">
-                  <div class="avatar">
-                     <#assign avatarNodeRef>${m.authority.avatarNode!"avatar"}</#assign>
-                     <img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${avatarNodeRef?string?replace('://','/')}" alt="Avatar" />
-                  </div>
-                  <div class="person">
-                     <h3><a href="${url.context}/page/user/${m.authority.userName?url}/profile" class="theme-color-1">${m.authority.firstName?html} <#if m.authority.lastName??>${m.authority.lastName?html}</#if></a></h3>
-                     <div>${msg("role." + m.role)}</div>
-                        <#if m.authority.userStatus??>
-                           <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(<span class="relativeTime">${(m.authority.userStatusTime.iso8601!"")?html}</span>)</span></div>
-                        </#if>
-                  </div>
-                  <div class="clear"></div>
+               <div class="person">
+                  <h3><a href="${url.context}/page/user/${m.authority.userName?url}/profile" class="theme-color-1">${m.authority.firstName?html} <#if m.authority.lastName??>${m.authority.lastName?html}</#if></a></h3>
+                  <div>${msg("role." + m.role)}</div>
+                  <#if m.authority.userStatus??>
+                     <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(<span class="relativeTime">${(m.authority.userStatusTime.iso8601!"")?html}</span>)</span></div>
+                  </#if>
                </div>
-         </#list>
+               <div class="clear"></div>
+            </div>
+            </#list>
          </div>
       </div>
+      <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}");</script>
    </@>
 </@>

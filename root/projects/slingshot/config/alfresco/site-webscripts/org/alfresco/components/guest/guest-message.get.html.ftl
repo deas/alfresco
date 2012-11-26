@@ -1,4 +1,4 @@
-<#assign el=args.htmlid?js_string/>
+<#assign el=args.htmlid?html>
 <div id="${el}-body" class="theme-overlay guest-message hidden">
    <#if (args.logo!"true") == "true">
       <div class="theme-company-logo"></div>
@@ -14,5 +14,5 @@
    </#if>
 </div>
 <script type="text/javascript">//<![CDATA[
-new Alfresco.component.GuestMessage("${el}").setOptions({}).setMessages(${messages});
+new Alfresco.component.GuestMessage("${args.htmlid?js_string}").setOptions({}).setMessages(${messages});
 //]]></script>

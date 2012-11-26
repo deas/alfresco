@@ -17,8 +17,8 @@
       <#if allowNewVersionUpload??>
          <@createWidgets group="document-details"/>
          <@inlineScript group="document-details">
-            YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-               Alfresco.util.createTwister("${args.htmlid}-heading", "DocumentVersions");
+            YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+               Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentVersions");
             });
          </@>
       </#if>
@@ -30,7 +30,7 @@
             <#if workingCopyVersion??>
                <!-- No version component is displayed since it is a working copy -->
             <#else>
-               <#assign el=args.htmlid?js_string>
+               <#assign el=args.htmlid?html>
                <div id="${el}-body" class="document-versions document-details-panel">
                   <h2 id="${el}-heading" class="thin dark">
                      ${msg("header.versionHistory")}

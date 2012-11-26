@@ -1,6 +1,6 @@
-<#assign el=args.htmlid?js_string/>
-<#assign error=((args.error!"false") == "true")/>
-<#assign errorDisplay=args.errorDisplay!"container"/>
+<#assign el=args.htmlid?html>
+<#assign error=((args.error!"false") == "true")>
+<#assign errorDisplay=args.errorDisplay!"container">
 
 <div id="${el}-body" class="theme-overlay login hidden">
 
@@ -53,7 +53,7 @@
 
 </div>
 <script type="text/javascript">//<![CDATA[
-new Alfresco.component.Login("${el}").setOptions({
+new Alfresco.component.Login("${args.htmlid?js_string}").setOptions({
    error: ${error?string},
    errorDisplay: "${errorDisplay?js_string}",
    lastUsername: <#if lastUsername??>"${lastUsername?js_string}"<#else>null</#if>

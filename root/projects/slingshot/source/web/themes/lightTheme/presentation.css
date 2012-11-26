@@ -1523,6 +1523,12 @@ div.theme-bg-color-8
    border-top: 1px solid #ccc !important;
 }
 
+.profile .people li a
+{
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal !important;
+}
+
 /* only target the user profile toolbar - not others e.g. doclib */
 .toolbar.userprofile
 {

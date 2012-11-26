@@ -20,8 +20,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign id = args.htmlid>
-      <#assign jsid = args.htmlid?js_string>
+      <#assign id = args.htmlid?html>
       <div class="dashlet activities">
          <div class="title">${msg("header")}</div>
          <div class="toolbar flat-button">

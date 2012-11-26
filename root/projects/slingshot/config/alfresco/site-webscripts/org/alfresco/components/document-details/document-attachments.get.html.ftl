@@ -1,8 +1,8 @@
 <#if (attachmentsAssocs?size > 0)>
-<#assign el=args.htmlid?js_string>
+<#assign el=args.htmlid?html>
 <div id="${el}-body" class="document-attachment document-details-panel">
    <h2 id="${el}-heading" class="thin dark">
-         ${msg("header.attachments")}
+      ${msg("header.attachments")}
    </h2>
    <div class="panel-body">
       <#list attachmentsAssocs as assoc>
@@ -14,8 +14,7 @@
       </#list>
    </div>
    <script type="text/javascript">//<![CDATA[
-       Alfresco.util.createTwister("${el}-heading", "DocumentPublishing");
+       Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentPublishing");
     //]]></script>
 </div>
 </#if>
-

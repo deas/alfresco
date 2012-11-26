@@ -12,8 +12,8 @@
    <@markup id="widgets">
       <@createWidgets group="folder-details"/>
       <@inlineScript group="folder-details">
-         YAHOO.util.Event.onContentReady("${args.htmlid}-heading", function() {
-            Alfresco.util.createTwister("${args.htmlid}-heading", "FolderActions");
+         YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
+            Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "FolderActions");
          });
       </@>
    </@>
@@ -21,7 +21,7 @@
    <@markup id="html">
       <@uniqueIdDiv>
          <#if folderDetails??>
-            <#assign el=args.htmlid?js_string>
+            <#assign el=args.htmlid?html>
             <div id="${el}-body" class="folder-actions folder-details-panel">
                <h2 id="${el}-heading" class="thin dark">
                   ${msg("heading")}

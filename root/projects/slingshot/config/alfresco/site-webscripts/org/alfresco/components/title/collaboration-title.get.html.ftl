@@ -18,6 +18,7 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
+   <#assign el=args.htmlid?html>
    <div class="page-title theme-bg-color-1 theme-border-1">
 
       <#-- TITLE -->
@@ -36,7 +37,7 @@
             <#list links![] as link>
             <span class="yui-button yui-link-button">
                <span class="first-child">
-                  <a id="${args.htmlid}-${link.id}" href="${link.href!"#"}" class="${link.cssClass!""}">${msg(link.label)}</a>
+                  <a id="${el}-${link.id}" href="${link.href!"#"}" class="${link.cssClass!""}">${msg(link.label)}</a>
                </span>
             </span>
             </#list>
@@ -45,8 +46,8 @@
          <#-- MORE MENU -->
          <@markup id="moreMenu">
             <#if moreMenu??>
-               <input type="button" id="${args.htmlid}-more" name="${args.htmlid}-more" value="${msg(moreMenu.label)}"/>
-               <select id="${args.htmlid}-more-menu">
+               <input type="button" id="${el}-more" name="${el}-more" value="${msg(moreMenu.label)}"/>
+               <select id="${el}-more-menu">
                   <#list moreMenu.options![] as option>
                      <option value="${option.value}">${msg(option.label)}</option>
                   </#list>

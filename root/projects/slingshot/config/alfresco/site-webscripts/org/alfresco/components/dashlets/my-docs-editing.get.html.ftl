@@ -15,36 +15,36 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign el=args.htmlid?html>
-      <div class="dashlet" id="myEditingDocsDashlet">
+      <div class="dashlet" id="${el}-my-docs-dashlet">
          <div class="title">${msg("header")}</div>
          <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
 
             <#-- DOCUMENTS -->
             <@markup id="documents">
             <div id="${el}-message" class="my-docs-editing-message hidden"></div>
-               <div id="${el}-my-docs" class="my-docs-editing">
-                  <div class="hdr">
-                     <h3>${msg('text.documents')}</h3>
-                  </div>
-                  <div id="${el}-documents" class="hidden"></div>
-                  <div id="${el}-documents-wait" class="my-docs-editing-wait"></div>
-                  <div class="hdr">
-                     <h3>${msg('text.blogposts')}</h3>
-                  </div>
-                  <div id="${el}-blogposts" class="hidden"></div>
-                  <div class="hdr">
-                     <h3>${msg('text.wikipages')}</h3>
-                  </div>
-                  <div id="${el}-wikipages" class="hidden"></div>
-                  <div class="hdr">
-                     <h3>${msg('text.forumposts')}</h3>
-                  </div>
-                  <div id="${el}-forumposts" class="hidden"></div>
-                  <div id="${el}-content-wait" class="my-docs-editing-wait"></div>
+            <div id="${el}-my-docs" class="my-docs-editing">
+               <div class="hdr">
+                  <h3>${msg('text.documents')}</h3>
                </div>
+               <div id="${el}-documents" class="hidden"></div>
+               <div id="${el}-documents-wait" class="my-docs-editing-wait"></div>
+               <div class="hdr">
+                  <h3>${msg('text.blogposts')}</h3>
+               </div>
+               <div id="${el}-blogposts" class="hidden"></div>
+               <div class="hdr">
+                  <h3>${msg('text.wikipages')}</h3>
+               </div>
+               <div id="${el}-wikipages" class="hidden"></div>
+               <div class="hdr">
+                  <h3>${msg('text.forumposts')}</h3>
+               </div>
+               <div id="${el}-forumposts" class="hidden"></div>
+               <div id="${el}-content-wait" class="my-docs-editing-wait"></div>
             </div>
             </@markup>
 
+         </div>
       </div>
       <div class="hidden">
 

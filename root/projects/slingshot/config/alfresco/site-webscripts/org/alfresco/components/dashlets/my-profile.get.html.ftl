@@ -9,9 +9,6 @@
 
 <@markup id="widgets">
    <@createWidgets group="dashlets"/>
-   <@inlineScript group="dashlets">
-      Alfresco.util.renderRelativeTime("${args.htmlid}");
-   </@>
 </@>
 
 <@markup id="post">
@@ -65,5 +62,6 @@
          </div>
       </div>
       </#escape>
+      <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}");</script>
    </@>
 </@>

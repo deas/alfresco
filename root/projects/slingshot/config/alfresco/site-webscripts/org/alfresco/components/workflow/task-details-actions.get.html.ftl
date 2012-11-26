@@ -14,7 +14,7 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />
-      <#assign el=args.htmlid?js_string>
+      <#assign el=args.htmlid?html>
       <div id="${el}-body" class="form-manager task-details-actions">
          <div class="actions hidden">
             <button id="${el}-edit">${msg("button.edit")}</button>
