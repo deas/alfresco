@@ -36,6 +36,8 @@ button:focus {outline:none;}
 	font:13px/1.231 Open Sans,arial,helvetica,clean,sans-serif;
 }
 
+
+
 .alfresco-share .sticky-wrapper select,
 .yui-overlay select,
 .alfresco-share .sticky-wrapper input,
@@ -158,12 +160,6 @@ h4 .lighter
 
 .alfresco-share .sticky-wrapper
 {
-   background-color: #fff;
-}
-
-.alfresco-guest .sticky-wrapper
-{
-   /* TODO: background image */
    background-color: #fff;
 }
 
@@ -1290,6 +1286,11 @@ div.theme-bg-color-8
 }
 
 /* Unauthenticated pages (inc login) */
+
+.alfresco-guest .sticky-wrapper
+{
+   background: transparent url("./images/alfresco-logo-bg.jpg") no-repeat;
+}
 
 .alfresco-guest .theme-overlay
 {
