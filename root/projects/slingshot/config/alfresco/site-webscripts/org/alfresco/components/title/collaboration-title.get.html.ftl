@@ -20,21 +20,21 @@
    <@uniqueIdDiv>
    <div class="page-title theme-bg-color-1 theme-border-1">
 
-   <#-- TITLE -->
+      <#-- TITLE -->
       <@markup id="title">
       <div class="title">
          <h1 class="theme-color-3">${msg("header.site", "<span>${siteTitle?html}</span>")}</h1>
       </div>
       </@markup>
 
-   <#-- ACTIONS -->
+      <#-- ACTIONS -->
       <@markup id="actions">
       <div class="links title-button">
 
          <#-- LINKS -->
          <@markup id="links">
             <#list links![] as link>
-               <span class="yui-button yui-link-button">
+            <span class="yui-button yui-link-button">
                <span class="first-child">
                   <a id="${args.htmlid}-${link.id}" href="${link.href!"#"}" class="${link.cssClass!""}">${msg(link.label)}</a>
                </span>

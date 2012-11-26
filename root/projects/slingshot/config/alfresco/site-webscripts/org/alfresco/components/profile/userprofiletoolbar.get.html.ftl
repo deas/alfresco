@@ -15,19 +15,21 @@
    <@uniqueIdDiv>
       <#assign el=args.htmlid?js_string/>
       <div id="${el}-body" class="toolbar userprofile">
-      <#-- LINKS -->
+
+         <#-- LINKS -->
          <@markup id="links">
-            <div class="members-bar-links">
-               <#list links as link>
-                  <div class="link">
-                     <a id="${el}" href="${link.href}" class="${link.cssClass!""}">${link.label?html}</a>
-                  </div>
-                  <#if link_has_next>
-                     <div class="separator">&nbsp;</div>
-                  </#if>
-               </#list>
-            </div>
+         <div class="members-bar-links">
+            <#list links as link>
+               <div class="link">
+                  <a id="${el}-${link.id}" href="${link.href}" class="${link.cssClass!""}">${link.label?html}</a>
+               </div>
+               <#if link_has_next>
+                  <div class="separator">&nbsp;</div>
+               </#if>
+            </#list>
+         </div>
          </@markup>
+
       </div>
    </@>
 </@>

@@ -15,29 +15,39 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign el=args.htmlid?html>
-      <div id="${args.htmlid}-body" class="site-members">
-         <div class="title"><label for="${args.htmlid}-term">${msg("site-members.heading")}</label></div>
-         <div class="invite-people">
+      <div id="${el}-body" class="site-members">
 
-            <#-- INVITE PEOPLE BUTTON -->
-            <@markup id="invitePeopleButton">
-               <#if invitePeopleButton??>
-                  <span id="${el}-invitePeople" class="${invitePeopleButton.cssClass!""} yui-button yui-link-button">
-                  <span class="first-child">
-                     <a href="${invitePeopleButton.href}">${msg(invitePeopleButton.label)}</a>
-                  </span>
-               </span>
-               </#if>
-            </@markup>
-
+         <#-- TITLE -->
+         <@markup id="title">
+         <div class="title">
+            <label for="${el}-term">${msg("site-members.heading")}</label>
          </div>
+         </@>
+
+         <#-- LINKS -->
+         <@markup id="links">
+         <div class="links">
+            <#list links![] as link>
+            <span class="yui-button yui-link-button">
+               <span class="first-child">
+                  <a id="${el}-${link.id}" href="${link.href!"#"}" class="${link.cssClass!""}">${msg(link.label)}</a>
+               </span>
+            </span>
+            </#list>
+         </div>
+         </@markup>
+
+         <#-- FINDER-WRAPPER -->
+         <@markup id="finder-wrapper">
          <div class="finder-wrapper">
             <div class="search-controls theme-bg-color-3">
-               <div class="search-text"><input id="${args.htmlid}-term" type="text" class="search-term" /></div>
-               <div class="search-button"><button id="${args.htmlid}-button">${msg("button.search")}</button></div>
+               <div class="search-text"><input id="${el}-term" type="text" class="search-term" /></div>
+               <div class="search-button"><button id="${el}-button">${msg("button.search")}</button></div>
             </div>
-            <div id="${args.htmlid}-members" class="results"></div>
+            <div id="${el}-members" class="results"></div>
          </div>
+         </@>
+
       </div>
    </@>
 </@>
