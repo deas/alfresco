@@ -87,7 +87,7 @@
                </#if>
                   <!-- Title and Version -->
                   <h1 class="thin dark">
-                     ${displayName}<#if !isContainer><span class="document-version">${item.version}</span></#if>
+                     ${displayName}<#if !isContainer><span id="document-version" class="document-version">${item.version}</span></#if>
                   </h1>
                   <!-- Modified & Social -->
                   <div>
