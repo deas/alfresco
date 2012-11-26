@@ -179,6 +179,12 @@
    <!-- CSS image data handler - override max image size to be 100K - anything larger is left as a resource url -->
    <bean id="css.data.image.handler" parent="css.data.image.handler.abstract" class="org.springframework.extensions.surf.CssImageDataHandler">
       <property name="maximumImageSize" value="102400" />
+      <property name="excludeCssPaths">
+          <list>
+             <value>yui/assets/skins/default/skin.css</value>
+             <value>themes/[^/]*/yui/assets/skin.css</value>
+          </list>
+       </property>
    </bean>
    
    <!--                             -->
