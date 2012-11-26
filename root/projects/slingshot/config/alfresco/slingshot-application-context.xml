@@ -182,6 +182,8 @@
       <property name="excludeCssPaths">
           <list>
              <value>yui/assets/skins/default/skin.css</value>
+             <value>yui/columnbrowser/assets/columnbrowser.css</value>
+             <value>yui/columnbrowser/assets/skins/default/columnbrowser-skin.css</value>
              <value>themes/[^/]*/yui/assets/skin.css</value>
           </list>
        </property>
