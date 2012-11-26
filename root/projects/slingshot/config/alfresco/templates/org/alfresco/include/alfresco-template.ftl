@@ -78,8 +78,12 @@
    </@markup>
 
    <@markup id="ipadStylesheets">
+   <#assign tabletCSS><@checksumResource src="${url.context}/res/css/tablet.css"/></#assign>
    <!-- Android & iPad CSS overrides -->
-   <link media="only screen and (max-device-width: 1024px),only screen and (max-device-width: 1280px)" rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/tablet.css"/>'/>
+   <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href="${tabletCSS}"/>
+   <script type="text/javascript">
+      if (navigator.userAgent.indexOf(" Android ") !== -1)  document.write("<link rel='stylesheet' type='text/css' href='${tabletCSS}'/>");
+   </script>
    </@markup>
 <#if !PORTLET>
 </head>
