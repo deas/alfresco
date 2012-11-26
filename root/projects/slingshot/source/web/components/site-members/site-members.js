@@ -300,11 +300,14 @@
          
          // setup the buttons
          this.widgets.searchButton = Alfresco.util.createYUIButton(this, "button", this.onSearch);
-         this.widgets.invitePeople = Alfresco.util.createYUIButton(this, "invitePeople", null, 
+         if (Dom.get(this.id + "-invitePeople"))
          {
-            type: "link"
-         });
-         
+            this.widgets.invitePeople = Alfresco.util.createYUIButton(this, "invitePeople", null,
+            {
+               type: "link"
+            });
+         }
+
          // register the "enter" event on the search text field
          var searchInput = Dom.get(this.id + "-term"),
             enterListener = new YAHOO.util.KeyListener(searchInput,

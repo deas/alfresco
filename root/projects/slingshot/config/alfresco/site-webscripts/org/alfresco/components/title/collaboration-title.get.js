@@ -39,11 +39,99 @@ function main()
          userIsSiteManager = (obj.role == "SiteManager");
       }
    }
-   
+
+   var activePage = page.url.templateArgs.pageid || "";
+   var siteTitle = (profile.title != "") ? profile.title : profile.shortName;
+   var siteDashboardUrl = page.url.context + "/page/site/" + page.url.templateArgs.site + "/dashboard";
+
+   var links = [];
+
+   if (userIsSiteManager)
+   {
+      links.push(
+      {
+         id: "inviteUser-link",
+         href: "invite",
+         cssClass: ("invite" == activePage) ? "active-page" : null,
+         label: "link.invite"
+      });
+   }
+
+   // Join links
+   if (!userIsMember)
+   {
+      if (profile.visibility == "PUBLIC")
+      {
+         links.push(
+         {
+            id: "join-link",
+            label: "link.join"
+         });
+      }
+      else
+      {
+         links.push(
+         {
+            id: "requestJoin-link",
+            label: "link.request-join"
+         });
+
+      }
+   }
+
+   if (user.isAdmin && !userIsSiteManager)
+   {
+      links.push(
+      {
+         id: "become-manager-link",
+         label: "link.request-join"
+      });
+   }
+
+   // Customise Site link
+   if (userIsSiteManager && (page.url.uri == siteDashboardUrl || "customise-site-dashboard" == activePage))
+   {
+      links.push(
+      {
+         id: "customiseSite-link",
+         href: "customise-site-dashboard",
+         cssClass: "customise-site-dashboard" == activePage ? "active-page" : null,
+         label: "link.customiseDashboard"
+      });
+   }
+
+   var moreMenu;
+
+   if (userIsSiteManager)
+   {
+      moreMenu = {
+         label: "link.more",
+         options: [
+            { value: "editSite", label: "link.editSite" },
+            { value: "customiseSite", label: "link.customiseSite" },
+            { value: "leaveSite", label: "link.leave" }
+         ]
+      };
+   }
+   else if(userIsMember)
+   {
+      moreMenu = {
+         label: "link.actions",
+         options: [
+            { value: "leaveSite", label: "link.leave" }
+         ]
+      };
+   }
+
    // Prepare the model
+   model.activePage = activePage;
+   model.siteTitle = siteTitle;
+   model.siteDashboardUrl = siteDashboardUrl;
    model.profile = profile;
    model.userIsSiteManager = userIsSiteManager;
    model.userIsMember = userIsMember;
+   model.links = links;
+   model.moreMenu = moreMenu;
    model.userIsDirectMember = userIsDirectMember;
    
    // Widget instantiation metadata...

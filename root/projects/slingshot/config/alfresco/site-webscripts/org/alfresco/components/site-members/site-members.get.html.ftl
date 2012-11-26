@@ -14,16 +14,22 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
+      <#assign el=args.htmlid?html>
       <div id="${args.htmlid}-body" class="site-members">
          <div class="title"><label for="${args.htmlid}-term">${msg("site-members.heading")}</label></div>
          <div class="invite-people">
-         <#if currentUserRole = "SiteManager">
-            <span id="${args.htmlid}-invitePeople" class="yui-button yui-link-button">
-               <span class="first-child">
-                  <a href="invite">${msg("site-members.invite-people")}</a>
+
+            <#-- INVITE PEOPLE BUTTON -->
+            <@markup id="invitePeopleButton">
+               <#if invitePeopleButton??>
+                  <span id="${el}-invitePeople" class="${invitePeopleButton.cssClass!""} yui-button yui-link-button">
+                  <span class="first-child">
+                     <a href="${invitePeopleButton.href}">${msg(invitePeopleButton.label)}</a>
+                  </span>
                </span>
-            </span>
-         </#if>
+               </#if>
+            </@markup>
+
          </div>
          <div class="finder-wrapper">
             <div class="search-controls theme-bg-color-3">

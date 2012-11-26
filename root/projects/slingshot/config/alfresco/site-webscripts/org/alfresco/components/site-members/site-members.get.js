@@ -62,6 +62,12 @@ function main()
    }
 
    model.widgets = [siteMembers];
+
+   // Add Invite People button
+   if (model.currentUserRole == "SiteManager")
+   {
+      model.invitePeopleButton = { href: "invite", label: "site-members.invite-people" };
+   }
 }
 
 main();
