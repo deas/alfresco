@@ -269,6 +269,9 @@
    <bean id="group.component.evaluator" class="org.alfresco.web.extensibility.SlingshotGroupComponentElementEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>
+   <bean id="useragent.component.evaluator" class="org.alfresco.web.extensibility.SlingshotUserAgentComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
 
    <!-- 
       CMIS beans

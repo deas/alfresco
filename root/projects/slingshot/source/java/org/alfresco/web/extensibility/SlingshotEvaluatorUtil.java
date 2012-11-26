@@ -37,6 +37,7 @@ import org.springframework.extensions.surf.ServletUtil;
 import org.springframework.extensions.surf.UserFactory;
 import org.springframework.extensions.surf.WebFrameworkServiceRegistry;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
+import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.webscripts.ScriptRemote;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
@@ -432,5 +433,22 @@ public class SlingshotEvaluatorUtil {
             }
         }
         return groups;
+    }
+
+    /**
+     * Helper method to get a request header value from the current request context
+     *
+     * @param name Header name to retrieve
+     * @return string value or null
+     */
+    protected String getHeader(String name)
+    {
+        String header = null;
+        if (name != null)
+        {
+            final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
+            header = rc.getHeader(name);
+        }
+        return header;
     }
 }

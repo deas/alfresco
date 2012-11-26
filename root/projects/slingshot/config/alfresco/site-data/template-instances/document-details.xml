@@ -7,6 +7,28 @@
    </properties>
    <components>
 
+      <!-- Mobile App Launch -->
+      <component>
+         <region-id>mobile-app</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if User Agent matches: iPad, iPhone, iPod -->
+                  <evaluation id="useragent">
+                     <evaluators>
+                        <evaluator type="useragent.component.evaluator">
+                           <params>
+                              <useragent>iPhone|iPod|iPad</useragent>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/mobile-app-support/ios-mobile</url>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+
       <!-- Title -->
       <component>
          <region-id>title</region-id>
