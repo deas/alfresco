@@ -227,37 +227,8 @@
 
          // The ok button is the submit button, and it should be enabled when the form is ready
          editSiteForm.setSubmitElements(this.widgets.okButton);
-         editSiteForm.doBeforeFormSubmit =
-         {
-            fn: function()
-            {
-               var formEl = YAHOO.util.Dom.get(this.id + "-form");
-               formEl.attributes.action.nodeValue = Alfresco.constants.PROXY_URI + "api/sites/" + this.showConfig.shortName; 
-
-               // Site access
-               var siteVisibility = "PUBLIC";
-               if (this.widgets.isPublic.checked)
-               {
-                  if (this.widgets.isModerated.checked)
-                  {
-                     siteVisibility = "MODERATED";
-                  }
-               }
-               else
-               {
-                  siteVisibility = "PRIVATE";
-               }
-               this.widgets.siteVisibility.value = siteVisibility;
-
-               this.widgets.cancelButton.set("disabled", true);
-               this.widgets.panel.hide();
-               this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
-               {
-                  text: Alfresco.util.message("message.saving", this.name),
-                  spanClass: "wait",
-                  displayTime: 0
-               });
-            },
+         editSiteForm.doBeforeFormSubmit = {
+            fn: this.doBeforeFormSubmit,
             obj: null,
             scope: this
          };
@@ -280,6 +251,11 @@
          editSiteForm.setAjaxSubmitMethod("PUT");
          // We're in a popup, so need the tabbing fix
          editSiteForm.applyTabFix();
+         // Intercept data just before AJAX submission
+         editSiteForm.doBeforeAjaxRequest = {
+            fn: this.doBeforeAjaxRequest,
+            scope: this
+         };
          editSiteForm.init();
 
          this.widgets.siteVisibility = Dom.get(this.id + "-visibility");
@@ -295,6 +271,52 @@
          this._showPanel();
       },
 
+      /**
+       * Called before the form is about to be submitted
+       *
+       * @method doBeforeFormSubmit
+       */
+      doBeforeFormSubmit: function()
+      {
+         var formEl = YAHOO.util.Dom.get(this.id + "-form");
+         formEl.attributes.action.nodeValue = Alfresco.constants.PROXY_URI + "api/sites/" + this.showConfig.shortName;
+
+         // Site access
+         var siteVisibility = "PUBLIC";
+         if (this.widgets.isPublic.checked)
+         {
+            if (this.widgets.isModerated.checked)
+            {
+               siteVisibility = "MODERATED";
+            }
+         }
+         else
+         {
+            siteVisibility = "PRIVATE";
+         }
+         this.widgets.siteVisibility.value = siteVisibility;
+
+         this.widgets.cancelButton.set("disabled", true);
+         this.widgets.panel.hide();
+         this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
+         {
+            text: Alfresco.util.message("message.saving", this.name),
+            spanClass: "wait",
+            displayTime: 0
+         });
+      },
+
+      /**
+       * Interceptor just before Ajax request is sent.
+       *
+       * @method doBeforeAjaxRequest
+       * @param p_config {object} Object literal containing request config
+       * @return {boolean} True to continue sending form, False to prevent it
+       */
+      doBeforeAjaxRequest: function CreateSite_doBeforeAjaxRequest(p_config)
+      {
+         return true;
+      },
 
       /**
        * Called when user clicks on the isPublic checkbox.

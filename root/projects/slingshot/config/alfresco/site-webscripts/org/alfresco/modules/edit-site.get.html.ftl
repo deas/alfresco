@@ -1,18 +1,32 @@
 <#assign el=args.htmlid?html>
 <div id="${el}-dialog" class="edit-site">
-   <div class="hd">${msg("header.editSite")}</div>
+   <div class="hd">
+      <#-- TITLE -->
+      <@markup id="title">${msg("header.editSite")}</@markup>
+   </div>
    <div class="bd">
       <form id="${el}-form" method="PUT"  action="">
+
+      <#-- FIELDS -->
+      <@markup id="fields">
+
+         <#-- HIDDEN -->
          <input type="hidden" id="${el}-visibility" name="visibility" value="${profile.visibility}"/>
          <input id="${el}-shortName" type="hidden" name="shortName" value="${profile.shortName}"/>
+
+         <#-- TITLE -->
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-title">${msg("label.name")}:</label></div>
             <div class="yui-u"><input id="${el}-title" type="text" name="title" value="${profile.title?html}" tabindex="0"/>&nbsp;*</div>
          </div>
+
+         <#-- DESCRIPTION -->
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-description">${msg("label.description")}:</label></div>
             <div class="yui-u"><textarea id="${el}-description" name="description" rows="3" tabindex="0">${profile.description?html}</textarea></div>
          </div>
+
+         <#-- ACCESS -->
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-isPublic">${msg("label.access")}:</label></div>
             <div class="yui-u">
@@ -29,11 +43,15 @@
                <input id="${el}-isPrivate" type="radio" tabindex="0" name="-" <#if (profile.visibility == "PRIVATE")>checked="checked"</#if>/> ${msg("label.isPrivate")}
             </div>
          </div>
-         <div class="bdft">
-            <input type="submit" id="${el}-ok-button" value="${msg("button.ok")}" tabindex="0"/>
-            <input type="button" id="${el}-cancel-button" value="${msg("button.cancel")}" tabindex="0"/>
-         </div>
-      </form>
+
+      </@markup>
+
+      <div class="bdft">
+         <#-- BUTTONS -->
+         <input type="submit" id="${el}-ok-button" value="${msg("button.ok")}" tabindex="0"/>
+         <input type="button" id="${el}-cancel-button" value="${msg("button.cancel")}" tabindex="0"/>
+      </div>
+   </form>
    </div>
 </div>
 

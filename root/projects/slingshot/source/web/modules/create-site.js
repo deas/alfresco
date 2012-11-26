@@ -192,40 +192,20 @@
             crop: true
          }, "keyup");
 
+         var sitePresetEl = Dom.get(this.id + "-sitePreset");
+         Event.addListener(sitePresetEl, "change", function CreateSite_sitePreset_change()
+         {
+            this.onSitePresetChange(sitePresetEl.options[sitePresetEl.selectedIndex].value);
+         }, this, true);
+         if (sitePresetEl.options.length > 0)
+         {
+            this.onSitePresetChange(sitePresetEl.options[sitePresetEl.selectedIndex].value);
+         }
+
          // The ok button is the submit button, and it should be enabled when the form is ready
          createSiteForm.setSubmitElements(this.widgets.okButton);
-         createSiteForm.doBeforeFormSubmit =
-         {
-            fn: function()
-            {
-               var formEl = Dom.get(this.id + "-form");
-               formEl.attributes.action.nodeValue = Alfresco.constants.URL_SERVICECONTEXT + "modules/create-site"; 
-               
-               this.widgets.cancelButton.set("disabled", true);
-
-               // Site access
-               var siteVisibility = "PUBLIC";
-               if (this.widgets.isPublic.checked)
-               {
-                  if (this.widgets.isModerated.checked)
-                  {
-                     siteVisibility = "MODERATED";
-                  }
-               }
-               else
-               {
-                  siteVisibility = "PRIVATE";
-               }
-               this.widgets.siteVisibility.value = siteVisibility;
-               
-               this.widgets.panel.hide();
-               this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
-               {
-                  text: Alfresco.util.message("message.creating", this.name),
-                  spanClass: "wait",
-                  displayTime: 0
-               });
-            },
+         createSiteForm.doBeforeFormSubmit = {
+            fn: this.doBeforeFormSubmit,
             obj: null,
             scope: this
          };
@@ -247,10 +227,73 @@
          createSiteForm.setSubmitAsJSON(true);
          // We're in a popup, so need the tabbing fix
          createSiteForm.applyTabFix();
+         createSiteForm.doBeforeAjaxRequest = {
+            fn: this.doBeforeAjaxRequest,
+            scope: this
+         };
          createSiteForm.init();
 
          // Show the panel
          this._showPanel();
+      },
+
+      /**
+       * Called when a preset as been selected.
+       * Implement to make it possible to dispay custom site property fields
+       *
+       * @method onSitePresetChange
+       * @param sitePreset
+       */
+      onSitePresetChange: function(sitePreset) {},
+
+      /**
+       * Interceptor just before Ajax request is sent.
+       *
+       * @method doBeforeAjaxRequest
+       * @param p_config {object} Object literal containing request config
+       * @return {boolean} True to continue sending form, False to prevent it
+       */
+      doBeforeAjaxRequest: function CreateSite_doBeforeAjaxRequest(p_config)
+      {
+         return true;
+      },
+
+      /**
+       * Called before the form is about to be submitted
+       *
+       * @method doBeforeFormSubmit
+       * @param form {HTMLFormElement} The create site form
+       * @param obj {Object} Callback object
+       */
+      doBeforeFormSubmit: function(form, obj)
+      {
+         var formEl = Dom.get(this.id + "-form");
+         formEl.attributes.action.nodeValue = Alfresco.constants.URL_SERVICECONTEXT + "modules/create-site";
+
+         this.widgets.cancelButton.set("disabled", true);
+
+         // Site access
+         var siteVisibility = "PUBLIC";
+         if (this.widgets.isPublic.checked)
+         {
+            if (this.widgets.isModerated.checked)
+            {
+               siteVisibility = "MODERATED";
+            }
+         }
+         else
+         {
+            siteVisibility = "PRIVATE";
+         }
+         this.widgets.siteVisibility.value = siteVisibility;
+
+         this.widgets.panel.hide();
+         this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
+         {
+            text: Alfresco.util.message("message.creating", this.name),
+            spanClass: "wait",
+            displayTime: 0
+         });
       },
 
       /**
