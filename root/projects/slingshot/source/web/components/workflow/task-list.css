@@ -6,10 +6,9 @@
 /* task-list bar */
 .task-list .task-list-bar
 {
-   background-color: #f8f8f8;
    border-bottom: 1px dashed #c0c0c0;
    margin: 0 -10px;
-   padding: 4px 0.5em 2px;
+   padding: 4px 0 6px;
 }
 
 .task-list .task-list-bar-bottom
@@ -227,14 +226,13 @@
    border: 1px solid transparent;
 }
 
-
 .task-list .task-edit-link-over,
 .task-list .task-view-link-over,
 .task-list .workflow-view-link-over
 {
    background-color: #FFF;
    border: 1px solid #2B6EB5;
-   cursor: pointer;   
+   cursor: pointer;
 }
 
 .task-list .tasks td.yui-dt-last .yui-dt-liner

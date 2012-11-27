@@ -19,7 +19,7 @@
       <#assign el=args.htmlid?html>
       <div id="${el}-links-header" class="links-header" style="visibility:hidden">
          
-         <div id="${el}-linksBar" class="toolbar links-toolbar flat-button theme-bg-2">
+         <div id="${el}-linksBar" class="toolbar links-toolbar flat-button theme-bg-color-1">
             <div>
                <div id="${el}-create-link-container" class="createLink">
                   <div style="float:left"><button id="${el}-create-link-button" name="linklist-create-link-button">${msg("header.createLink")}</button></div>
@@ -39,7 +39,7 @@
             <div class="rss-feed"><button id="${el}-rss-feed" name="rss-feed">${msg("header.rssFeed")}</button></div>
          </div>
          
-         <div id="${el}-links-titleBar" class="links-titlebar theme-bg-color-4" >
+         <div id="${el}-links-titleBar" class="links-titlebar theme-bg-color-2">
             <div id="${el}-listTitle" class="list-title">${msg("title.generic")}</div>
          </div>
          

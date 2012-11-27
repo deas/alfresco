@@ -840,9 +840,26 @@ body.yui-skin-lightTheme .link-menu-button.link-menu-button-menu-active
    padding: 6px !important;
 }
 
-.topicview .nodeFooter, .postview .nodeFooter, .reply .nodeFooter
+.topicview .nodeFooter, .postview .nodeFooter, .reply .nodeFooter, .linksview .nodeFooter
 {
    border: none !important;
+}
+
+.task-list .task-list-bar
+{
+   border-bottom: 1px solid #ccc !important;
+}
+
+.task-list .tasks tr:hover td.yui-dt-last .yui-dt-liner
+{
+   border-left: 1px solid #ccc !important;
+}
+
+.task-list .task-edit-link-over,
+.task-list .task-view-link-over,
+.task-list .workflow-view-link-over
+{
+   border: 1px solid #ccc !important;
 }
 
 /* blog/wiki action items links */

@@ -15,8 +15,8 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#assign el=args.htmlid?html>
-      <div class="linksview-header theme-bg-2">
-         <div class="navigation-bar theme-bg-3">
+      <div class="linksview-header theme-bg-color-1">
+         <div class="navigation-bar theme-bg-color-2">
             <div>
                <span class="<#if (page.url.args.listViewLinkBack! == "true")>back-link<#else>forward-link</#if>">
                   <a href="${url.context}/page/site/${page.url.templateArgs.site}/links">${msg("header.back")}</a>

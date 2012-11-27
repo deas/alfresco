@@ -19,7 +19,7 @@
       <#import "filter/filter.lib.ftl" as filter/>
       <#assign el=args.htmlid?html>
       <div id="${el}-body" class="task-list">
-         <div class="yui-g task-list-bar flat-button">
+         <div class="yui-g task-list-bar flat-button theme-bg-color-1">
             <div class="yui-u first">
                <h2 id="${el}-filterTitle" class="thin">
                   &nbsp;
