@@ -798,7 +798,6 @@ Alfresco.util.getFileExtension = function(filePath)
 
 
 /**
-<<<<<<< .working
  * Loads a webscript into a target element.
  *
  * @method loadWebscript
