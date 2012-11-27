@@ -4,6 +4,7 @@
    <description>Slingshot Project</description>
    <source-id>site</source-id>
    <properties>
+      <theme>lightTheme</theme>
       <root-page>site-index</root-page>
    </properties>
 </configuration>

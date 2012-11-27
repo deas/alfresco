@@ -1287,9 +1287,14 @@ div.theme-bg-color-8
 
 /* Unauthenticated pages (inc login) */
 
-.alfresco-guest .sticky-wrapper
+body.alfresco-guest
 {
    background: transparent url("./images/alfresco-logo-bg.jpg") no-repeat;
+}
+
+.alfresco-guest .sticky-wrapper
+{
+   background: none;
 }
 
 .alfresco-guest .theme-overlay
