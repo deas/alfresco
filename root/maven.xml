@@ -186,7 +186,7 @@
 
     <target name="maven-deploy-webclient-jars" description="Deploys Alfresco Explorer related JARs to a Maven repository">
         <!-- Parent POM -->
-        <mvndeploy artifactId="alfresco-parent"
+        <mvndeploypomonly artifactId="alfresco-parent"
             file="${alfresco.basedir}/pom-experimental.xml" />
 
         <!-- Core -->
@@ -337,13 +337,10 @@
             <local name="extension.tmp" />
             <local name="extension" />
             <property name="fileabsolute" location="@{file}" />
-            <pathconvert property="extension.tmp">
+            <pathconvert property="extension">
                 <fileset file="@{file}"/>
                 <mapper type="regexp" from="^.*\.(.*)$$" to="\1"/>
             </pathconvert>
-            <condition property="extension" value="pom" else="${extension.tmp}">
-                <equals arg1="${extension.tmp}" arg2="xml"/>
-            </condition>
 
             <artifact:mvn>
                 <arg value="${maven.command}"/>
@@ -359,6 +356,43 @@
                 <arg value="${maven.settings.file}"/>
             </artifact:mvn>
 
+        </sequential>
+    </macrodef>
+
+    <macrodef name="mvndeploypomonly">
+        <attribute name="file" />
+        <attribute name="artifactId" />
+        <sequential>
+            <echo>
+            Deploying @{file}
+            as ${maven.group.id}:@{artifactId}:${maven.version.number}... </echo>
+
+            <local name="fileabsolute" />
+            <property name="fileabsolute" location="@{file}" />
+
+            <!-- Remove SNAPSHOT in POM version if necessary -->
+            <condition property="pomVersion" value="${maven.version.number}-SNAPSHOT" else="${maven.version.number}">
+                <istrue value="${maven.isRelease}" />
+            </condition>
+            <replace file="@{file}" summary="true" token="${pomVersion}" value="${maven.version.number}" >
+                <filename name="@{file}"/>
+            </replace>
+
+            <artifact:mvn>
+                <arg value="${maven.command}"/>
+                <arg value="-Dfile=${fileabsolute}"/>
+                <arg value="-DgroupId=${maven.group.id}"/>
+                <arg value="-DartifactId=@{artifactId}"/>
+                <arg value="-Dversion=${maven.version.number}"/>
+                <arg value="-Dpackaging=pom"/>
+                <arg value="-Durl=${maven.repo.url}"/>
+                <arg value="-DrepositoryId=${maven.repo.id}"/>
+                <arg value="-s"/>
+                <arg value="${maven.settings.file}"/>
+            </artifact:mvn>
+
+            <!-- Revert change in pom done above -->
+            <replace file="@{file}" summary="true" token="${maven.version.number}" value="${pomVersion}" />
         </sequential>
     </macrodef>
 
