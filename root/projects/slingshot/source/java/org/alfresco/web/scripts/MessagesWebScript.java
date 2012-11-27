@@ -110,7 +110,7 @@ public class MessagesWebScript extends org.springframework.extensions.webscripts
         final int schemaIndex = serverPath.indexOf(':');
         sb.append("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
         sb.append(serverPath.substring(0, schemaIndex));
-        sb.append("://www.alfresco.com/assets/images/logos/community-3.4-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
+        sb.append("://www.alfresco.com/assets/images/logos/community-4.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
         // end logo
         return sb.toString();
     }
