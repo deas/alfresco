@@ -263,6 +263,7 @@
             <version>${project.version}</version>
             <classifier>webapp</classifier>
             <type>war</type>
+            <scope>provided</scope> <!-- ALF-16947 -->
         </dependency>
         <dependency>
             <artifactId>stax-api</artifactId>
