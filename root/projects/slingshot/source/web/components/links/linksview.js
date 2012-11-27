@@ -226,7 +226,7 @@
          var authorLink = Alfresco.util.people.generateUserLink(data.author);
 
          var html = '';
-         html += '<div id="' + this.id + '-linksview" class="node linksview">';
+         html += '<div id="' + this.id + '-linksview" class="node linksview theme-bg-2">';
          html += Alfresco.util.links.generateLinksActions(this, data, 'div');
 
          // Prepare url attribute

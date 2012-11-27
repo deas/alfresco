@@ -1,7 +1,6 @@
 .linksview-header
 {
-   background-color: #e3eaec;
-   border-bottom: 2px solid #C7CCCE;
+   border-bottom: 1px solid #ccc;
    clear: both;
    margin: 0 -10px;
    height: 34px;
@@ -21,8 +20,7 @@
    padding:2px 1em;
    line-height: 30px;
    height: 30px;
-   background-color: #D6DEE3;
-   border-right: 2px solid #F0F3F4;
+   border-right: 1px solid #ccc;
 }
 
 .linksview-header .navigation-bar div
@@ -36,13 +34,9 @@
 *****************/
 .linksview
 {
-   background-color: #F8FAFB;
-   border: 1px solid #c6c6c6 !important;
+   border: 1px solid #ccc !important;
    margin: 1.5em 0;
    padding: 20px 10px;
-   border: 2px solid #fff;
-   voice-family: "\"}\"";
-   voice-family:inherit;
    display: inline-block;
 }
 

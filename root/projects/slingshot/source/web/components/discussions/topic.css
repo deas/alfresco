@@ -64,8 +64,6 @@
   padding: 20px 10px;
   margin-left: 0px;
   margin-right: 0px;
-  voice-family: "\"}\""; 
-  voice-family:inherit;
   display: inline-block;
 }
 html>body .node, .reply, .comment {

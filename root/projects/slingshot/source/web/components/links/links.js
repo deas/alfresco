@@ -536,7 +536,7 @@
             {
                e.target.cells[2].childNodes[0].style.visibility = "visible";
                e.target.cells[2].childNodes[0].style.width = "100px";
-               e.target.cells[2].style.borderLeft = "1px solid #999";
+               e.target.cells[2].style.borderLeft = "1px solid #ccc";
             }
          };
 
@@ -546,7 +546,7 @@
             if (e.target.cells && e.target.cells.length > 1)
             {
                e.target.cells[2].childNodes[0].style.visibility = "hidden";
-               e.target.cells[2].style.borderLeft = "1px solid #FFF";
+               e.target.cells[2].style.borderLeft = "1px solid #fff";
             }
          };
 

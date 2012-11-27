@@ -799,7 +799,7 @@ body.yui-skin-lightTheme .link-menu-button.link-menu-button-menu-active .yui-but
 
 .yui-skin-lightTheme .link-menu-button span.link-menu-button-link
 {
-   border-right: 1px #BDBDBD solid;
+   border-right: 1px #ccc solid;
 }
 
 body.yui-skin-lightTheme .link-menu-button.link-menu-button-menu-active
@@ -816,6 +816,33 @@ body.yui-skin-lightTheme .link-menu-button.link-menu-button-menu-active
 .topiclist .yui-dt-liner
 {
    padding: 0;
+}
+
+.topicview
+{
+   border: 1px solid #ccc !important;
+}
+
+.links-body .yui-dt td
+{
+   border-bottom: 1px solid #ccc !important;
+}
+
+.links-header .links-infobar
+{
+   border-bottom: 1px solid #ccc !important;
+}
+
+.nodeFooter
+{
+   border-bottom: 1px solid #ccc !important;
+   border-top: 1px solid #ccc !important;
+   padding: 6px !important;
+}
+
+.topicview .nodeFooter, .postview .nodeFooter, .reply .nodeFooter
+{
+   border: none !important;
 }
 
 /* blog/wiki action items links */
