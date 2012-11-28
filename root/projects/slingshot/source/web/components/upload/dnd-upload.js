@@ -1767,6 +1767,11 @@
                // Call the onFileUploadComplete callback in the correct scope
                callback.fn.call((typeof callback.scope == "object" ? callback.scope : this), objComplete, callback.obj);
             }
+            
+            if (objComplete.failed.length === 0)
+            {
+               this.onCancelOkButtonClick();
+            }
          }
          catch(exception)
          {
