@@ -24,17 +24,17 @@ function main()
    model.logo = context.getSiteConfiguration().getProperty("logo");
    
    // Widget instantiation metadata...
-   var defaultlogo= msg.get("header.logo");
+   var defaultlogo = msg.get("header.logo");
    if (defaultlogo == "header.logo")
    {
-      defaultlogo ="app-logo.png";
+      defaultlogo = "app-logo.png";
    }
    
    var widget = {
-      id : "ConsoleApplication", 
-      name : "Alfresco.ConsoleApplication",
-      options : {
-         defaultlogo: url.context + "/res/themes/" + model.theme + "/images/" + defaultlogo
+      id: "ConsoleApplication", 
+      name: "Alfresco.ConsoleApplication",
+      options: {
+         defaultlogo: url.context + "/res/themes/" + theme + "/images/" + defaultlogo
       }
    };
    model.widgets = [widget];
