@@ -1546,6 +1546,15 @@ body.alfresco-guest
    color: #333 !important;
 }
 
+.users .header-bar
+{
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal !important;
+   background-color: #eee !important;
+   border-bottom: 1px solid #ccc !important;
+   margin: 1.5em 1em 1em !important;
+}
+
 .profile .header-bar
 {
    font-family: Open Sans Bold, Arial, sans-serif;

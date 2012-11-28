@@ -577,7 +577,7 @@ body .doclist tr.yui-dt-highlighted
 .doclist .more-actions a.action-link,
 .doclist .more-actions a.simple-link
 {
-   border: 1px solid #fff;
+   border: 1px solid transparent;
 }
 
 .doclist .more-actions a:active,
