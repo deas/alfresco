@@ -117,11 +117,11 @@
            iconStyle = 'style="background-image:url(' + urlContext + '{icon}-16.png)" ',
            actionTypeMarkup =
            {
-              "link": '<div class="{id}"><a alt="{label}" class="simple-link" href="{href}" ' + iconStyle + '{target}><span>{label}</span></a></div>',
-              "pagelink": '<div class="{id}"><a alt="{label}" class="simple-link" href="{pageUrl}" ' + iconStyle + '><span>{label}</span></a></div>',
-              "javascript": '<div class="{id}" id="{jsfunction}"><a alt="{label}" class="action-link" href="#"' + iconStyle + '><span>{label}</span></a></div>'
+              "link": '<div class="{id}"><a title="{label}" class="simple-link" href="{href}" ' + iconStyle + '{target}><span>{label}</span></a></div>',
+              "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}" ' + iconStyle + '><span>{label}</span></a></div>',
+              "javascript": '<div class="{id}" id="{jsfunction}"><a title="{label}" class="action-link" href="#"' + iconStyle + '><span>{label}</span></a></div>'
            };
-      
+         
          // Store quick look-up for client-side actions
          p_record.actionParams[p_action.id] = p_action.params;
          
@@ -181,7 +181,6 @@
                Alfresco.logger.warn("Action configuration error: Missing 'function' parameter for actionId: ", p_action.id);
             }
          }
-
          
          return YAHOO.lang.substitute(actionTypeMarkup[p_action.type], markupParams);
       },
