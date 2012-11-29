@@ -13,15 +13,14 @@ function main()
    
    // Widget instantiation metadata...
    var documentActions = {
-      id : "DocumentLinks", 
-      name : "Alfresco.DocumentLinks",
-      options : {
-         nodeRef : model.nodeRef,
-         siteId : (model.site != null) ? model.site : null
+      id: "DocumentLinks", 
+      name: "Alfresco.DocumentLinks",
+      options: {
+         nodeRef: model.nodeRef,
+         siteId: model.site
       }
    };
    model.widgets = [documentActions];
 }
 
 main();
-
