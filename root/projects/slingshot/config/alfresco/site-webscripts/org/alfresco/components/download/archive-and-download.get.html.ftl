@@ -39,10 +39,3 @@
       </div>
    </@>
 </@>
-
-<script type="text/javascript">//<![CDATA[
-(function()
-{
-   new Alfresco.ArchiveAndDownload("${el}").setMessages(${messages});
-})();
-//]]></script>
