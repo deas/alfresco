@@ -2,10 +2,8 @@ function main()
 {
    if (args.nodeRef != null)
    {
-      var nodeRef = args.nodeRef;
-      
-      var result = remote.call("/api/attachments?nodeRef=" + nodeRef);
-      var attachmentsAssocs = [];
+      var attachmentsAssocs = [],
+          result = remote.call("/api/attachments?nodeRef=" + args.nodeRef);
       if (result.status == 200)
       {
          attachmentsAssocs = eval('(' + result + ')');

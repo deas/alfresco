@@ -21,8 +21,8 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?html>
       <#if documentDetails && syncEnabled>
+      <#assign el=args.htmlid?html>
       <div class="document-sync document-details-panel">
          <h2 id="${el}-heading" class="thin dark">
             ${msg("heading")}

@@ -25,8 +25,8 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?html>
       <#if document??>
+         <#assign el=args.htmlid?html>
          <#if document.workingCopy??>
             <!-- Don't display links since this nodeRef points to one of a working copy pair -->
          <#else>
