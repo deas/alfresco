@@ -756,7 +756,7 @@
          </action>
 
          <!-- Download folder -->
-         <action id="folder-download" type="javascript" label="actions.document.download" icon="document-download">
+         <action id="folder-download" type="javascript" label="actions.folder.download" icon="document-download">
             <param name="function">onActionFolderDownload</param>
          </action>
 
