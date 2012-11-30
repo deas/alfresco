@@ -27,6 +27,8 @@ import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.module.vti.metadata.model.DocMetaInfo;
 import org.alfresco.module.vti.metadata.model.DocsMetaInfo;
 import org.alfresco.module.vti.web.VtiEncodingUtils;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -73,20 +75,19 @@ public class GetDocsMetaInfoMethod extends AbstractMethod
         for (int i = 0; i < urlList.size(); ++i)
         {
             String url = urlList.get(i);
-            URI uriObj = URI.create(url);
-            if (uriObj.isAbsolute())
+            String path = URIUtil.getPath(url);
+            if (urlIsAbsolute(url))
             {
-                String relativeUrl = uriObj.getPath();
-                if (relativeUrl.length() > 1 && relativeUrl.startsWith("/"))
+                if (path.length() > 1 && path.startsWith("/"))
                 {
                     // Remove preceding slash if one exists.
-                    relativeUrl = relativeUrl.substring(1);
+                    path = path.substring(1);
                 }
-                if (relativeUrl.startsWith(serviceName))
+                if (path.startsWith(serviceName))
                 {
-                    relativeUrl = relativeUrl.substring(serviceName.length());
+                    path = path.substring(serviceName.length());
                 }
-                urlList.set(i, relativeUrl);
+                urlList.set(i, path);
             }
         }
         DocsMetaInfo docsMetaInfoList;
@@ -143,6 +144,22 @@ public class GetDocsMetaInfoMethod extends AbstractMethod
         {
             logger.debug("End of method execution. Method name: " + getName());
         }
+    }
+
+    private boolean urlIsAbsolute(String url)
+    {
+        String pathEncodedURL;
+        try
+        {
+            // Encode the path part of since this may have spaces in it, for example. 
+            pathEncodedURL = URIUtil.encodePath(url, "UTF-8");
+        }
+        catch (URIException error)
+        {
+            throw new IllegalArgumentException("Invalid URL: " + url, error);
+        }
+        URI uriObj = URI.create(pathEncodedURL);
+        return uriObj.isAbsolute();
     }
 
     /**

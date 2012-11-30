@@ -19,7 +19,6 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.net.URI;
 import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +28,7 @@ import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -86,8 +86,7 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
            throw new VtiSoapException("pageUrl must be supplied", 0x82000001l);
         }
         String docPath = URLDecoder.decode(docE.getTextTrim(), "UTF-8");
-        URI uri = URI.create(docPath);
-        docPath = uri.getPath();
+        docPath = URIUtil.getPath(docPath);
         
         // Did they want to work on it locally?
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckOutFile/checkoutToLocal"));

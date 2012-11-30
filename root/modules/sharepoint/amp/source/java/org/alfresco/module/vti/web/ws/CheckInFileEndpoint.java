@@ -19,12 +19,12 @@
 
 package org.alfresco.module.vti.web.ws;
 
-import java.net.URI;
 import org.alfresco.module.vti.handler.CheckOutCheckInServiceHandler;
 import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.version.VersionType;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -85,8 +85,7 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         }
         
         String docPath = URLDecoder.decode(docE.getTextTrim());
-        URI uri = URI.create(docPath);
-        docPath = uri.getPath();
+        docPath = URIUtil.getPath(docPath);
 
         // Get the comment
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/comment"));
