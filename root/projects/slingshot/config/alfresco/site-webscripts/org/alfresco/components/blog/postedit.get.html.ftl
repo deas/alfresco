@@ -36,7 +36,7 @@
                      <label for="${args.htmlid}-title">${msg("label.title")}:</label>
                   </div>
                   <div class="yui-u">
-                     <input class="wide" type="text" id="${args.htmlid}-title" name="title" value="" />
+                     <input class="wide" type="text" id="${args.htmlid}-title" name="title" value="" />&nbsp;*
                   </div>
                </div>
       

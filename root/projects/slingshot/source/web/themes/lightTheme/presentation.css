@@ -36,8 +36,6 @@ button:focus {outline:none;}
 	font:13px/1.231 Open Sans,arial,helvetica,clean,sans-serif;
 }
 
-
-
 .alfresco-share .sticky-wrapper select,
 .yui-overlay select,
 .alfresco-share .sticky-wrapper input,
@@ -48,6 +46,12 @@ button:focus {outline:none;}
 .yui-overlay button
 {
 	font:99% Open Sans,arial,helvetica,clean,sans-serif;
+}
+
+.alfresco-share .sticky-wrapper hr,
+.yui-overlay hr
+{
+   height: 0 !important;
 }
 
 .sticky-wrapper,
@@ -72,12 +76,12 @@ button:focus {outline:none;}
    text-decoration: none;
 }
 
-.sticky-wrapper a:hover,
+/*.sticky-wrapper a:hover,
 .sticky-footer a:hover,
 .yui-overlay a:hover
 {
    text-decoration: underline;
-}
+}*/
 
 .sticky-wrapper h1,
 .yui-overlay h1
@@ -296,14 +300,14 @@ h4 .lighter
 
 .yui-skin-lightTheme .yui-panel .hd
 {
-   font-family: Open Sans Bold, Arial, sans-serif;
-   font-size: 123.1%;
+   font-family: Open Sans Condensed, Arial, sans-serif;
+   font-size: 235%;
    font-weight: normal;
    border-bottom: 1px solid #ccc;
    border-top-left-radius: 6px;
    border-top-right-radius: 6px;
-   line-height: 2em;
-   border-bottom: 1px solid #ccc;
+   line-height: 1.2em;
+   padding: 0.5em 0;
 }
 
 .yui-skin-lightTheme .yui-panel .form-buttons,
@@ -559,9 +563,45 @@ span.navigation-separator-alt
    background-color: #fff;
 }
 
-.yui-skin-lightTheme .yui-navset .yui-content
+.form-container textarea,
+.page-form-body textarea
 {
-   background: #eee;
+   width: 99.5% !important;
+}
+
+.form-container .input,
+.form-container input[type="file"],
+.form-container input[type="text"],
+.form-container input[type="password"],
+.form-container textarea,
+.form-container .input input[type="file"],
+.form-container .input input[type="text"],
+.form-container .input input[type="password"],
+.form-container .input textarea,
+.form-container select,
+.page-form-body .input,
+.page-form-body input[type="file"],
+.page-form-body input[type="text"],
+.page-form-body input[type="password"],
+.page-form-body textarea,
+.page-form-body .input input[type="file"],
+.page-form-body .input input[type="text"],
+.page-form-body .input input[type="password"],
+.page-form-body .input textarea,
+.page-form-body select
+{
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.defaultSkin table.mceLayout
+{
+   width: 100% !important;
+}
+
+.mceEditor.defaultSkin
+{
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.15);
+   display: block;
 }
 
 .input,
@@ -585,9 +625,26 @@ span.navigation-separator-alt
    border-right: none;
 }
 
+.share-form .form-manager h1
+{
+   margin-bottom: 0 !important;
+}
+
 .form-element-background-color
 {
    background-color: #fff;
+}
+
+.create-content-mgr .heading
+{
+   font-family: Open Sans Condensed, Arial, sans-serif;
+   font-size: 235% !important;
+   padding: 0.5em 0.2em 0 !important;
+}
+
+.yui-skin-lightTheme .yui-navset .yui-content
+{
+   background: #eee;
 }
 
 /* same as theme-color-2 */
@@ -1722,4 +1779,16 @@ body.alfresco-guest
 table td.thumbnail img
 {
    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Tag editor in wiki/discussions/blog */
+.tags_box li a:link
+{
+   color: #333 !important;
+}
+
+.tags_box li a:hover,
+.tags_box li a.hover
+{
+   border: 1px solid transparent !important;
 }

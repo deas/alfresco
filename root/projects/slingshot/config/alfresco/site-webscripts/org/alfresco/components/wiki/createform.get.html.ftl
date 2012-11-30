@@ -36,7 +36,7 @@
                      <label for="${args.htmlid}-title">${msg("label.title")}:</label>
                   </div>
                   <div class="yui-u">
-                     <input type="text" maxlength="100" size="75" id="${args.htmlid}-title" name="pageTitle" class="wide"/>
+                     <input type="text" maxlength="100" size="75" id="${args.htmlid}-title" name="pageTitle" class="wide"/>&nbsp;*
                   </div>
                </div>
          

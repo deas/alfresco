@@ -1,6 +1,6 @@
 <#include "common/editorparams.inc.ftl" />
 
-<#if field.control.params.rows??><#assign rows=field.control.params.rows><#else><#assign rows=8></#if>
+<#if field.control.params.rows??><#assign rows=field.control.params.rows><#else><#assign rows=12></#if>
 <#if field.control.params.columns??><#assign columns=field.control.params.columns><#else><#assign columns=60></#if>
 
 <#if form.capabilities?? && form.capabilities.javascript?? && form.capabilities.javascript == false><#assign jsDisabled=true><#else><#assign jsDisabled=false></#if>
@@ -11,10 +11,8 @@
 <div class="form-field" id="${fieldHtmlId}-field">
    <#if jsDisabled == false>
    <script type="text/javascript">//<![CDATA[
-   (function()
-   {
-      new Alfresco.ContentControl("${fieldHtmlId}").setOptions(
-      {
+   (function() {
+      new Alfresco.ContentControl("${fieldHtmlId}").setOptions( {
          <#if form.mode == "view" || (field.disabled && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true"))>disabled: true,</#if>
          currentValue: "${field.value?js_string}",
          mandatory: ${field.mandatory?string},
@@ -33,18 +31,16 @@
          <#if field.control.params.forceEditor??>forceEditor: ${field.control.params.forceEditor},</#if>
          <#if field.control.params.forceContent??>forceContent: ${field.control.params.forceContent},</#if>
          <@editorParameters field />
-      }).setMessages(
-         ${messages}
-      );
+      }).setMessages(${messages});
    })();
    //]]></script>
    </#if>
    
    <label for="${fieldHtmlId}">${field.label?html}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></label>
    <textarea id="${fieldHtmlId}" name="${field.name}" rows="${rows}" columns="${columns}" tabindex="0"
-             <#if field.description??>title="${field.description?html}"</#if>
-             <#if field.control.params.styleClass??>class="${field.control.params.styleClass}"</#if>
-             <#if field.control.params.style??>style="${field.control.params.style}"</#if>
-             <#if field.disabled && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if>><#if jsDisabled>${field.content?html}</#if></textarea>
+      <#if field.description??>title="${field.description?html}"</#if>
+      <#if field.control.params.styleClass??>class="${field.control.params.styleClass}"</#if>
+      <#if field.control.params.style??>style="${field.control.params.style}"</#if>
+      <#if field.disabled && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if>><#if jsDisabled>${field.content?html}</#if></textarea>
 </div>
 </#if>

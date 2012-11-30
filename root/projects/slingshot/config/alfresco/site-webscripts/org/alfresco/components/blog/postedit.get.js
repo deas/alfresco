@@ -12,7 +12,7 @@ function main()
          postId : (page.url.args.postId != null) ? page.url.args.postId : "",
          editorConfig : {
             width: "700",
-            height: "180",
+            height: "300",
             inline_styles: false,
             convert_fonts_to_spans: false,
             theme: "advanced",

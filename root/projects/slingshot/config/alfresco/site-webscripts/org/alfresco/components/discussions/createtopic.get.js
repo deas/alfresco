@@ -11,7 +11,7 @@ function main()
          editMode : (page.url.args.topicId != null),
          editorConfig : {
             width: "700",
-            height: "180",
+            height: "300",
             inline_styles: false,
             convert_fonts_to_spans: false,
             theme: "advanced",

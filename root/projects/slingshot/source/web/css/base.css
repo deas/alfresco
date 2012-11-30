@@ -389,7 +389,7 @@ span.navigation-separator-alt
 .page-form-header
 {
    margin: 4px;
-   padding: 4px;
+   padding: 0.85em 0 0.25em 0.15em;
 }
 
 .page-form-body .yui-gd
@@ -406,6 +406,7 @@ span.navigation-separator-alt
 {
    text-align: right;
    width: 5% !important;
+   padding-top: 0.3em;
 }
 
 /* Replace default styles for HTML content */
