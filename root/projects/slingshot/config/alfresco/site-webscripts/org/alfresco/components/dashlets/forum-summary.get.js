@@ -14,7 +14,8 @@ function main()
       options : {
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          searchRootNode : (config.scoped['RepositoryLibrary']['root-node']).value,
-         filters : model.filters
+         filters : model.filters,
+         regionId : args['region-id']
       }
    };
    

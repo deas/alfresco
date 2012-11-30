@@ -46,12 +46,6 @@
        DELETE_EVENTCLASS = Alfresco.util.generateDomId(null, "del-site");
 
    /**
-    * Preferences
-    */
-   var PREFERENCES_SITES = "org.alfresco.share.sites",
-       PREFERENCES_SITES_DASHLET_FILTER = PREFERENCES_SITES + ".dashlet.filter";
-
-   /**
     * Dashboard MySites constructor.
     *
     * @param {String} htmlId The HTML id of the parent element
@@ -77,6 +71,12 @@
 
    YAHOO.extend(Alfresco.dashlet.MySites, Alfresco.component.Base,
    {
+      /**
+       * Preferences
+       */
+      PREFERENCES_SITES_DASHLET: "",
+      PREFERENCES_SITES_DASHLET_FILTER: "",
+
       /**
        * Site data
        *
@@ -163,6 +163,10 @@
       onReady: function MySites_onReady()
       {
          var me = this;
+
+         // Fetch preferences
+         this.PREFERENCES_SITES_DASHLET = this.services.preferences.getDashletId(this, "sites");
+         this.PREFERENCES_SITES_DASHLET_FILTER = this.PREFERENCES_SITES_DASHLET + ".filter";
 
          // Create Dropdown filter
          this.widgets.type = Alfresco.util.createYUIButton(this, "type", this.onTypeFilterChanged,
@@ -277,7 +281,7 @@
             this.widgets.type.value = menuItem.value;
 
             // Save preferences
-            this.services.preferences.set(PREFERENCES_SITES_DASHLET_FILTER, menuItem.value,
+            this.services.preferences.set(this.PREFERENCES_SITES_DASHLET_FILTER, menuItem.value,
             {
                successCallback:
                {
@@ -319,7 +323,7 @@
          this.imapfavSites = imapfavSites;
 
          // Retrieve the preferred filter for the UI
-         var filter = Alfresco.util.findValueByDotNotation(prefs, PREFERENCES_SITES_DASHLET_FILTER, "all");
+         var filter = Alfresco.util.findValueByDotNotation(prefs, this.PREFERENCES_SITES_DASHLET_FILTER, "all");
          this.filter = this.options.validFilters.hasOwnProperty(filter) ? filter : "all";
       },
 

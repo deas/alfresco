@@ -33,13 +33,6 @@
       Selector = YAHOO.util.Selector;
 
    /**
-    * Preferences
-    */
-   var PREFERENCES_MYDOCUMENTS_DASHLET = "org.alfresco.share.mydocuments.dashlet"
-      PREFERENCES_MYDOCUMENTS_DASHLET_FILTER = PREFERENCES_MYDOCUMENTS_DASHLET + ".filter",
-      PREFERENCES_MYDOCUMENTS_DASHLET_VIEW = PREFERENCES_MYDOCUMENTS_DASHLET + ".simpleView";
-
-   /**
     * Dashboard MyDocuments constructor.
     *
     * @param {String} htmlId The HTML id of the parent element
@@ -53,12 +46,22 @@
 
    YAHOO.extend(Alfresco.dashlet.MyDocuments, Alfresco.component.SimpleDocList,
    {
+      PREFERENCES_MYDOCUMENTS_DASHLET_FILTER: "",
+      PREFERENCES_MYDOCUMENTS_DASHLET_VIEW: "",
       /**
        * Fired by YUI when parent element is available for scripting
        * @method onReady
        */
       onReady: function MyDocuments_onReady()
       {
+
+         /**
+          * Preferences
+          */
+         var PREFERENCES_MYDOCUMENTS_DASHLET = this.services.preferences.getDashletId(this, "mydocuments");
+            this.PREFERENCES_MYDOCUMENTS_DASHLET_FILTER = PREFERENCES_MYDOCUMENTS_DASHLET + ".filter";
+            this.PREFERENCES_MYDOCUMENTS_DASHLET_VIEW = PREFERENCES_MYDOCUMENTS_DASHLET + ".simpleView";
+
          // Create Dropdown filter
          this.widgets.filter = Alfresco.util.createYUIButton(this, "filters", this.onFilterChange,
          {
@@ -114,7 +117,7 @@
             this.widgets.filter.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.filter.value = menuItem.value;
 
-            this.services.preferences.set(PREFERENCES_MYDOCUMENTS_DASHLET_FILTER, this.widgets.filter.value);
+            this.services.preferences.set(this.PREFERENCES_MYDOCUMENTS_DASHLET_FILTER, this.widgets.filter.value);
 
             this.reloadDataTable();
          }
@@ -130,7 +133,7 @@
       onSimpleDetailed: function MyDocuments_onSimpleDetailed(e, p_obj)
       {
          this.options.simpleView = e.newValue.index === 0;
-         this.services.preferences.set(PREFERENCES_MYDOCUMENTS_DASHLET_VIEW, this.options.simpleView);
+         this.services.preferences.set(this.PREFERENCES_MYDOCUMENTS_DASHLET_VIEW, this.options.simpleView);
          if (e)
          {
             Event.preventDefault(e);

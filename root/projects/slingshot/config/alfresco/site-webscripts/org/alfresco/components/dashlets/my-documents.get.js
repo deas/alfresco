@@ -35,7 +35,8 @@ function getMaxItems()
    return parseInt(maxItems && maxItems.length > 0 ? maxItems : 50, 10);
 }
 
-model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.mydocuments.dashlet");
+var regionId = args['region-id'];
+model.preferences = AlfrescoUtil.getPreferences("org.alfresco.share.mydocuments.dashlet." + regionId);
 model.filters = getFilters();
 model.maxItems = getMaxItems();
 
@@ -61,7 +62,8 @@ function main()
          filter : model.prefFilter,
          maxItems : parseInt(model.maxItems),
          simpleView : model.prefSimpleView,
-         validFilters : model.filters
+         validFilters : model.filters,
+         regionId : regionId
       }
    };
 

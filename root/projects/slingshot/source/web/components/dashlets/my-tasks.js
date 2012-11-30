@@ -37,10 +37,6 @@
     */
    var $html = Alfresco.util.encodeHTML,
       $siteURL = Alfresco.util.siteURL;
-   /**
-    * Preferences
-    */
-   var PREFERENCES_TASKS_DASHLET_FILTER = "org.alfresco.share.tasks.dashlet.filter";
 
    /**
     * Dashboard MyTasks constructor.
@@ -74,6 +70,11 @@
     */
    YAHOO.lang.augmentObject(Alfresco.dashlet.MyTasks.prototype,
    {
+      /**
+       * Preferences
+       */
+      PREFERENCES_TASKS_DASHLET: "",
+      PREFERENCES_TASKS_DASHLET_FILTER: "",
       /**
        * Object container for initialization options
        *
@@ -124,10 +125,12 @@
          });
 
          // Load preferences (after which the appropriate tasks will be displayed)
+         this.PREFERENCES_TASKS_DASHLET = this.services.preferences.getDashletId(this, "tasks");
+         this.PREFERENCES_TASKS_DASHLET_FILTER = this.PREFERENCES_TASKS_DASHLET + ".filter";
          var prefs = this.services.preferences.get();
 
          // Select the preferred filter in the ui
-         var filter = Alfresco.util.findValueByDotNotation(prefs, PREFERENCES_TASKS_DASHLET_FILTER, "activeTasks");
+         var filter = Alfresco.util.findValueByDotNotation(prefs, this.PREFERENCES_TASKS_DASHLET_FILTER, "activeTasks");
          filter = this.options.filters.hasOwnProperty(filter) ? filter : "activeTasks";
          this.widgets.filterMenuButton.set("label", this.msg("filter." + filter));
          this.widgets.filterMenuButton.value = filter;
@@ -246,7 +249,7 @@
             this.widgets.alfrescoDataTable.loadDataTable(parameters);
 
             // Save preferences
-            this.services.preferences.set(PREFERENCES_TASKS_DASHLET_FILTER, menuItem.value);
+            this.services.preferences.set(this.PREFERENCES_TASKS_DASHLET_FILTER, menuItem.value);
          }
       },
 

@@ -28,7 +28,8 @@ function main()
       options : {
          hiddenTaskTypes : model.hiddenTaskTypes,
          maxItems : parseInt(model.maxItems),
-         filters : filterMap
+         filters : filterMap,
+         regionId : args['region-id']
       }
    };
    

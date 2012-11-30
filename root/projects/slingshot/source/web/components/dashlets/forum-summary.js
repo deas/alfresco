@@ -34,8 +34,6 @@
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML;
-
-   var PREFERENCES_FORUM_SUMMARY_DASHLET = "org.alfresco.share.forum.summary.dashlet.";
    
    /**
     * Dashboard ForumSummary constructor.
@@ -50,13 +48,15 @@
       
       // Services
       this.services.preferences = new Alfresco.service.Preferences();
-      PREFERENCES_FORUM_SUMMARY_DASHLET = PREFERENCES_FORUM_SUMMARY_DASHLET + this.id;
 
       return this;
    };
 
    YAHOO.extend(Alfresco.dashlet.ForumSummary, Alfresco.component.Base,
    {
+
+      PREFERENCES_FORUM_SUMMARY_DASHLET: "",
+
       /**
        * Object container for initialization options
        *
@@ -112,6 +112,7 @@
          var id = this.id;
 
          // Load preferences
+         this.PREFERENCES_FORUM_SUMMARY_DASHLET = this.services.preferences.getDashletId(this, "forum.summary");
          var prefs = this.services.preferences.get();
          
          for(var i = 0; i < this.options.filters.length; i++)
@@ -123,7 +124,7 @@
                menu: filter.name + "-menu",
                lazyloadmenu: false
             });
-            var filterPrefName = PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name;
+            var filterPrefName = this.PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name;
             var selectedOption = Alfresco.util.findValueByDotNotation(prefs, filterPrefName);
             
             if (selectedOption !== null)
@@ -277,7 +278,7 @@
          for(var i = 0; i < this.options.filters.length; i++)
          {
             var filter = this.options.filters[i];
-            var filterValue = this.options.filterPreferences[PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name];
+            var filterValue = this.options.filterPreferences[this.PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filter.name];
             parameters += filter.name + "=" + filterValue + "&";
          }
          parameters += "resultSize=" + this.options.resultSize;
@@ -313,7 +314,7 @@
 
          if (menuItem !== null)
          {
-            var filterPrefName = PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filterName;
+            var filterPrefName = this.PREFERENCES_FORUM_SUMMARY_DASHLET + "." + filterName;
             this.options.filterPreferences[filterPrefName] = menuItem.value;
             var preferences = this.services.preferences;
             preferences.set(filterPrefName, menuItem.value);

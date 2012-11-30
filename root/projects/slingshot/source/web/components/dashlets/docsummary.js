@@ -33,13 +33,6 @@
       Selector = YAHOO.util.Selector;
 
    /**
-    * Preferences
-    */
-   var PREFERENCES_DOCSUMMARY_DASHLET = "org.alfresco.share.docsummary.dashlet"
-      PREFERENCES_DOCSUMMARY_DASHLET_FILTER = PREFERENCES_DOCSUMMARY_DASHLET + ".filter",
-      PREFERENCES_DOCSUMMARY_DASHLET_VIEW = PREFERENCES_DOCSUMMARY_DASHLET + ".simpleView";
-
-   /**
     * Dashboard DocSummary constructor.
     *
     * @param {String} htmlId The HTML id of the parent element
@@ -53,12 +46,23 @@
 
    YAHOO.extend(Alfresco.dashlet.DocSummary, Alfresco.component.SimpleDocList,
    {
+
+      /**
+       * Preferences
+       */
+      PREFERENCES_DOCSUMMARY_DASHLET: "",
+      PREFERENCES_DOCSUMMARY_DASHLET_FILTER: "",
+      PREFERENCES_DOCSUMMARY_DASHLET_VIEW: "",
       /**
        * Fired by YUI when parent element is available for scripting
        * @method onReady
        */
       onReady: function DocSummary_onReady()
       {
+         this.PREFERENCES_DOCSUMMARY_DASHLET = this.services.preferences.getDashletId(this, "docsummary");
+         this.PREFERENCES_DOCSUMMARY_DASHLET_FILTER = this.PREFERENCES_DOCSUMMARY_DASHLET + ".filter";
+         this.PREFERENCES_DOCSUMMARY_DASHLET_VIEW = this.PREFERENCES_DOCSUMMARY_DASHLET + ".simpleView";
+
          // Create Dropdown filter
          this.widgets.filter = Alfresco.util.createYUIButton(this, "filters", this.onFilterChange,
          {
@@ -143,7 +147,7 @@
             this.widgets.filter.set("label", menuItem.cfg.getProperty("text"));
             this.widgets.filter.value = menuItem.value;
 
-            this.services.preferences.set(PREFERENCES_DOCSUMMARY_DASHLET_FILTER, this.widgets.filter.value);
+            this.services.preferences.set(this.PREFERENCES_DOCSUMMARY_DASHLET_FILTER, this.widgets.filter.value);
 
             this.reloadDataTable();
          }
@@ -159,7 +163,7 @@
       onSimpleDetailed: function DocSummary_onSimpleDetailed(e, p_obj)
       {
          this.options.simpleView = e.newValue.index === 0;
-         this.services.preferences.set(PREFERENCES_DOCSUMMARY_DASHLET_VIEW, this.options.simpleView);
+         this.services.preferences.set(this.PREFERENCES_DOCSUMMARY_DASHLET_VIEW, this.options.simpleView);
          if (e)
          {
             Event.preventDefault(e);

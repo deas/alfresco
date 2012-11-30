@@ -107,7 +107,7 @@
             id = this.id;
 
          // Preferences
-         var PREFERENCES_SITE_SEARCH_DASHLET = "org.alfresco.share.site.search.dashlet." + this.options.regionId + (this.options.siteId ? ("." + this.options.siteId) : "");
+         var PREFERENCES_SITE_SEARCH_DASHLET = this.services.preferences.getDashletId(this, "site.search");
          this.PREFERENCES_SITE_SEARCH_DASHLET_TERM = PREFERENCES_SITE_SEARCH_DASHLET + ".term";
          this.PREFERENCES_SITE_SEARCH_DASHLET_RESULTSIZE = PREFERENCES_SITE_SEARCH_DASHLET + ".resultSize";
 
