@@ -8569,145 +8569,159 @@ Alfresco.service.BaseService.prototype =
    };
 
    YAHOO.extend(Alfresco.service.Preferences, Alfresco.service.BaseService,
+   {
+      _prefs: null,
+
+      /**
+       * Gets a user specific property
+       *
+       * @method url
+       * @return {string} The base url to the preference webscripts
+       * @private
+       */
+      _url: function Preferences_url()
+      {
+         return Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/preferences";
+      },
+
+      /**
+       * Get the complete copy of the currently cached user preferences. This value is set once per page load - a component
+       * should retrieve this once onReady() but not assume the state is correct after that. The component should maintain
+       * its own local copies of values as modified by set(), add() or remote() operations until the next page refresh.
+       *
+       * @method get
+       */
+      get: function Preferences_get()
+      {
+         if (this._prefs === null)
          {
-            _prefs: null,
+            this._prefs = YAHOO.lang.JSON.parse(Alfresco.constants.USERPREFERENCES);
+         }
+         return this._prefs;
+      },
 
-            /**
-             * Gets a user specific property
-             *
-             * @method url
-             * @return {string} The base url to the preference webscripts
-             * @private
-             */
-            _url: function Preferences_url()
-            {
-               return Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/preferences";
-            },
+      /**
+       * Requests a fresh copy of a user specific property
+       *
+       * @method request
+       * @param name {string} The name of the property to get, or null or no param for all
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      request: function Preferences_request(name, responseConfig)
+      {
+         this._jsonCall(Alfresco.util.Ajax.GET, this._url() + (name ? "?pf=" + name : ""), null, responseConfig);
+      },
 
-            /**
-             * Get the complete copy of the currently cached user preferences. This value is set once per page load - a component
-             * should retrieve this once onReady() but not assume the state is correct after that. The component should maintain
-             * its own local copies of values as modified by set(), add() or remote() operations until the next page refresh.
-             *
-             * @method get
-             */
-            get: function Preferences_get()
+      /**
+       * Sets a user specific property
+       *
+       * @method set
+       * @param name {string} The name of the property to set
+       * @param value {object} The value of the property to set
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      set: function Preferences_set(name, value, responseConfig)
+      {
+         var preference = Alfresco.util.dotNotationToObject(name, value);
+         this._jsonCall(Alfresco.util.Ajax.POST, this._url(), preference, responseConfig);
+      },
+
+      /**
+       * Adds a value to a user specific property that is treated as a multi value.
+       * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.
+       *
+       * @method add
+       * @param name {string} The name of the property to set
+       * @param value {object} The value of the property to set
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      add: function Preferences_add(name, value, responseConfig)
+      {
+         var n = name, v = value;
+         var rc = responseConfig ? responseConfig : {};
+         var originalSuccessCallback = rc.successCallback;
+         rc.successCallback =
+         {
+            fn: function (response, obj)
             {
-               if (this._prefs === null)
+               // Make sure the original succes callback is used
+               rc.successCallback = originalSuccessCallback;
+
+               // Get the value for the preference name
+               var preferences = Alfresco.util.dotNotationToObject(n, null);
+               preferences = YAHOO.lang.merge(preferences, response.json);
+               var values = Alfresco.util.findValueByDotNotation(preferences, n);
+
+               // Parse string to array, add the value and convert to string again
+               if (typeof values == "string" || values === null)
                {
-                  this._prefs = YAHOO.lang.JSON.parse(Alfresco.constants.USERPREFERENCES);
+                  var arrValues = values ? values.split(",") : [];
+                  arrValues.push(v);
+
+                  // Save preference with the new value
+                  this.set(name, arrValues.join(","), rc);
                }
-               return this._prefs;
             },
+            scope: this
+         };
+         this.request(name, rc);
+      },
 
-            /**
-             * Requests a fresh copy of a user specific property
-             *
-             * @method request
-             * @param name {string} The name of the property to get, or null or no param for all
-             * @param responseConfig {object} A config object with only success and failure callbacks and messages
-             */
-            request: function Preferences_request(name, responseConfig)
+      /**
+       * Removes a value from a user specific property that is treated as a multi value.
+       * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.
+       *
+       * @method remove
+       * @param name {string} The name of the property to set
+       * @param value {object} The value of the property to set
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      remove: function Preferences_remove(name, value, responseConfig)
+      {
+         var n = name, v = value;
+         var rc = responseConfig ? responseConfig : {};
+         var originalSuccessCallback = rc.successCallback;
+         rc.successCallback =
+         {
+            fn: function (response, obj)
             {
-               this._jsonCall(Alfresco.util.Ajax.GET, this._url() + (name ? "?pf=" + name : ""), null, responseConfig);
-            },
+               // Make sure the original succes callback is used
+               rc.successCallback = originalSuccessCallback;
 
-            /**
-             * Sets a user specific property
-             *
-             * @method set
-             * @param name {string} The name of the property to set
-             * @param value {object} The value of the property to set
-             * @param responseConfig {object} A config object with only success and failure callbacks and messages
-             */
-            set: function Preferences_set(name, value, responseConfig)
-            {
-               var preference = Alfresco.util.dotNotationToObject(name, value);
-               this._jsonCall(Alfresco.util.Ajax.POST, this._url(), preference, responseConfig);
-            },
+               // Get the value for the preference name
+               var preferences = Alfresco.util.dotNotationToObject(n, null);
+               preferences = YAHOO.lang.merge(preferences, response.json);
+               var values = Alfresco.util.findValueByDotNotation(preferences, n);
 
-            /**
-             * Adds a value to a user specific property that is treated as a multi value.
-             * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.
-             *
-             * @method add
-             * @param name {string} The name of the property to set
-             * @param value {object} The value of the property to set
-             * @param responseConfig {object} A config object with only success and failure callbacks and messages
-             */
-            add: function Preferences_add(name, value, responseConfig)
-            {
-               var n = name, v = value;
-               var rc = responseConfig ? responseConfig : {};
-               var originalSuccessCallback = rc.successCallback;
-               rc.successCallback =
+               // Parse string to array, remove the value and convert to string again
+               if (typeof values == "string")
                {
-                  fn: function (response, obj)
-                  {
-                     // Make sure the original succes callback is used
-                     rc.successCallback = originalSuccessCallback;
+                  var arrValues = values ? values.split(",") : [];
+                  arrValues = Alfresco.util.arrayRemove(arrValues, v);
 
-                     // Get the value for the preference name
-                     var preferences = Alfresco.util.dotNotationToObject(n, null);
-                     preferences = YAHOO.lang.merge(preferences, response.json);
-                     var values = Alfresco.util.findValueByDotNotation(preferences, n);
-
-                     // Parse string to array, add the value and convert to string again
-                     if (typeof values == "string" || values === null)
-                     {
-                        var arrValues = values ? values.split(",") : [];
-                        arrValues.push(v);
-
-                        // Save preference with the new value
-                        this.set(name, arrValues.join(","), rc);
-                     }
-                  },
-                  scope: this
-               };
-               this.request(name, rc);
+                  // Save preference without value
+                  this.set(name, arrValues.join(","), rc);
+               }
             },
+            scope: this
+         };
+         this.request(name, rc);
+      },
 
-            /**
-             * Removes a value from a user specific property that is treated as a multi value.
-             * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.
-             *
-             * @method remove
-             * @param name {string} The name of the property to set
-             * @param value {object} The value of the property to set
-             * @param responseConfig {object} A config object with only success and failure callbacks and messages
-             */
-            remove: function Preferences_remove(name, value, responseConfig)
-            {
-               var n = name, v = value;
-               var rc = responseConfig ? responseConfig : {};
-               var originalSuccessCallback = rc.successCallback;
-               rc.successCallback =
-               {
-                  fn: function (response, obj)
-                  {
-                     // Make sure the original succes callback is used
-                     rc.successCallback = originalSuccessCallback;
+      /**
+       *
+       * @param dashlet
+       * @param name
+       */
+      getDashletId: function Preferences_getDashletId(dashlet, name)
+      {
+         var siteId = (dashlet.options.siteId && dashlet.options.siteId != "") ? "." + dashlet.options.siteId : "",
+            regionId = (dashlet.options.regionId && dashlet.options.regionId != "") ? "." + dashlet.options.regionId : "",
+            constantPrefix = "org.alfresco.share.";
 
-                     // Get the value for the preference name
-                     var preferences = Alfresco.util.dotNotationToObject(n, null);
-                     preferences = YAHOO.lang.merge(preferences, response.json);
-                     var values = Alfresco.util.findValueByDotNotation(preferences, n);
-
-                     // Parse string to array, remove the value and convert to string again
-                     if (typeof values == "string")
-                     {
-                        var arrValues = values ? values.split(",") : [];
-                        arrValues = Alfresco.util.arrayRemove(arrValues, v);
-
-                        // Save preference without value
-                        this.set(name, arrValues.join(","), rc);
-                     }
-                  },
-                  scope: this
-               };
-               this.request(name, rc);
-            }
-         });
+         return constantPrefix + name + ".dashlet" + regionId + siteId;
+      }
+   });
 })();
 
 /**
@@ -10807,4 +10821,3 @@ Alfresco.util.generateThumbnailUrl = function(jsNode, thumbnailName)
    }
    return url;
 };
-

@@ -280,14 +280,25 @@ var AlfrescoUtil =
       // Retrieve the current user's preferences
       var prefs = eval('(' + preferences.value + ')');
 
-      // Populate the preferences object literal for easy look-up later
+      // If filter isn't set, then return all the preferences.
       if (typeof p_filter == "undefined" || p_filter.length == 0)
       {
-         userprefs = eval('try{(prefs)}catch(e){}');
+         userprefs = prefs;
       }
       else
       {
-         userprefs = eval('try{(prefs.' + p_filter + ')}catch(e){}');
+         var filteredPrefs = prefs,
+            filters = p_filter.split(".");
+
+         for (var i = 0; i < filters.length; i++)
+         {
+            if (filteredPrefs[filters[i]])
+            {
+               filteredPrefs = filteredPrefs[filters[i]];
+            }
+         }
+
+         userprefs = filteredPrefs;
       }
       if (typeof userprefs != "object")
       {
