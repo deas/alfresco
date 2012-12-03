@@ -930,6 +930,11 @@ body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
    
 }
 
+.wikipage
+{
+   border-bottom: 1px solid #ccc !important;
+}
+
 .webview .title a,
 .wiki .title a
 {
@@ -1671,6 +1676,11 @@ body.alfresco-guest
 .yui-dt-data td
 {
    border-bottom: 1px solid #eee !important
+}
+
+.yui-dt-data .yui-dt-last td
+{
+   border-bottom: none !important;
 }
 
 /** Collab component toolbars e.g. blog */
