@@ -1810,3 +1810,8 @@ table td.thumbnail img
    font-family: Open Sans Bold, Arial, sans-serif;
    font-weight: normal !important;
 }
+
+.dnd-upload .title-folder
+{
+   vertical-align: baseline !important;
+}
