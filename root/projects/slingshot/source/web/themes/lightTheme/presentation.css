@@ -1802,3 +1802,11 @@ table td.thumbnail img
 {
    border: 1px solid transparent !important;
 }
+
+/* Uploaders */
+.fileupload-percentage-span,
+.fileupload-progressInfo-span
+{
+   font-family: Open Sans Bold, Arial, sans-serif;
+   font-weight: normal !important;
+}

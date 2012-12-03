@@ -341,7 +341,7 @@
 .dnd-upload .title-folder
 {
    padding: 0 2px 0 4px;
-   vertical-align: text-bottom;
+   vertical-align: baseline;
 }
 
 .dnd-file-selection-control
