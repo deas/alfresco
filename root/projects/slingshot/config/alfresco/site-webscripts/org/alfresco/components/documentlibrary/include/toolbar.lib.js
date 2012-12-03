@@ -23,32 +23,34 @@ function getPreferences()
 function getActionSet(myConfig)
 {
    // Actions
-   var xmlActionSet = myConfig..actionSet.(@id == "default"),
+   var multiSelectConfig = config.scoped["DocumentLibrary"]["multi-select"],
+      multiSelectActions = multiSelectConfig.getChildren("action"),
       actionSet = [];
-   
-   // Found match?
-   if (xmlActionSet.@id == "default")
+
+   var multiSelectAction;
+   for (var i = 0; i < multiSelectActions.size(); i++)
    {
-      for each(var xmlAction in xmlActionSet.action)
+      multiSelectAction = multiSelectActions.get(i);
+      attr = multiSelectAction.attributes;
+
+      if(!attr[syncMode] || attr[syncMode].toString() == syncMode.value)
       {
-         // Remove multi-select actions if the syncMode element is defined or the syncMode isn't the same as the configured mode
-         if (xmlAction.@syncMode.toString() === "" || xmlAction.@syncMode.toString() == syncMode.value)
-         {
-            actionSet.push(
-            {
-               id: xmlAction.@id.toString(),
-               type: xmlAction.@type.toString(),
-               permission: xmlAction.@permission.toString(),
-               asset: xmlAction.@asset.toString(),
-               href: xmlAction.@href.toString(),
-               label: xmlAction.@label.toString(),
-               hasAspect: xmlAction.@hasAspect.toString(),
-               notAspect: xmlAction.@notAspect.toString()
-            });
-         }
+         // Multi-Select Actions
+         action = {
+            id: attr["id"] ? attr["id"].toString() : "",
+            type: attr["type"] ? attr["type"].toString() : "",
+            permission: attr["permission"] ? attr["permission"].toString() : "",
+            asset: attr["asset"] ? attr["asset"].toString() : "",
+            href: attr["href"] ? attr["href"].toString() : "",
+            label: attr["label"] ? attr["label"].toString() : "",
+            hasAspect: attr["hasAspect"] ? attr["hasAspect"].toString() : "",
+            notAspect: attr["notAspect"] ? attr["notAspect"].toString() : ""
+         };
+
+         actionSet.push(action)
       }
    }
-   
+
    model.actionSet = actionSet;
 }
 
