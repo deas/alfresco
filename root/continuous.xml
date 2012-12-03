@@ -698,34 +698,34 @@
                       the same name but prefixed by "build-"
     -->
     <target name="windows-32-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-win.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.name.build}" ${installer.build.args}  "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" "project.installerFilename=${file.name.dist.installer.win}" "binaries_folder=${installer.build.binaries.win32}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.continuous.build}/error-install-win.txt" failonerror="true">
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.build}" ${installer.build.args}  "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" "project.installerFilename=${file.name.dist.installer.win}" "binaries_folder=${installer.build.binaries.win32}"'/>
         </exec>
-        <exec dir="${dir.installer.bitrock}" executable="${file.name.signcode.exe.linux}" output="${dir.name.build}/error-signcode-win.txt" failifexecutionfails="true">
-            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.name.build}/${file.name.dist.installer.win}" -out "${dir.continuous.dist}/${file.name.dist.installer.win}" -t "${url.signcode.timestamp}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${file.name.signcode.exe.linux}" output="${dir.continuous.build}/error-signcode-win.txt" failonerror="true">
+            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.continuous.build}/${file.name.dist.installer.win}" -out "${dir.continuous.dist}/${file.name.dist.installer.win}" -t "${url.signcode.timestamp}"'/>
         </exec>
     </target>
     
     <target name="windows-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-win64.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.name.build}" ${installer.build.args}  "project.installerFilename=${file.name.dist.installer.win64}" "binaries_folder=${installer.build.binaries.win64}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.continuous.build}/error-install-win64.txt" failonerror="true">
+            <arg line='${installer.build.type} project.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.build}" ${installer.build.args}  "project.installerFilename=${file.name.dist.installer.win64}" "binaries_folder=${installer.build.binaries.win64}"'/>
         </exec>
-        <exec dir="${dir.installer.bitrock}" executable="${file.name.signcode.exe.linux}" output="${dir.name.build}/error-signcode-win64.txt" failifexecutionfails="true">
-            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.name.build}/${file.name.dist.installer.win64}" -out "${dir.continuous.dist}/${file.name.dist.installer.win64}" -t "${url.signcode.timestamp}"'/>
+        <exec dir="${dir.installer.bitrock}" executable="${file.name.signcode.exe.linux}" output="${dir.continuous.build}/error-signcode-win64.txt" failonerror="true">
+            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.continuous.build}/${file.name.dist.installer.win64}" -out "${dir.continuous.dist}/${file.name.dist.installer.win64}" -t "${url.signcode.timestamp}"'/>
         </exec>
     </target>
     
     <target name="windows-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-win.txt" failifexecutionfails="true">
-            <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.name.build}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" "project.installerFilename=${file.name.dist.deployment.win}"'/>
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.continuous.build}/error-deploy-win.txt" failonerror="true">
+            <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.build}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" "project.installerFilename=${file.name.dist.deployment.win}"'/>
         </exec>
-        <exec dir="${dir.installer.deploy}" executable="${file.name.signcode.exe.linux}" output="${dir.name.build}/error-signcode-deploy-win.txt" failifexecutionfails="true">
-            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.name.build}/${file.name.dist.deployment.win}" -out "${dir.continuous.dist}/${file.name.dist.deployment.win}" -t "${url.signcode.timestamp}"'/>
+        <exec dir="${dir.installer.deploy}" executable="${file.name.signcode.exe.linux}" output="${dir.continuous.build}/error-signcode-deploy-win.txt" failonerror="true">
+            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.continuous.build}/${file.name.dist.deployment.win}" -out "${dir.continuous.dist}/${file.name.dist.deployment.win}" -t "${url.signcode.timestamp}"'/>
         </exec>
     </target>
 
     <target name="osx-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-osx64.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.continuous.build}/error-install-osx64.txt" failonerror="false">
             <arg line='${installer.build.type} project.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} "project.fullName=Alfresco ${file.name.codeline} (Evaluation Use Only)" project.installerFilename="${file.name.dist.installer.osx64}" binaries_folder="${installer.build.binaries.osx64}"'/>
         </exec>
         <tar destfile="${dir.continuous.dist}/${file.name.dist.installer.osx64}.tar.gz"
@@ -737,7 +737,7 @@
     </target>
 
     <target name="osx-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-osx.txt" failifexecutionfails="false">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.continuous.build}/error-deploy-osx.txt" failonerror="false">
             <arg line='${installer.build.type} deployment.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
         </exec>
         <tar destfile="${dir.continuous.dist}/${file.name.dist.deployment.osx}.tar.gz"
@@ -749,13 +749,13 @@
     </target>
         
     <target name="linux-64-bit-installer">
-        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.name.build}/error-install-linux64.txt" failifexecutionfails="true">
+        <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.continuous.build}/error-install-linux64.txt" failonerror="true">
             <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}"'/>
         </exec>      
     </target>
     
     <target name="linux-64-bit-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.name.build}/error-deploy-linux64.txt" failifexecutionfails="true">
+        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.continuous.build}/error-deploy-linux64.txt" failonerror="true">
             <arg line='${installer.build.type} deployment.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux64}"'/>
         </exec>
     </target>
