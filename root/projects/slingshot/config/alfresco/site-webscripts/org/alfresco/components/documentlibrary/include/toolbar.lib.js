@@ -33,7 +33,7 @@ function getActionSet(myConfig)
       multiSelectAction = multiSelectActions.get(i);
       attr = multiSelectAction.attributes;
 
-      if(!attr[syncMode] || attr[syncMode].toString() == syncMode.value)
+      if(!attr["syncMode"] || attr["syncMode"].toString() == syncMode.value)
       {
          // Multi-Select Actions
          action = {
