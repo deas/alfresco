@@ -1209,7 +1209,7 @@
          // Detect whether or not HTML5 drag and drop is supported...
          this.dragAndDropEnabled = this.dragAndDropAllowed && ('draggable' in document.createElement('span')) && YAHOO.env.ua.mobile === null;
 
-         // If the viewRenderer in the user preference is no longer available, use detailed
+         // If the viewRenderer in the user preference is no longer available, use first available
          // Also determine the index value of the selected viewRenderer from viewRendererNames
          var isViewRendererAvailable = false;
          var selectedViewRendererIndex = 1;
@@ -1222,9 +1222,9 @@
                break;
             }
          }
-         if (!isViewRendererAvailable)
+         if (!isViewRendererAvailable && this.options.viewRendererNames.length > 0)
          {
-            this.options.viewRendererName = this.options.viewRendererNames[1];
+            this.options.viewRendererName = this.options.viewRendererNames[0];
          }
          
          // Set-up default metadata renderers
@@ -2004,60 +2004,7 @@
        */
       _setupViewRenderers: function DL__setupViewRenderers()
       {
-         var simpleViewRenderer = new Alfresco.DocumentListViewRenderer("simple");
-         simpleViewRenderer.actionsColumnWidth = 80;
-         simpleViewRenderer.actionsSplitAtModifier = 0;
-         simpleViewRenderer.renderCellThumbnail = function _renderCellThumbnail(scope, elCell, oRecord, oColumn, oData)
-         {
-            var record = oRecord.getData(),
-               node = record.jsNode,
-               properties = node.properties,
-               name = record.displayName,
-               isContainer = node.isContainer,
-               isLink = node.isLink,
-               extn = name.substring(name.lastIndexOf(".")),
-               imgId = node.nodeRef.nodeRef; // DD added
-            
-            var containerTarget; // This will only get set if thumbnail represents a container
-            
-            oColumn.width = 40;
-            Dom.setStyle(elCell, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-   
-            if (isContainer)
-            {
-               elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
-               containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
-            }
-            else
-            {
-               var id = scope.id + '-preview-' + oRecord.getId();
-               elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
-   
-               // Preview tooltip
-               scope.previewTooltips.push(id);
-            }
-            var dnd = new Alfresco.DnD(imgId, scope);
-         };
-         simpleViewRenderer.setupRenderer = function _setupRenderer(scope)
-         {
-            Dom.addClass(scope.id + this.buttonElementIdSuffix, this.buttonCssClass);
-            // Tooltip for thumbnail in Simple View
-            scope.widgets.previewTooltip = new YAHOO.widget.Tooltip(scope.id + "-previewTooltip",
-            {
-               width: "108px"
-            });
-            scope.widgets.previewTooltip.contextTriggerEvent.subscribe(function(type, args)
-            {
-               var context = args[0],
-                  oRecord = scope.widgets.dataTable.getRecord(context.id),
-                  record = oRecord.getData();
-
-               this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" />');
-            });
-         };
-         
-         this.registerViewRenderer(simpleViewRenderer);
+         this.registerViewRenderer(new Alfresco.DocumentListSimpleViewRenderer("simple"));
          this.registerViewRenderer(new Alfresco.DocumentListViewRenderer("detailed"));
          
          YAHOO.Bubbling.fire("postSetupViewRenderers",
@@ -2443,7 +2390,10 @@
             this.afterDocListUpdate = [];
 
             // Register preview tooltips
-            this.widgets.previewTooltip.cfg.setProperty("context", this.previewTooltips);
+            if (typeof this.widgets.previewTooltip !== "undefined") 
+            {
+               this.widgets.previewTooltip.cfg.setProperty("context", this.previewTooltips);
+            }
 
             // Register insitu editors
             var iEd;
@@ -4020,9 +3970,19 @@
             // Call destroy view on all viewRenderers then renderView on the selected view
             for (var i = 0, ii = this.options.viewRendererNames.length; i < ii; i++)
             {
-               this.viewRenderers[this.options.viewRendererNames[i]].destroyView(this, sRequest, oResponse, oPayload);
+               if (typeof this.viewRenderers[this.options.viewRendererNames[i]] === "object")
+               {
+                  this.viewRenderers[this.options.viewRendererNames[i]].destroyView(this, sRequest, oResponse, oPayload);
+               }
             }
-            this.viewRenderers[this.options.viewRendererName].renderView(this, sRequest, oResponse, oPayload);
+            if (typeof this.viewRenderers[this.options.viewRendererName] === "object")
+            {
+               this.viewRenderers[this.options.viewRendererName].renderView(this, sRequest, oResponse, oPayload);
+            }
+            else
+            {
+               // TODO Display message that no view renderers are available and render detailed anyway
+            }
          };
 
          var failureHandler = function DL__uDL_failureHandler(sRequest, oResponse)

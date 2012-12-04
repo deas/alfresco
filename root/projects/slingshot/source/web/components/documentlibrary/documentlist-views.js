@@ -907,4 +907,81 @@
       
    };
    
+   /**
+    * SimpleViewRenderer constructor.
+    *
+    * @param name {String} The name of the SimpleViewRenderer
+    * @return {Alfresco.DocumentListSimpleViewRenderer} The new SimpleViewRenderer instance
+    * @constructor
+    */
+   Alfresco.DocumentListSimpleViewRenderer = function(name, galleryColumns)
+   {
+      Alfresco.DocumentListSimpleViewRenderer.superclass.constructor.call(this, name);
+      this.actionsColumnWidth = 80;
+      this.actionsSplitAtModifier = 0;
+      return this;
+   };
+   
+   /**
+    * Extend from Alfresco.DocumentListViewRenderer
+    */
+   YAHOO.extend(Alfresco.DocumentListSimpleViewRenderer, Alfresco.DocumentListViewRenderer);
+   
+   /**
+    * Override Alfresco.DocumentListViewRenderer.renderCellThumbnail with a simple icon and preview
+    */
+   Alfresco.DocumentListSimpleViewRenderer.prototype.renderCellThumbnail = function DL_SVR_renderCellThumbnail(scope, elCell, oRecord, oColumn, oData)
+   {
+      var record = oRecord.getData(),
+         node = record.jsNode,
+         properties = node.properties,
+         name = record.displayName,
+         isContainer = node.isContainer,
+         isLink = node.isLink,
+         extn = name.substring(name.lastIndexOf(".")),
+         imgId = node.nodeRef.nodeRef; // DD added
+      
+      var containerTarget; // This will only get set if thumbnail represents a container
+      
+      oColumn.width = 40;
+      Dom.setStyle(elCell, "width", oColumn.width + "px");
+      Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+      if (isContainer)
+      {
+         elCell.innerHTML = '<span class="folder-small">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-32.png" /></a>';
+         containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
+      }
+      else
+      {
+         var id = scope.id + '-preview-' + oRecord.getId();
+         elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+
+         // Preview tooltip
+         scope.previewTooltips.push(id);
+      }
+      var dnd = new Alfresco.DnD(imgId, scope);
+   };
+   
+   /**
+    * Override Alfresco.DocumentListViewRenderer.setupRenderer to setup preview tooltip
+    */
+   Alfresco.DocumentListSimpleViewRenderer.prototype.setupRenderer = function DL_SVR_setupRenderer(scope)
+   {
+      Dom.addClass(scope.id + this.buttonElementIdSuffix, this.buttonCssClass);
+      // Tooltip for thumbnail in Simple View
+      scope.widgets.previewTooltip = new YAHOO.widget.Tooltip(scope.id + "-previewTooltip",
+      {
+         width: "108px"
+      });
+      scope.widgets.previewTooltip.contextTriggerEvent.subscribe(function(type, args)
+      {
+         var context = args[0],
+            oRecord = scope.widgets.dataTable.getRecord(context.id),
+            record = oRecord.getData();
+
+         this.cfg.setProperty("text", '<img src="' + Alfresco.DocumentList.generateThumbnailUrl(record) + '" />');
+      });
+   };
+   
 })();
