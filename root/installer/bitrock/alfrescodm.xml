@@ -25,6 +25,7 @@
         <directoryParameter name="alfresco_commands_directory" value="${installdir}/bin" ask="0" description="Use to configure the destination of the content in commands folder"/>
         <directoryParameter name="alfresco_library_directory" value="${tomcat_server_directory}/lib" ask="0"/>
         <directoryParameter name="alfresco_shared_directory" value="${tomcat_server_directory}/shared/classes" ask="0"/>
+        <directoryParameter name="alfresco_shared_library_directory" value="${tomcat_server_directory}/shared/lib" ask="0"/>
         <stringParameter name="alfresco_database_name" value="alfresco" ask="0"/>
 
         <!-- Ports: FTP, RMI -->
@@ -134,6 +135,10 @@
             <destination>${alfresco_library_directory}</destination>
             <name>libfiles</name>
             <platforms>all</platforms>
+            <!-- ALF-16809: It's an Alfresco convention to have a shared/lib directory -->
+            <actionList>
+                <createDirectory path="${alfresco_shared_library_directory}" />
+            </actionList>
             <distributionFileList>
                 <distributionFile origin="${alfresco_lib_source_directory}/*" allowWildcards="1"/>
             </distributionFileList>
@@ -326,7 +331,7 @@
             <substitutionList>
                 <substitution>
                     <pattern>shared.loader=</pattern>
-                    <value>shared.loader=${'${catalina.base}/shared/classes'}</value>
+                    <value>shared.loader=${'${catalina.base}/shared/classes,${catalina.base}/shared/lib/*.jar'}</value>
                 </substitution>
             </substitutionList>
         </substitute>
