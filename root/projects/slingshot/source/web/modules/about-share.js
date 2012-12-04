@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,9 +19,9 @@
 
 /**
  * AboutShare module
- *
+ * 
  * A dialog for displaying information about Alfresco Share
- *
+ * 
  * @namespace Alfresco.module
  * @class Alfresco.module.AboutShare
  */
@@ -104,31 +104,6 @@
 
          if (YAHOO.env.ua.ie === 0 || YAHOO.env.ua.ie > 7)
          {
-            if (YAHOO.env.ua.webkit && !YAHOO.env.ua.ios)
-            {
-               this.widgets.panel.beforeShowEvent.subscribe(function()
-               {
-                  Dom.setStyle(document.body, "-webkit-perspective", "800");
-                  Dom.addClass(this.element, "appear");
-               });
-
-               this.widgets.panel.hide = function()
-               {
-                  var thisPanel = this;
-                  this.element.addEventListener("webkitAnimationEnd", function()
-                  {
-                     if (Dom.hasClass(this, "spindrop"))
-                     {
-                        thisPanel.cfg.setProperty("visible", false);
-                        Dom.removeClass(this, "appear");
-                        Dom.removeClass(this, "spindrop");
-                        Dom.setStyle(document.body, "-webkit-perspective", null);
-                     }
-                  }, false);
-                  Dom.addClass(this.element, "spindrop");
-               }
-            }
-
             Dom.setStyle(this.id + "-contributions", "display", "block");
             
             // begin the contributions scroller
