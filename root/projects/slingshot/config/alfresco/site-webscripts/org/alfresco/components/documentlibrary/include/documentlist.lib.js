@@ -155,7 +155,7 @@ function doclibCommon()
    {
       model.preferences.viewRendererName = (model.preferences.simpleView ? "simple" : "detailed");
    }
-   model.viewRendererNames = ["simple", "detailed"];
+   model.viewRendererNames = ["simple", "detailed", "gallery"];
    model.repositoryUrl = DocumentList.getConfigValue("DocumentLibrary", "repository-url", null);
    model.replicationUrlMappingJSON = DocumentList.getReplicationUrlMappingJSON();
    model.rootNode = DocumentList.getConfigValue("RepositoryLibrary", "root-node", "alfresco://company/home");

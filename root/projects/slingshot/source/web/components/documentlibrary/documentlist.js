@@ -52,7 +52,8 @@
       PREF_SORT_FIELD = PREFERENCES_DOCLIST + ".sortField",
       PREF_SHOW_FOLDERS = PREFERENCES_DOCLIST + ".showFolders",
       PREF_SIMPLE_VIEW = PREFERENCES_DOCLIST + ".simpleView",           // deprecated
-      PREF_VIEW_RENDERER = PREFERENCES_DOCLIST + ".viewRendererName";   // viewRender was previously simpleView
+      PREF_VIEW_RENDERER = PREFERENCES_DOCLIST + ".viewRendererName",   // viewRender was previously simpleView
+      PREF_GALLERY_COLUMNS = PREFERENCES_DOCLIST + ".galleryColumns";
    
    /**
     * Document Library Drag and Drop object declaration.
@@ -844,7 +845,7 @@
           * @type array
           * @default ["simple", "detailed"]
           */
-         viewRendererNames: [ "simple", "detailed" ],
+         viewRendererNames: [ "simple", "detailed", "gallery" ],
 
          /**
           * Flag indicating whether pagination is available or not.
@@ -1305,12 +1306,12 @@
             this.dynamicControls.push(this.widgets.fileSelect);
          }
          
-         // Set-up default view renderers
-         this._setupViewRenderers();
-
          // Services
          this.services.preferences = new Alfresco.service.Preferences();
          this.services.likes = new Alfresco.service.Ratings(Alfresco.service.Ratings.LIKES);
+         
+         // Set-up default view renderers
+         this._setupViewRenderers();
 
          // DataSource set-up and event registration
          this._setupDataSource();
@@ -2006,6 +2007,9 @@
       {
          this.registerViewRenderer(new Alfresco.DocumentListSimpleViewRenderer("simple"));
          this.registerViewRenderer(new Alfresco.DocumentListViewRenderer("detailed"));
+         var prefs = this.services.preferences.get();
+         var numGalleryColumns = Alfresco.util.findValueByDotNotation(prefs, PREF_GALLERY_COLUMNS, null);
+         this.registerViewRenderer(new Alfresco.DocumentListGalleryViewRenderer("gallery", numGalleryColumns));
          
          YAHOO.Bubbling.fire("postSetupViewRenderers",
          {

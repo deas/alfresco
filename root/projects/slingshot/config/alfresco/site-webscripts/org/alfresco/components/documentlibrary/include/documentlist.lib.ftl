@@ -74,7 +74,7 @@
         <span class="docListOtherOptionsText"><a class="docListLinkedInstruction">${msg("dnd.upload.description")}</a></span>
      </div>
    </div>
-   
+
    <#-- New Folder (when user has create access) -->
    <div id="${id}-new-folder-template" class="hidden">
      <div id="${id}-new-folder-link-template">
@@ -112,43 +112,52 @@
          <div id="${id}-paginator" class="paginator"></div>
       </div>
       <div class="yui-u align-right">
-      	 <@markup id="documentListViewRendererSelect">
-         	<div id="${id}-simpleDetailed" class="simple-detailed yui-buttongroup inline">
-	            <#-- Don't insert linefeeds between these <input> tags -->
-	            <#if viewRendererNames??><#list viewRendererNames as viewRendererName><input id="${id}-${viewRendererName}View" type="radio" name="simpleDetailed" title="${msg("button.view." + viewRendererName)}" value="" /></#list></#if>
-         	</div>
+         <@markup id="documentListViewRendererSelect">
+           <div id="${id}-simpleDetailed" class="simple-detailed yui-buttongroup inline">
+              <#-- Don't insert linefeeds between these <input> tags -->
+              <#if viewRendererNames??><#list viewRendererNames as viewRendererName><input id="${id}-${viewRendererName}View" type="radio" name="simpleDetailed" title="${msg("button.view." + viewRendererName)}" value="" /></#list></#if>
+           </div>
          </@>
          <@markup id="documentListShowFolders">
-	         <div class="show-folders">
-	            <span id="${id}-showFolders-button" class="yui-button yui-checkbox-button">
-	               <span class="first-child">
-	                  <button name="doclist-showFolders-button"></button>
-	               </span>
-	            </span>
-	            <span class="separator">&nbsp;</span>
-	         </div>
+           <div class="show-folders">
+              <span id="${id}-showFolders-button" class="yui-button yui-checkbox-button">
+                 <span class="first-child">
+                    <button name="doclist-showFolders-button"></button>
+                 </span>
+              </span>
+              <span class="separator">&nbsp;</span>
+           </div>
          </@>
          <@markup id="documentListSortSelect">
-	         <div class="sort-field">
-	            <span id="${id}-sortField-button" class="yui-button yui-push-button">
-	               <span class="first-child">
-	                  <button name="doclist-sortField-button"></button>
-	               </span>
-	            </span>
-	            <span class="separator">&nbsp;</span>
-	            <select id="${id}-sortField-menu">
-	            <#list sortOptions as sort>
-	               <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
-	            </#list>
-	            </select>
-	         </div>
-	         <div class="sort-direction">
-	            <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
-	               <span class="first-child">
-	                  <button name="doclist-sortAscending-button"></button>
-	               </span>
-	            </span>
-	         </div>
+           <div class="sort-field">
+              <span id="${id}-sortField-button" class="yui-button yui-push-button">
+                 <span class="first-child">
+                    <button name="doclist-sortField-button"></button>
+                 </span>
+              </span>
+              <span class="separator">&nbsp;</span>
+              <select id="${id}-sortField-menu">
+              <#list sortOptions as sort>
+                 <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
+              </#list>
+              </select>
+           </div>
+           <div class="sort-direction">
+              <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
+                 <span class="first-child">
+                    <button name="doclist-sortAscending-button"></button>
+                 </span>
+              </span>
+           </div>
+         </@>
+         <@markup id="galleryViewSlider">
+           <div id="${id}-gallery-slider" class="alf-gallery-slider hidden">
+              <div class="alf-gallery-slider-small"><img src="${url.context}/res/components/documentlibrary/images/gallery-size-small-16.png"></div>
+              <div id="${id}-gallery-slider-bg" class="yui-h-slider alf-gallery-slider-bg"> 
+              <div id="${id}-gallery-slider-thumb" class="yui-slider-thumb alf-gallery-slider-thumb"><img src="${url.context}/res/components/documentlibrary/images/thumb-n.png"></div> 
+           </div>
+           <div class="alf-gallery-slider-large"><img src="${url.context}/res/components/documentlibrary/images/gallery-size-large-16.png"></div>
+           </div>
          </@>
       </div>
    </div>
@@ -156,6 +165,10 @@
    <#-- Main Panel: Document List -->
    <@markup id="documentListContainer">
    <div id="${id}-documents" class="documents"></div>
+   <div id="${id}-gallery" class="alf-gallery documents"></div>
+   <div id="${id}-gallery-empty" class="hidden">
+      <div class="yui-dt-liner"></div>
+   </div>
    </@>
 
    <#-- Bottom Bar: Paginator -->
@@ -175,6 +188,26 @@
       <div id="${id}-moreActions">
          <div class="internal-show-more" id="onActionShowMore"><a href="#" class="show-more" alt="${msg("actions.more")}"><span>${msg("actions.more")}</span></a></div>
          <div class="more-actions hidden"></div>
+      </div>
+
+      <#-- Document List Gallery View Templates-->
+      <div id="${id}-gallery-item-template" class="alf-gallery-item hidden">
+         <div class="alf-gallery-item-thumbnail">
+            <div class="alf-header">
+               <div class="alf-select"></div>
+                  <a href="javascript:void(0)" class="alf-show-detail">&nbsp;</a>
+            </div>
+            <div class="alf-label"></div>
+         </div>
+         <div class="alf-detail" style="display: none;">
+            <div class="bd">
+               <div class="alf-detail-thumbnail"></div>
+               <div class="alf-status"></div>
+               <div class="alf-actions"></div>
+               <div style="clear: both;"></div>
+               <div class="alf-description"></div>
+            </div>
+         </div>
       </div>
 
    </div>
