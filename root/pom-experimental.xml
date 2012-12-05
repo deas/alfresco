@@ -170,7 +170,7 @@
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.junit.version>4.11-20120805-1225</dependency.junit.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
-    <dependency.surf.version>1.2.0-M1</dependency.surf.version>
+    <dependency.surf.version>1.2.0-M3</dependency.surf.version>
     <dependency.activiti.version>5.10-alf-20121114</dependency.activiti.version>
     <dependency.poi.version>3.9-beta1-20121109</dependency.poi.version>
   </properties>
@@ -211,7 +211,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>1.1.1</version>
+            <version>1.2</version>
             <executions>
                 <execution>
                     <id>enforce-java</id>
@@ -268,10 +268,6 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.6</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.1.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-help-plugin</artifactId>
@@ -375,6 +371,11 @@
                         <version>5.1.14</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.0</version>
             </plugin>
         </plugins>
     </pluginManagement>
