@@ -1444,7 +1444,9 @@
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 
-      <!-- Note: This is manually duplicated from the build.xml file -->
+      <!-- Note: This is manually duplicated from the build.xml file
+           Note: disabled currently - no longer used - SpringSurf will automatically concat related files in future release
+                 since the addition of far future expire time CRC based URLs for resources, multiple scripts not an issue.
       <concat destfile="${dir.project.slingshot.assemble}/js/documentlibrary-actions.js" force="no">
          <fileset file="${dir.project.slingshot.src.web}/components/documentlibrary/actions.js" />
          <fileset file="${dir.project.slingshot.src.web}/components/documentlibrary/actions-util.js" />
@@ -1462,7 +1464,7 @@
       <concat destfile="${dir.project.slingshot.assemble}/js/datalist-actions.js" force="no">
          <fileset file="${dir.project.slingshot.src.web}/components/data-lists/actions.js" />
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
-      </concat>
+      </concat>-->
       
       <touch file="${dir.project.slingshot.assemble}/modules/about-share-min.js" />
 
