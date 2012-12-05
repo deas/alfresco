@@ -540,6 +540,12 @@
          <mimetype mimetype="application/vnd.apple.numbers" display="Apple iWork Numbers">
             <extension>numbers</extension>
          </mimetype>
+
+         <!-- Markdown  -->
+         <mimetype mimetype="text/x-markdown" display="Markdown">
+            <extension default="true">md</extension>
+         </mimetype>
+
       </mimetypes>
    </config>
    
