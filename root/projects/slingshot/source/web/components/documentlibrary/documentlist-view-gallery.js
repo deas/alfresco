@@ -321,6 +321,42 @@
       return Dom.get(selectId);
    };
    
+   /**
+    * Sets up the gallery item hover delegates.
+    *
+    * @method setupItemHovers
+    * @param scope {HTMLElement} The document list object
+    */
+   Alfresco.DocumentListGalleryViewRenderer.prototype.setupItemHovers = function DL_GVR_setupItemHovers(scope)
+   {
+      var container = Dom.get(scope.id + this.parentElementIdSuffix);
+      
+      // On mouseover show the select checkbox and detail pull down
+      Event.delegate(container, 'mouseover', Alfresco.DocumentListGalleryViewRenderer.onMouseOverItem,
+            'div.' + this.rowClassName, this);
+      
+      // On mouseout hide the select checkbox and detail pull down
+      Event.delegate(container, 'mouseout', Alfresco.DocumentListGalleryViewRenderer.onMouseOutItem,
+            'div.' + this.rowClassName, this);
+   }
+   
+   /**
+    * Tear down of the gallery item hover delegates.
+    *
+    * @method destroyItemHovers
+    * @param scope {HTMLElement} The document list object
+    */
+   Alfresco.DocumentListGalleryViewRenderer.prototype.destroyItemHovers = function DL_GVR_destroyItemHovers(scope)
+   {
+      var container = Dom.get(scope.id + this.parentElementIdSuffix);
+      
+      Event.removeDelegate(container, 'mouseover', 
+            Alfresco.DocumentListGalleryViewRenderer.onMouseOverItem);
+      
+      Event.removeDelegate(container, 'mouseout', 
+            Alfresco.DocumentListGalleryViewRenderer.onMouseOutItem);
+   }
+   
    Alfresco.DocumentListGalleryViewRenderer.prototype.setupRenderer = function DL_GVR_setupRenderer(scope)
    {
       Alfresco.DocumentListGalleryViewRenderer.superclass.setupRenderer.call(this, scope);
@@ -334,20 +370,9 @@
          this.galleryColumnsChangedEvent.fire();
       }, this);
       
+      this.setupItemHovers(scope);
+      
       var viewRendererInstance = this;
-      
-      // On mouseover show the select checkbox and detail pull down
-      Event.delegate(container, 'mouseover', function DL_GVR_onGalleryItemMouseOver(event, matchedEl, container)
-      {
-         Dom.addClass(matchedEl, 'alf-hover');
-         viewRendererInstance.onEventHighlightRow(scope, event, matchedEl);
-      }, 'div.' + this.rowClassName, this);
-      
-      // On mouseout hide the select checkbox and detail pull down
-      Event.delegate(container, 'mouseout', function DL_GVR_onGalleryItemMouseOut(event, matchedEl, container)
-      {
-         Dom.removeClass(matchedEl, 'alf-hover');
-      }, 'div.' + this.rowClassName, this);
       
       // On click of detail pull down show detail panel
       Event.delegate(container, 'click', function DL_GVR_infoPopup(event, matchedEl, container)
@@ -561,6 +586,35 @@
    };
    
    /**
+    * Handler for mouse over a gallery item
+    *
+    * @method onMouseOverItem
+    * @param event {Event} The click event
+    * @param matchedEl {HTMLElement} the element that was clicked
+    * @param container {Object} the parent container (the entire gallery)
+    * @param viewRendererInstance {Object} the view renderer instance
+    */
+   Alfresco.DocumentListGalleryViewRenderer.onMouseOverItem = function DL_GVR_onMouseOverItem(event, matchedEl, container, viewRendererInstance)
+   {
+      Dom.addClass(matchedEl, 'alf-hover');
+      viewRendererInstance.onEventHighlightRow(viewRendererInstance.documentList, event, matchedEl);
+   };
+   
+   /**
+    * Handler for mouse out of a gallery item
+    *
+    * @method onMouseOutItem
+    * @param event {Event} The click event
+    * @param matchedEl {HTMLElement} the element that was clicked
+    * @param container {Object} the parent container (the entire gallery)
+    * @param viewRendererInstance {Object} the view renderer instance
+    */
+   Alfresco.DocumentListGalleryViewRenderer.onMouseOutItem = function DL_GVR_onMouseOutItem(event, matchedEl, container, viewRendererInstance)
+   {
+      Dom.removeClass(matchedEl, 'alf-hover');
+   };
+   
+   /**
     * Handler for selection of a gallery items
     *
     * @method onSelectedFilesChanged
@@ -593,19 +647,14 @@
       var container = Dom.get(scope.id + this.parentElementIdSuffix);
       if (anySelected)
       {
-       if (!Dom.hasClass(container, 'alf-selected'))
-       {
+         if (!Dom.hasClass(container, 'alf-selected'))
+         {
             Dom.addClass(container, 'alf-selected');
-            Event.delegate(container, 'click', 
-                Alfresco.DocumentListGalleryViewRenderer.onSelectModeImgClicked,
-                '.alf-gallery-item-thumbnail img', this);
-       }
+         }
       }
       else
       {
          Dom.removeClass(container, 'alf-selected');
-         Event.removeDelegate(container, 'click', 
-             Alfresco.DocumentListGalleryViewRenderer.onSelectModeImgClicked);
       }
    }
    
@@ -671,18 +720,22 @@
       var containerTarget; // This will only get set if thumbnail represents a container
       
       var thumbnail = this.getThumbnail(scope, elCell, oRecord, oColumn, oData, imgIdSuffix, renditionName);
+      var record = oRecord.getData();
 
       // Just add the data table thumbnail once
       if (!document.getElementById(thumbnail.id))
       {
          if (thumbnail.isContainer)
          {
-            elCell.innerHTML += '<span class="folder">' + (thumbnail.isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + thumbnail.html;
+            elCell.innerHTML += '<span class="folder">' + (thumbnail.isLink ? '<span class="link"></span>' : '') + 
+                  (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + 
+                  Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + thumbnail.html + '</a>';
             containerTarget = new YAHOO.util.DDTarget(thumbnail.id); // Make the folder a target
          }
          else
          {
-            elCell.innerHTML += (thumbnail.isLink ? '<span class="link"></span>' : '') + thumbnail.html;
+            elCell.innerHTML += (thumbnail.isLink ? '<span class="link"></span>' : '') + 
+                  Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + thumbnail.html + '</a>';
          }
          var thumbnailElement = document.getElementById(thumbnail.id);
          if (thumbnailElement)

@@ -942,7 +942,8 @@ body .doclist tr.yui-dt-highlighted
    z-index: 1;
    visibility: hidden;
 }
-.alf-gallery-item.alf-hover .alf-header
+.alf-gallery-item.alf-hover .alf-header,
+.alf-selected .alf-gallery-item .alf-header
 {
    visibility: visible !important;
 }
