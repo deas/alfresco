@@ -1300,14 +1300,12 @@
                type: "button"
             });
             this.widgets.creategroupOkButton.on("click", this.onCreateGroupOKClick, null, this);
-            this.widgets.creategroupOkButton.set("disabled", true);
 
             this.widgets.creategroupAnotherButton = new YAHOO.widget.Button(parent.id + "-creategroup-another-button",
             {
                type: "button"
             });
             this.widgets.creategroupAnotherButton.on("click", this.onCreateGroupAnotherClick, null, this);
-            this.widgets.creategroupAnotherButton.set("disabled", true);
 
             this.widgets.creategroupCancelButton = new YAHOO.widget.Button(parent.id + "-creategroup-cancel-button",
             {
