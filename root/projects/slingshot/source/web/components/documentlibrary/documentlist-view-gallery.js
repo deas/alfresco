@@ -684,6 +684,19 @@
          {
             elCell.innerHTML += (thumbnail.isLink ? '<span class="link"></span>' : '') + thumbnail.html;
          }
+         var thumbnailElement = document.getElementById(thumbnail.id);
+         if (thumbnailElement)
+         {
+            var tempImg = new Image();
+            tempImg.onload = function()
+            {
+               if(tempImg.width > tempImg.height)
+               {
+                  Dom.addClass(thumbnailElement, 'alf-landscape');
+               }
+            }
+            tempImg.src = thumbnailElement.src;
+         }
       }
    };
    
