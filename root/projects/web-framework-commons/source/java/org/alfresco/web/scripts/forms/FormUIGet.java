@@ -1953,7 +1953,10 @@ public class FormUIGet extends DeclarativeWebScript
                 }
                 
                 // Sort the options based on the label...
-                Collections.sort(optionsList, new OptionsComparator());
+                if (fieldConfig.isSorted())
+                {
+                    Collections.sort(optionsList, new OptionsComparator());
+                }
                 
                 // ALF-7961: don't use a comma as the list separator
                 field.getControl().getParams().put(CONTROL_PARAM_OPTIONS, 

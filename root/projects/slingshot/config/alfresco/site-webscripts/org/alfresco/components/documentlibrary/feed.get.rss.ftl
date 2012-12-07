@@ -29,7 +29,7 @@
       </description>
       <link>${proxyLink + item.contentUrl}</link>
       <guid isPermaLink="false">${item.nodeRef}</guid>
-      <pubDate>${xmldate(item.modifiedOn)?string(msg("date-format.rfc822"))}</pubDate>
+      <pubDate><#assign locale_original=.locale><#setting locale="en_US">${xmldate(item.modifiedOn)?string(msg("date-format.rfc822"))}<#setting locale=locale_original></pubDate>
       <#if isMP3><enclosure url="${proxyLink + item.contentUrl}" length="${item.size}" type="audio/mpeg" /></#if>
    </item>
    </#if>

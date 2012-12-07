@@ -1773,6 +1773,7 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
             if (YAHOO.env.ua.ie > 0)
             {
                // IE doesn't handle the fading in/out very well so we won't do it. 
+               Dom.setStyle(this.actionsNode, "display", "none");
             }
             else
             {

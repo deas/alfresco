@@ -439,9 +439,9 @@
             extensions = "*" + displayName.substring(displayName.lastIndexOf("."));
          }
          
-         if (asset.custom && asset.custom.workingCopyVersion)
+         if (asset.workingCopy && asset.workingCopy.workingCopyVersion)
          {
-            version = asset.custom.workingCopyVersion;
+            version = asset.workingCopy.workingCopyVersion;
          }
          
          var singleUpdateConfig =

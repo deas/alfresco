@@ -232,7 +232,22 @@
                return sortByDate(task1.properties.bpm_completionDate, task2.properties.bpm_completionDate);
             });
             // Save the most recent task
-            recentTask = this.historyTasks.length > 0 ? this.historyTasks[0] : { properties: {} };
+            var findLastCompleted = function(allHistoryTasks)
+            {
+                if (allHistoryTasks.length > 0)
+                {
+                    for (var i = 0, il = allHistoryTasks.length; i < il; i++)
+                    {
+                        var status = allHistoryTasks[i].properties.bpm_status;
+                        if (status == "Completed")
+                        {
+                            return allHistoryTasks[i];
+                        }
+                    }
+                }
+                return { properties: {} };
+            }
+            recentTask = findLastCompleted(this.historyTasks);
 
             // Set values in the "Summary" & "General" form sections
             Dom.get(this.id + "-recentTaskTitle").innerHTML = $html(recentTask.title || "");

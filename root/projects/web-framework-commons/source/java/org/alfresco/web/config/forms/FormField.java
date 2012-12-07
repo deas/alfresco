@@ -45,6 +45,7 @@ public class FormField
 	private static final String ATTR_SET = "set";
     private static final String ATTR_READ_ONLY = "read-only";
     private static final String ATTR_MANDATORY = "mandatory";
+    private static final String ATTR_SORTED = "sorted";
 
 	private static Log logger = LogFactory.getLog(FormField.class);
     
@@ -144,6 +145,13 @@ public class FormField
         Object mandatoryValue = attributes.get(ATTR_MANDATORY);
         return mandatoryValue instanceof String
             && "true".equalsIgnoreCase((String)mandatoryValue);
+    }
+    
+    public boolean isSorted() 
+    {
+        Object sortedValue = attributes.get(ATTR_SORTED);
+        return sortedValue instanceof String
+            && "true".equalsIgnoreCase((String) sortedValue);
     }
     
     public String getSet()

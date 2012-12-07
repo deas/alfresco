@@ -689,12 +689,50 @@ public class RuntimeExec
             StringBuilder sb = new StringBuilder(128);
             sb.append("Execution result: \n")
               .append("   os:         ").append(System.getProperty(KEY_OS_NAME)).append("\n")
-              .append("   command:    ").append(Arrays.deepToString(command)).append("\n")
+              .append("   command:    ");appendCommand(sb, command).append("\n")
               .append("   succeeded:  ").append(getSuccess()).append("\n")
               .append("   exit code:  ").append(exitValue).append("\n")
               .append("   out:        ").append(out).append("\n")
               .append("   err:        ").append(err);
             return sb.toString();
+        }
+        
+        /**
+         * Appends the command in a form that make running from the command line simpler.
+         * It is not a real attempt at making a command given all the operating system 
+         * and shell options, but makes copy, paste and edit a bit simpler.
+         */
+        private StringBuilder appendCommand(StringBuilder sb, String[] command)
+        {
+            boolean arg = false;
+            for (String element: command)
+            {
+                if (command == null)
+                {
+                    continue;
+                }
+                
+                if (arg)
+                {
+                    sb.append(' ');
+                }
+                else
+                {
+                    arg = true;
+                }
+
+                boolean escape = element.indexOf(' ') != -1 || element.indexOf('>') != -1;
+                if (escape)
+                {
+                    sb.append("\"");
+                }
+                sb.append(element);
+                if (escape)
+                {
+                    sb.append("\"");
+                }
+            }
+            return sb;
         }
         
         /**

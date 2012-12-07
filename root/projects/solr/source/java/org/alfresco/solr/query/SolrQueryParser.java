@@ -150,7 +150,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
         booleanQuery.add(new SolrCachingPathQuery(pathQuery), Occur.SHOULD);
         booleanQuery.add(createPrimaryAssocTypeQNameQuery(queryText), Occur.SHOULD);
 
-        return booleanQuery;
+        return getNonEmptyBooleanQuery(booleanQuery);
     }
 
     /**
@@ -262,8 +262,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                 }
             }
         }
-        return booleanQuery;
-
+        return getNonEmptyBooleanQuery(booleanQuery);
     }
 
     /*
@@ -649,7 +648,7 @@ public class SolrQueryParser extends AbstractLuceneQueryParser
                     booleanQuery.add(result, Occur.SHOULD);
                 }
             }
-            return booleanQuery;
+            return getNonEmptyBooleanQuery(booleanQuery);
         }
         catch (IOException ioe)
         {

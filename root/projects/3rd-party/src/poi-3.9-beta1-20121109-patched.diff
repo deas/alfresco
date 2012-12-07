@@ -1,3 +1,69 @@
+Index: src/java/org/apache/poi/hpsf/UnicodeString.java
+===================================================================
+--- src/java/org/apache/poi/hpsf/UnicodeString.java	(revision 1407532)
++++ src/java/org/apache/poi/hpsf/UnicodeString.java	(working copy)
+@@ -13,6 +13,10 @@
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
++
++   2012 - Alfresco Software, Ltd.
++   Alfresco Software has modified source of this file
++   The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
+ ==================================================================== */
+ package org.apache.poi.hpsf;
+ 
+@@ -35,6 +39,26 @@
+     {
+         int length = LittleEndian.getInt( data, offset );
+ 
++        // If the length looks wrong, this might be because the offset is expected to be on a
++        // 4 byte boundary. Try changing it rather than getting an ArrayIndexOutOfBoundsException
++        // from LittleEndian.getByteArray. Also avoids creating a large byte[] if this is the case.
++        if (!validLength( length, data, offset + LittleEndian.INT_SIZE ))
++        {
++        	if (offset % 4 != 0)
++        	{
++        		offset += 2;
++        	}
++
++            length = LittleEndian.getInt( data, offset );
++
++            if (!validLength(length, data, offset + LittleEndian.INT_SIZE))
++            {
++                throw new IllegalPropertySetDataException(
++                        "UnicodeString started at offset #" + offset
++                                + " is not NULL-terminated" );
++            }
++        }
++
+         if ( length == 0 )
+         {
+             _value = new byte[0];
+@@ -43,13 +67,18 @@
+ 
+         _value = LittleEndian.getByteArray( data, offset
+                 + LittleEndian.INT_SIZE, length * 2 );
+-
+-        if ( _value[length * 2 - 1] != 0 || _value[length * 2 - 2] != 0 )
+-            throw new IllegalPropertySetDataException(
+-                    "UnicodeString started at offset #" + offset
+-                            + " is not NULL-terminated" );
+     }
+ 
++    private boolean validLength(int length, byte[] data, int offset) {
++    	if (length == 0)
++    	{
++    		return true;
++    	}
++        int size = length * 2;
++		offset += size;
++        return offset < data.length && size >= 0 && data[offset-1] == 0 && data[offset-2] == 0;
++	}
++
+     int getSize()
+     {
+         return LittleEndian.INT_SIZE + _value.length;
 Index: src/java/org/apache/poi/ss/usermodel/DataFormatter.java
 ===================================================================
 --- src/java/org/apache/poi/ss/usermodel/DataFormatter.java	(revision 1407532)

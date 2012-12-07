@@ -3536,14 +3536,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         default:
         }
 
-        if (range.clauses().size() > 0)
-        {
-            return range;
-        }
-        else
-        {
-            return null;
-        }
+        return getNonEmptyBooleanQuery(range);
     }
 
     private Query buildEnd(String field, Calendar cal, int startField, int padField, int resolutionField)
@@ -3802,14 +3795,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         default:
         }
 
-        if (range.clauses().size() > 0)
-        {
-            return range;
-        }
-        else
-        {
-            return null;
-        }
+        return getNonEmptyBooleanQuery(range);
     }
 
     private String build2SF(String prefix, int value)
@@ -4991,14 +4977,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 addMLTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
                         mlAnalysisMode, locale);
             }
-            if(booleanQuery.getClauses().length == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return booleanQuery;
-            }
+            return getNonEmptyBooleanQuery(booleanQuery);
         }
         // Content
         else if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
@@ -5049,14 +5028,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 addTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
 
             }
-            if(booleanQuery.getClauses().length == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return booleanQuery;
-            }
+            return getNonEmptyBooleanQuery(booleanQuery);
         }
         else
         {
@@ -5378,6 +5350,23 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public AbstractAnalyzer getAnalyzer()
     {
         return luceneAnalyser;
+    }
+
+    /**
+     * Returns null if all clause words were filtered away by the analyzer
+     * @param booleanQuery - initial BooleanQuery
+     * @return BooleanQuery or <code>null</code> if booleanQuery has no clauses 
+     */
+    protected BooleanQuery getNonEmptyBooleanQuery(BooleanQuery booleanQuery)
+    {
+        if (booleanQuery.clauses().size() > 0)
+        {
+            return booleanQuery;
+        }
+        else
+        {
+            return null;
+        }
     }
 
 }

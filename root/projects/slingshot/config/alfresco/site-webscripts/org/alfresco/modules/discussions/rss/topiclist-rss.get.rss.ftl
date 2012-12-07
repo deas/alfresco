@@ -12,7 +12,7 @@
          <title>${topic.title?html}</title>
          <link>${absurl(url.context)}/page/site/${site}/discussions-topicview?topicId=${topic.name}</link>
          <description>${topic.content?html}</description>
-         <pubDate>${xmldate(topic.createdOn)}</pubDate>
+         <pubDate><#assign locale_original=.locale><#setting locale="en_US">${topic.createdOn?string("EEE, dd MMM yyyy HH:mm:ss Z")}<#setting locale=locale_original></pubDate>
       </item>
    </#list>
 <#else>
