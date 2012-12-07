@@ -228,7 +228,7 @@ table.versionHistory
  * for large blocks of HTML.
  */
 
-.alfresco-share .sticky-wrapper .wiki-page,
+.alfresco-share .sticky-wrapper .wiki-page .rich-content,
 .alfresco-share .sticky-wrapper .wiki
 {
     font-size: 1.2em;
@@ -241,41 +241,41 @@ table.versionHistory
    line-height: 1.5em;
 }
 
-.wiki-page a, .wiki a
+.wiki-page .rich-content a, .wiki a
 {
 	/* Make links look like links */
    color: #6CA5CE;
 }
 
-.wiki-page h1, .wiki h1
+.wiki-page .rich-content h1, .wiki h1
 {
     margin: 0.5em 0;
     padding: 0 0 0.25em 0;
     border-bottom: 1px solid #cccccc;
 }
 
-.wiki-page h2, .wiki h2
+.wiki-page .rich-content h2, .wiki h2
 {
     padding-top: 0.5em 0;
 }
 
-.wiki-page h3, .wiki-page h4, 
-.wiki-page h5, .wiki-page h6,
+.wiki-page .rich-content h3, .wiki-page .rich-content h4, 
+.wiki-page .rich-content h5, .wiki-page .rich-content h6,
 .wiki h3, .wiki h4, 
 .wiki h5, .wiki h6
 {
     padding: 0.5em 0;
 }
 
-.alfresco-share .sticky-wrapper .wiki-page p,
+.alfresco-share .sticky-wrapper .wiki-page .rich-content p,
 .alfresco-share .sticky-wrapper .wiki p
 {
     margin: 0.8em 0;
 }
 
-.wiki-page h1 a, .wiki-page h2 a, 
-.wiki-page h3 a, .wiki-page h4 a, 
-.wiki-page h5 a, .wiki-page h6 a,
+.wiki-page .rich-content h1 a, .wiki-page .rich-content h2 a, 
+.wiki-page .rich-content h3 a, .wiki-page .rich-content h4 a, 
+.wiki-page .rich-content h5 a, .wiki-page .rich-content h6 a,
 .wiki h1 a, .wiki h2 a, 
 .wiki h3 a, .wiki h4 a, 
 .wiki h5 a, .wiki h6 a
@@ -283,9 +283,9 @@ table.versionHistory
     color: #333333;
 }
 
-.wiki-page h1 a:hover, .wiki-page h2 a:hover, 
-.wiki-page h3 a:hover, .wiki-page h4 a:hover, 
-.wiki-page h5 a:hover, .wiki-page h6 a:hover,
+.wiki-page .rich-content h1 a:hover, .wiki-page .rich-content h2 a:hover, 
+.wiki-page .rich-content h3 a:hover, .wiki-page .rich-content h4 a:hover, 
+.wiki-page .rich-content h5 a:hover, .wiki-page .rich-content h6 a:hover,
 .wiki h1 a:hover, .wiki h2 a:hover, 
 .wiki h3 a:hover, .wiki h4 a:hover, 
 .wiki h5 a:hover, .wiki h6 a:hover
@@ -294,36 +294,36 @@ table.versionHistory
     text-decoration: none;
 }
 
-.alfresco-share .sticky-wrapper .wiki-page ul,
-.alfresco-share .sticky-wrapper .wiki-page ol,
+.alfresco-share .sticky-wrapper .wiki-page .rich-content ul,
+.alfresco-share .sticky-wrapper .wiki-page .rich-content ol,
 .alfresco-share .sticky-wrapper .wiki ul,
 .alfresco-share .sticky-wrapper .wiki ol
 {
     padding: 0.5em 0 0.5em 1em;
 }
 
-.wiki-page h1 + ul, .wiki h1 + ul,
-.wiki-page h2 + ul, .wiki h2 + ul,
-.wiki-page h3 + ul, .wiki h3 + ul,
-.wiki-page h4 + ul, .wiki h4 + ul,
-.wiki-page h5 + ul, .wiki h5 + ul,
-.wiki-page h6 + ul, .wiki h6 + ul,
-.wiki-page h1 + ol, .wiki h1 + ol,
-.wiki-page h2 + ol, .wiki h2 + ol,
-.wiki-page h3 + ol, .wiki h3 + ol,
-.wiki-page h4 + ol, .wiki h4 + ol,
-.wiki-page h5 + ol, .wiki h5 + ol,
-.wiki-page h6 + ol, .wiki h6 + ol
+.wiki-page .rich-content h1 + ul, .wiki h1 + ul,
+.wiki-page .rich-content h2 + ul, .wiki h2 + ul,
+.wiki-page .rich-content h3 + ul, .wiki h3 + ul,
+.wiki-page .rich-content h4 + ul, .wiki h4 + ul,
+.wiki-page .rich-content h5 + ul, .wiki h5 + ul,
+.wiki-page .rich-content h6 + ul, .wiki h6 + ul,
+.wiki-page .rich-content h1 + ol, .wiki h1 + ol,
+.wiki-page .rich-content h2 + ol, .wiki h2 + ol,
+.wiki-page .rich-content h3 + ol, .wiki h3 + ol,
+.wiki-page .rich-content h4 + ol, .wiki h4 + ol,
+.wiki-page .rich-content h5 + ol, .wiki h5 + ol,
+.wiki-page .rich-content h6 + ol, .wiki h6 + ol
 {
     padding-top: 1em;
 }
 
-.wiki-page ul li, .wiki ul li
+.wiki-page .rich-content ul li, .wiki ul li
 {
 }
 
-.wiki-page pre,
-.wiki-page code,
+.wiki-page .rich-content pre,
+.wiki-page .rich-content code,
 .wiki pre,
 .wiki code
 {
