@@ -885,6 +885,11 @@ body.yui-skin-lightTheme .link-menu-button.link-menu-button-menu-active
    border-bottom: 1px solid #ccc !important;
 }
 
+.links-body .over
+{
+   border: 1px solid #ccc !important;
+}
+
 .links-header .links-infobar
 {
    border-bottom: 1px solid #ccc !important;

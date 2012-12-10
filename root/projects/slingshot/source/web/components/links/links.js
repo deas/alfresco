@@ -369,12 +369,12 @@
 
                ec.onmouseover = function()
                {
-                  Dom.addClass(this, me.EDITEDCLASS + "-over");
+                  Dom.addClass(this, "over");
                };
 
                ec.onmouseout = function()
                {
-                  Dom.removeClass(this, me.EDITEDCLASS + "-over");
+                  Dom.removeClass(this, "over");
                };
             }
             else
@@ -397,12 +397,12 @@
 
                dc.onmouseover = function()
                {
-                  Dom.addClass(this, me.DELETEDCLASS + "-over");
+                  Dom.addClass(this, "over");
                };
 
                dc.onmouseout = function()
                {
-                  Dom.removeClass(this, me.DELETEDCLASS + "-over");
+                  Dom.removeClass(this, "over");
                };
 
             }

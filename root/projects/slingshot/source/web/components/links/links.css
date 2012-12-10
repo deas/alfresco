@@ -70,9 +70,9 @@
    padding: 2px 0px 2px 30px;
 }
 
-.links-body .edit-link-over
+.links-body .over
 {
-   background-color: #FFF;
+   background-color: #FFF !important;
    border: 1px solid #2B6EB5;
    cursor: pointer;
 }
@@ -108,13 +108,6 @@
 .links-body .simple-view .delete-link a
 {
    display: none;
-}
-
-.links-body .delete-link-over
-{
-   background-color: #FFF;
-   border: 1px solid #2B6EB5;
-   cursor: pointer;
 }
 
 .links-filter h2
