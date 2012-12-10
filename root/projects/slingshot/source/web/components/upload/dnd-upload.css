@@ -16,7 +16,7 @@
    line-height: 2em;
    margin-left: auto;
    margin-right: auto;
-   width: 18em;
+   min-width: 18em;
 }
 
 .dnd-upload div.browse-wrapper div.browse,
