@@ -139,7 +139,6 @@
          YAHOO.Bubbling.on("tagSelected", this.onTagSelected, this);
          YAHOO.Bubbling.on("viewChanged", this.onViewChanged, this);
          YAHOO.Bubbling.on("dateChanged", this.onCalSelect, this);
-         YAHOO.Bubbling.on("formValidationError", this.onFormValidationError, this);
          if (this.calendarView == Alfresco.CalendarView.VIEWTYPE_DAY | this.calendarView == Alfresco.CalendarView.VIEWTYPE_WEEK)
          {
             YAHOO.Bubbling.on("eventResized", this.onEventResized, this);
@@ -961,22 +960,6 @@
       },
 
       /**
-       *
-       * @method onFormValidationError
-       *
-       * @param e {object} Event object
-       * @param args {object} Value object referencing elements that are invalid
-       */
-      onFormValidationError: function CalendarView_onFormValidationError(e, args)
-      {
-         args = args[1];
-         Alfresco.util.PopupManager.displayMessage(
-         {
-            text: args.msg
-         });
-      },
-
-      /**
        * Handler for eventEdited event. Updates event in DOM in response to updated event data.
        *
        * @method  onEventEdited
@@ -1256,7 +1239,7 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
        */
       getDateFromField: function Alfresco_CalendarHelper_getDateFromField(field)
       {  
-         var dateString = field.title;
+         var dateString = Dom.getAttribute(field, "rel");
          var d = (dateString !== "") ? fromISO8601(dateString) : new Date();
          return d;
       },
@@ -1270,7 +1253,7 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
       {
          var formattedDate = dateFormat(date, Alfresco.util.message("date-format.fullDate"));
          field.value = formattedDate;
-         field.title = toISO8601(date);
+         Dom.setAttribute(field, "rel", toISO8601(date));
       },
 
       /**

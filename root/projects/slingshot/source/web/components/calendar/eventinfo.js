@@ -829,7 +829,6 @@
                         Dom.removeClass(document.getElementsByName('end')[0].parentNode, "hidden")
                      }
                   });
-                  YAHOO.Bubbling.on('formValidationError', CalendarView.onFormValidationError, EditDialog);
 
                },
                scope: EditDialog
