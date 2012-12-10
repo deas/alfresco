@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -64,37 +64,37 @@
 
    YAHOO.extend(Alfresco.module.TagLibrary, Alfresco.component.Base,
    {
-       /**
-        * Object container for initialization options
-        */
-       options:
-       {
-          /**
-           * Current siteId.
-           * 
-           * @property siteId
-           * @type string
-           * @default ""
-           */
-          siteId: "",
-          
-          /**
-           * Maximum number of tags popular tags displayed
-           * @property topN
-           * @type integer
-           * @default 10
-           */
-          topN: 10
-       },
+      /**
+       * Object container for initialization options
+       */
+      options:
+      {
+         /**
+          * Current siteId.
+          * 
+          * @property siteId
+          * @type string
+          * @default ""
+          */
+         siteId: "",
+         
+         /**
+          * Maximum number of tags popular tags displayed
+          * @property topN
+          * @type integer
+          * @default 10
+          */
+         topN: 10
+      },
 
-       /**
-        * Balloon UI instance used for error reporting
-        *
-        * @property balloon
-        * @type object
-        */
-       balloon: null,
-       
+      /**
+       * Balloon UI instance used for error reporting
+       *
+       * @property balloon
+       * @type object
+       */
+      balloon: null,
+      
       /**
        * Object literal used to generate unique tag ids
        * 
@@ -124,7 +124,6 @@
          this.currentTags = tags;
          return this;
       },
-      
       
       formsRuntime: null,
       
@@ -200,7 +199,6 @@
          var addTagButton = Alfresco.util.createYUIButton(this, "add-tag-button", this.onAddTagButtonClick,
          {
             type: "button",
-            disabled: (typeof formsRuntime != "undefined"),
             htmlName: "-"
          });
 
@@ -220,7 +218,6 @@
                {
                }
             }, this, true);
-            
             
             var tagFormsRuntime = new Alfresco.forms.Form(formsRuntime.formId);
             tagFormsRuntime.setSubmitElements(addTagButton);
