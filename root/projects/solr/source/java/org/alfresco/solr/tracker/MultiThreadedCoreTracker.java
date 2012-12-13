@@ -54,6 +54,7 @@ import org.apache.solr.core.SolrCore;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.CommitUpdateCommand;
+import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 
 /**
@@ -172,15 +173,13 @@ public class MultiThreadedCoreTracker extends CoreTracker
     }
 
     @Override
-    protected void trackTransactions(SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    protected void trackTransactions() throws AuthenticationException, IOException, JSONException
     {
         if (!enableMultiThreadedTracking)
         {
-            super.trackTransactions(solrIndexSearcher);
+            super.trackTransactions();
             return;
         }
-
-        SolrIndexReader reader = solrIndexSearcher.getReader();
 
         boolean indexed = false;
         boolean upToDate = false;
@@ -224,9 +223,27 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 boolean index = false;
 
                 String target = NumericEncoder.encode(info.getId());
-                TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
-                Term term = termEnum.term();
-                termEnum.close();
+                
+                RefCounted<SolrIndexSearcher> refCounted = null;
+                Term term = null;
+                try
+                {
+                    refCounted = core.getSearcher(false, true, null);
+                    
+                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
+                    term = termEnum.term();
+                    termEnum.close();
+                }
+                finally
+                {
+                    if(refCounted != null)
+                    {
+                        refCounted.decref();
+                    }
+                    refCounted = null;
+                }
+                
+               
                 if (term == null)
                 {
                     index = true;
@@ -256,7 +273,20 @@ public class MultiThreadedCoreTracker extends CoreTracker
                     if (getDocCout(txBatch) > transactionDocsBatchSize)
                     {
                         indexed = true;
-                        docCount += indexBatchOfTransactions(txBatch, solrIndexSearcher);
+                        refCounted = null;
+                        try
+                        {
+                            refCounted = core.getSearcher(false, true, null);
+                            docCount += indexBatchOfTransactions(txBatch, refCounted.get());
+                        }
+                        finally
+                        {
+                            if(refCounted != null)
+                            {
+                                refCounted.decref();
+                            }
+                            refCounted = null;
+                        }
                         for (Transaction scheduled : txBatch)
                         {
                             txnsFound.add(scheduled);
@@ -269,7 +299,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 3)
+                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         waitAndIndexTransactions(transactionsIndexed);
                         docCount = 0;
@@ -281,7 +311,20 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 indexed = true;
                 if (getDocCout(txBatch) > 0)
                 {
-                    docCount += indexBatchOfTransactions(txBatch, solrIndexSearcher);
+                    RefCounted<SolrIndexSearcher> refCounted = null;
+                    try
+                    {
+                        refCounted = core.getSearcher(false, true, null);
+                        docCount += indexBatchOfTransactions(txBatch, refCounted.get());
+                    }
+                    finally
+                    {
+                        if(refCounted != null)
+                        {
+                            refCounted.decref();
+                        }
+                        refCounted = null;
+                    }
                 }
                 for (Transaction scheduled : txBatch)
                 {
@@ -419,15 +462,13 @@ public class MultiThreadedCoreTracker extends CoreTracker
      * @throws JSONException
      */
     @Override
-    protected void trackAclChangeSets(SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    protected void trackAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         if (!enableMultiThreadedTracking)
         {
-            super.trackAclChangeSets(solrIndexSearcher);
+            super.trackAclChangeSets();
             return;
         }
-
-        SolrIndexReader reader = solrIndexSearcher.getReader();
 
         boolean indexed = false;
         boolean upToDate = false;
@@ -470,9 +511,26 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 boolean index = false;
 
                 String target = NumericEncoder.encode(changeSet.getId());
-                TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
-                Term term = termEnum.term();
-                termEnum.close();
+                
+                RefCounted<SolrIndexSearcher> refCounted = null;
+                Term term = null;
+                try
+                {
+                    refCounted = core.getSearcher(false, true, null);
+                    
+                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                    term = termEnum.term();
+                    termEnum.close();
+                }
+                finally
+                {
+                    if(refCounted != null)
+                    {
+                        refCounted.decref();
+                    }
+                    refCounted = null;
+                }           
+                
                 if (term == null)
                 {
                     index = true;
@@ -502,7 +560,23 @@ public class MultiThreadedCoreTracker extends CoreTracker
                     if (getAclCount(changeSetBatch) > changeSetAclsBatchSize)
                     {
                         indexed = true;
-                        aclCount += indexBatchOfChangeSets(changeSetBatch, solrIndexSearcher);
+                        
+                        try
+                        {
+                            refCounted = core.getSearcher(false, true, null);
+                            
+                            aclCount += indexBatchOfChangeSets(changeSetBatch, refCounted.get());
+                        }
+                        finally
+                        {
+                            if(refCounted != null)
+                            {
+                                refCounted.decref();
+                            }
+                            refCounted = null;
+                        }    
+                        
+
                         for (AclChangeSet scheduled : changeSetBatch)
                         {
                             changeSetsFound.add(scheduled);
@@ -514,7 +588,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
                 if (aclCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 3)
+                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         waitForAsynchronousReindexing();
                         for (AclChangeSet set : changeSetsIndexed)
@@ -539,7 +613,21 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 indexed = true;
                 if(getAclCount(changeSetBatch) > 0)
                 {
-                    aclCount += indexBatchOfChangeSets(changeSetBatch, solrIndexSearcher);
+                    RefCounted<SolrIndexSearcher> refCounted = null;
+                    try
+                    {
+                        refCounted = core.getSearcher(false, true, null);
+                        
+                        aclCount += indexBatchOfChangeSets(changeSetBatch, refCounted.get());
+                    }
+                    finally
+                    {
+                        if(refCounted != null)
+                        {
+                            refCounted.decref();
+                        }
+                        refCounted = null;
+                    }   
                 }
                 for (AclChangeSet scheduled : changeSetBatch)
                 {

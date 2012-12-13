@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.NamespaceDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 
@@ -64,9 +65,9 @@ public class M2ModelDefinition implements ModelDefinition
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ModelDefinition#getDescription()
      */
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(this, null, null, "description"); 
+        String value = M2Label.getLabel(this, messageLookup, null, null, "description"); 
         if (value == null)
         {
             value = model.getDescription();

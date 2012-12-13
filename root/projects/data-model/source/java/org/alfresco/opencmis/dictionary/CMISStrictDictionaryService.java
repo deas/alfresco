@@ -67,15 +67,15 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
             if (cmisMapping.isValidCmisDocument(classQName))
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_DOCUMENT, classQName);
-                objectTypeDef = new DocumentTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, classDef);
+                objectTypeDef = new DocumentTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
             } else if (cmisMapping.isValidCmisFolder(classQName))
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_FOLDER, classQName);
-                objectTypeDef = new FolderTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, classDef);
+                objectTypeDef = new FolderTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
             } else if (cmisMapping.isValidCmisPolicy(classQName))
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
-                objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, classDef);
+                objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
             }
 
             if (objectTypeDef != null)
@@ -96,7 +96,7 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
         // register base type
         String typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_RELATIONSHIP, CMISMapping.RELATIONSHIP_QNAME);
         RelationshipTypeDefintionWrapper objectTypeDef = new RelationshipTypeDefintionWrapper(cmisMapping,
-                accessorMapping, luceneBuilderMapping, typeId, dictionaryService.getClass(CMISMapping.RELATIONSHIP_QNAME));
+                accessorMapping, luceneBuilderMapping, typeId, dictionaryService, dictionaryService.getClass(CMISMapping.RELATIONSHIP_QNAME));
 
         registry.registerTypeDefinition(objectTypeDef);
 
@@ -110,7 +110,7 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
             AssociationDefinition assocDef = dictionaryService.getAssociation(classQName);
             typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_RELATIONSHIP, classQName);
             objectTypeDef = new RelationshipTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, 
-                    typeId, assocDef);
+                    typeId, dictionaryService, assocDef);
 
             registry.registerTypeDefinition(objectTypeDef);
         }

@@ -20,6 +20,7 @@ package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Properties;
 
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.solr.AlfrescoSolrEventListener;
@@ -50,6 +51,8 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
         // translate reults to leaf docs
         // build ordered doc list
 
+        Properties p = searcher.getSchema().getResourceLoader().getCoreProperties();
+        boolean doPermissionChecks = Boolean.parseBoolean(p.getProperty("alfresco.doPermissionChecks", "true"));
         
         Query key = new SolrAuthoritySetQuery(authorities);
         
@@ -75,7 +78,7 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
                     
         }
         
-        if (hasGlobalRead)
+        if (hasGlobalRead || (doPermissionChecks == false))
         {
             // can read all
             OpenBitSet allLeafDocs = (OpenBitSet) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);

@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -40,12 +41,12 @@ public interface ConstraintDefinition
     /**
      * @return the human-readable class title 
      */
-    public String getTitle();
+    public String getTitle(MessageLookup messageLookup);
     
     /**
      * @return the human-readable class description 
      */
-    public String getDescription();
+    public String getDescription(MessageLookup messageLookup);
     
     /**
      * @return Returns the constraint implementation

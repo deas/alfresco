@@ -618,6 +618,9 @@
          <!-- NOTE: include dev-context.xml to allow developer overrides -->
          <fileset dir="${dir.project.repository.config}" 
                   includes="**/extension/dev-context.xml"/>
+         <!-- Override version.properties with modified one -->
+         <fileset dir="${dir.project.repository.dist}"
+                  includes="alfresco/version.properties"/>
       </copy>
       
       <!-- for Share activity feed (email) notifier - overwrite dummy files -->

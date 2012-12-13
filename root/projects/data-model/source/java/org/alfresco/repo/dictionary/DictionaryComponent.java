@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.repo.tenant.TenantDeployer;
@@ -34,6 +35,7 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 import org.springframework.extensions.surf.util.ParameterCheck;
 
@@ -46,6 +48,7 @@ import org.springframework.extensions.surf.util.ParameterCheck;
 public class DictionaryComponent implements DictionaryService, TenantDeployer
 {
     private DictionaryDAO dictionaryDAO;
+    private MessageLookup messageLookup;
     
     // TODO: Check passed arguments are valid
     
@@ -57,6 +60,17 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
     public void setDictionaryDAO(DictionaryDAO dictionaryDAO)
     {
         this.dictionaryDAO = dictionaryDAO;
+    }
+    
+    /**
+     * Sets the message lookup service
+     * 
+     * @param messageLookup
+     *            the message lookup service
+     */
+    public void setMessageLookup(MessageLookup messageLookup)
+    {
+        this.messageLookup = messageLookup;
     }
     
     /* (non-Javadoc)
@@ -452,6 +466,40 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
     {
         dictionaryDAO.destroy();
     }
-    
-    
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.i18n.MessageLookup#getMessage(java.lang.String)
+     */
+    @Override
+    public String getMessage(String messageKey)
+    {
+        return messageLookup.getMessage(messageKey);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.i18n.MessageLookup#getMessage(java.lang.String, java.util.Locale)
+     */
+    @Override
+    public String getMessage(String messageKey, Locale locale)
+    {
+        return messageLookup.getMessage(messageKey, locale);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.i18n.MessageLookup#getMessage(java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public String getMessage(String messageKey, Object... params)
+    {
+        return messageLookup.getMessage(messageKey, params);
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.i18n.MessageLookup#getMessage(java.lang.String, java.util.Locale, java.lang.Object[])
+     */
+    @Override
+    public String getMessage(String messageKey, Locale locale, Object... params)
+    {
+        return messageLookup.getMessage(messageKey, locale, params);
+    }
 }

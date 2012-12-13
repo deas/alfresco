@@ -41,7 +41,7 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
     private PolicyTypeDefinitionImpl typeDefInclProperties;
 
     public PolicyTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping propertyAccessorMapping, 
-            PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, ClassDefinition cmisClassDef)
+            PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {
         alfrescoName = cmisClassDef.getName();
         alfrescoClass = cmisMapping.getAlfrescoClass(alfrescoName);
@@ -73,8 +73,8 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName((cmisClassDef.getTitle() != null) ? cmisClassDef.getTitle() : typeId);
-        typeDef.setDescription(cmisClassDef.getDescription() != null ? cmisClassDef.getDescription() : typeDef
+        typeDef.setDisplayName((cmisClassDef.getTitle(dictionaryService) != null) ? cmisClassDef.getTitle(dictionaryService) : typeId);
+        typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
                 .getDisplayName());
 
         typeDef.setIsCreatable(false);
@@ -88,7 +88,7 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
         typeDefInclProperties = CMISUtils.copy(typeDef);
         setTypeDefinition(typeDef, typeDefInclProperties);
 
-        createOwningPropertyDefinitions(cmisMapping, propertyAccessorMapping, luceneBuilderMapping, cmisClassDef);
+        createOwningPropertyDefinitions(cmisMapping, propertyAccessorMapping, luceneBuilderMapping, dictionaryService, cmisClassDef);
         createActionEvaluators(propertyAccessorMapping, BaseTypeId.CMIS_POLICY);
     }
 
@@ -175,7 +175,7 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
                         propDef.getOwningType().getAlfrescoName(), propDef.getAlfrescoName());
 
                 propertyDefintion = createPropertyDefinition(cmisMapping, propDef.getPropertyId(),
-                        alfrescoPropDef.getName(), alfrescoPropDef, true);
+                        alfrescoPropDef.getName(), dictionaryService, alfrescoPropDef, true);
 
                 if (propertyDefintion != null)
                 {

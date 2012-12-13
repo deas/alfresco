@@ -22,8 +22,10 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.alfresco.service.NotAuditable;
-import org.alfresco.service.PublicService;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
+
+import com.sun.tools.xjc.outline.Aspect;
 
 
 
@@ -40,7 +42,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author David Caruana
  */
-public interface DictionaryService
+public interface DictionaryService extends MessageLookup
 {
 
     /**

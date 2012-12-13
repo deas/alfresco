@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,6 +33,7 @@ import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.cmr.security.PermissionService;
+import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.util.EqualsHelper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -92,9 +94,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static final String KEY_DELETE_ALL = "KEY_DELETE_ALL";
 
     public static String ALFRESCO_CACHE = "alfrescoCache";
-    
+
     public static String ALFRESCO_AUTHORITY_CACHE = "alfrescoAuthorityCache";
-    
+
     public static String ALFRESCO_PATH_CACHE = "alfrescoPathCache";
 
     // Full cache of doc position to DBID, and leaf and path oposition
@@ -120,11 +122,11 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static String KEY_OWNER_LOOKUP = "KEY_OWNER_LOOKUP";
 
     public static String KEY_CHECK_CACHE = "KEY_CHECK_CACHE";
-    
+
     public static String KEY_OWNER_ID_MANAGER = "KEY_OWNER_ID_MANAGER";
-    
+
     public static String KEY_READER_TO_ACL_IDS_LOOKUP = "KEY_READER_TO_ACL_IDS_LOOKUP";
-    
+
     public static String KEY_PUBLIC_DOC_SET = "KEY_PUBLIC_DOC_SET";
 
     private NamedList args;
@@ -160,6 +162,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     @Override
     public void newSearcher(SolrIndexSearcher newSearcher, SolrIndexSearcher currentSearcher)
     {
+        Properties p = core.getResourceLoader().getCoreProperties();
+        boolean doPermissionChecks = Boolean.parseBoolean(p.getProperty("alfresco.doPermissionChecks", "true"));
+
         SolrIndexReader newReader = newSearcher.getReader();
         log.info("Max " + newReader.maxDoc());
         log.info("Docs " + newReader.numDocs());
@@ -179,7 +184,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             txByDocId[i] = -1;
             aclTxByDocId[i] = -1;
         }
-      
+
 
         OpenBitSet deleted = new OpenBitSet(newReader.maxDoc());
         OwnerIdManager ownerIdManager = new OwnerIdManager();
@@ -213,7 +218,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             ConcurrentHashMap<Long, Long> deletedAclTx = (ConcurrentHashMap<Long, Long>) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETED_ACL_TX);
             AtomicBoolean deleteAll = (AtomicBoolean) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DELETE_ALL);
             AtomicBoolean checkCache = (AtomicBoolean) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_CHECK_CACHE);
-            
+
             if (checkCache == null)
             {
                 checkCache = new AtomicBoolean(false);
@@ -223,298 +228,338 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     + addedAux.size() + addedAcl.size() + addedTx.size() + addedAclTx.size() + updatedLeaves.size() + updatedAux.size() + updatedAcl.size() + updatedTx.size() + updatedAclTx
                     .size()) > 0;
 
-            if (newReader.maxDoc() == 0)
-            {
-                // nothing to do
-            }
-            else if ((oldIndexedByDocId == null) || (oldAclIdByDocId == null) || (oldTxIdByDocId == null) || (oldAclTxIdByDocId == null) || (oldAllLeafDocs == null) || (oldOwnerIdManager == null))
-            {
-                log.warn("Recover from missing cache");
-                buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), unmatchedByDBID, ownerIdManager);
-
-            }
-            else if (deleteAll.get())
-            {
-                buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), unmatchedByDBID, ownerIdManager);
-            }
-            else
-            {
-
-                try
-                {
-                    SolrIndexReader[] before = currentSearcher.getReader().getSequentialSubReaders();
-                    SolrIndexReader[] after = newSearcher.getReader().getSequentialSubReaders();
-
-                    CacheSection[] cacheSectionsBefore = SolrIndexReaderCacheSection.getCacheSections(before);
-                    CacheSection[] cacheSectionsAfter = SolrIndexReaderCacheSection.getCacheSections(after);
-
-                    // Copy old to new and apply deletions
-
-                    int currentCache = 0;
-
-                    for (int i = 0; i < oldAclIdByDocId.length; i++)
+                    if (newReader.maxDoc() == 0)
                     {
-                        CacheSection section = cacheSectionsBefore[currentCache];
-                        if (section.getStart() + section.getLength() == i)
-                        {
-                            currentCache++;
-                            if (currentCache == cacheSectionsBefore.length)
-                            {
-                                currentCache--;
-                            }
-                            section = cacheSectionsBefore[currentCache];
-                        }
+                        // nothing to do
+                    }
+                    else if ((oldIndexedByDocId == null) || (oldAclIdByDocId == null) || (oldTxIdByDocId == null) || (oldAclTxIdByDocId == null) || (oldAllLeafDocs == null) || (oldOwnerIdManager == null))
+                    {
+                        log.warn("Recover from missing cache");
+                        buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), unmatchedByDBID, ownerIdManager);
 
-                        CacheEntry entry = oldIndexedByDocId[i];
-                        if (entry != null)
+                    }
+                    else if (deleteAll.get())
+                    {
+                        buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), unmatchedByDBID, ownerIdManager);
+                    }
+                    else
+                    {
+
+                        try
                         {
-                            if (entry.getLeaf() == i)
+                            SolrIndexReader[] before = currentSearcher.getReader().getSequentialSubReaders();
+                            SolrIndexReader[] after = newSearcher.getReader().getSequentialSubReaders();
+
+                            CacheSection[] cacheSectionsBefore = SolrIndexReaderCacheSection.getCacheSections(before);
+                            CacheSection[] cacheSectionsAfter = SolrIndexReaderCacheSection.getCacheSections(after);
+
+                            // Copy old to new and apply deletions
+
+                            int currentCache = 0;
+
+                            for (int i = 0; i < oldAclIdByDocId.length; i++)
                             {
-                                // Leaf
-                                if ((updatedLeaves.get(entry.dbid) == null) && (deletedLeaves.get(entry.dbid) == null))
+                                CacheSection section = cacheSectionsBefore[currentCache];
+                                if (section.getStart() + section.getLength() == i)
                                 {
-                                    // leave
+                                    currentCache++;
+                                    if (currentCache == cacheSectionsBefore.length)
+                                    {
+                                        currentCache--;
+                                    }
+                                    section = cacheSectionsBefore[currentCache];
+                                }
+
+                                CacheEntry entry = oldIndexedByDocId[i];
+                                if (entry != null)
+                                {
+                                    if (entry.getLeaf() == i)
+                                    {
+                                        // Leaf
+                                        if ((updatedLeaves.get(entry.dbid) == null) && (deletedLeaves.get(entry.dbid) == null))
+                                        {
+                                            // leave
+                                        }
+                                        else
+                                        {
+                                            section.addDeletion(i);
+                                            deleted.set(i);
+                                        }
+                                    }
+                                    else if (entry.getPath() == i)
+                                    {
+                                        // Aux
+                                        if ((updatedAux.get(entry.dbid) == null) && (deletedAux.get(entry.dbid) == null))
+                                        {
+                                            // leave
+                                        }
+                                        else
+                                        {
+                                            section.addDeletion(i);
+                                            deleted.set(i);
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    section.addDeletion(i);
-                                    deleted.set(i);
+                                    if ((updatedAcl.get(oldAclIdByDocId[i]) != null) || (deletedAcl.get(oldAclIdByDocId[i]) != null))
+                                    {
+                                        section.addDeletion(i);
+                                        deleted.set(i);
+                                    }
+
+                                    if ((updatedTx.get(oldTxIdByDocId[i]) != null) || (deletedTx.get(oldTxIdByDocId[i]) != null))
+                                    {
+                                        section.addDeletion(i);
+                                        deleted.set(i);
+                                    }
+
+                                    if ((updatedAclTx.get(oldAclTxIdByDocId[i]) != null) || (deletedAclTx.get(oldAclTxIdByDocId[i]) != null))
+                                    {
+                                        section.addDeletion(i);
+                                        deleted.set(i);
+                                    }
+
                                 }
                             }
-                            else if (entry.getPath() == i)
+                            LinkedList<CacheMatch> operations = buildCacheUpdateOperations(hasNew, cacheSectionsBefore, cacheSectionsAfter, after);
+
+                            log.info("Cache operatoins ...");
+                            for (CacheMatch match : operations)
                             {
-                                // Aux
-                                if ((updatedAux.get(entry.dbid) == null) && (deletedAux.get(entry.dbid) == null))
+                                log.info(match.toString());
+                            }
+
+                            CacheUpdateTracker tracker = new CacheUpdateTracker(0, 0, 0);
+
+                            for (CacheMatch match : operations)
+                            {
+                                match.updateCache(tracker, oldIndexedByDocId, oldAclIdByDocId, oldTxIdByDocId, oldAclTxIdByDocId, indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId,
+                                        aclTxByDocId, unmatchedByDBID, deleted, newReader, ownerIdManager);
+                            }
+
+                            // Check unmatched
+
+                            int hiddenDocCount = 0;
+                            for(Long unmatchedDBID : unmatchedByDBID.keySet())
+                            {
+                                // hidden docs appear as an unmatched path
+                                CacheEntry entry = unmatchedByDBID.get(unmatchedDBID);
+                                if( (entry.getLeaf() != 0) && (entry.getPath() == 0))
                                 {
-                                    // leave
+                                    // leaf doc with no aux doc;
+                                    log.info("Leaf has no AUX doc for DBID "+unmatchedDBID+ " at position "+entry.getLeaf());
+                                }
+                                if( (entry.getLeaf() == 0) && (entry.getPath() != 0))
+                                {
+                                    hiddenDocCount++;
+                                }
+                            }
+                            log.info("Cache unindexed/error doc count = "+hiddenDocCount);
+
+                            // Simple position check;
+
+                            boolean simpleCheckOk = true;
+                            for(int i = 0; i < indexedByDocId.length; i++)
+                            {
+                                CacheEntry entry = indexedByDocId[i];
+                                if(entry != null)
+                                {
+                                    if((entry.getLeaf() != i ) && (entry.getPath() != i))
+                                    {
+                                        log.warn("Core "+newSearcher.getIndexDir());
+                                        log.warn("Simple cache caheck failed: Incorrect indexedByDocId at " + i);
+                                        log.warn(".. leaf and path doc poistion do not match the doc position     .. " + indexedByDocId[i]);
+                                        simpleCheckOk = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ((simpleCheckOk == false) || forceCheckCache || checkCache.get())
+                            {
+                                CacheEntry[] checkIndexedByDocId = new CacheEntry[newReader.maxDoc()];
+                                OpenBitSet checkAllLeafDocs = new OpenBitSet(newReader.maxDoc());
+                                long[] checkAclIdByDocId = new long[newReader.maxDoc()];
+                                long[] checkTxIdByDocId = new long[newReader.maxDoc()];
+                                long[] checkAclTxIdByDocId = new long[newReader.maxDoc()];
+
+                                buildCacheForReader(checkIndexedByDocId, checkAllLeafDocs, checkAclIdByDocId, checkTxIdByDocId, checkAclTxIdByDocId, newReader, 0, newReader.maxDoc(),
+                                        new HashMap<Long, CacheEntry>(), ownerIdManager);
+
+                                boolean ok = true;
+                                boolean thisTestOk = true;
+                                for (int i = 0; i < checkIndexedByDocId.length; i++)
+                                {
+                                    if (!EqualsHelper.nullSafeEquals(checkIndexedByDocId[i], indexedByDocId[i]))
+                                    {
+                                        if(thisTestOk)
+                                        {
+                                            log.warn("Core "+newSearcher.getIndexDir());
+                                            log.warn("Invalid indexedByDocId at " + i);
+                                            log.warn(".. found     .. " + indexedByDocId[i]);
+                                            log.warn(".. expected  .. " + checkIndexedByDocId[i]);
+                                            ok = false;
+                                            thisTestOk = false;
+                                        }
+                                    }
+                                }
+
+
+                                thisTestOk = true;
+                                if (!checkAllLeafDocs.equals(allLeafDocs))
+                                {
+                                    if(thisTestOk)
+                                    {
+                                        log.warn("Core "+newSearcher.getIndexDir());
+                                        log.warn("Invalid AllLeafDocs cache");
+                                        ok = false;
+                                        thisTestOk= false;
+                                    }
+                                }
+
+                                thisTestOk = true;
+                                for (int i = 0; i < checkAclIdByDocId.length; i++)
+                                {
+                                    if (checkAclIdByDocId[i] != aclIdByDocId[i])
+                                    {
+
+
+                                        if (thisTestOk)
+                                        {
+                                            log.warn("Core "+newSearcher.getIndexDir());
+                                            log.warn("Invalid AclIdByDocId cache at " + i);
+                                            log.warn(".. found    .. " + aclIdByDocId[i]);
+                                            log.warn(".. expected .. " + checkAclIdByDocId[i]);
+                                            try
+                                            {
+                                                log.warn(".. expected .. " + newSearcher.doc(i));
+                                            }
+                                            catch (IOException e)
+                                            {
+                                                log.error("IO Exception", e);
+                                            }
+                                            ok = false;
+                                            thisTestOk= false;
+                                        }
+
+                                    }
+                                }
+
+                                thisTestOk = true;
+                                for (int i = 0; i < checkTxIdByDocId.length; i++)
+                                {
+                                    if (checkTxIdByDocId[i] != txByDocId[i])
+                                    {
+
+
+                                        if (thisTestOk)
+                                        {
+                                            log.warn("Core "+newSearcher.getIndexDir());
+                                            log.warn("Invalid txByDocId cache at " + i);
+                                            log.warn(".. found    .. " + txByDocId[i]);
+                                            log.warn(".. expected .. " + checkTxIdByDocId[i]); 
+                                            try
+                                            {
+                                                log.warn(".. expected .. " + newSearcher.doc(i));
+                                            }
+                                            catch (IOException e)
+                                            {
+                                                log.error("IO Exception", e);
+                                            }
+
+                                            ok = false;
+                                            thisTestOk= false;
+                                        }
+
+                                    }
+                                }
+
+                                thisTestOk = true;
+                                for (int i = 0; i < checkAclTxIdByDocId.length; i++)
+                                {
+                                    if (checkAclTxIdByDocId[i] != aclTxByDocId[i])
+                                    {
+
+
+                                        if (thisTestOk)
+                                        {
+                                            log.warn("Core "+newSearcher.getIndexDir());
+                                            log.warn("Invalid aclTxByDocId cache at " + i);
+                                            log.warn(".. found    .. " + aclTxByDocId[i]);
+                                            log.warn(".. expected .. " + checkAclTxIdByDocId[i]);
+
+                                            try
+                                            {
+                                                log.warn(".. expected .. " + newSearcher.doc(i));
+                                            }
+                                            catch (IOException e)
+                                            {
+                                                log.error("IO Exception", e);
+                                            }
+
+                                            ok = false;
+                                            thisTestOk= false;
+                                        }
+
+                                    }
+                                }
+
+
+                                if (!ok)
+                                {
+                                    indexedByDocId = checkIndexedByDocId;
+                                    allLeafDocs = checkAllLeafDocs;
+                                    aclIdByDocId = checkAclIdByDocId;
+                                    txByDocId = checkTxIdByDocId;
+                                    aclTxByDocId = checkAclTxIdByDocId;
+
+                                    log.warn("... Using recomputed cache");
                                 }
                                 else
                                 {
-                                    section.addDeletion(i);
-                                    deleted.set(i);
+                                    log.info("... cache OK");
                                 }
+
                             }
                         }
-                        else
+                        catch (IllegalStateException ise)
                         {
-                            if ((updatedAcl.get(oldAclIdByDocId[i]) != null) || (deletedAcl.get(oldAclIdByDocId[i]) != null))
-                            {
-                                section.addDeletion(i);
-                                deleted.set(i);
-                            }
-
-                            if ((updatedTx.get(oldTxIdByDocId[i]) != null) || (deletedTx.get(oldTxIdByDocId[i]) != null))
-                            {
-                                section.addDeletion(i);
-                                deleted.set(i);
-                            }
-
-                            if ((updatedAclTx.get(oldAclTxIdByDocId[i]) != null) || (deletedAclTx.get(oldAclTxIdByDocId[i]) != null))
-                            {
-                                section.addDeletion(i);
-                                deleted.set(i);
-                            }
-
+                            log.warn("Cache state error -> rebuilding", ise);
+                            buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), new HashMap<Long, CacheEntry>(), ownerIdManager);
                         }
                     }
-                    LinkedList<CacheMatch> operations = buildCacheUpdateOperations(hasNew, cacheSectionsBefore, cacheSectionsAfter, after);
-
-                    log.info("Cache operatoins ...");
-                    for (CacheMatch match : operations)
-                    {
-                        log.info(match.toString());
-                    }
-
-                    CacheUpdateTracker tracker = new CacheUpdateTracker(0, 0, 0);
-
-                    for (CacheMatch match : operations)
-                    {
-                        match.updateCache(tracker, oldIndexedByDocId, oldAclIdByDocId, oldTxIdByDocId, oldAclTxIdByDocId, indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId,
-                                aclTxByDocId, unmatchedByDBID, deleted, newReader, ownerIdManager);
-                    }
-
-                    if (forceCheckCache || checkCache.get())
-                    {
-                        CacheEntry[] checkIndexedByDocId = new CacheEntry[newReader.maxDoc()];
-                        OpenBitSet checkAllLeafDocs = new OpenBitSet(newReader.maxDoc());
-                        long[] checkAclIdByDocId = new long[newReader.maxDoc()];
-                        long[] checkTxIdByDocId = new long[newReader.maxDoc()];
-                        long[] checkAclTxIdByDocId = new long[newReader.maxDoc()];
-
-                        buildCacheForReader(checkIndexedByDocId, checkAllLeafDocs, checkAclIdByDocId, checkTxIdByDocId, checkAclTxIdByDocId, newReader, 0, newReader.maxDoc(),
-                                unmatchedByDBID, ownerIdManager);
-
-                        boolean ok = true;
-                        boolean thisTestOk = true;
-                        for (int i = 0; i < checkIndexedByDocId.length; i++)
-                        {
-                            if (!EqualsHelper.nullSafeEquals(checkIndexedByDocId[i], indexedByDocId[i]))
-                            {
-                                if(thisTestOk)
-                                {
-                                    log.warn("Core "+newSearcher.getIndexDir());
-                                    log.warn("Invalid indexedByDocId at " + i);
-                                    log.warn(".. found     .. " + indexedByDocId[i]);
-                                    log.warn(".. expected  .. " + checkIndexedByDocId[i]);
-                                    ok = false;
-                                    thisTestOk= false;
-                                }
-                            }
-                        }
-                        
-                        
-                        thisTestOk = true;
-                        if (!checkAllLeafDocs.equals(allLeafDocs))
-                        {
-                            if(thisTestOk)
-                            {
-                                log.warn("Core "+newSearcher.getIndexDir());
-                                log.warn("Invalid AllLeafDocs cache");
-                                ok = false;
-                                thisTestOk= false;
-                            }
-                        }
-                        
-                        thisTestOk = true;
-                        for (int i = 0; i < checkAclIdByDocId.length; i++)
-                        {
-                            if (checkAclIdByDocId[i] != aclIdByDocId[i])
-                            {
-
-
-                                if (thisTestOk)
-                                {
-                                    log.warn("Core "+newSearcher.getIndexDir());
-                                    log.warn("Invalid AclIdByDocId cache at " + i);
-                                    log.warn(".. found    .. " + aclIdByDocId[i]);
-                                    log.warn(".. expected .. " + checkAclIdByDocId[i]);
-                                    try
-                                    {
-                                        log.warn(".. expected .. " + newSearcher.doc(i));
-                                    }
-                                    catch (IOException e)
-                                    {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                    ok = false;
-                                    thisTestOk= false;
-                                }
-
-                            }
-                        }
-
-                        thisTestOk = true;
-                        for (int i = 0; i < checkTxIdByDocId.length; i++)
-                        {
-                            if (checkTxIdByDocId[i] != txByDocId[i])
-                            {
-
-
-                                if (thisTestOk)
-                                {
-                                    log.warn("Core "+newSearcher.getIndexDir());
-                                    log.warn("Invalid txByDocId cache at " + i);
-                                    log.warn(".. found    .. " + txByDocId[i]);
-                                    log.warn(".. expected .. " + checkTxIdByDocId[i]); 
-                                    try
-                                    {
-                                        log.warn(".. expected .. " + newSearcher.doc(i));
-                                    }
-                                    catch (IOException e)
-                                    {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-
-                                    ok = false;
-                                    thisTestOk= false;
-                                }
-
-                            }
-                        }
-                        
-                        thisTestOk = true;
-                        for (int i = 0; i < checkAclTxIdByDocId.length; i++)
-                        {
-                            if (checkAclTxIdByDocId[i] != aclTxByDocId[i])
-                            {
-
-
-                                if (thisTestOk)
-                                {
-                                    log.warn("Core "+newSearcher.getIndexDir());
-                                    log.warn("Invalid aclTxByDocId cache at " + i);
-                                    log.warn(".. found    .. " + aclTxByDocId[i]);
-                                    log.warn(".. expected .. " + checkAclTxIdByDocId[i]);
-
-                                    try
-                                    {
-                                        log.warn(".. expected .. " + newSearcher.doc(i));
-                                    }
-                                    catch (IOException e)
-                                    {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-
-                                    ok = false;
-                                    thisTestOk= false;
-                                }
-
-                            }
-                        }
-                        
-
-                        if (!ok)
-                        {
-                            indexedByDocId = checkIndexedByDocId;
-                            allLeafDocs = checkAllLeafDocs;
-                            aclIdByDocId = checkAclIdByDocId;
-                            txByDocId = checkTxIdByDocId;
-                            aclTxByDocId = checkAclTxIdByDocId;
-
-                            log.warn("... Using recomputed cache");
-                        }
-                        else
-                        {
-                            log.info("... cache OK");
-                        }
-
-                    }
-                }
-                catch (IllegalStateException ise)
-                {
-                    ise.printStackTrace();
-                    buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), unmatchedByDBID, ownerIdManager);
-                }
-            }
 
         }
         else
         {
-            buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), unmatchedByDBID, ownerIdManager);
+            buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), new HashMap<Long, CacheEntry>(), ownerIdManager);
         }
 
         long endTime = System.nanoTime();
         log.info("Core cache rebuilt in " + ((endTime - startTime) / (1.0e9)));
         startTime = System.nanoTime();
 
-        CacheEntry[] indexedOderedByAclIdThenDoc = new CacheEntry[(int) allLeafDocs.cardinality()];
-        CacheEntry[] indexedOderedByOwnerIdThenDoc = new CacheEntry[(int) allLeafDocs.cardinality()];
+        int size = doPermissionChecks ? (int) allLeafDocs.cardinality() : 0;
 
-        int doc = -1;
-        int pos = 0;
-        while ((doc = allLeafDocs.nextSetBit(doc + 1)) != -1)
+        CacheEntry[] indexedOderedByAclIdThenDoc = new CacheEntry[size];
+        CacheEntry[] indexedOderedByOwnerIdThenDoc = new CacheEntry[ size];
+
+        if(doPermissionChecks)
         {
-            CacheEntry entry = indexedByDocId[doc];
-            indexedOderedByAclIdThenDoc[pos] = entry;
-            indexedOderedByOwnerIdThenDoc[pos] = entry;
-            pos++;
+            int doc = -1;
+            int pos = 0;
+            while ((doc = allLeafDocs.nextSetBit(doc + 1)) != -1)
+            {
+                CacheEntry entry = indexedByDocId[doc];
+                indexedOderedByAclIdThenDoc[pos] = entry;
+                indexedOderedByOwnerIdThenDoc[pos] = entry;
+                pos++;
+            }
         }
 
         Arrays.sort(indexedOderedByAclIdThenDoc, new Comparator<CacheEntry>()
-        {
+                {
 
             @Override
             public int compare(CacheEntry o1, CacheEntry o2)
@@ -552,7 +597,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
 
             }
-        });
+                });
 
         // build lookups
 
@@ -602,7 +647,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
 
         Arrays.sort(indexedOderedByOwnerIdThenDoc, new Comparator<CacheEntry>()
-        {
+                {
 
             @Override
             public int compare(CacheEntry o1, CacheEntry o2)
@@ -640,7 +685,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
 
             }
-        });
+                });
 
         // build lookups
 
@@ -715,86 +760,89 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 throw e;
             }
         }
-        
+
         // cache readers and acl doc ids
-        
+
         HashMap<String, HashSet<Long>> readerToAclIds = new HashMap<String, HashSet<Long>>();
         BitDocSet publicDocSet = new BitDocSet(new OpenBitSet(newReader.maxDoc()));
-  
-        try
+
+        if(doPermissionChecks)
         {
-            IndexReader reader = newSearcher.getReader();
-            TermEnum termEnum = reader.terms(new Term("READER", ""));
-            TermDocs termDocs = null;
-            do
+            try
             {
-                Term term = termEnum.term();
-                if (term == null)
+                IndexReader reader = newSearcher.getReader();
+                TermEnum termEnum = reader.terms(new Term("READER", ""));
+                TermDocs termDocs = null;
+                do
                 {
-                    break;
-                }
-                if (term.field().equals("READER"))
-                {
-                    String currentReader = term.text();
-
-
-
-                    ArrayList<Long> aclIds = new ArrayList<Long>();   
-                    if (termDocs == null)
+                    Term term = termEnum.term();
+                    if (term == null)
                     {
-                        termDocs = reader.termDocs(term);
+                        break;
                     }
-                    else
+                    if (term.field().equals("READER"))
                     {
-                        termDocs.seek(term);
-                    }
-                    while (termDocs.next())
-                    {
-                        int currentDoc = termDocs.doc();
-                        long acl = aclIdByDocId[currentDoc];
-                        aclIds.add(acl);
-                    }
+                        String currentReader = term.text();
 
-                    AclLookUp key = new AclLookUp(0);
-                    HashSet<Long> aclsAsSet = new HashSet<Long>(aclIds.size(), 1f);
-                    for(Long longAcl : aclIds)
-                    {
-                        aclsAsSet.add(longAcl);
-                        if(currentReader.equals("GROUP_EVERYONE"))
+
+
+                        ArrayList<Long> aclIds = new ArrayList<Long>();   
+                        if (termDocs == null)
                         {
-                            key.setAclid(longAcl);
-                            AlfrescoSolrEventListener.AclLookUp value = aclLookUp.get(key);
-                            if(value != null)
+                            termDocs = reader.termDocs(term);
+                        }
+                        else
+                        {
+                            termDocs.seek(term);
+                        }
+                        while (termDocs.next())
+                        {
+                            int currentDoc = termDocs.doc();
+                            long acl = aclIdByDocId[currentDoc];
+                            aclIds.add(acl);
+                        }
+
+                        AclLookUp key = new AclLookUp(0);
+                        HashSet<Long> aclsAsSet = new HashSet<Long>(aclIds.size(), 1f);
+                        for(Long longAcl : aclIds)
+                        {
+                            aclsAsSet.add(longAcl);
+                            if(currentReader.equals("GROUP_EVERYONE"))
                             {
-                                for(int i = value.getStart(); i < value.getEnd(); i++)
+                                key.setAclid(longAcl);
+                                AlfrescoSolrEventListener.AclLookUp value = aclLookUp.get(key);
+                                if(value != null)
                                 {
-                                    publicDocSet.add(indexedOderedByAclIdThenDoc[i].getLeaf());
+                                    for(int i = value.getStart(); i < value.getEnd(); i++)
+                                    {
+                                        publicDocSet.add(indexedOderedByAclIdThenDoc[i].getLeaf());
+                                    }
                                 }
                             }
                         }
+
+                        readerToAclIds.put(currentReader, aclsAsSet);                    
+
                     }
-
-                    readerToAclIds.put(currentReader, aclsAsSet);                    
-
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+                while (termEnum.next());
+                if (termDocs != null)
                 {
-                    break;
+                    termDocs.close();
                 }
+                termEnum.close();
             }
-            while (termEnum.next());
-            if (termDocs != null)
+            catch (IOException e1)
             {
-                termDocs.close();
+                log.error("IO Exception while enumerating and caching readers", e1);
             }
-            termEnum.close();
         }
-        catch (IOException e1)
-        {
 
-        }
-        
-        
+
         // transform to readers to acl ids
 
         endTime = System.nanoTime();
@@ -809,7 +857,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         globalReaders.add(PermissionService.OWNER_AUTHORITY);
         globalReaders.add(PermissionService.ADMINISTRATOR_AUTHORITY);
         globalReaders.add(AuthenticationUtil.getSystemUserName());
-        
+
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_GLOBAL_READERS, globalReaders);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ALL_LEAF_DOCS, allLeafDocs);
@@ -819,12 +867,12 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_LOOKUP, ownerLookUp);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF, indexedOderedByOwnerIdThenDoc);
-        
+
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_ID_MANAGER, ownerIdManager);
-        
+
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_READER_TO_ACL_IDS_LOOKUP, readerToAclIds);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_PUBLIC_DOC_SET, publicDocSet);
-        
+
         try
         {
             if(currentSearcher != null)
@@ -834,14 +882,14 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            log.error("IO Exception while warming searcher", e);
         }
-        
+
     }
-    
-    
-   
-    
+
+
+
+
 
     /**
      * @param hasNew
@@ -873,7 +921,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                             current = null;
                             currentDocCount = 0;
                         }
-                        
+
                         if (before[iBefore].getDocCount() == after[iAfter].getDocCount())
                         {
                             Match match = new Match(after[iAfter].getLength(), after[iAfter].getDocCount(), afterIndexReaders == null ? null : afterIndexReaders[iAfter]);
@@ -905,7 +953,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         if (current == null)
                         {
                             int thisCount = before[iBefore].getDocCount() - before[iBefore].getNewDeletionsCount();
-                            
+
                             current = new Merge(after[iAfter].getLength(), after[iAfter].getDocCount(), afterIndexReaders == null ? null : afterIndexReaders[iAfter]);
                             current.addToOldCacheSize(before[iBefore].getLength());
                             currentDocCount = thisCount;
@@ -925,7 +973,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 throw new IllegalStateException("Merged section has too few docs");
                             }
                             iAfter++;
-                            
+
                         }
                         else
                         {
@@ -1019,7 +1067,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         throw new IllegalStateException("New sub reader but no new docs ??");
                     }
 
-                   
+
                 }
                 else
                 {
@@ -1088,7 +1136,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e1)
         {
-
+            log.error("Build cache for reader failed to enumerate ISNODE", e1);
         }
 
         // walk dbids and build leaf-doc links
@@ -1107,12 +1155,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 if (term.field().equals("DBID"))
                 {
                     Long dbid = NumericEncoder.decodeLong(term.text());
-                    CacheEntry entry = unmatchedByDBID.remove(dbid);
-                    if (entry == null)
-                    {
-                        entry = new CacheEntry(dbid);
-                        unmatchedByDBID.put(dbid, entry);
-                    }
+
                     if (termDocs == null)
                     {
                         termDocs = reader.termDocs(term);
@@ -1124,14 +1167,28 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     while (termDocs.next())
                     {
                         int doc = start + termDocs.doc();
+                        CacheEntry entry;
                         if (allLeafDocs.get(doc))
                         {
+                            entry = unmatchedByDBID.remove(dbid);
+                            if ((entry == null) || (entry.getLeaf() > 0))
+                            {
+                                entry = new CacheEntry(dbid);
+                                unmatchedByDBID.put(dbid, entry);
+                            }
                             entry.setLeaf(doc);
                         }
                         else
                         {
+                            entry = unmatchedByDBID.remove(dbid);
+                            if ((entry == null) || (entry.getPath() > 0))
+                            {
+                                entry = new CacheEntry(dbid);
+                                unmatchedByDBID.put(dbid, entry);
+                            }
                             entry.setPath(doc);
                         }
+                        entry.setAclid(-1);
                         cache[doc] = entry;
 
                     }
@@ -1152,7 +1209,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e1)
         {
-
+            log.error("Build cache for reader failed to enumerate DBID", e1);
         }
 
         // walk acls and build lookups
@@ -1208,7 +1265,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e1)
         {
-
+            log.error("Build cache for reader failed to enumerate ACLID", e1);
         }
 
         try
@@ -1262,7 +1319,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e1)
         {
-
+            log.error("Build cache for reader failed to enumerate TXID", e1);
         }
 
         try
@@ -1316,7 +1373,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e1)
         {
-
+            log.error("Build cache for reader failed to enumerate ACLTXID", e1);
         }
 
         // walk owner and cache
@@ -1366,11 +1423,11 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e1)
         {
-
+            log.error("Build cache for reader failed to enumerate OWNER", e1);
         }
     }
 
- 
+
 
     /*
      * (non-Javadoc)
@@ -1603,13 +1660,13 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 return false;
             return true;
         }    
-     
+
         public void setAclid(long aclid)
         {
             this.aclid = aclid;
         }
     }
-    
+
 
     public static class OwnerLookUp
     {
@@ -1739,8 +1796,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         {
             return numberOfOldCaches;
         }
-        
-        
+
+
         public void checkCachePosition(CacheUpdateTracker tracker, CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, SolrIndexReader reader, OwnerIdManager ownerIdManager) 
         {
             if(tracker.inNew ==0)
@@ -2082,12 +2139,12 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
-            
+
             if((getNumberOfOldCaches() ==1) && (tracker.earlyDeletes > 0))
             {
                 throw new IllegalStateException("Early deletes should have been cleared");
             }
-            
+
             // Deletions appear as merges
             // Merges can have deletions - we have to check if a deletion still exists in the new reader
             boolean targetHasDeletions = finalIndexReader.hasDeletions();
@@ -2096,7 +2153,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             int lastNew = tracker.inNew + getFinalCacheSize();
             int lastOld = tracker.inOld + getOldCacheSize();
 
-            
+
             while ((tracker.inNew < lastNew) && (tracker.inOld < lastOld))
             {
                 if (deleted.get(tracker.inOld))
@@ -2131,7 +2188,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     {
                         throw new IllegalStateException("Early deletes should have been cleared");
                     }
-                    
+
                     CacheEntry old = oldIndexedByDocId[tracker.inOld];
                     if (old != null)
                     {
@@ -2141,7 +2198,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             // we have already created a new entry so we update it
                             CacheEntry newCacheEntry = unmatchedByDBID.remove(old.dbid);
-                            if (newCacheEntry != null)
+                            if ((newCacheEntry != null) && (newCacheEntry.getLeaf() == 0))
                             {
                                 newCacheEntry.setLeaf(tracker.inNew);
                             }
@@ -2171,7 +2228,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             // we have already created a new entry so we update it
                             CacheEntry newCacheEntry = unmatchedByDBID.remove(old.dbid);
-                            if (newCacheEntry != null)
+                            if ((newCacheEntry != null) && (newCacheEntry.getPath() ==0))
                             {
                                 newCacheEntry.setAclid(old.getAclid());
                                 newCacheEntry.setOwner(old.getOwner());
@@ -2267,7 +2324,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                 }
             }
-            
+
             if (targetHasDeletions)
             {
                 while (tracker.inNew < lastNew)
@@ -2293,9 +2350,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                 }                
             }
-            
+
             // skip and check remaining nulls in the source
-            
+
             while(tracker.inOld < lastOld)
             {
                 if (deleted.get(tracker.inOld))
@@ -2316,13 +2373,13 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     tracker.inOld++;
                 }
             }
-            
+
             if((tracker.inNew != lastNew) || (tracker.inOld != lastOld))
             {
                 // force rebuild as cache rebuild failed
                 throw new IllegalStateException("RemoveNullEntriesCacheMatch cache update failed");
             }
-            
+
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
 
         }
@@ -2391,12 +2448,12 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
-            
+
             if(tracker.earlyDeletes > 0)
             {
                 throw new IllegalStateException("Early deletes should have been cleared");
             }
-            
+
             int lastNew = tracker.inNew + getFinalCacheSize();
             int lastOld = tracker.inOld + getOldCacheSize();
 
@@ -2427,7 +2484,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             // we have already created a new entry so we update it
                             CacheEntry newCacheEntry = unmatchedByDBID.remove(old.dbid);
-                            if (newCacheEntry != null)
+                            if ((newCacheEntry != null) && (newCacheEntry.getLeaf() == 0))
                             {
                                 newCacheEntry.setLeaf(tracker.inNew);
                             }
@@ -2456,7 +2513,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             // we have already created a new entry so we update it
                             CacheEntry newCacheEntry = unmatchedByDBID.remove(old.dbid);
-                            if (newCacheEntry != null)
+                            if ((newCacheEntry != null) && (newCacheEntry.getPath() == 0))
                             {
                                 newCacheEntry.setAclid(old.getAclid());
                                 newCacheEntry.setOwner(old.getOwner());
@@ -2543,13 +2600,13 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                 }
             }
-            
+
             if((tracker.inNew != lastNew) || (tracker.inOld != lastOld))
             {
                 // force rebuild as cache rebuild failed
                 throw new IllegalStateException("Match cache update failed");
             }
-            
+
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
         }
 
@@ -2606,7 +2663,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         {
             // delete all existing
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
-            
+
             if(tracker.earlyDeletes > 0)
             {
                 throw new IllegalStateException("Early deletes should have been cleared");
@@ -2614,7 +2671,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, getFinalIndexReader(), tracker.inNew, getFinalCacheSize(), unmatchedByDBID, ownerIdManager);
             tracker.inNew += getFinalCacheSize();
             tracker.inOld += getOldCacheSize();
-            
+
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
         }
     }
@@ -2663,7 +2720,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         {
 
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
-            
+
             boolean targetHasDeletions = finalIndexReader.hasDeletions();
             int startNew = tracker.inNew;
             int startOld = tracker.inOld;
@@ -2712,7 +2769,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             // we have already created a new entry so we update it
                             CacheEntry newCacheEntry = unmatchedByDBID.remove(old.dbid);
-                            if (newCacheEntry != null)
+                            if ((newCacheEntry != null) && (newCacheEntry.getLeaf() == 0))
                             {
                                 newCacheEntry.setLeaf(tracker.inNew);
                             }
@@ -2742,7 +2799,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             // we have already created a new entry so we update it
                             CacheEntry newCacheEntry = unmatchedByDBID.remove(old.dbid);
-                            if (newCacheEntry != null)
+                            if ((newCacheEntry != null) && (newCacheEntry.getPath() == 0))
                             {
                                 newCacheEntry.setAclid(old.getAclid());
                                 newCacheEntry.setOwner(old.getOwner());
@@ -2821,11 +2878,11 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         {
                             allLeafDocs.flip(tracker.inNew);
                         }
-                       
+
                         aclIdByDocId[tracker.inNew] = -1;
                         txIdByDocId[tracker.inNew] = -1;
                         aclTxIdByDocId[tracker.inNew] = -1;
-                        
+
                         if (targetHasDeletions)
                         {
                             if(finalIndexReader.isDeleted(tracker.inNew - startNew))
@@ -2833,7 +2890,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 tracker.inNew++;
                             }
                         }
-                        
+
                         tracker.inOld++;
                     }
                 }
@@ -2861,7 +2918,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 // force rebuild as cache rebuild failed
                 throw new IllegalStateException("MergeAndNew cache update failed");
             }
-            
+
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
         }
 
@@ -3095,24 +3152,29 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         owner = field.stringValue();
                     }
 
-                    CacheEntry entry = unmatchedByDBID.get(dbid);
-                    if (entry == null)
-                    {
-                        entry = new CacheEntry(dbid);
-                        unmatchedByDBID.put(dbid, entry);
-                    }
-                    else
-                    {
-                        unmatchedByDBID.remove(dbid);
-                    }
+                    CacheEntry entry;
 
                     if (isLeaf)
                     {
+                        entry = unmatchedByDBID.remove(dbid);
+                        if ((entry == null) || (entry.getLeaf() > 0))
+                        {
+                            entry = new CacheEntry(dbid);
+                            unmatchedByDBID.put(dbid, entry);
+                        }
+
                         entry.setLeaf(tracker.inNew);
                         allLeafDocs.set(tracker.inNew);
                     }
                     else
                     {
+                        entry = unmatchedByDBID.remove(dbid);
+                        if ((entry == null) || (entry.getPath() > 0))
+                        {
+                            entry = new CacheEntry(dbid);
+                            unmatchedByDBID.put(dbid, entry);
+                        }
+
                         entry.setPath(tracker.inNew);
                         entry.setAclid(aclId);
                         entry.setOwner(osnerIdManager.getOwnerId(owner));
@@ -3199,7 +3261,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         catch (IOException e)
         {
-
+            throw new IllegalStateException("Update cache by doc id failed", e);
         }
     }
 
@@ -3207,26 +3269,26 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     {
         ArrayList<String> idToOwner = new ArrayList<String>();
         HashMap<String, Integer> ownerIds = new HashMap<String, Integer>();
-        
+
         OwnerIdManager()
         {
             idToOwner.add(null);
         }
-        
+
         /**
          * @param owner
          * @return
          */
         public String get(int owner)
         {
-           if(owner < idToOwner.size())
-           {
-               return idToOwner.get(owner);
-           }
-           else
-           {
-               return null;
-           }
+            if(owner < idToOwner.size())
+            {
+                return idToOwner.get(owner);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /**
@@ -3241,7 +3303,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 ownerIds.put(owner, ownerId);
                 idToOwner.add(owner);
             }
-            
+
         }
 
         private Integer getOwnerId(String owner)
@@ -3261,7 +3323,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             }
             return ownerId;
         }
-        
+
         public String toString()
         {
             return idToOwner.toString() + "\n" + ownerIds;

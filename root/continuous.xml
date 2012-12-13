@@ -100,15 +100,13 @@
            depends="set-build-number,
                     incremental, 
                     distribute-core,
-                    distribute-non-core,
-                    revert-changes" />
+                    distribute-non-core" />
 
    <target name="distribute-patch" 
            description="Creates the distribution files for all platforms"
            depends="set-build-number,
                     incremental, 
-                    distribute-core,
-                    revert-changes" />
+                    distribute-core" />
 
    <target name="distribute-non-core" 
            description="Creates the distribution files for all platforms"
@@ -134,66 +132,32 @@
                     distribute-file-transfer-receiver" />
 
    <target name="set-build-number"
-           depends="continuous-init, set-build-devbox-number, set-revision-number">
+           depends="continuous-init, set-revision-number">
       <property file="distribute.properties" />
    </target>
 
-   <target name="set-build-devbox-number"
-           if="alf.build.number">
-      <exec executable="svn">
-         <arg line="revert ${dir.project.repository.config}/alfresco/version.properties"/>
-      </exec>
-      <replace file="${dir.project.repository.config}/alfresco/version.properties"
-               token="@build-number@"
-               value="${alf.build.number}"
-               summary="yes" />
-      <replace file="${dir.project.repository.config}/alfresco/version.properties"
-               token="version.edition=Community"
-               value="version.edition=${file.name.codeline}"
-               summary="yes" />
-   </target>
-
    <target name="set-revision-number"
-           depends="continuous-init"
-           unless="alf.build.number">
+           depends="continuous-init">
       <taskdef name="svn"
                classname="org.tigris.subversion.svnant.SvnTask">
          <classpath refid="classpath.compile" />
       </taskdef>
 
-      <svn>
-         <status path="${basedir}" revisionProperty="svn.revision" />
+      <svn failonerror="false">
+         <info target="${basedir}"/>
       </svn>
-      <exec executable="svn">
-         <arg line="revert ${dir.project.repository.config}/alfresco/version.properties"/>
-      </exec>
-      <replace file="${dir.project.repository.config}/alfresco/version.properties"
-               token="@build-number@"
-               value="r${svn.revision}"
-               summary="yes" />
-      <replace file="${dir.project.repository.config}/alfresco/version.properties"
-               token="version.edition=Community"
-               value="version.edition=${file.name.codeline}"
-               summary="yes" />
-   </target>
+      <condition property="display.build.number" value="-b${alf.build.number}" else="">
+          <isset property="alf.build.number" />
+      </condition>
 
-   <target name="set-build-number-cc"
-           depends="continuous-init"
-           if="build.release">
-      <replace file="${dir.project.repository.config}/alfresco/version.properties" 
-               token="@build-number@" 
-               value="${label}" />
-      <replace file="${dir.project.repository.config}/alfresco/version.properties"
-               token="@code-line@"
-               value="${file.name.codeline}"
-               summary="yes" />
-   </target>
-
-   <target name="revert-changes"
-           depends="continuous-init">
-      <exec executable="svn">
-         <arg line="revert ${dir.project.repository.config}/alfresco/version.properties"/>
-      </exec>
+      <copy file="${dir.project.repository.config}/alfresco/version.properties"
+          toDir="${dir.project.repository.dist}/alfresco" overwrite="true" />
+      <replace file="${dir.project.repository.dist}/alfresco/version.properties" summary="yes">
+          <replacefilter token="@scm-path@" value="${svn.info.url}" />
+          <replacefilter token="@scm-revision@" value="${svn.info.rev}" />
+          <replacefilter token="-b@build-number@" value="${display.build.number}" />
+          <replacefilter token="version.edition=Community" value="version.edition=${file.name.codeline}" />
+      </replace>
    </target>
 
    <target name="generate-checksums"
@@ -212,7 +176,7 @@
     <target name="maven-build-prerequisites" depends="set-build-number, incremental, distribute-core, distribute-amps, distribute-fdk, distribute-sdk"/>
 
 	<!-- Builds all necessary artifacts and delegates deployment to the Maven repository to the maven-deploy target. -->
-	<target name="maven-build-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-build-prerequisites, maven-deploy, revert-changes" />
+	<target name="maven-build-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-build-prerequisites, maven-deploy" />
 
    <!-- **************************************************** -->
    <!-- ** Database targets (for internal script use only)** -->
@@ -790,10 +754,9 @@
         <antcall target="linux-64-bit-deployment-installer"/>
     </target>
             
-   <!-- Build installers in parallel -->
+   <!-- Build installers -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
-        <parallel threadCount="2" failonany="true">
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
@@ -801,7 +764,6 @@
             <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-64-bit-deployment-installer"/>
-        </parallel>
    </target>
    
    
@@ -1098,8 +1060,10 @@
       <mkdir dir="${dir.continuous.assemble.config}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-config.zip"
           basedir="${dir.project.datamodel.config}" />
-      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-config.zip"
-          basedir="${dir.project.repository.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-config.zip">
+          <fileset dir="${dir.project.repository.config}" excludes="alfresco/version.properties" />
+          <fileset dir="${dir.project.repository.dist}" includes="alfresco/version.properties" />
+      </zip>
       <zip destfile="${dir.continuous.assemble.config}/alfresco-remote-api-config.zip"
           basedir="${dir.project.remoteapi.config}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip"
@@ -1192,6 +1156,9 @@
                   excludes="**/extension/*" /> -->
          <fileset dir="${dir.project.core.src.java}" 
                   includes="log4j.properties,logging.properties" />
+         <!-- Override version.properties with modified one -->
+         <fileset dir="${dir.project.repository.dist}"
+                  includes="alfresco/version.properties"/>
       </copy>
       <delete>
          <fileset dir="${dir.continuous.assemble.sdk}/config/alfresco/messages">

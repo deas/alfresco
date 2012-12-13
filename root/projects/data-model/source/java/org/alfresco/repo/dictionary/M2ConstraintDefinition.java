@@ -31,6 +31,7 @@ import org.alfresco.service.cmr.dictionary.Constraint;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.EqualsHelper;
@@ -169,12 +170,12 @@ import org.springframework.beans.PropertyAccessException;
             
             if (m2Constraint.getTitle() == null)
             {
-                m2Constraint.setTitle(constraintDef.getTitle());
+                m2Constraint.setTitle(constraintDef.getTitle(null));
             }
             
             if (m2Constraint.getDescription() == null)
             {
-                m2Constraint.setDescription(constraintDef.getDescription());
+                m2Constraint.setDescription(constraintDef.getDescription(null));
             }
         }
         else
@@ -308,9 +309,9 @@ import org.springframework.beans.PropertyAccessException;
         return name;
     }
     
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "constraint", name, "title"); 
+        String value = M2Label.getLabel(model, messageLookup, "constraint", name, "title"); 
         if (value == null)
         {
             value = m2Constraint.getTitle();
@@ -318,9 +319,9 @@ import org.springframework.beans.PropertyAccessException;
         return value;
     }
     
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "constraint", name, "description"); 
+        String value = M2Label.getLabel(model, messageLookup, "constraint", name, "description"); 
         if (value == null)
         {
             value = m2Constraint.getDescription();
@@ -415,13 +416,13 @@ import org.springframework.beans.PropertyAccessException;
         }
         
         // check title
-        if (! EqualsHelper.nullSafeEquals(getTitle(), conDef.getTitle(), false))
+        if (! EqualsHelper.nullSafeEquals(getTitle(null), conDef.getTitle(null), false))
         { 
             isUpdatedIncrementally = true;
         }
         
         // check description
-        if (! EqualsHelper.nullSafeEquals(getDescription(), conDef.getDescription(), false))
+        if (! EqualsHelper.nullSafeEquals(getDescription(null), conDef.getDescription(null), false))
         { 
             isUpdatedIncrementally = true;
         }

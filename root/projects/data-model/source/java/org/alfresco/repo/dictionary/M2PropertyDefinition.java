@@ -33,6 +33,7 @@ import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.EqualsHelper;
@@ -209,13 +210,13 @@ import org.springframework.util.StringUtils;
         }
 
         // Copy all other properties as they are
-        property.setDescription(propertyDef.getDescription());
+        property.setDescription(propertyDef.getDescription(null));
         property.setIndexed(propertyDef.isIndexed());
         property.setIndexedAtomically(propertyDef.isIndexedAtomically());
         property.setMultiValued(propertyDef.isMultiValued());
         property.setProtected(propertyDef.isProtected());
         property.setStoredInIndex(propertyDef.isStoredInIndex());
-        property.setTitle(propertyDef.getTitle());
+        property.setTitle(propertyDef.getTitle(null));
         property.setIndexTokenisationMode(propertyDef.getIndexTokenisationMode());
         
         return property;
@@ -229,8 +230,8 @@ import org.springframework.util.StringUtils;
     {
         StringBuffer sb = new StringBuffer();
         sb.append("Name: " + getName() + "\n");
-        sb.append("Title: " + getTitle() + "\n");
-        sb.append("Description: " + getDescription() + "\n");
+        sb.append("Title: " + getTitle(null) + "\n");
+        sb.append("Description: " + getDescription(null) + "\n");
         sb.append("Default Value: " + getDefaultValue() + "\n");
         sb.append("DataType Name: " + getDataType().getName() + "\n");
         sb.append("ContainerClass Name: " + getContainerClass().getName() + "\n");
@@ -266,9 +267,9 @@ import org.springframework.util.StringUtils;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.PropertyDefinition#getTitle()
      */
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(classDef.getModel(), "property", name, "title"); 
+        String value = M2Label.getLabel(classDef.getModel(), messageLookup, "property", name, "title"); 
         if (value == null)
         {
             value = m2Property.getTitle();
@@ -280,9 +281,9 @@ import org.springframework.util.StringUtils;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.PropertyDefinition#getDescription()
      */
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(classDef.getModel(), "property", name, "description"); 
+        String value = M2Label.getLabel(classDef.getModel(), messageLookup, "property", name, "description"); 
         if (value == null)
         {
             value = m2Property.getDescription();
@@ -448,13 +449,13 @@ import org.springframework.util.StringUtils;
         }
         
         // check title
-        if (! EqualsHelper.nullSafeEquals(getTitle(), propDef.getTitle(), false))
+        if (! EqualsHelper.nullSafeEquals(getTitle(null), propDef.getTitle(null), false))
         { 
             isUpdatedIncrementally = true;
         }
         
         // check description
-        if (! EqualsHelper.nullSafeEquals(getDescription(), propDef.getDescription(), false))
+        if (! EqualsHelper.nullSafeEquals(getDescription(null), propDef.getDescription(null), false))
         { 
             isUpdatedIncrementally = true;
         }

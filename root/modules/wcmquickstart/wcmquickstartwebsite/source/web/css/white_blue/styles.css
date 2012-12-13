@@ -42,12 +42,24 @@ blockquote {
 .jqueryslidemenu ul li ul li ul {
 	border-top:1px solid #efefef;
 }
+
+/* Added for ALF-14758 */
+.jqueryslidemenu ul li ul li ul li ul {
+    border-color: #cfcfcf;
+}
+
 .jqueryslidemenu ul li ul li a { 
 	border-bottom:1px solid #efefef;
 	border-left:1px solid #efefef;
 	border-right:1px solid #efefef;
 	background:#fff;
 }
+
+/* Added for ALF-14758 */
+.jqueryslidemenu ul li ul li ul li ul li a {
+    border-color: #cfcfcf;
+}
+
 .jqueryslidemenu ul li ul li a:hover { /* sub menus hover style */
 	background:#fafafa;
 	color:#0875ba;

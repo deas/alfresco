@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 
@@ -105,9 +106,9 @@ import org.alfresco.service.namespace.QName;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.PropertyTypeDefinition#getTitle()
      */
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "datatype", name, "title"); 
+        String value = M2Label.getLabel(model, messageLookup, "datatype", name, "title"); 
         if (value == null)
         {
             value = dataType.getTitle();
@@ -119,9 +120,9 @@ import org.alfresco.service.namespace.QName;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.PropertyTypeDefinition#getDescription()
      */
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "datatype", name, "description"); 
+        String value = M2Label.getLabel(model, messageLookup, "datatype", name, "description"); 
         if (value == null)
         {
             value = dataType.getDescription();

@@ -696,25 +696,48 @@
                }
             }
 
-            // Create item buttons for users and groups
-            var groupButtons = [
-               {
-                  title: parent._msg("button.updategroup"),
-                  cssClass: "groups-update-button",
-                  click: {
-                     fn: this.onUpdateClick,
-                     scope: this
-                  }
-               },
-               {
-                  title: parent._msg("button.deletegroup"),
-                  cssClass: "groups-delete-button",
-                  click: {
-                     fn: this.onDeleteClick,
-                     scope: this
-                  }
+            var updategroupButton =
+            {
+               title: parent._msg("button.updategroup"),
+               cssClass: "groups-update-button",
+               click: {
+                  fn: this.onUpdateClick,
+                  scope: this
                }
-            ];
+            };
+
+            var deletegroupButton =
+            {
+               title: parent._msg("button.deletegroup"),
+               cssClass: "groups-delete-button",
+               click: {
+                  fn: this.onDeleteClick,
+                  scope: this
+               }
+            };
+
+            var deletegroupButtonDisabled =
+            {
+               title: parent._msg("button.deletegroup"),
+               cssClass: "groups-delete-button-disabled",
+               click: {
+                  fn: function()
+                  {
+                     return false;
+                  },
+                  scope: this
+               }
+            };
+
+            // Create item buttons for users and groups
+            var groupButtons = [];
+            groupButtons.push(updategroupButton);
+            groupButtons.push(deletegroupButton);
+
+            var groupButtonsDisabled = [];
+            groupButtonsDisabled.push(updategroupButton);
+            groupButtonsDisabled.push(deletegroupButtonDisabled);
+
             var usersButtons = [
                {
                   title: parent._msg("button.removeuser"),
@@ -743,7 +766,7 @@
                   label: label,
                   next : null,
                   cssClass: o.authorityType == 'GROUP' ? "groups-item-group" : "groups-item-user",
-                  buttons: o.authorityType == 'GROUP' ? groupButtons : usersButtons
+                  buttons: o.authorityType == 'GROUP' ? (Alfresco.util.arrayContains(o.zones, "APP.SHARE") ? groupButtonsDisabled : groupButtons) : usersButtons
                };
                column.body.items.push(item);
             }
@@ -1173,21 +1196,29 @@
                }, null, parent);
                elCell.appendChild(updateLink);
 
-               //
-               var deleteLink = document.createElement("a");
-               //deleteLink.setAttribute("href", "#");
-               Dom.addClass(deleteLink, "delete");
-               deleteLink.innerHTML = "&nbsp;";
-               YAHOO.util.Event.addListener(deleteLink, "click", function(e)
+               if (Alfresco.util.arrayContains(oRecord.getData("zones"), "APP.SHARE"))
                {
-                  me._confirmDeleteGroup(
-                        oRecord.getData("shortName"),
-                        null,
-                        oRecord.getData("displayName"),
-                        null,
-                        null);
-               });
-               elCell.appendChild(deleteLink);
+                  var disabledDeleteLink = document.createElement("a");
+                  Dom.addClass(disabledDeleteLink, "delete-disabled");
+                  disabledDeleteLink.innerHTML = "&nbsp;";
+                  elCell.appendChild(disabledDeleteLink);
+               }
+               else
+               {
+                  var deleteLink = document.createElement("a");
+                  Dom.addClass(deleteLink, "delete");
+                  deleteLink.innerHTML = "&nbsp;";
+                  YAHOO.util.Event.addListener(deleteLink, "click", function(e)
+                  {
+                     me._confirmDeleteGroup(
+                           oRecord.getData("shortName"),
+                           null,
+                           oRecord.getData("displayName"),
+                           null,
+                           null);
+                  });
+                  elCell.appendChild(deleteLink);
+               }
             };
 
             // DataTable column defintions

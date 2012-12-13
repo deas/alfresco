@@ -673,7 +673,7 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
            {
               list = new ListTypeBean(
                     id, VtiListBaseType.GENERIC_LIST.id, true, typeQName,
-                    name, type.getTitle(), type.getDescription()
+                    name, type.getTitle(dictionaryService), type.getDescription(dictionaryService)
               );
            }
            else

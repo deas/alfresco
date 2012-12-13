@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.alfresco.service.cmr.dictionary.ConstraintException;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.datatype.TypeConversionException;
 import org.springframework.extensions.surf.util.I18NUtil;
@@ -139,7 +140,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
      * @since 4.0
      * @see I18NUtil#getLocale()
      */
-    public String getDisplayLabel(String constraintAllowableValue)
+    public String getDisplayLabel(String constraintAllowableValue, MessageLookup messageLookup)
     {
         if (!getAllowedValues().contains(constraintAllowableValue))
         {
@@ -151,7 +152,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
         key += "." + constraintAllowableValue;
         key = StringUtils.replace(key, ":", "_");
         
-        String message = I18NUtil.getMessage(key, I18NUtil.getLocale());
+        String message = messageLookup.getMessage(key, I18NUtil.getLocale());
         return message == null ? constraintAllowableValue : message;
     }
 

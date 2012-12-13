@@ -22,6 +22,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
+import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
@@ -35,7 +36,7 @@ public class FolderTypeDefintionWrapper extends ShadowTypeDefinitionWrapper
     private FolderTypeDefinitionImpl typeDefInclProperties;
 
     public FolderTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping, 
-            PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, ClassDefinition cmisClassDef)
+            PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {
         alfrescoName = cmisClassDef.getName();
         alfrescoClass = cmisMapping.getAlfrescoClass(alfrescoName);
@@ -68,8 +69,8 @@ public class FolderTypeDefintionWrapper extends ShadowTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName((cmisClassDef.getTitle() != null) ? cmisClassDef.getTitle() : typeId);
-        typeDef.setDescription(cmisClassDef.getDescription() != null ? cmisClassDef.getDescription() : typeDef
+        typeDef.setDisplayName((cmisClassDef.getTitle(dictionaryService) != null) ? cmisClassDef.getTitle(dictionaryService) : typeId);
+        typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
                 .getDisplayName());
 
         typeDef.setIsCreatable(!isSystemFolder);
@@ -83,7 +84,7 @@ public class FolderTypeDefintionWrapper extends ShadowTypeDefinitionWrapper
         typeDefInclProperties = CMISUtils.copy(typeDef);
         setTypeDefinition(typeDef, typeDefInclProperties);
 
-        createOwningPropertyDefinitions(cmisMapping, accessorMapping, luceneBuilderMapping, cmisClassDef);
+        createOwningPropertyDefinitions(cmisMapping, accessorMapping, luceneBuilderMapping, dictionaryService, cmisClassDef);
         createActionEvaluators(accessorMapping, BaseTypeId.CMIS_FOLDER);
     }
 }

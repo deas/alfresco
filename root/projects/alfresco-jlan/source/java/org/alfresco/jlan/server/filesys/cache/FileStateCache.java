@@ -645,27 +645,46 @@ public abstract class FileStateCache {
 	public FileAccessToken grantFileAccess( FileOpenParams params, FileState fstate, int fileSts)
 		throws FileSharingException, AccessDeniedException, FileExistsException {
 		
+		LocalFileAccessToken accToken = null;
+		
 		synchronized ( fstate) {
-			
+
 			// Check if the current file open allows the required shared access
 			
 			boolean nosharing = false;
 			String noshrReason = null;
+			boolean attribsOnly = false;
 			
-			if ( fstate.getOpenCount() > 0) {
+			if ( params.isAttributesOnlyAccess()) {
 				
+				// File attributes/metadata access only
+				
+				attribsOnly = true;
+
+				// DEBUG
+				
+				if ( hasDebug())
+					Debug.println( "Attributes only access for " + fstate); 
+			}
+			else if ( fstate.getOpenCount() > 0) {
+
+				// DEBUG
+				
+				if ( hasDebug())
+					Debug.println( "File already open by pid=" + fstate.getProcessId() + 
+									", sharingMode=" + SharingMode.getSharingModeAsString( fstate.getSharedAccess()));
+					
 				// Check if the open action indicates a new file create
 				
 				if ( params.getOpenAction() == FileAction.NTCreate)
-					throw new FileExistsException( params.getFullPath());
+					throw new FileExistsException();
 					
 				// Check for impersonation security level from the original process that opened the file
 				
 				if ( params.getSecurityLevel() == WinNT.SecurityImpersonation && params.getProcessId() == fstate.getProcessId())
 					nosharing = false;
-	
+
 				// Check if the caller wants read access, check the sharing mode
-				// Check if the caller wants write access, check if the sharing mode allows write
 				
 		    	else if ( params.isReadOnlyAccess() && (fstate.getSharedAccess() & SharingMode.READ) != 0)
 		    		nosharing = false;
@@ -680,7 +699,7 @@ public abstract class FileStateCache {
 		    		// DEBUG
 		    		
 		    		if ( Debug.EnableDbg && hasDebug())
-		    			Debug.println("Sharing mode disallows write access path=" + params.getPath());
+		    			Debug.println("Sharing mode disallows write access path=" + fstate.getPath());
 		    	}
 		    	
 				// Check if the file has been opened for exclusive access
@@ -696,8 +715,10 @@ public abstract class FileStateCache {
 					nosharing = true;
 					noshrReason = "Sharing mode mismatch";
 					
+		    		// DEBUG
+		    		
 		    		if ( Debug.EnableDbg && hasDebug())
-		    			Debug.println("Local share mode=0x" + Integer.toHexString(fstate.getSharedAccess()) + ", params share mode=0x" + Integer.toHexString(params.getSharedAccess()));
+		    			Debug.println("Local share mode=0x" + Integer.toHexString( fstate.getSharedAccess()) + ", params share mode=0x" + Integer.toHexString( params.getSharedAccess()));
 				}
 				
 				// Check if the caller wants exclusive access to the file
@@ -712,9 +733,9 @@ public abstract class FileStateCache {
 			
 			if ( nosharing == true)
 				throw new FileSharingException( "File sharing violation, reason " + noshrReason);
-			else {
+			else if ( attribsOnly == false) {
 				
-				// Update the file sharing mode and process id, if this is the first file open
+				// Update the file sharing mode, process id and primary owner details, if this is the first file open
 				
 				fstate.setSharedAccess( params.getSharedAccess());
 				fstate.setProcessId( params.getProcessId());
@@ -726,13 +747,22 @@ public abstract class FileStateCache {
 				// Set the file status
 				
 				if ( fileSts != FileStatus.Unknown)
-					fstate.setFileStatus( fileSts);
+					fstate.setFileStatus( fileSts, FileState.ReasonNone);
 			}
+
+			// Return an access token
+			
+			accToken = new LocalFileAccessToken( params.getProcessId());
+				
+			// Check if the file open is attributes only, mark the token so that the file open count
+			// is not decremented when the file is closed
+				
+			accToken.setAttributesOnly( attribsOnly);
 		}
 		
-		// Use the PID as the access token
-		
-		return new LocalFileAccessToken( params.getProcessId());
+		// Return the file access token
+			
+		return accToken;
 	}
 	
 	/**
@@ -744,19 +774,41 @@ public abstract class FileStateCache {
 	 */
 	public int releaseFileAccess( FileState fstate, FileAccessToken token) {
 
-		int openCount = -1;
+		// Get the current file open count
+		
+		int openCount = fstate.getOpenCount();
 		
 		synchronized ( fstate) {
 			
-			// Decrement the file open count, if the count is now zero then reset the sharing mode
-			
-			openCount = fstate.decrementOpenCount();
-			
-			if ( openCount == 0)
-				fstate.setSharedAccess( SharingMode.READWRITEDELETE);
+			// Release the access token
+		
+			if ( token instanceof LocalFileAccessToken) {
+	
+				LocalFileAccessToken accToken = (LocalFileAccessToken) token;
+	
+				// Decrement the file open count, unless the token is from an attributes only file open
+				
+				if ( accToken.isAttributesOnly() == false) {
+					
+					// Decrement the file open count
+				
+					openCount = fstate.decrementOpenCount();
+				
+					if ( openCount == 0) {
+						
+						// Reset the sharing mode, no current file opens
+					
+						fstate.setSharedAccess( SharingMode.READWRITEDELETE);
+					}
+				}
+				
+				// Mark the access token as released
+				
+				accToken.setReleased( true);
+			}
 		}
 		
-		// Return the current open count for the file
+		// Return the new file open count
 		
 		return openCount;
 	}

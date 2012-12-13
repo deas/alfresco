@@ -30,7 +30,6 @@ import org.alfresco.jlan.server.config.ServerConfiguration;
 import org.alfresco.jlan.server.filesys.FileName;
 import org.alfresco.jlan.server.filesys.FileStatus;
 import org.alfresco.jlan.server.locking.OpLockDetails;
-import org.alfresco.jlan.util.StringList;
 import org.springframework.extensions.config.ConfigElement;
 
 /**

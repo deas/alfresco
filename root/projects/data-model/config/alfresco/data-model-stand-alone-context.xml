@@ -38,8 +38,6 @@
     </bean>
 
     <bean name="prefixesCache" class="org.alfresco.repo.cache.MemoryCache" />
-   
-   
 
     <bean id="dictionaryDAO" class="org.alfresco.repo.dictionary.DictionaryDAOImpl">
         <constructor-arg index="0">
@@ -57,10 +55,15 @@
     </bean>
     
     <bean name="compiledModelsCache" class="org.alfresco.repo.cache.MemoryCache" /> 
+ 
+    <bean name="messageLookup" class="org.alfresco.repo.i18n.StaticMessageLookup" /> 
 
     <bean id="dictionaryService" class="org.alfresco.repo.dictionary.DictionaryComponent" depends-on="dictionaryBootstrap">
         <property name="dictionaryDAO">
             <ref bean="dictionaryDAO" />
+        </property>
+        <property name="messageLookup">
+            <ref bean="messageLookup" />
         </property>
     </bean>
 

@@ -88,7 +88,7 @@ public abstract class ShadowTypeDefinitionWrapper extends AbstractTypeDefinition
                         propDef.getOwningType().getAlfrescoName(), propDef.getAlfrescoName());
 
                 propertyDefintion = createPropertyDefinition(cmisMapping, propDef.getPropertyId(),
-                        alfrescoPropDef.getName(), alfrescoPropDef, true);
+                        alfrescoPropDef.getName(), dictionaryService, alfrescoPropDef, true);
 
                 if (propertyDefintion != null)
                 {

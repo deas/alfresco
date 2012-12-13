@@ -9,7 +9,7 @@
    
    // test user dashboard page exists?
    RequestContext context = (RequestContext)request.getAttribute(RequestContext.ATTR_REQUEST_CONTEXT);
-   if (context.getObjectService().getPage("user/" + userid + "/dashboard") == null)
+   if (!context.getObjectService().hasPage("user/" + userid + "/dashboard"))
    {
       // no user dashboard page found! create initial dashboard for this user...
       Map<String, String> tokens = new HashMap<String, String>();

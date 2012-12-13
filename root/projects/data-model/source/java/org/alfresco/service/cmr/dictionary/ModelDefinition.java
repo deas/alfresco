@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.alfresco.repo.dictionary.DictionaryDAO;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 
 
@@ -52,7 +53,7 @@ public interface ModelDefinition
     /**
      * @return the model description
      */
-    public String getDescription();
+    public String getDescription(MessageLookup messageLookup);
     
     /**
      * @return the model author

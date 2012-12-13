@@ -96,7 +96,7 @@ public class CustomCreateContentWizard extends CreateContentWizard
                      AspectDefinition aspectDef = this.getDictionaryService().getAspect(idQName);
                      if (aspectDef != null)
                      {
-                        label = aspectDef.getTitle();
+                        label = aspectDef.getTitle(this.getDictionaryService());
                      }
                      else
                      {

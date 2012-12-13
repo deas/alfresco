@@ -56,6 +56,7 @@ import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
@@ -283,6 +284,7 @@ public class AlfrescoSolrDataModel
 
         dictionaryComponent = new DictionaryComponent();
         dictionaryComponent.setDictionaryDAO(dictionaryDAO);
+        dictionaryComponent.setMessageLookup(new StaticMessageLookup());
 
         // cmis dictionary
         CMISMapping cmisMapping = new CMISMapping();

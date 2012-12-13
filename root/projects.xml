@@ -639,9 +639,13 @@
          <lib dir="${dir.project.datamodel.dist}" 
               includes="${file.name.jar.datamodel}" />
          <classes dir="${dir.project.datamodel.config}"/>
-         <classes dir="${dir.project.repository.config}"/>
+         <classes dir="${dir.project.repository.config}"
+              excludes="alfresco/version.properties" />
          <classes file="${dir.project.core.src.java}/log4j.properties" 
                   prefix="WEB-INF/classes" />
+         <!-- Override version.properties with modified one -->
+         <classes dir="${dir.project.repository.dist}"
+                  includes="alfresco/version.properties"/>
          <manifest>
              <attribute name="Specification-Title" value="Alfresco JCR TCK"/>
              <attribute name="Specification-Version" value="${version.number}"/>
@@ -1837,7 +1841,7 @@
          <fileset dir="${dir.project.datamodel.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}"
-                  excludes="**/extension/**" />
+                  excludes="**/extension/**,alfresco/version.properties" />
          <fileset dir="${dir.project.remoteapi.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}"
@@ -1851,6 +1855,10 @@
          -->
          <fileset dir="${dir.project.repository.config}"
                   includes="**/extension/dev-context.xml"/>
+
+         <!-- Override version.properties with modified one -->
+         <fileset dir="${dir.project.repository.dist}"
+                  includes="alfresco/version.properties"/>
       </copy>
             
 
@@ -2852,7 +2860,7 @@
 
    <target name="version-file-transfer-receiver">
       <copy todir="${dir.project.file-transfer-receiver.assemble}">
-         <fileset dir="${dir.project.repository.config}/alfresco" includes="version.properties" />
+         <fileset dir="${dir.project.repository.dist}/alfresco" includes="version.properties" />
       </copy>
    </target>
 

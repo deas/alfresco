@@ -336,6 +336,8 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                         updatedAcl.put(dbidAncAclid.aclid, dbidAncAclid.aclid);
                         break;
                     case AUX:
+                    case ERROR:
+                    case UNINDEXED:
                         updatedAux.put(dbidAncAclid.dbid, dbidAncAclid.dbid);
                         break;
                     case LEAF:
@@ -355,6 +357,10 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             }
             else
             {
+                if (cmd.indexedId == null)
+                {
+                    cmd.indexedId = getIndexedId(cmd.doc);
+                }
                 Term idTerm = this.idTerm.createTerm(cmd.indexedId);
                 if(idTerm.text().equals("CHECK_CACHE"))
                 {
@@ -372,6 +378,8 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                         addedAcl.put(dbidAncAclid.aclid, dbidAncAclid.aclid);
                         break;
                     case AUX:
+                    case ERROR:
+                    case UNINDEXED:
                         addedAux.put(dbidAncAclid.dbid, dbidAncAclid.aclid);
                         break;
                     case LEAF:
@@ -439,6 +447,16 @@ public class AlfrescoUpdateHandler extends UpdateHandler
             {
                 Long dbid = Long.valueOf(cmd.id.substring(5));
                 deletedLeaves.put(dbid, dbid);
+            }
+            else if(cmd.id.startsWith("ERROR-"))
+            {
+                Long dbid = Long.valueOf(cmd.id.substring(6));
+                deletedAux.put(dbid, dbid);
+            }
+            else if(cmd.id.startsWith("UNINDEXED-"))
+            {
+                Long dbid = Long.valueOf(cmd.id.substring(10));
+                deletedAux.put(dbid, dbid);
             }
             else if(cmd.id.startsWith("AUX-"))
             {
@@ -1006,7 +1024,7 @@ public class AlfrescoUpdateHandler extends UpdateHandler
     
     static enum DocType
     {
-        LEAF, AUX, ACL, UNKOWN, TX, ACLTX;
+        LEAF, AUX, ACL, UNKOWN, TX, ACLTX, ERROR, UNINDEXED;
     }
     
     static class DbidAndAclid
@@ -1015,6 +1033,8 @@ public class AlfrescoUpdateHandler extends UpdateHandler
         Long aclid;
         Long txid;
         Long acltxid;
+        String id;
+        DocType docType;
         
         
         DbidAndAclid(Document doc) 
@@ -1044,7 +1064,47 @@ public class AlfrescoUpdateHandler extends UpdateHandler
                 
                 acltxid = Long.valueOf(aclTxIdField[0].stringValue());
             }
+            
+            Fieldable[] idField = doc.getFieldables("ID");
+            if((idField != null) && (idField.length > 0))
+            {
+                
+                id = idField[0].stringValue();
+            }
 
+            if(id.startsWith("LEAF-"))
+            {
+                docType = DocType.LEAF;
+            }
+            else if(id.startsWith("ERROR-"))
+            {
+                docType = DocType.ERROR;
+            }
+            else if(id.startsWith("UNINDEXED-"))
+            {
+                docType = DocType.UNINDEXED;
+            }
+            else if(id.startsWith("AUX-"))
+            {
+                docType = DocType.AUX;
+            }
+            else if(id.startsWith("ACL-"))
+            {
+                docType = DocType.ACL;
+            }
+            else if(id.startsWith("TX-"))
+            {
+                docType = DocType.TX;
+            }
+            else if(id.startsWith("ACLTX-"))
+            {
+                docType = DocType.ACLTX;
+            }
+            else
+            {
+                docType = DocType.UNKOWN;
+            }
+            
         }
         
         DbidAndAclid()
@@ -1054,42 +1114,7 @@ public class AlfrescoUpdateHandler extends UpdateHandler
        
         DocType getDocType()
         {
-            if(dbid == null)
-            {
-                if(aclid == null)
-                {
-                    if(txid == null)
-                    {
-                        if(acltxid == null)
-                        {
-                            return DocType.UNKOWN;
-                        }
-                        else
-                        {
-                            return DocType.ACLTX;
-                        }
-                    }
-                    else
-                    {
-                        return DocType.TX;
-                    }
-                }
-                else
-                {
-                    return DocType.ACL;
-                }
-            }
-            else
-            {
-                if(aclid == null)
-                {
-                    return DocType.LEAF;
-                }
-                else
-                {
-                    return DocType.AUX;
-                }
-            }
+            return docType;
         }
     }
 }

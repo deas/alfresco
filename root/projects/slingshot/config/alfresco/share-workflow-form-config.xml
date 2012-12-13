@@ -3,10 +3,10 @@
    <!-- ************************************** -->
    <!-- Workflow Definition Form Configuration -->
    <!-- ************************************** -->
-   
+
    <!--
       When workflows are started some bpm:workflowXxx properties are copied to the task and named bpm:xxx
-      I.e The bpm:workflowDueDate workflow property becomes the bpm:dueDate task property. 
+      I.e The bpm:workflowDueDate workflow property becomes the bpm:dueDate task property.
    -->
 
    <!-- Ad Hoc Workflow Definition -->
@@ -27,7 +27,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -46,7 +46,7 @@
          </form>
       </forms>
    </config>
-   
+
 
    <!-- Activiti Ad Hoc Workflow Definition -->
    <config evaluator="string-compare" condition="activiti$activitiAdhoc">
@@ -66,7 +66,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -90,7 +90,7 @@
          </form>
       </forms>
    </config>
-   
+
    <!-- Review and Approve Workflow Definition -->
    <config evaluator="string-compare" condition="jbpm$wf:review">
       <forms>
@@ -109,7 +109,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -147,7 +147,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -190,7 +190,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -210,7 +210,7 @@
          </form>
       </forms>
    </config>
-   
+
    <!-- Activiti Pooled Review and Approve Workflow Definition -->
    <config evaluator="string-compare" condition="activiti$activitiReviewPooled">
       <forms>
@@ -229,7 +229,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -245,7 +245,12 @@
                   <control template="/org/alfresco/components/form/controls/workflow/priority.ftl" />
                </field>
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" set="assignee" />
-               <field id="wf:requiredApprovePercent" set="assignee" />
+               <field id="wf:requiredApprovePercent" label-id="workflow.field.requiredApprovePercent" set="assignee">
+                  <control template="/org/alfresco/components/form/controls/percentage-approve.ftl">
+                     <control-param name="minValue">1</control-param>
+                     <control-param name="maxValue">100</control-param>
+                  </control>
+               </field>
                <field id="packageItems" set="items" />
                <field id="bpm:sendEMailNotifications" set="other">
                   <control template="/org/alfresco/components/form/controls/workflow/email-notification.ftl" />
@@ -254,7 +259,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="string-compare" condition="jbpm$wf:parallelreview">
       <forms>
          <form>
@@ -273,7 +278,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignees" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -293,7 +298,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="string-compare" condition="activiti$activitiParallelReview">
       <forms>
          <form>
@@ -312,7 +317,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignees" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -327,7 +332,12 @@
                <field id="bpm:workflowPriority" label-id="workflow.field.priority" set="info">
                   <control template="/org/alfresco/components/form/controls/workflow/priority.ftl" />
                </field>
-               <field id="wf:requiredApprovePercent" set="assignee" />
+               <field id="wf:requiredApprovePercent" label-id="workflow.field.requiredApprovePercent" set="assignee">
+                  <control template="/org/alfresco/components/form/controls/percentage-approve.ftl">
+                     <control-param name="minValue">1</control-param>
+                     <control-param name="maxValue">100</control-param>
+                  </control>
+               </field>
                <field id="bpm:assignees" label-id="workflow.field.reviewers" set="assignee" />
                <field id="packageItems" set="items" />
                <field id="bpm:sendEMailNotifications" set="other">
@@ -337,7 +347,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="string-compare" condition="jbpm$wf:parallelgroupreview">
       <forms>
          <form>
@@ -356,7 +366,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -376,7 +386,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="string-compare" condition="activiti$activitiParallelGroupReview">
       <forms>
          <form>
@@ -395,7 +405,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -410,7 +420,12 @@
                <field id="bpm:workflowPriority" label-id="workflow.field.priority" set="info">
                   <control template="/org/alfresco/components/form/controls/workflow/priority.ftl" />
                </field>
-               <field id="wf:requiredApprovePercent" set="assignee" />
+               <field id="wf:requiredApprovePercent" label-id="workflow.field.requiredApprovePercent" set="assignee">
+                  <control template="/org/alfresco/components/form/controls/percentage-approve.ftl">
+                     <control-param name="minValue">1</control-param>
+                     <control-param name="maxValue">100</control-param>
+                  </control>
+               </field>
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" set="assignee" />
                <field id="packageItems" set="items" />
                <field id="bpm:sendEMailNotifications" set="other">
@@ -420,7 +435,7 @@
          </form>
       </forms>
    </config>
-   
+
    <!-- Lifecycle Workflow Definition -->
    <config evaluator="string-compare" condition="jbpm$wfl:lifecycleapproval">
       <forms>
@@ -439,7 +454,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -458,7 +473,7 @@
          </form>
       </forms>
    </config>
-   
+
     <config evaluator="string-compare" condition="activiti$activitiLifecycleApproval">
       <forms>
          <form>
@@ -476,7 +491,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -500,7 +515,7 @@
          </form>
       </forms>
    </config>
-   
+
     <!-- Activiti Timer Ad Hoc Workflow Definition -->
    <config evaluator="string-compare" condition="activiti$activitiAdhocTimer">
       <forms>
@@ -519,7 +534,7 @@
                <set id="assignee" appearance="title" label-id="workflow.set.assignee" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="bpm:workflowDescription" label-id="workflow.field.message">
                   <control template="/org/alfresco/components/form/controls/textarea.ftl">
                      <control-param name="style">width: 95%</control-param>
@@ -543,15 +558,15 @@
          </form>
       </forms>
    </config>
-   
+
    <!-- ***************************** -->
    <!-- Start Task Form Configuration -->
    <!-- ***************************** -->
-   
-   <!-- 
-      NOTE: The forms with 'workflow-details' are used in the Workflow Details page. 
-   -->   
-   
+
+   <!--
+      NOTE: The forms with 'workflow-details' are used in the Workflow Details page.
+   -->
+
    <config evaluator="task-type" condition="bpm:startTask">
       <forms>
          <form id="workflow-details">
@@ -562,11 +577,11 @@
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="packageItems" set="items" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -584,7 +599,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -605,7 +620,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="bpm:activitiStartTask">
       <forms>
          <form id="workflow-details">
@@ -616,11 +631,11 @@
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="packageItems" set="items" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -638,7 +653,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -659,7 +674,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:submitAdhocTask">
       <forms>
          <form id="workflow-details">
@@ -670,11 +685,11 @@
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="packageItems" set="items" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -692,7 +707,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -713,7 +728,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:submitReviewTask">
       <forms>
          <form id="workflow-details">
@@ -724,11 +739,11 @@
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="packageItems" set="items" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -746,7 +761,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -767,7 +782,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:submitGroupReviewTask">
       <forms>
          <form id="workflow-details">
@@ -780,12 +795,12 @@
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="bpm:groupAssignee" label-id="workflow.field.review_group" />
                <field id="packageItems" set="items" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -804,7 +819,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -826,7 +841,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:submitParallelReviewTask">
       <forms>
          <form id="workflow-details">
@@ -838,11 +853,11 @@
             <appearance>
                <set id="" appearance="title" label-id="workflow.set.workflow.more_info" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="packageItems" set="items" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -861,7 +876,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="other" appearance="title" label-id="workflow.set.other" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -883,7 +898,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="inwf:inviteToSiteTask">
       <forms>
          <form id="workflow-details">
@@ -897,11 +912,11 @@
                <show id="inwf:inviterUserName" />
             </field-visibility>
             <appearance>
-               <set id="" appearance="title" label-id="workflow.set.workflow.more_info" 
+               <set id="" appearance="title" label-id="workflow.set.workflow.more_info"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -922,7 +937,7 @@
                <set id="" appearance="title" label-id="workflow.set.task.info" />
                <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -957,11 +972,11 @@
                <show id="imwf:resourceName" />
             </field-visibility>
             <appearance>
-               <set id="" appearance="title" label-id="workflow.set.workflow.more_info" 
+               <set id="" appearance="title" label-id="workflow.set.workflow.more_info"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
             </appearance>
          </form>
-         
+
          <form>
             <field-visibility>
                <show id="message" />
@@ -978,7 +993,7 @@
                <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -999,11 +1014,11 @@
          </form>
       </forms>
    </config>
-   
+
    <!-- *********************** -->
    <!-- Task Form Configuration -->
    <!-- *********************** -->
-   
+
    <config evaluator="task-type" condition="bpm:workflowTask">
       <forms>
          <form>
@@ -1024,7 +1039,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1048,7 +1063,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:adhocTask">
       <forms>
          <form>
@@ -1069,7 +1084,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1093,7 +1108,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:completedAdhocTask">
       <forms>
          <form>
@@ -1114,7 +1129,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1138,7 +1153,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:reviewTask">
       <forms>
          <form>
@@ -1183,7 +1198,7 @@
          </form>
       </forms>
    </config>
-   
+
    <!--  Activiiti Review Task -->
    <config evaluator="task-type" condition="wf:activitiReviewTask">
       <forms>
@@ -1231,7 +1246,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:approvedTask">
       <forms>
          <form>
@@ -1252,7 +1267,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1276,7 +1291,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:rejectedTask">
       <forms>
          <form>
@@ -1297,7 +1312,7 @@
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1321,7 +1336,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:approvedParallelTask">
       <forms>
          <form>
@@ -1344,11 +1359,11 @@
                <set id="" appearance="title" label-id="workflow.set.task.info" />
                <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
-               <set id="outcome" appearance="title" label-id="workflow.set.outcome" 
+               <set id="outcome" appearance="title" label-id="workflow.set.outcome"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1384,7 +1399,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="wf:rejectedParallelTask">
       <forms>
          <form>
@@ -1407,11 +1422,11 @@
                <set id="" appearance="title" label-id="workflow.set.task.info" />
                <set id="info" appearance="" template="/org/alfresco/components/form/3-column-set.ftl" />
                <set id="progress" appearance="title" label-id="workflow.set.task.progress" />
-               <set id="outcome" appearance="title" label-id="workflow.set.outcome" 
+               <set id="outcome" appearance="title" label-id="workflow.set.outcome"
                     template="/org/alfresco/components/form/2-column-set.ftl" />
                <set id="items" appearance="title" label-id="workflow.set.items" />
                <set id="response" appearance="title" label-id="workflow.set.response" />
-               
+
                <field id="message">
                   <control template="/org/alfresco/components/form/controls/info.ftl" />
                </field>
@@ -1447,7 +1462,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="inwf:invitePendingTask">
       <forms>
          <form>
@@ -1471,7 +1486,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="inwf:activitiInvitePendingTask">
       <forms>
          <form>
@@ -1497,7 +1512,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="inwf:acceptInviteTask">
       <forms>
          <form>
@@ -1514,7 +1529,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="inwf:rejectInviteTask">
       <forms>
          <form>
@@ -1531,7 +1546,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="imwf:moderatedInvitationReviewTask">
       <forms>
          <form>
@@ -1554,7 +1569,7 @@
          </form>
       </forms>
    </config>
-   
+
    <config evaluator="task-type" condition="imwf:activitiModeratedInvitationReviewTask">
       <forms>
          <form>

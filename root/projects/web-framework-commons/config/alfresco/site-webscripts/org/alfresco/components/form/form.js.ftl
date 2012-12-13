@@ -3,6 +3,7 @@
 <@script type="text/javascript" src="${url.context}/res/components/form/date.js" group="form"/>
 <@script type="text/javascript" src="${url.context}/res/components/form/date-picker.js" group="form"/>
 <@script type="text/javascript" src="${url.context}/res/components/form/period.js" group="form"/>
+<@script type="text/javascript" src="${url.context}/res/components/form/percentage-approve.js" group="form"/>
 <@script type="text/javascript" src="${url.context}/res/components/object-finder/object-finder.js" group="form"/>
 <@script type="text/javascript" src="${url.context}/res/components/form/rich-text.js" group="form"/>
 <@script type="text/javascript" src="${url.context}/res/components/form/content.js" group="form"/>

@@ -33,6 +33,7 @@ import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 
@@ -117,18 +118,18 @@ import org.alfresco.service.namespace.QName;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ClassDefinition#getTitle()
      */
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        return type.getTitle();
+        return type.getTitle(messageLookup);
     }
 
     
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ClassDefinition#getDescription()
      */
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        return type.getDescription();
+        return type.getDescription(messageLookup);
     }
 
     

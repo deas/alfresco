@@ -68,6 +68,7 @@ import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.namespace.NamespaceException;
@@ -154,6 +155,7 @@ public class SOLRAPIClientTest extends TestCase
 
             dictionaryComponent = new DictionaryComponent();
             dictionaryComponent.setDictionaryDAO(dictionaryDAO);
+            dictionaryComponent.setMessageLookup(new StaticMessageLookup());
 
             // cmis dictionary
             CMISMapping cmisMapping = new CMISMapping();

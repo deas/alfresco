@@ -1,6 +1,6 @@
 <project>
     <vendor>Alfresco Software, Inc.</vendor>
-    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <compressionAlgorithm>zip</compressionAlgorithm>
     <fullName>Alfresco Community Edition Stack</fullName>
     <!--readmeFile>README.txt</readmeFile-->
     <shortName>alfresco</shortName>

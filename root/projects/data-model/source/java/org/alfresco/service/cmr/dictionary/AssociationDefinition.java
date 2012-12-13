@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 
 
@@ -43,12 +44,12 @@ public interface AssociationDefinition extends ClassAttributeDefinition
     /**
      * @return the human-readable title 
      */
-    public String getTitle();
+    public String getTitle(MessageLookup messageLookup);
     
     /**
      * @return the human-readable description 
      */
-    public String getDescription();
+    public String getDescription(MessageLookup messageLookup);
     
     /**
      * Is this a child association?

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -45,12 +46,12 @@ public interface PropertyDefinition extends ClassAttributeDefinition
     /**
      * @return the human-readable class title
      */
-    public String getTitle();
+    public String getTitle(MessageLookup messageLookup);
 
     /**
      * @return the human-readable class description
      */
-    public String getDescription();
+    public String getDescription(MessageLookup messageLookup);
 
     /**
      * @return the default value

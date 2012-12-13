@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 import org.springframework.util.StringUtils;
 
@@ -44,8 +45,12 @@ public class M2Label
      * @param label
      * @return
      */
-    public static String getLabel(Locale locale, ModelDefinition model, String type, QName item, String label)
+    public static String getLabel(Locale locale, ModelDefinition model, MessageLookup messageLookup, String type, QName item, String label)
     {
+        if (messageLookup == null)
+        {
+            return null;
+        }
         String key = model.getName().toPrefixString();
         if (type != null)
         {
@@ -57,7 +62,7 @@ public class M2Label
         }
         key += "." + label;
         key = StringUtils.replace(key, ":", "_");
-        return I18NUtil.getMessage(key, locale);
+        return messageLookup.getMessage(key, locale);
     }
     
     /**
@@ -69,9 +74,9 @@ public class M2Label
      * @param label
      * @return
      */
-    public static String getLabel(ModelDefinition model, String type, QName item, String label)
+    public static String getLabel(ModelDefinition model, MessageLookup messageLookup, String type, QName item, String label)
     {
-        return getLabel(I18NUtil.getLocale(), model, type, item, label);
+        return getLabel(I18NUtil.getLocale(), model, messageLookup, type, item, label);
     }
     
 }

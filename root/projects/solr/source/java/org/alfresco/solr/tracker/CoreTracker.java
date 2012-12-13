@@ -282,6 +282,8 @@ public class CoreTracker implements CloseHook
     // 
     
     private boolean transformContent = true;
+
+    private int maxLiveSearchers;
     
     public long getLastIndexedTxCommitTime()
     {
@@ -339,6 +341,11 @@ public class CoreTracker implements CloseHook
         return dataModel.getModelErrors();
     }
     
+    public int getMaxLiveSearchers()
+    {
+        return maxLiveSearchers;
+    }
+    
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         super();
@@ -380,6 +387,7 @@ public class CoreTracker implements CloseHook
         maxHostConnections = Integer.parseInt(p.getProperty("alfresco.maxHostConnections", "40"));
         transformContent = Boolean.parseBoolean(p.getProperty("alfresco.index.transformContent", "true"));
         socketTimeout = Integer.parseInt(p.getProperty("alfresco.socketTimeout", "0"));
+        maxLiveSearchers =  Integer.parseInt(p.getProperty("alfresco.maxLiveSearchers", "2"));
 
         client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(), dataModel.getNamespaceDAO());
 
@@ -862,7 +870,7 @@ public class CoreTracker implements CloseHook
 
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 3)
+                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
@@ -1016,7 +1024,7 @@ public class CoreTracker implements CloseHook
 
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 3)
+                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
@@ -1120,7 +1128,7 @@ public class CoreTracker implements CloseHook
     public void trackRepository() throws IOException, AuthenticationException, JSONException
     {
         int registeredSearcherCount = getRegisteredSearcherCount();
-        if(registeredSearcherCount > 2)
+        if(registeredSearcherCount >= getMaxLiveSearchers())
         {
             log.info(".... skipping tracking registered searcher count = " + registeredSearcherCount);
             return;
@@ -1142,10 +1150,7 @@ public class CoreTracker implements CloseHook
 
             checkRepoAndIndexConsistency(solrIndexSearcher);
 
-            // Track Acls up to end point
-            trackAclChangeSets(solrIndexSearcher);
-
-            trackTransactions(solrIndexSearcher);
+          
         }
         catch(Throwable t)
         {
@@ -1160,6 +1165,19 @@ public class CoreTracker implements CloseHook
             }
         }
 
+        try
+        {
+            // Track Acls up to end point
+            trackAclChangeSets();
+
+            trackTransactions();
+        }
+        catch(Throwable t)
+        {
+            core.getUpdateHandler().rollback(new RollbackUpdateCommand());
+            log.error("Tracking failed", t);
+        }
+        
         // check index state
 
         if (state.check)
@@ -1179,10 +1197,8 @@ public class CoreTracker implements CloseHook
      * @throws IOException
      * @throws JSONException
      */
-    protected void trackTransactions(SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    protected void trackTransactions() throws AuthenticationException, IOException, JSONException
     {
-        SolrIndexReader reader = solrIndexSearcher.getReader();
-
         boolean indexed = false;
         boolean upToDate = false;
         ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
@@ -1223,9 +1239,23 @@ public class CoreTracker implements CloseHook
                 boolean index = false;
 
                 String target = NumericEncoder.encode(info.getId());
-                TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
-                Term term = termEnum.term();
-                termEnum.close();
+                RefCounted<SolrIndexSearcher> refCounted = null;
+                Term term = null;
+                try
+                {
+                    refCounted = core.getSearcher(false, true, null);
+                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
+                    term = termEnum.term();
+                    termEnum.close();
+                }
+                finally
+                {
+                    if(refCounted != null)
+                    {
+                        refCounted.decref();
+                    }
+                    refCounted = null;
+                }
                 if (term == null)
                 {
                     index = true;
@@ -1269,7 +1299,22 @@ public class CoreTracker implements CloseHook
                             {
                                 log.debug(node.toString());
                             }
-                            indexNode(node, solrIndexSearcher, true);
+                            refCounted = null;
+                            try
+                            {
+                                refCounted = core.getSearcher(false, true, null);
+                                indexNode(node, refCounted.get(), true);
+                            }
+                            finally
+                            {
+                                if(refCounted != null)
+                                {
+                                    refCounted.decref();
+                                }
+                                refCounted = null;
+                            }
+                            
+                            
 
                         }
 
@@ -1292,7 +1337,7 @@ public class CoreTracker implements CloseHook
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < 3)
+                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
@@ -1351,10 +1396,8 @@ public class CoreTracker implements CloseHook
      * @throws IOException
      * @throws JSONException
      */
-    protected void trackAclChangeSets(SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    protected void trackAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
-        SolrIndexReader reader = solrIndexSearcher.getReader();
-
         boolean aclIndexing = false;
         AclChangeSets aclChangeSets;
         boolean aclsUpToDate = false;
@@ -1392,9 +1435,27 @@ public class CoreTracker implements CloseHook
                 if (!aclIndexing)
                 {
                     String target = NumericEncoder.encode(changeSet.getId());
-                    TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
-                    Term term = termEnum.term();
-                    termEnum.close();
+                    RefCounted<SolrIndexSearcher> refCounted = null;
+                    Term term = null;
+                    try
+                    {
+                        refCounted = core.getSearcher(false, true, null);
+                        
+                        TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                        term = termEnum.term();
+                        termEnum.close();
+                    }
+                    finally
+                    {
+                        if(refCounted != null)
+                        {
+                            refCounted.decref();
+                        }
+                        refCounted = null;
+                    }
+                    
+                    
+                  
                     if (term == null)
                     {
                         aclIndexing = true;
@@ -2233,6 +2294,12 @@ public class CoreTracker implements CloseHook
                 docCmd.fromPending = true;
                 docCmd.fromCommitted = true;
                 core.getUpdateHandler().delete(docCmd);
+                
+                docCmd = new DeleteUpdateCommand();
+                docCmd.id = "ERROR-" + node.getId();
+                docCmd.fromPending = true;
+                docCmd.fromCommitted = true;
+                core.getUpdateHandler().delete(docCmd);
 
 
             }
@@ -2315,6 +2382,12 @@ public class CoreTracker implements CloseHook
                                 docCmd.fromPending = true;
                                 docCmd.fromCommitted = true;
                                 core.getUpdateHandler().delete(docCmd);
+                                
+                                docCmd = new DeleteUpdateCommand();
+                                docCmd.id = "ERROR-" + node.getId();
+                                docCmd.fromPending = true;
+                                docCmd.fromCommitted = true;
+                                core.getUpdateHandler().delete(docCmd);
 
                                 SolrInputDocument doc = new SolrInputDocument();
                                 doc.addField(AbstractLuceneQueryParser.FIELD_ID, "UNINDEXED-" + nodeMetaData.getId());
@@ -2351,6 +2424,19 @@ public class CoreTracker implements CloseHook
                         }
                     }
 
+                    // Make sure any unindexed doc is removed.
+                    DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
+                    docCmd.id = "UNINDEXED-" + node.getId();
+                    docCmd.fromPending = true;
+                    docCmd.fromCommitted = true;
+                    core.getUpdateHandler().delete(docCmd);
+                    
+                    docCmd = new DeleteUpdateCommand();
+                    docCmd.id = "ERROR-" + node.getId();
+                    docCmd.fromPending = true;
+                    docCmd.fromCommitted = true;
+                    core.getUpdateHandler().delete(docCmd);
+                    
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
@@ -2471,6 +2557,24 @@ public class CoreTracker implements CloseHook
             // TODO: Store exception for display via query
             // TODO: retry failed
 
+            DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
+            docCmd.id = "LEAF-" + node.getId();
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+
+            docCmd = new DeleteUpdateCommand();
+            docCmd.id = "AUX-" + node.getId();
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+
+            docCmd = new DeleteUpdateCommand();
+            docCmd.id = "UNINDEXED-" + node.getId();
+            docCmd.fromPending = true;
+            docCmd.fromCommitted = true;
+            core.getUpdateHandler().delete(docCmd);
+            
             AddUpdateCommand leafDocCmd = new AddUpdateCommand();
             leafDocCmd.overwriteCommitted = overwrite;
             leafDocCmd.overwritePending = overwrite;
@@ -2542,7 +2646,7 @@ public class CoreTracker implements CloseHook
         }
 
         for (Long childId : childIds)
-        {
+        { 
             NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
             nmdp.setFromNodeId(childId);
             nmdp.setToNodeId(childId);
@@ -2566,16 +2670,29 @@ public class CoreTracker implements CloseHook
                     updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
                 }
 
-                SolrInputDocument aux = createAuxDoc(nodeMetaData);
-                AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                auxDocCmd.overwriteCommitted = overwrite;
-                auxDocCmd.overwritePending = overwrite;
-                auxDocCmd.solrDoc = aux;
-                auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+                // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
+                log.info(".. checking aux doc exists in index before we update it");
+                Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + childId));
+                DocSet auxSet = solrIndexSearcher.getDocSet(query);
+                if (auxSet.size() > 0)
+                {
+                    log.debug("... cascade update aux doc "+childId);
+                    
+                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
+                    AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+                    auxDocCmd.overwriteCommitted = overwrite;
+                    auxDocCmd.overwritePending = overwrite;
+                    auxDocCmd.solrDoc = aux;
+                    auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
-                core.getUpdateHandler().addDoc(auxDocCmd);
+                    core.getUpdateHandler().addDoc(auxDocCmd);
+                    
+                }
+                else
+                {
+                    log.debug("... no aux doc found to update "+childId);
+                }   
             }
-
         }
     }
 

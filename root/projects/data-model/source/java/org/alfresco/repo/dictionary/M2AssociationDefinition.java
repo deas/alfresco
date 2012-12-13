@@ -26,6 +26,7 @@ import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.EqualsHelper;
@@ -131,9 +132,9 @@ import org.alfresco.util.EqualsHelper;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.AssociationDefinition#getTitle()
      */
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(classDef.getModel(), "association", name, "title"); 
+        String value = M2Label.getLabel(classDef.getModel(), messageLookup, "association", name, "title"); 
         if (value == null)
         {
             value = assoc.getTitle();
@@ -145,9 +146,9 @@ import org.alfresco.util.EqualsHelper;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.AssociationDefinition#getDescription()
      */
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(classDef.getModel(), "association", name, "description"); 
+        String value = M2Label.getLabel(classDef.getModel(), messageLookup, "association", name, "description"); 
         if (value == null)
         {
             value = assoc.getDescription();
@@ -264,13 +265,13 @@ import org.alfresco.util.EqualsHelper;
         }
         
         // check title
-        if (! EqualsHelper.nullSafeEquals(getTitle(), assocDef.getTitle(), false))
+        if (! EqualsHelper.nullSafeEquals(getTitle(null), assocDef.getTitle(null), false))
         { 
             isUpdatedIncrementally = true;
         }
         
         // check description
-        if (! EqualsHelper.nullSafeEquals(getDescription(), assocDef.getDescription(), false))
+        if (! EqualsHelper.nullSafeEquals(getDescription(null), assocDef.getDescription(null), false))
         { 
             isUpdatedIncrementally = true;
         }

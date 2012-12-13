@@ -224,7 +224,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
      */
     protected void createOwningPropertyDefinitions(CMISMapping cmisMapping,
             PropertyAccessorMapping propertyAccessorMapping, PropertyLuceneBuilderMapping luceneBuilderMapping,
-            ClassDefinition cmisClassDef)
+            DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {
         PropertyDefinition<?> propertyDefintion;
 
@@ -244,7 +244,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 
             // create property definition
             propertyDefintion = createPropertyDefinition(cmisMapping, propertyId, alfrescoPropDef.getName(),
-                    alfrescoPropDef, false);
+                    dictionaryService, alfrescoPropDef, false);
 
             // if the datatype is not supported, the property defintion will be
             // null
@@ -304,7 +304,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
      * Creates a property definition object.
      */
     protected PropertyDefinition<?> createPropertyDefinition(CMISMapping cmisMapping, String id,
-            QName alfrescoPropName, org.alfresco.service.cmr.dictionary.PropertyDefinition propDef, boolean inherited)
+            QName alfrescoPropName, DictionaryService dictionaryService, org.alfresco.service.cmr.dictionary.PropertyDefinition propDef, boolean inherited)
     {
         PropertyType datatype = cmisMapping.getDataType(propDef.getDataType());
         if (datatype == null)
@@ -357,8 +357,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         result.setId(id);
         result.setLocalName(alfrescoPropName.getLocalName());
         result.setLocalNamespace(alfrescoPropName.getNamespaceURI());
-        result.setDisplayName(propDef.getTitle() != null ? propDef.getTitle() : id);
-        result.setDescription(propDef.getDescription() != null ? propDef.getDescription() : result.getDisplayName());
+        result.setDisplayName(propDef.getTitle(dictionaryService) != null ? propDef.getTitle(dictionaryService) : id);
+        result.setDescription(propDef.getDescription(dictionaryService) != null ? propDef.getDescription(dictionaryService) : result.getDisplayName());
         result.setPropertyType(datatype);
         result.setCardinality(propDef.isMultiValued() ? Cardinality.MULTI : Cardinality.SINGLE);
         result.setIsInherited(inherited);

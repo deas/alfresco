@@ -24,6 +24,7 @@ import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 
@@ -43,28 +44,28 @@ import org.alfresco.service.namespace.QName;
     }
 
     @Override
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "aspect", name, "description");
+        String value = M2Label.getLabel(model, messageLookup, "aspect", name, "description");
         
         // if we don't have a description call the super class
         if (value == null)
         {
-           value = super.getDescription();
+           value = super.getDescription(messageLookup);
         }
         
         return value;
     }
 
     @Override
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "aspect", name, "title");
+        String value = M2Label.getLabel(model, messageLookup, "aspect", name, "title");
         
         // if we don't have a title call the super class
         if (value == null)
         {
-           value = super.getTitle();
+           value = super.getTitle(messageLookup);
         }
         
         return value;

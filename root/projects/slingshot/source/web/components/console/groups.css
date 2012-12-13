@@ -99,6 +99,11 @@
    background-image: url(../images/delete-16.png);
 }
 
+.groups td.yui-dt-last .yui-dt-liner a.delete-disabled
+{
+   background-image: url(../images/delete-disabled-16.png);
+}
+
 .groups td.yui-dt-last .yui-dt-liner a
 {
    background-position: 0 center;
@@ -269,6 +274,11 @@
 .groups .yui-columnbrowser .yui-columnbrowser-item .yui-columnbrowser-item-buttons span.users-remove-button
 {
    background-image: url(../images/delete-16.png);
+}
+
+.groups .yui-columnbrowser .yui-columnbrowser-item .yui-columnbrowser-item-buttons span.groups-delete-button-disabled
+{
+   background-image: url(../images/delete-disabled-16.png);
 }
 
 /* Create & Update Panels */

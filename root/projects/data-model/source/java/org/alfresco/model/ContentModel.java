@@ -63,6 +63,9 @@ public interface ContentModel
     static final QName ASPECT_HIDDEN = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "hidden");
     static final QName PROP_VISIBILITY_MASK = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "clientVisibilityMask");
 
+    // tag for soft delete (CIFS rename shuffle)
+    static final QName ASPECT_SOFT_DELETE  = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "softDelete");
+    
     // archived nodes aspect constants
     static final QName ASPECT_ARCHIVED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archived");
     static final QName PROP_ARCHIVED_ORIGINAL_PARENT_ASSOC = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archivedOriginalParentAssoc");

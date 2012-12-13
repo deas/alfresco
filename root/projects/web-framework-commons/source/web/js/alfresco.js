@@ -27,6 +27,15 @@ var YUIDom = YAHOO.util.Dom,
       YUIKeyListener = YAHOO.util.KeyListener;
 
 /**
+ * YUI Config
+ * There are some bugs (see ALF-16878) in IE8's native stringify method, so we don't want to use it.
+ */
+if (YAHOO.env.ua.ie == 8)
+{
+   YAHOO.lang.JSON.useNativeStringify = false;
+}
+
+/**
  * Alfresco root namespace.
  *
  * @namespace Alfresco

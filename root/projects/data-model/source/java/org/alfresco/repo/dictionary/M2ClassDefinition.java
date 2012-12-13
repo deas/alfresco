@@ -36,6 +36,7 @@ import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.EqualsHelper;
@@ -357,9 +358,9 @@ import org.alfresco.util.EqualsHelper;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ClassDefinition#getTitle()
      */
-    public String getTitle()
+    public String getTitle(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "class", name, "title"); 
+        String value = M2Label.getLabel(model, messageLookup, "class", name, "title"); 
         if (value == null)
         {
             value = m2Class.getTitle();
@@ -370,9 +371,9 @@ import org.alfresco.util.EqualsHelper;
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ClassDefinition#getDescription()
      */
-    public String getDescription()
+    public String getDescription(MessageLookup messageLookup)
     {
-        String value = M2Label.getLabel(model, "class", name, "description"); 
+        String value = M2Label.getLabel(model, messageLookup, "class", name, "description"); 
         if (value == null)
         {
             value = m2Class.getDescription();
@@ -538,13 +539,13 @@ import org.alfresco.util.EqualsHelper;
         }
         
         // check title
-        if (! EqualsHelper.nullSafeEquals(getTitle(), classDef.getTitle(), false))
+        if (! EqualsHelper.nullSafeEquals(getTitle(null), classDef.getTitle(null), false))
         { 
             isUpdatedIncrementally = true;
         }
         
         // check description
-        if (! EqualsHelper.nullSafeEquals(getDescription(), classDef.getDescription(), false))
+        if (! EqualsHelper.nullSafeEquals(getDescription(null), classDef.getDescription(null), false))
         { 
             isUpdatedIncrementally = true;
         }
