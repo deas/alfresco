@@ -19,14 +19,13 @@ package org.alfresco.wcm.client.impl;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -129,22 +128,14 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
     @Override
     public List<Asset> getRelatedAssets(String relationshipName)
     {
-        this.readLock.lock();
-        try
+        List<String> relatedAssetIds = getRelationships().get(relationshipName);
+        if (relatedAssetIds == null)
         {
-            List<String> relatedAssetIds = getRelationships().get(relationshipName);
-            if (relatedAssetIds == null)
-            {
-                return Collections.emptyList();
-            }
-            else
-            {
-                return getAssetFactory().getAssetsById(relatedAssetIds);
-            }
+            return Collections.emptyList();
         }
-        finally  
+        else
         {
-            this.readLock.unlock();
+            return getAssetFactory().getAssetsById(relatedAssetIds);
         }
     }
 
@@ -154,21 +145,13 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
     @Override
     public Asset getRelatedAsset(String relationshipName)
     {
-        this.readLock.lock();
-        try
+        Asset result = null;
+        List<String> relatedAssetIds = getRelationships().get(relationshipName);
+        if (relatedAssetIds != null && !relatedAssetIds.isEmpty())
         {
-            Asset result = null;
-            List<String> relatedAssetIds = getRelationships().get(relationshipName);
-            if (relatedAssetIds != null && !relatedAssetIds.isEmpty())
-            {
-                result = getAssetFactory().getAssetById(relatedAssetIds.get(0));
-            }
-            return result;
+            result = getAssetFactory().getAssetById(relatedAssetIds.get(0));
         }
-        finally
-        {
-            this.readLock.unlock();
-        }
+        return result;
     }
 
     /**

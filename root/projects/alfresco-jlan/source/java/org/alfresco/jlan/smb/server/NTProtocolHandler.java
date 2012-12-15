@@ -4201,7 +4201,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 				if ( userLimit != -1L)
 					userLimit = userLimit / diskInfo.getUnitSize();
 				else
-					userLimit = diskInfo.getTotalUnits();
+					userLimit = diskInfo.getFreeUnits();
 
 				// Pack the disk information into the return data packet
 

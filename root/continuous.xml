@@ -1149,7 +1149,7 @@
       <copy todir="${dir.continuous.assemble.sdk}/config"
             includeEmptyDirs="false">
          <fileset dir="${dir.project.repository.config}" 
-                  excludes="**/extension/*" />
+                  excludes="**/extension/*,alfresco/version.properties" />
          <fileset dir="${dir.project.datamodel.config}" 
                   excludes="**/extension/*" />
 <!--         <fileset dir="${dir.project.webclient.config}" 
@@ -1173,11 +1173,9 @@
       </copy>
 
       <!-- fix for ETHREEOH-3996 add exploded config directory to SDK -->
-      <copy todir="${dir.continuous.assemble.sdk}/lib/server/config">
+      <move todir="${dir.continuous.assemble.sdk}/lib/server/config">
          <fileset dir="${dir.continuous.assemble.sdk}/config"/>
-      </copy>
-
-      <delete dir="${dir.continuous.assemble.sdk}/config" />
+      </move>
 
       <!-- Dependencies -->
       <mkdir dir="${dir.continuous.assemble.sdk}/lib/server/dependencies" />

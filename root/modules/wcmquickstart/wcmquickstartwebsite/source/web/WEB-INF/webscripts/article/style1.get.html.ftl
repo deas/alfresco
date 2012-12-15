@@ -16,7 +16,7 @@
     </div>
         
     <h3 class="tag-list">${msg('tags')}</h3>
-    <#if asset.tags?size == 0>
+    <#if !asset.tags?? || asset.tags?size == 0> 
         <p>${msg('tags.none')}</p>
     <#else>
         <ul class="tag-list">

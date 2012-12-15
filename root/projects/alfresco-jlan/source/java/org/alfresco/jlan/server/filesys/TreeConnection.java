@@ -135,10 +135,28 @@ public class TreeConnection {
 
       for (int idx = 0; idx < m_files.length; idx++) {
 
-        //  Check if the file is active
+   	    //  Make sure the file is closed
 
-        if (m_files[idx] != null)
+   	    if (m_files[idx] != null) {
+
+   	      //  Close the file
+
+   	      try {
+
+   	        //  Access the disk interface and close the file
+
+   	        DiskInterface disk = (DiskInterface) m_shareDev.getInterface();
+   	        m_files[idx].setForce(true);
+   	        disk.closeFile(sess, this, m_files[idx]);
+   	        m_files[idx].setClosed(true);
+   	      }
+   	      catch (Exception ex) {
+    	  }
+   	      
+   	      // Remove the file from the open file table
+   	      
           removeFile(idx, sess);
+    	}
       }
     }
     
@@ -196,7 +214,7 @@ public class TreeConnection {
     	return null;
     return m_shareDev.getContext();
   }
-
+  
   /**
    * Return the share access permissions that the user has been granted.
    *
@@ -303,25 +321,6 @@ public class TreeConnection {
 
     if (m_files == null || idx >= m_files.length)
       return;
-
-    //  Make sure the files is closed
-
-    if (m_files[idx] != null && m_files[idx].isClosed() == false) {
-
-      //  Close the file
-
-      try {
-
-        //  Access the disk interface and close the file
-
-        DiskInterface disk = (DiskInterface) m_shareDev.getInterface();
-        m_files[idx].setForce(true);
-        disk.closeFile(sess, this, m_files[idx]);
-        m_files[idx].setClosed(true);
-      }
-      catch (Exception ex) {
-      }
-    }
 
     //	Inform listeners of the file closure
 

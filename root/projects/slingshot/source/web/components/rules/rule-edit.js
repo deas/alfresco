@@ -439,10 +439,12 @@
       {
          this._toggleButtons(false);
          this.widgets.feedbackMessage.hide();
+         var title = this.msg("message.failure"),
+            text = (response.json && response.json.message) ? response.json.message : this.msg("message.persist-failure");
          Alfresco.util.PopupManager.displayPrompt(
          {
-            title: this.msg("message.failure"),
-            text: this.msg("message.persist-failure")
+            title: title,
+            text: text
          });
       },
 
