@@ -168,7 +168,7 @@
     <dependency.tika.version>1.3-20121030</dependency.tika.version>
     <dependency.opencmis.version>0.8.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
-    <dependency.junit.version>4.11-20120805-1225</dependency.junit.version>
+    <dependency.junit.version>4.11</dependency.junit.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.0-M3</dependency.surf.version>
     <dependency.activiti.version>5.10-alf-20121114</dependency.activiti.version>
@@ -636,9 +636,6 @@
     <!-- Profile to build alfresco-enterprise -->
     <profile>
         <id>enterprise</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
         <modules>
             <module>enterpriseprojects/repository</module>
             <module>enterpriseprojects/remote-api</module>
