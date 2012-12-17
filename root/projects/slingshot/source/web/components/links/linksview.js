@@ -1,4 +1,23 @@
 /**
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
  * LinksView component.
  *
  * Component to view a link
@@ -9,7 +28,6 @@
  */
 (function()
 {
-
    /**
     * YUI Library aliases
     */
@@ -48,7 +66,6 @@
 
    YAHOO.extend(Alfresco.LinksView, Alfresco.component.Base,
    {
-
       /**
        * Object container for initialization options
        *
@@ -278,11 +295,11 @@
       },
 
       /**
-      * Generate a view url for a given site, link id.
-      *
-      * @param linkId the id/name of the link
-      * @return an url to access the link
-      */
+       * Generate a view url for a given site, link id.
+       *
+       * @param linkId the id/name of the link
+       * @return an url to access the link
+       */
       generateLinksViewUrl: function LinksView_generateLinksViewUrl(site, container, linkId)
       {
          var url = YAHOO.lang.substitute(Alfresco.constants.URL_PAGECONTEXT + "site/{site}/links-view?linkId={linkId}",
@@ -318,7 +335,7 @@
          }
       },
 
-       /**
+      /**
        * Link deletion implementation
        *
        * @method onDeleteLink
@@ -413,7 +430,7 @@
          });
       },
 
-       /**
+      /**
        * Loads the edit link form and displays it instead of the content
        */
       onEditLink: function LinksView_onEditNode(linkId)
@@ -448,7 +465,6 @@
          var elem = args[1].target;
          YAHOO.util.Dom.removeClass(elem, 'over');
       },
-
 
       /**
        * PRIVATE FUNCTIONS
@@ -492,6 +508,5 @@
             return false;
          }
       }
-
    });
 })();

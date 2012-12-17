@@ -986,7 +986,6 @@
                items: ids
             }
          });
-
       },
 
       /**
@@ -1173,7 +1172,8 @@
          return this.id + "-tagId-" + id;
       },
 
-      /**Build URI parameter string for doclist JSON data webscript
+      /**
+       * Build URI parameter string for doclist JSON data webscript
        *
        * @method _buildDocListParams
        * @param p_obj.page {string} Page number
@@ -1303,7 +1303,7 @@
        */
       _generateRSSFeedUrl: function Links__generateRSSFeedUrl()
       {
-         var url = YAHOO.lang.substitute(Alfresco.constants.URL_CONTEXT + "service/components/links/rss?site={site}",
+         var url = YAHOO.lang.substitute(Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/links/rss?site={site}",
          {
             site: this.options.siteId
          });
