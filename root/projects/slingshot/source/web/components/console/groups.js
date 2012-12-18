@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -103,6 +103,22 @@
          _selectedParentGroupShortName: null,
 
          /**
+          * The value for sorting the result
+          *
+          * @property sortBy
+          * @type String
+          */
+         sortBy: "displayName",
+
+         /**
+          * The number of max items to display for the search
+          *
+          * @property maxItems
+          * @type int
+          */
+         maxItems: 250,
+
+         /**
           * PANEL LIFECYCLE CALLBACKS
           */
 
@@ -124,7 +140,10 @@
             this.widgets.columnbrowser = new YAHOO.extension.ColumnBrowser(parent.id + "-columnbrowser",
             {
                numVisible: 3,
-               rootUrl: Alfresco.constants.PROXY_URI + "api/rootgroups?sortBy=displayName&zone=APP.DEFAULT",
+               rootUrl: Alfresco.constants.PROXY_URI + "api/groups?" +
+                        "sortBy=" + this.sortBy +
+                        (Dom.get(parent.id + "-show-all").checked ? "" : "&zone=APP.DEFAULT") +
+                        ((parent.query && parent.query != null) ? "&shortNameFilter=" + encodeURIComponent(parent.query) : ""),
                pagination:
                {
                   rowsPerPage: parent.options.maxPageSize,
@@ -160,7 +179,8 @@
             Event.addListener(elShowAll, "change", function()
                {
                   var state = {
-                     "showAll": elShowAll.checked
+                     "showAll": elShowAll.checked,
+                     "refresh": this.getParameterValueFromUrl("refresh")
                   };
                   parent.refreshUIState(state);
                }, null, this);
@@ -189,14 +209,6 @@
                {
                   var items = oFullResponse.data;
 
-                  // initial sort by username field
-                  items.sort(function(a, b)
-                  {
-                     var name1 = a.shortName ? a.shortName.toLowerCase() : "",
-                        name2 = b.shortName ? b.shortName.toLowerCase() : "";
-                     return (name1 > name2) ? 1 : (name1 < name2) ? -1 : 0;
-                  });
-
                   // we need to wrap the array inside a JSON object so the DataTable gets the object it expects
                   updatedResponse =
                   {
@@ -223,6 +235,23 @@
 
             // Setup the main datatable
             this._setupDataTable();
+
+            this.widgets.dataTable.subscribe("theadCellClickEvent", function(oArgs)
+            {
+               var panel = null;
+               for (var i = 0, length = parent.panels.length; i < length; i++)
+               {
+                  if (parent.panels[i].id === "search")
+                  {
+                     panel = parent.panels[i];
+                     break;
+                  }
+               }
+               if (panel != null)
+               {
+                  panel.sortBy = this.getColumn(oArgs.target).key;
+               }
+            });
 
             // register the "enter" event on the search text field
             var searchText = Dom.get(parent.id + "-search-text");
@@ -287,6 +316,24 @@
             }, null, this);
 
             this.widgets.deleteGroupOkButton = Alfresco.util.createYUIButton(parent, "remove-button", null);
+         },
+
+         getParameterValueFromUrl: function ConsoleGroups_SearchPanelHandeler_getParameterValueFromUrl(param)
+         {
+            var token, 
+               result = null,
+               hash = window.location.hash,
+               params = hash.replace('#', '').split("&");
+            for (var i = 0; i < params.length; i++)
+            {
+               token = params[i].split("=");
+               if (token[0] === param)
+               {
+                  result = token[1];
+                  break;
+               }
+            }
+            return result;
          },
 
          /**
@@ -398,6 +445,16 @@
          onBrowseClick: function ConsoleGroups_SearchPanelHandler_onBrowseClick()
          {
             parent.refreshUIState({"query": undefined, "refresh": "false"});
+
+            // reset group browser url
+            var showAll = Dom.get(parent.id + "-show-all").checked;
+            var query = Dom.get(parent.id + "-search-text").value;
+            var rootUrl = Alfresco.constants.PROXY_URI + "api/groups?" +
+               "sortBy=" + this.sortBy +
+               (showAll ? "" : "&zone=APP.DEFAULT") +
+               ((query && query != null) ? "&shortNameFilter=" + encodeURIComponent(query) : "");
+            parent.panelHandlers.searchPanelHandler.widgets.columnbrowser.set("rootUrl", rootUrl);
+            parent.panelHandlers.searchPanelHandler.widgets.columnbrowser.load([rootUrl] , true);
          },
 
          /**
@@ -761,7 +818,7 @@
                var item = {
                   shortName: o.shortName,
                   fullName: o.fullName,
-                  url: o.authorityType == 'GROUP' ? Alfresco.constants.PROXY_URI + o.url + "/children?sortBy=displayName" : null,
+                  url: o.authorityType == 'GROUP' ? Alfresco.constants.PROXY_URI + o.url + "/children?sortBy=" + this.sortBy : null,
                   hasNext: o.groupCount > 0 || o.userCount > 0,
                   label: label,
                   next : null,
@@ -1234,11 +1291,6 @@
             {
                initialLoad: false,
                renderLoopSize: 32,
-               sortedBy:
-               {
-                  key: "displayName",
-                  dir: "asc"
-               },
                MSG_EMPTY: parent._msg("message.empty")
             });
          },
@@ -1268,7 +1320,7 @@
          {
             var query = "shortNameFilter=" + encodeURIComponent(query);
             var showAll = Dom.get(parent.id + "-show-all").checked;
-            return showAll ? query : query + "&zone=APP.DEFAULT";
+            return (showAll ? query : query + "&zone=APP.DEFAULT") +  "&maxItems=" + this.maxItems + "&sortBy=" + this.sortBy;
          },
 
          /**
@@ -2033,11 +2085,6 @@
          if (state.showAll)
          {
             this.showAll = state.showAll == "true" ? true : false;
-            // reset group browser url
-            var rootUrl = Alfresco.constants.PROXY_URI + "api/rootgroups?sortBy=displayName" +
-               (this.showAll ? "" : "&zone=APP.DEFAULT");
-            this.panelHandlers.searchPanelHandler.widgets.columnbrowser.set("rootUrl", rootUrl);
-            this.panelHandlers.searchPanelHandler.widgets.columnbrowser.load([rootUrl] , true);
          }
          
          // test if panel has actually changed?

@@ -295,7 +295,7 @@
    <!-- ************************ -->
    <!-- ** Repository Project ** -->
    <!-- ************************ -->
-      
+
    <target name="incremental-repository" 
            depends="package-repository" />
       
@@ -336,8 +336,7 @@
    </target>
    
    <target name="package-repository"
-           depends="compile-repository">
-      <mkdir dir="${dir.project.repository.dist}" />
+           depends="compile-repository, set-revision-number">
       <jar jarfile="${dir.project.repository.dist}/${file.name.jar.repository}" 
             basedir="${dir.project.repository.classes}" />
    </target>

@@ -136,30 +136,6 @@
       <property file="distribute.properties" />
    </target>
 
-   <target name="set-revision-number"
-           depends="continuous-init">
-      <taskdef name="svn"
-               classname="org.tigris.subversion.svnant.SvnTask">
-         <classpath refid="classpath.compile" />
-      </taskdef>
-
-      <svn failonerror="false">
-         <info target="${basedir}"/>
-      </svn>
-      <condition property="display.build.number" value="-b${alf.build.number}" else="">
-          <isset property="alf.build.number" />
-      </condition>
-
-      <copy file="${dir.project.repository.config}/alfresco/version.properties"
-          toDir="${dir.project.repository.dist}/alfresco" overwrite="true" />
-      <replace file="${dir.project.repository.dist}/alfresco/version.properties" summary="yes">
-          <replacefilter token="@scm-path@" value="${svn.info.url}" />
-          <replacefilter token="@scm-revision@" value="${svn.info.rev}" />
-          <replacefilter token="-b@build-number@" value="${display.build.number}" />
-          <replacefilter token="version.edition=Community" value="version.edition=${file.name.codeline}" />
-      </replace>
-   </target>
-
    <target name="generate-checksums"
            description="Generates checksum files for the distibution files" 
            depends="continuous-init">
