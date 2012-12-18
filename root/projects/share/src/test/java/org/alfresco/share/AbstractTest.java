@@ -20,6 +20,7 @@ package org.alfresco.share;
 
 
 import org.alfresco.share.util.ShareTestProperty;
+import org.alfresco.webdrone.AlfrescoVersion;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.share.DashBoardPage;
@@ -40,12 +41,13 @@ public abstract class AbstractTest
     private static Log logger = LogFactory.getLog(AbstractTest.class);
     private static ApplicationContext ctx;
     protected static String shareUrl;
-
     protected static WebDrone drone;
     protected static boolean isCloud;
-    public static String username = "admin";
-    public static String password = "admin";
     protected static Integer maxIteration;
+    protected static String username;
+    protected static String password;
+    protected static AlfrescoVersion alfrescoVersion;
+    
     
     @BeforeClass
     public static void setupContext()
@@ -55,7 +57,8 @@ public abstract class AbstractTest
         shareUrl = t.getShareUrl();
         username = t.getUsername();
         password = t.getPassword();
-        isCloud = t.getAlfrescoVersion().isCloud();
+        alfrescoVersion = t.getAlfrescoVersion();
+        isCloud = alfrescoVersion.isCloud();
         maxIteration = t.getMaxIteration();
     }
 
