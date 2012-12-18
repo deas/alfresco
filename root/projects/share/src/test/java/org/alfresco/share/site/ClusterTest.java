@@ -33,9 +33,7 @@ import org.alfresco.webdrone.share.site.UploadFilePage;
 import org.alfresco.webdrone.share.site.document.DocumentLibraryPage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
