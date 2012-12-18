@@ -20,6 +20,7 @@ package org.alfresco.share.site;
 
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.Assert;
 
@@ -119,123 +120,70 @@ public class ClusterTest extends AbstractSiteTest
       CountDownLatch startSignal = new CountDownLatch(maxIteration);
       CountDownLatch triggerSignal = new CountDownLatch(maxIteration);
       CountDownLatch pauseTest = new CountDownLatch(1);
-      
-      //Start thread and get them to document detail page
+      AtomicBoolean continueTest = new AtomicBoolean(true);
       Thread[] threads = new CheckLikeItThread[maxIteration];
-      for(int i = 0; i < maxIteration; i++)
+      try
       {
-          CheckLikeItThread thread = new CheckLikeItThread(alfrescoVersion,
-                                                           shareUrl,
-                                                           siteName,
-                                                           fileName,
-                                                           startSignal,
-                                                           endSignal,
-                                                           pauseTest,
-                                                           triggerSignal);
-          thread.setDaemon(true);
-          threads[i] = thread;
-          thread.start();
+          //Start thread and get them to document detail page
+          for(int i = 0; i < maxIteration; i++)
+          {
+              CheckLikeItThread thread = new CheckLikeItThread(alfrescoVersion,
+                      shareUrl,
+                      siteName,
+                      fileName,
+                      startSignal,
+                      endSignal,
+                      pauseTest,
+                      triggerSignal,
+                      continueTest);
+              thread.setDaemon(true);
+              threads[i] = thread;
+              thread.start();
+          }
+          //Wait till all threads are on the document details page.
+          startSignal.await();
+          //assert no likes on the document details page
+          for(int i =0; i < threads.length; i++)
+          {
+              CheckLikeItThread thread = (CheckLikeItThread) threads[i];
+              Assert.assertEquals(0, thread.likeCount.get());
+          }
+          //Have a thread set like 
+          logger.info("sent trigger signal wait");
+          new SelectLikeItThread(alfrescoVersion, shareUrl, siteName, fileName, pauseTest).call();
+          //pause the test to allow threads to check
+          pauseTest.await();
+          logger.debug("pause point passed");
+          //Continue to pasue the test to allow thread to finish checking likes
+          triggerSignal.await();
+          //Refresh the other browsers
+          logger.debug("assertion time");
+          //check like count matches all thread
+          for(int i =0; i < threads.length; i++)
+          {
+              CheckLikeItThread thread = (CheckLikeItThread) threads[i];
+              Assert.assertEquals(1, thread.likeCount.get());
+          }
       }
-      //Wait till all threads are on the page.
-      startSignal.await();
-      logger.info("passed start point");
-      //check we see no likes
-      for(int i =0; i < threads.length; i++)
+      finally
       {
-          CheckLikeItThread thread = (CheckLikeItThread) threads[i];
-          Assert.assertEquals(0, thread.likeCount.get());
-      }
-      //Select like
-      
-      //Have a thread set like 
-      logger.info("sent trigger signal wait");
-      new SelectLikeItThread(alfrescoVersion, shareUrl, siteName, fileName, pauseTest).call();
-      pauseTest.await();
-      logger.debug("pause point passed");
-      triggerSignal.await();
-      //Refresh the other browsers
-      logger.debug("assertion time");
-      
-      //check like count matches all thread
-      for(int i =0; i < threads.length; i++)
-      {
-          CheckLikeItThread thread = (CheckLikeItThread) threads[i];
-          Assert.assertEquals(1, thread.likeCount.get());
-      }
-      
-      //End Threads
-      for(int i =0; i < threads.length; i++)
-      {
-          CheckLikeItThread thread = (CheckLikeItThread) threads[i];
-          thread.continueTest.set(false);
-      }
-      endSignal.await();
-      if(logger.isDebugEnabled())
-      {
-          logger.debug("============ test over =============");
+          //End Threads
+          if(logger.isDebugEnabled())
+          {
+              logger.debug("============ ending threads =============");
+          }
+          if(pauseTest.getCount() > 0)
+          {
+              pauseTest.countDown();
+          }
+          continueTest.set(false);
+          endSignal.await();
+          if(logger.isDebugEnabled())
+          {
+              logger.debug("============ test over =============");
+          }
       }
     }
-//    @Test
-//    public void checkUsingWebDroneThread() throws InterruptedException
-//    {
-//        String siteName = "test";
-//        String fileName = "IMG_0653.jpg";
-//        String shareUrl = "https://benchmy.alfresco.me/share/";
-//        AlfrescoVersion alfrescoVersion = AlfrescoVersion.Cloud;
-//        
-//        //Start thread and get them to document detail page
-//        Thread[] threads = new CheckLikeItThread[maxIteration];
-//        CountDownLatch startSignal = new CountDownLatch(maxIteration);
-//        CountDownLatch endSignal = new CountDownLatch(maxIteration);
-//        
-//        for(int i = 0; i < maxIteration; i++)
-//        {
-//            CheckLikeItThread thread = new CheckLikeItThread(alfrescoVersion,
-//                                                             shareUrl,
-//                                                             siteName,
-//                                                             fileName,
-//                                                             startSignal,
-//                                                             endSignal);
-//            thread.setDaemon(true);
-//            threads[i] = thread;
-//            thread.start();
-//        }
-//        //Wait till all threads are on the page.
-//        startSignal.await();
-//        logger.info("passed start point");
-//        //check we see no likes
-//        for(int i =0; i < threads.length; i++)
-//        {
-//            CheckLikeItThread thread = (CheckLikeItThread) threads[i];
-//            Assert.assertEquals(0, thread.likeCount.get());
-//        }
-//        startSignal.await();
-//        logger.info("can increment");
-//        startSignal.countDown();
-//        //Have a thread set like 
-//        //TODO: wait 1 refresh
-//        
-//        
-//        logger.info("sent start signal");
-//        //check like count matches all thread
-//        for(int i =0; i < threads.length; i++)
-//        {
-//            CheckLikeItThread thread = (CheckLikeItThread) threads[i];
-//            Assert.assertEquals(1, thread.likeCount.get());
-//        }
-//        
-//        //End Threads
-//        for(int i =0; i < threads.length; i++)
-//        {
-//            CheckLikeItThread thread = (CheckLikeItThread) threads[i];
-//            thread.continueTest.set(false);
-//        }
-//        endSignal.await();
-//        if(logger.isDebugEnabled())
-//        {
-//            logger.debug("============ test over =============");
-//        }
-//    }
 //    /**
 //     * Helper method to navigate to document library page of a site that
 //     * we have created for the test.

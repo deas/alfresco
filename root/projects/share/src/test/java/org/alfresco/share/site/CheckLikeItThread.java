@@ -48,10 +48,10 @@ public class CheckLikeItThread extends Thread
     private CountDownLatch finished;
     private CountDownLatch checkSignal;
     private CountDownLatch pauseSignal;
-    private AtomicInteger refreshCount = new AtomicInteger(0);
-    private AtomicInteger maxRefreshCount = new AtomicInteger(5);
+    private int refreshCount = 0;
+    private int maxRefreshCount = 2;
     
-    AtomicBoolean continueTest = new AtomicBoolean(true);
+    AtomicBoolean continueTest;
     AtomicInteger likeCount = new AtomicInteger();
     
     public CheckLikeItThread(final AlfrescoVersion alfrescoVersion, 
@@ -61,7 +61,8 @@ public class CheckLikeItThread extends Thread
                              CountDownLatch start, 
                              CountDownLatch finished,
                              CountDownLatch pauseSignal,
-                             CountDownLatch checkSignal)
+                             CountDownLatch checkSignal,
+                             AtomicBoolean continueTest)
     {
         this.alfrescoVersion = alfrescoVersion;
         this.url = url;
@@ -71,6 +72,7 @@ public class CheckLikeItThread extends Thread
         this.finished = finished;
         this.checkSignal = checkSignal;
         this.pauseSignal = pauseSignal;
+        this.continueTest = continueTest;
     }
     
     @Override
@@ -113,8 +115,8 @@ public class CheckLikeItThread extends Thread
     
     private void incrementCount()
     {
-        refreshCount.getAndIncrement();
-        boolean exceeded = refreshCount.intValue() > maxRefreshCount.intValue();
+        refreshCount ++;
+        boolean exceeded = refreshCount > maxRefreshCount;
         if(exceeded)
         {
             if(logger.isDebugEnabled())
