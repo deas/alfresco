@@ -89,18 +89,6 @@ public class ClusterTest extends AbstractSiteTest
         SiteUtil.deleteSite(siteName, isCloud, shareUrl);
     }
     
-    @Before
-    public void startWebDrone() throws Exception
-    {
-        getWebDrone();  
-    }
-    
-    @After
-    public void closeWebDrone() throws Exception
-    {
-        quitWebDrone();  
-    }
-    
     @Test
     public void checkUpdatingLike() throws Exception
     {
