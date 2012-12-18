@@ -18,7 +18,6 @@
  */
 package org.alfresco.share.site;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 import org.alfresco.webdrone.AlfrescoVersion;
@@ -34,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class SelectLikeItThread implements Callable<Boolean>
+public class SelectLikeItThread extends Thread
 {
     private Log logger = LogFactory.getLog(this.getClass());
     
@@ -59,9 +58,8 @@ public class SelectLikeItThread implements Callable<Boolean>
     }
 
     @Override
-    public Boolean call() throws Exception
+    public void run()
     {
-        boolean completed = false;
         drone = new WebDroneImpl(new FirefoxDriver(), alfrescoVersion);
         try
         {
@@ -75,8 +73,8 @@ public class SelectLikeItThread implements Callable<Boolean>
             if(logger.isDebugEnabled()) logger.debug(Thread.currentThread().getName() + " entering document details page");
             DocumentDetailsPage documentDetailsPage = documentLibPage.selectFile(fileName).render();
             documentDetailsPage.selectLike();
-            completed = true;
-
+            //Release the other threads
+            startPoint.countDown();
         }
         catch (Exception e)
         {
@@ -87,7 +85,5 @@ public class SelectLikeItThread implements Callable<Boolean>
             if(logger.isDebugEnabled()) logger.debug(Thread.currentThread().getName() + "closing web drone");
             drone.quit();
         }
-        if(completed) startPoint.countDown();
-        return completed;
     }
 }
