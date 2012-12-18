@@ -32,7 +32,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.expression-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11-SNAPSHOT-20120805-1225.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.asm-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-collections-3.2.1.jar" sourcepath="/3rd Party/src/commons-collections-3.2.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/ehcache-core-2.0.0.jar"/>

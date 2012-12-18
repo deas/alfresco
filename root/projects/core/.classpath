@@ -38,7 +38,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/mybatis-3.0.4-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.aop-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.aop-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/quartz-1.8.3-patched.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11-SNAPSHOT-20120805-1225.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.8.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

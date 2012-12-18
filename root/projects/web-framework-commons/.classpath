@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.2.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11-SNAPSHOT-20120805-1225.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
