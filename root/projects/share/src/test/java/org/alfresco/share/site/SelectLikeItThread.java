@@ -32,7 +32,17 @@ import org.alfresco.webdrone.share.site.document.DocumentLibraryPage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
+/**
+ * Thread that starts {@link WebDrone} and navigates to 
+ * Alfresco's share document library. 
+ * 
+ * Once the thread has reached the page it will select the like
+ * count on the page and terminate its operation.
+ * 
+ * 
+ * @author Michael Suzuki
+ *
+ */
 public class SelectLikeItThread extends Thread
 {
     private Log logger = LogFactory.getLog(this.getClass());

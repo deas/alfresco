@@ -34,22 +34,36 @@ import org.alfresco.webdrone.share.site.document.DocumentLibraryPage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
+/**
+ * Thread that starts {@link WebDrone} and navigates to 
+ * Alfresco's share document library. 
+ * 
+ * Once the thread has reached the page it wait till it
+ * recieves the go ahead to check if like is selected
+ * on the document, this is repeated by the maxRefreshCount.
+ * 
+ * The thread will continue until the refreh count has exceeded
+ * or continueTest has been set to false by parent thread.
+ * 
+ * @author Michael Suzuki
+ *
+ */
 public class CheckLikeItThread extends Thread
 {
     private Log logger = LogFactory.getLog(this.getClass());
     
-    private String url;
-    private String siteName;
-    private String fileName;
-    private AlfrescoVersion alfrescoVersion;
+    private final AtomicInteger refreshCount = new AtomicInteger(0);
+    private final AtomicBoolean exceededCount = new AtomicBoolean(false);
+    private final int maxRefreshCount = 2;
+    private final String url;
+    private final String siteName;
+    private final String fileName;
+    private final AlfrescoVersion alfrescoVersion;
     private WebDrone drone;
     private CountDownLatch startPoint;
     private CountDownLatch finished;
     private CountDownLatch checkSignal;
     private CountDownLatch pauseSignal;
-    private int refreshCount = 0;
-    private int maxRefreshCount = 2;
     
     AtomicBoolean continueTest;
     AtomicInteger likeCount = new AtomicInteger();
@@ -94,7 +108,7 @@ public class CheckLikeItThread extends Thread
             startPoint.countDown();
             pauseSignal.await();
             //wait till the update happend
-            while(continueTest.get())
+            while(continueTest.get() && !exceededCount.get())
             {
                 incrementCount();
                 checkLikeCount();
@@ -112,21 +126,33 @@ public class CheckLikeItThread extends Thread
             drone.quit();
         }
     }
-    
+    /**
+     * Increments the current count and checks 
+     * against the max refresh count to validate
+     * if the work should stop.
+     */
     private void incrementCount()
     {
-        refreshCount ++;
-        boolean exceeded = refreshCount > maxRefreshCount;
+        refreshCount.getAndIncrement();
+        if(logger.isDebugEnabled())
+        {
+            logger.debug(String.format("%S refresh count: %d",Thread.currentThread().getName(), refreshCount.get()));
+        }
+        boolean exceeded = refreshCount.get() > maxRefreshCount;
         if(exceeded)
         {
             if(logger.isDebugEnabled())
             {
                 logger.debug("refresh count exceeded: " + exceeded);
             }
-            continueTest.set(false);
+            exceededCount.set(true);
         }
     }
 
+    /**
+     * Refreshes the page and verifies the like count
+     * on the document details page.
+     */
     public void checkLikeCount()
     {
         drone.refresh();

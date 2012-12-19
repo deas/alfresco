@@ -103,14 +103,14 @@ public class ClusterTest extends AbstractSiteTest
           for(int i = 0; i < maxIteration; i++)
           {
               CheckLikeItThread thread = new CheckLikeItThread(alfrescoVersion,
-                      shareUrl,
-                      siteName,
-                      file.getName(),
-                      startSignal,
-                      endSignal,
-                      pauseTest,
-                      triggerSignal,
-                      continueTest);
+                                                               shareUrl,
+                                                               siteName,
+                                                               file.getName(),
+                                                               startSignal,
+                                                               endSignal,
+                                                               pauseTest,
+                                                               triggerSignal,
+                                                               continueTest);
               thread.setDaemon(true);
               threads[i] = thread;
               thread.start();
