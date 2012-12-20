@@ -62,6 +62,19 @@
                         <test>AlfrescoSolrEventListenerTest#testAllMatch*</test>
                 </configuration>
             </plugin>
+
+            <!--  Create a jar of test classes, to be reused later -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                 <executions>
+                    <execution>
+                        <id>create-test-jar</id>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

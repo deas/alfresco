@@ -106,6 +106,7 @@
     <module>projects/web-editor-plugin</module>
     <module>projects/solr</module>
     <module>projects/file-transfer-receiver</module>
+    <module>projects/system-build-test</module>
     <module>modules/sharepoint/amp</module>
     <module>modules/wcmquickstart/wcmquickstartmodule</module>
     <module>modules/wcmquickstart/wcmquickstartclientapi</module>
@@ -275,7 +276,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.4</version>
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
