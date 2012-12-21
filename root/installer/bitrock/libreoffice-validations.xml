@@ -24,10 +24,31 @@ Do you want to continue with the installation?</text>
 			    <ruleEvaluationLogic>and</ruleEvaluationLogic>
 			    <ruleList>
 				<compareText value="${linux_distribution}" logic="equals" text="debian" nocase="1" />
+				<compareText value="${linux_distribution_id}" text="Ubuntu" nocase="1" logic="equals"/>
+				<compareText value="${linux_distribution_release}" text="10.04" nocase="1" logic="equals"/>
 				<ruleGroup>
 				    <ruleEvaluationLogic>or</ruleEvaluationLogic>
 				    <ruleList>
-					<!-- Ubuntu -->
+					<!-- Ubuntu 10.04 -->
+					<fileTest path="/usr/lib/libICE.so.6" condition="not_exists" />
+					<fileTest path="/usr/lib/libSM.so.6" condition="not_exists" />
+					<fileTest path="/usr/lib/libXext.so.6" condition="not_exists" />
+					<fileTest path="/usr/lib/libXrender.so.1" condition="not_exists" />
+					<fileTest path="/usr/lib/libfontconfig.so.1" condition="not_exists" />
+				    </ruleList>
+				</ruleGroup>
+			    </ruleList>
+			</ruleGroup>
+			<ruleGroup>
+			    <ruleEvaluationLogic>and</ruleEvaluationLogic>
+			    <ruleList>
+				<compareText value="${linux_distribution}" logic="equals" text="debian" nocase="1" />
+				<compareText value="${linux_distribution_id}" text="Ubuntu" nocase="1" logic="equals"/>
+				<compareText value="${linux_distribution_release}" text="10.04" nocase="1" logic="does_not_equal"/>
+				<ruleGroup>
+				    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+				    <ruleList>
+					<!-- Ubuntu > 10.04-->
 					<fileTest path="/usr/lib/x86_64-linux-gnu/libICE.so.6" condition="not_exists" />
 					<fileTest path="/usr/lib/x86_64-linux-gnu/libSM.so.6" condition="not_exists" />
 					<fileTest path="/usr/lib/x86_64-linux-gnu/libXext.so.6" condition="not_exists" />
