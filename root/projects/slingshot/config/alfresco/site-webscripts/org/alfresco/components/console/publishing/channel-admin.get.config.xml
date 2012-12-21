@@ -1,4 +1,4 @@
 <config>
-   <remoteAuthDomain>http://alfresco.com</remoteAuthDomain>
+   <remoteAuthDomain>http://www.alfresco.com</remoteAuthDomain>
    <remoteAuthSendPath>/stand-alone-auth-send.html</remoteAuthSendPath>
 </config>

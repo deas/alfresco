@@ -5,21 +5,12 @@ function main()
    var wikipage = args.wikipage;
    if (wikipage)
    {
-      var uri = "/slingshot/wiki/page/" + page.url.templateArgs.site + "/" + encodeURIComponent(wikipage) + "?format=mediawiki",
-          connector = remote.connect("alfresco"),
-          result = connector.get(uri),
-          myConfig = new XML(config.script);
-      
-      if (result.status == status.STATUS_OK)
-      {
-         model.wikipage = myConfig.allowUnfilteredHTML == true ? result.response : stringUtils.stripUnsafeHTML(result.response);
-      }
-      
+      var wikiData = doGetCall("/slingshot/wiki/page/" + page.url.templateArgs.site + "/" + encodeURIComponent(wikipage) + "?minWikiData=true");
+      var allowUnfilteredHTML = new XML(config.script).allowUnfilteredHTML;
+      model.wikipage = allowUnfilteredHTML ? wikiData.pagetext : stringUtils.stripUnsafeHTML(wikiData.pagetext);
+      model.pageList = wikiData.pageList;
       model.wikiLink = String(wikipage);
       model.pageTitle = String(wikipage).replace(/_/g, " ");
-   
-      // Get all pages for the site so we can display links correctly
-      model.pageList = doGetCall("/slingshot/wiki/pages/" + page.url.templateArgs.site + "?pageMetaOnly=true");
    }
    
    // Call the repository to see if the user is site manager or not

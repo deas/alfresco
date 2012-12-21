@@ -255,147 +255,156 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
             {
                 return new VerbatimAnalyser(false);
             }
-            
+
             for (String contentEnding : AlfrescoSolrDataModel.additionalContentFields.keySet())
             {
-                try
+                if(fieldName.endsWith(contentEnding))
                 {
-                    int  end = fieldName.length() - contentEnding.length();
-                    if(end <= 0)
+                    try
                     {
-                        // Skip for short field names
-                        continue;
-                    }
-                    QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
-                    PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
-                    if (propertyDef != null)
-                    {
-                        if (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT))
+                        int  end = fieldName.length() - contentEnding.length();
+                        if(end <= 0)
                         {
-                            if (fieldName.endsWith(".size"))
+                            // Skip for short field names
+                            continue;
+                        }
+                        QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
+                        PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
+                        if (propertyDef != null)
+                        {
+                            if (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT))
                             {
-                                return new LongAnalyser();
-                            }
-                            else if (fieldName.endsWith(".locale"))
-                            {
-                                return new VerbatimAnalyser(true);
-                            }
-                            else if (fieldName.endsWith(".mimetype"))
-                            {
-                                return new VerbatimAnalyser();
-                            }
-                            else if (fieldName.endsWith(".encoding"))
-                            {
-                                return new VerbatimAnalyser();
-                            }
-                            else if (fieldName.endsWith(".contentDocId"))
-                            {
-                                return new LongAnalyser();
-                            }
-                            else if (fieldName.endsWith(".transformationException"))
-                            {
-                                return defaultAnalyser;
-                            }
-                            else if (fieldName.endsWith(".transformationTime"))
-                            {
-                                return new LongAnalyser();
-                            }
-                            else if (fieldName.endsWith(".transformationStatus"))
-                            {
-                                return new VerbatimAnalyser();
-                            }
-                            else if (fieldName.endsWith(".__"))
-                            {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, defaultAnalyser);
+                                if (fieldName.endsWith(".size"))
+                                {
+                                    return new LongAnalyser();
+                                }
+                                else if (fieldName.endsWith(".locale"))
+                                {
+                                    return new VerbatimAnalyser(true);
+                                }
+                                else if (fieldName.endsWith(".mimetype"))
+                                {
+                                    return new VerbatimAnalyser();
+                                }
+                                else if (fieldName.endsWith(".encoding"))
+                                {
+                                    return new VerbatimAnalyser();
+                                }
+                                else if (fieldName.endsWith(".contentDocId"))
+                                {
+                                    return new LongAnalyser();
+                                }
+                                else if (fieldName.endsWith(".transformationException"))
+                                {
+                                    return defaultAnalyser;
+                                }
+                                else if (fieldName.endsWith(".transformationTime"))
+                                {
+                                    return new LongAnalyser();
+                                }
+                                else if (fieldName.endsWith(".transformationStatus"))
+                                {
+                                    return new VerbatimAnalyser();
+                                }
+                                else if (fieldName.endsWith(".__"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, defaultAnalyser);
+                                }
                             }
                         }
                     }
-                }
-                catch (InvalidQNameException iqne)
-                {
+                    catch (InvalidQNameException iqne)
+                    {
 
+                    }
                 }
             }
 
             for (String textEnding : AlfrescoSolrDataModel.additionalTextFields.keySet())
             {
-                try
+                if(fieldName.endsWith(textEnding))
                 {
-                    int  end = fieldName.length() - textEnding.length();
-                    if(end <= 0)
+                    try
                     {
-                        // Skip for short field names
-                        continue;
-                    }
-                    QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
-                    PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
-                    if (propertyDef != null)
-                    {
-                        if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
+                        int  end = fieldName.length() - textEnding.length();
+                        if(end <= 0)
                         {
-                            if (fieldName.endsWith(".__"))
+                            // Skip for short field names
+                            continue;
+                        }
+                        QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
+                        PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
+                        if (propertyDef != null)
+                        {
+                            if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
                             {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, defaultAnalyser);
-                            }
-                            else if (fieldName.endsWith(".__.u"))
-                            {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, new VerbatimAnalyser(false));
-                            }
-                            else if (fieldName.endsWith(".u"))
-                            {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE, new VerbatimAnalyser(false));
-                            }
-                            else if (fieldName.endsWith(".sort"))
-                            {
-                                return new VerbatimAnalyser(false);
+                                if (fieldName.endsWith(".__"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, defaultAnalyser);
+                                }
+                                else if (fieldName.endsWith(".__.u"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, new VerbatimAnalyser(false));
+                                }
+                                else if (fieldName.endsWith(".u"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE, new VerbatimAnalyser(false));
+                                }
+                                else if (fieldName.endsWith(".sort"))
+                                {
+                                    return new VerbatimAnalyser(false);
+                                }
                             }
                         }
                     }
-                }
-                catch (InvalidQNameException iqne)
-                {
+                    catch (InvalidQNameException iqne)
+                    {
 
+                    }
                 }
             }
 
             for (String mlTexttEnding : AlfrescoSolrDataModel.additionalMlTextFields.keySet())
             {
-                try
+                if(fieldName.endsWith(mlTexttEnding))
                 {
-                    int  end = fieldName.length() - mlTexttEnding.length();
-                    if(end <= 0)
+                    try
                     {
-                        // Skip for short field names
-                        continue;
-                    }
-                    QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
-                    PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
-                    if (propertyDef != null)
-                    {
-                        if (propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
+                        int  end = fieldName.length() - mlTexttEnding.length();
+                        if(end <= 0)
                         {
-                            if (fieldName.endsWith(".__"))
+                            // Skip for short field names
+                            continue;
+                        }
+                        QName testPropertyQName = QName.createQName(fieldName.substring(1, end));
+                        PropertyDefinition propertyDef = dictionaryService.getProperty(testPropertyQName);
+                        if (propertyDef != null)
+                        {
+                            if (propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
                             {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, defaultAnalyser);
-                            }
-                            else if (fieldName.endsWith(".__.u"))
-                            {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, new VerbatimAnalyser(false));
-                            }
-                            else if (fieldName.endsWith(".u"))
-                            {
-                                return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE, new VerbatimAnalyser(false));
-                            }
-                            else if (fieldName.endsWith(".sort"))
-                            {
-                                return new VerbatimAnalyser(false);
+                                if (fieldName.endsWith(".__"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, defaultAnalyser);
+                                }
+                                else if (fieldName.endsWith(".__.u"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.ALL_ONLY, new VerbatimAnalyser(false));
+                                }
+                                else if (fieldName.endsWith(".u"))
+                                {
+                                    return new MLAnalayser(dictionaryService, MLAnalysisMode.EXACT_LANGUAGE, new VerbatimAnalyser(false));
+                                }
+                                else if (fieldName.endsWith(".sort"))
+                                {
+                                    return new VerbatimAnalyser(false);
+                                }
                             }
                         }
                     }
-                }
-                catch (InvalidQNameException iqne)
-                {
+                    catch (InvalidQNameException iqne)
+                    {
 
+                    }
                 }
             }
 
@@ -532,7 +541,7 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
             throw new RuntimeException("Unable to load analyser for property of type " + property.getName() + " using " + analyserClassName);
         }
     }
-    
+
     private Analyzer loadAnalyzer( DataTypeDefinition dataTypeDef )
     {
         String analyserClassName = dataTypeDef.resolveAnalyserClassName(I18NUtil.getLocale()).trim();
@@ -579,7 +588,7 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
             {
                 propertyQName = QName.createQName(fieldName.substring(1));
             }
-          
+
             PropertyDefinition propertyDef = dictionaryService.getProperty(propertyQName);
             if (propertyDef != null)
             {

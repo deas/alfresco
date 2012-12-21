@@ -1426,6 +1426,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 localePrefix = language;
                 toTokenise = token;
             }
+            else
+            {
+                toTokenise = token;
+            }
         }
 
         String testText = toTokenise;

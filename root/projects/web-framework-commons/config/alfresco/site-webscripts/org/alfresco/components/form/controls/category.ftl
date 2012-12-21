@@ -48,8 +48,16 @@
                </div>
             </#if>
             
+            <#if field.control.params.mode?? && isValidMode(field.control.params.mode?upper_case)>
+               <input id="${fieldHtmlId}-mode" type="hidden" name="${field.name}-mode" value="${field.control.params.mode?upper_case}" />
+            </#if>
+            
             <@renderPickerHTML controlId />
          </#if>
       </div>
    </#if>
 </div>
+
+<#function isValidMode modeValue>
+   <#return modeValue == "OR" || modeValue == "AND">
+</#function>

@@ -451,11 +451,11 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
             BooleanQuery booleanQuery, Locale locale, String textFieldName) throws ParseException
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(part1);
+        builder.append("{").append(locale.toString()).append("}").append(part1);
         String first = getToken(fieldName, builder.toString(), analysisMode);
 
         builder = new StringBuilder();
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(part2);
+        builder.append("{").append(locale.toString()).append("}").append(part2);
         String last = getToken(fieldName, builder.toString(), analysisMode);
 
         Query query = new ConstantScoreRangeQuery(textFieldName, first, last, includeLower, includeUpper);
@@ -568,7 +568,7 @@ public class LuceneQueryParser extends AbstractLuceneQueryParser
             BooleanQuery booleanQuery, Locale locale, String actualField) throws ParseException
     {
         StringBuilder builder = new StringBuilder(queryText.length() + 10);
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
+        builder.append("{").append(locale.toString()).append("}").append(queryText);
         Query subQuery = subQueryBuilder.getQuery(actualField, builder.toString(), analysisMode, luceneFunction);
         if (subQuery != null)
         {
