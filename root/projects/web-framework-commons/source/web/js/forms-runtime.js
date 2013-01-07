@@ -29,7 +29,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
    {
       this.formId = formId;
       this.showSubmitStateDynamically = false;
-      this.reusable = false;
+      this.reusable = true;
       this.submitAsJSON = false;
       this.submitElements = [];
       this.validations = [];
