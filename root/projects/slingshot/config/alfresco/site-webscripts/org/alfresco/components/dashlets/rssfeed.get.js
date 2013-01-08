@@ -60,7 +60,10 @@ function main()
    {
       actions.push({
          cssClass: "edit",
-         eventOnClick: { _alfValue : "rssFeedDashletEvent", _alfType: "REFERENCE"},
+         eventOnClick: {
+            _alfValue : "rssFeedDashletEvent" + args.htmlid.replace(/-/g, "_"),
+            _alfType: "REFERENCE"
+         },
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

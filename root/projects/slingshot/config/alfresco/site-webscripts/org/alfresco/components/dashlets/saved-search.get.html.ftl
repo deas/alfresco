@@ -1,3 +1,5 @@
+<#assign el=args.htmlid?html>
+
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/saved-search.css" group="dashlets" />
@@ -11,18 +13,18 @@
 </@>
 
 <@markup id="widgets">
+   <#assign id=el?replace("-", "_")>
    <@inlineScript group="dashlets">
-      var savedSearchDashletEvent = new YAHOO.util.CustomEvent("configSearchClick");
+      var savedSearchDashletEvent${id} = new YAHOO.util.CustomEvent("onConfigSearchClick");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      savedSearchDashletEvent.subscribe(savedSearch.configSearchClick, savedSearch, true);
+      savedSearchDashletEvent${id}.subscribe(savedSearch.onConfigSearchClick, savedSearch, true);
    </@>
 </@>
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?html>
       <div class="dashlet savedsearch">
          <div class="title" id="${el}-title">${msg("header.title")}</div>
          <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>

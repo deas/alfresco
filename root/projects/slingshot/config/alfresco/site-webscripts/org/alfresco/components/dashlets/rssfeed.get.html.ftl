@@ -1,4 +1,5 @@
 <#import "/org/alfresco/utils/feed.utils.ftl" as feedLib/>
+<#assign el=args.htmlid?html>
 
 <@markup id="css" >
    <#-- No CSS Dependencies -->
@@ -11,18 +12,18 @@
 </@>
 
 <@markup id="widgets">
+   <#assign id=el?replace("-", "_")>
    <@inlineScript group="dashlets">
-      var rssFeedDashletEvent = new YAHOO.util.CustomEvent("onConfigFeedClick");
+      var rssFeedDashletEvent${id} = new YAHOO.util.CustomEvent("onConfigFeedClick");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      rssFeedDashletEvent.subscribe(rssFeed.onConfigFeedClick, rssFeed, true);
+      rssFeedDashletEvent${id}.subscribe(rssFeed.onConfigFeedClick, rssFeed, true);
    </@>
 </@>
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?html>
       <div class="dashlet rssfeed">
          <div class="title" id="${el}-title">${title!msg("label.header")}</div>
          <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
