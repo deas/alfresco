@@ -1,3 +1,5 @@
+<#assign el=args.htmlid?html>
+
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/webview.css" group="dashlets"/>
@@ -10,12 +12,13 @@
 </@>
 
 <@markup id="widgets">
+   <#assign id=el?replace("-", "_")>
    <@inlineScript group="dashlets">
-      var editWebViewDashletEvent = new YAHOO.util.CustomEvent("onDashletConfigure");
+      var editWebViewDashletEvent${id} = new YAHOO.util.CustomEvent("onDashletConfigure");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      editWebViewDashletEvent.subscribe(webView.onConfigWebViewClick, webView, true);
+      editWebViewDashletEvent${id}.subscribe(webView.onConfigWebViewClick, webView, true);
    </@>
 </@>
 
@@ -23,9 +26,9 @@
    <@uniqueIdDiv>
       <div class="dashlet webview">
          <div class="title">
-            <a id="${args.htmlid}-title-link" class="title-link" <#if !isDefault>href="${uri}"</#if> target="_blank"><#if webviewTitle != "">${webviewTitle?html}<#elseif !isDefault>${uri?html}<#else>${msg('label.header')}</#if></a>
+            <a id="${el}-title-link" class="title-link" <#if !isDefault>href="${uri}"</#if> target="_blank"><#if webviewTitle != "">${webviewTitle?html}<#elseif !isDefault>${uri?html}<#else>${msg('label.header')}</#if></a>
          </div>
-         <div class="body scrollablePanel"<#if args.height??> style="height: ${args.height}px;"</#if> id="${args.htmlid}-iframeWrapper">
+         <div class="body scrollablePanel"<#if args.height??> style="height: ${args.height}px;"</#if> id="${el}-iframeWrapper">
          <#if isDefault>
             <h3 class="configureInstructions">${msg("label.noWebPage")}</h3>
          <#else>

@@ -1,4 +1,5 @@
 <#import "/org/alfresco/utils/feed.utils.ftl" as feedLib/>
+<#assign el=args.htmlid?html>
 
 <@markup id="css" >
    <#-- No CSS Dependencies -->
@@ -11,18 +12,18 @@
 </@>
 
 <@markup id="widgets">
+   <#assign id=el?replace("-", "_")>
    <@inlineScript group="dashlets">
-      var addOnsRssFeedDashletEvent = new YAHOO.util.CustomEvent("openFeedClick");
+      var addOnsRssFeedDashletEvent${id} = new YAHOO.util.CustomEvent("openFeedClick");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      addOnsRssFeedDashletEvent.subscribe(addOnsRssFeed.onConfigFeedClick, addOnsRssFeed, true);
+      addOnsRssFeedDashletEvent${id}.subscribe(addOnsRssFeed.onConfigFeedClick, addOnsRssFeed, true);
    </@>
 </@>
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <#assign el=args.htmlid?html>
       <div class="dashlet rssfeed">
          <div class="title" id="${el}-title">${title!msg("label.header")}</div>
          <div class="toolbar">
