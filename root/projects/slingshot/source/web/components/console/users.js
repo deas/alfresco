@@ -651,7 +651,7 @@
             
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-create-form");
-            form.setSubmitElements([parent.widgets.createuserOkButton, parent.widgets.createuserAnotherButton]);
+            form.setSubmitElements([parent.widgets.createuserAnotherButton]);
 
             // Form field validation
             form.addValidation(parent.id + "-create-firstname", Alfresco.forms.validation.mandatory, null, "keyup");
