@@ -1716,16 +1716,24 @@
        */
       onCreateUserOKClick: function ConsoleUsers_onCreateUserOKClick(e, args)
       {
-         var handler = function(res)
+         var form = this._getCurrentPanel()._form;
+         if (form.validate())
          {
-            window.scrollTo(0, 0);
-            Alfresco.util.PopupManager.displayMessage(
+            var handler = function(res)
             {
-               text: this._msg("message.create-success")
-            });
-            this.refreshUIState({"panel": "search"});
-         };
-         this._createUser(handler);
+               window.scrollTo(0, 0);
+               Alfresco.util.PopupManager.displayMessage(
+               {
+                  text: this._msg("message.create-success")
+               });
+               this.refreshUIState({"panel": "search"});
+            };
+            this._createUser(handler);
+         }
+         else
+         {
+            form._setAllFieldsAsVisited();
+         }
       },
       
       /**
@@ -1737,20 +1745,27 @@
        */
       onCreateUserAnotherClick: function ConsoleUsers_onCreateUserAnotherClick(e, args)
       {
-         var me = this;
-         var handler = function(res)
+         var form = this._getCurrentPanel()._form;
+         if (form.validate())
          {
-            window.scrollTo(0, 0);
-            Alfresco.util.PopupManager.displayMessage(
+            var me = this;
+            var handler = function(res)
             {
-               text: me._msg("message.create-success")
-            });
-            
-            // clear fields
-            this._getCurrentPanel().clear();
-            Dom.get(me.id + "-create-firstname").focus();
-         };
-         this._createUser(handler);
+               window.scrollTo(0, 0);
+               Alfresco.util.PopupManager.displayMessage(
+               {
+                  text: me._msg("message.create-success")
+               });
+               // clear fields
+               this._getCurrentPanel().clear();
+               Dom.get(me.id + "-create-firstname").focus();
+            };
+            this._createUser(handler);
+         }
+         else
+         {
+            form._setAllFieldsAsVisited();
+         }
       },
       
       /**
@@ -1774,17 +1789,25 @@
        */
       onUpdateUserOKClick: function ConsoleUsers_onUpdateUserOKClick(e, args)
       {
-         var me = this;
-         var handler = function(res)
+         var form = this._getCurrentPanel()._form;
+         if (form.validate())
          {
-            window.scrollTo(0, 0);
-            Alfresco.util.PopupManager.displayMessage(
+            var me = this;
+            var handler = function(res)
             {
-               text: me._msg("message.update-success")
-            });
-            me.refreshUIState({"panel": "view"});
-         };
-         this._updateUser(handler);
+               window.scrollTo(0, 0);
+               Alfresco.util.PopupManager.displayMessage(
+               {
+                  text: me._msg("message.update-success")
+               });
+               me.refreshUIState({"panel": "view"});
+            };
+            this._updateUser(handler);
+         }
+         else
+         {
+            form._setAllFieldsAsVisited();
+         }
       },
       
       /**
