@@ -31,6 +31,7 @@
             <@region id="folder-permissions" scope="template"/>
          </div>
       </div>
+      <@region id="archive-and-download" scope="template"/>
    </div>
    <@region id="doclib-custom" scope="template"/>
    </@>

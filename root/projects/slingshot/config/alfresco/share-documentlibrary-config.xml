@@ -873,7 +873,8 @@
          </actionGroup>
 
          <actionGroup id="folder-details">
-            <action index="100" id="document-edit-metadata" icon="folder-edit-metadata" label="actions.folder.edit-metadata" />
+            <action index="100" id="folder-download"/>
+            <action index="105" id="document-edit-metadata" icon="folder-edit-metadata" label="actions.folder.edit-metadata" />
             <action index="110" id="document-approve" icon="folder-approve" />
             <action index="120" id="document-reject" icon="folder-reject" />
             <action index="130" id="document-copy-to" icon="folder-copy-to" label="actions.folder.copy-to" />

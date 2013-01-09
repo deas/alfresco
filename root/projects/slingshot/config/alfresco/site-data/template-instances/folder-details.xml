@@ -179,6 +179,12 @@
          </sub-components>
       </component>
 
+      <!-- Archive and Download -->
+      <component>
+         <region-id>archive-and-download</region-id>
+         <url>/components/download/archive</url>
+      </component>
+
       <!-- Custom Code -->
       <component>
          <region-id>doclib-custom</region-id>
