@@ -642,16 +642,13 @@
             YAHOO.Bubbling.on("removeGroupCreate", this.onRemoveGroupCreate, this);
             
             // Buttons
-            parent.widgets.createuserOkButton = Alfresco.util.createYUIButton(parent, "createuser-ok-button", parent.onCreateUserOKClick,
-            {
-               type: "submit"
-            });
+            parent.widgets.createuserOkButton = Alfresco.util.createYUIButton(parent, "createuser-ok-button", parent.onCreateUserOKClick);
             parent.widgets.createuserAnotherButton = Alfresco.util.createYUIButton(parent, "createuser-another-button", parent.onCreateUserAnotherClick);
             parent.widgets.createuserCancelButton = Alfresco.util.createYUIButton(parent, "createuser-cancel-button", parent.onCreateUserCancelClick);
             
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-create-form");
-            form.setSubmitElements([parent.widgets.createuserAnotherButton]);
+            form.setSubmitElements([parent.widgets.createuserOkButton, parent.widgets.createuserAnotherButton]);
 
             // Form field validation
             form.addValidation(parent.id + "-create-firstname", Alfresco.forms.validation.mandatory, null, "keyup");
@@ -680,6 +677,17 @@
                max: 100,
                crop: true
             }, "change", parent._msg("Alfresco.forms.validation.length.message"));
+
+            // Add an enter listener to the form
+            new YAHOO.util.KeyListener(form.formId, {
+               keys: [13]
+            }, {
+               fn: function(e) {
+                  parent.onCreateUserOKClick();
+               },
+               scope: this,
+               correctScope: true
+            }).enable();
 
             // Initialise the form
             form.init();
