@@ -291,6 +291,7 @@
          <mimetype mimetype="video/x-sgi-movie" display="SGI Video">
             <extension>movie</extension>
             <extension>mpv2</extension>
+            <extension>mv</extension>
          </mimetype>
          <mimetype mimetype="application/oda" display="">
             <extension>oda</extension>
