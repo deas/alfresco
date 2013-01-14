@@ -146,7 +146,7 @@ public class MimetypeMap implements MimetypeService
     // Adobe
     public static final String MIMETYPE_APPLICATION_ILLUSTRATOR = "application/illustrator";
 
-    public static final String MIMETYPE_APPLICATION_PHOTOSHOP = "application/photoshop";
+    public static final String MIMETYPE_APPLICATION_PHOTOSHOP = "image/vnd.adobe.photoshop";
 
     // Open Document
     public static final String MIMETYPE_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
