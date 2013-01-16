@@ -106,7 +106,9 @@
     <module>projects/web-editor-plugin</module>
     <module>projects/solr</module>
     <module>projects/file-transfer-receiver</module>
+    <!-- Currently being worked out... see BDE-118
     <module>projects/system-build-test</module>
+    -->
     <module>modules/sharepoint/amp</module>
     <module>modules/wcmquickstart/wcmquickstartmodule</module>
     <module>modules/wcmquickstart/wcmquickstartclientapi</module>
