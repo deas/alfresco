@@ -1,14 +1,12 @@
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/my-meeting-workspaces.css" group="dashlets"/>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/create-site.css" group="dashlets"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/delete-site.css" group="dashlets"/>
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
    <@script type="text/javascript" src="${url.context}/res/components/dashlets/my-meeting-workspaces.js" group="dashlets"/>
-   <@script type="text/javascript" src="${url.context}/res/modules/create-site.js" group="dashlets"/>
    <@script type="text/javascript" src="${url.context}/res/modules/delete-site.js" group="dashlets"/>
 </@>
 
