@@ -341,7 +341,7 @@
             Dom.get(this.id + "-title").value = "";
             Dom.get(this.id + "-shortName").value = "";
             Dom.get(this.id + "-description").value = "";
-            Dom.get(this.id + "-sitePreset").setSelectedIndex = 0;
+            Dom.get(this.id + "-sitePreset").selectedIndex = 0;
             Dom.get(this.id + "-isPublic").checked = "checked";
             Dom.get(this.id + "-isModerated").checked = "";
          }
