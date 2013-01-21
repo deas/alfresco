@@ -198,7 +198,7 @@
                weekMode: me.options.fcOpts.weekMode,
                weekends: me.options.fcOpts.weekends,
                allDaySlot: me.options.fcOpts.allDaySlot,
-               firstDay: me.options.fcOpts.firstDay,
+               firstDay: parseInt(Alfresco.util.message("calendar.widget_config.start_weekday")),
                firstHour: me.options.fcOpts.firstHour,
                minTime: (me.options.fcOpts.showWorkHours) ? me.options.fcOpts.minTimeWorkHours : me.options.fcOpts.minTimeToggle,
                maxTime: (me.options.fcOpts.showWorkHours) ? me.options.fcOpts.maxTimeWorkHours : me.options.fcOpts.maxTimeToggle,

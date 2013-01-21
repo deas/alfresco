@@ -6,7 +6,6 @@
    <weekMode>"variable"</weekMode>
    <weekends>true</weekends>
    <allDaySlot>true</allDaySlot>
-   <firstDay>1</firstDay>
    <firstHour>0</firstHour>
    <minTimeWorkHours>7</minTimeWorkHours>
    <maxTimeWorkHours>19</maxTimeWorkHours>
