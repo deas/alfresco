@@ -1315,14 +1315,14 @@ tr.early {
 #divCalendarContent .deleteAction
 {
    float: right;
-   visibility: hidden;
+   display: none;
 }
 
 #divCalendarContent .yui-dt-highlighted .infoAction,
 #divCalendarContent .yui-dt-highlighted .editAction,
 #divCalendarContent .yui-dt-highlighted .deleteAction
 {
-   visibility: visible;
+   display: block;
 }
 
 #divCalendarContent .infoAction
