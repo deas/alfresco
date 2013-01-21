@@ -12,3 +12,8 @@
    padding-top: 125px;
    line-height: 1em;
 }
+
+.web-preview .previewer video
+{
+   max-height: 325px;
+}
