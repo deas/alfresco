@@ -47,8 +47,7 @@
             <div class="yui-u overflow">
                <span id="${el}-startdate">
                   <input id="fd" type="text" name="fromdate" readonly="readonly" tabindex="6"
-                         value="<#if event.startAt??>${event.startAt.iso8601}</#if>"
-                         title="<#if event.startAt??>${xmldate(event.startAt.iso8601)?string("yyyy-MM-dd")}</#if>" />
+                         value="<#if event.startAt??>${event.startAt.iso8601}</#if>" />
                </span>
                <span id="${el}-starttime" class="eventTime">
                   <label for="${el}-start">${msg("label.at")}</label>
@@ -61,8 +60,7 @@
             <div class="yui-u overflow">
                <span id="${el}-enddate">
                   <input id="td" type="text" name="todate" readonly="readonly" tabindex="8"
-                         value="<#if event.endAt??>${event.endAt.iso8601}</#if>"
-                         title="<#if event.endAt??>${xmldate(event.endAt.iso8601)?string("yyyy-MM-dd")}</#if>" />
+                         value="<#if event.endAt??>${event.endAt.iso8601}</#if>" />
                </span>
                <span id="${el}-endtime" class="eventTime">
                   <label for="${el}-end">${msg("label.at")}</label>
