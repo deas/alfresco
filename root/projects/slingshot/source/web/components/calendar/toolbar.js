@@ -99,9 +99,9 @@
          this.workHoursButton = Alfresco.util.createYUIButton(this, "workHours-button", this.onToggleWorkHours,
          {
             type: "checkbox",
-            checked:true
+            checked:false
          });
-
+         this.workHoursButton.set("title", Alfresco.util.message(this.workHoursButton.get("checked") ? "button.work-hours.all" : "button.work-hours.working", 'Alfresco.CalendarToolbar'));
          this.navButtonGroup = new YAHOO.widget.ButtonGroup(this.id + "-navigation");
          if (typeof(this.navButtonGroup) != "undefined" && this.navButtonGroup._buttons != null ) // Will be undefined / null if navigation is hidden serverside (e.g. only one view enabled)
          {
