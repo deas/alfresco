@@ -438,16 +438,16 @@
                   // Update time in submission fields
                   // NOTE: this uses the user's current timezone and stores it as a UTC offset.
                   var startTimeEl = document.getElementsByName("start")[0],
-                     startTime = startTimeEl.value.split(":"),
+                     startTime = Alfresco.util.parseTime(startTimeEl.value),
                      endTimeEl = document.getElementsByName("end")[0],
-                     endTime = endTimeEl.value.split(":"),
+                     endTime = Alfresco.util.parseTime(endTimeEl.value),
                      startAtEl = document.getElementsByName("startAt")[0],
                      endAtEl = document.getElementsByName("endAt")[0],
                      startDate = fromISO8601(startAtEl.value),
                      endDate = fromISO8601(endAtEl.value);
 
-                  startDate.setHours(startTime[0], startTime[1]);
-                  endDate.setHours(endTime[0], endTime[1]);
+                  startDate.setHours(startTime.getHours(), startTime.getMinutes());
+                  endDate.setHours(endTime.getHours(), endTime.getMinutes());
 
                   Dom.setAttribute(startAtEl, "value", toISO8601(startDate))
                   Dom.setAttribute(endAtEl, "value", toISO8601(endDate))
@@ -536,9 +536,8 @@
                   // Make sure the time is correct if we're editing an event.
                   if (editEvent)
                   {
-                     // TODO: Change this to use date-format.shortTime when input parsing script can determine AM/PM
-                     Dom.setAttribute(startTimeEl, "value", formatDate(startDate, "HH:MM"));
-                     Dom.setAttribute(endTimeEl, "value", formatDate(endDate, "HH:MM"));
+                     Dom.setAttribute(startTimeEl, "value", formatDate(startDate, this.msg("date-format.shortTime")));
+                     Dom.setAttribute(endTimeEl, "value", formatDate(endDate, this.msg("date-format.shortTime")));
                   }
 
                   // hide mini-cal
@@ -574,13 +573,6 @@
                      match: false
                   };
 
-                  // validate time fields
-                  var validateTimeRegExp =
-                  {
-                     pattern: /^\d{1,2}:\d{2}/,
-                     match: true
-                  };
-
                   var textElements = [EditDialog.id + "-title", EditDialog.id + "-location", EditDialog.id + "-description"];
                   form.addValidation(textElements[0], Alfresco.forms.validation.mandatory, null, "blur");
                   form.addValidation(textElements[0], Alfresco.forms.validation.mandatory, null, "keyup");
@@ -592,10 +584,6 @@
                   }
 
                   var timeElements = [EditDialog.id + "-start", EditDialog.id + "-end"];
-                  for (var i = 0; i < timeElements.length; i++)
-                  {
-                     form.addValidation(timeElements[i], Alfresco.forms.validation.regexMatch, validateTimeRegExp, "blur", CalendarView.msg('message.invalid-time'));
-                  }
 
                   form.addValidation(EditDialog.id + "-tag-input-field", function EventInfo_tagValidation(field, args, event, form, silent)
                   {
@@ -971,17 +959,20 @@
 
       _onDateValidation: function _onDateValidation(field, args, event, form, silent)
       {
-         var fromHours = Dom.get(args.obj.id + "-start").value.split(':');
-         var toHours = Dom.get(args.obj.id + "-end").value.split(':');
+         var fromTime = Alfresco.util.parseTime(Dom.get(args.obj.id + "-start").value);
+         var toTime = Alfresco.util.parseTime(Dom.get(args.obj.id + "-end").value);
+
+         if (fromTime === null || toTime === null)
+         {
+            return false;
+         }
 
          // Check that the end date is after the start date
          var startDate = Alfresco.CalendarHelper.getDateFromField(Dom.get("fd"));
-         startDate.setHours(fromHours[0]);
-         startDate.setMinutes(fromHours[1]);
+         startDate.setHours(fromTime.getHours(), fromTime.getMinutes());
 
          var toDate = Alfresco.CalendarHelper.getDateFromField(Dom.get("td"));
-         toDate.setHours(toHours[0]);
-         toDate.setMinutes(toHours[1]);
+         toDate.setHours(toTime.getHours(), toTime.getMinutes());
 
          //allday events; the date and time can be exactly the same so test for this too
          if (startDate.getTime() === toDate.getTime())

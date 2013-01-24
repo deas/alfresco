@@ -1160,6 +1160,48 @@ Alfresco.util.fromISO8601 = function(date)
 };
 
 /**
+ *
+ * Converts a user input time string into a date object.
+ * Accepted inputs include: 11am, 11PM, 11:00, 23:00, 11:23 am, 3 p.m., 08:00, 1100, 11, 8, 23.
+ * Only accepts hours and minutes, seconds are zeroed.
+ *
+ * @param timeString {String} - user input time
+ * @return {Date}
+ */
+
+Alfresco.util.parseTime = function(timeString)
+{
+   var d = new Date(); // Today's date
+   var time = timeString.toString().match(/^(\d{1,2})(?::?(\d\d))?\s*(a*)([p]?)\.*m?\.*$/i);
+
+   // Exit early if we've not got a match, if the hours are greater than 24, or greater than 12 if AM/PM is specified, or minutes are larger than 59.
+   if (time === null || !time[1] || time[1] > 24 || (time[1] > 12 && (time[3]||time[4])) || (time[2] && time[2] > 59)) return null;
+
+   // Add 12?
+   var add12 = false;
+
+   // If we're PM:
+   if (time[4])
+   {
+      add12 = true;
+   }
+
+   // if we've got EITHER AM or PM, the 12th hour behaves different:
+   // 12am = 00:00 (which is the same as 24:00 if the date is ignored), 12pm = 12:00
+   // if we don't have AM or PM, then default to 12 === noon (i.e. add nothing).
+   if (time[1] == 12 && (time[3] || time[4]))
+   {
+      add12 = !add12;
+   }
+
+   d.setHours( parseInt(time[1], 10) + (add12 ? 12 : 0) );
+   d.setMinutes( parseInt(time[2], 10) || 0 );
+   d.setSeconds(0);
+   return d;
+
+}
+
+/**
  * Convert a JavaScript native Date object into an ISO8601 date string
  *
  * @method Alfresco.util.toISO8601
