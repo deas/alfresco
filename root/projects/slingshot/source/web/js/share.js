@@ -51,8 +51,9 @@ Alfresco.Share = Alfresco.Share || {};
  *    parentNodeRef {string} Must have either parentNodeRef or nodeRef
  *    appTool {string} Share application used for filtering, e.g. "documentlibrary"|"blog"|"links"
  * </pre>
+ * @param callback {function} a function which will be called after the activity has been posted
  */
-Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
+Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, callback)
 {
    // Mandatory parameter check
    if (!YAHOO.lang.isString(siteId) || siteId.length === 0 ||
@@ -64,7 +65,6 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
       return;
    }
 
-   // This is a "fire-and-forget" webscript; we're not concerned with success/failure status
    var config =
    {
       method: "POST",
@@ -75,7 +75,29 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data)
          type: activityType,
          title: title,
          page: page
-      }, data)
+      }, data),
+      successCallback:
+      {
+         fn: function()
+         {
+            if (callback)
+            {
+               callback();
+            }
+         },
+         scope: this
+      },
+      failureCallback:
+      {
+         fn: function()
+         {
+            if (callback)
+            {
+               callback();
+            }
+         },
+         scope: this
+      }
    };
 
    Alfresco.logger.debug("Alfresco.Share.postActivity: ", config.dataObj);

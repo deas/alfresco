@@ -125,13 +125,13 @@
        */
       onInlineEditSuccess: function InlineEditMgr_onInlineEditSuccess(response)
       {
-         var siteId = this.options.siteId, data = 
-         {
-            fileName: response.config.dataObj.prop_cm_name,
-            nodeRef: new Alfresco.util.NodeRef(this.options.nodeRef)
-         };
-         this.modules.actions.postActivity(siteId, "inline-edit", "document-details", data);
-         this._navigateForward();
+         var siteId = this.options.siteId,
+            data = 
+            {
+               fileName: response.config.dataObj.prop_cm_name,
+               nodeRef: this.options.nodeRef
+            };
+         this.modules.actions.postActivity(siteId, "inline-edit", "document-details", data, {}, this._navigateForward());
       },
       
       /**
