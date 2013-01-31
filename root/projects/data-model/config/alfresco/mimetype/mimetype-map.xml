@@ -257,6 +257,8 @@
             <extension default="true">mpg</extension>
             <extension>mpeg</extension>
             <extension>mpe</extension>
+            <extension>m1v</extension>
+            <extension>m2v</extension>
          </mimetype>
          <mimetype mimetype="audio/mpeg" display="MPEG Audio">
             <extension default="true">mp3</extension>
@@ -278,6 +280,10 @@
          <mimetype mimetype="video/mpeg2" display="MPEG2 Video">
             <extension>mpeg2</extension>
          </mimetype>
+         <mimetype mimetype="video/mp2t" display="MPEG Transport Stream">
+            <extension>ts</extension>
+            <extension>m2ts</extension>
+         </mimetype>
          <mimetype mimetype="video/quicktime" display="Quicktime Video">
             <extension>mov</extension>
             <extension>qt</extension>
@@ -286,6 +292,7 @@
             <extension>3gp</extension>
          </mimetype>
          <mimetype mimetype="video/3gpp2" display="3G2 Video">
+            <extension default="true">3g2</extension>
             <extension>3gp2</extension>
          </mimetype>
          <mimetype mimetype="video/x-sgi-movie" display="SGI Video">
