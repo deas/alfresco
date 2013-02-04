@@ -59,7 +59,7 @@ public class AlfrescoHttpClient
 {
     private static Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
 
-    private static final int TIMEOUT_MILLISEC = 10000; // = 10 seconds
+    private static final int TIMEOUT_MILLISEC = 10000; // 30 seconds
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "admin";
 

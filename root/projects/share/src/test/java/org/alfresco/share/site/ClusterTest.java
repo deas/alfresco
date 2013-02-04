@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.Assert;
 
+import org.alfresco.share.site.AbstractSiteTest;
+import org.alfresco.share.site.CheckLikeItThread;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.webdrone.AlfrescoVersion;
 import org.alfresco.webdrone.WebDrone;

@@ -27,6 +27,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.share.DashBoardPage;
+import org.alfresco.webdrone.share.ShareLink;
 import org.alfresco.webdrone.share.dashlet.MySitesDashlet;
 import org.alfresco.webdrone.share.site.SiteDashboardPage;
 import org.alfresco.webdrone.share.site.document.DocumentDetailsPage;
@@ -99,7 +100,8 @@ public class CheckLikeItThread extends Thread
             DashBoardPage dashBoard = WebDroneUtil.loginAs(drone, url, "admin", "admin").render();
             MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
 
-            SiteDashboardPage site = dashlet.selectSite(siteName).render();
+            ShareLink siteLink = dashlet.selectSite(siteName);
+            SiteDashboardPage site = siteLink.click().render();
             if(logger.isDebugEnabled()) logger.debug(Thread.currentThread().getName() + " entering document library page");
             DocumentLibraryPage documentLibPage = site.getSiteNav().selectSiteDocumentLibrary().render();
             if(logger.isDebugEnabled()) logger.debug(Thread.currentThread().getName() + " entering document details page");
@@ -118,7 +120,7 @@ public class CheckLikeItThread extends Thread
         }
         catch (Exception e)
         {
-            logger.error("thread error: " + e);
+            logger.error(String.format("%s thread error: %s",Thread.currentThread().getName(), e.getMessage()));
         } 
         finally
         {
