@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2005-2010 Alfresco Software Limited.
+* Copyright (C) 2005-2013 Alfresco Software Limited.
 *
 * This file is part of Alfresco
 *
@@ -51,12 +51,12 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     }
 
     /** 
-     * @see org.alfresco.repo.webdav.WebDAVMethod#getNodeForPath(org.alfresco.service.cmr.repository.NodeRef, java.lang.String, java.lang.String)
+     * @see org.alfresco.repo.webdav.WebDAVMethod#getNodeForPath(org.alfresco.service.cmr.repository.NodeRef, java.lang.String)
      */    
     @Override
-    protected FileInfo getNodeForPath(NodeRef rootNodeRef, String path, String servletPath) throws FileNotFoundException
+    protected FileInfo getNodeForPath(NodeRef rootNodeRef, String path) throws FileNotFoundException
     {
-        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, URLDecoder.decode(path), servletPath);
+        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, URLDecoder.decode(path));
         FileInfo workingCopy = getWorkingCopy(nodeInfo.getNodeRef());
         return workingCopy != null ? workingCopy : nodeInfo;
     }
@@ -123,7 +123,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
             try
             {
                 // Check if the path exists
-                lockNodeInfo = getNodeForPath(getRootNodeRef(), getPath(), m_request.getServletPath());
+                lockNodeInfo = getNodeForPath(getRootNodeRef(), getPath());
             }
             catch (FileNotFoundException e)
             {
