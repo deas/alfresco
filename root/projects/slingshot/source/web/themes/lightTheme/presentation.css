@@ -953,7 +953,7 @@ body.yui-skin-lightTheme .yuimenu .bd
    border: 1px solid #ccc;
    box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    padding: 3px;
-   font-size: 108%;
+   font-size: 109%;
    border-bottom-left-radius: 6px;
    border-bottom-right-radius: 6px;
 }
@@ -1819,4 +1819,9 @@ table td.thumbnail img
 .dnd-upload .title-folder
 {
    vertical-align: baseline !important;
+}
+
+.about-share .bd
+{
+   border-radius: 0 !important;
 }
