@@ -7,16 +7,13 @@
 }
 
 .alfresco-share .alf-menu-user-status-text-area > textarea {
-   box-shadow: 3px 3px 5px rgba(50, 50, 50, 0.5) inset;
-   border-bottom: 1px solid #eee;
-   border-right: 1px solid #eee;
-   border-top: 1px solid #838383;
-   border-left: 1px solid #838383;
-   border-radius: 5px 5px 5px 5px;
-   padding: 5px;
-   font-family: arial, sans-serif;
+   box-shadow: 0 0 8px rgba(50, 50, 50, 0.25) inset;
+   border: none;
+   padding: 2px;
    color: #838383;
    width: 100%;
+   font-family: Open Sans,arial,sans-serif;
+   font-size: 108%;
 }
 
 .alfresco-share .alf-menu-user-status-title {
