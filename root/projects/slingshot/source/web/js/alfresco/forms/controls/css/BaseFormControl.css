@@ -1,0 +1,52 @@
+.form-control {
+   
+}
+
+.form-control-label {
+   
+}
+
+.form-control-control {
+   float: left;
+   margin-right: 5px;
+}
+
+.form-control-requirementIndicator {
+   float: left;
+}
+
+.form-control-units {
+   float: left;
+}
+
+.form-control-validation {
+   float: left;
+   display: none;
+}
+
+.form-control-validation.validation-error {
+   background: url("./images/error-16.png");
+   display: block;
+   height: 16px;
+   width: 16px;
+   background-repeat: no-repeat;
+   margin: 5px;
+}
+
+.form-control-validation-message {
+   float: left;
+   display: none;
+   color: #ED2525;
+   font-weight: bold;
+}
+
+.form-control-validation-message.display {
+   float: left;
+   display: block;
+}
+
+
+.form-control-clear-both {
+   clear: both;
+   height: 5px;
+}

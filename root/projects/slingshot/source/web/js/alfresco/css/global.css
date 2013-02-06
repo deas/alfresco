@@ -1,0 +1,30 @@
+@font-face {
+  font-family: AlfArialNarrow;
+  src: local("Arial Narrow");
+}
+
+body {
+   margin: 0;
+   font-family: arial, sans-serif;
+   color: #5d5d5d;
+}
+
+.clear-both {
+   clear: both;
+}
+
+
+.horizontal-widgets {
+}
+
+.horizontal-widget {
+   float: left;
+}
+
+.left-widgets {
+   float: left;
+}
+
+.right-widgets {
+   float: right;
+}

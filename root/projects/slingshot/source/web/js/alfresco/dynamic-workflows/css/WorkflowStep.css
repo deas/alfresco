@@ -1,0 +1,24 @@
+.workflow-step {
+   
+}
+
+.workflow-step-read-display {
+   display: block;
+}
+
+.workflow-step-read-display.hide {
+   display: none;
+}
+
+.workflow-step-edit-display {
+   display: block;
+}
+
+.workflow-step-edit-display.hide {
+   display: none;
+}
+
+.workflow-step-read-display-title {
+    font-size: 18px;
+    font-weight: bold;
+}

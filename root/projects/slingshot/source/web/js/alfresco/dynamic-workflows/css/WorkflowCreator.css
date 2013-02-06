@@ -1,0 +1,21 @@
+.workflow-creator {
+}
+
+.workflow-creator-steps {
+   background-color: #ECECEC;
+   float: left;
+   margin: 10px;
+   padding: 20px;
+}
+
+.workflow-creator-details {
+   background-color: #F5FFF2;
+   border: 1px solid #E4EDE1;
+   float: left;
+   margin: 10px;
+   padding: 20px;
+}
+
+.workflow-creator-step-details {
+   float: left;
+}

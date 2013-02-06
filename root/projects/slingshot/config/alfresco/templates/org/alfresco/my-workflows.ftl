@@ -10,8 +10,7 @@
 <@templateBody>
    <@markup id="alf-hd">
    <div id="alf-hd">
-      <@region id="header" scope="global" />
-      <@region id="task-title" scope="template" />
+      <@region scope="global" id="share-header" chromeless="true"/>
    </div>
    </@>
    <@markup id="bd">

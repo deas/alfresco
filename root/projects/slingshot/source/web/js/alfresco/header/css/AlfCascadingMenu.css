@@ -1,0 +1,43 @@
+/* This has been added to set the display for cascading menus - TODO this needs to be changed
+   for cases where groups have not been specified. */
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu {
+  border: 1px solid #4D4D4D;
+  background-color: #4D4D4D;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+}
+
+/* This ensures that the menu text color is white */
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu .dijitMenuItem {
+  color: #FFFFFF;
+  background-color: #4D4D4D;
+}
+
+/* This overrides whatever Dojo theme is used */
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu .dijitSelectMenu .dijitMenuItemHover td, 
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu .dijitSelectMenu .dijitMenuItemSelected td, 
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu .dijitMenuItemHover,
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu .dijitMenuItemSelected {
+  background-color: #1682c6;
+  background-image: none;
+  background-repeat: no-repeat;
+  color: #ffffff;
+}
+
+/* More specific rule for properly grouped items */
+.dijitPopup.Popup .alf-header-cascading-menu .alf-menu-group.dijitMenu .alf-menu-group-items .alf-dropdown-menu {
+  border: 1px solid #4D4D4D;
+  background-color: #4D4D4D;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+}
+
+.alfresco-share .dijitPopup.Popup .alf-header-cascading-menu {
+  background-color: transparent;
+  border: medium none;
+  box-shadow: none;
+  padding: 0;
+}
+

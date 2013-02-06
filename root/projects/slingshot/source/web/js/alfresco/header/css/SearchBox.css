@@ -1,0 +1,47 @@
+.alfresco-share .alf-search-box .dijit.dijitReset.dijitInline.dijitDropDownButton {
+  float: left;
+}
+
+.alfresco-share .alf-search-box .dijitReset.dijitInline.dijitButtonNode {
+  border: medium none;
+}
+
+.alfresco-share .alf-search-box {
+   background-color: #D9D9D9;
+   border-radius: 7px 7px 7px 7px;
+   color: #333333;
+   margin: 2px 5px 5px;
+   padding: 0 5px;
+}
+
+/* This ensures that the menu bar and the input field are in the same line */
+.alf-search-box .alf-menu-bar .dijitMenuBar {
+  /*display: inline; */
+}
+
+.alfresco-share .alf-search-box-menu {
+   display: inline-block;
+}
+
+.alfresco-share .alf-search-box-text {
+   background-color: #D9D9D9;
+   width: 100px;
+   border: none;
+   padding: 2px;
+}
+
+/* This defines the search icon for use in popup menu items only */
+.alfresco-share .alf-search-icon {
+   background: url("./images/search-16-gray.png");
+   background-repeat: no-repeat;
+   height: 16px;
+   width: 16px;
+   display: block;
+   margin-top: -2px;
+}
+
+/* This overrides the header menu bar settings to ensure that the popup menu item is the right height */
+.alfresco-share .alf-header .alf-search-box-menu .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+  height: 17px;
+  margin-top: 0;
+}

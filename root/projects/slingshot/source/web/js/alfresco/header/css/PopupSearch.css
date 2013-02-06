@@ -1,0 +1,19 @@
+.alfresco-share .alf-menu-popup-search {
+   
+}
+
+.alfresco-share .alf-menu-popup-search-label {
+   font-weight: bold;
+}
+
+.alfresco-share .alf-menu-popup-search-text-area > textarea {
+   box-shadow: 3px 3px 5px rgba(50, 50, 50, 0.5) inset;
+   border-bottom: 1px solid #eee;
+   border-right: 1px solid #eee;
+   border-top: 1px solid #838383;
+   border-left: 1px solid #838383;
+   border-radius: 5px 5px 5px 5px;
+   padding: 5px;
+   font-family: arial, sans-serif;
+   color: #838383;
+}

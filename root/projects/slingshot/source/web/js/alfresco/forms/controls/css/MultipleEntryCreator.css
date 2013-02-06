@@ -1,0 +1,57 @@
+.multiple-element-creator {
+   
+}
+
+.multiple-element-creator-entries {
+   
+}
+
+.multiple-element-creator-new-entry {
+   
+}
+
+
+
+.multiple-entry-element-wrapper {
+  border: 2px solid gray;
+  border-radius: 10px 10px 10px 10px;
+  box-shadow: 3px 3px 3px 3px #CCCCCC;
+  margin: 2px;
+  padding: 5px;
+  width: 300px;
+  /*background-color: rgba(255, 220, 120, 0.5) */
+}
+
+.multiple-entry-element-wrapped-content {
+   float: left;
+   padding: 3px;
+}
+
+.multiple-entry-element-button {
+   background-repeat: no-repeat;
+   width: 16px;
+   height: 16px;
+   float: right;
+   margin: 5px 2px 2px;
+}
+
+.multiple-entry-element-button.edit {
+   background-image: url("./images/edit-16.png");
+}
+
+
+.multiple-entry-element-button.delete {
+   background-image: url("./images/delete-16.png");
+}
+
+.multiple-entry-element-button.add {
+   background-image: url("./images/add-icon-16.png");
+}
+
+.multiple-entry-element-clear-both {
+   clear: both;
+}
+
+.multiple-entry-element-clear-hide {
+   display: none;
+}

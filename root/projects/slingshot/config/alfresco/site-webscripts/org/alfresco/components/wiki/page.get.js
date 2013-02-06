@@ -57,7 +57,7 @@ function main()
    
    // Widget instantiation metadata...
    var versions = [];
-   if (model.result.versionhistory != null)
+   if (model.result && model.result.versionhistory != null)
    {
       for (var i = 0; i<model.result.versionhistory.length; i++)
       {
@@ -70,7 +70,7 @@ function main()
       }
    }
    var permissions = {}
-   if (model.result.permissions != null)
+   if (model.result && model.result.permissions != null)
    {
       permissions.create = (model.result.permissions.create != null) ? model.result.permissions.create : "false";
       permissions.edit = (model.result.permissions.edit != null) ? model.result.permissions.edit : "false";
@@ -90,15 +90,15 @@ function main()
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          pageTitle : (page.url.args.title != null) ? page.url.args.title : "",
          mode : (page.url.args.action != null) ? page.url.args.action : "view",
-         tags : (model.result.tags != null) ? model.result.tags : [],
-         pages : (model.result.pageList != null) ? model.result.pageList : [],
+         tags : (model.result && model.result.tags != null) ? model.result.tags : [],
+         pages : (model.result && model.result.pageList != null) ? model.result.pageList : [],
          versions: versions,
          locale : locale.substring(0, 2),
          permissions: permissions
       }
    };
    
-   if (model.result.message != null)
+   if (model.result && model.result.message != null)
    {
       wikiPage.options.error = true;
    }

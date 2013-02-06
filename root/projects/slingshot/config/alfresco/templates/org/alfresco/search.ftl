@@ -4,8 +4,7 @@
 <@templateBody>
    <@markup id="alf-hd">
    <div id="alf-hd">
-      <@region id="header" scope="global" />
-      <@region id="title" scope="page" />
+      <@region scope="global" id="share-header" chromeless="true"/>
    </div>
    </@>
    <@markup id="bd">

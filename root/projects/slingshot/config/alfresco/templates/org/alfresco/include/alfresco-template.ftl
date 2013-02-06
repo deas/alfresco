@@ -38,6 +38,9 @@
       <#-- Common i18n msg properties -->
       <@generateMessages type="text/javascript" src="${url.context}/service/messages.js" locale="${locale}"/>
    </@markup>
+   <@markup id="dojoBootstrap">
+      <@region scope="global" id="bootstrap" chromeless="true"/>
+   </@>
    
    <#-- This is where the JavaScript and CSS dependencies will initially be added through the use of the 
         <@script> and <@link> directives. The JavaScript can be moved through the use 
@@ -96,7 +99,7 @@
 -->
 <#macro templateBody type="">
 <#if !PORTLET>
-<body id="Share" class="yui-skin-${theme} alfresco-share ${type}">
+<body id="Share" class="yui-skin-${theme} alfresco-share ${type} claro">
 </#if>
    <div class="sticky-wrapper">
       <div id="doc3">

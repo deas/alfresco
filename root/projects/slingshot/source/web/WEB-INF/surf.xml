@@ -55,6 +55,52 @@
             <!-- Pick the mode: development, production -->
             <mode>production</mode>
          </autowire>
+
+         <!--
+            Stops cached client side resources from being stale after a release by adding a checksum to the url
+            for resources requested using <@script> & <@link> tags
+         -->
+         <use-checksum-dependencies>true</use-checksum-dependencies>
+         <aggregate-dependencies>false</aggregate-dependencies>
+         <calculate-webscript-dependencies>true</calculate-webscript-dependencies>
+         <generate-css-data-images>true</generate-css-data-images>
+         
+         <enable-remote-resource-resolving>true</enable-remote-resource-resolving>
+         
+         <!-- This is the Dojo configuration settings for Surf -->
+         <dojo-pages>
+            <!-- This indicates that Dojo page support is on - this means that the Dojo
+                 dependency handler bean will be checked by the ResourceController and that
+                 the relevant FreeMarker directives will be made available to WebScripts -->
+            <enabled>true</enabled>
+            
+            <!-- This determines whether or not the loader trace is on or off -->
+            <loader-trace-enabled>false</loader-trace-enabled>
+            
+            <!-- This is the file that will be loaded when Dojo is bootstrapped -->
+            <bootstrap-file>/res/js/lib/dojo-1.8.3/dojo/dojo.js</bootstrap-file>
+            
+            <!-- This is the widget that will be used to load the page -->
+            <page-widget>alfresco/core/Page</page-widget>
+            
+            <!-- The following data is used to bootstrap Dojo when it is loaded -->
+            <base-url>/res/</base-url>
+            
+            <messages-object>Alfresco</messages-object>
+            <packages>
+                <package name="dojo" location="js/lib/dojo-1.8.3/dojo"/>
+                <package name="dijit" location="js/lib/dojo-1.8.3/dijit"/>
+                <package name="dojox" location="js/lib/dojo-1.8.3/dojox"/>
+                <package name="alfresco" location="js/alfresco"/>
+                
+                <!-- NOTE:
+                     The following package declaration should be removed once 4.2 Enterprise is
+                     ready for release. It is kept here temporarily to allow the unit tests to
+                     run from within Share (they will ultimately be moved to a new application)-->
+                <package name="doh" location="js/lib/dojo-1.8.3/util/doh"/>
+            </packages>
+         </dojo-pages>
+
       </web-framework>
 
    </config>

@@ -20,18 +20,13 @@ package org.alfresco.web.config.header;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.alfresco.web.config.forms.FormConfigElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.extensions.config.ConfigElement;
 import org.springframework.extensions.config.ConfigException;
-import org.springframework.extensions.config.element.ConfigElementAdapter;
 
 /**
  * This class element represents a header item for the client header.

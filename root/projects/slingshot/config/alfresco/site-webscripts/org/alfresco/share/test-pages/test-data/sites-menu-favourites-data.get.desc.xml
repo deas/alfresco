@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Dummy Sites Menu Favourites Data for testing</shortname>
+  <family>Share Tests</family>
+  <url>/sites-menu-favourites-data</url>
+  <format default="json">argument</format>
+</webscript>

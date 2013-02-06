@@ -1,0 +1,35 @@
+.workflow-step-wrapper {
+   background-color: #FFFFFF;
+   border: 1px solid #D1D1D1;
+   border-radius: 10px 10px 10px 10px;
+   /*box-shadow: 3px 3px 3px 3px #CCCCCC;*/
+   margin: 2px 2px 10px;
+   padding: 5px;
+   width: 300px;
+}
+
+.workflow-step-wrapped-content {
+   float: left;
+   padding: 3px;
+}
+
+.workflow-step-button {
+   background-repeat: no-repeat;
+   width: 16px;
+   height: 16px;
+   float: right;
+   margin: 5px 2px 2px;
+}
+
+
+.workflow-step-button.delete {
+   background-image: url("./images/delete-16.png");
+}
+
+.workflow-step-clear-hide {
+   display: none;
+}
+
+.workflow-step-selected {
+   background-color: #fff6d3;
+}

@@ -1,0 +1,39 @@
+.alfresco-share .alf-menu-arrow {
+   background-image: url("./images/MenuArrow.PNG");
+   background-repeat: no-repeat;
+   background-position: right center;
+   margin-left: 3px;
+   width: 20px;
+   height: 20px;
+}
+
+
+/* This overrides the default Dojo box shadow for popups. Our box shadow is defined elsewhere */
+.alfresco-share div.dijitPopup.Popup {
+    box-shadow: none;
+}
+
+/* This is added to the container node of the menu bar popup to make room for an icon when required */
+.alfresco-share .alf-menu-bar-popup-label-node {
+   margin-left: 6px;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-configure-icon {
+   background: url("./images/Configure.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-user-icon {
+   background: url("./images/User.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}

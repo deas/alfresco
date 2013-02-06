@@ -6,9 +6,7 @@
 <@templateBody>
    <@markup id="alf-hd">
    <div id="alf-hd">
-      <@region id="header" scope="global" />
-      <@region id="title" scope="template" />
-      <@region id="navigation" scope="template" />
+      <@region scope="global" id="share-header" chromeless="true"/>
       <h1 class="sub-title"><#if page.titleId??>${msg(page.titleId)!page.title}<#else>${page.title}</#if></h1>
    </div>
    </@>

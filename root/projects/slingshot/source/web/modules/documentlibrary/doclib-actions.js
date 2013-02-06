@@ -166,7 +166,7 @@
             params = action.params ? action.params : action.webscript.params,
             overrideConfig = action.config,
             wait = action.wait,
-            configObj = null,
+            config = null,
             doclibActions = this;
 
          if (action.params)
@@ -258,7 +258,7 @@
          if (params)
          {
             url = YAHOO.lang.substitute(url, params);
-            configObj = params;
+            config = params;
          }
          if (webscript.queryString)
          {
@@ -284,7 +284,7 @@
             url: url,
             method: webscript.method,
             responseContentType: Alfresco.util.Ajax.JSON,
-            object: configObj
+            object: config
          });
 
          return this._runAction(config, overrideConfig);

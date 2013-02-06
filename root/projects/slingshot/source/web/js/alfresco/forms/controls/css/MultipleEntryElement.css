@@ -1,0 +1,19 @@
+.multiple-entry-element {
+   
+}
+
+.multiple-entry-element-read-display {
+   display: block;
+}
+
+.multiple-entry-element-read-display.hide {
+   display: none;
+}
+
+.multiple-entry-element-edit-display {
+   display: block;
+}
+
+.multiple-entry-element-edit-display.hide {
+   display: none;
+}

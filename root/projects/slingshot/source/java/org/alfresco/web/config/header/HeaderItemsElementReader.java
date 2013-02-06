@@ -20,7 +20,6 @@ package org.alfresco.web.config.header;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -43,6 +42,9 @@ class HeaderItemsElementReader implements ConfigElementReader
     public static final String ELEMENT_APP_ITEMS = "app-items";
     public static final String ELEMENT_USER_ITEMS = "user-items";
     public static final String ELEMENT_CONTAINER_GROUP = "container-group";
+    public static final String ELEMENT_LEGACY = "legacy-mode-enabled";
+    public static final String ELEMENT_MAX_RECENT_SITES = "max-recent-sites";
+    public static final String ELEMENT_MAX_DISPLAYED_SITE_PAGES = "max-displayed-site-pages";
     
     public static final String ID_SEPARATOR = "_";
     
@@ -79,10 +81,13 @@ class HeaderItemsElementReader implements ConfigElementReader
         }
 
         String name = headerItemsElement.getName();
-        if (!name.equals(ELEMENT_APP_ITEMS) && !name.equals(ELEMENT_USER_ITEMS) && !name.equals(ELEMENT_CONTAINER_GROUP))
+        if (!name.equals(ELEMENT_APP_ITEMS) && 
+            !name.equals(ELEMENT_USER_ITEMS) && 
+            !name.equals(ELEMENT_CONTAINER_GROUP) &&
+            !name.equals(ELEMENT_LEGACY))
         {
             throw new ConfigException(this.getClass().getName()
-                    + " can only parse " + ELEMENT_APP_ITEMS + ", " + ELEMENT_USER_ITEMS + ", " + ELEMENT_CONTAINER_GROUP
+                    + " can only parse " + ELEMENT_APP_ITEMS + ", " + ELEMENT_USER_ITEMS + ", " + ELEMENT_CONTAINER_GROUP + ", " + ELEMENT_LEGACY
                     + " elements, the element passed was '" + name + "'");
         }
 

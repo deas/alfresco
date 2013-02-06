@@ -400,7 +400,9 @@
            depends="package-webframeworkcommons-jar,
                     package-slingshot-jar,
                     deploy-slingshot-tomcat-exploded,
-                    minimize-slingshot-deployed-javascript" />
+                    install-slingshot-amps,
+                    minimize-slingshot-deployed-javascript,
+					unpack-dojo-exploded" />
    
    <target name="incremental-webeditor-tomcat"
            description="Performs an incremental build and deployment of the Web Editor WAR"
@@ -780,6 +782,8 @@
          <fileset dir="${dir.project.slingshot.src.web}/yui" />
       </copy>
 
+      
+      
       <!-- clean up previously generated properties files -->
       <delete>
          <fileset dir="${dir.deploy.tomcat.application.slingshot}/WEB-INF/classes/alfresco/messages">
@@ -802,7 +806,37 @@
                  from="^([^_]*).get.properties$" 
                  to="\1.get_en.properties"/>
       </copy>
+   </target>
 
+   <target name="check-dojo-unpacked-exploded" depends="init">
+      <condition property="dojo.unpacked.exploded">
+         <available file="${dojo.tomcat.target}" property="dojo.unpacked.exploded" type="dir"/>
+      </condition>
+      <echo message="Found exploded Dojo? ${dojo.unpacked.exploded}"/>
+   </target>
+   
+   <target name="unpack-dojo-exploded" depends="init, check-dojo-unpacked-exploded" unless="dojo.unpacked.exploded">
+      <echo message="Found exploded Dojo? ${dojo.unpacked.exploded}"/>
+      
+      <!-- unzip and add Dojo -->          
+      <unzip src="${file.zip.slingshot.dojo}"
+             dest="${dir.deploy.tomcat.application.slingshot}" />
+             
+      <!-- Move the directories into the correct location -->
+      <move todir="${dojo.tomcat.target}" includeEmptyDirs="yes" verbose="${copy.verbose}">
+         <fileset dir="${dir.deploy.tomcat.application.slingshot}/${dojo.archive}">
+            <include name="**/*" />
+            
+			<!-- The "util" folder should ultimately be excluded but is retained whilst unit tests live in Share -->
+			<!-- <exclude name="util/**"/> -->
+         </fileset>
+      </move>
+
+      <!-- Delete the now empty Dojo release directory -->
+      <delete dir="${dir.deploy.tomcat.application.slingshot}/${dojo.archive}"/>
+   </target>
+   
+   <target name="install-slingshot-amps" depends="init">
       <!-- Installing auto apply Share AMPs into Share WAR -->
       <touch mkdirs="true" file="${dir.deploy.tomcat.application.slingshot}/META-INF/MANIFEST.MF" />
       <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.share}"
@@ -858,7 +892,7 @@
          
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.deploy.tomcat.application.slingshot}" 
-                           destdir="${dir.deploy.tomcat.application.slingshot}" />
+                           destdir="${dir.deploy.tomcat.application.slingshot}"/>
    </target>
    
    <target name="deploy-webeditor-tomcat" depends="init" 

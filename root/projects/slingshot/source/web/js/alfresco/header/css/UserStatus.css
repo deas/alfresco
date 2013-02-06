@@ -1,0 +1,41 @@
+.alfresco-share .alf-menu-user-status {
+  margin-bottom: 10px;
+}
+
+.alfresco-share .alf-menu-user-status-text-area {
+  margin-bottom: 10px;
+}
+
+.alfresco-share .alf-menu-user-status-text-area > textarea {
+   box-shadow: 3px 3px 5px rgba(50, 50, 50, 0.5) inset;
+   border-bottom: 1px solid #eee;
+   border-right: 1px solid #eee;
+   border-top: 1px solid #838383;
+   border-left: 1px solid #838383;
+   border-radius: 5px 5px 5px 5px;
+   padding: 5px;
+   font-family: arial, sans-serif;
+   color: #838383;
+   width: 100%;
+}
+
+.alfresco-share .alf-menu-user-status-title {
+   border-bottom: 1px solid #7E7E7E;
+   color: #7E7E7E;
+   margin-bottom: 5px;
+}
+
+.alfresco-share .alf-menu-user-status-last-update {
+   float: left;
+}
+
+.alfresco-share .alf-menu-user-status-post-button {
+  background-color: #CCCCCC;
+  border: medium none;
+  border-radius: 4px 4px 4px 4px;
+  color: #575757;
+  float: right;
+  font-weight: bold;
+  padding: 2px 10px;
+  margin-left: 20px;
+}

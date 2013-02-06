@@ -18,15 +18,9 @@
  */
 package org.alfresco.web.config.header;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.alfresco.web.config.forms.ControlParam;
 import org.alfresco.web.config.forms.DependenciesConfigElement;
-import org.alfresco.web.config.forms.DependenciesElementReader;
 import org.springframework.extensions.config.ConfigElement;
 import org.springframework.extensions.config.ConfigException;
 import org.springframework.extensions.config.element.ConfigElementAdapter;
@@ -42,6 +36,9 @@ public class HeaderConfigElement extends ConfigElementAdapter
 
     public static final String HEADER_ID = "header";
 
+    private boolean legacyMode = false;
+    private int maxRecentSites;
+    private int maxDisplayedSitePages;
     private HeaderItemsConfigElement appItemsConfigElement;
     private HeaderItemsConfigElement userItemsConfigElement;
     private DependenciesConfigElement dependenciesConfigElement;
@@ -66,11 +63,41 @@ public class HeaderConfigElement extends ConfigElementAdapter
             "Reading the header config via the generic interfaces is not supported");
     }
 
+    public boolean getLegacyMode()
+    {
+        return this.legacyMode;
+    }
+    
+    void setLegacyMode(boolean enabled)
+    {
+        this.legacyMode = enabled;
+    }
+    
+    public int getMaxRecentSites()
+    {
+        return this.maxRecentSites;
+    }
+    
+    void setMaxRecentSites(int n)
+    {
+        this.maxRecentSites = n;
+    }
+    
+    public int getMaxDisplayedSitePages()
+    {
+        return this.maxDisplayedSitePages;
+    }
+    
+    void setMaxDisplayedSitePages(int n)
+    {
+        this.maxDisplayedSitePages = n;
+    }
+    
     public HeaderItemsConfigElement getAppItems()
     {
         return this.appItemsConfigElement;
     }
-
+    
     void setAppItems(HeaderItemsConfigElement items)
     {
         this.appItemsConfigElement = items;

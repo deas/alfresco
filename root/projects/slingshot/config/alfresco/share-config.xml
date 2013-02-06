@@ -22,6 +22,24 @@
       </flags>
       
       <header>
+      
+         <!-- The number of sites to display in the recent history group of the sites menu -->
+         <max-recent-sites>5</max-recent-sites>
+         
+         <!--  The number of sites page links (e.g. "Dashboard", "Document Library", "Calendar", etc
+               that will be displayed on any site page for navigation. All other site pages will be
+               displayed under a "More" drop down menu. The current site page will always be displayed -->
+         <max-displayed-site-pages>3</max-displayed-site-pages>
+         
+         <!-- This indicates whether or not to use the configuration defined in this "header" element for rendering
+              the header menu bar. If this is set to "false" or it not defined then the header bar will be rendered
+              using the design implemented for 4.2 Enterprise. The header definition can be found in the associated
+              WebScript controller.
+         -->
+         <legacy-mode-enabled>false</legacy-mode-enabled>
+
+         <!-- This is the configuration that will be used to populate the header menu bar when "legacy-mode-enabled"
+              has been set to true -->
          <app-items>
             <!-- defaults: icon="{id}.png" label="header.{id}.label" description="header.{id}.description" -->
             <item type="link" id="my-dashboard">{userdashboardpage}</item>
@@ -105,6 +123,11 @@
          <uri-template id="userdefaultpage">/user/{pageid}</uri-template>
          <uri-template id="consoletoolpage">/console/{pageid}/{toolid}</uri-template>
          <uri-template id="consolepage">/console/{pageid}</uri-template>
+         
+         <!-- This should be used to go to the refreshed Share pages -->
+         <uri-template id="share-site-page">/{pageid}/site/{site}/ws/{webscript}</uri-template>
+         <uri-template id="share-page">/{pageid}/ws/{webscript}</uri-template>
+         
       </uri-templates>
    </config>
 

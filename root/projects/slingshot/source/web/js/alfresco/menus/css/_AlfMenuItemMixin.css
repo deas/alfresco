@@ -1,0 +1,48 @@
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-edit-icon {
+   background: url("./images/Edit.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-cog-icon {
+   background: url("./images/Cog.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-leave-icon {
+   background: url("./images/Right_Arrow.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-profile-icon {
+   background: url("./images/Profile.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-password-icon {
+   background: url("./images/Password.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-help-icon {
+   background: url("./images/Help.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-logout-icon {
+   background: url("./images/Logout.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}

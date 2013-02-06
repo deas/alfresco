@@ -97,6 +97,12 @@
                <!-- cm:geographic aspect -->
                <show id="cm:latitude" />
                <show id="cm:longitude" />
+               
+               <!-- surf:widget aspect -->
+               <show id="surf:widgetType"/>
+               <show id="surf:mid"/>
+               <show id="surf:label"/>
+               
             </field-visibility>
             <appearance>
                <field id="cm:name">

@@ -295,7 +295,7 @@
    <!-- ************************ -->
    <!-- ** Repository Project ** -->
    <!-- ************************ -->
-
+      
    <target name="incremental-repository" 
            depends="package-repository" />
       
@@ -1321,7 +1321,8 @@
 
    <target name="package-slingshot-war" 
            depends="assemble-slingshot-war,
-                    minimize-slingshot-javascript">
+		            minimize-slingshot-javascript,
+                    unpack-dojo">
       
       <!-- clean up previously generated properties files -->
       <delete>
@@ -1428,6 +1429,31 @@
    	
    </target>
 
+   <target name="check-dojo-unpacked">
+      <condition property="dojo.unpacked">
+         <available file="${dojo.assemble.target}" property="dojo.unpacked" type="dir"/>
+      </condition>
+   </target>
+   
+   <target name="unpack-dojo" depends="check-dojo-unpacked" unless="dojo.unpacked">
+      <!-- unzip and add Dojo -->          
+      <unzip src="${file.zip.slingshot.dojo}"
+             dest="${dir.project.slingshot.assemble}" />
+             
+      <!-- Move the directories into the correct location -->
+      <move todir="${dojo.assemble.target}" includeEmptyDirs="yes" verbose="${copy.verbose}">
+         <fileset dir="${dir.project.slingshot.assemble}/${dojo.archive}">
+            <include name="**/*" />
+			
+			<!-- The "util" folder should ultimately be excluded but is retained whilst unit tests live in Share -->
+			<!-- <exclude name="util/**"/> -->
+         </fileset>
+      </move>
+      
+      <!-- Delete the now empty Dojo release directory -->
+      <delete dir="${dir.project.slingshot.assemble}/${dojo.archive}"/>
+   </target>
+   
    <target name="minimize-slingshot-javascript"
            depends="init">
       <echo>Merging selected Slingshot Javascript files...</echo>

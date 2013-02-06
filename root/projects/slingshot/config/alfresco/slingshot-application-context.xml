@@ -296,4 +296,16 @@
    <bean id="webscript.org.springframework.extensions.cmis.content.get" class="org.springframework.extensions.cmis.CMISContentStreamWebScript" parent="webscript">
       <property name="ScriptParameterFactory" ref="cmis.script" />
    </bean>
+   
+   <!--  Overrides the default Surf remote resources handler to use a Share specific bean that sets a custom filter
+         to only access the content within the Data Dictionary. The custom bean will manipulate each resource to
+         handle Share specific requirements (namely processing AMD module requests) -->
+   <bean id="remote.resources.handler" parent="remote.resources.handler.abstract" class="org.alfresco.web.resources.ShareRemoteResourcesHandler">
+      <property name="repositoryPrefix" value="Data Dictionary/ShareResources/AMD/alfresco/"/>
+      <property name="filters">
+         <list>
+            <value>js/alfresco/remote/</value>
+         </list>
+      </property>
+   </bean>
 </beans>

@@ -1,23 +1,19 @@
-<!-- ********************************************************* -->
-<!-- **              Alfresco Parent POM                    ** -->
-<!-- **                                                     ** -->
-<!-- ** This Maven build is NOT usable to build Alfresco,   ** -->
-<!-- ** you should use the standard Ant build for that.     ** -->
-<!-- ** This POM is instead used to produce POMs to develop ** -->
-<!-- ** against Alfresco with Maven. POMs, dependencies and ** -->
-<!-- ** projects information are up to date and released    ** -->
-<!-- ** together with the official Alfresco artifacts at    ** -->
-<!---**          https://artifacts.alfresco.com.            ** -->  
-<!---** Fox the SDK and Maven project samples check         ** -->
-<!---** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
-<!-- ********************************************************* -->
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<!-- 
+    |  Prerequisites:
+    | - Either run with -Dmaven.test.skip=true or a PostgreSQL instance should be running 
+    | - export MAVEN_OPTS="-Xmx1G -Xms1G"
+    -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.alfresco</groupId>
   <artifactId>alfresco-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.2.d-SNAPSHOT</version>
+  <version>4.2-SNAPSHOT</version>
   <name>Alfresco Parent Project</name>
 
   <url>http://www.alfresco.org/</url>
@@ -28,14 +24,14 @@
   </organization>
   <licenses>
     <license>
-      <name>${maven.license.name}</name>
-      <url>${maven.license.url}</url>
+      <name>GNU Lesser General Public License v3.0 or later</name>
+      <url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</url>
     </license>
   </licenses>
   <scm>
-    <connection>${maven.scm.connection}</connection>
-    <developerConnection>${maven.scm.developerConnection}</developerConnection>
-    <url>${maven.scm.url}</url>
+    <connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</connection>
+    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</developerConnection>
+    <url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -51,10 +47,10 @@
   </prerequisites>
 
   <repositories>
-    <!-- Pointing to Alfresco repository group. Value is switched between community and enterprise -->
+    <!-- Pointing to Alfresco Private repository, as it contains both Community and Enteprise dependencies -->
     <repository>
       <id>alfresco-internal</id>
-      <url>${maven.repository.url}</url>
+      <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
     </repository>
     <!-- Snapshot repository for Spring Surf -->
     <repository>
@@ -73,12 +69,12 @@
       <!-- For now internal releases repositories -->
       <repository>
           <id>alfresco-internal</id>
-          <url>${maven.distributionManagement.url}</url>
+          <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
       </repository>
       <!-- For now internal snapshot repositories -->
       <snapshotRepository>
           <id>alfresco-internal-snapshots</id>
-          <url>${maven.distributionManagement.snapshot.url}</url>
+          <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
       </snapshotRepository>      
       <site>      
           <id>alfresco-site</id>
@@ -106,9 +102,6 @@
     <module>projects/web-editor-plugin</module>
     <module>projects/solr</module>
     <module>projects/file-transfer-receiver</module>
-    <!-- Currently being worked out... see BDE-118
-    <module>projects/system-build-test</module>
-    -->
     <module>modules/sharepoint/amp</module>
     <module>modules/wcmquickstart/wcmquickstartmodule</module>
     <module>modules/wcmquickstart/wcmquickstartclientapi</module>
@@ -150,32 +143,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Sonar specific properties -->
-    <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.exclusions></sonar.exclusions>
     <sonar.skippedModules></sonar.skippedModules>
     <sonar.branch>HEAD</sonar.branch>
 
-    <!-- Community build specific properties -->
-    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
-    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
-    <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
-    <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/public</maven.repository.url>
-    <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</maven.distributionManagement.snapshot.url>
-    <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/releases</maven.distributionManagement.url>
-    <maven.license.name>GNU Lesser General Public License v3.0 or later</maven.license.name>
-    <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
-
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
     <dependency.jibx.version>1.2.3</dependency.jibx.version>
-    <dependency.tika.version>1.3-20121218</dependency.tika.version>
-    <dependency.opencmis.version>0.8.0</dependency.opencmis.version>
+    <dependency.tika.version>1.3-20120801</dependency.tika.version>
+    <dependency.opencmis.version>0.7.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
-    <dependency.junit.version>4.11</dependency.junit.version>
+    <dependency.junit.version>4.11-20120805-1225</dependency.junit.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
-    <dependency.surf.version>1.2.0-M3</dependency.surf.version>
-    <dependency.activiti.version>5.11-alf-20130104</dependency.activiti.version>
-    <dependency.poi.version>3.9-beta1-20121109</dependency.poi.version>
+    <dependency.surf.version>1.2.0-SNAPSHOT</dependency.surf.version>
+    <dependency.activiti.version>5.10-alf-20120918</dependency.activiti.version>
   </properties>
   
   <dependencyManagement>
@@ -214,7 +195,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>1.2</version>
+            <version>1.1.1</version>
             <executions>
                 <execution>
                     <id>enforce-java</id>
@@ -242,7 +223,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>2.5.1</version>
                 <configuration>
                     <source>${maven.build.sourceVersion}</source>
                     <target>${maven.build.sourceVersion}</target>
@@ -262,15 +243,19 @@
             </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.3</version>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
+                <version>2.5.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-help-plugin</artifactId>
@@ -278,19 +263,19 @@
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.3.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.13</version>
+                <version>2.12.4</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.13</version>
+                <version>2.12.4</version>
                 <configuration>
                     <!-- To prevent tests alfresco.log to be created in project roots and bother while synchronizing with SCM -->
                     <workingDirectory>${project.build.directory}</workingDirectory>
@@ -343,7 +328,7 @@
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.0-beta-1</version>
             </plugin>
             <plugin>
                 <groupId>org.antlr</groupId>
@@ -375,11 +360,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.0</version>
-            </plugin>
         </plugins>
     </pluginManagement>
   </build>
@@ -388,11 +368,11 @@
     <plugins>
         <plugin>
             <artifactId>maven-site-plugin</artifactId>
-            <version>3.2</version>
+            <version>3.1</version>
         </plugin>
         <plugin>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.6</version>
+            <version>2.5.1</version>
             <configuration>
                 <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
             </configuration>
@@ -412,7 +392,7 @@
         </plugin>
         <plugin>
             <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.13</version>
+            <version>2.12.4</version>
         </plugin>
         <plugin>
             <artifactId>maven-pmd-plugin</artifactId>
@@ -639,23 +619,17 @@
     <!-- Profile to build alfresco-enterprise -->
     <profile>
         <id>enterprise</id>
+        <activation>
+             <property>
+                 <name>alfresco.enterprise</name>
+                 <value>true</value>    
+             </property>
+        </activation>
         <modules>
             <module>enterpriseprojects/repository</module>
             <module>enterpriseprojects/remote-api</module>
         </modules>
-        <properties>
-            <!-- Enterprise specific properties -->
-            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
-            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
-            <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
-            <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
-            <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</maven.distributionManagement.snapshot.url>
-            <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</maven.distributionManagement.url>
-            <maven.license.name>Alfresco Enterprise License</maven.license.name>
-            <maven.license.url>http://www.alfresco.com/legal</maven.license.url>
-        </properties>
     </profile>
-    
   </profiles>
 
 </project>

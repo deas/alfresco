@@ -4,7 +4,7 @@
 <@templateBody>
    <@markup id="alf-hd">
    <div id="alf-hd">
-      <@region id="header" scope="global"/>
+      <@region scope="global" id="share-header" chromeless="true"/>
       <@region id="title" scope="template"/>
       <@region id="navigation" scope="template"/>
       <#if page.url.args.nodeRef??>
