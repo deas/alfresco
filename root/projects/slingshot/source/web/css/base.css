@@ -792,6 +792,11 @@ div.dashlet div.hdr
    background-image: url(../components/images/feed-icon-16.png);
 }
 
+.dcolumn
+{
+   margin-top: -16px;
+}
+
 .yui-g.grid,
 .yui-gb.grid,
 .yui-gc.grid,

@@ -9,7 +9,7 @@
 <#macro _normalGrid columns class bindPrefix>
    <div class="${class} grid columnSize${columns?size}">
       <#list columns as column>
-         <div class="yui-u<#if column_index == 0> first</#if> column${column_index + 1}">
+         <div class="yui-u<#if column_index == 0> first</#if> column${column_index + 1} dcolumn">
             <#list 1..column.components as component>
                <@region id="${bindPrefix + '-' + (column_index + 1) + '-' + (component_index + 1)}" scope="page" />
             </#list>
@@ -22,9 +22,9 @@
    <div class="${class} grid columnSize${columns?size}">
       <#list columns as column>
          <#if (column_index % 2 == 0)>
-            <div class="yui-g<#if column_index == 0> first</#if> column${column_index + 1}">
+            <div class="yui-g<#if column_index == 0> first</#if> column${column_index + 1} dcolumn">
          </#if>
-         <div class="yui-u<#if column_index%2 == 0> first</#if> column${column_index + 1}">
+         <div class="yui-u<#if column_index%2 == 0> first</#if> column${column_index + 1} dcolumn">
             <#list 1..column.components as component>
                <@region id="${bindPrefix + '-' + (column_index + 1) + '-' + (component_index + 1)}" scope="page" />
             </#list>
