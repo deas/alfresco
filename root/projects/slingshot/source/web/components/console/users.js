@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -157,12 +157,6 @@
                          items.splice(i, 1);
                       }
                   }
-                  
-                  // initial sort by username field
-                  items.sort(function(a, b)
-                  {
-                     return (a.userName > b.userName);
-                  });
                   
                   // we need to wrap the array inside a JSON object so the DataTable gets the object it expects
                   updatedResponse =
@@ -455,10 +449,28 @@
             {
                initialLoad: false,
                renderLoopSize: 32,
+               dynamicData: true,
                sortedBy:
                {
                   key: "userName",
                   dir: "asc"
+               },
+               generateRequest:  function(oState, oSelf) {
+
+               // Set defaults
+               oState = oState || {pagination:null, sortedBy:null};
+               var sort = encodeURIComponent((oState.sortedBy) ? oState.sortedBy.key : oSelf.getColumnSet().keys[0].getKey());
+               var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_DESC) ? "desc" : "asc";
+
+               // Build the request
+               var query =  "?sortBy=" + sort + "&dir=" + dir;
+
+               if (parent.searchTerm)
+               {
+                  query = query + "&filter=" + encodeURIComponent(parent.searchTerm);
+               }
+
+               return query;
                },
                MSG_EMPTY: parent._msg("message.empty")
             });

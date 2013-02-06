@@ -1845,7 +1845,10 @@ Alfresco.util.setDomId = function(p_el, p_domId)
       if (YAHOO.env.ua.ie > 0 && YAHOO.env.ua.ie < 8)
       {
          // MSIE 6 & 7-safe method
-         p_el.attributes["id"].value = p_domId;
+         if (p_el.attributes["id"])
+         {
+            p_el.attributes["id"].value = p_domId;
+         }
          p_el.setAttribute("id", p_domId);
       }
       else

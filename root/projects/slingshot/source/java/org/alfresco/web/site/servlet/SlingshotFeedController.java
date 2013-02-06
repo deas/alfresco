@@ -58,7 +58,7 @@ public class SlingshotFeedController extends FeedController
     {
         // retrieve Alfresco endpoint descriptor and query for Basic Auth configuration
         EndpointDescriptor descriptor = getRemoteConfig().getEndpointDescriptor(SlingshotUserFactory.ALFRESCO_ENDPOINT_ID);
-        if (descriptor.getBasicAuth())
+        if (!descriptor.getExternalAuth())
         {
             return super.handleRequestInternal(req, res);
         }

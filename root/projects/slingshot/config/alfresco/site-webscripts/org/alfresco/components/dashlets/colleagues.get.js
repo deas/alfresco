@@ -68,7 +68,6 @@ function main()
       useMessages: false
    };
    
-
    var dashletTitleBarActions = {
       id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",

@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.Header;
+import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.extensions.webscripts.connector.HttpMethod;
 import org.springframework.extensions.webscripts.connector.RemoteClient;
 import org.springframework.extensions.webscripts.ui.common.StringUtils;
@@ -46,72 +48,97 @@ public class SlingshotRemoteClient extends RemoteClient
     protected void copyResponseStreamOutput(URL url, HttpServletResponse res, OutputStream out,
             org.apache.commons.httpclient.HttpMethod method, String contentType, int bufferSize) throws IOException
     {
-        boolean process = false;
+        boolean processed = false;
         if (res != null && getRequestMethod() == HttpMethod.GET)
         {
-            // found a GET request that might be a security risk
-            if (contentType != null && (contentType.startsWith("text/html") || contentType.startsWith("application/xhtml+xml")))
+            // only match if content is not an attachment - don't interfere with downloading of file content 
+            Header cd = method.getResponseHeader("Content-Disposition");
+            if (cd == null || !cd.getValue().startsWith("attachment"))
             {
-                //  match appropriate content URIs 
-                if (CONTENT_PATTERN.matcher(url.getPath()).matches())
+                // only match appropriate content REST URIs 
+                if (contentType != null && CONTENT_PATTERN.matcher(url.getPath()).matches())
                 {
-                    // found content we need to process in-memory and perform HTML stripping on
-                    process = true;
-                }
-            }
-        }
-        if (!process)
-        {
-            super.copyResponseStreamOutput(url, res, out, method, contentType, bufferSize);
-        }
-        else
-        {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
-            final InputStream input = method.getResponseBodyAsStream();
-            if (input != null)
-            {
-                // get data into our byte buffer for processing
-                try
-                {
-                    final byte[] buffer = new byte[bufferSize];
-                    int read = input.read(buffer);
-                    while (read != -1)
+                    // found a GET request that might be a security risk
+                    String mimetype = contentType;
+                    String encoding = null;
+                    int csi = contentType.indexOf(CHARSETEQUALS);
+                    if (csi != -1)
                     {
-                        bos.write(buffer, 0, read);
-                        read = input.read(buffer);
+                        mimetype = contentType.substring(0, csi - 1).toLowerCase();
+                        encoding = contentType.substring(csi + CHARSETEQUALS.length());
+                    }
+                    
+                    // examine the mimetype to see if additional processing is required
+                    if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml"))
+                    {
+                        // found HTML content we need to process in-memory and perform stripping on
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
+                        final InputStream input = method.getResponseBodyAsStream();
+                        if (input != null)
+                        {
+                            // get data into our byte buffer for processing
+                            try
+                            {
+                                final byte[] buffer = new byte[bufferSize];
+                                int read = input.read(buffer);
+                                while (read != -1)
+                                {
+                                    bos.write(buffer, 0, read);
+                                    read = input.read(buffer);
+                                }
+                            }
+                            finally
+                            {
+                                input.close();
+                            }
+                            
+                            // convert to appropriate string format
+                            String content = encoding != null ? new String(bos.toByteArray(), encoding) : new String(bos.toByteArray());
+                            
+                            // process with HTML stripper
+                            content = StringUtils.stripUnsafeHTMLTags(content, false);
+                            
+                            // push the modified response to the real outputstream
+                            try
+                            {
+                                byte[] bytes = encoding != null ? content.getBytes(encoding) : content.getBytes();
+                                // rewrite size header as it wil have changed
+                                res.setContentLength(bytes.length);
+                                // output the bytes
+                                out.write(bytes);
+                            }
+                            finally
+                            {
+                                out.close();
+                            }
+                        }
+                        processed = true;
+                    }
+                    else if (mimetype.equals("application/x-shockwave-flash"))
+                    {
+                        String msg = I18NUtil.getMessage("security.insecuremimetype");
+                        try
+                        {
+                            byte[] bytes = encoding != null ? msg.getBytes(encoding) : msg.getBytes();
+                            
+                            // rewrite headers
+                            res.setContentType("text/plain");
+                            res.setContentLength(bytes.length);
+                            // output the bytes
+                            out.write(bytes);
+                        }
+                        finally
+                        {
+                            out.close();
+                        }
+                        processed = true;
                     }
                 }
-                finally
-                {
-                    input.close();
-                }
-                
-                // convert to appropriate string format
-                String encoding = null;
-                int csi = contentType.indexOf(CHARSETEQUALS);
-                if (csi != -1)
-                {
-                    encoding = contentType.substring(csi + CHARSETEQUALS.length());
-                }
-                String content = encoding != null ? new String(bos.toByteArray(), encoding) : new String(bos.toByteArray());
-                
-                // process with HTML stripper
-                content = StringUtils.stripUnsafeHTMLTags(content, false);
-                
-                // push the modified response to the real outputstream
-                try
-                {
-                    byte[] bytes = encoding != null ? content.getBytes(encoding) : content.getBytes();
-                    // rewrite size header as it wil have changed
-                    res.setContentLength(bytes.length);
-                    // output the bytes
-                    out.write(bytes);
-                }
-                finally
-                {
-                    out.close();
-                }
             }
+        }
+        if (!processed)
+        {
+            super.copyResponseStreamOutput(url, res, out, method, contentType, bufferSize);
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -1291,6 +1291,30 @@
             {
                initialLoad: false,
                renderLoopSize: 32,
+               dynamicData: true,
+               sortedBy:
+               {
+                  key: "displayName",
+                  dir: "asc"
+               },
+               generateRequest:  function(oState, oSelf) {
+
+                  // Set defaults
+                  oState = oState || {pagination:null, sortedBy:null};
+                 var sort = encodeURIComponent((oState.sortedBy) ? oState.sortedBy.key : oSelf.getColumnSet().keys[0].getKey());
+                 var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_DESC) ? "desc" : "asc";
+
+                 // Build the request
+                 var query =  "sortBy=" + sort + "&dir=" + dir;
+
+                 if (parent.query)
+                 {
+                     query = query + "&shortNameFilter=" + encodeURIComponent(parent.query);
+                 }
+
+                 return query;
+
+               },
                MSG_EMPTY: parent._msg("message.empty")
             });
          },

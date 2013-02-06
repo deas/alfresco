@@ -75,7 +75,6 @@ function main()
             id: "requestJoin-link",
             label: "link.request-join"
          });
-
       }
    }
 
@@ -84,7 +83,7 @@ function main()
       links.push(
       {
          id: "become-manager-link",
-         label: "link.request-join"
+         label: "link.become-manager"
       });
    }
 
@@ -100,7 +99,7 @@ function main()
       });
    }
 
-   var moreMenu;
+   var moreMenu = null;
 
    if (userIsSiteManager)
    {
@@ -113,7 +112,7 @@ function main()
          ]
       };
    }
-   else if(userIsMember)
+   else if (userIsMember)
    {
       moreMenu = {
          label: "link.actions",

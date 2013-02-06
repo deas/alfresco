@@ -2033,7 +2033,7 @@
 
          try
          {
-            while (bookmarkedFilter !== (bookmarkedFilter = decodeURIComponent(bookmarkedFilter))){}
+            while (bookmarkedFilter !== (bookmarkedFilter = decodeURIComponent(bookmarkedFilter.replace(/%25/g, "%2525")))){} 
          }
          catch (e)
          {
@@ -2066,12 +2066,6 @@
          YAHOO.util.History.register("filter", bookmarkedFilter, function DL_onHistoryManagerFilterChanged(newFilter)
          {
             Alfresco.logger.debug("HistoryManager: filter changed:" + newFilter);
-            // Firefox fix
-            if (YAHOO.env.ua.gecko > 0)
-            {
-               newFilter = window.unescape(newFilter);
-               Alfresco.logger.debug("HistoryManager: filter (after Firefox fix):" + newFilter);
-            }
 
             this._updateDocList.call(this,
             {

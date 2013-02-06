@@ -94,3 +94,23 @@ Index: src/freemarker/ext/beans/BeansWrapper.java
          }
          return false;
      }
+--- src\freemarker\template\utility\StringUtil.java.orig        Sat May 21 22:53:16 2011
++++ src\freemarker\template\utility\StringUtil.java     Wed Jan 16 12:44:45 2013
+@@ -933,7 +933,7 @@
+         int ln = s.length();
+         for (int i = 0; i < ln; i++) {
+             char c = s.charAt(i);
+-            if (c == '"' || c == '\'' || c == '\\' || c == '>' || c < 0x20) {
++            if (c == '"' || c == '/' || c == '\'' || c == '\\' || c == '>' || c < 0x20) {
+                 StringBuffer b = new StringBuffer(ln + 4);
+                 b.append(s.substring(0, i));
+                 while (true) {
+@@ -943,6 +943,8 @@
+                         b.append("\\'");
+                     } else if (c == '\\') {
+                         b.append("\\\\");
++                    } else if (c == '/') {
++                        b.append("\\/");
+                     } else if (c == '>') {
+                         b.append("\\>");
+                     } else if (c < 0x20) {

@@ -195,10 +195,6 @@
          this.widgets.uploadDirectory = Dom.get(this.id + "-uploadDirectory-hidden");
          this.widgets.overwrite = Dom.get(this.id + "-overwrite-hidden");
          this.widgets.thumbnails = Dom.get(this.id + "-thumbnails-hidden");
-         this.widgets.successCallback = Dom.get(this.id + "-successCallback-hidden");
-         this.widgets.successScope = Dom.get(this.id + "-successScope-hidden");
-         this.widgets.failureCallback = Dom.get(this.id + "-failureCallback-hidden");
-         this.widgets.failureScope = Dom.get(this.id + "-failureScope-hidden");
 
          // Save reference to version section elements so we can set its values later
          this.widgets.description = Dom.get(this.id + "-description-textarea");
@@ -525,13 +521,6 @@
             this.widgets.overwrite.value = this.showConfig.overwrite;
             this.widgets.thumbnails.value = this.showConfig.thumbnails;
          }
-         var success = "window.parent.Alfresco.util.ComponentManager.get('" + this.id + "')";
-         this.widgets.successCallback.value = success + ".onUploadSuccess";
-         this.widgets.successScope.value = success;
-
-         var failure = "window.parent.Alfresco.util.ComponentManager.get('" + this.id + "')";
-         this.widgets.failureCallback.value = failure + ".onUploadFailure";
-         this.widgets.failureScope.value = failure;
       },
 
       /**

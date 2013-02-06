@@ -24,6 +24,19 @@
             <p id="${el}-singleUpdateTip-span">${msg("label.singleUpdateTip")}</p>
          </div>
          <div class="bd">
+            <script type="text/javascript">
+               <#assign callback>onAlfrescoHtmlUploadComponent_${el?replace("-", "__")}</#assign>
+               var ${callback}_success = function(response)
+               {
+                  var component = Alfresco.util.ComponentManager.get('${el}');
+                  component.onUploadSuccess.call(component, response)
+               };
+               var ${callback}_failure= function(response)
+               {
+                  var component = Alfresco.util.ComponentManager.get('${el}');
+                  component.onUploadFailure.call(component, response)
+               };
+            </script>
             <form id="${el}-htmlupload-form"
                   method="post" enctype="multipart/form-data" accept-charset="utf-8"
                   action="${url.context}/proxy/alfresco/api/upload.html">
@@ -36,10 +49,8 @@
                <input type="hidden" id="${el}-uploadDirectory-hidden" name="uploadDirectory" value=""/>
                <input type="hidden" id="${el}-overwrite-hidden" name="overwrite" value=""/>
                <input type="hidden" id="${el}-thumbnails-hidden" name="thumbnails" value=""/>
-               <input type="hidden" id="${el}-successCallback-hidden" name="successCallback" value=""/>
-               <input type="hidden" id="${el}-successScope-hidden" name="successScope" value=""/>
-               <input type="hidden" id="${el}-failureCallback-hidden" name="failureCallback" value=""/>
-               <input type="hidden" id="${el}-failureScope-hidden" name="failureScope" value=""/>
+               <input type="hidden" name="success" value="window.parent.${callback}_success"/>
+               <input type="hidden" name="failure" value="window.parent.${callback}_failure"/>
                <div>
                   <div class="yui-g">
                      <h2>${msg("section.file")}</h2>
