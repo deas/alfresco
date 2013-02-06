@@ -360,7 +360,27 @@
          // Hide the panel and initiate the download...
          this.widgets.cancelOkButton.set("disabled", false);
          this.panel.hide();
-         window.location = Alfresco.constants.PROXY_URI + "api/node/content/" + this._currentArchiveNodeURL + "/" + this._currentArchiveName;
+
+         // Create an empty form and post it to a hidden ifram using GET to avoid confusing the browser to believe we
+         // are leaving the current page (which would abort the currently running requests, i.e. deletion of the archive
+
+         var form = document.createElement("form");
+         form.method = "GET";
+         form.action = Alfresco.constants.PROXY_URI + "api/node/content/" + this._currentArchiveNodeURL + "/" + this._currentArchiveName;
+         document.body.appendChild(form);
+
+         var d = form.ownerDocument;
+         var iframe = d.createElement("iframe");
+         iframe.style.display = "none";
+         YAHOO.util.Dom.generateId(iframe, "downloadArchive");
+         iframe.name = iframe.id;
+         document.body.appendChild(iframe);
+
+         // makes it possible to target the frame properly in IE.
+         window.frames[iframe.name].name = iframe.name;
+
+         form.target = iframe.name;
+         form.submit();
       },
       
       /**

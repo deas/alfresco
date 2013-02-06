@@ -5489,7 +5489,7 @@ Alfresco.util.navigateTo = function(uri, method, parameters)
       var form = document.createElement("form");
       form.method = method;
       form.action = uri;
-      if (method == "POST" || method == "PUT")
+      if (method == "POST")
       {
          var input;
          for (var name in parameters)
