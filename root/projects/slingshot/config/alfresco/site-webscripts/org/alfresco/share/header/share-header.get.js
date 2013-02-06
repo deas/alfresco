@@ -316,7 +316,7 @@ if (model.pages != null)
          config: {
             label: model.pages[i].title,
             pageId: model.pages[i].pageId,
-            targetUrl: "site/" + page.url.templateArgs.site + "/" + model.pages[i].pageId,
+            targetUrl: "site/" + page.url.templateArgs.site + "/" + model.pages[i].pageUrl,
             selected: (model.pages[i].titleId == page.titleId)
          }
       });
@@ -339,7 +339,7 @@ if (model.pages != null)
    {
       // Make sure that if the current page is in the main menu (e.g. if it would otherwise be in the 
       // "More" menu...
-      for (var i=maxDisplayedSitePages; i<navigationWidgets.length; i++)
+      for (var i=maxDisplayedSitePages-1; i<navigationWidgets.length; i++)
       {
          if (navigationWidgets[i].config.selected)
          {
@@ -364,8 +364,6 @@ if (model.pages != null)
       });
    }
 }
-
-
 
 /* *********************************************************************************
  *                                                                                 *
