@@ -958,6 +958,48 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                   // makes it possible to target the frame properly in IE.
                   window.frames[iframe.name].name = iframe.name;
 
+                  // Pass the CSRF token if the CSRF token filter is enabled
+                  if (Alfresco.util.CSRF.isFilterEnabled())
+                  {
+                     // Make sure there is a CSRF parameter with the token present in submission
+                     var pathAndParams = submitUrl.split("?"),
+                           tokenParam = Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+                     if (pathAndParams.length == 1)
+                     {
+                        submitUrl += "?" + tokenParam;
+                     }
+                     else
+                     {
+                        var params = pathAndParams[1].split("&"),
+                              pi = 0,
+                              nameAndValue,
+                              newParams = "",
+                              firstParam = true;
+                        for (; pi < params.length; pi++)
+                        {
+                           nameAndValue = params[pi].split("=");
+                           if (nameAndValue.length > 0 && nameAndValue[0] == Alfresco.util.CSRF.getParameter())
+                           {
+                              // Don't use the old token param, add a new one after the loop instead
+                           }
+                           else
+                           {
+                              // Pass on parameter
+                              newParams += firstParam ? "?" : "&";
+                              newParams += params[pi];
+                              firstParam = false;
+                           }
+                        }
+                        if (pi == params.length)
+                        {
+                           newParams += firstParam ? "?" : "&";
+                           newParams += tokenParam;
+                        }
+                        submitUrl = pathAndParams[0] + newParams;
+                     }
+                     form.attributes.action.nodeValue = submitUrl;
+                  }
+
                   form.target = iframe.name;
                   form.submit();
                   return;

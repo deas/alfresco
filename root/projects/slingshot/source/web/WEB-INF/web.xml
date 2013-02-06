@@ -49,7 +49,13 @@
          <param-value>alfresco</param-value>
       </init-param>
    </filter>
-   
+
+   <filter>
+      <description>Share CSRF Token filter. Checks for a session based CSRF token in request headers (or form parameters) based on config.</description>
+      <filter-name>CSRF Token Filter</filter-name>
+      <filter-class>org.alfresco.web.site.servlet.CSRFTokenFilter</filter-class>
+   </filter>
+
    <filter-mapping>
       <filter-name>CacheExpiresFilter</filter-name>
       <url-pattern>*.jpg</url-pattern>
@@ -85,7 +91,27 @@
       <filter-name>Authentication Filter</filter-name>
       <url-pattern>/proxy/*</url-pattern>
    </filter-mapping>
-   
+
+   <filter-mapping>
+      <filter-name>CSRF Token Filter</filter-name>
+      <url-pattern>/page/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>CSRF Token Filter</filter-name>
+      <url-pattern>/p/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>CSRF Token Filter</filter-name>
+      <url-pattern>/proxy/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>CSRF Token Filter</filter-name>
+      <url-pattern>/service/*</url-pattern>
+   </filter-mapping>
+
    <filter-mapping>
       <filter-name>UrlRewriteFilter</filter-name>
       <url-pattern>/proxy/*</url-pattern>

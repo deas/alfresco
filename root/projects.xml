@@ -1470,6 +1470,7 @@
          <fileset file="${dir.project.slingshot.assemble}/yui/datatable/datatable-min.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/history/history-min.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/treeview/treeview-min.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/cookie/cookie-min.js" />
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 

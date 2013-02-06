@@ -6923,6 +6923,76 @@ Alfresco.util.FilterManager = function()
    });
 }();
 
+/**
+ * Helper class for getting the CSRF token and the name of the request header or param to set it to.
+ *
+ * @class Alfresco.util.CSRF
+ */
+Alfresco.util.CSRF = function()
+{
+   return {
+
+      /**
+       * Use this method and check if the CSRF filter is enabled before trying to set the CSRF header or parameter.
+       * Will be disabled if the filter contains no rules.
+       *
+       * @return {*}
+       */
+      isFilterEnabled: function()
+      {
+         return Alfresco.constants.CSRF_FILTER_ENABLED;
+      },
+
+      /**
+       * Returns the name of the request header to put the token in when sending XMLHttpRequests.
+       *
+       * @method getHeader
+       * @return {String} The name of the request header to put the token in.
+       */
+      getHeader: function()
+      {
+         return Alfresco.constants.CSRF_HEADER;
+      },
+
+      /**
+       * Returns the name of the request parameter to put the token in when sending multipart form uploads.
+       *
+       * @method getParameter
+       * @return {String} The name of the request header to put the token in.
+       */
+      getParameter: function()
+      {
+         return Alfresco.constants.CSRF_PARAMETER;
+      },
+
+      /**
+       * Returns the name of the cookie that holds the value of the token.
+       *
+       * @method getCookie
+       * @return {String} The name of the request header to put the token in.
+       */
+      getCookie: function()
+      {
+         return Alfresco.constants.CSRF_COOKIE;
+      },
+
+      /**
+       * Returns the token.
+       *
+       * Note! Make sure to use this method just before a request is made against the server since it might have been
+       * updated in another browser tab or window.
+       *
+       * @method getToken
+       * @return {String} The name of the request header to put the token in.
+       */
+      getToken: function()
+      {
+         var cookieName = this.getCookie()
+         return cookieName ? YAHOO.util.Cookie.get(cookieName) : null;
+      }
+   };
+}();
+
 
 /**
  * Helper class for submitting data to serverthat wraps a
@@ -7105,6 +7175,12 @@ Alfresco.util.Ajax = function()
             YAHOO.util.Connect.setDefaultPostHeader(this.FORM);
             YAHOO.util.Connect.setDefaultXhrHeader(this.FORM);
             YAHOO.util.Connect.initHeader("Content-Type", this.FORM)
+         }
+
+         // CSRF token
+         if (Alfresco.util.CSRF.isFilterEnabled())
+         {
+            YAHOO.util.Connect.initHeader(Alfresco.util.CSRF.getHeader(), Alfresco.util.CSRF.getToken());
          }
 
          // Encode dataObj depending on request method and contentType.

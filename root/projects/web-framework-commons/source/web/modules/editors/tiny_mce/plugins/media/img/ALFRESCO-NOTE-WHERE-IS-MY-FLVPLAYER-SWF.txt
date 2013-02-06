@@ -1,0 +1,8 @@
+Dear developer.
+
+Even though the flv_player.swf is shipped in an OOTB distribution of TinyMCE Alfresco has decided NOT to include it.
+The reason is because security vulnerabilities have been reported against the flv_player.swf.
+If required in your Alfresco installation, for whatever reason, feel free to download the flv_player.swf from
+Moxie Code's website and include it, but be aware that you are doing so AT YOUR OWN RISK.
+
+Best regards, The Alfresco team

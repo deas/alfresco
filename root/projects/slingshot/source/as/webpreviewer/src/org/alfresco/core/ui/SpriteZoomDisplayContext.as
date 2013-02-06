@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,50 +19,52 @@
 
 package org.alfresco.core.ui
 {
-
-	/**
-	 *  SpriteZoomDisplayContext is a helper class to SpriteXoomDisplay.
-	 *  It describes the current state of the zoomable sprite inside the displays vieable area. 
-	 */
-	public class SpriteZoomDisplayContext
-	{
-		
-		/**
-		 * True if sprite is wider than the display area.
-		 */
-		public var overflowX:Boolean;
-		
-		/**
-		 * True if sprite is higher than the display area.
-		 */
-		public var overflowY:Boolean;
-		
-		/**
-		 * The width of the display area exluding the vertical scrollbar.
-		 */
-		public var screenWidth:Number;
-		
-		/**
-		 * The height of the display area excluding the horizontal srollbar.
-		 */
-		public var screenHeight:Number;
-		
-		/**
-		 * The width of the display area including any vertical scrollbar.
-		 */
-		public var screenWidthIncl:Number;
-		
-		/**
-		 * The height of the display area including any horizontal scrollbar.
-		 */
-		public var screenHeightIncl:Number;
-		
-		/** 
-		 * Constructor
-		 */ 
-		public function SpriteZoomDisplayContext()
-		{				
-		}
-
-	}
+   
+   /**
+    *  SpriteZoomDisplayContext is a helper class to SpriteXoomDisplay.
+    *  It describes the current state of the zoomable sprite inside the displays vieable area.
+    *
+    *  @author Erik Winlof
+    */
+   public class SpriteZoomDisplayContext
+   {
+      
+      /**
+       * True if sprite is wider than the display area.
+       */
+      public var overflowX:Boolean;
+      
+      /**
+       * True if sprite is higher than the display area.
+       */
+      public var overflowY:Boolean;
+      
+      /**
+       * The width of the display area exluding the vertical scrollbar.
+       */
+      public var screenWidth:Number;
+      
+      /**
+       * The height of the display area excluding the horizontal srollbar.
+       */
+      public var screenHeight:Number;
+      
+      /**
+       * The width of the display area including any vertical scrollbar.
+       */
+      public var screenWidthIncl:Number;
+      
+      /**
+       * The height of the display area including any horizontal scrollbar.
+       */
+      public var screenHeightIncl:Number;
+      
+      /** 
+       * Constructor
+       */ 
+      public function SpriteZoomDisplayContext()
+      {				
+      }
+      
+   }
 }

@@ -1144,6 +1144,11 @@
       {
          try
          {
+            if (Alfresco.util.CSRF.isFilterEnabled())
+            {
+               url += "?" + Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+            }
+
             var data = event.record.getData();
             var fileInfo = this.fileStore[data.id];
 

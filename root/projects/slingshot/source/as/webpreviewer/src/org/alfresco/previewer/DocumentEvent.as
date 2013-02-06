@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -19,40 +19,41 @@
 
 package org.alfresco.previewer
 {
-	import flash.events.Event;
-	
-	/**
-	 * Event class describing events occurring inside a Page.
-	 */
-	public class DocumentEvent extends Event
-	{
-				
-		/**
-		 * Dispatched when a apge in the document was clicked.
-		 * 
-		 * Sets values: page and pageNo
-		 */		
-		public static const DOCUMENT_PAGE_CLICK:String = "documentPageClick";		
-
-		/**
-		 * The page in the document that something happenened to.
-		 */
-		public var page:Page;
-
-		/**
-		 * The page index of the page in the document that something happenened to.
-		 */
-		public var pageIndex:Number;
-		
-		/**
-		 * Constructor
-		 */
-		public function DocumentEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
-		{
-			super(type, bubbles, cancelable);
-		}
-	}
+   import flash.events.Event;
+   
+   /**
+    * Event class describing events occurring inside a Page.
+    *
+    * @author Erik Winlof
+    */
+   public class DocumentEvent extends Event
+   {
+      
+      /**
+       * Dispatched when a apge in the document was clicked.
+       * 
+       * Sets values: page and pageNo
+       */		
+      public static const DOCUMENT_PAGE_CLICK:String = "documentPageClick";		
+      
+      /**
+       * The page in the document that something happenened to.
+       */
+      public var page:Page;
+      
+      /**
+       * The page index of the page in the document that something happenened to.
+       */
+      public var pageIndex:Number;
+      
+      /**
+       * Constructor
+       */
+      public function DocumentEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+      {
+         super(type, bubbles, cancelable);
+      }
+   }
 }
 
 
-	

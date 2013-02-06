@@ -16,19 +16,16 @@
 
       <condition mimeType="video/mp4" thumbnail="imgpreview">
          <plugin poster="imgpreview" posterFileSuffix=".png">StrobeMediaPlayback</plugin>
-         <plugin poster="imgpreview" posterFileSuffix=".png">FlashFox</plugin>
          <plugin poster="imgpreview" posterFileSuffix=".png">Video</plugin>
       </condition>
 
       <condition mimeType="video/m4v" thumbnail="imgpreview">
          <plugin poster="imgpreview" posterFileSuffix=".png">StrobeMediaPlayback</plugin>
-         <plugin poster="imgpreview" posterFileSuffix=".png">FlashFox</plugin>
          <plugin poster="imgpreview" posterFileSuffix=".png">Video</plugin>
       </condition>
 
       <condition mimeType="video/x-flv" thumbnail="imgpreview">
          <plugin poster="imgpreview" posterFileSuffix=".png">StrobeMediaPlayback</plugin>
-         <plugin poster="imgpreview" posterFileSuffix=".png">FlashFox</plugin>
       </condition>
 
       <condition mimeType="video/quicktime" thumbnail="imgpreview">
@@ -47,19 +44,16 @@
 
       <condition mimeType="video/mp4">
          <plugin>StrobeMediaPlayback</plugin>
-         <plugin>FlashFox</plugin>
          <plugin>Video</plugin>
       </condition>
 
       <condition mimeType="video/x-m4v">
          <plugin>StrobeMediaPlayback</plugin>
-         <plugin>FlashFox</plugin>
          <plugin>Video</plugin>
       </condition>
 
       <condition mimeType="video/x-flv">
          <plugin>StrobeMediaPlayback</plugin>
-         <plugin>FlashFox</plugin>
       </condition>
 
       <condition mimeType="video/quicktime">
@@ -77,7 +71,6 @@
       <!-- Audio -->
       <condition mimeType="audio/mpeg">
          <plugin>StrobeMediaPlayback</plugin>
-         <plugin>FlashFox</plugin>
          <plugin>Audio</plugin>
       </condition>
 
@@ -111,9 +104,7 @@
          <plugin srcMaxSize="2000000">Image</plugin>
       </condition>
 
-      <condition mimeType="application/x-shockwave-flash">
-         <plugin>Flash</plugin>
-      </condition>
+      <!-- Note! The Flash plugin is not activated by default, for more information see Flash.js -->
 
       <!-- To add zooming capabilities for images place the following inside a <condition> element -->
       <!-- <plugin>WebPreviewer</plugin> -->

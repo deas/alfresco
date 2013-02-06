@@ -95,14 +95,15 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
       this.createSwfDiv();
 
       // Create flash web preview by using swfobject
+      // Note! "WebPreviewer_" is used and must match in global js callback methods
       var swfId = "WebPreviewer_" + this.wp.id;
       var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "components/preview/WebPreviewer.swf",
             swfId, "100%", "100%", "9.0.45");
       so.addVariable("fileName", this.wp.options.name);
       so.addVariable("paging", this.attributes.paging);
       so.addVariable("url", ctx.url);
-      so.addVariable("jsCallback", "Alfresco.util.ComponentManager.get('" + this.wp.id + "').plugin.onWebPreviewerEvent");
-      so.addVariable("jsLogger", "Alfresco.util.ComponentManager.get('" + this.wp.id + "').plugin.onWebPreviewerLogging");
+      so.addVariable("jsCallback", "Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent");
+      so.addVariable("jsLogger", "Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerLogging");
       so.addVariable("i18n_actualSize", this.wp.msg("preview.actualSize"));
       so.addVariable("i18n_fitPage", this.wp.msg("preview.fitPage"));
       so.addVariable("i18n_fitWidth", this.wp.msg("preview.fitWidth"));
@@ -117,6 +118,7 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
       so.addVariable("show_fullwindow_button", this.attributes.showFullWindowButton);
       so.addVariable("disable_i18n_input_fix", this.disableI18nInputFix());
 
+      so.addParam("allowNetworking", "all");
       so.addParam("allowScriptAccess", "sameDomain");
       so.addParam("allowFullScreen", "true");
       so.addParam("wmode", "transparent");
@@ -183,12 +185,13 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
     * @method onWebPreviewerLogging
     * @param msg {string} The log message
     * @param level {string} The log level
+    * @param objectId {string} The id of the embed/object tag that holds WebPreviewer.swf
     */
-   onWebPreviewerLogging: function WebPreviewer_onWebPreviewerLogging(msg, level)
+   onWebPreviewerLogging: function WebPreviewer_onWebPreviewerLogging(msg, level, objectId)
    {
       if (YAHOO.lang.isFunction(Alfresco.logger[level]))
       {
-         Alfresco.logger[level].call(Alfresco.logger, "WebPreviewer: " + msg);
+         Alfresco.logger[level].call(Alfresco.logger, "WebPreviewer(" + objectId + "): " + msg);
       }
    },
 
@@ -197,8 +200,9 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
     *
     * @method onWebPreviewerEvent
     * @param event {object} an WebPreview message
+    * @param objectId {string} The id of the embed/object tag that holds WebPreviewer.swf
     */
-   onWebPreviewerEvent: function WebPreviewer_onWebPreviewerEvent(event)
+   onWebPreviewerEvent: function WebPreviewer_onWebPreviewerEvent(event, objectId)
    {
       if (event.event)
       {
@@ -286,4 +290,18 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
       }
    }
 
+};
+
+Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerLogging = function Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerLogging(msg, level, objectId)
+{
+   var webPreviewComponentId = objectId.substring("WebPreviewer_".length);
+   var webPreviewPlugin = Alfresco.util.ComponentManager.get(webPreviewComponentId).plugin;
+   return webPreviewPlugin.onWebPreviewerLogging.apply(webPreviewPlugin, arguments);
+};
+
+Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent = function Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent(event, objectId)
+{
+   var webPreviewComponentId = objectId.substring("WebPreviewer_".length);
+   var webPreviewPlugin = Alfresco.util.ComponentManager.get(webPreviewComponentId).plugin;
+   return webPreviewPlugin.onWebPreviewerEvent.apply(webPreviewPlugin, arguments);
 };

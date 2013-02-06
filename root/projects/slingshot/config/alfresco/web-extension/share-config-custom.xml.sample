@@ -36,6 +36,13 @@
       </web-framework>
    </config>
 
+   <!-- Disable the CSRF Token Filter -->
+   <!--
+   <config evaluator="string-compare" condition="CSRF" replace="true">
+      <filter/>
+   </config>
+   -->
+
    <config evaluator="string-compare" condition="Replication">
       <share-urls>
          <!--

@@ -1612,8 +1612,15 @@
          
          // Flash does not correctly bind to the session cookies during POST
          // so we manually patch the jsessionid directly onto the URL instead
+         // also include the CSRF token to pass the CSRF token filter
          url += ";jsessionid=" + YAHOO.util.Cookie.get("JSESSIONID") + "?lang=" + Alfresco.constants.JS_LOCALE;
-         
+
+         // Pass the CSRF token if the CSRF token filter is enabled
+         if (Alfresco.util.CSRF.isFilterEnabled())
+         {
+            url += "&" + Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+         }
+
          // Find files to upload
          var startedUploads = 0,
             length = this.widgets.dataTable.getRecordSet().getLength(),

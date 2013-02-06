@@ -66,7 +66,7 @@ Alfresco.WebPreview.prototype.Plugins.StrobeMediaPlayback.prototype =
       poster: null,
 
       /**
-       * If a poster is used we must tell FlashFox what type of image it is by appending a file suffix on the url
+       * If a poster is used we must tell StrobeMediaPlayback what type of image it is by appending a file suffix on the url
        * when requesting the poster thumbnail. Must be given if a poster is in use.
        *
        * Example value: ".png"

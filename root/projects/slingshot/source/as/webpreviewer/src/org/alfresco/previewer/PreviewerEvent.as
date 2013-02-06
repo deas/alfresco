@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,33 +20,34 @@
 package org.alfresco.previewer
 {
    import flash.events.Event;
-
-	/**
-	 * Event class describing events occurring inside a Page.
-	 */
-	public class PreviewerEvent extends Event
-	{
-				
-		/**
-		 * Dispatched when the fullwindow button is clicked.
-		 */		
-		public static const FULL_WINDOW_BUTTON_CLICK:String = "fullWindowButtonClick";
-
-		/**
-		 * Dispatched when user presses the escape key in full window mode.
-		 */		
-		public static const FULL_WINDOW_ESCAPE:String = "fullWindowEscape";
-
-
-		/**
-		 * Constructor
-		 */
-		public function PreviewerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
-		{
-			super(type, bubbles, cancelable);
-		}
-	}
+   
+   /**
+    * Event class describing events occurring inside a Page.
+    *
+    * @author Erik Winlof
+    */
+   public class PreviewerEvent extends Event
+   {
+      
+      /**
+       * Dispatched when the fullwindow button is clicked.
+       */		
+      public static const FULL_WINDOW_BUTTON_CLICK:String = "fullWindowButtonClick";
+      
+      /**
+       * Dispatched when user presses the escape key in full window mode.
+       */		
+      public static const FULL_WINDOW_ESCAPE:String = "fullWindowEscape";
+      
+      
+      /**
+       * Constructor
+       */
+      public function PreviewerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+      {
+         super(type, bubbles, cancelable);
+      }
+   }
 }
 
 
-	
