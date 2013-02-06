@@ -469,37 +469,40 @@ define(["dojo/_base/declare",
        */
       alfLog: function alfresco_core_Core__alfLog(severity, message) {
          
-         if (arguments.length < 2)
+         if (Alfresco && Alfresco.logging)
          {
-            // Catch developer errors !!
-            console.error("AlfLog was not supplied enough arguments. A severity and message are the minimum required arguments.", arguments);
-         }
-         else if (typeof console[severity] != "function")
-         {
-            // Catch developer errors !!
-            console.error("The supplied severity is not a function of console", severity);
-         }
-         else
-         {
-            // Call the console method passing all the additional arguments)...
-            var callerName = arguments.callee.caller.name;
-            if (callerName && callerName != "")
+            if (arguments.length < 2)
             {
-               var re1 = /([^_])(_){1}/g,
-                   re2 = /(\/_)/g;
-               callerName = callerName.replace(re1, "$1/").replace(re2, "[") + "] >> ";
+               // Catch developer errors !!
+               console.error("AlfLog was not supplied enough arguments. A severity and message are the minimum required arguments.", arguments);
+            }
+            else if (typeof console[severity] != "function")
+            {
+               // Catch developer errors !!
+               console.error("The supplied severity is not a function of console", severity);
             }
             else
             {
-               callerName = "";
+               // Call the console method passing all the additional arguments)...
+               var callerName = arguments.callee.caller.name;
+               if (callerName && callerName != "")
+               {
+                  var re1 = /([^_])(_){1}/g,
+                      re2 = /(\/_)/g;
+                  callerName = callerName.replace(re1, "$1/").replace(re2, "[") + "] >> ";
+               }
+               else
+               {
+                  callerName = "";
+               }
+               message = callerName + message;
+               var messageArgs = [message];
+               for (var i=2; i<arguments.length; i++)
+               {
+                  messageArgs.push(arguments[i]);
+               }
+               console[severity].apply(console, messageArgs);
             }
-            message = callerName + message;
-            var messageArgs = [message];
-            for (var i=2; i<arguments.length; i++)
-            {
-               messageArgs.push(arguments[i]);
-            }
-            console[severity].apply(console, messageArgs);
          }
       }
    });

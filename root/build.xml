@@ -826,14 +826,28 @@
       <move todir="${dojo.tomcat.target}" includeEmptyDirs="yes" verbose="${copy.verbose}">
          <fileset dir="${dir.deploy.tomcat.application.slingshot}/${dojo.archive}">
             <include name="**/*" />
-            
-			<!-- The "util" folder should ultimately be excluded but is retained whilst unit tests live in Share -->
-			<!-- <exclude name="util/**"/> -->
          </fileset>
       </move>
 
       <!-- Delete the now empty Dojo release directory -->
       <delete dir="${dir.deploy.tomcat.application.slingshot}/${dojo.archive}"/>
+   </target>
+   
+   <!-- This is a target just for developers to unpack the uncompressed Dojo source and utilities for testing, etc -->
+   <target name="unpack-dev-dojo" depends="init">
+	  <!-- Delete the "production" Dojo... -->
+	  <delete dir="${dojo.tomcat.target}"/>
+
+      <!-- Unzip and add "development" Dojo -->          
+      <unzip src="${file.zip.slingshot.dojo.development}"
+             dest="${dir.deploy.tomcat.application.slingshot}" />
+      <move todir="${dojo.tomcat.target}" includeEmptyDirs="yes" verbose="${copy.verbose}">
+         <fileset dir="${dir.deploy.tomcat.application.slingshot}/${dojo.archive.development}">
+            <include name="**/*" />
+         </fileset>
+      </move>
+      <!-- Delete the directory created for unpacking -->	  
+	  <delete dir="${dir.deploy.tomcat.application.slingshot}/${dojo.archive.development}"/>
    </target>
    
    <target name="install-slingshot-amps" depends="init">

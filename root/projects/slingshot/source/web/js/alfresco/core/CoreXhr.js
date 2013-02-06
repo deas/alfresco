@@ -25,7 +25,6 @@ define(["dojo/_base/declare",
          var r = input;
          if (typeof input == "string")
          {
-//            r = input.replace(/\s/g, "").replace(/,}/g, "}");
             r = input.replace(/,}/g, "}");
          }
          return r;

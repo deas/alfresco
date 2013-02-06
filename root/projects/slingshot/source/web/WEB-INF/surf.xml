@@ -93,11 +93,8 @@
                 <package name="dojox" location="js/lib/dojo-1.8.3/dojox"/>
                 <package name="alfresco" location="js/alfresco"/>
                 
-                <!-- NOTE:
-                     The following package declaration should be removed once 4.2 Enterprise is
-                     ready for release. It is kept here temporarily to allow the unit tests to
-                     run from within Share (they will ultimately be moved to a new application)-->
-                <package name="doh" location="js/lib/dojo-1.8.3/util/doh"/>
+                <!-- The following package declaration can be uncommented if DOH is required-->
+                <!-- <package name="doh" location="js/lib/dojo-1.8.3/util/doh"/> -->
             </packages>
          </dojo-pages>
 
