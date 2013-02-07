@@ -120,7 +120,7 @@
          <rule>
             <request>
                <method>POST</method>
-               <path>/page/dologin.*</path>
+               <path>^/page/dologin.*|^\/page/site\/[^\/]+\/start-workflow</path>
             </request>
             <!-- No action just let the filter pass -->
          </rule>
@@ -129,7 +129,7 @@
          <rule>
             <request>
                <method>GET</method>
-               <path>/page/dologout.*</path>
+               <path>^/page/dologout.*</path>
             </request>
             <action name="clearToken">
                <param name="session">Alfresco-CSRFToken</param>
@@ -155,7 +155,7 @@
          <rule>
             <request>
                <method>GET</method>
-               <path>/page/.*</path>
+               <path>^/page/.*</path>
                <session>
                   <attribute name="_alf_USER_ID">.*</attribute>
                   <attribute name="Alfresco-CSRFToken">.*</attribute>
@@ -171,7 +171,7 @@
          <rule>
             <request>
                <method>POST</method>
-               <header name="Content-Type">multipart/.*</header>
+               <header name="Content-Type">^multipart/.*</header>
                <session>
                   <attribute name="_alf_USER_ID">.*</attribute>
                </session>
