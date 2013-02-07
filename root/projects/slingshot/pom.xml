@@ -163,10 +163,6 @@
                     <groupId>commons-lang</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>freemarker</artifactId>
-                    <groupId>org.freemarker</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                     <groupId>org.apache.geronimo.specs</groupId>
                 </exclusion>
@@ -254,7 +250,7 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.18-alfresco-patched</version>
+            <version>2.3.18-alfresco-patched-2</version>
         </dependency>
         <!-- Dependency on the web-framework-commons resources skinny war -->
         <dependency>
