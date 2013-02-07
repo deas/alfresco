@@ -36,8 +36,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator-1.4.0.jar" sourcepath="src/commons-validator-1.4.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.3-20121218.jar" sourcepath="src/tika-core-1.3-20121218.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.3-20121218.jar" sourcepath="src/tika-parsers-1.3-20121218.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.2-20120518.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.2-20120518.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.3-20130206.jar" sourcepath="src/vorbis-java-core-0.3-20130206-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.3-20130206.jar" sourcepath="src/vorbis-java-tika-0.3-20130206-source.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xz-1.0.jar" sourcepath="src/xz-1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/isoparser-1.0-RC-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aspectjrt-1.6.11.jar"/>

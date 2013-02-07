@@ -151,6 +151,7 @@
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
     <dependency.jibx.version>1.2.3</dependency.jibx.version>
     <dependency.tika.version>1.3-20120801</dependency.tika.version>
+    <dependency.vorbisJava.version>0.3-20130206</dependency.vorbisJava.version>
     <dependency.opencmis.version>0.7.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.junit.version>4.11-20120805-1225</dependency.junit.version>
