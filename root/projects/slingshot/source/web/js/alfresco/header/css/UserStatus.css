@@ -9,7 +9,7 @@
 .alfresco-share .alf-menu-user-status-text-area > textarea {
    box-shadow: 0 0 8px rgba(50, 50, 50, 0.25) inset;
    border: none;
-   padding: 2px;
+   padding: 3px;
    color: #838383;
    width: 100%;
    font-family: Open Sans,arial,sans-serif;
@@ -23,16 +23,18 @@
 }
 
 .alfresco-share .alf-menu-user-status-last-update {
+   color: #A6A6A6;
    float: left;
 }
 
 .alfresco-share .alf-menu-user-status-post-button {
-  background-color: #CCCCCC;
+  background-color: #ccc;
   border: medium none;
-  border-radius: 4px 4px 4px 4px;
+  border-radius: 4px;
   color: #575757;
   float: right;
-  font-weight: bold;
-  padding: 2px 10px;
+  padding: 2px 8px;
   margin-left: 20px;
+  font-family: Open Sans Bold,arial,sans-serif;
+  font-size: 95%;
 }

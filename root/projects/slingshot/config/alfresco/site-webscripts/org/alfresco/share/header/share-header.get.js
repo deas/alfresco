@@ -1093,7 +1093,8 @@ if (page.titleId == "page.userDashboard.title")
       name: "alfresco/menus/AlfMenuBarItem",
       config: {
          label: "",
-         iconClass: "alf-cog-icon",
+         title: msg.get("customize_dashboard.label"),
+         iconClass: "alf-configure-icon",
          targetUrl: "customise-user-dashboard"
       }
    };

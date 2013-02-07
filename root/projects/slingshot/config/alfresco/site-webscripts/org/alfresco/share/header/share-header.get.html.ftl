@@ -1,7 +1,6 @@
 <@markup id="css" >
    <@link rel="stylesheet" type="text/css" href="${url.context}/${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css" group="share" forceAggregation="true"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css" group="share" forceAggregation="true"/>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/header.css" group="share" forceAggregation="true"/>
    <#if config.global.header?? && config.global.header.dependencies?? && config.global.header.dependencies.css??>
       <#list config.global.header.dependencies.css as cssFile>
          <@link href="${url.context}/res${cssFile}" group="header"/>
