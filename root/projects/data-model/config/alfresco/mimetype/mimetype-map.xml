@@ -121,7 +121,6 @@
 
          <mimetype mimetype="video/ogg" display="Ogg Video">
             <extension default="true">ogv</extension>
-            <extension>ogg</extension>
          </mimetype>
          <mimetype mimetype="audio/ogg" display="Ogg Audio">
             <extension default="true">oga</extension>
