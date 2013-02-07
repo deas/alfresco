@@ -116,7 +116,22 @@
       -->
       <filter>
 
-         <!-- Certain POST requests does NOT require a token -->
+         <!--
+            Certain Surf POST requests form the WebScript console must be allowed to pass without a token since
+            the Surf WebScript console code can't be dependent on a Share specific filter.
+            Note! In the future this rule will use "assertOrigin" and "assertReferer" filter rule actions once
+            implemented (unless the webscript console implements its own csrf token solution, which would be the most
+            proper solution.
+         -->
+         <rule>
+            <request>
+               <method>POST</method>
+               <path>^\/page\/caches\/dependency\/clear|^\/page\/index|^\/page\/surfBugStatus|^\/page\/modules\/deploy|^\/share\/page\/modules\/module|^\/share\/page\/api\/javascript\/debugger</path>
+            </request>
+            <!-- No action just let the filter pass for now -->
+         </rule>
+
+         <!-- Certain Share POST requests does NOT require a token -->
          <rule>
             <request>
                <method>POST</method>
