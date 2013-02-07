@@ -56,11 +56,17 @@ define(["dojo/_base/declare",
             }
             else
             {
+               var headers = (config.headers) ? config.headers : { 'Content-Type': 'application/json' };
+               if (Alfresco && Alfresco.util && Alfresco.util.CSRF && Alfresco.util.CSRF.isFilterEnabled())
+               {
+                  headers[Alfresco.util.CSRF.getHeader()] = Alfresco.util.CSRF.getToken();
+               }
+               
                xhr(config.url, {
                   handleAs: "text",
                   method: (config.method) ? config.method : "POST",
                   data: (config.data) ? JSON.stringify(config.data) : null,
-                  headers: (config.headers) ? config.headers : { 'Content-Type': 'application/json' }
+                  headers: headers
                }).then(function(response){
                   
                   // HANDLE SUCCESS...
