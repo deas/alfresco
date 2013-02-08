@@ -53,7 +53,7 @@
    <filter>
       <description>Share CSRF Token filter. Checks for a session based CSRF token in request headers (or form parameters) based on config.</description>
       <filter-name>CSRF Token Filter</filter-name>
-      <filter-class>org.alfresco.web.site.servlet.CSRFTokenFilter</filter-class>
+      <filter-class>org.alfresco.web.site.servlet.CSRFFilter</filter-class>
    </filter>
 
    <filter-mapping>

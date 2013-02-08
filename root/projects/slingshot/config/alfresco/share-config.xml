@@ -119,16 +119,18 @@
          <!--
             Certain Surf POST requests form the WebScript console must be allowed to pass without a token since
             the Surf WebScript console code can't be dependent on a Share specific filter.
-            Note! In the future this rule will use "assertOrigin" and "assertReferer" filter rule actions once
-            implemented (unless the webscript console implements its own csrf token solution, which would be the most
-            proper solution.
          -->
          <rule>
             <request>
                <method>POST</method>
                <path>^\/page\/caches\/dependency\/clear|^\/page\/index|^\/page\/surfBugStatus|^\/page\/modules\/deploy|^\/share\/page\/modules\/module|^\/share\/page\/api\/javascript\/debugger</path>
             </request>
-            <!-- No action just let the filter pass for now -->
+            <action name="assertReferer">
+               <param name="always">false</param>
+            </action>
+            <action name="assertOrigin">
+               <param name="always">false</param>
+            </action>
          </rule>
 
          <!-- Certain Share POST requests does NOT require a token -->
@@ -137,7 +139,12 @@
                <method>POST</method>
                <path>^/page/dologin.*|^\/page/site\/[^\/]+\/start-workflow</path>
             </request>
-            <!-- No action just let the filter pass -->
+            <action name="assertReferer">
+               <param name="always">false</param>
+            </action>
+            <action name="assertOrigin">
+               <param name="always">false</param>
+            </action>
          </rule>
 
          <!-- Clear the token when logging out -->
@@ -158,6 +165,7 @@
                <session>
                   <attribute name="_alf_USER_ID">.*</attribute>
                   <attribute name="Alfresco-CSRFToken"/>
+                  <!-- empty attribute element indicates null -->
                </session>
             </request>
             <action name="generateToken">
@@ -182,7 +190,7 @@
             </action>
          </rule>
 
-         <!-- Verify multipart requests contains the token as a parameter -->
+         <!-- Verify multipart requests contains the token as a parameter and also correct referer & origin header if available -->
          <rule>
             <request>
                <method>POST</method>
@@ -195,12 +203,19 @@
                <param name="session">Alfresco-CSRFToken</param>
                <param name="parameter">Alfresco-CSRFToken</param>
             </action>
+            <action name="assertReferer">
+               <param name="always">false</param>
+            </action>
+            <action name="assertOrigin">
+               <param name="always">false</param>
+            </action>
          </rule>
 
          <!--
-            Verify there is a token in the header for remaining state changing requests.
-            We "catch" all content types since just setting it to "application/json.*" since a webscript that doesn't
-            require a json request body otherwise would be successfully executed using i.e. "text/plain".
+            Verify there is a token in the header for remaining state changing requests and also correct
+            referer & origin headers if available. We "catch" all content types since just setting it to
+            "application/json.*" since a webscript that doesn't require a json request body otherwise would be
+            successfully executed using i.e. "text/plain".
          -->
          <rule>
             <request>
@@ -213,6 +228,13 @@
                <param name="session">Alfresco-CSRFToken</param>
                <param name="header">Alfresco-CSRFToken</param>
             </action>
+            <action name="assertReferer">
+               <param name="always">false</param>
+            </action>
+            <action name="assertOrigin">
+               <param name="always">false</param>
+            </action>
+
          </rule>
 
       </filter>

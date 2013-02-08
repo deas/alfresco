@@ -49,22 +49,23 @@ import org.springframework.extensions.surf.util.URLEncoder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * A CSRF Token Filter class for the web-tier checking that certain requests supply a secret CSRF token that is compared
- * to the token existing in the user's session to mitigate CSRF attacks.
+ * A CSRF Filter class for the web-tier checking that certain requests supply a secret token that is compared
+ * to the token existing in the user's session to mitigate CSRF attacks. It is also possible to check the referer or
+ * origin headers.
  *
  * The logic is configurable making it possible to: disable the filter, use 1 and same token per session, refresh the
  * token when certain urls are requested (i.e. on a new page visit, which is recommended) OR refresh the token on
  * every request made to the server (which is not recommended since multiple requests might span over each other making
- * some tokens staleand therefor get treated as CSRF attack).
+ * some tokens stale and therefor get treated as a CSRF attack).
  *
  * It is recommended to run the filter with a filter-mapping that NOT includes client side resources since that
  * is pointless and unnecessarily would decrease the performance of the webapp (even though the filter still would work).
  *
  * @author Erik Winlof
  */
-public class CSRFTokenFilter implements Filter
+public class CSRFFilter implements Filter
 {
-    private static Log logger = LogFactory.getLog(CSRFTokenFilter.class);
+    private static Log logger = LogFactory.getLog(CSRFFilter.class);
     
     private ServletContext servletContext = null;
     
@@ -240,6 +241,14 @@ public class CSRFTokenFilter implements Filter
         {
             return new ClearTokenAction();
         }
+        else if (name.equals("assertReferer"))
+        {
+            return new AssertRefererAction();
+        }
+        else if (name.equals("assertOrigin"))
+        {
+            return new AssertOriginAction();
+        }
         return null;
     }
 
@@ -310,7 +319,7 @@ public class CSRFTokenFilter implements Filter
         }
         
         // Match path
-        if (rule.getPath() != null && !matchString(request.getRequestURI().substring(request.getContextPath().length()), rule.getPath()))
+        if (rule.getPath() != null && !matchString(request.getRequestURI(). substring(request.getContextPath().length()), rule.getPath()))
         {
             return false;
         }
@@ -455,6 +464,23 @@ public class CSRFTokenFilter implements Filter
     }
 
     /**
+     * Returns the current server's scheme, name & port
+     *
+     * @param request The http request
+     * @return the current server's scheme, name & port
+     */
+    private String getServerString(HttpServletRequest request)
+    {
+        String currentServerContext = request.getScheme() + "://" + request.getServerName();
+        if (request.getServerPort() != 80)
+        {
+            currentServerContext += ":" + request.getServerPort();
+        }
+        return currentServerContext;
+    }
+
+
+    /**
      * Abstract base class representing a rule action.
      */
     private abstract class Action
@@ -583,11 +609,13 @@ public class CSRFTokenFilter implements Filter
                 String headerToken = request.getHeader(params.get(PARAM_HEADER));
                 
                 if (logger.isDebugEnabled())
-                    logger.debug("Assert token " + request.getMethod() + " " + request.getRequestURI() + " :: session: '" + sessionToken + "' vs header: '" + headerToken + "'");
+                    logger.debug("Assert token " + request.getMethod() + " " + request.getRequestURI() + " :: session: '"
+                            + sessionToken + "' vs header: '" + headerToken + "'");
                 
                 if (headerToken == null || sessionToken == null || !headerToken.equals(sessionToken))
                 {
-                    String message = "Possible CSRF attack noted when comparing token in session and request header. Request: " + request.getMethod() + " " + request.getRequestURI();
+                    String message = "Possible CSRF attack noted when comparing token in session and request header. Request: "
+                            + request.getMethod() + " " + request.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
@@ -599,11 +627,13 @@ public class CSRFTokenFilter implements Filter
                 String parameterToken = request.getParameter(params.get(PARAM_PARAMETER));
                 
                 if (logger.isDebugEnabled())
-                    logger.debug("Assert token " + request.getMethod() + " " + request.getRequestURI() + " :: session: '" + sessionToken + "' vs parameter: '" + parameterToken + "'");
+                    logger.debug("Assert token " + request.getMethod() + " " + request.getRequestURI() + " :: session: '"
+                            + sessionToken + "' vs parameter: '" + parameterToken + "'");
                 
                 if (parameterToken == null || sessionToken == null || !parameterToken.equals(sessionToken))
                 {
-                    String message = "Possible CSRF attack noted when comparing token in session and request parameter. Request: " + request.getMethod() + " " + request.getRequestURI();
+                    String message = "Possible CSRF attack noted when comparing token in session and request parameter. Request: "
+                            + request.getMethod() + " " + request.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
@@ -661,6 +691,164 @@ public class CSRFTokenFilter implements Filter
                 userCookie.setPath(request.getContextPath());
                 userCookie.setMaxAge(0);
                 response.addCookie(userCookie);
+            }
+        }
+    }
+
+    /**
+     * An action that asserts the request's 'Referer' header starts with the current server name or the "referer" param.
+     *
+     * Note that the word “referrer” is misspelled in the RFC as well as in most implementations.
+     */
+    private class AssertRefererAction extends Action
+    {
+        public static final String PARAM_ALWAYS = "always";
+        public static final String PARAM_REFERER = "referer";
+        public static final String HEADER_REFERER = "Referer";
+
+        /**
+         * Requires the following params; a boolean deciding if the referer header MUST be present when validated.
+         * Defined in a param with key "always".
+         *
+         * @param params The action parameters
+         * @throws ServletException
+         */
+        public void init(Map<String, String> params) throws ServletException
+        {
+            super.init(params);
+
+            // Check for mandatory parameters
+            if (params == null || !params.containsKey(PARAM_ALWAYS))
+            {
+                String message = "Parameter '" + PARAM_ALWAYS + "' must be defined.";
+                if (logger.isErrorEnabled())
+                    logger.error(message);
+                throw new ServletException(message);
+            }
+            if (!params.get(PARAM_ALWAYS).equals("true") && !params.get(PARAM_ALWAYS).equals("false"))
+            {
+                String message = "Parameter '" + PARAM_ALWAYS + "' must be a boolean and be set to true or false.";
+                if (logger.isErrorEnabled())
+                    logger.error(message);
+                throw new ServletException(message);
+            }
+        }
+
+        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        {
+            String refererHeader = request.getHeader(HEADER_REFERER);
+            if (refererHeader == null)
+            {
+                refererHeader = "";
+            }
+            else if (!refererHeader.endsWith("/"))
+            {
+                refererHeader += "/";
+            }
+
+            String currentServer = params.containsKey(PARAM_REFERER) ? params.get(PARAM_REFERER) : getServerString(request);
+
+            if (logger.isDebugEnabled())
+                logger.debug("Assert referer " + request.getMethod() + " " + request.getRequestURI() + " :: referer: '"
+                        + request.getHeader(HEADER_REFERER) + "' vs server & context: '" + currentServer + "'");
+
+            // Note! Add slashes at the end to avoid missing when the victim's domain is "site.com"
+            // and the attacker site "site.com.attacker.com"
+            if (!currentServer.endsWith("/"))
+            {
+                currentServer += "/";
+            }
+
+            if (refererHeader.isEmpty() && params.get(PARAM_ALWAYS).equals("false"))
+            {
+                // The referrer header might be blank or no existing due to a variety of "valid" reasons, i.e:
+                // * If a website is accessed from a HTTP Secure (HTTPS) connection and a link points to anywhere except
+                //   another secure location, then the referrer field is not sent.
+                // * A proxy or other system might have blanked the header due to privacy concerns sending the entire
+                //   url including the full path.
+                // * The user agent might have been instructed to not send the referrer header using "noreferrer".
+            }
+            else
+            {
+                if (!refererHeader.startsWith(currentServer))
+                {
+                    String message = "Possible CSRF attack noted when asserting referer header '"
+                            + request.getHeader(HEADER_REFERER) + "'. Request: " + request.getMethod() + " "
+                            + request.getRequestURI();
+                    if (logger.isInfoEnabled())
+                        logger.info(message);
+
+                    throw new ServletException(message);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * An action that asserts the request's 'Origin' header matches the current server name or the "origin" param .
+     */
+    private class AssertOriginAction extends Action
+    {
+        public static final String PARAM_ALWAYS = "always";
+        public static final String PARAM_ORIGIN = "origin";
+        public static final String HEADER_ORIGIN = "Origin";
+
+        /**
+         * Requires the following params; a boolean deciding if the origin header MUST be present when validated.
+         * Defined in a param with key "always".
+         *
+         * @param params The action parameters
+         * @throws ServletException
+         */
+        public void init(Map<String, String> params) throws ServletException
+        {
+            super.init(params);
+
+            // Check for mandatory parameters
+            if (params == null || !params.containsKey(PARAM_ALWAYS))
+            {
+                String message = "Parameter '" + PARAM_ALWAYS + "' must be defined.";
+                if (logger.isErrorEnabled())
+                    logger.error(message);
+                throw new ServletException(message);
+            }
+            if (!params.get(PARAM_ALWAYS).equals("true") && !params.get(PARAM_ALWAYS).equals("false"))
+            {
+                String message = "Parameter '" + PARAM_ALWAYS + "' must be a boolean and be set to true or false.";
+                if (logger.isErrorEnabled())
+                    logger.error(message);
+                throw new ServletException(message);
+            }
+        }
+
+        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        {
+            String originHeader = request.getHeader(HEADER_ORIGIN);
+            if (originHeader == null)
+            {
+                originHeader = "";
+            }
+
+            String currentServer = params.containsKey(PARAM_ORIGIN) ? params.get(PARAM_ORIGIN) : getServerString(request);
+
+            if (logger.isDebugEnabled())
+                logger.debug("Assert origin " + request.getMethod() + " " + request.getRequestURI() + " :: origin: '" + request.getHeader(HEADER_ORIGIN) + "' vs server: '" + currentServer + "'");
+
+            if (originHeader.isEmpty() && params.get(PARAM_ALWAYS).equals("false"))
+            {
+                // Only valid reason for the Origin header not being sent should be due to an old browser NOT supporting it.
+            }
+            else
+            {
+                if (!originHeader.startsWith(currentServer))
+                {
+                    String message = "Possible CSRF attack noted when asserting origin header '" + request.getHeader(HEADER_ORIGIN) + "'. Request: " + request.getMethod() + " " + request.getRequestURI();
+                    if (logger.isInfoEnabled())
+                        logger.info(message);
+
+                    throw new ServletException(message);
+                }
             }
         }
     }
