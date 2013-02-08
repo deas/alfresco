@@ -181,6 +181,7 @@ function getSitesMenuData() {
                      name: "alfresco/header/AlfMenuItem",
                      config:
                      {
+                        id: "HEADER_SITES_MENU_FAVOURITE_" + currShortName,
                         label: sites[i].title,
                         iconClass: "alf-favourite-site-icon",
                         targetUrl: "site/" + currShortName + "/dashboard",
@@ -210,6 +211,7 @@ function getSitesMenuData() {
                   id: "ALF_RECENT_SITE___" + currShortName,
                   name: "alfresco/header/AlfMenuItem",
                   config: {
+                     id: "HEADER_SITES_MENU_RECENT_" + currShortName,
                      label: sites[i].title,
                      iconClass: "alf-recent-site-icon",
                      targetUrl: "site/" + currShortName + "/dashboard",

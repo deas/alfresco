@@ -442,11 +442,13 @@ define(["dojo/_base/declare",
             
             // Create and add the 'Site Finder' and 'Create Site' menu items to it...
             this.siteFinder = new AlfMenuItem({
+               id: this.id + "_SITE_FINDER",
                label: this.siteFinderLabel,
                iconClass: this.siteFinderIconClass,
                targetUrl: "site-finder"
             });
             this.createSite = new AlfMenuItem({
+               id: this.id + "_CREATE_SITE",
                label: this.createSiteLabel,
                iconClass: this.createSiteIconClass,
                publishTopic: "ALF_CREATE_SITE"
@@ -465,6 +467,7 @@ define(["dojo/_base/declare",
             
             // Create the cascading menu item to popout the favourites list...
             this.favoritesCascade = new AlfCascadingMenu({
+               id: this.id + "_FAVOURITES",
                label: this.favouriteGroupLabel,
                iconClass: this.favouriteGroupIconClass
             });
@@ -483,7 +486,7 @@ define(["dojo/_base/declare",
                // Always create the Add and Remove favourite menu items, but only add them if requested
                // This is done so that we can add and remove the menu items easily upon request...
                this.addFavourite = new AlfMenuItem({
-                  id: this.addFavouriteId,
+                  id: this.id + "_ADD_FAVOURITE",
                   label: this.addFavouriteLabel,
                   iconClass: this.addFavouriteIconClass,
                   publishTopic: "ALF_ADD_FAVOURITE_SITE",
@@ -493,7 +496,7 @@ define(["dojo/_base/declare",
                   }
                });
                this.removeFavourite = new AlfMenuItem({
-                  id: this.removeFavouriteId,
+                  id: this.id + "_REMOVE_FAVOURITE",
                   label: this.removeFavouriteLabel,
                   iconClass: this.removeFavouriteIconClass,
                   publishTopic: "ALF_REMOVE_FAVOURITE_SITE",

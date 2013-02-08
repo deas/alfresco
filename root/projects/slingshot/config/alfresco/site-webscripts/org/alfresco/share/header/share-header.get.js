@@ -304,6 +304,7 @@ if (model.pages != null)
    navigationWidgets.push({
       name: "alfresco/menus/AlfMenuBarItem",
       config: {
+         id: "HEADER_SITE_DASHBOARD",
          label: "Dashboard",
          targetUrl: "site/" + page.url.templateArgs.site + "/dashboard",
          selected: (page.titleId == "page.siteDashboard.title")
@@ -314,6 +315,7 @@ if (model.pages != null)
       navigationWidgets.push({
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
+            id: "HEADER_SITE_" + model.pages[i].pageId.toUpperCase(),
             label: model.pages[i].title,
             pageId: model.pages[i].pageId,
             targetUrl: "site/" + page.url.templateArgs.site + "/" + model.pages[i].pageUrl,
@@ -324,6 +326,7 @@ if (model.pages != null)
    navigationWidgets.push({
       name: "alfresco/menus/AlfMenuBarItem",
       config: {
+         id: "HEADER_SITE_MEMBERS",
          label: "Members",
          targetUrl: "site/" + page.url.templateArgs.site + "/site-members",
          selected: (page.titleId == "page.siteMembers.title")
@@ -388,6 +391,7 @@ function getUserStatusWidget()
       id: "UserStatus",
       name: "alfresco/header/UserStatus",
       config: {
+         id: "HEADER_USER_STATUS",
          userStatus: userStatus,
          userStatusTime: userStatusTime
       }
@@ -818,7 +822,7 @@ function generateAppItems() {
          id: "UserHomeLink",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
-//            label: "header.menu.home.label",
+            id: "HEADER_HOME",
             iconClass: "alf-home-icon",
             targetUrl: "user/" + user.name + "/dashboard"
          }
@@ -841,6 +845,7 @@ function generateAppItems() {
          id: "SitesMenu",
          name: "alfresco/header/AlfSitesMenu",
          config: {
+            id: "HEADER_SITES_MENU",
             label: "header.menu.sites.label",
             currentSite: page.url.templateArgs.site,
             currentUser: user.name
@@ -850,6 +855,7 @@ function generateAppItems() {
          id: "UserTasksLink",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
+            id: "HEADER_MY_TASKS",
             label: "header.menu.tasks.label",
             targetUrl: "my-tasks#filter=workflows|active"
          }
@@ -858,6 +864,7 @@ function generateAppItems() {
          id: "PeopleLink",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
+            id: "HEADER_PEOPLE",
             label: "header.menu.people.label",
             targetUrl: "people-finder"
          }
@@ -869,6 +876,7 @@ function generateAppItems() {
          id: "RepositoryLink",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
+            id: "HEADER_REPOSITORY",
             label: "header.menu.repository.label",
             targetUrl: "repository"
          }
@@ -877,6 +885,7 @@ function generateAppItems() {
          id: "AdminToolsLink",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
+            id: "HEADER_ADMIN_CONSOLE",
             label: "header.menu.admin.label",
             targetUrl: "console/admin-console/"
          }
@@ -902,6 +911,7 @@ function generateUserItems() {
          id: "PopupUserMenu",
          name: "alfresco/header/AlfMenuBarPopup",
          config: {
+            id: "HEADER_USER_MENU",
             label: user.fullName,
             widgets: [
                getUserStatusWidget(),
@@ -910,6 +920,7 @@ function generateUserItems() {
                   name: "alfresco/header/AlfMenuItem",
                   config:
                   {
+                     id: "HEADER_USER_MENU_PROFILE",
                      label: "my_profile.label",
                      iconClass: "alf-user-profile-icon",
                      targetUrl: "user/" + user.name + "/profile"
@@ -920,6 +931,7 @@ function generateUserItems() {
                   name: "alfresco/header/AlfMenuItem",
                   config:
                   {
+                     id: "HEADER_USER_MENU_CHANGE_PASSWORD",
                      label: "change_password.label",
                      iconClass: "alf-user-password-icon",
                      targetUrl: "user/" + user.name + "/change-password"
@@ -930,6 +942,7 @@ function generateUserItems() {
                   name: "alfresco/header/AlfMenuItem",
                   config:
                   {
+                     id: "HEADER_USER_MENU_HELP",
                      label: "help.label",
                      iconClass: "alf-user-help-icon",
                      targetUrl: getHelpLink(),
@@ -942,6 +955,7 @@ function generateUserItems() {
                   name: "alfresco/header/AlfMenuItem",
                   config:
                   {
+                     id: "HEADER_USER_MENU_LOGOUT",
                      label: "logout.label",
                      iconClass: "alf-user-logout-icon",
                      targetUrl: "dologout"
@@ -1092,6 +1106,7 @@ if (page.titleId == "page.userDashboard.title")
       id: "UserDashBoardCustomization",
       name: "alfresco/menus/AlfMenuBarItem",
       config: {
+         id: "HEADER_CUSTOMIZE_USER_DASHBOARD",
          label: "",
          title: msg.get("customize_dashboard.label"),
          iconClass: "alf-configure-icon",
@@ -1107,6 +1122,7 @@ else if (page.url.templateArgs.site != null)
       id: "SiteConfigurationPopup",
       name: "alfresco/menus/AlfMenuBarPopup",
       config: {
+         id: "HEADER_SITE_CONFIGURATION_DROPDOWN",
          label: "",
          iconClass: "alf-configure-icon",
          widgets: []
@@ -1120,6 +1136,7 @@ else if (page.url.templateArgs.site != null)
       siteConfig.config.widgets.push({
          name: "alfresco/menus/AlfMenuItem",
          config: {
+            id: "HEADER_BECOME_SITE_MANAGER",
             label: "become_site_manager.label",
             iconClass: "alf-cog-icon",
             publishTopic: "ALF_BECOME_SITE_MANAGER",
@@ -1137,6 +1154,7 @@ else if (page.url.templateArgs.site != null)
       titleConfig.push({
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
+            id: "HEADER_SITE_INVITE",
             label: "",
             iconClass: "alf-user-icon",
             targetUrl: "site/" + page.url.templateArgs.site + "/invite"
@@ -1150,6 +1168,7 @@ else if (page.url.templateArgs.site != null)
          siteConfig.config.widgets.push({
             name: "alfresco/menus/AlfMenuItem",
             config: {
+               id: "HEADER_CUSTOMIZE_SITE_DASHBOARD",
                label: "customize_dashboard.label",
                iconClass: "alf-cog-icon",
                targetUrl: "site/" + page.url.templateArgs.site + "/customise-site-dashboard"
@@ -1162,6 +1181,7 @@ else if (page.url.templateArgs.site != null)
          {
             name: "alfresco/menus/AlfMenuItem",
             config: {
+               id: "HEADER_EDIT_SITE_DETAILS",
                label: "edit_site_details.label",
                iconClass: "alf-edit-icon",
                publishTopic: "ALF_EDIT_SITE",
@@ -1174,6 +1194,7 @@ else if (page.url.templateArgs.site != null)
          {
             name: "alfresco/menus/AlfMenuItem",
             config: {
+               id: "HEADER_CUSTOMIZE_SITE",
                label: "customize_site.label",
                iconClass: "alf-cog-icon",
                targetUrl: "site/" + page.url.templateArgs.site + "/customise-site"
@@ -1182,6 +1203,7 @@ else if (page.url.templateArgs.site != null)
          {
             name: "alfresco/menus/AlfMenuItem",
             config: {
+               id: "HEADER_LEAVE_SITE",
                label: "leave_site.label",
                iconClass: "alf-leave-icon",
                publishTopic: "ALF_LEAVE_SITE",
@@ -1199,6 +1221,7 @@ else if (page.url.templateArgs.site != null)
       siteConfig.config.widgets.push({
          name: "alfresco/menus/AlfMenuItem",
          config: {
+            id: "HEADER_LEAVE_SITE",
             label: "leave_site.label",
             iconClass: "alf-leave-icon",
             publishTopic: "ALF_LEAVE_SITE",
@@ -1215,6 +1238,7 @@ else if (page.url.templateArgs.site != null)
       siteConfig.config.widgets.push({
          name: "alfresco/menus/AlfMenuItem",
          config: {
+            id: "HEADER_JOIN_SITE",
             label: "join_site.label",
             iconClass: "alf-leave-icon",
             publishTopic: "ALF_JOIN_SITE",
@@ -1296,6 +1320,7 @@ model.jsonModel = {
                            name: "alfresco/header/SearchBox",
                            align: "right",
                            config: {
+                              id: "HEADER_SEARCH_BOX"
                            }
                         }
                      ],
