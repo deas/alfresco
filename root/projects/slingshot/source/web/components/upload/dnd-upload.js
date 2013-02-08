@@ -1144,11 +1144,6 @@
       {
          try
          {
-            if (Alfresco.util.CSRF.isFilterEnabled())
-            {
-               url += "?" + Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
-            }
-
             var data = event.record.getData();
             var fileInfo = this.fileStore[data.id];
 
@@ -1185,7 +1180,7 @@
                // For now only allow 1 upload at a time
                return;
             }
-            }
+         }
       },
 
       /**
@@ -1195,7 +1190,7 @@
        * @param fileInfo {object} Contains info about the file and its request.
        */
       _startUpload: function (fileInfo)
-            {
+      {
          // Mark file as being uploaded
          fileInfo.state = this.STATE_UPLOADING;
 
@@ -1208,7 +1203,11 @@
          {
             url = Alfresco.constants.PROXY_URI + this.showConfig.uploadURL;
          }
-         
+         if (Alfresco.util.CSRF.isFilterEnabled())
+         {
+            url += "?" + Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+         }
+
          if (this.uploadMethod === this.FORMDATA_UPLOAD)
          {
             // For Browsers that support it (currently FireFox 4), the FormData object is the best
