@@ -272,7 +272,6 @@
 					<exclude name="**/tiny_mce/**" />
 					<exclude name="**/yui/**" />
                     <exclude name="js/lib/dojo*/**" />
-					<exclude name="js/alfresco/**" />
 					<exclude name="**/log4javascript*.js" />
 				</fileset>
 				<arg line="-jar"/>
