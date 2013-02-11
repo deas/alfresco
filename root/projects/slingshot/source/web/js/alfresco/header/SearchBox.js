@@ -92,6 +92,7 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/header/AlfMenuBarPopup",
                   config: {
+                     id: this.id + "_DROPDOWN_MENU",
                      showArrow: false,
                      label: "",
                      iconClass: "alf-search-icon",
@@ -99,6 +100,7 @@ define(["dojo/_base/declare",
                         {
                            name: "alfresco/menus/AlfMenuItem",
                            config: {
+                              id: this.id + "_ADVANCED_SEARCH",
                               i18nScope: "org.alfresco.SearchBox",
                               label: "search.advanced",
                               targetUrl: "advsearch"
