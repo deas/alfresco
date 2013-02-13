@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -29,9 +29,12 @@ import net.sf.acegisecurity.context.ContextHolder;
 import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import net.sf.acegisecurity.providers.dao.User;
 
+import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.repo.tenant.TenantContextHolder;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.util.EqualsHelper;
+import org.alfresco.util.Pair;
 import org.alfresco.util.log.NDC;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -181,17 +184,30 @@ public class AuthenticationUtil implements InitializingBean
         return setFullyAuthenticatedUser(userName, getDefaultUserDetails(userName));
     }
     
-    private static Authentication setFullyAuthenticatedUser(String userName, UserDetails providedDetails) throws AuthenticationException
+    private static Authentication setFullyAuthenticatedUser(String userNameIn, UserDetails providedDetails) throws AuthenticationException
     {
-        if (userName == null)
+        if (userNameIn == null)
         {
             throw new AuthenticationException("Null user name");
         }
-
+        
         try
         {
+            if (TenantContextHolder.getTenantDomain() == null)
+            {
+                TenantContextHolder.clearTenantDomain();
+            }
+            
+            Pair<String, String> userTenant = AuthenticationUtil.getUserTenant(userNameIn);
+            final String userName = userTenant.getFirst();
+            final String tenantDomain = userTenant.getSecond();
+            
             UsernamePasswordAuthenticationToken auth = getAuthenticationToken(userName, providedDetails);
-            return setFullAuthentication(auth);
+            Authentication authentication = setFullAuthentication(auth);
+            
+            TenantContextHolder.setTenantDomain(tenantDomain);
+            
+            return authentication;
         }
         catch (net.sf.acegisecurity.AuthenticationException ae)
         {
@@ -435,10 +451,11 @@ public class AuthenticationUtil implements InitializingBean
             String runAsUser = AuthenticationUtil.getRunAsUser();
             if (runAsUser != null)
             {
-                String[] parts = splitUserTenant(runAsUser);
-                if (parts.length == 2)
+                String tenantDomain = AuthenticationUtil.getUserTenant(runAsUser).getSecond();
+                
+                if (! TenantService.DEFAULT_DOMAIN.equals(tenantDomain))
                 {
-                    return defaultAdminUserName + TenantService.SEPARATOR + parts[1];
+                    return defaultAdminUserName + TenantService.SEPARATOR + tenantDomain;
                 }
             }
         }
@@ -485,6 +502,8 @@ public class AuthenticationUtil implements InitializingBean
         InMemoryTicketComponentImpl.clearCurrentSecurityContext();
         
         NDC.remove();
+        
+        TenantContextHolder.clearTenantDomain();
     }
 
     /**
@@ -511,6 +530,8 @@ public class AuthenticationUtil implements InitializingBean
             }
             else
             {
+                // TODO remove - this should be obsolete now we're using TenantContextHolder
+                /*
                 if ((originalRunAsAuthentication != null) && (isMtEnabled()))
                 {
                     String originalRunAsUserName = getUserName(originalRunAsAuthentication);
@@ -523,6 +544,7 @@ public class AuthenticationUtil implements InitializingBean
                         }
                     }
                 }
+                */
                 AuthenticationUtil.setRunAsUser(uid);
             }
             logNDC(uid);
@@ -563,8 +585,8 @@ public class AuthenticationUtil implements InitializingBean
         return runAs(runAsWork, getSystemUserName());
     }
     
-    static class ThreadLocalStack extends ThreadLocal<Stack<Authentication>> {
-
+    static class ThreadLocalStack extends ThreadLocal<Stack<Authentication>>
+    {
         /* (non-Javadoc)
          * @see java.lang.ThreadLocal#initialValue()
          */
@@ -573,10 +595,19 @@ public class AuthenticationUtil implements InitializingBean
         {
             return new Stack<Authentication>();
         }
-        
-    }    
+    }
+    
     private static ThreadLocal<Stack<Authentication>> threadLocalFullAuthenticationStack = new ThreadLocalStack();
     private static ThreadLocal<Stack<Authentication>> threadLocalRunAsAuthenticationStack = new ThreadLocalStack();
+    
+    private static ThreadLocal<Stack<String>> threadLocalTenantDomainStack = new ThreadLocal<Stack<String>>()
+                                                                                    {
+                                                                                        @Override
+                                                                                        protected Stack<String> initialValue()
+                                                                                        {
+                                                                                            return new Stack<String>();
+                                                                                        }
+                                                                                    };
     
     /**
      * Push the current authentication context onto a threadlocal stack.
@@ -587,6 +618,8 @@ public class AuthenticationUtil implements InitializingBean
         Authentication originalRunAsAuthentication = AuthenticationUtil.getRunAsAuthentication();
         threadLocalFullAuthenticationStack.get().push(originalFullAuthentication);
         threadLocalRunAsAuthenticationStack.get().push(originalRunAsAuthentication);
+        
+        threadLocalTenantDomainStack.get().push(TenantContextHolder.getTenantDomain());
     }
     
     /**
@@ -596,6 +629,7 @@ public class AuthenticationUtil implements InitializingBean
     {
         Authentication originalFullAuthentication = threadLocalFullAuthenticationStack.get().pop();
         Authentication originalRunAsAuthentication = threadLocalRunAsAuthenticationStack.get().pop();
+        
         if (originalFullAuthentication == null)
         {
             AuthenticationUtil.clearCurrentSecurityContext();
@@ -605,6 +639,9 @@ public class AuthenticationUtil implements InitializingBean
             AuthenticationUtil.setFullAuthentication(originalFullAuthentication);
             AuthenticationUtil.setRunAsAuthentication(originalRunAsAuthentication);
         }
+        
+        String originalTenantDomain = threadLocalTenantDomainStack.get().pop();
+        TenantContextHolder.setTenantDomain(originalTenantDomain);
     }
 
     /**
@@ -621,18 +658,20 @@ public class AuthenticationUtil implements InitializingBean
         }
     }
 
-    public static void logNDC(String userName)
+    public static void logNDC(String userNameIn)
     {
         NDC.remove();
         
-        if (userName != null)
+        if (userNameIn != null)
         {
             if (isMtEnabled())
             {
-                String[] parts = splitUserTenant(userName);
-                if (parts.length == 2)
+                Pair<String, String> userTenant = AuthenticationUtil.getUserTenant(userNameIn);
+                final String userName = userTenant.getFirst();
+                final String tenantDomain = userTenant.getSecond();
+                if (! TenantService.DEFAULT_DOMAIN.equals(tenantDomain))
                 {
-                    NDC.push("Tenant:" + parts[1] + " User:" + parts[0]);
+                    NDC.push("Tenant:" +tenantDomain + " User:" + userName);
                 }
                 else
                 {
@@ -641,18 +680,41 @@ public class AuthenticationUtil implements InitializingBean
             }
             else
             {
-                NDC.push("User:" + userName);
+                NDC.push("User:" + userNameIn);
             }
         }
     }
     
-    private static String[] splitUserTenant(String userName)
+    //
+    // Return username and current tenant domain. If current tenant domain is not set then
+    // get implied tenant domain. For example: bob@acme.com  => bob@acme.com, acme.com
+    //
+    public static Pair<String, String> getUserTenant(String userName)
     {
-        int idx = userName.lastIndexOf(TenantService.SEPARATOR);
-        if ((idx > 0) && (idx < (userName.length()-1)))
+        String tenantDomain = TenantContextHolder.getTenantDomain();
+        if (tenantDomain == null)
         {
-            return new String[] {userName.substring(0, idx), userName.substring(idx+1)};
+            tenantDomain = TenantService.DEFAULT_DOMAIN;
+            
+            if ((userName != null) && isMtEnabled())
+            {
+                // MT implied domain from username (for backwards compatibility)
+                int idx = userName.indexOf(TenantService.SEPARATOR);
+                if ((idx > 0) && (idx < (userName.length()-1)))
+                {
+                    tenantDomain = userName.substring(idx+1);
+                    if (tenantDomain.indexOf(TenantService.SEPARATOR) > 0)
+                    {
+                        throw new AlfrescoRuntimeException("Unexpected tenant: "+tenantDomain+" (contains @)");
+                    }
+                    
+                    if (s_logger.isDebugEnabled())
+                    {
+                        s_logger.debug("Tenant domain implied: userName="+userName+", tenantDomain="+tenantDomain);
+                    }
+                }
+            }
         }
-        return new String[] {userName};
+        return new Pair<String, String>(userName, tenantDomain);
     }
 }

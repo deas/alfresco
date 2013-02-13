@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -44,7 +44,7 @@ public interface TenantService extends TenantUserService
      * @return          the reference <b>with</b> the tenant-specific ID attached
      */
     public NodeRef getName(NodeRef nodeRef);
-
+    
     /**
      * @return          the reference <b>with</b> the tenant-specific ID attached
      */
@@ -132,18 +132,24 @@ public interface TenantService extends TenantUserService
     
     public void checkDomainUser(String username);
     
-    public void checkDomain(String name);  
-
+    public void checkDomain(String name);
+    
     public NodeRef getRootNode(NodeService nodeService, SearchService searchService, NamespaceService namespaceService, String rootPath, NodeRef rootNodeRef);
-
+    
     public boolean isTenantUser();
     
+    /**
+     * @deprecated
+     */
     public boolean isTenantUser(String username);
     
     public boolean isTenantName(String name);
-
+    
+    /**
+     * @deprecated
+     */
     public String getUserDomain(String username);
-
+    
     public Tenant getTenant(String tenantDomain);
     
     /**

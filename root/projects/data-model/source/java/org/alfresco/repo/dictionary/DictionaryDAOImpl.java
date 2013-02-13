@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,6 +33,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
+import org.alfresco.repo.tenant.TenantContextHolder;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
@@ -1184,13 +1185,21 @@ public class DictionaryDAOImpl implements DictionaryDAO
         else
         {
             // ALF-6029
-            return AuthenticationUtil.runAs(new RunAsWork<Map<QName,CompiledModel>>()
+            String currentTenantDomain = TenantContextHolder.setTenantDomain(TenantService.DEFAULT_DOMAIN);
+            try
             {
-                public Map<QName,CompiledModel> doWork()
+                return AuthenticationUtil.runAs(new RunAsWork<Map<QName,CompiledModel>>()
                 {
-                    return getDictionaryRegistry(TenantService.DEFAULT_DOMAIN).getCompiledModels();
-                }
-            }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+                    public Map<QName,CompiledModel> doWork()
+                    {
+                        return getDictionaryRegistry(TenantService.DEFAULT_DOMAIN).getCompiledModels();
+                    }
+                }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+            }
+            finally
+            {
+                TenantContextHolder.setTenantDomain(currentTenantDomain);
+            }
         }
     }
     
@@ -1208,13 +1217,21 @@ public class DictionaryDAOImpl implements DictionaryDAO
         else
         {
             // ALF-6029
-            return AuthenticationUtil.runAs(new RunAsWork<Map<String, List<CompiledModel>>>()
+            String currentTenantDomain = TenantContextHolder.setTenantDomain(TenantService.DEFAULT_DOMAIN);
+            try
             {
-                public Map<String, List<CompiledModel>> doWork()
+                return AuthenticationUtil.runAs(new RunAsWork<Map<String, List<CompiledModel>>>()
                 {
-                    return getDictionaryRegistry(TenantService.DEFAULT_DOMAIN).getUriToModels();
-                }
-            }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+                    public Map<String, List<CompiledModel>> doWork()
+                    {
+                        return getDictionaryRegistry(TenantService.DEFAULT_DOMAIN).getUriToModels();
+                    }
+                }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
+            }
+            finally
+            {
+                TenantContextHolder.setTenantDomain(currentTenantDomain);
+            }
         }
     }
     

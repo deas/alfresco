@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,11 +18,14 @@
  */
 package org.alfresco.repo.tenant;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.util.ParameterCheck;
 
 /**
  * Utility helper methods to change the tenant context for threads.
- *
+ * 
+ * @author janv
  * @since Thor
  */
 public class TenantUtil
@@ -41,34 +44,32 @@ public class TenantUtil
      * Execute a unit of work in a given tenant context. The thread's tenant context will be returned to its normal state
      * after the call.
      * 
-     * @param runAsWork  the unit of work to do
-     * @param uid        the user ID
-     * @return Returns the work's return value
+     * @param runAsWork    the unit of work to do
+     * @param uid          the user ID
+     * @return Returns     the work's return value
      */
-    public static <R> R runAsPrimaryTenant(final TenantRunAsWork<R> runAsWork, String user)
+    public static <R> R runAsPrimaryTenant(final TenantRunAsWork<R> runAsWork, String uid)
     {
-        // TODO need to differentiate between
-        // - tenant user - with implied context (in MT Ent world)
-        // - system users as a tenant
-        // - super tenant only
-        // etc
-
-        // TODO for now, this is just a brute force change of tenant regardless of above
-        //      scenarios
         String runAsUser = AuthenticationUtil.getRunAsUser();
-        if (runAsUser == null || runAsUser.equals(user))
+        if (runAsUser == null || runAsUser.equals(uid))
         {
+            // same user (hence same primary/implied tenant) and already in runAs block (hence no runAsUserTenant switch required)
             return runAsWork(runAsWork);
         }
         else
         {
-            return AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<R>()
+            // TODO review - get users' primary tenant (based on domain)
+            String tenantDomain = TenantService.DEFAULT_DOMAIN;
+            if (uid != null)
             {
-                public R doWork()
+                int idx = uid.lastIndexOf(TenantService.SEPARATOR);
+                if ((idx > 0) && (idx < (uid.length()-1)))
                 {
-                    return runAsWork(runAsWork);
+                    tenantDomain = uid.substring(idx+1);
                 }
-            }, user);
+            }
+            
+            return runAsUserTenant(runAsWork, uid, tenantDomain);
         }
     }
     
@@ -96,37 +97,31 @@ public class TenantUtil
      * Execute a unit of work in a given tenant context. The thread's tenant context will be returned to its normal state
      * after the call.
      * 
-     * @param runAsWork  the unit of work to do
-     * @param uid        the user ID
-     * @return Returns the work's return value
+     * @param runAsWork    the unit of work to do
+     * @param tenanDomain  the tenant domain
+     * @return Returns     the work's return value
      */
     public static <R> R runAsTenant(final TenantRunAsWork<R> runAsWork, String tenantDomain)
     {
-        // TODO need to differentiate between
-        // - tenant user - with implied context (in MT Ent world)
-        // - system users as a tenant
-        // - super tenant only
-        // etc
-
-        // TODO for now, this is just a brute force change of tenant regardless of above
-        //      scenarios
+        ParameterCheck.mandatory("tenantDomain", tenantDomain);
         
-        if (getCurrentDomain().equals(tenantDomain))
+        if (tenantDomain.indexOf(TenantService.SEPARATOR) > 0)
         {
+            throw new AlfrescoRuntimeException("Unexpected tenant domain: "+tenantDomain+" (should not contain '"+TenantService.SEPARATOR+"')");
+        }
+        
+        String currentTenantDomain = null;
+        try
+        {
+            currentTenantDomain = TenantContextHolder.setTenantDomain(tenantDomain);
             return runAsWork(runAsWork);
         }
-        else
+        finally
         {
-            return AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<R>()
-            {
-                public R doWork()
-                {
-                    return runAsWork(runAsWork);
-                }
-            }, AuthenticationUtil.getRunAsUser() + TenantService.SEPARATOR + tenantDomain);
+            TenantContextHolder.setTenantDomain(currentTenantDomain);
         }
     }
-
+    
     public static <R> R runAsDefaultTenant(final TenantRunAsWork<R> runAsWork)
     {
         // Note: with MT Enterprise, if you're current user is not already part of the default domain then this will switch to System
@@ -136,32 +131,14 @@ public class TenantUtil
         }
         else
         {
-            return AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<R>()
-            {
-                public R doWork()
-                {
-                    return runAsWork(runAsWork);
-                }
-            }, AuthenticationUtil.getSystemUserName() + TenantService.SEPARATOR); // force default domain;
+            return runAsSystemTenant(runAsWork, TenantService.DEFAULT_DOMAIN); // force System in default domain
         }
     }
     
     // switch tenant and run as System within that tenant
     public static <R> R runAsSystemTenant(final TenantRunAsWork<R> runAsWork, final String tenantDomain)
     {
-        StringBuffer systemUser = new StringBuffer().append(AuthenticationUtil.getSystemUserName());
-        if (AuthenticationUtil.isMtEnabled())
-        {
-            systemUser.append(TenantService.SEPARATOR).append(tenantDomain);
-        }
-        
-        return AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<R>()
-        {
-            public R doWork()
-            {
-                return runAsWork(runAsWork);
-            }
-        }, systemUser.toString());
+        return runAsUserTenant(runAsWork, AuthenticationUtil.getSystemUserName(), tenantDomain);
     }
     
     private static <R> R runAsWork(final TenantRunAsWork<R> runAsWork)
@@ -184,18 +161,11 @@ public class TenantUtil
     // note: this does not check if tenant is enabled (unlike non-static MultiTServiceImpl.getCurrentUserDomain)
     public static String getCurrentDomain()
     {
-        if (AuthenticationUtil.isMtEnabled())
+        String tenantDomain = TenantContextHolder.getTenantDomain();
+        if (tenantDomain == null)
         {
-            String runAsUser = AuthenticationUtil.getRunAsUser();
-            if (runAsUser != null)
-            {
-                int idx = runAsUser.lastIndexOf(TenantService.SEPARATOR);
-                if ((idx > 0) && (idx < (runAsUser.length()-1)))
-                {
-                    return runAsUser.substring(idx+1);
-                }
-            }
+            tenantDomain = TenantService.DEFAULT_DOMAIN;
         }
-        return TenantService.DEFAULT_DOMAIN;
+        return tenantDomain;
     }
 }
