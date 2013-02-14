@@ -187,6 +187,11 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String MODEL_MAX_LENGTH = "maxLength";
     protected static final String MODEL_GROUP = "group";
     
+    private static final String TYPE_INT ="int";
+    private static final String TYPE_LONG ="long";
+    private static final String TYPE_DOUBLE ="double";
+    private static final String TYPE_FLOAT ="float";
+     
     protected ConfigService configService;
     
     private MessageHelper messageHelper = null;
@@ -1711,8 +1716,9 @@ public class FormUIGet extends DeclarativeWebScript
         
         // add a number constraint if the field has a number data type
         String dataType = field.getDataType();
-        if ("int".equals(dataType) || "long".equals(dataType) ||
-            "double".equals(dataType) || "float".equals(dataType))
+        Map<String, ConstraintHandlerDefinition> constraintDefinitionMap = (fieldConfig == null) ? null : fieldConfig.getConstraintDefinitionMap();
+
+        if (isConstraintHandlerExist(constraintDefinitionMap, CONSTRAINT_NUMBER) ||isDataTypeNumber(dataType))
         {
             Constraint constraint = generateConstraintModel(context, field, fieldDefinition, 
                         fieldConfig, CONSTRAINT_NUMBER);
@@ -1729,7 +1735,27 @@ public class FormUIGet extends DeclarativeWebScript
                 // add the constraint to the context
                 context.getConstraints().add(constraint);
             }
+        }        
+    }
+
+    private boolean isConstraintHandlerExist(Map<String, ConstraintHandlerDefinition> constraintDefinitionMap, String constraint)
+    {
+        if (constraintDefinitionMap != null)
+        {
+           return constraintDefinitionMap.containsKey(constraint);
         }
+        return false;
+    }
+    
+    private boolean isDataTypeNumber(String dataType)
+    {
+        if (TYPE_INT.equals(dataType) ||TYPE_LONG.equals(dataType) ||TYPE_DOUBLE.equals(dataType)
+                    ||TYPE_FLOAT.equals(dataType)) 
+        { 
+            return true; 
+        }
+
+        return false;
     }
     
     /**
