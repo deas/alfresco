@@ -879,7 +879,7 @@
                <field id="ftp.enabled" label-id="fileservers.field.ftp.enabled" set="ftp">
                  <control template="/org/alfresco/components/form/controls/checkbox.ftl"/>
                </field>
-               <field id="ftp.port" label-id="fileservers.field.ftp.port" data-type="int" set="ftp">
+               <field id="ftp.port" label-id="fileservers.field.ftp.port" set="ftp">
                   <control template="/org/alfresco/components/form/controls/number.ftl"/>
                   <constraint-handlers>
                      <constraint type="NUMBER" validation-handler="Alfresco.forms.validation.number" event="keyup" />
