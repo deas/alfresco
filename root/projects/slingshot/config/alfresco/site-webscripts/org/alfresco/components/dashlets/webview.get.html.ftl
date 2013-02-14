@@ -24,18 +24,18 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <div class="dashlet webview">
-         <div class="title">
-            <a id="${el}-title-link" class="title-link" <#if !isDefault>href="${uri}"</#if> target="_blank"><#if webviewTitle != "">${webviewTitle?html}<#elseif !isDefault>${uri?html}<#else>${msg('label.header')}</#if></a>
-         </div>
-         <div class="body scrollablePanel"<#if args.height??> style="height: ${args.height}px;"</#if> id="${el}-iframeWrapper">
-         <#if isDefault>
-            <h3 class="configureInstructions">${msg("label.noWebPage")}</h3>
-         <#else>
-            <iframe frameborder="0" scrolling="auto" width="100%" height="100%" src="${uri}"></iframe>
-            <div class="resize-mask"></div>
-         </#if>
-         </div>
+   <div class="dashlet webview <#if isDefault>webview-mode-default</#if>">
+      <div class="title">
+         <span id="${args.htmlid}-default-title" class="default-title" target="_blank">${msg("label.header")}</span>
+         <span id="${args.htmlid}-notsecure-title" class="notsecure-title" target="_blank">${msg("label.notSecureHeader")}</span>
+         <a id="${args.htmlid}-iframe-title" class="iframe-title" target="_blank"></a>
       </div>
+      <div class="body scrollablePanel"<#if args.height??> style="height: ${args.height}px;"</#if> id="${args.htmlid}-iframeWrapper">
+         <h3 class="configureInstructions default-body">${msg("label.noWebPage")}</h3>
+         <h3 class="configureInstructions notsecure-body">${msg("label.notSecurePage")}</h3>
+         <iframe id="${args.htmlid}-iframe" class="iframe-body" frameborder="0" scrolling="auto" width="100%" height="100%"></iframe>
+         <div class="resize-mask"></div>
+      </div>
+   </div>
    </@>
 </@>

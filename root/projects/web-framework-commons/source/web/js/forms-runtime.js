@@ -959,11 +959,11 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                   window.frames[iframe.name].name = iframe.name;
 
                   // Pass the CSRF token if the CSRF token filter is enabled
-                  if (Alfresco.util.CSRF.isFilterEnabled())
+                  if (Alfresco.util.CSRFPolicy.isFilterEnabled())
                   {
                      // Make sure there is a CSRF parameter with the token present in submission
                      var pathAndParams = submitUrl.split("?"),
-                           tokenParam = Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+                           tokenParam = Alfresco.util.CSRFPolicy.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRFPolicy.getToken());
                      if (pathAndParams.length == 1)
                      {
                         submitUrl += "?" + tokenParam;
@@ -978,7 +978,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                         for (; pi < params.length; pi++)
                         {
                            nameAndValue = params[pi].split("=");
-                           if (nameAndValue.length > 0 && nameAndValue[0] == Alfresco.util.CSRF.getParameter())
+                           if (nameAndValue.length > 0 && nameAndValue[0] == Alfresco.util.CSRFPolicy.getParameter())
                            {
                               // Don't use the old token param, add a new one after the loop instead
                            }

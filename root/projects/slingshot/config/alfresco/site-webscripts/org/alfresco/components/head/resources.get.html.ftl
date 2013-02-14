@@ -20,7 +20,7 @@
    <#else>
       <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/yui/assets/skin.css" group="template-common" />
    </#if>
-   
+
    <#if DEBUG>
    <@script type="text/javascript" src="${url.context}/res/js/log4javascript.v1.4.1.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/yui/yahoo/yahoo-debug.js" group="template-common"/>
@@ -63,7 +63,7 @@
       };
    </@>
 </@>
-   
+
 <@markup id="alfrescoConstants">
    <@inlineScript group="template-common">
       <!-- Alfresco web framework constants -->
@@ -86,13 +86,22 @@
       Alfresco.constants.PORTLET_URL = unescape("${(context.attributes.portletUrl!"")?js_string}");
       Alfresco.constants.JS_LOCALE = "${locale}";
       Alfresco.constants.USERPREFERENCES = "${preferences?js_string}";
-      Alfresco.constants.CSRF_FILTER_ENABLED = ${((config.scoped["CSRF"]["filter"].getChildren("rule")?size > 0)?string)!false};
-      Alfresco.constants.CSRF_COOKIE = "${config.scoped["CSRF"]["client"].getChildValue("cookie")!""}";
-      Alfresco.constants.CSRF_HEADER = "${config.scoped["CSRF"]["client"].getChildValue("header")!""}";
-      Alfresco.constants.CSRF_PARAMETER = "${config.scoped["CSRF"]["client"].getChildValue("parameter")!""}";
+      Alfresco.constants.CSRF_POLICY = {
+         enabled: ${((config.scoped["CSRFPolicy"]["filter"].getChildren("rule")?size > 0)?string)!false},
+         cookie: "${config.scoped["CSRFPolicy"]["client"].getChildValue("cookie")!""}",
+         header: "${config.scoped["CSRFPolicy"]["client"].getChildValue("header")!""}",
+         parameter: "${config.scoped["CSRFPolicy"]["client"].getChildValue("parameter")!""}"
+      };   
+      Alfresco.constants.IFRAME_POLICY =
+      {
+         sameDomain: "${config.scoped["IFramePolicy"]["same-domain"].value!"allow"}",
+         crossDomainUrls: [<#list (config.scoped["IFramePolicy"]["cross-domain"].childrenMap["url"]![]) as c>
+            "${c.value?js_string}"<#if c_has_next>,</#if>
+         </#list>]
+      };
       <#if PORTLET>
       document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=";
-   </#if>
+      </#if>
    </@>
 </@>
 

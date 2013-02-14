@@ -1203,9 +1203,9 @@
          {
             url = Alfresco.constants.PROXY_URI + this.showConfig.uploadURL;
          }
-         if (Alfresco.util.CSRF.isFilterEnabled())
+         if (Alfresco.util.CSRFPolicy.isFilterEnabled())
          {
-            url += "?" + Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+            url += "?" + Alfresco.util.CSRFPolicy.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRFPolicy.getToken());
          }
 
          if (this.uploadMethod === this.FORMDATA_UPLOAD)

@@ -75,9 +75,9 @@ define(["dojo/_base/declare",
             else
             {
                var headers = (config.headers) ? config.headers : { 'Content-Type': 'application/json' };
-               if (Alfresco && Alfresco.util && Alfresco.util.CSRF && Alfresco.util.CSRF.isFilterEnabled())
+               if (Alfresco && Alfresco.util && Alfresco.util.CSRFPolicy && Alfresco.util.CSRFPolicy.isFilterEnabled())
                {
-                  headers[Alfresco.util.CSRF.getHeader()] = Alfresco.util.CSRF.getToken();
+                  headers[Alfresco.util.CSRFPolicy.getHeader()] = Alfresco.util.CSRFPolicy.getToken();
                }
                
                xhr(config.url, {

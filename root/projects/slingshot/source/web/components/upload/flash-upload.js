@@ -1616,9 +1616,9 @@
          url += ";jsessionid=" + YAHOO.util.Cookie.get("JSESSIONID") + "?lang=" + Alfresco.constants.JS_LOCALE;
 
          // Pass the CSRF token if the CSRF token filter is enabled
-         if (Alfresco.util.CSRF.isFilterEnabled())
+         if (Alfresco.util.CSRFPolicy.isFilterEnabled())
          {
-            url += "&" + Alfresco.util.CSRF.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRF.getToken());
+            url += "&" + Alfresco.util.CSRFPolicy.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRFPolicy.getToken());
          }
 
          // Find files to upload

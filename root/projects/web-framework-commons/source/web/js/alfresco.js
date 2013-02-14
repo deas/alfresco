@@ -6926,9 +6926,9 @@ Alfresco.util.FilterManager = function()
 /**
  * Helper class for getting the CSRF token and the name of the request header or param to set it to.
  *
- * @class Alfresco.util.CSRF
+ * @class Alfresco.util.CSRFPolicy
  */
-Alfresco.util.CSRF = function()
+Alfresco.util.CSRFPolicy = function()
 {
    return {
 
@@ -6940,7 +6940,7 @@ Alfresco.util.CSRF = function()
        */
       isFilterEnabled: function()
       {
-         return Alfresco.constants.CSRF_FILTER_ENABLED;
+         return Alfresco.constants.CSRF_POLICY.enabled;
       },
 
       /**
@@ -6951,7 +6951,7 @@ Alfresco.util.CSRF = function()
        */
       getHeader: function()
       {
-         return Alfresco.constants.CSRF_HEADER;
+         return Alfresco.constants.CSRF_POLICY.header;
       },
 
       /**
@@ -6962,7 +6962,7 @@ Alfresco.util.CSRF = function()
        */
       getParameter: function()
       {
-         return Alfresco.constants.CSRF_PARAMETER;
+         return Alfresco.constants.CSRF_POLICY.parameter;
       },
 
       /**
@@ -6973,7 +6973,7 @@ Alfresco.util.CSRF = function()
        */
       getCookie: function()
       {
-         return Alfresco.constants.CSRF_COOKIE;
+         return Alfresco.constants.CSRF_POLICY.cookie;
       },
 
       /**
@@ -6987,8 +6987,43 @@ Alfresco.util.CSRF = function()
        */
       getToken: function()
       {
-         var cookieName = this.getCookie()
+         var cookieName = this.getCookie();
          return cookieName ? YAHOO.util.Cookie.get(cookieName) : null;
+      }
+   };
+}();
+
+/**
+ * Helper class for deciding if a url shall be allowed to be included as an iframe inside Share.
+ *
+ * @class Alfresco.util.IFramePolicy
+ */
+Alfresco.util.IFramePolicy = function()
+{
+   return {
+
+      /**
+       * Use this method and check if the url has been configured to be allowed to be included as an <iframe> inside Share.
+       *
+       * @return {boolean} True if the url is allowed.
+       */
+      isUrlAllowed: function(url)
+      {
+         // Is it a local url?
+         if (url.indexOf(window.location.protocol + "//" + window.location.host) == 0)
+         {
+            return Alfresco.constants.IFRAME_POLICY.sameDomain == "allow";
+         }
+
+         var crossDomainUrls = Alfresco.constants.IFRAME_POLICY.crossDomainUrls;
+         for (var i = 0; i < crossDomainUrls.length; i++)
+         {
+            if (crossDomainUrls[i] == "*" || url.indexOf(crossDomainUrls[i]) == 0)
+            {
+               return true;
+            }
+         }
+         return false;
       }
    };
 }();
@@ -7178,9 +7213,9 @@ Alfresco.util.Ajax = function()
          }
 
          // CSRF token
-         if (Alfresco.util.CSRF.isFilterEnabled())
+         if (Alfresco.util.CSRFPolicy.isFilterEnabled())
          {
-            YAHOO.util.Connect.initHeader(Alfresco.util.CSRF.getHeader(), Alfresco.util.CSRF.getToken());
+            YAHOO.util.Connect.initHeader(Alfresco.util.CSRFPolicy.getHeader(), Alfresco.util.CSRFPolicy.getToken());
          }
 
          // Encode dataObj depending on request method and contentType.

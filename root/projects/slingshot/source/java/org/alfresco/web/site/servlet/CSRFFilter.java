@@ -88,12 +88,12 @@ public class CSRFFilter implements Filter
         ConfigService configService = (ConfigService)context.getBean("web.config");
         
         // Retrieve the remote configuration
-        Config csrfConfig = (Config) configService.getConfig("CSRF");
+        Config csrfConfig = (Config) configService.getConfig("CSRFPolicy");
         if (csrfConfig == null)
         {
             enabled = false;
             if (logger.isDebugEnabled())
-                logger.debug("There is no 'CSRF' config, filter will allow all requests.");
+                logger.debug("There is no 'CSRFPolicy' config, filter will allow all requests.");
         }
         else
         {
@@ -102,7 +102,7 @@ public class CSRFFilter implements Filter
             {
                 enabled = false;
                 if (logger.isDebugEnabled())
-                    logger.debug("The 'CSRF' config had no filter, filter will allow all requests.");
+                    logger.debug("The 'CSRFPolicy' config had no filter, filter will allow all requests.");
             }
             else
             {
@@ -111,7 +111,7 @@ public class CSRFFilter implements Filter
                 {
                     enabled = false;
                     if (logger.isDebugEnabled())
-                        logger.debug("The 'CSRF' filter config was empty, filter will allow all requests.");
+                        logger.debug("The 'CSRFPolicy' filter config was empty, filter will allow all requests.");
                 }
                 else
                 {

@@ -113,6 +113,50 @@
           * on how well the browser handles flash movies.
           */
          this.widgets.iframeWrapper = Dom.get(this.id + "-iframeWrapper");
+         this.widgets.iframe = Dom.get(this.id + "-iframe");
+         this.widgets.iframeTitle = Dom.get(this.id + "-iframe-title");
+         this._syncIFrameOptions();
+      },
+
+      /**
+       * Takes the iframe options (url & title) and reflects their values in the ui.
+       *
+       * @method _syncIFrameOptions
+       * @private
+       */
+      _syncIFrameOptions: function()
+      {
+         Dom.removeClass(this.id, "webview-default");
+         Dom.removeClass(this.id, "webview-notsecure");
+         Dom.removeClass(this.id, "webview-iframe");
+
+         if (this.options.isDefault)
+         {
+            Dom.addClass(this.id, "webview-default");
+         }
+         else if (!Alfresco.util.IFramePolicy.isUrlAllowed(this.options.webviewURI))
+         {
+            Dom.addClass(this.id, "webview-notsecure");
+         }
+         else
+         {
+            // Iframe itself
+            this.widgets.iframe.src = this.options.webviewURI;
+
+            // Title link
+            this.widgets.iframeTitle.href = this.options.webviewURI;
+
+            // Title label
+            if (this.options.webviewTitle != "")
+            {
+               this.widgets.iframeTitle.innerHTML = $html(this.options.webviewTitle);
+            }
+            else if (!this.options.isDefault)
+            {
+               this.widgets.iframeTitle.innerHTML = $html(this.options.webviewURI);
+            }
+            Dom.addClass(this.id, "webview-iframe");
+         }
       },
 
       /**
@@ -144,24 +188,11 @@
                      }
                      else
                      {
-                        var div = Dom.get(this.id + "-iframeWrapper");
-                        div.innerHTML = response.serverResponse.responseText + '<div class="resize-mask"></div>';
-                        var iframe = Dom.getFirstChildBy(div, function(node)
-                        {
-                           return (node.tagName.toUpperCase() == "IFRAME");
-                        });
-                        if (iframe)
-                        {
-                           if (iframe.attributes["name"])
-                           {
-                              var titleLink = Dom.get(this.id + "-title-link");
-                              // update iframe and internal config
-                              titleLink.href = this.options.webviewURI = iframe.attributes["src"].value;
-                              this.options.webviewTitle = iframe.attributes["name"].value;
-                              titleLink.innerHTML = $html(this.options.webviewTitle);
-                           }
-                           this.options.isDefault = false;
-                        }
+                        var data = response.json;
+                        this.options.webviewURI = data.uri;
+                        this.options.webviewTitle = data.title;
+                        this.options.isDefault = false;
+                        this._syncIFrameOptions();
                      }
                   },
                   scope: this
@@ -170,8 +201,8 @@
                {
                   fn: function WebView_doSetupForm_callback(form)
                   {
-                     form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.mandatory, null, "blur");
-                     form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.url, null, "keyup");
+                     form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.mandatory, null, "keyup");
+                     form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.url, null, "keyup", this.msg("Alfresco.forms.validation.url.message"));
                      
                      // 511 characters is the maximum length of URL that IE appears to support without causing a page direct
                      // and preventing the user from returning to their dashboard. To avoid this occurring a check on the length
@@ -179,10 +210,14 @@
                      // a user could edit the URL on one browser to something greater than 511 characters and then attempt
                      // to view the page in another browser.
                      form.addValidation(this.configDialog.id + "-url", function(field, args, event, form, silent, message)
-                        {
-                           return (field.value.length < 512);
-                        }, null, "keyup");
-
+                     {
+                        return (field.value.length < 512);
+                     }, null, "keyup");
+                     // Check that the url is from a trusted domain
+                     form.addValidation(this.configDialog.id + "-url", function(field)
+                     {
+                        return field.value.length == 0 || Alfresco.util.IFramePolicy.isUrlAllowed(field.value);
+                     }, null, "keyup", this.msg("form.url.validation.failure"));
 
                      /* Get the link title */
                      var elem = Dom.get(this.configDialog.id + "-webviewTitle");
@@ -195,7 +230,7 @@
                      elem = Dom.get(this.configDialog.id + "-url");
                      if (elem)
                      {
-                        elem.value = this.options.isDefault ? "http://" : this.options.webviewURI;
+                        elem.value = this.options.isDefault ? "" : this.options.webviewURI;
                      }
                   },
                   scope: this

@@ -47,6 +47,9 @@
             <!-- Share CMIS config -->
             <value>classpath:alfresco/share-cmis-config.xml</value>
 
+            <!-- Share Security config -->
+            <value>classpath:alfresco/share-security-config.xml</value>
+
             <!-- Share custom config -->
             <value>classpath:alfresco/web-extension/share-config-custom.xml</value>
             <value>jar:*!/META-INF/share-config-custom.xml</value>
