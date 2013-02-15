@@ -56,6 +56,12 @@
       <filter-class>org.alfresco.web.site.servlet.CSRFFilter</filter-class>
    </filter>
 
+   <filter>
+      <description>Share Security Headers filter. Adds security response headers based on config.</description>
+      <filter-name>Security Headers Filter</filter-name>
+      <filter-class>org.alfresco.web.site.servlet.SecurityHeadersFilter</filter-class>
+   </filter>
+
    <filter-mapping>
       <filter-name>CacheExpiresFilter</filter-name>
       <url-pattern>*.jpg</url-pattern>
@@ -109,6 +115,26 @@
 
    <filter-mapping>
       <filter-name>CSRF Token Filter</filter-name>
+      <url-pattern>/service/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Security Headers Filter</filter-name>
+      <url-pattern>/page/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Security Headers Filter</filter-name>
+      <url-pattern>/p/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Security Headers Filter</filter-name>
+      <url-pattern>/proxy/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Security Headers Filter</filter-name>
       <url-pattern>/service/*</url-pattern>
    </filter-mapping>
 

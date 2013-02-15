@@ -1,20 +1,27 @@
 <alfresco-config>
 
+   <!--
+      This setting controls which domains' pages that shall be allowed to be included inside Share using an <iframe>.
+      All components in Share that creates an <iframe> (targeted at a user provided url) MUST assert the url is
+      provided in the white list below or that it.
+
+      Will be used and exposed to the client side code in Alfresco.contants.IFRAME_POLICY.
+      Use the Alfresco.util.IFramePolicy.isUrlAllowed() to check if a url is allowed.
+
+      Note!
+      These settings are used to mitigate phishing attacks (i.e. displaying a login form).
+      These settings are NOT used to mitigate clickjacking attacks and do NOT control if or when Share is allowed
+      to be included into pages (using an <iframe>) from other domains.
+   -->
    <config evaluator="string-compare" condition="IFramePolicy">
-      <!--
-         This setting controls which domains' pages that shall be allowed to be included inside Share using an <iframe>.
-         All components in Share that creates an <iframe> (targeted at a user provided url) MUST assert the url is
-         provided in the white list below or that it.
 
-         Will be used and exposed to the client side code in Alfresco.contants.IFRAME_POLICY.
-         Use the Alfresco.util.IFramePolicy.isUrlAllowed() to check if a url is allowed.
-
-         Note!
-         These settings are used to mitigate phishing attacks (i.e. displaying a login form).
-         These settings are NOT used to mitigate clickjacking attacks and do NOT control if or when Share is allowed
-         to be included into pages (using an <iframe>) from other domains.
-      -->
+      <!-- Local share pages/resources are governed by the same-domain element which can be set to "allow" or "deny" -->
       <same-domain>allow</same-domain>
+
+      <!--
+         Add a list of <url> elements inside this element to form a whitelist of allowed domains.
+         The check will assert that the url used for the <iframe> starts with the value of one of the <url> elements.
+      -->
       <cross-domain>
          <!-- Specific domain that you trust -->
          <!--
@@ -27,6 +34,31 @@
       </cross-domain>
    </config>
 
+   <!--
+      CSRF Filter config to mitigate XSRF & Seasurfing attacks
+
+      To disable the CSRF token filter override the <filter> to not contain any values, see share-config-custom.xml for
+      an example.
+
+      If you have a custom resource(s) that a client POST to that can't accept a token, for whatever reason, then make
+      sure to copy the entire CSRFPolicy config and place it in your share-config-custom.xml file
+      with the replace="true" attribute and make sure to add a new <rule> in the top of the <filter> element,
+      which has a <request> element matching your requests and uses only the "assertReferer" & "assertOrigin" actions.
+
+      I.e.
+      <rule>
+         <request>
+            <method>POST</method>
+            <path>^\/some\/resource|^\/some\/resource2</path>
+         </request>
+         <action name="assertReferer">
+            <param name="always">false</param>
+         </action>
+         <action name="assertOrigin">
+            <param name="always">false</param>
+         </action>
+      </rule>
+   -->
    <config evaluator="string-compare" condition="CSRFPolicy">
 
       <!--
@@ -40,12 +72,8 @@
          <parameter>Alfresco-CSRFToken</parameter>
       </client>
 
-      <!--
-         The first rule with a matching request will get its action invoked, the remaining rules will be ignored.
-         To disable the CSRF token filter override the <filter> to not contain any values, see share-config-custom.xml.
-      -->
+      <!-- The first rule with a matching request will get its action invoked, the remaining rules will be ignored. -->
       <filter>
-
          <!--
             Certain Surf POST requests form the WebScript console must be allowed to pass without a token since
             the Surf WebScript console code can't be dependent on a Share specific filter.
@@ -166,8 +194,42 @@
             </action>
 
          </rule>
-
       </filter>
+   </config>
+
+   <!-- A set of HTTP response headers that instructs the browser to behave in certain ways to improve security -->
+   <config evaluator="string-compare" condition="SecurityHeadersPolicy">
+      <headers>
+         <!--
+            Setting to allow the embedding of Share within an IFRAME by other domains.
+            DENY        = Don't allow Share to be included in any iframe
+            SAMEORIGIN  = Only allow Share to be included in pages from the same domain
+         -->
+         <header>
+            <name>X-Frame-Options</name>
+            <value>SAMEORIGIN</value>
+         </header>
+
+         <!--
+            Stop IE from guessing (and then "correcting") the Content-Type
+         -->
+         <header>
+            <name>X-Content-Type-Options</name>
+            <value>nosniff</value>
+         </header>
+
+         <!--
+            Stop IE from trying to be "smart" and mitigating XSS attacks but instead introducing new ones:
+            http://www.h-online.com/security/news/item/Security-feature-of-Internet-Explorer-8-unsafe-868837.html
+            0              = Stop IE's XSS protection
+            1; mode=block  = Run IE's XSS protection, but if XSS is found then block the page instead of trying to
+                             "fix" the problem and then introducing new security flaws
+         -->
+         <header>
+            <name>X-XSS-Protection</name>
+            <value>1; mode=block</value>
+         </header>
+      </headers>
    </config>
 
 

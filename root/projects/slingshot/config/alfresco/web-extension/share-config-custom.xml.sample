@@ -43,6 +43,28 @@
    </config>
    -->
 
+   <!-- Add custom domains that will be allowed to be used inside iframes (i.e. in the WebView dashlet) -->
+   <!--
+   <config evaluator="string-compare" condition="IFramePolicy">
+      <cross-domain>
+         <url>http://www.trusted-domain-1.com/</url>
+         <url>http://www.trusted-domain-2.com/</url>
+      </cross-domain>
+   </config>
+   -->
+
+   <!-- Prevent browser communication over HTTP (for HTTPS servers) -->
+   <!--
+   <config evaluator="string-compare" condition="SecurityHeadersPolicy">
+      <headers>
+         <header>
+            <name>Strict-Transport-Security</name>
+            <value>max-age=31536000</value>
+         </header>
+      </headers>
+   </config>
+   -->
+
    <config evaluator="string-compare" condition="Replication">
       <share-urls>
          <!--
