@@ -53,6 +53,18 @@
    </config>
    -->
 
+   <!-- Turn off header that stops Share from being displayed in iframes on pages from other domains -->
+   <!--
+   <config evaluator="string-compare" condition="SecurityHeadersPolicy">
+      <headers>
+         <header>
+            <name>X-Frame-Options</name>
+            <enabled>false</enabled>
+         </header>
+      </headers>
+   </config>
+   -->
+
    <!-- Prevent browser communication over HTTP (for HTTPS servers) -->
    <!--
    <config evaluator="string-compare" condition="SecurityHeadersPolicy">

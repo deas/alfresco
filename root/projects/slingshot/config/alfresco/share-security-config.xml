@@ -197,7 +197,13 @@
       </filter>
    </config>
 
-   <!-- A set of HTTP response headers that instructs the browser to behave in certain ways to improve security -->
+   <!--
+      A set of HTTP response headers that instructs the browser to behave in certain ways to improve security
+
+      The header name is (of course) unique meaning that a <header> element can be override to provide a different
+      <value> or be disabled (by creating a <enabled>false</enabled> element as a child to the <header> element).
+      See the share-config-custom.xml.sample for examples.
+   -->
    <config evaluator="string-compare" condition="SecurityHeadersPolicy">
       <headers>
          <!--

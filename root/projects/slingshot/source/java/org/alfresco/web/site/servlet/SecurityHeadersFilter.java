@@ -30,8 +30,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A filter adding HTTP response headers to incoming requests to improve security for the webapp.
@@ -47,7 +49,7 @@ public class SecurityHeadersFilter implements Filter
     private ServletContext servletContext = null;
 
     private Boolean enabled = true;
-    private List<Header> headers = null;
+    private List<Header> headers = new LinkedList<Header>();
 
     /**
      * Parses the headers config.
@@ -92,29 +94,51 @@ public class SecurityHeadersFilter implements Filter
                 }
                 else
                 {
-                    this.headers = new LinkedList<Header>();
+                    // Get and merge all configs
+                    Map<String, Header> allHeaders = new HashMap<String, Header>();
                     for (ConfigElement headerConfig : headersConfigList)
                     {
-                        this.headers.add(createHeader(headerConfig));
+                        // Name
+                        String name = headerConfig.getChildValue("name");
+                        Header header;
+                        if (allHeaders.containsKey(name))
+                        {
+                            header = allHeaders.get(name);
+                        }
+                        else
+                        {
+                            header = new Header();
+                            header.setName(name);
+                            allHeaders.put(name, header);
+                        }
+
+                        // Vaule
+                        ConfigElement valueConfig = headerConfig.getChild("value");
+                        if (valueConfig != null)
+                        {
+                            header.setValue(valueConfig.getValue());
+                        }
+
+                        // Enabled
+                        ConfigElement enabledConfig = headerConfig.getChild("enabled");
+                        if (enabledConfig != null)
+                        {
+                            String enabled = enabledConfig.getValue();
+                            header.setEnabled(enabled == null || enabled.equalsIgnoreCase("true"));
+                        }
+                    }
+
+                    // Filter out all enabled configs
+                    for (Header header: allHeaders.values())
+                    {
+                        if (header.getEnabled())
+                        {
+                            headers.add(header);
+                        }
                     }
                 }
             }
         }
-    }
-
-    /**
-     * Creates a header object based on the config.
-     *
-     * @param headerConfig The header config element
-     * @return A header object created from the config
-     * @throws ServletException if the config is invalid
-     */
-    protected Header createHeader(final ConfigElement headerConfig) throws ServletException
-    {
-        final Header header = new Header();
-        header.setName(headerConfig.getChildValue("name"));
-        header.setValue(headerConfig.getChildValue("value"));
-        return header;
     }
 
 
@@ -166,6 +190,7 @@ public class SecurityHeadersFilter implements Filter
     {
         private String name;
         private String value;
+        private Boolean enabled = true;
 
         public String getName() {
             return name;
@@ -181,6 +206,14 @@ public class SecurityHeadersFilter implements Filter
 
         public void setValue(String value) {
             this.value = value;
+        }
+
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(Boolean enabled) {
+            this.enabled = enabled;
         }
     }
 }
