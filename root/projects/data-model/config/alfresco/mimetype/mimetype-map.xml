@@ -431,13 +431,6 @@
          <mimetype mimetype="image/vnd.dwg" display="AutoCAD Drawing">
             <extension>dwg</extension>
          </mimetype>
-         <!-- Legacy, no longer used -->
-<!--
-         <mimetype mimetype="application/dwg" display="AutoCAD Drawing">
-         </mimetype>
-         <mimetype mimetype="image/x-dwg" display="AutoCAD Drawing">
-         </mimetype>
--->
          <mimetype mimetype="image/x-dwt" display="AutoCAD Template">
             <extension>dwt</extension>
          </mimetype>
