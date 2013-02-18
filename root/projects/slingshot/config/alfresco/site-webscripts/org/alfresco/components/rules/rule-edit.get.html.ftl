@@ -27,7 +27,6 @@
    <@script src="${url.context}/res/yui/calendar/calendar.js" group="rules"/>
    <@script src="${url.context}/res/components/rules/rule-edit.js" group="rules"/>
    <@script src="${url.context}/res/modules/documentlibrary/global-folder.js" group="rules"/>
-   <@script src="${url.context}/res/modules/documentlibrary/global-folder.js" group="rules"/>
    <@script src="${url.context}/res/modules/rules/actions/workflow.js" group="rules"/>
    <@script src="${url.context}/res/modules/rules/actions/checkin.js" group="rules"/>
    <@script src="${url.context}/res/components/people-finder/authority-finder.js" group="rules"/>
