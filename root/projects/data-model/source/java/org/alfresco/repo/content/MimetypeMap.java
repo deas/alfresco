@@ -56,7 +56,22 @@ import org.springframework.extensions.config.ConfigService;
  */
 public class MimetypeMap implements MimetypeService
 {
+    
+    public static final String PREFIX_APPLICATION = "application/";
+    
+    public static final String PREFIX_AUDIO = "audio/";
+    
+    public static final String PREFIX_IMAGE = "image/";
+    
+    public static final String PREFIX_MESSAGE = "message/";
+    
+    public static final String PREFIX_MODEL = "model/";
+    
+    public static final String PREFIX_MULTIPART = "multipart/";
+    
     public static final String PREFIX_TEXT = "text/";
+    
+    public static final String PREFIX_VIDEO = "video/";
 
     public static final String EXTENSION_BINARY = "bin";
 
