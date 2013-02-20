@@ -15,7 +15,14 @@
 </@>
 
 <@markup id="widgets">
-   <@processJsonModel group="share" forceAggregation="true"/>
+   <@inlineScript group="dashlets">
+      <#if page.url.templateArgs.site??>
+         Alfresco.constants.DASHLET_RESIZE = ${userIsSiteManager?string} && YAHOO.env.ua.mobile === null;
+      <#else>
+         Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string} && YAHOO.env.ua.mobile === null;
+      </#if>
+   </@>
+   <@processJsonModel group="share"/>
 </@>
 
 <@markup id="html">
