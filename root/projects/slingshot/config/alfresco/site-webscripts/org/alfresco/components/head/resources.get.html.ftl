@@ -164,6 +164,8 @@
    <@script type="text/javascript" src="${url.context}/res/js/share.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/js/lightbox.js" group="template-common"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/presentation.css" group="template-common" />
+   <@link rel="stylesheet" type="text/css" href="${url.context}/${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css" group="share" forceAggregation="true"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css" group="share" forceAggregation="true"/>
 </@>
 
 <#if (templateStylesheets?? && templateStylesheets?size > 0)>
