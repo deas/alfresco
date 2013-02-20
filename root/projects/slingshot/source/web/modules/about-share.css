@@ -9,6 +9,9 @@
    height: 249px;
    background-position: 0 1px;
    background-repeat: no-repeat;
+   border: 0;
+   margin: 0;
+   padding: 0;
 }
 
 .about-share .logo-com
