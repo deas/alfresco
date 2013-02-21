@@ -7,11 +7,10 @@
 }
 
 .alfresco-share .alf-search-box {
-   background-color: #D9D9D9;
+   background-color: #ccc;
    border-radius: 16px;
-   color: #333333;
-   margin: 2px 10px;
-   padding-top: 1px;
+   color: #333;
+   margin: 3px 20px 3px 10px;
 }
 
 .alfresco-share .alf-search-box-menu {
@@ -19,7 +18,7 @@
 }
 
 .alfresco-share .alf-search-box-text {
-   background-color: #D9D9D9;
+   background-color: #ccc;
    border: none !important;
    padding: 0 !important;
    margin-right: 8px;

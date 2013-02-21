@@ -823,7 +823,7 @@ function generateAppItems() {
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
             id: "HEADER_HOME",
-            iconClass: "alf-home-icon",
+            label: "header.menu.home.label",
             targetUrl: "user/" + user.name + "/dashboard"
          }
       },

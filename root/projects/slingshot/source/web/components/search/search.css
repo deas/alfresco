@@ -147,9 +147,7 @@
 
 .search .results div.details span.tags
 {
-   background-image: url(images/tag-16.png);
-   background-position: 0px 2px;
-   background-repeat: no-repeat;
+   background: url(../images/tag-16.png) no-repeat 0 2px;
 }
 
 .search .yui-dt .yui-dt-message

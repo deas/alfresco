@@ -1,3 +1,22 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../../css/opensans.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans Bold';
+  font-style: normal;
+  font-weight: 600;
+  src: url(../../css/opensansbold.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: url(../../css/opensanscondensed.woff) format('woff');
+}
+
 .alfresco-share .alf-home-icon {
    background: url("./images/home.png");
    background-repeat: no-repeat;
@@ -8,17 +27,17 @@
 }
 
 .alfresco-share .navigation-menu {
-   margin-top: 30px;
+   margin-top: 24px;
 }
 
 .alfresco-share .title-menu {
-   margin-top: 30px;
+   margin-top: 24px;
 }
 
 .alfresco-share .alf-header {
    background-color: #1A1A1A;
    color: #A6A6A6;
-   font-family: Open Sans Bold,arial,helvetica,clean,sans-serif;
+   font-family: Open Sans,arial,helvetica,clean,sans-serif;
    padding: 0;
    margin: 0 -10px;
 }
@@ -50,9 +69,9 @@
  * possible adjusted if items in the header are changed */
 .alfresco-share .alf-header .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
    height: 22px;
-   margin: 0 10px;
-   padding-top: 5px;
-   color: #A6A6A6;
+   margin: 0 8px;
+   padding-top: 4px;
+   color: #ccc;
 }
 
 /* Sets the dark grey colour in the drop-down menus in header menus ONLY. */
@@ -64,7 +83,7 @@
 /* Sets the dark grey colour in the menu groups in the header menu ONLY */
 .alfresco-share .alf-header-menu-bar .dijitMenuTable {
    background-color: #4D4D4D;
-   color: #FFFFFF;
+   color: #fff;
 }
 
 /* Sets the menu group title background colour in the header menu ONLY */
