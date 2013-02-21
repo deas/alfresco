@@ -353,7 +353,15 @@ public class DictionaryQuery extends SingletonValueProcessorExtension<Dictionary
      */
     private Dictionary getDictionary()
     {
-        return getSingletonValue(true);
+        return getSingletonValue(isTenant());
+    }
+    
+    /**
+     * @return true for tenant specific Dictionary support, false to share a single Dictionary.
+     */
+    protected boolean isTenant()
+    {
+        return true;
     }
     
     @Override

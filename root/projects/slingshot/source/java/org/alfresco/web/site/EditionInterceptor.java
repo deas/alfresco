@@ -206,7 +206,7 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
         private final String edition;
         private final boolean response;
         
-        EditionInfo()
+        public EditionInfo()
         {
             this.users = -1L;
             this.documents = -1L;
@@ -214,7 +214,7 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
             this.response = false;
         }
         
-        EditionInfo(String response) throws JSONException
+        public EditionInfo(String response) throws JSONException
         {
             JSONObject json = new JSONObject(response);
             this.users = json.optLong("users", -1L);

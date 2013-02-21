@@ -19,10 +19,6 @@
 package org.alfresco.web.scripts;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.site.EditionInterceptor;
@@ -37,8 +33,9 @@ import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.Response;
+
 /**
- * Slingleton scripting host object provided to retrieve the value of the
+ * Singleton scripting host object provided to retrieve the value of the
  * Sync Mode configuration from the Alfresco repository.
  * 
  * @author Kevin Roast
