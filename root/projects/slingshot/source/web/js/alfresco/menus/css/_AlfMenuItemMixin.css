@@ -1,3 +1,8 @@
+.alfresco-share .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+   margin: 0 5px;
+   padding: 2px 5px;
+}
+
 .alfresco-share .dijitIcon.dijitMenuItemIcon.alf-edit-icon {
    background: url("./images/Edit.png");
    background-repeat: no-repeat;

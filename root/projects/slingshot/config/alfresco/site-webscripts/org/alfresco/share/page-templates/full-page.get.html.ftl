@@ -68,6 +68,8 @@
          </script>
       </@>
       <@outputJavaScript/>
+      <@link rel="stylesheet" type="text/css" href="${url.context}/${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css" group="share" forceAggregation="true"/>
+      <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css" group="share" forceAggregation="true"/>
    </head>
    <#-- PLEASE NOTE: The "yui-skin-default" class is just for wrapping Share widgets. Ideally we wouldn't include this
                      and there maybe the argument that we don't include it here or have the wrapped Share class add
