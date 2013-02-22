@@ -5,66 +5,6 @@
       <pageFamily>documentlibrary</pageFamily>
    </properties>
    <components>
-
-      <![CDATA[
-
-      <!-- title: normal, portlet, repo, task & workflow -->
-      <component>
-         <region-id>title</region-id>
-         <url>/components/title/collaboration-title</url>
-      </component>
-      <component>
-         <region-id>portlet-title</region-id>
-         <url>/components/title/portlet-collaboration-title</url>
-      </component>
-
-      <component>
-         <region-id>repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-repo-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.repository</title>
-            <subtitle>title.browser</subtitle>
-         </properties>
-      </component>
-
-      <component>
-         <region-id>tasks-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myTasks</title>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-tasks-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myTasks</title>
-         </properties>
-      </component>
-
-      <component>
-         <region-id>workflows-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myWorkflows</title>
-         </properties>
-      </component>
-      <component>
-         <region-id>portlet-workflows-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myWorkflows</title>
-         </properties>
-      </component>
-
       <!-- navigation: normal, tasks & workflow -->
       <component>
          <region-id>navigation</region-id>
@@ -88,6 +28,5 @@
          <region-id>portlet-workflows-navigation</region-id>
          <url>/components/workflow/workflow-toolbar</url>
       </component>
-      ]]>
    </components>
 </template-instance>

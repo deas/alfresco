@@ -19,7 +19,6 @@
       <#include "../../include/alfresco-macros.lib.ftl" />
       <#assign el=args.htmlid?html>
       <div id="${el}-body" class="form-manager start-workflow">
-         <h1>${msg("header")}</h1>
          <div>
             <label for="${el}-workflowDefinitions" class="workflow-definition">${msg("label.workflow")}:</label>
             <#-- Workflow type menu button  -->

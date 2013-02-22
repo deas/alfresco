@@ -3,15 +3,6 @@
    <template-type>org/alfresco/my-tasks</template-type>
    <components>
 
-      <!-- Title -->
-      <component>
-         <region-id>task-title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>title.myTasks</title>
-         </properties>
-      </component>
-
       <!-- All Filter -->
       <component>
          <region-id>all-filter</region-id>
