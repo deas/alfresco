@@ -1032,6 +1032,11 @@ body.yui-skin-lightTheme .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabl
 
 /* Doclist */
 
+body.yui-skin-lightTheme #alfresco-documentlibrary
+{
+   border-top: 1px solid #ccc;
+}
+
 body.yui-skin-lightTheme .doclist .more-actions a:active,
 body.yui-skin-lightTheme .doclist .more-actions a:hover
 {
