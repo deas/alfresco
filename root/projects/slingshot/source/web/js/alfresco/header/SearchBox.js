@@ -140,32 +140,35 @@ define(["dojo/_base/declare",
        * @method _onFocus
        */
       _onFocus: function alfresco_header_SearchBox___onFocus() {
+         var me = this;
          domAttr.set(this._searchTextNode, "value", "");
          fx.animateProperty({
             node: this._searchTextNode,
             properties: {
-              width: this._focusedWidth
+               width: this._focusedWidth
+            },
+            onEnd: function() {
+               me._searchTextNode.focus();
             }
          }).play();
          this.inherited(arguments);
-         this._searchTextNode.focus();
-     },
+      },
      
-     /**
-      * Implements the dijit/_FocusMixin callback to contract the width of the search box input field when this
-      * widget loses focus.
-      * 
-      * @method _onBlur
-      */
-     _onBlur: function alfresco_header_SearchBox___onBlur(){
+      /**
+       * Implements the dijit/_FocusMixin callback to contract the width of the search box input field when this
+       * widget loses focus.
+       * 
+       * @method _onBlur
+       */
+      _onBlur: function alfresco_header_SearchBox___onBlur() {
          fx.animateProperty({
             node: this._searchTextNode,
             properties: {
               width: this._blurredWidth
             }
          }).play();
-         this.inherited(arguments);
          domAttr.set(this._searchTextNode, "value", this.message("search.instruction"));
-     }
+         this.inherited(arguments);
+      }
    });
 });

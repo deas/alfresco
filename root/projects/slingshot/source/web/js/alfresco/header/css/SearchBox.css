@@ -22,6 +22,13 @@
    border: none !important;
    padding: 0 !important;
    margin-right: 8px;
+   position: relative;
+   top: 1px;
+}
+
+.alfresco-share .alf-search-box-text:focus
+{
+   outline:none;
 }
 
 /* This defines the search icon for use in popup menu items only */

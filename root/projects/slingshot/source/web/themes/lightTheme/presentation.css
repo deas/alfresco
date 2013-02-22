@@ -87,7 +87,7 @@ button:focus {outline:none;}
 .yui-overlay h1
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 235%;
+   font-size: 230%;
    font-weight: normal;
    top: -4px;
    left: 162px;
@@ -301,13 +301,13 @@ h4 .lighter
 .yui-skin-lightTheme .yui-panel .hd
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 235%;
+   font-size: 230%;
    font-weight: normal;
    border-bottom: 1px solid #ccc;
    border-top-left-radius: 6px;
    border-top-right-radius: 6px;
-   line-height: 1.2em;
-   padding: 0.5em 0;
+   line-height: 1em;
+   padding: 0.25em;
 }
 
 .yui-skin-lightTheme .yui-panel .form-buttons,
@@ -561,6 +561,7 @@ span.navigation-separator-alt
 {
    border: 1px solid #ccc !important;
    background-color: #fff;
+   margin-left: 10px;
 }
 
 .form-container textarea,
@@ -590,7 +591,7 @@ span.navigation-separator-alt
 .page-form-body .input textarea,
 .page-form-body select
 {
-   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.15);
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .defaultSkin table.mceLayout
@@ -625,9 +626,14 @@ span.navigation-separator-alt
    border-right: none;
 }
 
+.share-form .form-manager
+{
+   padding-top: 0.25em !important;
+}
+
 .share-form .form-manager h1
 {
-   margin-bottom: 0 !important;
+   margin-bottom: 0.5em !important;
 }
 
 .form-element-background-color
@@ -638,7 +644,7 @@ span.navigation-separator-alt
 .create-content-mgr .heading
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 235% !important;
+   font-size: 230% !important;
    padding: 0.5em 0.2em 0 !important;
 }
 
@@ -1591,6 +1597,11 @@ body.alfresco-guest
    padding: 0 0 0.2em !important;
 }
 
+.node-header .node-path
+{
+   padding-top: 0 !important;
+}
+
 /** tweak width of global picker treeview to avoid wrap*/
 .global-folder .treeview
 {
@@ -1676,10 +1687,20 @@ body.alfresco-guest
    padding: 3.666px !important;
 }
 
+.search .search-sites
+{
+   padding-top: 0 !important;
+}
+
 .search .search-sites a.bold
 {
    font-family: Open Sans Bold, Arial, sans-serif;
    font-weight: normal !important;
+}
+
+.search .form-row
+{
+   margin: -10px 0 1em 2em !important;
 }
 
 .alfresco-datatable td,
