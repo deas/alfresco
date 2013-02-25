@@ -81,7 +81,7 @@
          <rule>
             <request>
                <method>POST</method>
-               <path>^\/page\/caches\/dependency\/clear|^\/page\/index|^\/page\/surfBugStatus|^\/page\/modules\/deploy|^\/share\/page\/modules\/module|^\/share\/page\/api\/javascript\/debugger</path>
+               <path>^\/page\/caches\/dependency\/clear|^\/page\/index|^\/page\/surfBugStatus|^\/page\/modules\/deploy|^\/page\/modules\/module|^\/page\/api\/javascript\/debugger</path>
             </request>
             <action name="assertReferer">
                <param name="always">false</param>
