@@ -51,7 +51,7 @@ public class TenantUtil
     public static <R> R runAsPrimaryTenant(final TenantRunAsWork<R> runAsWork, String uid)
     {
         String runAsUser = AuthenticationUtil.getRunAsUser();
-        if (runAsUser == null || runAsUser.equals(uid))
+        if ((runAsUser != null) && runAsUser.equals(uid))
         {
             // same user (hence same primary/implied tenant) and already in runAs block (hence no runAsUserTenant switch required)
             return runAsWork(runAsWork);
