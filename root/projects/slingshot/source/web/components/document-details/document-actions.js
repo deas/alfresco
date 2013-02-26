@@ -186,7 +186,7 @@
        */
       onReady: function DocumentActions_onReady()
       {
-         var componentId = this.id;
+         var me = this;
          
          // Asset data 
          this.recordData = this.options.documentDetails.item;
@@ -226,7 +226,6 @@
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
-               var me = Alfresco.util.ComponentManager.get(componentId);
                if (typeof me[owner.id] === "function")
                {
                   args[1].stop = true;
