@@ -19,10 +19,15 @@
 package org.alfresco.solr.query;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.alfresco.solr.AlfrescoSolrEventListener;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermDocs;
+import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -48,101 +53,115 @@ public class SolrReaderSetScorer extends AbstractSolrCachingScorer
 
         String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
 
-        HashMap<String, HashSet<Long>> readerToAclIds = (HashMap<String, HashSet<Long>>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_READER_TO_ACL_IDS_LOOKUP);
-        long[] aclByDocId = (long[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_ID_BY_DOC_ID);
-        HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp> lookups = (HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_LOOKUP);
-        AlfrescoSolrEventListener.CacheEntry[] aclThenLeafOrderedEntries = ( AlfrescoSolrEventListener.CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
+        long[] aclIdByDocId = (long[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_ID_BY_DOC_ID);
+        HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp> lookups = (HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp>) searcher
+                .cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_LOOKUP);
+        AlfrescoSolrEventListener.CacheEntry[] aclThenLeafOrderedEntries = (AlfrescoSolrEventListener.CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
+                AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
         BitDocSet publicDocSet = (BitDocSet) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_PUBLIC_DOC_SET);
 
-        //        DocSet aclDocSet;
-        //        if(auths.length > 1)
-        //        {
-        //           BooleanQuery bQuery = new BooleanQuery();
-        //           for(String current : auths)
-        //           {
-        //               bQuery.add(new TermQuery(new Term("READER", current)), Occur.SHOULD);
-        //           }
-        //           aclDocSet = searcher.getDocSet(bQuery);
-        //        }
-        //        else
-        //        {   
-        //            aclDocSet = searcher.getDocSet(new TermQuery(new Term("READER", auths[0])));
-        //        }
-
         DocSet readableDocSet = new BitDocSet(new OpenBitSet(searcher.getReader().maxDoc()));
-        
-        HashSet<Long> acls = new HashSet<Long>();
-        for(String auth : auths)
+        HashSet<Long> ignoredAlcs = null;
+        for (String auth : auths)
         {
-            if(auth.equals("GROUP_EVERYONE"))
+            if (auth.equals("GROUP_EVERYONE"))
+            {
+                HashSet<Long> aclIds =  (HashSet<Long>)searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_READER_TO_ACL_IDS_CACHE, auth);
+                if(aclIds == null)
+                {
+                    aclIds = buildReaderAclIds(searcher, auth, aclIdByDocId);
+                    searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_READER_TO_ACL_IDS_CACHE, auth, aclIds);
+                }
+                ignoredAlcs = aclIds;
+                break;
+            }
+        }
+
+        HashSet<Long> acls = new HashSet<Long>();
+        for (String auth : auths)
+        {
+            if (auth.equals("GROUP_EVERYONE"))
             {
                 readableDocSet = readableDocSet.union(publicDocSet);
             }
             else
             {
-                HashSet<Long> aclIds = readerToAclIds.get(auth);
-                if(aclIds != null)
+                HashSet<Long> aclIds =  (HashSet<Long>)searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_READER_TO_ACL_IDS_CACHE, auth);
+                if(aclIds == null)
                 {
-                    acls.addAll(aclIds);
+                    aclIds = buildReaderAclIds(searcher, auth, aclIdByDocId);
+                    searcher.cacheInsert(AlfrescoSolrEventListener.ALFRESCO_READER_TO_ACL_IDS_CACHE, auth, aclIds);
                 }
+                acls.addAll(aclIds);
+               
             }
+        }
+        if(ignoredAlcs != null)
+        {
+            acls.removeAll(ignoredAlcs);
         }
 
         AlfrescoSolrEventListener.AclLookUp key = new AlfrescoSolrEventListener.AclLookUp(0);
 
-        for(Long acl : acls)
+        for (Long acl : acls)
         {
             key.setAclid(acl);
             AlfrescoSolrEventListener.AclLookUp value = lookups.get(key);
-            if(value != null)
+            if (value != null)
             {
-                for(int i = value.getStart(); i < value.getEnd(); i++)
+                for (int i = value.getStart(); i < value.getEnd(); i++)
                 {
                     readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
                 }
             }
         }
 
-
-
-        //        if(aclDocSet instanceof BitDocSet)
-        //        {
-        //            BitDocSet source = (BitDocSet)aclDocSet;
-        //            OpenBitSet openBitSet = source.getBits();
-        //            int current = -1;
-        //            while((current = openBitSet.nextSetBit(current+1)) != -1)
-        //            {
-        //                long acl = aclByDocId[current];
-        //                key.setAclid(acl);
-        //                AlfrescoSolrEventListener.AclLookUp value = lookups.get(key);
-        //                if(value != null)
-        //                {
-        //                    for(int i = value.getStart(); i < value.getEnd(); i++)
-        //                    {
-        //                        readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //
-        //            for (DocIterator it = aclDocSet.iterator(); it.hasNext(); /* */)
-        //            {
-        //                int doc = it.nextDoc();
-        //                long acl = aclByDocId[doc];
-        //                key.setAclid(acl);
-        //                AlfrescoSolrEventListener.AclLookUp value = lookups.get(key);
-        //                if(value != null)
-        //                {
-        //                    for(int i = value.getStart(); i < value.getEnd(); i++)
-        //                    {
-        //                        readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
-        //                    }
-        //                }
-        //            }
-        //        }
         return new SolrReaderSetScorer(similarity, readableDocSet, reader);
 
     }
+
+    public static HashSet<Long> buildReaderAclIds(SolrIndexSearcher searcher, String authority, long[] aclIdByDocId) throws IOException
+    {
+        HashSet<Long> aclsAsSet = new HashSet<Long>();
+
+        IndexReader reader = searcher.getReader();
+        TermEnum termEnum = reader.terms(new Term("READER", authority));
+        try
+        {
+            Term term = termEnum.term();
+            if (term == null)
+            {
+                return aclsAsSet;
+            }
+            if (term.field().equals("READER") && term.text().equals(authority))
+            {
+                TermDocs termDocs = reader.termDocs(term);
+                try
+                {
+                    while (termDocs.next())
+                    {
+                        int currentDoc = termDocs.doc();
+                        long acl = aclIdByDocId[currentDoc];
+                        aclsAsSet.add(acl);
+                    }
+                }
+                finally
+                {
+
+                    termDocs.close();
+                }
+                return aclsAsSet;
+            }
+            else
+            {
+                return aclsAsSet;
+            }
+        }
+        finally
+        {
+            termEnum.close();
+        }
+
+    }
+
 }

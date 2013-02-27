@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -561,7 +561,22 @@ public class RuntimeExec
         ExecutionResult result = new ExecutionResult(process, commandToExecute, errCodes, exitValue, execOut, execErr);
 
         // done
-        if (logger.isDebugEnabled())
+        if (logger.isTraceEnabled() && processProperties != null)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(result).append("\n   env: ");
+            for (int i=0; i<processProperties.length; i++)
+            {
+                String property = processProperties[i];
+                if (i > 0)
+                {
+                    sb.append("\n        ");
+                }
+                sb.append(property);
+            }
+            logger.trace(sb);
+        }
+        else if (logger.isDebugEnabled())
         {
             logger.debug(result);
         }

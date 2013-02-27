@@ -48,6 +48,13 @@ public interface ResultSetSPI<ROW extends ResultSetRow, MD extends ResultSetMeta
      *         actual size is not known and evaluated upon request.
      */
     public int length();
+   
+    /**
+     * Get the number of rows that matched the query. This result set may only contain a section of the results.
+     * If a skip count is given the number found  may or may not include the items skipped.
+     * @return
+     */
+    public long getNumberFound();
 
     /**
      * Get the id of the node at the given index (if there is only one selector or no selector)

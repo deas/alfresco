@@ -1,4 +1,4 @@
-Copyright (c) 2005-2011 Alfresco Software, Ltd. and others.
+Copyright (c) 2005-2013 Alfresco Software, Ltd. and others.
 All rights reserved.  This program and the accompanying materials are made available under the terms of the Alfresco 
 agreement located at www.alfresco.com/legal/agreements/ or other commercial agreement between Alfresco Software, Ltd. 
 ("Alfresco") and the user of this program.
@@ -54,10 +54,14 @@ jayrock 	http://jayrock.berlios.de/
 livetribe   	http://livetribe.codehaus.org/
 log4j		http://logging.apache.org/log4j 
 lucene-*	http://lucene.apache.org 
+metadata-extractor  http://code.google.com/p/metadata-extractor/
 myfaces-*	http://myfaces.apache.org/ 
 naming-*	http://tomcat.apache.org 
 Neethi		http://ws.apache.org/commons/neethi/
 opensaml	http://www.opensaml.org/
+OpenSSL	    http://www.openssl.org/
+pdfbox		http://pdfbox.apache.org/
+POI		http://poi.apache.org/legal.html
 Spring Framework	http://www.springsource.com/download/community?sid=453581
 J2EE/Portlet	Redistributed by Apache foundation.
 resolver	http://xml.apache.org/commons/
@@ -94,11 +98,17 @@ dom4j		http://www.dom4j.org/
 fontbox		http://xmlgraphics.apache.org/fop/ 
 jibx-*		http://jibx.sourceforge.net
 jta		http://java.sun.com/products/jta/ 
+libfreetype http://www.freetype.org/
+libgif      http://giflib.sourceforge.net/
+libjpeg     http://libjpeg.sourceforge.net/
+libpng      http://www.libpng.org/
+libtiff     http://www.libtiff.org/
+libz        http://zlib.net/
 One-Jar		http://sourceforge.net/projects/one-jar
-pdfbox		http://www.pdfbox.org
 PostgreSQL	http://www.postgresql.org
 STAX Utils	https://stax-utils.dev.java.net/
 Tuckey URL rewriter	http://tuckey.org/urlrewrite/manual/3.0/introduction.html
+xmpcore     http://www.adobe.com/devnet/xmp.html
 Xstream		http://xstream.codehaus.org/license.html
   
 
@@ -111,6 +121,9 @@ SAAJ		https://glassfish.dev.java.net/public/CDDL+GPL.html
 xml-apis	https://jaxp.dev.java.net/
 
   
+=== Commercial license ===
+Bitrock installer   http://bitrock.com/
+
 ===CPL 1.0 License===
 htmlparser	http://htmlparser.sourceforge.net/ 
 Junit		http://sourceforge.net/projects/junit/
@@ -138,9 +151,16 @@ netcdf      	http://www.unidata.ucar.edu/software/netcdf/copyright.html
 nunit           http://www.nunit.org/index.php?p=home
               
 
+===GPL Affero GPL ===
+GhostScript	http://www.ghostscript.com/
+
+===GPL V2===
+ncurses     http://www.gnu.org/software/ncurses/
+libiconv    http://www.gnu.org/software/libiconv/
+libstdc++   http://gcc.gnu.org/libstdc++/
+
 ===GPL V3===
 SWF Tools 	http://wiki.swftools.org
-
 
 ===Imagemagick===
 Imagemagick 	http://www.imagemagick.org/script/license.php
@@ -150,6 +170,7 @@ Imagemagick 	http://www.imagemagick.org/script/license.php
 JBPM		http://www.opensource.org/licenses/lgpl-license.php
 jid3lib		https://jid3lib.dev.java.net/ http://www.gnu.org/copyleft/lesser.html
 jug-lgpl	http://jug.safehaus.org/ 
+libwmf      http://wvware.sourceforge.net/libwmf.html
 TinyMCE		http://tinymce.moxiecode.com/tinymce/docs/license.html
 
                 
@@ -163,6 +184,9 @@ Jut.jar		http://www.openoffice.org/licenses/lgpl_license.html
 OpenOffice	http://www.openoffice.org/license.html
 
                 
+=== Microsoft Redistributable ===
+Microsoft Visual C++ 2008 Redistributable Package
+
 ===MIT License===
 facebook	http://code.google.com/p/facebook-java-api/
 Jutf7		http://jutf7.sourceforge.net/license.html
@@ -173,6 +197,7 @@ Mootools	http://docs.mootools.net/
                 
 ===MPL===
 rhino-js	http://www.mozilla.org/rhino/
+juniversalcharsetdet	http://juniversalchardet.googlecode.com/
 
 
 ===ODMG 	Licnese===
@@ -185,7 +210,8 @@ Oracle JDK 	http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u21-lic
 
 ===Public Domain License===
 AOP Alliance	http://aopalliance.sourceforge.net/
-hrtlib		http://www.javaworld.com/javaqa/2003-01/timing/01-qa-0110-timing.zip 
+hrtlib		http://www.javaworld.com/javaqa/2003-01/01-qa-0110-timing.html
+XZ          http://tukaani.org/xz/java.html
 
 
 ===Sun Public License===
@@ -201,7 +227,7 @@ Nunit		http://www.nunit.org/
 
 
 Alfresco has modified the source code of the following third party libraries.  Below is the list of modified modules and corresponding licenses.
-The svn diff files with the details of the changes can be found in the following location: Root/Projects/3Rd-Party/Src.
+The svn diff files with the details of the changes can be found in the following location: root/projects/3rd-party/src.
 
 
 ===Apache2===
@@ -210,8 +236,7 @@ commons-*	http://jakarta.apache.org/commons/
 Framework	http://cxf.apache.org/
 Greenmail	http://www.icegreen.com/greenmail/readme.html
 jslideshare  	http://code.google.com/p/jslideshare/
-httpclient  	http://hc.apache.org/httpcomponents-client-ga/
-ibatis		http://ibatis.apache.org/license.html
+pdfbox		http://pdfbox.apache.org/
 POI		http://poi.apache.org/legal.html
 mybatis  	http://code.google.com/p/mybatis/
 quartz		http://www.opensymphony.com/quartz/
@@ -239,6 +264,7 @@ PDF Renderer	https://pdf-renderer.dev.java.net/
 
 ===LGPL 2.1===
 hibernate	http://www.hibernate.org/
+PDF Renderer    http://java.net/projects/pdf-renderer
 
 
 

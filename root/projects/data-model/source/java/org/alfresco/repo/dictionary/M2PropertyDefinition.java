@@ -79,10 +79,10 @@ import org.springframework.util.StringUtils;
             Map<QName, ConstraintDefinition> modelConstraints)
     {
         this.classDef = classDef;
-        this.m2Property = createOverriddenProperty(propertyDef, override, prefixResolver, modelConstraints);
         this.name = propertyDef.getName();
         this.dataType = propertyDef.getDataType();
         this.propertyTypeName = this.dataType.getName();
+        this.m2Property = createOverriddenProperty(propertyDef, override, prefixResolver, modelConstraints);
     }
     
     
@@ -129,6 +129,19 @@ import org.springframework.util.StringUtils;
         Map<QName, ConstraintDefinition> constraintsByQName = new HashMap<QName, ConstraintDefinition>(7);
         for (M2Constraint constraint : m2constraints)
         {
+            // Consistent naming scheme for anonymous property constraints
+            if (constraint.getName() == null)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.append(m2PropertyDef.classDef.getModel().getName().getLocalName()).append("_");
+                builder.append(m2PropertyDef.classDef.getName().getLocalName()).append("_");
+                builder.append(m2PropertyDef.getName().getLocalName()).append("_");
+                builder.append("anon_");
+                builder.append(constraints.size());
+                QName newName  = QName.createQName(m2PropertyDef.classDef.getModel().getName().getNamespaceURI(), builder.toString());
+                constraint.setName(newName.getPrefixedQName(prefixResolver).toPrefixString());
+            }
+            
             ConstraintDefinition def = new M2ConstraintDefinition(m2PropertyDef, constraint, prefixResolver);
             QName qname = def.getName();
             if (constraintsByQName.containsKey(qname))
@@ -200,7 +213,7 @@ import org.springframework.util.StringUtils;
         {
             constraintDefs = buildConstraints(
                     overrideConstraints,
-                    (M2PropertyDefinition) propertyDef,
+                    this,
                     prefixResolver,
                     modelConstraints);
         }

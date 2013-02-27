@@ -24,9 +24,11 @@ import java.util.Map;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -177,5 +179,24 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
         
         return httpMethod;
     }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.httpclient.AlfrescoHttpClient#close()
+     */
+    @Override
+    public void close()
+    {
+       if(httpClient != null)
+       {
+           HttpConnectionManager connectionManager = httpClient.getHttpConnectionManager();
+           if(connectionManager instanceof MultiThreadedHttpConnectionManager)
+           {
+               ((MultiThreadedHttpConnectionManager)connectionManager).shutdown();
+           }
+       }
+        
+    }
+    
+    
 
 }

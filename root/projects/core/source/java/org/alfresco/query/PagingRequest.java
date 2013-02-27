@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -69,8 +69,8 @@ public class PagingRequest
     /**
      * Construct a page request
      * 
-     * @param maxItems              the maximum number of items per page
      * @param skipCount             the number of items to skip before the first page
+     * @param maxItems              the maximum number of items per page
      * @param queryExecutionId      a query execution ID associated with ealier paged requests
      */
     public PagingRequest(int skipCount, int maxItems, String queryExecutionId)

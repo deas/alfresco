@@ -112,39 +112,11 @@ public class AlfrescoDataType extends FieldType
         return AlfrescoSolrDataModel.getInstance(id).getSortField(field, reverse);
     }
 
-    private void initLogging(SolrResourceLoader solrResourceLoader) 
-    {;
-        try
-        {
-            Class clazz = Class.forName("org.apache.log4j.PropertyConfigurator");
-            Method method = clazz.getMethod("configure", Properties.class);
-            InputStream is = solrResourceLoader.openResource("log4j.properties");
-            Properties p = new Properties();
-            p.load(is);
-            method.invoke(null, p);
-            is = solrResourceLoader.openResource("log4j-solr.properties");
-            p = new Properties();
-            p.load(is);
-            method.invoke(null, p);
-        }
-        catch (ClassNotFoundException e)
-        {
-           return;
-        }
-        catch (Throwable e)
-        {
-            log.info("Failed to load log4j-solr.properties", e);
-        }
-        
-        
-    }
+    
     
     @Override
     protected void init(IndexSchema schema, Map<String, String> args)
     {
-        
-        initLogging(schema.getResourceLoader());
-        
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
         id = schema.getResourceLoader().getInstanceDir();
 
@@ -252,12 +224,17 @@ public class AlfrescoDataType extends FieldType
         return  super.getAnalyzer();
     }
     
+    public Analyzer getDefaultQueryAnalyzer()
+    {
+        return  super.getQueryAnalyzer();
+    }
+    
     @Override
     public SolrLuceneAnalyser getAnalyzer()
     {
         return AlfrescoSolrDataModel.getInstance(id).getSolrLuceneAnalyser();
     }
-
+   
     public Field createField(SchemaField field, String externalVal, float boost)
     {
         String val;
@@ -313,7 +290,7 @@ public class AlfrescoDataType extends FieldType
     @Override
     public Analyzer getQueryAnalyzer()
     {
-        return AlfrescoSolrDataModel.getInstance(id).getQueryAnalyser();
+        return AlfrescoSolrDataModel.getInstance(id).getSolrLuceneQueryAnalyser();
     }
 
     @Override

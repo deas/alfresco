@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -565,7 +565,8 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
             }
             FileInfo fileInfo = getPathHelper().resolvePathFileInfo(serviceName + "/" + url);
 
-            if (fileInfo != null && fileInfo.isLink() == false)
+            // ALF-17662, hidden documents are not visible for client
+            if (fileInfo != null && fileInfo.isLink() == false && !getFileFolderService().isHidden(fileInfo.getNodeRef()))
             {
                 DocMetaInfo docMetaInfo = new DocMetaInfo(fileInfo.isFolder());
                 setDocMetaInfo(fileInfo, docMetaInfo);
@@ -612,14 +613,18 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
 
         for (FileInfo fileInfo : getFileFolderService().list(sourceFileInfo.getNodeRef()))
         {
-            if (fileInfo.isFolder())
+            // ALF-17662 fix, filter out all hidden nodes
+            if (!fileFolderService.isHidden(fileInfo.getNodeRef()))
             {
-                result.getDialogMetaInfoList().add(getDialogMetaInfo(fileInfo));                
-            }
-            else if (getNodeService().hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY) == false
+                if (fileInfo.isFolder())
+                {
+                    result.getDialogMetaInfoList().add(getDialogMetaInfo(fileInfo));                
+                }
+                else if (getNodeService().hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY) == false
                     && VtiDocumentHelper.applyFilters(fileInfo.getName(), fileDialogFilterValue))
-            {                
-               result.getDialogMetaInfoList().add(getDialogMetaInfo(fileInfo));                
+                {                
+                   result.getDialogMetaInfoList().add(getDialogMetaInfo(fileInfo));                
+                }
             }
         }
 
@@ -918,7 +923,7 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 }
 
                 if ((putOptionSet.contains(PutOption.overwrite) == false && putOptionSet.contains(PutOption.edit) == false)
-                        || (putOptionSet.contains(PutOption.edit) && VtiUtils.compare(curDocumentFileInfo.getModifiedDate(), document.getTimelastmodified()) == false))
+                        || (!getFileFolderService().isHidden(curDocumentFileInfo.getNodeRef()) && putOptionSet.contains(PutOption.edit) && VtiUtils.compare(curDocumentFileInfo.getModifiedDate(), document.getTimelastmodified()) == false))
                 {
                     if (logger.isDebugEnabled())
                     {
@@ -927,6 +932,15 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                     }
 
                     throw new VtiHandlerException(VtiHandlerException.FILE_ALREADY_EXISTS);
+                }
+                
+                NodeRef existedNodeRef = curDocumentFileInfo.getNodeRef();
+                
+                // ALF-17662, hidden node is the same as non-existed node for SPP
+                if (getFileFolderService().isHidden(existedNodeRef))
+                {
+                    // make it visible for client
+                    getFileFolderService().setHidden(existedNodeRef, false);
                 }
             }
             else

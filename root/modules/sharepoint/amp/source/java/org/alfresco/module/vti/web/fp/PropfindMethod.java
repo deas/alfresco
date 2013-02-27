@@ -158,6 +158,13 @@ public class PropfindMethod extends WebDAVMethod
         {
             // Check that the path exists
             pathNodeInfo = getDAVHelper().getNodeForPath(getRootNodeRef(), m_strPath);
+            
+            if (getFileFolderService().isHidden(pathNodeInfo.getNodeRef()))
+            {
+                // ALF-17662, the path is hidden - send a 404 error back to the client
+                m_response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -277,9 +284,9 @@ public class PropfindMethod extends WebDAVMethod
                     // Output the child node details
                     for (FileInfo curChildInfo : childNodeInfos)
                     {
-                        // Do not output link nodes
+                        // ALF-17662, do not show link nodes and hidden documents
 
-                        if (curChildInfo.isLink() == false)
+                        if (curChildInfo.isLink() == false && !getFileFolderService().isHidden(curChildInfo.getNodeRef()))
                         {
                             // Build the path for the current child node
                             baseBuild.setLength(curBaseLen);

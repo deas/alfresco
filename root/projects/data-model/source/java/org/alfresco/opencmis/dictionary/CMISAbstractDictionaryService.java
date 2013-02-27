@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -23,6 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.mapping.CMISMapping;
@@ -33,6 +36,7 @@ import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.data.CmisExtensionElement;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.PropertyType;
@@ -120,8 +124,11 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         this.singletonCache = singletonCache;
     }
     
-    // note: cache is tenant-aware (if using EhCacheAdapter shared cache)
+    private final ReentrantReadWriteLock registryLock = new ReentrantReadWriteLock();
+    private final WriteLock registryWriteLock = registryLock.writeLock();
+    private final ReadLock registryReadLock = registryLock.readLock();
     
+    // note: cache is tenant-aware (if using EhCacheAdapter shared cache)
     private SimpleCache<String, DictionaryRegistry> singletonCache; // eg. for openCmisDictionaryRegistry
     private final String KEY_OPENCMIS_DICTIONARY_REGISTRY = "key.openCmisDictionaryRegistry";
     
@@ -215,10 +222,21 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
             return builder.toString();
         }
     }
-
+    
     private DictionaryRegistry getRegistry()
     {
-        DictionaryRegistry registry = singletonCache.get(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+        DictionaryRegistry registry = null;
+        
+        registryReadLock.lock();
+        try
+        {
+            registry = singletonCache.get(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+        }
+        finally
+        {
+            registryReadLock.unlock();
+        }
+        
         if (registry == null)
         {
             init();
@@ -226,7 +244,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         }
         return registry;
     }
-
+    
     public TypeDefinitionWrapper findType(String typeId)
     {
         return getRegistry().typeDefsByTypeId.get(typeId);
@@ -289,7 +307,8 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
 
     public TypeDefinitionWrapper findTypeByQueryName(String queryName)
     {
-        return getRegistry().typeDefsByQueryName.get(queryName);
+        // ISO 9075 name look up should be lower case.
+        return getRegistry().typeDefsByQueryName.get(ISO9075.lowerCaseEncodedSQL(queryName));
     }
 
     public QName getAlfrescoClass(QName name)
@@ -305,7 +324,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     @Override
     public PropertyDefinitionWrapper findPropertyByQueryName(String queryName)
     {
-        return getRegistry().propDefbyQueryName.get(queryName);
+        return getRegistry().propDefbyQueryName.get(ISO9075.lowerCaseEncodedSQL(queryName));
     }
 
     public List<TypeDefinitionWrapper> getBaseTypes()
@@ -375,52 +394,60 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      */
     private void init()
     {
-        DictionaryRegistry registry = new DictionaryRegistry();
-
-        if (logger.isDebugEnabled())
+        registryWriteLock.lock();
+        try
         {
-            logger.debug("Creating type definitions...");
-        }
-
-        // phase 1: construct type definitions and link them together
-        createDefinitions(registry);
-        for (AbstractTypeDefinitionWrapper objectTypeDef : registry.typeDefsByTypeId.values())
-        {
-            objectTypeDef.connectParentAndSubTypes(cmisMapping, registry, dictionaryService);
-        }
-
-        // phase 2: register base types and inherit property definitions
-        for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
-        {
-            if (typeDef.getTypeDefinition(false).getParentTypeId() == null)
+            DictionaryRegistry registry = new DictionaryRegistry();
+            
+            if (logger.isDebugEnabled())
             {
-                registry.baseTypes.add(typeDef);
-                typeDef.resolveInheritance(cmisMapping, registry, dictionaryService);
+                logger.debug("Creating type definitions...");
             }
+            
+            // phase 1: construct type definitions and link them together
+            createDefinitions(registry);
+            for (AbstractTypeDefinitionWrapper objectTypeDef : registry.typeDefsByTypeId.values())
+            {
+                objectTypeDef.connectParentAndSubTypes(cmisMapping, registry, dictionaryService);
+            }
+            
+            // phase 2: register base types and inherit property definitions
+            for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
+            {
+                if (typeDef.getTypeDefinition(false).getParentTypeId() == null)
+                {
+                    registry.baseTypes.add(typeDef);
+                    typeDef.resolveInheritance(cmisMapping, registry, dictionaryService);
+                }
+            }
+            
+            // phase 3: register properties
+            for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
+            {
+                registry.registerPropertyDefinitions(typeDef);
+            }
+            
+            // phase 4: assert valid
+            for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
+            {
+                typeDef.assertComplete();
+                
+                addTypeExtensions(registry, typeDef);
+            }
+            
+            // publish new registry
+            singletonCache.put(KEY_OPENCMIS_DICTIONARY_REGISTRY, registry);
+            
+            if (logger.isInfoEnabled())
+                logger.info("Initialized CMIS Dictionary. Types:" + registry.typeDefsByTypeId.size() + ", Base Types:"
+                        + registry.baseTypes.size());
         }
-
-        // phase 3: register properties
-        for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
+        finally
         {
-            registry.registerPropertyDefinitions(typeDef);
+            registryWriteLock.unlock();
         }
-
-        // phase 4: assert valid
-        for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
-        {
-            typeDef.assertComplete();
-
-            addTypeExtensions(registry, typeDef);
-        }
-
-        // publish new registry
-        singletonCache.put(KEY_OPENCMIS_DICTIONARY_REGISTRY, registry);
-
-        if (logger.isInfoEnabled())
-            logger.info("Initialized CMIS Dictionary. Types:" + registry.typeDefsByTypeId.size() + ", Base Types:"
-                    + registry.baseTypes.size());
     }
-
+    
     /*
      * (non-Javadoc)
      * 
@@ -448,7 +475,15 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      */
     public void afterDictionaryDestroy()
     {
-        singletonCache.remove(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+        registryWriteLock.lock();
+        try
+        {
+            singletonCache.remove(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+        }
+        finally
+        {
+            registryWriteLock.unlock();
+        }
     }
 
     /*

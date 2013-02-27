@@ -35,7 +35,7 @@
                </div>
                <span class="align-right yui-button-align">
                   <span class="first-child">
-                     <a href="site-members#showall" class="theme-color-1">${msg("link.all-members")}</a>
+               <a href="site-members" class="theme-color-1">${msg("link.all-members")}</a>
                   </span>
                </span>
                <div class="clear"></div>

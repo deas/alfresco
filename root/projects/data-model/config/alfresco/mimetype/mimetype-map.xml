@@ -498,7 +498,7 @@
          <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.slide" display="Microsoft PowerPoint 2007 slide">
             <extension>sldx</extension>
          </mimetype>
-         <mimetype mimetype="application/vnd.ms-powerpoint.slide.macroEnabled.12" display="Microsoft PowerPoint 2007 macro-enabled slide">
+         <mimetype mimetype="application/vnd.ms-powerpoint.slide.macroenabled.12" display="Microsoft PowerPoint 2007 macro-enabled slide">
             <extension>sldm</extension>
          </mimetype>
 

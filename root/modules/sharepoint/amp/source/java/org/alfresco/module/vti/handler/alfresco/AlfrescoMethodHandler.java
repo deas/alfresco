@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -46,6 +46,7 @@ import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.repo.webdav.WebDAV;
+import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -157,7 +158,9 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         }
 
         FileInfo resourceFileInfo = getPathHelper().resolvePathFileInfo(decodedUrl);
-        if (resourceFileInfo == null)
+
+        // ALF-17662, hidden documents are the same as nonexistent
+        if (resourceFileInfo == null || getFileFolderService().isHidden(resourceFileInfo.getNodeRef()))
         {
             try
             {
@@ -340,8 +343,14 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
 
             ContentWriter writer = null;
 
+            FileFolderService fileFolderService = getFileFolderService();
             if (workingCopyNodeRef != null)
             {
+                if (fileFolderService.isHidden(workingCopyNodeRef))
+                {
+                    fileFolderService.setHidden(workingCopyNodeRef, false);
+                }
+
                 String workingCopyOwner = getNodeService().getProperty(workingCopyNodeRef, ContentModel.PROP_WORKING_COPY_OWNER).toString();
                 if (workingCopyOwner.equals(getAuthenticationService().getCurrentUserName()))
                 {
@@ -351,6 +360,13 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             }
             else
             {
+                // ALF-17662, hidden node is the same as non-existed node for SPP
+                if (fileFolderService.isHidden(resourceNodeRef))
+                {
+                    // make it visible for client
+                    fileFolderService.setHidden(resourceNodeRef, false);
+                }
+
                 // original document writer
                 writer = getContentService().getWriter(resourceNodeRef, ContentModel.PROP_CONTENT, true);
 
@@ -586,7 +602,9 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                 {
                     if (file.isLink() == false)
                     {
-                        if (getNodeService().hasAspect(file.getNodeRef(), ContentModel.ASPECT_WORKING_COPY) == false)
+                        // ALF-17662, working copies and hidden documents are not visible
+                        if (getNodeService().hasAspect(file.getNodeRef(), ContentModel.ASPECT_WORKING_COPY) == false
+                                && !getFileFolderService().isHidden(file.getNodeRef()))
                         {
                             result.getFileMetaInfoList().add(buildDocMetaInfo(file, folderList));
                         }

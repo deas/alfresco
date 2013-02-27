@@ -359,4 +359,32 @@ public class ISO9075
         return QName.createQName(namespaceURI, localName);
 
     }
+
+    /**
+     * @param queryName
+     * @return
+     */
+    public static Object lowerCaseEncodedSQL(String toLowerCaseEncoded)
+    {
+        String lowerCased = toLowerCaseEncoded.toLowerCase();
+        StringBuilder builder = new StringBuilder(toLowerCaseEncoded.length());
+        for (int i = 0; i < toLowerCaseEncoded.length(); i++)
+        {
+            if (matchesEncodedPattern(toLowerCaseEncoded, i))
+            {
+                for(int j = 0; j < 7; j++)
+                {
+                    builder.append(lowerCased.charAt(i+j));
+                }
+                i += 6;
+                
+            }
+            else
+            {
+                builder.append(toLowerCaseEncoded.charAt(i));
+            }
+
+        }
+        return builder.toString();
+    }
 }

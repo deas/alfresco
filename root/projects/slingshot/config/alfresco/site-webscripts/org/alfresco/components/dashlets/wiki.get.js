@@ -6,11 +6,14 @@ function main()
    if (wikipage)
    {
       var wikiData = doGetCall("/slingshot/wiki/page/" + page.url.templateArgs.site + "/" + encodeURIComponent(wikipage) + "?minWikiData=true");
-      var allowUnfilteredHTML = new XML(config.script).allowUnfilteredHTML;
-      model.wikipage = allowUnfilteredHTML ? wikiData.pagetext : stringUtils.stripUnsafeHTML(wikiData.pagetext);
-      model.pageList = wikiData.pageList;
-      model.wikiLink = String(wikipage);
-      model.pageTitle = String(wikipage).replace(/_/g, " ");
+      if (wikiData)
+      {
+         var allowUnfilteredHTML = new XML(config.script).allowUnfilteredHTML;
+         model.wikipage = allowUnfilteredHTML ? wikiData.pagetext : stringUtils.stripUnsafeHTML(wikiData.pagetext);
+         model.pageList = wikiData.pageList;
+         model.wikiLink = String(wikipage);
+         model.pageTitle = String(wikipage).replace(/_/g, " ");
+      }
    }
    
    // Call the repository to see if the user is site manager or not

@@ -2500,14 +2500,16 @@
                return;
             }
 
+            var itemName = Alfresco.util.isValueSet(oRecord.getData("title")) ? "title" : "name";
+
             if (oRecord.getData("isContainer") ||
                 (!oRecord.getData("isContainer") && (scope.options.allowNavigationToContentChildren || oRecord.getData("type") == "cm:category")))
             {
-               template += '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + scope.eventGroup + '">{name}</a></h3>';
+               template += '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + scope.eventGroup + '">{' + itemName + '}</a></h3>';
             }
             else
             {
-               template += '<h3 class="item-name">{name}</h3>';
+               template += '<h3 class="item-name">{' + itemName + '}</h3>';
             }
 
             if (!scope.options.compactMode)

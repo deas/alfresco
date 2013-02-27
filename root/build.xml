@@ -182,11 +182,6 @@
          <include name="**/RepositoryStartupTest.java" />
          <include name="**/IndexCheckServiceImplTest.java" />
       </patternset>
-      <patternset id="files.tests.intermittent">
-         <include name="**/org/alfresco/wcm/WCMTestSuite.java" unless="minimal.testing" />
-         <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
-         <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
-      </patternset>
       <patternset id="files.tests">
          <!-- System Build Tests (runs using embedded Jetty) -->
          <exclude name="**/*SystemTest.java" />
@@ -194,7 +189,6 @@
          <exclude name="**/Base*Test.java" />
          <exclude name="**/Abstract*Test.java" />
          <exclude name="**/RepositoryStartupTest.java" />
-         <exclude name="**/WCMTestSuite.java" />
          <exclude name="**/IndexCheckServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
 
@@ -221,12 +215,14 @@
          <include name="**/org/alfresco/repo/content/metadata/xml/XmlMetadataExtracterTest.java" />
          <!-- Domain Tests -->
          <exclude name="**/org/alfresco/repo/domain/**/*Test.java" />
+         <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <!-- Model (Multilingual and File Folder) Tests -->
          <exclude name="**/org/alfresco/repo/model/**/*Test.java" />
          <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
          <include name="**/org/alfresco/repo/model/filefolder/HiddenAspectTest.java" />
          <!-- Publishing Tests -->
          <exclude name="**/org/alfresco/repo/publishing/**/*Test.java" />
+         <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
          <!-- Version Tests -->
          <exclude name="**/org/alfresco/repo/version/**/*Test.java" />
          <include name="**/org/alfresco/repo/version/VersionTestSuite.java" />

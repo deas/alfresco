@@ -156,9 +156,12 @@ public class CmisQParserPlugin extends QParserPlugin
                 this.params = newParams;
             }
 
-           
-            
-            return AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery);
+            Query query = AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery);
+            if(log.isDebugEnabled())
+            {
+                log.debug("AFTS QP query as lucene:\t    "+query);
+            }
+            return query;
         }
     }
 

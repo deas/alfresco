@@ -35,7 +35,7 @@ public class SlingshotProxyControllerInterceptor implements ProxyControllerInter
     @Override
     public boolean allowHttpBasicAuthentication(EndpointDescriptor endpoint, String uri)
     {
-        return (uri.contains("/api/node/content"));
+        return uri.contains("/api/node/content") || uri.contains("/cmis/") && uri.contains("/content");
     }
 
     /**
@@ -44,6 +44,6 @@ public class SlingshotProxyControllerInterceptor implements ProxyControllerInter
     @Override
     public boolean exceptionOnError(EndpointDescriptor endpoint, String uri)
     {
-        return (uri.contains("/api/node/content"));
+        return allowHttpBasicAuthentication(endpoint, uri);
     }
 }

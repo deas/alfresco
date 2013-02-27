@@ -250,7 +250,7 @@
          }
 
          // Version display
-         if ($isValueSet(record.version) && !jsNode.isContainer && !jsNode.isLink)
+         if (!jsNode.hasAspect("cm:workingcopy") && $isValueSet(record.version) && !jsNode.isContainer && !jsNode.isLink)
          {
             version = '<span class="document-version">' + $html(record.version) + '</span>';
          }

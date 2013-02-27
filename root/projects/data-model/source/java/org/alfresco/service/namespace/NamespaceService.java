@@ -75,6 +75,12 @@ public interface NamespaceService extends NamespacePrefixResolver
     /** EXIF Model URI */
     static final String EXIF_MODEL_1_0_URI = "http://www.alfresco.org/model/exif/1.0";
 
+    /** WebDAV Model Prefix */
+    static final String WEBDAV_MODEL_PREFIX = "webdav";
+    
+    /** WebDAV Model URI */
+    static final String WEBDAV_MODEL_1_0_URI = "http://www.alfresco.org/model/webdav/1.0";
+
     /** EXIF Model Prefix */
     static final String EXIF_MODEL_PREFIX = "exif";
     

@@ -21,4 +21,10 @@ public interface AlfrescoHttpClient
      * @param baseUrl
      */
     public void setBaseUrl(String baseUrl);
+
+
+    /**
+     * 
+     */
+    public void close();
 }

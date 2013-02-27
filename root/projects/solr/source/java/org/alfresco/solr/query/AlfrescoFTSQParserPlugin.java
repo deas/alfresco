@@ -20,6 +20,7 @@ package org.alfresco.solr.query;
 
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.ContextAwareQuery;
 import org.alfresco.util.Pair;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
@@ -78,7 +79,12 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
 
-            return AlfrescoSolrDataModel.getInstance(id).getFTSQuery(searchParametersAndFilter, indexReader);
+            Query query = AlfrescoSolrDataModel.getInstance(id).getFTSQuery(searchParametersAndFilter, indexReader);
+            if(log.isDebugEnabled())
+            {
+                log.debug("AFTS QP query as lucene:\t    "+query);
+            }
+            return query;
         }
     }
 

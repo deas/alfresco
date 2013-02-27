@@ -16,7 +16,7 @@
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
     <allowComponentSelection>0</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
-    <allowedLanguages>en fr es it de ja nl ru zh_CN</allowedLanguages>
+    <allowedLanguages>en fr es it de ja nl ru zh_CN nb_NO</allowedLanguages>
     <enableRollback>0</enableRollback>
     <installationType>upgrade</installationType>
 
@@ -84,6 +84,11 @@
 	    <code>zh_CN</code> 
 	    <encoding>utf-8</encoding>
 	    <file>${build_project_directory}/lang/alf-zh_CN.po</file>
+	</language>
+	<language> 
+	    <code>nb_NO</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-nb_NO.po</file>
 	</language>
     </customLanguageFileList>
 

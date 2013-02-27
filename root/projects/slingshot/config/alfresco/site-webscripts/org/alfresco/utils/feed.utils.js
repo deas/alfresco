@@ -24,50 +24,64 @@ function getValidRSSUri(uri)
  */
 function getRSSFeed(uri, limit)
 {
-   limit = limit || DISPLAY_ITEMS;
-
+   limit = limit || null;
+   
    // We only handle "http" connections for the time being
    var connector = remote.connect("http");
    var result = connector.call(uri);
 
    if (result !== null && result.status == 200)
    {
-      var rssXml = new String(result),
-         rss;
-
-      // Prepare string for E4X
-      rssXml = prepareForE4X(rssXml);
-
-      // Find out what type of feed
-      try
-      {
-         rss = new XML(rssXml);
-         if (rss.name().localName.toLowerCase() == "rss")
-         {
-             return parseRssFeed(rss, rssXml, limit);
-         }
-         else if(rss.name().localName.toLowerCase() == "feed")
-         {
-             return parseAtomFeed(rss, rssXml, limit);
-         }
-         else
-         {
-            return {
-               error: "unsupported"
-            };
-         }
-      }
-      catch (e)
-      {
-         return {
-            error: "bad_data"
-         };
-      }
+      return rssFromString(new String(result), limit);
    }
    else
    {
       return {
          error: "unavailable"
+      };
+   }
+}
+
+/**
+ * Parse feed items from an XML string
+ *
+ * @param rssXml {String} XML markup to be parsed
+ * @param limit {int} Maximum number of feed entries to return, if not specified defaults to DISPLAY_ITEMS global
+ * @return {object} Object containing the feed entries or exception details in the event of an error
+ */
+function rssFromString(rssXml, limit)
+{
+   limit = limit || DISPLAY_ITEMS;
+   
+   var rss;
+
+   // Prepare string for E4X
+   rssXml = prepareForE4X(rssXml);
+
+   // Find out what type of feed
+   try
+   {
+      rss = new XML(rssXml);
+      if (rss.name().localName.toLowerCase() == "rss")
+      {
+          return parseRssFeed(rss, rssXml, limit);
+      }
+      else if(rss.name().localName.toLowerCase() == "feed")
+      {
+          return parseAtomFeed(rss, rssXml, limit);
+      }
+      else
+      {
+         return {
+            error: "unsupported"
+         };
+      }
+   }
+   catch (e)
+   {
+      logger.log(e);
+      return {
+         error: "bad_data"
       };
    }
 }

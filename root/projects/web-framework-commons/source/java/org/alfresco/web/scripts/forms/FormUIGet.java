@@ -1979,7 +1979,7 @@ public class FormUIGet extends DeclarativeWebScript
                 }
                 
                 // Sort the options based on the label...
-                if (fieldConfig.isSorted())
+                if (fieldConfig != null && fieldConfig.isSorted())
                 {
                     Collections.sort(optionsList, new OptionsComparator());
                 }

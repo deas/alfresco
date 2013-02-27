@@ -142,7 +142,8 @@ function getActivities()
    else
    {
       // Use alfresco-feed connector as a basic HTTP auth challenge will be issued
-      connector = remote.connect("alfresco-feed");
+      var cname = (args.loopback != null && args.loopback == "1") ? "alfresco" : "alfresco-feed";
+      connector = remote.connect(cname);
    }
 
    // Filter by user

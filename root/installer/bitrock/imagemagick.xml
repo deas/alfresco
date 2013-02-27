@@ -143,14 +143,28 @@ export GS_LIB
     </readyToInstallActionList>
     <folderList>
         <folder>
+            <description>//imagemagick windows files</description>
             <name>imagemagickWindows</name>
             <destination>${imagemagick_root_directory}</destination>
             <platforms>windows</platforms>
             <distributionFileList>
                 <distributionDirectory allowWildcards="1" origin="${imagemagick_distribution_folder_windows}/*"/>
             </distributionFileList>
+	    <actionList>
+		<!-- Install x86 vcruntime on Windows x86 and x64 -->
+		<runProgram>
+		    <workingDirectory>${imagemagick_root_directory}</workingDirectory>
+		    <program>vcredist_x86.exe</program>
+		    <programArguments>/q</programArguments>
+		    <abortOnError>0</abortOnError>
+		    <ruleList>
+			<fileTest condition="exists" path="${imagemagick_root_directory}/vcredist_x86.exe"/>
+		    </ruleList>
+		</runProgram>
+	    </actionList>
         </folder>
         <folder>
+            <description>//imagemagick unix files</description>
             <name>imagemagickUnix</name>
             <destination>${imagemagick_root_directory}</destination>
             <platforms>linux linux-x64 osx</platforms>

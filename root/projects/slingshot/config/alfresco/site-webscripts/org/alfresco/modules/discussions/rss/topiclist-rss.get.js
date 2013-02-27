@@ -26,7 +26,7 @@ function convertTopicsJSONData(data)
 
 function main()
 {
-   var site, container, theUrl, connector, result, data;
+   var site, container, theUrl, cname, connector, result, data;
    
    // gather all required data
    site = args["site"];
@@ -34,7 +34,8 @@ function main()
    
    theUrl = '/api/forum/site/' + site + '/' + container + "/posts?contentLength=512";
    
-   connector = remote.connect("alfresco-feed");
+   cname = (args.loopback != null && args.loopback == "1") ? "alfresco" : "alfresco-feed";
+   connector = remote.connect(cname);
    result = connector.get(theUrl);
    if (result.status != status.STATUS_OK)
    {

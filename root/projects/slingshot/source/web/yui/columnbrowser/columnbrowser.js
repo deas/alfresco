@@ -21,7 +21,7 @@
  */
 
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -307,6 +307,7 @@ YAHOO.namespace('extension');
          // If a request is happening stop it
          this._abortRequests();
          this._removeColumns(0);
+         this._urlPathUnPaginated = [];
 
          this._checkLoadUrlsConsistency = checkUrlsConsistency;
          this._loadUrls = urls;

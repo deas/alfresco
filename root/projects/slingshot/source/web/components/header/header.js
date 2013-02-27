@@ -425,13 +425,6 @@
          // When the user clicks away from the status box, reset the previous status if they have not entered a value...
          YAHOO.util.Event.addListener(this.id + "-statusText", "blur", function(e)
          {
-            var textBox = Dom.get(_this.id + "-statusText");
-            if (textBox.value.length == 0)
-            {
-               // If the user has not entered any data then reset the status...
-               textBox.value = _this._currentStatus;
-            }
-            
             _this._clickedStatusOnce = false;
          });
          

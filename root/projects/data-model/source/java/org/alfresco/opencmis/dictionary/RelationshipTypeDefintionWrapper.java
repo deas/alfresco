@@ -64,7 +64,7 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
             typeDef.setParentTypeId(BaseTypeId.CMIS_RELATIONSHIP.value());
             typeDef.setIsCreatable(true);
         }
-
+        
         typeDef.setDisplayName(cmisClassDef.getTitle(dictionaryService) != null ? cmisClassDef.getTitle(dictionaryService) : typeId);
         typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
                 .getDisplayName());
@@ -111,11 +111,19 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         typeDef.setIsIncludedInSupertypeQuery(true);
         typeDef.setIsFileable(false);
 
+        ArrayList<String> both = new ArrayList<String>(2);
+        both.add(BaseTypeId.CMIS_DOCUMENT.value());
+        both.add(BaseTypeId.CMIS_FOLDER.value());
+        
         String sourceTypeId = cmisMapping.getCmisTypeId(cmisMapping
                 .getCmisType(cmisAssocDef.getSourceClass().getName()));
         if (sourceTypeId != null)
         {
             typeDef.setAllowedSourceTypes(Collections.singletonList(sourceTypeId));
+        }
+        else
+        {
+            typeDef.setAllowedSourceTypes(both);
         }
 
         String targetTypeId = cmisMapping.getCmisTypeId(cmisMapping
@@ -123,6 +131,10 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         if (targetTypeId != null)
         {
             typeDef.setAllowedTargetTypes(Collections.singletonList(targetTypeId));
+        }
+        else
+        {
+            typeDef.setAllowedTargetTypes(both);
         }
 
         typeDefInclProperties = CMISUtils.copy(typeDef);

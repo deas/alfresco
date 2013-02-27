@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.text.Collator;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -345,9 +346,70 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             e.printStackTrace();
         }
+        
+        initLogging(coreContainer);
 
     }
 
+
+    private void initLogging(CoreContainer coreContainer) 
+    {
+        initResourceBasedLogging(coreContainer, "log4j.properties");   
+        initResourceBasedLogging(coreContainer, "log4j-solr.properties");   
+    }
+
+    /**
+     * @param solrResourceLoader
+     */
+    private void initResourceBasedLogging(CoreContainer coreContainer, String resource)
+    {
+        try
+        {
+            Class<?> clazz = Class.forName("org.apache.log4j.PropertyConfigurator");
+            Method method = clazz.getMethod("configure", Properties.class);
+            InputStream is = openResource(coreContainer, resource);
+            Properties p = new Properties();
+            p.load(is);
+            method.invoke(null, p);
+        }
+        catch (ClassNotFoundException e)
+        {
+           return;
+        }
+        catch (Throwable e)
+        {
+            log.info("Failed to load "+resource, e);
+        }
+    }
+    
+    private InputStream openResource(CoreContainer coreContainer, String resource) {
+        InputStream is=null;
+        try {
+            File f0 = new File(resource);
+            File f = f0;
+            if (!f.isAbsolute()) {
+                // try $CWD/$configDir/$resource
+                f = new File(coreContainer.getSolrHome() + resource);
+            }
+            if (f.isFile() && f.canRead()) {
+                return new FileInputStream(f);
+            } else if (f != f0) { // no success with $CWD/$configDir/$resource
+                if (f0.isFile() && f0.canRead())
+                    return new FileInputStream(f0);
+            }
+            // delegate to the class loader (looking into $INSTANCE_DIR/lib jars)
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        } catch (Exception e) {
+            throw new RuntimeException("Error opening " + resource, e);
+        }
+        if (is==null) {
+            throw new RuntimeException("Can't find resource '" + resource + "' in classpath or '" + coreContainer.getSolrHome() + "', cwd="+System.getProperty("user.dir"));
+        }
+        return is;
+    }
+    
+    
+    
     /**
      * @return the scheduler
      */
@@ -786,6 +848,34 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 }
                 return false;
             }
+            else if (a.equalsIgnoreCase("RETRY"))
+            {
+                if (cname != null)
+                {
+                    CoreTracker tracker = trackers.get(cname);
+                    Set<Long> errorDocIds = tracker.getErrorDocIds();
+                    for(Long nodeid : errorDocIds)
+                    {
+                        tracker.addNodeToReindex(nodeid);
+                    }
+                    rsp.add(cname, errorDocIds);
+
+                }
+                else
+                {
+                    for (String coreName : trackers.keySet())
+                    {
+                        CoreTracker tracker = trackers.get(coreName);
+                        Set<Long> errorDocIds = tracker.getErrorDocIds();
+                        for(Long nodeid : errorDocIds)
+                        {
+                            tracker.addNodeToReindex(nodeid);
+                        }
+                        rsp.add(coreName, errorDocIds);
+                    }
+                }
+                return false;
+            }
             else if (a.equalsIgnoreCase("INDEX"))
             {
                 if (cname != null)
@@ -958,6 +1048,16 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     }
                     rsp.add("Summary", report);
                 }
+                return false;
+            }
+            else if (a.equalsIgnoreCase("LOG4J"))
+            {
+                String resource = "log4j-solr.properties";
+                if (params.get("resource") != null)
+                {
+                    resource = params.get("resource"); 
+                }
+                initResourceBasedLogging(coreContainer, resource);
                 return false;
             }
             else
@@ -7308,6 +7408,24 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         if (indexHealthReport.getDuplicatedLeafInIndex().cardinality() > 0)
         {
             ihr.add("First duplicate leaf in the index", "LEAF-" + indexHealthReport.getDuplicatedLeafInIndex().nextSetBit(0L));
+        }
+        ihr.add("Index aux count", indexHealthReport.getAuxDocCountInIndex());
+        ihr.add("Count of duplicate aux docs in the index", indexHealthReport.getDuplicatedAuxInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedAuxInIndex().cardinality() > 0)
+        {
+            ihr.add("First duplicate aux in the index", "AUX-" + indexHealthReport.getDuplicatedAuxInIndex().nextSetBit(0L));
+        }
+        ihr.add("Index error count", indexHealthReport.getErrorDocCountInIndex());
+        ihr.add("Count of duplicate error docs in the index", indexHealthReport.getDuplicatedErrorInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedErrorInIndex().cardinality() > 0)
+        {
+            ihr.add("First duplicate error in the index", "ERROR-" + indexHealthReport.getDuplicatedErrorInIndex().nextSetBit(0L));
+        }
+        ihr.add("Index unindexed count", indexHealthReport.getUnindexedDocCountInIndex());
+        ihr.add("Count of duplicate unindexed docs in the index", indexHealthReport.getDuplicatedUnindexedInIndex().cardinality());
+        if (indexHealthReport.getDuplicatedUnindexedInIndex().cardinality() > 0)
+        {
+            ihr.add("First duplicate unindexed in the index", "UNINDEXED-" + indexHealthReport.getDuplicatedErrorInIndex().nextSetBit(0L));
         }
         ihr.add("Last index commit time", indexHealthReport.getLastIndexedCommitTime());
         Date lastDate = new Date(indexHealthReport.getLastIndexedCommitTime());

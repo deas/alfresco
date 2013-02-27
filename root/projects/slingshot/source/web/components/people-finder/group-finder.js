@@ -572,7 +572,10 @@
             }
             else
             {
-               this.itemSelectButtons[obj.itemName].set("disabled", false);
+               if (this.itemSelectButtons[obj.itemName])
+               {
+                  this.itemSelectButtons[obj.itemName].set("disabled", false);
+               }
             }
          }
       },

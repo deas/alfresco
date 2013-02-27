@@ -361,6 +361,10 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
       mappings[1] = new PortMapping(NFS.ProgramId, NFS.VersionId, Rpc.TCP, m_tcpHandler.getPort());
 
       registerRPCServer(mappings);
+      
+      // Indicate the NFS server is running
+      
+      setActive( true);
     }
     catch (Exception ex) {
     	
@@ -415,6 +419,10 @@ public class NFSServer extends RpcNetworkServer implements RpcProcessor {
     //	Fire a shutdown notification event
     
     fireServerEvent(ServerListener.ServerShutdown);
+    
+    // Indicate the server has been shutdown
+    
+    setActive( false);
   }
 
   /**

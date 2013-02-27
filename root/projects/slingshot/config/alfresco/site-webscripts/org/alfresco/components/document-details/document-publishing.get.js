@@ -8,6 +8,7 @@ function main()
    if (documentDetails)
    {
       model.document = documentDetails;
+      model.isWorkingCopy = (documentDetails.item && documentDetails.item.workingCopy && documentDetails.item.workingCopy.isWorkingCopy) ? true : false;
    }
    
    // Widget instantiation metadata...

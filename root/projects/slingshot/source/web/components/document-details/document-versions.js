@@ -89,14 +89,6 @@
          containerId: null,
 
          /**
-          * The version of the working copy (if it is a working copy), will be used during upload.
-          *
-          * @property workingCopyVersion
-          * @type string
-          */
-         workingCopyVersion: null,
-
-         /**
           * Tells if the user may upload a new version or revert the document.
           *
           * @property allowNewVersionUpload
@@ -318,7 +310,7 @@
             containerId: this.options.containerId,
             updateNodeRef: this.options.nodeRef,
             updateFilename: displayName,
-            updateVersion: this.options.workingCopyVersion || current.label,
+            updateVersion: current.label,
             overwrite: true,
             suppressRefreshEvent: true,
             filter: [

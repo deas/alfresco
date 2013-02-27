@@ -168,7 +168,7 @@ public class CoreTracker implements CloseHook
     private int alfrescoPort;
 
     private int alfrescoPortSSL;
-    
+
     private String baseUrl;
 
     private String cron;
@@ -191,7 +191,7 @@ public class CoreTracker implements CloseHook
     private String passwordFileLocation;
 
     private String keyStoreLocation;
-    
+
     // ssl
     private String sslKeyStoreType;
 
@@ -210,14 +210,14 @@ public class CoreTracker implements CloseHook
     private String sslTrustStorePasswordFileLocation;
 
     // index contrl
-    
+
     // http client
 
     private int maxTotalConnections = 40;
 
     private int maxHostConnections = 40;
-    
-    private int socketTimeout = 0;
+
+    private int socketTimeout = 120000;
 
     private String id;
 
@@ -248,43 +248,48 @@ public class CoreTracker implements CloseHook
     private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
 
     protected TrackerStats trackerStats = new TrackerStats();
-    
+
     //
-    
+
     private boolean runPostModelLoadInit = true;
-    
+
     private HashSet<StoreRef> indexedStores = new  HashSet<StoreRef>();
-    
+
     private HashSet<String> indexedTenants = new  HashSet<String>();
-    
+
     private HashSet<QName> indexedDataTypes = new  HashSet<QName>();
-    
+
     private HashSet<QName> indexedTypes = new  HashSet<QName>();
-    
+
     private HashSet<QName> indexedAspects = new  HashSet<QName>();
-    
+
     private HashSet<String> indexedFields = new  HashSet<String>();
 
     //
-    
+
     private HashSet<StoreRef> ignoredStores = new  HashSet<StoreRef>();
-    
+
     private HashSet<String> ignoredTenants = new  HashSet<String>();
-    
+
     private HashSet<QName> ignoredDataTypes = new  HashSet<QName>();
-    
+
     private HashSet<QName> ignoredTypes = new  HashSet<QName>();
-    
+
     private HashSet<QName> ignoredAspects = new  HashSet<QName>();
-    
+
     private HashSet<String> ignoredFields = new  HashSet<String>();
-    
+
     // 
-    
+
     private boolean transformContent = true;
 
     private int maxLiveSearchers;
-    
+
+    //
+
+    private volatile boolean shutdown = false;
+
+
     public long getLastIndexedTxCommitTime()
     {
         return state.lastIndexedTxCommitTime;
@@ -340,12 +345,12 @@ public class CoreTracker implements CloseHook
     {
         return dataModel.getModelErrors();
     }
-    
+
     public int getMaxLiveSearchers()
     {
         return maxLiveSearchers;
     }
-    
+
     CoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         super();
@@ -358,7 +363,7 @@ public class CoreTracker implements CloseHook
         id = loader.getInstanceDir();
         dataModel = AlfrescoSolrDataModel.getInstance(id);
         dataModel.setStoreAll(storeAll);
-        
+
         Properties p = core.getResourceLoader().getCoreProperties();
         alfrescoHost = p.getProperty("alfresco.host", "localhost");
         alfrescoPort = Integer.parseInt(p.getProperty("alfresco.port", "8080"));
@@ -482,17 +487,29 @@ public class CoreTracker implements CloseHook
 
             trackRepository();
         }
-        catch (IOException e1)
+        catch(IndexTrackingShutdownException t)
         {
-            e1.printStackTrace();
+            try
+            {
+                core.getUpdateHandler().rollback(new RollbackUpdateCommand());
+            }
+            catch (IOException e)
+            {
+                log.error("Failed to roll back pending work on error", t);
+            }
+            log.info("Stopping index tracking for "+core.getName());
         }
-        catch (JSONException e1)
+        catch(Throwable t)
         {
-            e1.printStackTrace();
-        }
-        catch (AuthenticationException e1)
-        {
-            e1.printStackTrace();
+            try
+            {
+                core.getUpdateHandler().rollback(new RollbackUpdateCommand());
+            }
+            catch (IOException e)
+            {
+                log.error("Failed to roll back pending work on error", t);
+            }
+            log.error("Tracking failed", t);
         }
         finally
         {
@@ -523,9 +540,11 @@ public class CoreTracker implements CloseHook
                     requiresCommit = true;
                 }
             }
+            checkShutdown();
         }
         if(requiresCommit)
         {
+            checkShutdown();
             core.getUpdateHandler().commit(new CommitUpdateCommand(false));
         }
     }
@@ -543,9 +562,11 @@ public class CoreTracker implements CloseHook
                 indexAcl(readers, false);
                 requiresCommit = true;
             }
+            checkShutdown();
         }
         if(requiresCommit)
         {
+            checkShutdown();
             core.getUpdateHandler().commit(new CommitUpdateCommand(false));
         }
     }
@@ -579,9 +600,11 @@ public class CoreTracker implements CloseHook
                         requiresCommit = true;
                     }
                 }
+                checkShutdown();
             }
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -615,9 +638,11 @@ public class CoreTracker implements CloseHook
                     indexAcl(readers, true);
                     requiresCommit = true;
                 }
+                checkShutdown();
             }
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -646,9 +671,11 @@ public class CoreTracker implements CloseHook
                     deleteByAclChangeSetId(solrIndexSearcher, aclChangeSetId);
                     requiresCommit = true;
                 }
+                checkShutdown();
             }
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -661,6 +688,14 @@ public class CoreTracker implements CloseHook
         }
     }
 
+    protected void checkShutdown()
+    {
+        if(shutdown)
+        {
+            throw new IndexTrackingShutdownException();
+        }
+    }
+    
     public void purgeAcls() throws AuthenticationException, IOException, JSONException
     {
         RefCounted<SolrIndexSearcher> refCounted = null;
@@ -677,9 +712,11 @@ public class CoreTracker implements CloseHook
                     deleteByAclId(solrIndexSearcher, aclId);
                     requiresCommit = true;
                 }
+                checkShutdown();
             }
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -857,7 +894,7 @@ public class CoreTracker implements CloseHook
                                 log.debug(node.toString());
                             }
                             indexNode(node, solrIndexSearcher, true);
-
+                            checkShutdown();
                         }
 
                         // Index the transaction doc after the node - if this is not found then a reindex will be
@@ -872,6 +909,7 @@ public class CoreTracker implements CloseHook
                 {
                     if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
+                        checkShutdown();
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
                         requiresCommit = false;
@@ -880,6 +918,7 @@ public class CoreTracker implements CloseHook
             }
             if (requiresCommit || ( docCount > 0))
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -917,11 +956,13 @@ public class CoreTracker implements CloseHook
                     indexNode(node, solrIndexSearcher, true);
                     requiresCommit = true;
                 }
+                checkShutdown();
 
             }
 
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
 
@@ -957,11 +998,12 @@ public class CoreTracker implements CloseHook
                     indexNode(node, solrIndexSearcher, false);
                     requiresCommit = true;
                 }
-
+                checkShutdown();
             }
 
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
 
@@ -1011,7 +1053,7 @@ public class CoreTracker implements CloseHook
                                 log.debug(node.toString());
                             }
                             indexNode(node, solrIndexSearcher, false);
-
+                            checkShutdown();
                         }
 
                         // Index the transaction doc after the node - if this is not found then a reindex will be
@@ -1026,6 +1068,7 @@ public class CoreTracker implements CloseHook
                 {
                     if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
+                        checkShutdown();
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
                         requiresCommit = false;
@@ -1034,6 +1077,7 @@ public class CoreTracker implements CloseHook
             }
             if (requiresCommit || (docCount > 0))
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -1064,9 +1108,11 @@ public class CoreTracker implements CloseHook
                     deleteByTransactionId(solrIndexSearcher, transactionId);
                     requiresCommit = true;
                 }
+                checkShutdown();
             }
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -1097,9 +1143,11 @@ public class CoreTracker implements CloseHook
                     deleteByNodeId(solrIndexSearcher, nodeId);
                     requiresCommit = true;
                 }
+                checkShutdown();
             }
             if(requiresCommit)
             {
+                checkShutdown();
                 core.getUpdateHandler().commit(new CommitUpdateCommand(false));
             }
         }
@@ -1133,7 +1181,8 @@ public class CoreTracker implements CloseHook
             log.info(".... skipping tracking registered searcher count = " + registeredSearcherCount);
             return;
         }
-        
+
+        checkShutdown();
         trackModels();
 
         RefCounted<SolrIndexSearcher> refCounted = null;
@@ -1150,13 +1199,9 @@ public class CoreTracker implements CloseHook
 
             checkRepoAndIndexConsistency(solrIndexSearcher);
 
-          
+
         }
-        catch(Throwable t)
-        {
-            core.getUpdateHandler().rollback(new RollbackUpdateCommand());
-            log.error("Tracking failed", t);
-        }
+
         finally
         {
             if (refCounted != null)
@@ -1165,19 +1210,13 @@ public class CoreTracker implements CloseHook
             }
         }
 
-        try
-        {
-            // Track Acls up to end point
-            trackAclChangeSets();
+        checkShutdown();
+        trackAclChangeSets();
 
-            trackTransactions();
-        }
-        catch(Throwable t)
-        {
-            core.getUpdateHandler().rollback(new RollbackUpdateCommand());
-            log.error("Tracking failed", t);
-        }
-        
+        checkShutdown();
+        trackTransactions();
+
+
         // check index state
 
         if (state.check)
@@ -1313,9 +1352,7 @@ public class CoreTracker implements CloseHook
                                 }
                                 refCounted = null;
                             }
-                            
-                            
-
+                            checkShutdown();
                         }
 
 
@@ -1339,10 +1376,12 @@ public class CoreTracker implements CloseHook
                 {
                     if(getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
+                        checkShutdown();
                         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
                         docCount = 0;
                     }
                 }
+                checkShutdown();
             }
             // reorder and find first last before hole
 
@@ -1386,6 +1425,7 @@ public class CoreTracker implements CloseHook
 
         if (indexed)
         {
+            checkShutdown();
             core.getUpdateHandler().commit(new CommitUpdateCommand(false));
         }
     }
@@ -1440,7 +1480,7 @@ public class CoreTracker implements CloseHook
                     try
                     {
                         refCounted = core.getSearcher(false, true, null);
-                        
+
                         TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
                         term = termEnum.term();
                         termEnum.close();
@@ -1453,9 +1493,9 @@ public class CoreTracker implements CloseHook
                         }
                         refCounted = null;
                     }
-                    
-                    
-                  
+
+
+
                     if (term == null)
                     {
                         aclIndexing = true;
@@ -1503,13 +1543,14 @@ public class CoreTracker implements CloseHook
 
                     }
                 }
+                checkShutdown();
             }
         }
         while ((aclChangeSets.getAclChangeSets().size() > 0) && (aclsUpToDate == false));
 
         if (aclIndexing)
-
         {
+            checkShutdown();
             core.getUpdateHandler().commit(new CommitUpdateCommand(false));
         }
     }
@@ -1884,7 +1925,7 @@ public class CoreTracker implements CloseHook
         {
             loadModel(modelMap, loadedModels, model, dataModel);
         }
-        if(modelDiffs.size() > 0)
+        if(loadedModels.size() > 0)
         {
             dataModel.afterInitModels();
         }
@@ -1926,7 +1967,7 @@ public class CoreTracker implements CloseHook
         long end = System.nanoTime();
 
         trackerStats.addModelTime(end-start);
-        
+
         if(true == runPostModelLoadInit)
         {
             Properties p = core.getResourceLoader().getCoreProperties();
@@ -1996,7 +2037,7 @@ public class CoreTracker implements CloseHook
         }
 
     }
-    
+
     QName expandQName(String qName)
     {
         String expandedQName = qName;
@@ -2085,7 +2126,7 @@ public class CoreTracker implements CloseHook
         return eq;
     }
 
-    
+
     /**
      * @param alfrescoModelDir
      * @param modelName
@@ -2294,7 +2335,7 @@ public class CoreTracker implements CloseHook
                 docCmd.fromPending = true;
                 docCmd.fromCommitted = true;
                 core.getUpdateHandler().delete(docCmd);
-                
+
                 docCmd = new DeleteUpdateCommand();
                 docCmd.id = "ERROR-" + node.getId();
                 docCmd.fromPending = true;
@@ -2382,7 +2423,7 @@ public class CoreTracker implements CloseHook
                                 docCmd.fromPending = true;
                                 docCmd.fromCommitted = true;
                                 core.getUpdateHandler().delete(docCmd);
-                                
+
                                 docCmd = new DeleteUpdateCommand();
                                 docCmd.id = "ERROR-" + node.getId();
                                 docCmd.fromPending = true;
@@ -2430,13 +2471,13 @@ public class CoreTracker implements CloseHook
                     docCmd.fromPending = true;
                     docCmd.fromCommitted = true;
                     core.getUpdateHandler().delete(docCmd);
-                    
+
                     docCmd = new DeleteUpdateCommand();
                     docCmd.id = "ERROR-" + node.getId();
                     docCmd.fromPending = true;
                     docCmd.fromCommitted = true;
                     core.getUpdateHandler().delete(docCmd);
-                    
+
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
                     doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
@@ -2574,7 +2615,7 @@ public class CoreTracker implements CloseHook
             docCmd.fromPending = true;
             docCmd.fromCommitted = true;
             core.getUpdateHandler().delete(docCmd);
-            
+
             AddUpdateCommand leafDocCmd = new AddUpdateCommand();
             leafDocCmd.overwriteCommitted = overwrite;
             leafDocCmd.overwritePending = overwrite;
@@ -2677,7 +2718,7 @@ public class CoreTracker implements CloseHook
                 if (auxSet.size() > 0)
                 {
                     log.debug("... cascade update aux doc "+childId);
-                    
+
                     SolrInputDocument aux = createAuxDoc(nodeMetaData);
                     AddUpdateCommand auxDocCmd = new AddUpdateCommand();
                     auxDocCmd.overwriteCommitted = overwrite;
@@ -2686,7 +2727,7 @@ public class CoreTracker implements CloseHook
                     auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
                     core.getUpdateHandler().addDoc(auxDocCmd);
-                    
+
                 }
                 else
                 {
@@ -2776,7 +2817,7 @@ public class CoreTracker implements CloseHook
     private void addContentPropertyToDoc(SolrInputDocument doc, ArrayList<Reader> toClose, ArrayList<File> toDelete, NodeMetaData nodeMetaData, QName propertyQName,
             ContentPropertyValue contentPropertyValue) throws AuthenticationException, IOException
             {
-        
+
         if(indexedDataTypes.size() > 0 && !indexedDataTypes.contains(DataTypeDefinition.CONTENT))
         {
             return;
@@ -2785,8 +2826,8 @@ public class CoreTracker implements CloseHook
         {
             return;
         }
-        
-        
+
+
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
@@ -2796,13 +2837,13 @@ public class CoreTracker implements CloseHook
         {
             return;
         }
-        
+
         long start = System.nanoTime();
         GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
         doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
-        
+
         InputStreamReader isr = null;
         InputStream ris = response.getContent();
         File temp = null;
@@ -2913,8 +2954,8 @@ public class CoreTracker implements CloseHook
     }
 
     private void addStringPropertyToDoc(SolrInputDocument doc, QName propertyQName, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties)
-    throws IOException
-    {
+            throws IOException
+            {
         PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
         {
@@ -2968,7 +3009,7 @@ public class CoreTracker implements CloseHook
         {
             doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
         }
-    }
+            }
 
     /**
      * @param refCounted
@@ -3305,7 +3346,7 @@ public class CoreTracker implements CloseHook
                     }
                     if (docCount > 1)
                     {
-                        long txid = Long.parseLong(term.text().substring(5));
+                        long txid = Long.parseLong(term.text().substring(4));
                         indexHealthReport.setDuplicatedAuxInIndex(txid);
                     }
 
@@ -3320,6 +3361,78 @@ public class CoreTracker implements CloseHook
             termEnum.close();
 
             indexHealthReport.setAuxDocCountInIndex(auxCount);
+
+            // ERROR
+
+            int errorCount = 0;
+            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "ERROR-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("ERROR-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(6));
+                        indexHealthReport.setDuplicatedErrorInIndex(txid);
+                    }
+
+                    errorCount++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setErrorDocCountInIndex(errorCount);
+
+            // UNINDEXED
+
+            int unindexedCount = 0;
+            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "UNINDEXED-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("UNINDEXED-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(10));
+                        indexHealthReport.setDuplicatedUnindexedInIndex(txid);
+                    }
+
+                    unindexedCount++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setUnindexedDocCountInIndex(unindexedCount);
 
             // Other
 
@@ -3368,6 +3481,54 @@ public class CoreTracker implements CloseHook
         while (termEnum.next());
         termEnum.close();
         return lastTxCommitTimeBeforeHoles;
+    }
+
+    public Set<Long> getErrorDocIds() throws IOException
+    {
+        HashSet<Long> errorDocIds = new HashSet<Long>();
+        RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+
+        if (refCounted == null)
+        {
+            return errorDocIds;
+        }
+
+        try
+        {
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            SolrIndexReader reader = solrIndexSearcher.getReader();
+            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "ERROR-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("ERROR-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+
+                    long txid = Long.parseLong(term.text().substring(6));
+                    errorDocIds.add(txid);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+        }
+        finally
+        {
+            refCounted.decref();
+        }
+        return errorDocIds;
     }
 
     private long getLastChangeSetCommitTimeBeforeHoles(SolrIndexReader reader, Long cutOffTime) throws IOException
@@ -3770,7 +3931,7 @@ public class CoreTracker implements CloseHook
         log.info(".... registered Searchers for "+core.getName()+" = "+keys.size());
         return keys.size();
     }
-    
+
     public NodeReport checkNodeCommon(NodeReport nodeReport)
     {
         // In Index
@@ -3945,39 +4106,39 @@ public class CoreTracker implements CloseHook
         }
     }
 
-//    public List<Long> getNodesForDbTransaction(Long txid)
-//    {
-//
-//        try
-//        {
-//            ArrayList<Long> answer = new ArrayList<Long>();
-//            GetNodesParameters gnp = new GetNodesParameters();
-//            ArrayList<Long> txs = new ArrayList<Long>();
-//            txs.add(txid);
-//            gnp.setTransactionIds(txs);
-//            gnp.setStoreProtocol(storeRef.getProtocol());
-//            gnp.setStoreIdentifier(storeRef.getIdentifier());
-//            List<Node> nodes;
-//            nodes = client.getNodes(gnp, Integer.MAX_VALUE);
-//            for (Node node : nodes)
-//            {
-//                answer.add(node.getId());
-//            }
-//            return answer;
-//        }
-//        catch (IOException e)
-//        {
-//            throw new AlfrescoRuntimeException("Failed to get nodes", e);
-//        }
-//        catch (JSONException e)
-//        {
-//            throw new AlfrescoRuntimeException("Failed to get nodes", e);
-//        }
-//        catch (AuthenticationException e)
-//        {
-//            throw new AlfrescoRuntimeException("Failed to get nodes", e);
-//        }
-//    }
+    //    public List<Long> getNodesForDbTransaction(Long txid)
+    //    {
+    //
+    //        try
+    //        {
+    //            ArrayList<Long> answer = new ArrayList<Long>();
+    //            GetNodesParameters gnp = new GetNodesParameters();
+    //            ArrayList<Long> txs = new ArrayList<Long>();
+    //            txs.add(txid);
+    //            gnp.setTransactionIds(txs);
+    //            gnp.setStoreProtocol(storeRef.getProtocol());
+    //            gnp.setStoreIdentifier(storeRef.getIdentifier());
+    //            List<Node> nodes;
+    //            nodes = client.getNodes(gnp, Integer.MAX_VALUE);
+    //            for (Node node : nodes)
+    //            {
+    //                answer.add(node.getId());
+    //            }
+    //            return answer;
+    //        }
+    //        catch (IOException e)
+    //        {
+    //            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+    //        }
+    //        catch (JSONException e)
+    //        {
+    //            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+    //        }
+    //        catch (AuthenticationException e)
+    //        {
+    //            throw new AlfrescoRuntimeException("Failed to get nodes", e);
+    //        }
+    //    }
 
     /**
      * @param acltxid
@@ -4128,8 +4289,10 @@ public class CoreTracker implements CloseHook
                 }
             }
 
-            dataModel.putModel(model);
-            loadedModels.add(modelName);
+            if(dataModel.putModel(model))
+            {
+                loadedModels.add(modelName);
+            }
             log.info("Loading model " + model.getName());
         }
     }
@@ -4148,15 +4311,20 @@ public class CoreTracker implements CloseHook
     {
         try
         {
+            shutdown = true;
+            
             adminHandler.getScheduler().deleteJob("CoreTracker-" + core.getName(), "Solr");
             adminHandler.getTrackers().remove(core.getName());
             if (adminHandler.getTrackers().size() == 0)
             {
                 if (!adminHandler.getScheduler().isShutdown())
                 {
+                    adminHandler.getScheduler().pauseAll();
                     adminHandler.getScheduler().shutdown();
                 }
             }
+
+            client.close();
         }
         catch (SchedulerException e)
         {
@@ -4296,5 +4464,15 @@ public class CoreTracker implements CloseHook
         }
         return namedList;
     }
+
     
+    public static class IndexTrackingShutdownException extends RuntimeException
+    {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -1294455847013444397L;
+        
+    }
 }

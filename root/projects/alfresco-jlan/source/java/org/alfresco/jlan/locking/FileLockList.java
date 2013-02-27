@@ -89,7 +89,7 @@ public class FileLockList implements Serializable {
 			// Get the current lock details
 
 			fLock = getLockAt(i);
-			if ( fLock.getOffset() == offset && fLock.getLength() == len && fLock.getProcessId() == pid) {
+			if ( fLock.getOffset() == offset && fLock.getLength() == len) {
 
 				// Return the matching lock
 
@@ -134,7 +134,7 @@ public class FileLockList implements Serializable {
 			// Get the current lock details
 
 			FileLock curLock = getLockAt(i);
-			if ( curLock.getOffset() == offset && curLock.getLength() == len && curLock.getProcessId() == pid) {
+			if ( curLock.getOffset() == offset && curLock.getLength() == len) {
 
 				// Remove the lock from the list
 
@@ -313,5 +313,28 @@ public class FileLockList implements Serializable {
 	 */
 	public final int numberOfLocks() {
 		return m_lockList.size();
+	}
+	
+	/**
+	 * Return the lock list as a string
+	 * 
+	 * @return String
+	 */
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		
+		str.append("[Locklist:");
+		str.append( numberOfLocks());
+		
+		if ( numberOfLocks() > 0) {
+			for ( int i = 0; i < numberOfLocks(); i++) {
+				str.append( getLockAt( i));
+				str.append(",");
+			}
+		}
+		
+		str.append("]");
+		
+		return str.toString();
 	}
 }

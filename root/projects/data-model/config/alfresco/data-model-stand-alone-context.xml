@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 
+<!--  ================================================================== -->
+<!--  = This context is only used to run DataModel specific tests      = -->
+<!--  = It is not, and must not, be included in the repository context = -->
+<!--  ================================================================== -->
+
 <!-- Core and miscellaneous bean definitions -->
 <beans>
 

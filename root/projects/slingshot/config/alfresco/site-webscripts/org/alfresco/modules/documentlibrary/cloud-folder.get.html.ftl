@@ -67,7 +67,7 @@
             {
                uri: <#if container.getChildValue("uri")??>"${container.getChildValue("uri")?js_string}"<#else>null</#if>,
                rootLabel: <#if container.getChildValue("rootLabel")??>"${container.getChildValue("rootLabel")?js_string}"<#else>null</#if>
-            }
+            }<#if container_has_next>,</#if>
             </#list>
          </#if>
       }

@@ -639,7 +639,7 @@ public class AlfrescoSolrDataModel
      */
     public Query getRangeQuery(SchemaField field, String part1, String part2, boolean minInclusive, boolean maxInclusive)
     {
-        SolrLuceneAnalyser defaultAnalyser = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
+        SolrLuceneAnalyser defaultAnalyser = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
         SolrQueryParser parser = new SolrQueryParser("TEXT", defaultAnalyser);
         parser.setDefaultOperator(Operator.AND);
         parser.setNamespacePrefixResolver(namespaceDAO);
@@ -663,13 +663,14 @@ public class AlfrescoSolrDataModel
     /**
      * @param model
      */
-    public void putModel(M2Model model)
+    public boolean putModel(M2Model model)
     {
         Set<String> errors = validateModel(model);
         if(errors.size() == 0)
         {
             modelErrors.remove(model.getName());
             dictionaryDAO.putModelIgnoringConstraints(model);
+            return true;
         }
         else
         {
@@ -678,6 +679,7 @@ public class AlfrescoSolrDataModel
                 modelErrors.put(model.getName(), errors);
                 log.warn(errors.iterator().next());
             }
+            return false;
         }
        
     }
@@ -1033,7 +1035,7 @@ public class AlfrescoSolrDataModel
 
     public AbstractLuceneQueryParser getLuceneQueryParser(SearchParameters searchParameters, IndexReader indexReader)
     {
-        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
+        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
         SolrQueryParser parser = new SolrQueryParser(searchParameters.getDefaultFieldName(), analyzer);
         Operator defaultOperator;
         if (searchParameters.getDefaultOperator() == SearchParameters.AND)
@@ -1059,7 +1061,7 @@ public class AlfrescoSolrDataModel
     public LuceneQueryBuilderContext getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader)
     {
         LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(dictionaryComponent, namespaceDAO, tenantService, searchParameters,
-                getMLAnalysisMode(), indexReader, alfrescoDataType.getAnalyzer(), this);
+                getMLAnalysisMode(), indexReader, alfrescoDataType.getQueryAnalyzer(), this);
         return luceneContext;
     }
 
@@ -1596,9 +1598,9 @@ public class AlfrescoSolrDataModel
     /**
      * @return
      */
-    public Analyzer getQueryAnalyser()
+    public SolrLuceneAnalyser getSolrLuceneQueryAnalyser()
     {
-        return getSolrLuceneAnalyser();
+        return new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,8 +18,12 @@
  */
 package org.alfresco.util;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
@@ -53,6 +57,8 @@ import org.quartz.JobExecutionException;
  */
 public class TempFileProvider
 {
+    private static final int BUFFER_SIZE = 40 * 1024;
+
     /** 
      * subdirectory in the temp directory where Alfresco temporary files will go 
      */
@@ -90,6 +96,10 @@ public class TempFileProvider
             throw new AlfrescoRuntimeException("System property not available: " + SYSTEM_KEY_TEMP_DIR);
         }
         File systemTempDir = new File(systemTempDirPath);
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Created system temporary directory: " + systemTempDir);
+        }
         return systemTempDir;
     }
     
@@ -200,7 +210,40 @@ public class TempFileProvider
         }
         throw new AlfrescoRuntimeException("Failed to create temp directory: " + longLifeDir);
     }
-    
+
+    public static File createTempFile(InputStream in, String namePrefix, String nameSufix) throws Exception
+    {
+        if (null == in)
+        {
+            return null;
+        }
+
+        File file = createTempFile(namePrefix, nameSufix);
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE);
+        try
+        {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int i;
+            while ((i = in.read(buffer)) > -1)
+            {
+                out.write(buffer, 0, i);
+            }
+        }
+        catch (Exception e)
+        {
+            file.delete();
+            throw e;
+        }
+        finally
+        {
+            in.close();
+            out.flush();
+            out.close();
+        }
+
+        return file;
+    }
+
     /**
      * Is this a long life folder ?
      * @param file
@@ -250,6 +293,10 @@ public class TempFileProvider
         try
         {
             File tempFile = File.createTempFile(prefix, suffix, directory);
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Creating tmp file: " + tempFile);
+            }
             return tempFile;
         } catch (IOException e)
         {
@@ -357,12 +404,20 @@ public class TempFileProvider
                     if(isLongLifeTempDir(file))
                     {
                         // long life for this folder and its children
-                        removeFiles(file, longLifeBefore, longLifeBefore, true);   
+                        int countRemoved = removeFiles(file, longLifeBefore, longLifeBefore, true);  
+                        if (logger.isDebugEnabled())
+                        {
+                            logger.debug("Removed " + countRemoved + " files from temp directory: " + file);
+                        }
                     }
                     else
                     {
                         // enter subdirectory and clean it out and remove itsynetics
-                        removeFiles(file, removeBefore, longLifeBefore, true);
+                        int countRemoved = removeFiles(file, removeBefore, longLifeBefore, true);
+                        if (logger.isDebugEnabled())
+                        {
+                            logger.debug("Removed " + countRemoved + " files from directory: " + file);
+                        }
                     }
                 }
                 else
@@ -399,6 +454,10 @@ public class TempFileProvider
                     if(listing != null && listing.length == 0)
                     {
                         // directory is empty
+                        if(logger.isDebugEnabled())
+                        {
+                            logger.debug("Deleting empty directory: " + directory);
+                        }
                         directory.delete();
                     }
                 }

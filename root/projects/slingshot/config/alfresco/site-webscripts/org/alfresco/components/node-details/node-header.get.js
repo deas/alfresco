@@ -20,7 +20,10 @@ function main()
       model.isContainer = nodeDetails.item.node.isContainer;
       model.paths = AlfrescoUtil.getPaths(nodeDetails, model.rootPage, model.rootLabelId);
       model.showQuickShare = (!model.isContainer && model.showQuickShare && config.scoped["Social"]["quickshare"].getChildValue("url") != null).toString();
-      model.showComments = ((nodeDetails.item.node.permissions.user["CreateChildren"] || false) && model.showComments).toString();
+      model.isWorkingCopy = (model.item && model.item.workingCopy && model.item.workingCopy.isWorkingCopy) ? true : false;
+      model.showFavourite = (model.isWorkingCopy ? false : model.showFavourite).toString();
+      model.showLikes = (model.isWorkingCopy ? false : model.showLikes).toString();
+      model.showComments = (model.isWorkingCopy ? false : ((nodeDetails.item.node.permissions.user["CreateChildren"] || false) && model.showComments)).toString();
       model.showDownload = (!model.isContainer && model.showDownload).toString();
       var count = nodeDetails.item.node.properties["fm:commentCount"];
       model.commentCount = (count != undefined ? count : null);

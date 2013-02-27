@@ -21,11 +21,18 @@ function main()
 
    // Widget instantiation metadata...
    var pages = [];
-   if (model.pageList != null)
+   if (model.pageList.pageTitles != null && model.pageList.pageTitles.length > 0)
    {
-      for (var i=0; i<model.pageList.length; i++)
+      for (var i=0; i<model.pageList.pageTitles.length; i++)
       {
-         pages.push(model.pageList[i].name);
+         pages.push(model.pageList.pageTitles[i]);
+      }
+   }
+   else if (model.pageList.pages != null && model.pageList.pages.length > 0)
+   {
+      for (var i=0; i<model.pageList.pages.length; i++)
+      {
+         pages.push(model.pageList.pages[i].title);
       }
    }
 

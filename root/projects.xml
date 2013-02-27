@@ -344,7 +344,6 @@
    <target name="test-repository" 
            depends="compile-repository">
       <run-tests-startup projectdir="${dir.project.repository}" />
-      <run-tests-intermittent projectdir="${dir.project.repository}" />
       <run-tests projectdir="${dir.project.repository}" />
    </target>
    
@@ -1867,7 +1866,7 @@
          <fileset dir="${dir.project.datamodel.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}"
-                  excludes="**/extension/**,alfresco/version.properties" />
+                  excludes="**/extension/**,alfresco/version.properties,test/**" />
          <fileset dir="${dir.project.remoteapi.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}"

@@ -3298,7 +3298,7 @@
             webscript:
             {
                method: Alfresco.util.Ajax.POST,
-               name: "checkout/node/{nodeRef}",
+               name: "checkout/node/{nodeRef}?gdc=1",
                params:
                {
                   nodeRef: nodeRef.uri

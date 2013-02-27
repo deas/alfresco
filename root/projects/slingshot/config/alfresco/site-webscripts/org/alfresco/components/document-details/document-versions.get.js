@@ -10,10 +10,7 @@ function main()
    {
       var userPermissions = documentDetails.item.node.permissions.user;
       model.allowNewVersionUpload = userPermissions["Write"] || false;
-      if (documentDetails.workingCopy && documentDetails.workingCopy.workingCopyVersion)
-      {
-         model.workingCopyVersion = documentDetails.workingCopy.workingCopyVersion;
-      }
+      model.isWorkingCopy = (documentDetails.item && documentDetails.item.workingCopy && documentDetails.item.workingCopy.isWorkingCopy) ? true : false;
    }
    
    // Widget instantiation metadata...

@@ -305,6 +305,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                         docCount = 0;
                     }
                 }
+                checkShutdown();
             }
             if (!txBatch.isEmpty())
             {
@@ -607,6 +608,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                         aclCount = 0;
                     }
                 }
+                checkShutdown();
             }
             if (!changeSetBatch.isEmpty())
             {
@@ -743,6 +745,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
         AbstractWorkerRunnable currentRunnable = peekHeadReindexWorker();
         while (currentRunnable != null)
         {
+            checkShutdown();
             synchronized (this)
             {
                 try
@@ -869,14 +872,25 @@ public class MultiThreadedCoreTracker extends CoreTracker
     {
         try
         {
-            if (threadPool != null)
-            {
-                threadPool.shutdown();
-            }
+            super.close(core);
+           
         }
         finally
         {
-            super.close(core);
+            if (threadPool != null)
+            {
+                threadPool.shutdownNow();
+            }
+        }
+        synchronized (this)
+        {
+            try
+            {
+                wait(5000);
+            }
+            catch (InterruptedException e)
+            {
+            }
         }
     }
 }

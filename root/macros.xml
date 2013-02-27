@@ -166,30 +166,6 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="run-tests-intermittent" description="Runs the intermittently-successful tests for the given project">
-		<attribute name="projectdir" />
-		<sequential>
-			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-			<junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
-				<jvmarg value="-server"/>
-				<jvmarg value="-XX:MaxPermSize=256M"/>
-				<jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
-				<jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
-				<jvmarg value="-Dcom.sun.management.jmxremote"/>
-				<classpath>
-					<path refid="classpath.unit.test"/>
-					<path refid="classpath.unit.test.extension"/>
-				</classpath>
-				<formatter type="xml" />
-				<batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
-					<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
-						<patternset refid="files.tests.intermittent" />
-					</fileset>
-				</batchtest>
-			</junit>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="run-tests" description="Runs the tests for the given project">
 		<attribute name="projectdir" />
 		<sequential>

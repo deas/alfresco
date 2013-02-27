@@ -282,7 +282,7 @@
             <value>application/vnd.openxmlformats-officedocument.presentationml.template</value>
             <value>application/vnd.ms-powerpoint.addin.macroenabled.12</value>
             <value>application/vnd.openxmlformats-officedocument.presentationml.slide</value>
-            <value>application/vnd.ms-powerpoint.slide.macroEnabled.12</value>
+            <value>application/vnd.ms-powerpoint.slide.macroenabled.12</value>
             <value>application/vnd.openxmlformats-officedocument.spreadsheetml.template</value>
             <value>application/vnd.ms-excel.addin.macroenabled.12</value>
             <value>application/vnd.ms-excel.sheet.binary.macroenabled.12</value>

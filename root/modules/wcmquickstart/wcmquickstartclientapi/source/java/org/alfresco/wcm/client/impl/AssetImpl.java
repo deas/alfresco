@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -89,6 +89,18 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
         this.readLock.lock();
         try
         {
+            if (relatedAssets != null)
+            {
+                return relatedAssets;
+            }
+        }
+        finally
+        {
+            this.readLock.unlock();
+        }
+        this.writeLock.lock();
+        try
+        {
             if (relatedAssets == null)
             {
                 Map<String, List<Asset>> assetMap = new TreeMap<String, List<Asset>>();
@@ -108,7 +120,7 @@ public class AssetImpl extends ResourceBaseImpl implements Asset
         }
         finally
         {
-            this.readLock.unlock();
+            this.writeLock.unlock();
         }
     }
 

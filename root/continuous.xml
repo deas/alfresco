@@ -1045,9 +1045,33 @@
       <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip"
           basedir="${dir.project.webframeworkcommons.config}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-web-client-config.zip"
-          basedir="${dir.project.remoteapi.config}" />
+          basedir="${dir.project.webclient.config}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-share-config.zip"
           basedir="${dir.project.slingshot.config}" />
+
+      <!-- -->
+      <!-- Source jars -->
+      <!-- -->
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-core-sources.zip"
+          basedir="${dir.project.core.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-sources.zip"
+          basedir="${dir.project.datamodel.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-deployment-sources.zip"
+          basedir="${dir.project.deployment.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-jlan-embed-sources.zip"
+          basedir="${dir.project.jlan.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-sources.zip"
+          basedir="${dir.project.repository.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-remote-api-sources.zip"
+          basedir="${dir.project.remoteapi.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-sources.zip"
+          basedir="${dir.project.webframeworkcommons.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-client-sources.zip"
+          basedir="${dir.project.webclient.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-service-client-sources.zip"
+          basedir="${dir.project.webserviceclient.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-share-sources.zip"
+          basedir="${dir.project.slingshot.src.java}" />
 
       <!-- -->
       <!-- Test resources jars -->
@@ -1113,6 +1137,11 @@
             file="${dir.project.core.dist}/${file.name.jar.core}"/>
       <copy todir="${dir.continuous.assemble.sdk}/lib/deployment"
             file="${dir.project.deployment.dist}/${file.name.jar.deployment}"/>
+
+      <!-- MMT jar -->
+      <mkdir dir="${dir.continuous.assemble.sdk}/lib/mmt" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/mmt"
+            file="${dir.continuous.assemble.commands}/${file.name.dist.mmt}.jar" />
 
       <!-- Share Libraries -->
       <mkdir dir="${dir.continuous.assemble.sdk}/lib/share"/>

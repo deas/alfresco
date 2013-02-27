@@ -179,10 +179,21 @@
             // Check for notification event
             if (obj)
             {
+               // Callback function specified?
+               var callback = null;
+               if (obj.callback && obj.callback.fn)
+               {
+                  callback = obj.callback.fn.call((typeof obj.callback.scope == "object" ? obj.callback.scope : this),
+                  {
+                     config: data.config,
+                     json: data.json,
+                     serverResponse: data.serverResponse
+                  }, obj.callback.obj);
+               }
                // Activity specified?
                if (obj.activity !== undefined)
                {
-                  doclibActions.postActivity(obj.activity.siteId, obj.activity.activityType, obj.activity.page, obj.activity.activityData);
+                  doclibActions.postActivity(obj.activity.siteId, obj.activity.activityType, obj.activity.page, obj.activity.activityData, callback);
                }
                // Event(s) specified?
                if (obj.event && obj.event.name)
@@ -209,16 +220,6 @@
                   {
                      text: obj.message
                   });
-               }
-               // Callback function specified?
-               if (obj.callback && obj.callback.fn)
-               {
-                  obj.callback.fn.call((typeof obj.callback.scope == "object" ? obj.callback.scope : this),
-                  {
-                     config: data.config,
-                     json: data.json,
-                     serverResponse: data.serverResponse
-                  }, obj.callback.obj);
                }
             }
          }
@@ -299,22 +300,39 @@
        * @param activityType {string} org.alfresco.documentlibrary.{activityType}
        * @param page {string} page to link to from activity
        * @param data {object} data attached to activity
+       * @param callback {function} a function which will be called after the activity has been posted
        */
-      postActivity: function DoclibActions_postActivity(siteId, activityType, page, data)
+      postActivity: function DoclibActions_postActivity(siteId, activityType, page, data, callback)
       {
          // No activities in Repository mode
          if (!Alfresco.util.isValueSet(siteId))
          {
             return;
          }
+
+         var fnCallback = function()
+         {
+            if (callback)
+            {
+               callback();
+            }
+         };
          
          var config =
          {
             method: "POST",
             url: Alfresco.constants.PROXY_URI + "slingshot/doclib/activity",
-            successCallback: null,
+            successCallback:
+            {
+               fn: fnCallback,
+               scope: this
+            },
             successMessage: null,
-            failureCallback: null,
+            failureCallback:
+            {
+               fn: fnCallback,
+               scope: this
+            },
             failureMessage: null,
             object: null
          };

@@ -221,10 +221,12 @@ public class SOLRAPIClient
         {
             args.append("?").append("fromId").append("=").append(minAclId);
         }
-        if (maxResults != 0 && maxResults != Integer.MAX_VALUE)
+        
+        if(maxResults >= 0)
         {
-            args.append(args.length() == 0 ? "?" : "&").append("maxResults").append("=").append(maxResults);            
+            args.append(args.length() == 0 ? "?" : "&").append("maxResults").append("=").append(maxResults);  
         }
+        
         url.append(args);
         
         JSONObject jsonReq = new JSONObject();
@@ -1436,5 +1438,14 @@ public class SOLRAPIClient
         {
         	return transformDuration;
         }
+    }
+
+    /**
+     * 
+     */
+    public void close()
+    {
+       repositoryHttpClient.close();
+        
     }
 }

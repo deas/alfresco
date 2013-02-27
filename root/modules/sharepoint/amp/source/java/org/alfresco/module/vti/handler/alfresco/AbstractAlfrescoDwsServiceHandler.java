@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -493,7 +493,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
                 throw new DwsException(DwsError.NO_ACCESS);
             }
 
-            throw new DwsException(DwsError.FAILED);
+            throw new DwsException(DwsError.FAILED, e);
         }
 
         if (logger.isDebugEnabled())
@@ -875,32 +875,36 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
 
         for (FileInfo fileInfo : fileInfoList)
         {
-            // do not show working copies
-            if (!fileInfo.isFolder() && nodeService.hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY))
+            // ALF-17662 fix, filter out all hidden nodes
+            if (!fileFolderService.isHidden(fileInfo.getNodeRef()))
             {
-                continue;
-            }
-            String id = "";
-            String progID = "";
-            String fileRef = documetnLibraryURL + fileInfo.getName();
-            String objType = (fileInfo.isFolder()) ? "1" : "0";
-            String created = VtiUtils.formatPropfindDate(fileInfo.getCreatedDate());
-            String author = (String) nodeService.getProperty(fileInfo.getNodeRef(), ContentModel.PROP_AUTHOR);
-            String modified = VtiUtils.formatPropfindDate(fileInfo.getModifiedDate());
-            String editor = (String) nodeService.getProperty(fileInfo.getNodeRef(), ContentModel.PROP_MODIFIER);
+                // do not show working copies
+                if (!fileInfo.isFolder() && (nodeService.hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY)))
+                {
+                    continue;
+                }
+                String id = "";
+                String progID = "";
+                String fileRef = documetnLibraryURL + fileInfo.getName();
+                String objType = (fileInfo.isFolder()) ? "1" : "0";
+                String created = VtiUtils.formatPropfindDate(fileInfo.getCreatedDate());
+                String author = (String) nodeService.getProperty(fileInfo.getNodeRef(), ContentModel.PROP_AUTHOR);
+                String modified = VtiUtils.formatPropfindDate(fileInfo.getModifiedDate());
+                String editor = (String) nodeService.getProperty(fileInfo.getNodeRef(), ContentModel.PROP_MODIFIER);
 
-            result.add(new DocumentBean(id, progID, fileRef, objType, created, author, modified, editor));
+                result.add(new DocumentBean(id, progID, fileRef, objType, created, author, modified, editor));
 
-            // word dont show list of documents longer then 99 itmes
-            if (result.size() > 99)
-            {
-                return;
-            }
+                // word dont show list of documents longer then 99 itmes
+                if (result.size() > 99)
+                {
+                    return;
+                }
 
-            // enter in other folders recursively
-            if (fileInfo.isFolder())
-            {
-                addDwsContentRecursive(fileInfo, result, documetnLibraryURL + fileInfo.getName() + "/");
+                // enter in other folders recursively
+                if (fileInfo.isFolder())
+                {
+                    addDwsContentRecursive(fileInfo, result, documetnLibraryURL + fileInfo.getName() + "/");
+                }
             }
         }
     }

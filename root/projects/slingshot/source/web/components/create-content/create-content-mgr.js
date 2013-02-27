@@ -137,10 +137,9 @@
               {
                  appTool: "documentlibrary",
                  nodeRef: nodeRef.toString()
-              });
+              }, this._navigateForward(nodeRef));
             }
          }
-         this._navigateForward(nodeRef);
       },
       
       /**

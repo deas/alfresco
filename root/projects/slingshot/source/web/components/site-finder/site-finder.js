@@ -190,7 +190,7 @@
                }
                else
                {
-                  var siteData, shortName, title, siteVisibility;
+                  var siteData, shortName, title, siteVisibility, isMemberOfGroup;
                   
                   for (var x = 0, y = oFullResponse.length; x < y; x++)
                   {
@@ -198,6 +198,7 @@
                      shortName = siteData.shortName;
                      title = siteData.title;
                      siteVisibility = siteData.visibility;
+                     isMemberOfGroup = siteData.isMemberOfGroup;
                      
                      // add site to list
                      items.push(siteData);
@@ -377,7 +378,8 @@
             // Create generic button - action populated later depending on state
             var button = new YAHOO.widget.Button(
             {
-                container: me.id + '-button-' + shortName
+                container: me.id + '-button-' + shortName,
+                disabled: oRecord.getData("isMemberOfGroup")
             });
 
             switch (siteVisibility)

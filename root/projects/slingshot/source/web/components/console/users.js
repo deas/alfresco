@@ -997,21 +997,16 @@
           */
          addGroup: function addGroup(group)
          {
-            var found = false,
-               i, j;
-            for (i = 0, j = this._groups.length; i < j; i++)
+            var found = false;
+            if (Alfresco.util.findInArray(this._groups, group.itemName, "itemName"))
             {
-               if (this._groups[i] !== null && this._groups[i].itemName === group.itemName)
-               {
-                  found = true;
-                  break;
-               }
+               found = true;
             }
-            
+
             if (!found)
             {
                this._groups.push(group);
-               
+
                var groupDiv = Dom.get(parent.id + "-update-groups"),
                   idx = (this._groups.length-1),
                   groupEl = document.createElement("span");
@@ -1030,21 +1025,22 @@
                   YAHOO.Bubbling.fire('itemDeselected', { eventGroup: parent.modules.updateGroupFinder, itemName: obj.group.itemName });
                }, { idx: idx, group: group });
 
-
-
                // if this group wasn't one of the original list, then add it to the addition list
                found = false;
-               for (i = 0, j = this._originalGroups.length; i < j; i++)
+               if (Alfresco.util.findInArray(this._originalGroups, group.itemName, "itemName"))
                {
-                  if (this._originalGroups[i].itemName === group.itemName)
-                  {
-                     found = true;
-                     break;
-                  }
+                  found = true;
                }
+
                if (!found)
                {
                   this._addedGroups.push(group.itemName);
+               }
+
+               // if the group has been removed before, remove it from the removed groups list
+               if (Alfresco.util.arrayContains(this._removedGroups, group.itemName))
+               {
+                  Alfresco.util.arrayRemove(this._removedGroups, group.itemName);
                }
             }
          },
@@ -1058,29 +1054,22 @@
           */
          onRemoveGroupUpdate: function onRemoveGroupUpdate(e, args)
          {
-            var i = args[1].id;
-            var el = Dom.get(parent.id + "_group" + i);
+            var id = args[1].id;
+            var el = Dom.get(parent.id + "_group" + id);
             el.parentNode.removeChild(el);
-            var group = this._groups[i];
-            this._groups[i] = null;
-            
+            var group = this._groups[id];
+            Alfresco.util.arrayRemove(this._groups, group);
+
             // if this group was one of the original list, then add it to the removed list
-            for (var i=0, j=this._originalGroups.length; i<j; i++)
+            if (Alfresco.util.findInArray(this._originalGroups, group.itemName, "itemName"))
             {
-               if (this._originalGroups[i].itemName === group.itemName)
-               {
-                  this._removedGroups.push(group.itemName);
-                  break;
-               }
+               this._removedGroups.push(group.itemName);
             }
+
             // also remove from the added groups list
-            for (var i=0, j=this._addedGroups.length; i<j; i++)
+            if (Alfresco.util.arrayContains(this._addedGroups, group.itemName))
             {
-               if (this._addedGroups[i] === group.itemName)
-               {
-                  this._addedGroups.splice(i, 1);
-                  break;
-               }
+               Alfresco.util.arrayRemove(this._addedGroups, group.itemName);
             }
          },
          

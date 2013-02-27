@@ -119,12 +119,20 @@
        */
       onReady: function RF_onReady()
       {
-         var _this = this;
-         
          // Get the DOM elements for the feed title and item list...
          this.titleElement = Dom.get(this.id + this.options.titleElSuffix);
          this.feedElement = Dom.get(this.id + this.options.targetElSuffix);
-         
+         this._loadFeed();
+      },
+      
+      /**
+       * Load the RSS feed
+       *
+       * @method loadFeed
+       * @private
+       */
+      _loadFeed: function RF__loadFeed()
+      {
          // Separate the protocol from the URI to ensure that WebScript request can be processed...
          // (it is not possible to use the entire URL as a REST token)...
          var uri = this.options.feedURL;
@@ -137,32 +145,99 @@
          }
          
          // Request the RSS feed...
-         Alfresco.util.Ajax.request(
+         if (uri.indexOf(location.host + "/") != 0)
          {
-            url: Alfresco.constants.URL_CONTEXT + "service/components/dashlets/async-rssfeed/protocol/" + protocol + "/limit/" + this.options.limit + "/target/" + this.options.target + "?feed-url=" + encodeURIComponent(uri) + "",
-            method: Alfresco.util.Ajax.GET,
-            requestContentType: Alfresco.util.Ajax.JSON,
-            successCallback:
+            Alfresco.util.Ajax.request(
             {
-               fn: function(response)
+               url: Alfresco.constants.URL_CONTEXT + "service/components/dashlets/async-rssfeed/protocol/" + protocol + "/limit/" + this.options.limit + "/target/" + this.options.target + "?feed-url=" + encodeURIComponent(uri) + "",
+               method: Alfresco.util.Ajax.GET,
+               requestContentType: Alfresco.util.Ajax.JSON,
+               successCallback:
                {
-                  // Update the dashlet with the RSS title and items...
-                  var json = Alfresco.util.parseJSON(response.serverResponse.responseText);
-                  this.feedElement.innerHTML = json.html;
-                  this.titleElement.innerHTML = json.title;
+                  fn: this.onLoadFeedSuccess,
+                  scope: this
                },
-               scope: _this
-            },
-            failureCallback: 
+               failureCallback: 
+               {
+                  fn: this.onLoadFeedFailure,
+                  scope: this
+               }
+            });
+         }
+         else
+         {
+            var feedURL = this.options.feedURL.replace("/feedservice/", "/page/").replace("/proxy/alfresco-feed/", "/proxy/alfresco/");
+            if (feedURL.indexOf("?") > 0)
             {
-               fn: function(response)
-               {
-                  this.titleElement.innerHTML = this.msg("title.error.unavailable");
-                  this.feedElement.innerHTML = this.msg("label.noItems");
-               },
-               scope: _this
+               feedURL += "&loopback=1";
             }
-         });
+            else
+            {
+               feedURL += "?loopback=1";
+            }
+            
+            Alfresco.util.Ajax.request(
+            {
+               url: feedURL,
+               method: Alfresco.util.Ajax.GET,
+               successCallback:
+               {
+                  fn: function (response)
+                  {
+                     Alfresco.util.Ajax.request(
+                     {
+                        url: Alfresco.constants.URL_CONTEXT + "service/components/dashlets/async-rssfeed/protocol/" + protocol + "/limit/" + this.options.limit + "/target/" + this.options.target + "?feed-url=" + encodeURIComponent(uri) + "",
+                        method: Alfresco.util.Ajax.POST,
+                        dataStr: response.serverResponse.responseText,
+                        requestContentType: "text/xml",
+                        successCallback:
+                        {
+                           fn: this.onLoadFeedSuccess,
+                           scope: this
+                        },
+                        failureCallback: 
+                        {
+                           fn: this.onLoadFeedFailure,
+                           scope: this
+                        }
+                     });
+                  },
+                  scope: this
+               },
+               failureCallback: 
+               {
+                  fn: this.onLoadFeedFailure,
+                  scope: this
+               },
+               noReloadOnAuthFailure: true
+            });
+         }
+      },
+      
+      /**
+       * RSS Feed loaded successfully
+       * 
+       * @method onLoadFeedSuccess
+       * @param response {object} Response object from Alfresco.util.Ajax.request()
+       */
+      onLoadFeedSuccess: function RF_onLoadFeedSuccess(response)
+      {
+         // Update the dashlet with the RSS title and items...
+         var json = Alfresco.util.parseJSON(response.serverResponse.responseText);
+         this.feedElement.innerHTML = json.html;
+         this.titleElement.innerHTML = json.title;
+      },
+      
+      /**
+       * RSS Feed failed to load
+       * 
+       * @method onLoadFeedSuccess
+       * @param response {object} Response object from Alfresco.util.Ajax.request()
+       */
+      onLoadFeedFailure: function RF_onLoadFeedFailure(response)
+      {
+         this.titleElement.innerHTML = this.msg("title.error.unavailable");
+         this.feedElement.innerHTML = this.msg("label.noItems");
       },
 
       /**
@@ -195,8 +270,7 @@
                      this.options.limit = rss.limit;
 
                      // Update title and items are with new rss 
-                     Dom.get(this.id + "-title").innerHTML = rss ? rss.title : "";
-                     Dom.get(this.id + "-scrollableList").innerHTML = (rss && rss.content !== "") ? rss.content : ('<h3>' + this.msg("label.noItems") + '</h3>');
+                     this._loadFeed();
                   },
                   scope: this
                },

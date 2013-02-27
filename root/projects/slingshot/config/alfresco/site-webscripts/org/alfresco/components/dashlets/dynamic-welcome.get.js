@@ -116,7 +116,7 @@ function main()
          description: "welcome.site.members.description",
          imageUrl: "/res/components/images/help-people-bw-64.png",
          actionMsg: "welcome.site.members.link",
-         actionHref: "site-members#showall",
+      actionHref: "site-members",
          actionId: null,
          actionTarget: null
       });

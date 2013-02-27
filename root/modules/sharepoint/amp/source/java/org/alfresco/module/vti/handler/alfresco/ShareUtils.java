@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -470,7 +470,8 @@ public class ShareUtils
                 logger.debug("Delete site method returned status: " + status);
             if (status != HttpStatus.SC_OK) 
             {
-                throw new RuntimeException("Failed to delete site with name: " + shortName + ". Returned status is: " + status);
+                throw new RuntimeException("Failed to delete site with name: " + shortName + ". Returned status is: " + status +
+                        ". \n Response from server :\n" + deleteSiteMethod.getResponseBodyAsString()); 
             }
             deleteSiteMethod.getResponseBody();
         }

@@ -57,6 +57,7 @@ import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
+import org.antlr.misc.OrderedHashSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -238,7 +239,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     }
 
     public abstract boolean addContentCrossLocaleWildcards();
-    
+
     /**
      * Lucene default constructor
      * 
@@ -1045,7 +1046,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
      */
     protected abstract Query createAuthoritySetQuery(String queryText) throws ParseException;
 
-    
+
     /**
      * @param queryText
      * @return
@@ -1278,7 +1279,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     protected abstract Query createAssocTypeQNameQuery(String queryText) throws SAXPathException;
 
     protected abstract Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException;
-    
+
     protected abstract Query createPrimaryAssocQNameQuery(String queryText) throws SAXPathException;
 
     protected abstract Query createQNameQuery(String queryText) throws SAXPathException;
@@ -1287,12 +1288,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     {      
         return getFieldQueryImpl(FIELD_INTXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
-    
+
     protected Query createInAclTxIdQuery(String queryText) throws ParseException
     {      
         return getFieldQueryImpl(FIELD_INACLTXID, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
-    
+
     protected Query createTransactionQuery(String queryText)
     {
         return createTermQuery(FIELD_TX, queryText);
@@ -1770,16 +1771,25 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             else
             {
                 LinkedList<LinkedList<org.apache.lucene.analysis.Token>> newAllTokeSequences = new LinkedList<LinkedList<org.apache.lucene.analysis.Token>>();
-                for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : allTokenSequences)
+
+                for(org.apache.lucene.analysis.Token t : tokensAtPosition)
                 {
-                    for(org.apache.lucene.analysis.Token t : tokensAtPosition)
+                    boolean tokenFoundSequence = false;
+                    for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : allTokenSequences)
                     {
                         LinkedList<org.apache.lucene.analysis.Token> newEntry = new LinkedList<org.apache.lucene.analysis.Token>();
                         newEntry.addAll(tokenSequence);
                         if(newEntry.getLast().endOffset() <= t.startOffset())
                         {
                             newEntry.add(t);
+                            tokenFoundSequence = true;
                         }
+                        newAllTokeSequences.add(newEntry);
+                    }
+                    if(false == tokenFoundSequence)
+                    {
+                        LinkedList<org.apache.lucene.analysis.Token> newEntry = new LinkedList<org.apache.lucene.analysis.Token>();
+                        newEntry.add(t);
                         newAllTokeSequences.add(newEntry);
                     }
                 }
@@ -1947,7 +1957,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
 
         // rebuild fixed list
-        
+
         ArrayList<org.apache.lucene.analysis.Token> fixed = new ArrayList<org.apache.lucene.analysis.Token>();
         for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
         {
@@ -1956,12 +1966,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 fixed.add(token);
             }
         }
-        
+
 
         // reorder by start position and increment
 
         Collections.sort(fixed, new Comparator<org.apache.lucene.analysis.Token>()
-        {
+                {
 
             public int compare(Token o1, Token o2)
             {
@@ -1972,15 +1982,21 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 }
                 else
                 {
-                    return o2.getPositionIncrement() - o1.getPositionIncrement();
+                    return o1.getPositionIncrement() - o2.getPositionIncrement();
                 }
             }
-        });
+                });
+
+        // make sure we remove any tokens we have duplicated
+
+        OrderedHashSet<org.apache.lucene.analysis.Token> unique = new OrderedHashSet<org.apache.lucene.analysis.Token>();
+        unique.addAll(fixed);
+        fixed = new ArrayList<org.apache.lucene.analysis.Token>(unique);
 
         list = fixed;
 
         // add any missing locales back to the tokens
-        
+
         if(localePrefix.length() > 0)
         {
             for (int j = 0; j < list.size(); j++)
@@ -2031,7 +2047,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     }
                     return q;
                 }
-                else
+                // Consider if we can use a multi-phrase query (e.g for synonym use rather then WordDelimiterFilterFactory)
+                else if(canUseMultiPhraseQuery(fixedTokenSequences))
                 {
                     // phrase query:
                     MultiPhraseQuery mpq = newMultiPhraseQuery();
@@ -2089,6 +2106,58 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         }
                     }
                     return mpq;
+
+                }
+                else
+                {
+                    BooleanQuery q = newBooleanQuery(true);
+                    for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
+                    {
+                        // phrase query:
+                        MultiPhraseQuery mpq = newMultiPhraseQuery();
+                        mpq.setSlop(internalSlop);
+                        int position = -1;
+                        for (int i = 0; i < tokenSequence.size(); i++)
+                        {
+                            nextToken = (org.apache.lucene.analysis.Token) tokenSequence.get(i);
+                            String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
+
+                            Term term = new Term(field, termText);
+
+                            if (getEnablePositionIncrements())
+                            {
+                                if(nextToken.getPositionIncrement() > 0)
+                                {
+                                    position += nextToken.getPositionIncrement();
+                                }
+                                else
+                                {
+                                    position++;
+                                }
+                                if ((termText != null) && (termText.contains("*") || termText.contains("?")))
+                                {
+                                    mpq.add(getMatchingTerms(field, term), position);
+                                }
+                                else
+                                {
+                                    mpq.add(new Term[] { term }, position);
+                                }
+                            }
+                            else
+                            {
+                                if ((termText != null) && (termText.contains("*") || termText.contains("?")))
+                                {
+                                    mpq.add(getMatchingTerms(field, term));
+                                }
+                                else
+                                {
+                                    mpq.add(term);
+                                }
+                            }
+                        }
+                        q.add(mpq, BooleanClause.Occur.SHOULD);
+                    }
+                    return q;
                 }
             }
             else
@@ -2103,7 +2172,14 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     Term term = new Term(field, termText);
                     if (getEnablePositionIncrements())
                     {
-                        position += nextToken.getPositionIncrement();
+                        if(nextToken.getPositionIncrement() > 0)
+                        {
+                            position += nextToken.getPositionIncrement();
+                        }
+                        else
+                        {
+                            position++;
+                        }
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
                             q.add(getMatchingTerms(field, term), position);
@@ -2128,6 +2204,37 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 return q;
             }
         }
+    }
+
+    /**
+     * @param fixedTokenSequences 
+     * @return
+     */
+    private boolean canUseMultiPhraseQuery(LinkedList<LinkedList<Token>> fixedTokenSequences)
+    {
+        if(fixedTokenSequences.size() <= 1)
+        {
+            return true;
+        }
+        LinkedList<Token> first = fixedTokenSequences.get(0);
+        for(int i = 1; i < fixedTokenSequences.size(); i++)
+        {
+            LinkedList<Token> current = fixedTokenSequences.get(i);
+            if(first.size() != current.size())
+            {
+                return false;
+            }
+            for(int j = 0; j < first.size(); j++)
+            {
+                Token fromFirst = first.get(j);
+                Token fromCurrent = current.get(j);
+                if(fromFirst.startOffset() != fromCurrent.startOffset())
+                {
+                    return false;
+                }   
+            }
+        }
+        return true;
     }
 
     private Set<Integer> getWildcardPositions(String string)
@@ -2240,8 +2347,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
      *                throw in overridden method to disallow
      */
     public Query getRangeQuery(String field, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction)
-    throws ParseException
-    {
+            throws ParseException
+            {
         if (field.equals(FIELD_PATH))
         {
             throw new UnsupportedOperationException("Range Queries are not support for " + FIELD_PATH);
@@ -2595,7 +2702,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
             return new ConstantScoreRangeQuery(field, part1, part2, includeLower, includeUpper);
         }
-    }
+            }
 
     /**
      * @param field
@@ -2706,8 +2813,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     // }
 
     protected Query buildDateTimeRange(String field, Calendar startIn, int startResolution, Calendar endIn, int endResolution, boolean includeLower, boolean includeUpper)
-    throws ParseException
-    {
+            throws ParseException
+            {
         int minResolution = (startResolution <= endResolution) ? startResolution : endResolution;
 
         // fix start and end dates and treat all as inclusive ranges
@@ -3222,7 +3329,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
 
         return query;
-    }
+            }
 
     private Query buildStart(String field, Calendar cal, int startField, int padField, int resolutionField)
     {
@@ -4958,7 +5065,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
 
         }
-        
+
 
         // Already in expanded form
 
@@ -5017,7 +5124,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
 
             boolean withWildCards = propertyQName.equals(ContentModel.PROP_USER_USERNAME) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME);
-            
+
             BooleanQuery booleanQuery = new BooleanQuery();
             MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
             List<Locale> locales = searchParameters.getLocales();
@@ -5260,7 +5367,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
 
             boolean withWildCards = propertyQName.equals(ContentModel.PROP_USER_USERNAME) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME);
-            
+
             BooleanQuery booleanQuery = new BooleanQuery();
             MLAnalysisMode mlAnalysisMode = searchParameters.getMlAnalaysisMode() == null ? defaultSearchMLAnalysisMode : searchParameters.getMlAnalaysisMode();
             List<Locale> locales = searchParameters.getLocales();

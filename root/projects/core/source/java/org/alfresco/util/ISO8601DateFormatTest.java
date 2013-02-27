@@ -46,15 +46,18 @@ public class ISO8601DateFormatTest extends TestCase
     
     public void testMiliseconds()
     {
-       // ALF-3803 bug fix, milliseconds are optional
-       String testA   = "2005-09-16T17:01:03.456+01:00";
-       String testB   = "2005-09-16T17:01:03+01:00";
-       String testBms = "2005-09-16T17:01:03.000+01:00";
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+
+        // ALF-3803 bug fix, milliseconds are optional
+       String testA   = "2005-09-16T17:01:03.456Z";
+       String testB   = "2005-09-16T17:01:03Z";
+       String testBms = "2005-09-16T17:01:03.000Z";
        
        Date dateA = ISO8601DateFormat.parse(testA);
        Date dateB = ISO8601DateFormat.parse(testB);
        
        assertEquals(testA, ISO8601DateFormat.format(dateA));
+      
        assertEquals(testBms, ISO8601DateFormat.format(dateB));
        
        // The official ISO 8601.2004 spec doesn't say much helpful about milliseconds
@@ -76,6 +79,7 @@ public class ISO8601DateFormatTest extends TestCase
     
     public void testTimezones()
     {
+       TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
        Date date = null;
        
        // A timezone is required by default

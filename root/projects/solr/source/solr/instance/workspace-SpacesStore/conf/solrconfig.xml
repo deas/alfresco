@@ -401,6 +401,14 @@
       regenerator="org.alfresco.solr.FilterCacheRegenerator"
     />
 
+   <!-- No regnerator or warming is required - this will be populated by the authority cache regenration -->
+   <cache name="alfrescoReaderToAclIdsCache"
+      class="solr.FastLRUCache"
+      size="${solr.readerToAclIdsCache.size:512}"
+      initialSize="${solr.readerToAclIdsCache.initialSize:512}"
+      autowarmCount="0"
+    />
+
     <listener event="newSearcher" class="org.alfresco.solr.AlfrescoSolrEventListener">
     </listener>
 

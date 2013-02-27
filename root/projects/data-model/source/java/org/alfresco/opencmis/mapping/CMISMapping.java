@@ -454,9 +454,59 @@ public class CMISMapping implements InitializingBean
         {
             return false;
         }
+        if(!isValidCmisRelationshipEndPoint(associationDefinition.getTargetClass().getName()))
+        {
+            return false;
+        }
+        if(!isValidCmisRelationshipEndPoint(associationDefinition.getSourceClass().getName()))
+        {
+            return false;
+        }
         return true;
     }
 
+    public boolean isValidCmisRelationshipEndPoint(QName typeQName)
+    {
+        if(dictionaryService.getClass(typeQName).isAspect())
+        {
+            return true;
+        }
+        
+        if (typeQName.equals(FOLDER_QNAME))
+        {
+            return true;
+        }
+        
+        if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_FOLDER))
+        {
+            return true;
+        }
+        
+        if (dictionaryService.isSubClass(ContentModel.TYPE_FOLDER, typeQName))
+        {
+            return true;
+        }
+
+        
+        if (typeQName.equals(DOCUMENT_QNAME))
+        {
+            return true;
+        }
+
+        if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_CONTENT))
+        {
+            return true;
+        }
+        
+        if (dictionaryService.isSubClass( ContentModel.TYPE_CONTENT, typeQName))
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    
     /**
      * Given an Alfresco model type map it to the appropriate type. Maps
      * cm:folder and cm:content to the CMIS definitions

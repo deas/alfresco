@@ -752,6 +752,7 @@ Alfresco.util.getFileIcon = function(p_fileName, p_fileType, p_iconSize, p_fileP
       "spx": "audio",
       "svg": "img",
       "swf": "swf",
+      "tif": "img",
       "tiff": "img",
       "txt": "text",
       "wav": "audio",
@@ -1696,7 +1697,7 @@ Alfresco.util.encodeURIPath = function(text)
  */
 Alfresco.util.activateLinks = function(text)
 {
-   var re = new RegExp(/((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?\^=%&:\/~\+#]*[\w\-\@?\^=%&\/~\+#])?)/g);
+   var re = new RegExp(/((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?\^=%&:;\/~\+#]*[\w\-\@?\^=%&\/~\+#])?)/g);
    text = text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
    return text;
 };

@@ -483,7 +483,7 @@ cursor: pointer;
 }
 .yui-skin-gdocs .yui-calcontainer .yui-cal-nav-mask {
 background-color: #000;
-opacity: 0.25;*filter:alpha(opacity=25);
+opacity: 0.25;filter:alpha(opacity=25);
 }
 .yui-skin-gdocs .yui-calcontainer .yui-cal-nav {
 font-family: arial,helvetica,clean,sans-serif;
@@ -892,7 +892,7 @@ text-decoration: none;
 }
 .yui-skin-gdocs .mask {
 background-color: #5A5D60;
-opacity: .25;*filter:alpha(opacity=25);
+opacity: .25;filter:alpha(opacity=25);
 }
 .yui-skin-gdocs .yui-panel-container {
 padding: 0 1px;*padding:2px;
@@ -970,7 +970,7 @@ _bottom: 0;
 _margin-top: 3px;
 _margin-left: -1px;
 background-color: #000;
-opacity: .12;*filter:alpha(opacity=12);
+opacity: .12;filter:alpha(opacity=12);
 }
 .yui-skin-gdocs .yui-dialog .ft {
 border-top: none;
@@ -1052,7 +1052,7 @@ bottom: -3px;
 background-color: #000;
 }
 .yui-skin-gdocs .yui-tt-shadow-visible {
-opacity: .12;*filter:alpha(opacity=12);
+opacity: .12;filter:alpha(opacity=12);
 }
 .yui-skin-gdocs .yui-dt-mask {
 position: absolute;
@@ -1178,7 +1178,7 @@ width: 6px;
 }
 .yui-skin-gdocs .yui-dt-mask {
 background-color: #000;
-opacity: .25;*filter:alpha(opacity=25);
+opacity: .25;filter:alpha(opacity=25);
 }
 .yui-skin-gdocs .yui-dt-message {
 background-color: #FFF;
@@ -2921,7 +2921,7 @@ background-repeat: no-repeat;
 }
 .yui-skin-gdocs .yui-menu-shadow-visible {
 background-color: #000;
-opacity: .12;*filter:alpha(opacity=12);
+opacity: .12;filter:alpha(opacity=12);
 }
 .yui-skin-gdocs .yuimenuitem-selected {
 background-color: #B3D4FF;

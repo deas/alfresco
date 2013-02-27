@@ -57,6 +57,14 @@ public class IndexHealthReport
     OpenBitSet duplicatedAclTxInIndex = new OpenBitSet();
 
     OpenBitSet aclTxInIndexButNotInDb = new OpenBitSet();
+    
+    OpenBitSet duplicatedErrorInIndex = new OpenBitSet();
+    
+    OpenBitSet duplicatedUnindexedInIndex = new OpenBitSet();
+    
+    long errorDocCountInIndex;
+    
+    long unindexedDocCountInIndex;
 
     /**
      * @return the transactionDocsInIndex
@@ -330,6 +338,72 @@ public class IndexHealthReport
     public long getLastIndexedCommitTime()
     {
         return lastIndexedCommitTime;
+    }
+
+    /**
+     * @param unindexedCount
+     */
+    public void setUnindexedDocCountInIndex(long unindexedDocCountInIndex)
+    {
+        this.unindexedDocCountInIndex = unindexedDocCountInIndex;
+    }
+
+    /**
+     * @param txid
+     */
+    public void setDuplicatedUnindexedInIndex(long txid)
+    {
+        duplicatedUnindexedInIndex.set(txid);
+        
+    }
+
+    /**
+     * @param errorCount
+     */
+    public void setErrorDocCountInIndex(long errorDocCountInIndex)
+    {
+        this.errorDocCountInIndex = errorDocCountInIndex;
+    }
+
+    /**
+     * @param txid
+     */
+    public void setDuplicatedErrorInIndex(long txid)
+    {
+        duplicatedErrorInIndex.set(txid);
+        
+    }
+
+    /**
+     * @return the duplicatedErrorInIndex
+     */
+    public OpenBitSet getDuplicatedErrorInIndex()
+    {
+        return duplicatedErrorInIndex;
+    }
+
+    /**
+     * @return the duplicatedUnindexedInIndex
+     */
+    public OpenBitSet getDuplicatedUnindexedInIndex()
+    {
+        return duplicatedUnindexedInIndex;
+    }
+
+    /**
+     * @return the errorDocCountInIndex
+     */
+    public long getErrorDocCountInIndex()
+    {
+        return errorDocCountInIndex;
+    }
+
+    /**
+     * @return the unindexedDocCountInIndex
+     */
+    public long getUnindexedDocCountInIndex()
+    {
+        return unindexedDocCountInIndex;
     }
     
     

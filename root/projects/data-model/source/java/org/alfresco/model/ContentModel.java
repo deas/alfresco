@@ -55,6 +55,9 @@ public interface ContentModel
     // tag for nodes being formed (WebDAV)
     static final QName ASPECT_WEBDAV_NO_CONTENT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "webdavNoContent");
     
+    static final QName ASPECT_WEBDAV_OBJECT = QName.createQName(NamespaceService.WEBDAV_MODEL_1_0_URI, "object");
+    static final QName PROP_DEAD_PROPERTIES = QName.createQName(NamespaceService.WEBDAV_MODEL_1_0_URI, "deadproperties");
+    
     // tag for localized nodes
     static final QName ASPECT_LOCALIZED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "localized");
     static final QName PROP_LOCALE = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "locale");
