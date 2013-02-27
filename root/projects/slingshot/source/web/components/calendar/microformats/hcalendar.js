@@ -65,7 +65,7 @@ hcalendar = {
          */
         category : function(data) 
         {
-          return data.split(' ');
+          return data.split(',');
         }
     },
     renderers : {

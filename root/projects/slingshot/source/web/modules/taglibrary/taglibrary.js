@@ -275,6 +275,7 @@
        * @method generateTagId
        * @param scope {object} instance that contains a tagId object (which stores the generated tag id mappings)
        * @param tagName {string} Tag name
+       * @param action
        * @return {string} A unique DOM-safe ID for the tag
        */
       generateTagId: function TagLibrary_generateTagId(scope, tagName, action)

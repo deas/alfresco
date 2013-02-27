@@ -187,6 +187,10 @@
             links = Selector.query("a", this.id),
             link,
             attr;
+         if (tokens.userid)
+         {
+             tokens.userid = encodeURIComponent(tokens.userid);
+         }
          
          for (var i = 0, ii = links.length; i < ii; i++)
          {

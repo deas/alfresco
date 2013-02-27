@@ -239,8 +239,7 @@
        */
       parseRel: function CalendarView_parseRel(element) 
       {
-         var relationship,
-            data = "",
+         var data = "",
             date = "",
             result = false;
          
@@ -422,7 +421,7 @@
        *       - the last day's start time is: 00:00
        *    - Adds cloned tag.
        *       
-       * TODO: Currently this is only used by the Agenda view - this needs rolling out across the other views when they get refactored.
+       * This is only used by the Agenda view
        * 
        * @method filterMultiday
        * @param events {Array} Array of event objects
@@ -481,46 +480,12 @@
          
          return events
       },
-      
-      /**
-       * Remove dom elements that represent multiple day events
-       *
-       * @method removeMultipleDayEvents
-       */
-      removeMultipleDayEvents: function CalendarView_removeMultipleDayEvents(srcEl)
-      {
-         var els = Dom.getElementsByClassName(srcEl.id + '-multiple');
-         for (var i = 0, len = els.length; i < len; i++)
-         {
-            els[i].parentNode.removeChild(els[i]);
-         }
-      },
-      /**
-       * Returns the current date that the user clicked on
-       *
-       * @method getClickedDate
-       * @param el {DOM Element} the element that was clicked on
-       * @returns {Date}
-       */
-      getClickedDate: function CalendarView_getClickedDate(el)
-      {
-         var date = this.options.titleDate; // set a default incase we can't find the element
-         if (el.nodeName.toUpperCase() !== 'TD') 
-         {
-            el = Dom.getAncestorByTagName(el, 'td');
-         }
-         if (el) 
-         {
-            date =  fromISO8601(el.id.replace('cal-', ''));
-         }
-         return date;
-      },
 
       /**
        * Displays add dialog
        *
        * @method showAddDialog
-       * @param date {Date object} Javascript date object containing the start date for the new event.
+       * @param date {Date} Javascript date object containing the start date for the new event.
        *
        */
       showAddDialog: function CalendarView_showAddDialog(date)
@@ -638,6 +603,7 @@
        * 
        * @param {Object} e
        * @param {Object} elTarget
+       * @param {Object} event
        */
       setUpDialog: function(e, elTarget, event) 
       {
@@ -664,9 +630,10 @@
       /**
        * Tests if event is valid for view must be within startdate and (enddate-1 second) of current view
        *
-       * @method date {object} Date to validate
+       * @method isValidDateForView
+       * @param date {object} Date to validate
        *
-       * @return true|false
+       * @return {Boolean}
        *
        */
       isValidDateForView: function(date)
@@ -677,24 +644,13 @@
       // HANDLERS
 
       /**
-       * Handler for cancelling dialog
-       *
-       * @method onCancelDialog
-       *
-       */
-      onCancelDialog: function CalendarView_onCancelDialog()
-      {
-         this.eventDialog.hide();
-      },
-
-      /**
        * Updates date field in dialog when date in selected in popup calendar
        *
        * @method onDateSelected
        * @param e {object} Event object
        * @param args {object} Event argument object
        */
-      onDateSelected: function CalendarView_onDateSelected(e, args, context)
+      onDateSelected: function CalendarView_onDateSelected(e, args)
       {
          if (this.currPopUpCalContext)
          {
@@ -924,7 +880,8 @@
        * Handler for when date mini calendar is selected
        *
        * @method onNav
-       * @param e {object}
+       * @param e {Object}
+       * @param args {Object}
        *
        */
       onCalSelect: function CalendarView_onCalSelect(e, args)
@@ -943,8 +900,7 @@
        */
       onTagSelected: function CalendarView_onTagSelected(e, args)
       {
-         var tagName = arguments[1][1].tagname,
-            showAllTags = false;
+         var tagName = arguments[1][1].tagname;
          
          // all tags
          if (tagName == Alfresco.util.message('label.all-tags', 'Alfresco.TagComponent'))
@@ -1079,7 +1035,7 @@
                // TODO: Remove this check once we have a consistent event object
                if (typeof(eventTags) === "string")
                {
-                  eventTags = eventTags.split(" "); // TODO: Tags with spaces are not supported in the Calendar Event input field.
+                  eventTags = eventTags.split(",");
                }
                if (Alfresco.util.arrayContains(eventTags, tagName)) 
                {
@@ -1104,117 +1060,12 @@
 Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
 {
    var Dom = YAHOO.util.Dom,
-       Event = YAHOO.util.Event,
-       Sel = YAHOO.util.Selector,
        fromISO8601 = Alfresco.util.fromISO8601,
        toISO8601 = Alfresco.util.toISO8601,
        dateFormat = Alfresco.thirdparty.dateFormat;
    var templates = [];
 
    return {
-      /**
-       * Calculates end date depending on specified duration, in ISO8601 format
-       *
-       * @method getEndDate
-       * @param dateISO {String} startDate in ISO8601 format
-       * @param duration {object} Duration object
-       */
-      getEndDate: function Alfresco_CalendarHelper_getEndDate(dateISO, duration)
-      {
-         var newDate = Alfresco.util.fromISO8601(dateISO);
-         for (var item in duration)
-         {
-            newDate = YAHOO.widget.DateMath.add(newDate, (item === 'M') ? YAHOO.widget.DateMath.MINUTE : item, (~ ~ (1 * duration[item])));
-         }
-         return Alfresco.util.toISO8601(newDate).split('+')[0];// newDate.toISO8601String(5);
-      },
-
-      /**
-       * Correctly determines which hour segment the event element is in. Returns the hour
-       *
-       * @method determineHourSegment
-       * @param ePos {object} Object containing XY position of element to test
-       * @param el {object} Event element
-       * @return {string} Hour
-       */
-      determineHourSegment: function Alfresco_CalendarHelper_determineHourSegment(ePos, el)
-      {
-         var r = Dom.getRegion(el);
-         var y = ePos[1];
-         var threshold = Math.round((r.bottom - r.top) / 2);
-         var inFirstHalfHour = (!Dom.getPreviousSibling(el)); // first half of
-         // hour
-
-         var hour = Dom.getAncestorByTagName(el, 'tr').getElementsByTagName('h2')[0].innerHTML;
-         if (inFirstHalfHour === true)
-         {
-            hour = (y - r.top < threshold) ? hour : hour.replace(':00', ':15');
-
-         }
-         else
-         {
-            hour = (y - r.top < threshold) ? hour.replace(':00', ':30') : hour.replace(':00', ':45');
-
-         }
-         return hour;
-      },
-
-      /**
-       * calculates duration based on specified start and end dates
-       *
-       *
-       * @method getDuration
-       * @param dtStartDate {Date} start date
-       * @param dtEndDate {Date} end date
-       * @return {String} Duration in ical format eg PT2H15M
-       */
-      getDuration: function Alfresco_CalendarHelper_getDuration(dtStartDate, dtEndDate)
-      {
-         var diff = dtEndDate.getTime() - dtStartDate.getTime();
-         var dateDiff = {};
-         var duration = 'P';
-         var diff = new Date();
-         diff.setTime(Math.abs(dtEndDate.getTime() - dtStartDate.getTime()));
-         var timediff = diff.getTime();
-
-         dateDiff[YAHOO.widget.DateMath.WEEK] = Math.floor(timediff / (1000 * 60 * 60 * 24 * 7));
-         timediff -= dateDiff[YAHOO.widget.DateMath.WEEK] * (1000 * 60 * 60 * 24 * 7);
-
-         dateDiff[YAHOO.widget.DateMath.DAY] = (Math.floor(timediff / (1000 * 60 * 60 * 24)));
-         timediff -= dateDiff[YAHOO.widget.DateMath.DAY] * (1000 * 60 * 60 * 24);
-
-         dateDiff[YAHOO.widget.DateMath.HOUR] = Math.floor(timediff / (1000 * 60 * 60));
-         timediff -= dateDiff[YAHOO.widget.DateMath.HOUR] * (1000 * 60 * 60);
-
-         dateDiff[YAHOO.widget.DateMath.MINUTE] = Math.floor(timediff / (1000 * 60));
-         timediff -= dateDiff[YAHOO.widget.DateMath.MINUTE] * (1000 * 60);
-
-         dateDiff[YAHOO.widget.DateMath.SECOND] = Math.floor(timediff / 1000);
-         timediff -= dateDiff[YAHOO.widget.DateMath.SECOND] * 1000;
-
-         if (dateDiff[YAHOO.widget.DateMath.WEEK] > 0)
-         {
-            duration += dateDiff[YAHOO.widget.DateMath.WEEK] + YAHOO.widget.DateMath.WEEK;
-         }
-         if (dateDiff[YAHOO.widget.DateMath.DAY] > 0)
-         {
-            duration += dateDiff[YAHOO.widget.DateMath.DAY] + YAHOO.widget.DateMath.DAY;
-         }
-         duration += 'T';
-         if (dateDiff[YAHOO.widget.DateMath.HOUR] > 0)
-         {
-            duration += dateDiff[YAHOO.widget.DateMath.HOUR] + YAHOO.widget.DateMath.HOUR;
-         }
-         if (dateDiff[YAHOO.widget.DateMath.MINUTE] > 0)
-         {
-            duration += dateDiff[YAHOO.widget.DateMath.MINUTE] + 'M';
-         }
-         if (dateDiff[YAHOO.widget.DateMath.SECOND] > 0)
-         {
-            duration += dateDiff[YAHOO.widget.DateMath.SECOND] + YAHOO.widget.DateMath.SECOND;
-         }
-         return duration;
-      },
 
       /**
        * Pads specified value with zeros if value is less than 10
@@ -1247,6 +1098,7 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
       /**
        * Formats the date
        *
+       * @param date {Date}
        * @param field {DOM Object} DOM object of element
        */
       writeDateToField: function Alfresco_CalendarHelper_writeDateToField(date, field)
@@ -1304,20 +1156,6 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
       },
 
       /**
-       * Checks whether start date is earlier than end date.
-       *
-       * @method isValidDate
-       * @param {Date} dtStartDate Start date
-       * @param {Date} dtEndDate End date
-       *
-       * @return {Boolean} flag denoting whether date is valid or not.
-       */
-      isValidDate: function Alfresco_CalendarHelper_isValidDate(dtStartDate, dtEndDate)
-      {
-         return dtStartDate.getTime() < dtEndDate.getTime();
-      },
-
-      /**
        * Checks to see if the two dates are the same
        *
        * @method isSameDay
@@ -1338,34 +1176,10 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
          }
          return (dateOne.getDate() === dateTwo.getDate() && dateOne.getMonth() === dateTwo.getMonth() && dateOne.getFullYear() === dateTwo.getFullYear());
       },
-      
-      /**
-       * Checks to see if dateOne is earlier than dateTwo or not
-       *
-       * @method isBefore
-       * @param {Date|string} dateOne (either JS Date Object or ISO8601 date string)
-       * @param {Date|string} dateTwo
-       *
-       * @return {Boolean}
-       */
-      isBefore: function Alfresco_CalendarHelper_isBefore(dateOne, dateTwo)
-      {
-         if (typeof(dateOne) === "string")
-         {
-            dateOne = fromISO8601(dateOne);
-         }
-         if (typeof(dateTwo) === "string")
-         {
-            dateTwo = fromISO8601(dateTwo);
-         }
-
-         return (dateOne < dateTwo);
-
-      },
 
       /**
        * @method isAllDay
-       * @param {Object} event data object
+       * @param {Object} eventData event data object
        *
        * @return {Boolean} flag indicating whether event is a timed event or not
        */

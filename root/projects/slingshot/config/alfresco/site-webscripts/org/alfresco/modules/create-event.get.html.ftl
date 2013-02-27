@@ -82,7 +82,7 @@
                   <#if event.tags?? && event.tags?size &gt; 0>
                      <#list event.tags as tag>
                         <#assign tags = tags + tag>
-                        <#if tag_has_next><#assign tags = tags + ' '></#if>
+                        <#if tag_has_next><#assign tags = tags + ','></#if>
                      </#list>
                   </#if>
                   <input tabindex="10" type="text" size="30" class="rel_left suppress-validation" id="${el}-tag-input-field" value="${tags}"/>

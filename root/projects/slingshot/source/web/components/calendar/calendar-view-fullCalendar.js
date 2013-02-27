@@ -52,7 +52,7 @@
        * The FullCalendar agenda views are not to be confused with the Alfresco agenda view which is an event overview page.
        *
        * @method getFullCalendarViewType
-       * @param {String} [day|week|month]
+       * @param AlfrescoViewType {String} [day|week|month]
        */
       getFullCalendarViewType: function CalendarFullCalendar_getFullCalendarViewType(AlfrescoViewType)
       {
@@ -382,6 +382,8 @@
       getEvents: function CalendarFullCalendar_getEvents()
       {
          $jCalendar.fullCalendar("refetchEvents");
+
+         this.refreshTags();
       },
 
       /**
@@ -408,7 +410,7 @@
                },
                page: Alfresco.constants.PAGEID,
                site: Alfresco.constants.SITE,
-               tags: (event.tags) ? event.tags.join( ) : "",
+               tags: (event.tags) ? event.tags.join() : [],
                what: event.title,
                where: event.where
             };

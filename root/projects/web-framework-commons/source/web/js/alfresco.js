@@ -664,9 +664,16 @@ Alfresco.util.formatFileSize = function(fileSize, decimalPlaces)
       fileSize = (fileSize / Alfresco.util.BYTES_MB).toFixed(decimalPlaces);
       return fileSize + " " + Alfresco.util.message("size.megabytes");
    }
-
-   fileSize = (fileSize / Alfresco.util.BYTES_GB).toFixed(decimalPlaces);
-   return fileSize + " " + Alfresco.util.message("size.gigabytes");
+   else if (isNaN(fileSize))
+   {
+      // special case for missing content size
+      return "0 " + Alfresco.util.message("size.bytes");
+   }
+   else
+   {
+      fileSize = (fileSize / Alfresco.util.BYTES_GB).toFixed(decimalPlaces);
+      return fileSize + " " + Alfresco.util.message("size.gigabytes");
+   }
 };
 
 /**
@@ -9864,7 +9871,7 @@ Alfresco.util.RENDERLOOPSIZE = 25;
                         }
                         else
                         {
-                           candidates = YUISelector.query("a[rel='" + obj.filterData.replace("'", "\'") + "']", this.id);
+                     candidates = YUISelector.query("a[rel=\"" + obj.filterData.replace("'", "\'") + "\"]", this.id);
                            if (candidates.length == 1)
                            {
                               // This component now owns the active filter

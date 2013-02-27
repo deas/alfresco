@@ -259,7 +259,7 @@
        * Called when an event edit API call returns successfully.
        *
        * @method onEdited
-       * @param e {object} DomEvent
+       * @param o {object} response from server
        */
       onEdited: function(o)
       {
@@ -468,7 +468,7 @@
 
                   if (p_config.dataObj.tags)
                   {
-                     p_config.dataObj.tags = p_config.dataObj.tags.join(' ');
+                     p_config.dataObj.tags = p_config.dataObj.tags.join();
                   }
 
                   //all day
@@ -513,7 +513,7 @@
 
                   var tags = tagInputEl.value;
                   tagInputEl.value = '';
-                  EditDialog.tagLibrary.setTags(tags.split(' '));
+                  EditDialog.tagLibrary.setTags(tags.split(","));
 
                   // Reset errors
                   EditDialog.form.errorContainer = null;
@@ -582,21 +582,6 @@
                      form.addValidation(textElements[i], Alfresco.forms.validation.regexMatch, validateTextRegExp, "blur");
                      form.addValidation(textElements[i], Alfresco.forms.validation.regexMatch, validateTextRegExp, "keyup");
                   }
-
-                  var timeElements = [EditDialog.id + "-start", EditDialog.id + "-end"];
-
-                  form.addValidation(EditDialog.id + "-tag-input-field", function EventInfo_tagValidation(field, args, event, form, silent)
-                  {
-                     if (!args)
-                     {
-                        args = {};
-                     }
-
-                     args.pattern = /([\"\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)/;
-                     args.match = false;
-
-                     return Alfresco.forms.validation.regexMatch(field, args, event, form, silent);
-                  }, null, "keyup");
 
                   EditDialog.tagLibrary.initialize(form);
 

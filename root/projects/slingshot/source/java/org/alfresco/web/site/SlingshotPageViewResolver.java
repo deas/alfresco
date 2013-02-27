@@ -63,8 +63,11 @@ public class SlingshotPageViewResolver extends PageViewResolver
                     throw new PlatformRuntimeException("Failed to init Request Context: " + e.getMessage(), e);
                 }
             }
+            if (ThreadLocalRequestContext.getRequestContext().getUser().isGuest())
+            {
+                return ThreadLocalRequestContext.getRequestContext().getRootPage();
+            }
         }
-        
         return super.lookupPage(pageId);
     }
     
