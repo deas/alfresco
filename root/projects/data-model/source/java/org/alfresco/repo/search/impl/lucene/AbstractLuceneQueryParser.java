@@ -1989,7 +1989,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 
         // make sure we remove any tokens we have duplicated
 
-        OrderedHashSet<org.apache.lucene.analysis.Token> unique = new OrderedHashSet<org.apache.lucene.analysis.Token>();
+        OrderedHashSet unique = new OrderedHashSet();
         unique.addAll(fixed);
         fixed = new ArrayList<org.apache.lucene.analysis.Token>(unique);
 
