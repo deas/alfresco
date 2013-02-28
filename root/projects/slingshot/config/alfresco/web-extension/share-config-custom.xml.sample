@@ -43,9 +43,12 @@
    </config>
    -->
 
-   <!-- Add custom domains that will be allowed to be used inside iframes (i.e. in the WebView dashlet) -->
    <!--
-   <config evaluator="string-compare" condition="IFramePolicy">
+      Remove the default wildcard setting and use instead a strict whitelist of the only domains that shall be allowed
+      to be used inside iframes (i.e. in the WebView dashlet on the dashboards)
+   -->
+   <!--
+   <config evaluator="string-compare" condition="IFramePolicy" replace="true">
       <cross-domain>
          <url>http://www.trusted-domain-1.com/</url>
          <url>http://www.trusted-domain-2.com/</url>

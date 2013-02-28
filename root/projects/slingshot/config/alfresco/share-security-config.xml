@@ -23,14 +23,11 @@
          The check will assert that the url used for the <iframe> starts with the value of one of the <url> elements.
       -->
       <cross-domain>
-         <!-- Specific domain that you trust -->
          <!--
-         <url>http://www.some-trusted-domain.com</url>
+            Allow all domains by default, it is highly recommended to override this setting and instead keep a
+            whitelist of the domains that you trust to be included on Share pages.
          -->
-         <!-- Allow all domains, NOT recommended! -->
-         <!--
          <url>*</url>
-         -->
       </cross-domain>
    </config>
 
