@@ -696,7 +696,7 @@ public class CSRFFilter implements Filter
     }
 
     /**
-     * An action that asserts the request's 'Referer' header starts with the current server name or the "referer" param.
+     * An action that asserts the request's 'Referer' header matches the current server name or the "referer" param.
      *
      * Note that the word “referrer” is misspelled in the RFC as well as in most implementations.
      */
@@ -741,16 +741,15 @@ public class CSRFFilter implements Filter
             {
                 refererHeader = "";
             }
-            else if (!refererHeader.endsWith("/"))
-            {
-                refererHeader += "/";
-            }
 
-            String currentServer = params.containsKey(PARAM_REFERER) ? params.get(PARAM_REFERER) : getServerString(request);
+            String currentServer = getServerString(request);
+            String refererServer = params.containsKey(PARAM_REFERER) ? params.get(PARAM_REFERER) : null;
 
             if (logger.isDebugEnabled())
-                logger.debug("Assert referer " + request.getMethod() + " " + request.getRequestURI() + " :: referer: '"
-                        + request.getHeader(HEADER_REFERER) + "' vs server & context: '" + currentServer + "'");
+                logger.debug("Assert referer " + request.getMethod() + " " + request.getRequestURI() + " :: referer: '" +
+                        request.getHeader(HEADER_REFERER) + "' vs server & context: '" + currentServer + "'" +
+                        (refererServer != null ? " or /" + refererServer + "/" : "")
+                );
 
             // Note! Add slashes at the end to avoid missing when the victim's domain is "site.com"
             // and the attacker site "site.com.attacker.com"
@@ -770,11 +769,20 @@ public class CSRFFilter implements Filter
             }
             else
             {
-                if (!refererHeader.startsWith(currentServer))
+                boolean valid = false;
+                if (refererHeader.startsWith(currentServer))
                 {
-                    String message = "Possible CSRF attack noted when asserting referer header '"
-                            + request.getHeader(HEADER_REFERER) + "'. Request: " + request.getMethod() + " "
-                            + request.getRequestURI();
+                    valid = true;
+                }
+                if (refererServer != null && refererHeader.matches(refererServer))
+                {
+                    valid = true;
+                }
+                if (!valid)
+                {
+                    String message = "Possible CSRF attack noted when asserting referer header '" +
+                            request.getHeader(HEADER_REFERER) + "'. Request: " + request.getMethod() + " " +
+                            request.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
@@ -830,10 +838,13 @@ public class CSRFFilter implements Filter
                 originHeader = "";
             }
 
-            String currentServer = params.containsKey(PARAM_ORIGIN) ? params.get(PARAM_ORIGIN) : getServerString(request);
+            String currentServer = getServerString(request);
+            String originServer = params.containsKey(PARAM_ORIGIN) ? params.get(PARAM_ORIGIN) : null;
 
             if (logger.isDebugEnabled())
-                logger.debug("Assert origin " + request.getMethod() + " " + request.getRequestURI() + " :: origin: '" + request.getHeader(HEADER_ORIGIN) + "' vs server: '" + currentServer + "'");
+                logger.debug("Assert origin " + request.getMethod() + " " + request.getRequestURI() + " :: origin: '" +
+                        request.getHeader(HEADER_ORIGIN) + "' vs server: '" + currentServer + "'" +
+                        (originServer != null ? " or /" + originServer + "/" : ""));
 
             if (originHeader.isEmpty() && params.get(PARAM_ALWAYS).equals("false"))
             {
@@ -841,9 +852,19 @@ public class CSRFFilter implements Filter
             }
             else
             {
-                if (!originHeader.startsWith(currentServer))
+                boolean valid = false;
+                if (originHeader.startsWith(currentServer))
                 {
-                    String message = "Possible CSRF attack noted when asserting origin header '" + request.getHeader(HEADER_ORIGIN) + "'. Request: " + request.getMethod() + " " + request.getRequestURI();
+                    valid = true;
+                }
+                if (originServer != null && originHeader.matches(originServer))
+                {
+                    valid = true;
+                }
+                if (!valid)
+                {
+                    String message = "Possible CSRF attack noted when asserting origin header '" + request.getHeader(HEADER_ORIGIN) + "'. " +
+                            "Request: " + request.getMethod() + " " + request.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
