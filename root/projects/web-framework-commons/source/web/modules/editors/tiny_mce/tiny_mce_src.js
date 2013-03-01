@@ -14709,7 +14709,7 @@ tinymce.create('tinymce.ui.Toolbar:tinymce.ui.Container', {
 				indentUnit = /[a-z%]+$/i.exec(intentValue);
 				intentValue = parseInt(intentValue);
 
-				if (!queryCommandState('InsertUnorderedList') && !queryCommandState('InsertOrderedList')) {
+				if (settings.inline_styles && !queryCommandState('InsertUnorderedList') && !queryCommandState('InsertOrderedList')) {
 					// If forced_root_blocks is set to false we don't have a block to indent so lets create a div
 					if (!settings.forced_root_block && !dom.getParent(selection.getNode(), dom.isBlock)) {
 						formatter.apply('div');

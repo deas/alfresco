@@ -29,6 +29,7 @@
             {
                itemId: "${cfg.form.itemId?js_string}",
                itemKind: "${cfg.form.itemKind?js_string}",
+         errorKey: <#if cfg.form.errorKey?size != 0>"${cfg.form.errorKey?js_string}"<#else>null</#if>,
                showCancelButton: <#if cfg.form.showCancelButton?size != 0>${cfg.form.showCancelButton?js_string}<#else>true</#if>,
                showSubmitButton: <#if cfg.form.showSubmitButton?size != 0>${cfg.form.showSubmitButton?js_string}<#else>true</#if>
             });

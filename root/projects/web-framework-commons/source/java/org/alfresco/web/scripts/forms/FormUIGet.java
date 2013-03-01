@@ -99,6 +99,7 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String ALFRESCO_PROXY = "/proxy/alfresco";
     protected static final String CM_NAME_PROP = "prop_cm_name";
     protected static final String MSG_DEFAULT_SET_LABEL = "form.default.set.label";
+    protected static final String MSG_DEFAULT_FORM_ERROR = "form.error";
     protected static final String INDENT = "   ";
     protected static final String DELIMITER = "#alf#";
     
@@ -124,6 +125,7 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String PARAM_SUBMIT_TYPE = "submitType";
     protected static final String PARAM_SUBMISSION_URL = "submissionUrl";
     protected static final String PARAM_JS = "js";
+    protected static final String PARAM_ERROR_KEY = "err";
     
     protected static final String CONSTRAINT_MANDATORY = "MANDATORY";
     protected static final String CONSTRAINT_LIST = "LIST";
@@ -277,7 +279,8 @@ public class FormUIGet extends DeclarativeWebScript
         }
         else
         {
-            model = generateErrorModel(formSvcResponse);
+            String errorKey = getParameter(request, PARAM_ERROR_KEY);
+            model = generateErrorModel(formSvcResponse, errorKey);
         }
         
         return model;
@@ -2229,14 +2232,26 @@ public class FormUIGet extends DeclarativeWebScript
             }
         }
     }
-    
+
     /**
      * Generates the "error" model used when an error occurs.
-     * 
+     *
      * @param errorResponse Response object representing the error
      * @return The "error" model
      */
     protected Map<String, Object> generateErrorModel(Response errorResponse)
+    {
+        return generateErrorModel(errorResponse, null);
+    }
+
+    /**
+    * Generates the "error" model used when an error occurs.
+    *
+    * @param errorResponse Response object representing the error
+    * @param errorKey
+    * @return The "error" model
+    */
+    protected Map<String, Object> generateErrorModel(Response errorResponse, String errorKey)
     {
         String error = "";
         
@@ -2249,7 +2264,8 @@ public class FormUIGet extends DeclarativeWebScript
                 error = json.getString(MODEL_MESSAGE);
                 
                 // Common AccessDeniedException is reported as a 500 server error from the repository
-                if (error.indexOf("org.alfresco.repo.security.permissions.AccessDeniedException") == -1)
+                if ((error.indexOf("org.alfresco.repo.security.permissions.AccessDeniedException") == -1) &&
+                        (errorKey == null || errorKey.isEmpty()))
                 {
                    if (logger.isErrorEnabled())
                        logger.error(error);
@@ -2261,9 +2277,21 @@ public class FormUIGet extends DeclarativeWebScript
             error= "";
         }
         
+        if (errorKey == null || errorKey.isEmpty())
+        {
+            errorKey = MSG_DEFAULT_FORM_ERROR;
+        }
+        String id = errorKey + "." + errorResponse.getStatus().getCode();
+        error = retrieveMessage(id);
+        if (error.equals(id))
+        {
+            // use key if key+"."+status is not found
+            error = retrieveMessage(errorKey);
+        }
+
         // create model with error
         Map<String, Object> model = new HashMap<String, Object>(1);
-        model.put(MODEL_ERROR, "");
+        model.put(MODEL_ERROR, error);
         return model;
     }
     

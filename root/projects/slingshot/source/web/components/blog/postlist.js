@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -1256,7 +1256,10 @@
          var filterData = this.currentFilter.filterData;       
          
          // check whether we got a filter or not
-         var url = "";
+         var url = "",
+            urlExt = "",
+            paramName;
+
          if (filterOwner == "Alfresco.BlogPostListFilter")
          {
             // latest only
@@ -1293,9 +1296,12 @@
             params.fromDate = fromDate.getTime();
             params.toDate = toDate.getTime();
          }
-         
+         else if (filterOwner == "Alfresco.BlogPostListTags" && filterId != null)
+         {
+            urlExt += "&" + filterId + "=" + encodeURIComponent(filterData);
+         }
+
          // build the url extension
-         var urlExt = "", paramName;
          for (paramName in params)
          {
             if (params[paramName] !== null)

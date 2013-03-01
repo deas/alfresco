@@ -207,8 +207,8 @@
          </indicator>
          <indicator id="nodeLock" index="10" icon="lock-owner-16.png" label="status.locked">
             <evaluator>evaluator.doclib.indicator.nodeLocked</evaluator>
-            <labelParam index="0">{jsNode.properties.cm_lockOwner.displayName}</labelParam>
-            <labelParam index="1">{jsNode.properties.cm_lockOwner.userName}</labelParam>
+            <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
+            <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
             <override>locked</override>
          </indicator>
          <!-- Google Docs Editing -->

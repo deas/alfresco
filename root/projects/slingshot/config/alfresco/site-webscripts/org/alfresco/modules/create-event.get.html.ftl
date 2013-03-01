@@ -21,22 +21,22 @@
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-title">${msg("label.what")}:</label></div>
-            <div class="yui-u"><input id="${el}-title" type="text" name="what" value="${event.what?html}" tabindex="1" class="wide"/> * </div>
+            <div class="yui-u"><input id="${el}-title" type="text" name="what" value="${(event.what!"")?html}" tabindex="1" class="wide"/> * </div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-location">${msg("label.where")}:</label></div>
-            <div class="yui-u"><input id="${el}-location" type="text" name="where" value="${event.location?html}" tabindex="2" class="wide"/></div>
+            <div class="yui-u"><input id="${el}-location" type="text" name="where" value="${(event.location!"")?html}" tabindex="2" class="wide"/></div>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-description">${msg("label.description")}:</label></div>
-            <div class="yui-u"><textarea id="${el}-description" name="desc" rows="3" cols="20" class="wide" tabindex="3">${event.description?html}</textarea></div>
+            <div class="yui-u"><textarea id="${el}-description" name="desc" rows="3" cols="20" class="wide" tabindex="3">${(event.description!"")?html}</textarea></div>
          </div>
          <div class="yui-g">
             <h2>${msg("section.time")}</h2>
          </div>
          <div class="yui-gd">
             <div class="yui-u first"><label for="${el}-allday">${msg("label.allday")}:</label></div>
-            <#if (edit && event.allday=='true')>
+            <#if (edit && event.allday?? && event.allday=='true')>
             <div class="yui-u"><input id="${el}-allday" type="checkbox" name="allday" tabindex="4" checked="checked"/></div>
             <#else>
             <div class="yui-u"><input id="${el}-allday" type="checkbox" name="allday" tabindex="5"/></div>
@@ -112,7 +112,7 @@
             <input type="submit" id="${el}-ok" value="${msg("button.ok")}" tabindex="15" />
             <input type="submit" id="${el}-cancel" value="${msg("button.cancel")}" tabindex="16" />
          </div>
-        <#if edit && event.isoutlook == 'false'>
+        <#if edit && event.isoutlook?? && event.isoutlook == 'false'>
         <div name="edit-available" id="${el}-edit-available" />
         </#if>
       </form>

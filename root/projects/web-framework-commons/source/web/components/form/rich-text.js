@@ -135,10 +135,17 @@
 
          // Make sure we persist the dom content from the editor in to the hidden textarea when appropriate 
          var _this = this;
-         this.editor.getEditor().onSetContent.add(function(ed, e) {
+         this.editor.getEditor().onSetContent.add(function(ed, e)
+         {
             _this._handleContentChange();
          });
-         this.editor.getEditor().onKeyUp.add(function(ed, e) {
+         this.editor.getEditor().onKeyUp.add(function(ed, e)
+         {
+            _this._handleContentChange();
+         });
+         // ALF-16991:
+         this.editor.getEditor().onExecCommand.add(function(ed, e)
+         {
             _this._handleContentChange();
          });
       },

@@ -30,6 +30,8 @@ import org.alfresco.repo.webdav.ActivityPoster;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVMethod;
 import org.alfresco.repo.webdav.WebDAVServerException;
+import org.alfresco.util.FileFilterMode;
+import org.alfresco.util.FileFilterMode.Client;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,6 +70,7 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
         WebDAVMethod method = getWebDAVMethod();
         try
         {
+            FileFilterMode.setClient(Client.webdav);
             davActionExecutor.execute(method, request, response);
         }
         catch (WebDAVServerException e)

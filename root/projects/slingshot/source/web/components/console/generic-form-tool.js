@@ -40,7 +40,7 @@
    /**
     * GenericFormTool constructor.
     * 
-    * @param {String} htmlId The HTML id üof the parent element
+    * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.GenericFormTool} The new GenericFormTool instance
     * @constructor
     */
@@ -80,7 +80,8 @@
                   itemKind: parent.options.itemKind,
                   itemId: parent.options.itemId,
                   mode: "view",
-                  formUI: false
+                  formUI: false,
+                  err: parent.options.errorKey || ""
                },
                successCallback:
                {
@@ -215,6 +216,14 @@
           * @type string
           */
          itemId: null,
+
+         /**
+          * Error key
+          *
+          * @property errorKey
+          * @type string
+          */         
+         errorKey: null,
 
 
          showCancelButton: true,

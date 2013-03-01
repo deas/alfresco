@@ -54,12 +54,12 @@ public class DefaultAuthenticationHandler implements AuthenticationHandler
 
     public boolean isRequestValidForCurrentUser(HttpServletRequest request, String alfrescoContext)
     {
-        String uri = URLDecoder.decode(request.getRequestURI());
+        String uri = request.getRequestURI();
 
         if (request.getMethod().equalsIgnoreCase("OPTIONS"))
             return true;
 
-        String targetUri = uri.startsWith(alfrescoContext) ? uri.substring(alfrescoContext.length()) : uri;
+        String targetUri = URLDecoder.decode(uri.startsWith(alfrescoContext) ? uri.substring(alfrescoContext.length()) : uri);
 
         if (targetUri.equals("/") || targetUri.equals("") || targetUri.startsWith("/_vti_inf.html") || targetUri.startsWith("/_vti_bin/") || targetUri.startsWith("/resources/"))
             return true;

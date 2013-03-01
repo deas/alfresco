@@ -341,7 +341,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             // we don't use RetryingTransactionHelper here cause we can read request input stream only once
             tx.begin();
 
-            ContentWriter writer = null;
+            ContentWriter writer;
 
             FileFolderService fileFolderService = getFileFolderService();
             if (workingCopyNodeRef != null)
@@ -351,12 +351,8 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                     fileFolderService.setHidden(workingCopyNodeRef, false);
                 }
 
-                String workingCopyOwner = getNodeService().getProperty(workingCopyNodeRef, ContentModel.PROP_WORKING_COPY_OWNER).toString();
-                if (workingCopyOwner.equals(getAuthenticationService().getCurrentUserName()))
-                {
-                    // working copy writer
-                    writer = getContentService().getWriter(workingCopyNodeRef, ContentModel.PROP_CONTENT, true);
-                }
+                // working copy writer
+                writer = getContentService().getWriter(workingCopyNodeRef, ContentModel.PROP_CONTENT, true);
             }
             else
             {
@@ -383,9 +379,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                 getNodeService().removeAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT);
             }
             
-            if (workingCopyNodeRef == null && getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_VERSIONABLE) == false)
+            // If we actually have content, it's time to add the versionable aspect and save the current version 
+            ContentData contentData = writer.getContentData();
+            if (workingCopyNodeRef == null && !getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_VERSIONABLE) && ContentData.hasContent(contentData) && contentData.getSize() > 0)
             {
-                // adds 'versionable' aspect and saves current version
                 getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
             }
 

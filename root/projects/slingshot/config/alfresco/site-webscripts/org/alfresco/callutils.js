@@ -102,6 +102,11 @@ function doPostCall(theUrl, paramsJSON)
    {
       return eval('(' + result.response + ')');
    }
+   else
+   {
+      status.code = result.status;
+      status.message = result.response;
+   }
 }
 
 
@@ -115,6 +120,11 @@ function doPutCall(theUrl, paramsJSON)
    if (result.status == status.STATUS_OK)
    {
       return eval('(' + result.response + ')');
+   }
+   else
+   {
+      status.code = result.status;
+      status.message = result.response;
    }
 }
 
@@ -130,5 +140,9 @@ function doGetCall(theUrl)
    {
       return eval('(' + result.response + ')');
    }
-
+   else
+   {
+      status.code = result.status;
+      status.message = result.response;
+   }
 }
