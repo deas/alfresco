@@ -234,6 +234,56 @@
          <mimetype mimetype="image/svg+xml" display="Scalable Vector Graphics Image">
             <extension>svg</extension>
          </mimetype>
+         <mimetype mimetype="image/x-raw-adobe" display="Adobe Digital Negative Image">
+            <extension>dng</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-hasselblad" display="Hasselblad RAW Image">
+            <extension>3fr</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-fuji" display="Fuji RAW Image">
+            <extension>raf</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-canon" display="Canon RAW Image">
+            <extension default="true">cr2</extension>
+            <extension>crw</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-kodak" display="Kodak RAW Image">
+            <extension>k25</extension>
+            <extension>kdc</extension>
+            <extension>dcs</extension>
+            <extension>drf</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-minolta" display="Minolta RAW Image">
+            <extension>mrw</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-nikon" display="Nikon RAW Image">
+            <extension default="true">nef</extension>
+            <extension>nrw</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-olympus" display="Olympus RAW Image">
+            <extension>orf</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-pentax" display="Pentax RAW Image">
+            <extension default="true">pef</extension>
+            <extension>ptx</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-sony" display="Sony RAW Image">
+            <extension default="true">arw</extension>
+            <extension>srf</extension>
+            <extension>sr2</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-sigma" display="Sigma RAW Image">
+            <extension>x3f</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-panasonic" display="Panasonic RAW Image">
+            <extension>rw2</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-leica" display="Leica RAW Image">
+            <extension>rwl</extension>
+         </mimetype>
+         <mimetype mimetype="image/x-raw-red" display="RED RAW Image">
+            <extension>r3d</extension>
+         </mimetype>
          <mimetype mimetype="application/x-javascript" text="true" display="Java Script">
             <extension>js</extension>
          </mimetype>

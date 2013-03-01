@@ -140,6 +140,34 @@ public class MimetypeMap implements MimetypeService
 
     public static final String MIMETYPE_IMAGE_TIFF = "image/tiff";
 
+    public static final String MIMETYPE_IMAGE_RAW_DNG = "image/x-raw-adobe";
+
+    public static final String MIMETYPE_IMAGE_RAW_3FR = "image/x-raw-hasselblad";
+
+    public static final String MIMETYPE_IMAGE_RAW_RAF = "image/x-raw-fuji";
+
+    public static final String MIMETYPE_IMAGE_RAW_CR2 = "image/x-raw-canon";
+
+    public static final String MIMETYPE_IMAGE_RAW_K25 = "image/x-raw-kodak";
+
+    public static final String MIMETYPE_IMAGE_RAW_MRW = "image/x-raw-minolta";
+
+    public static final String MIMETYPE_IMAGE_RAW_NEF = "image/x-raw-nikon";
+
+    public static final String MIMETYPE_IMAGE_RAW_ORF = "image/x-raw-olympus";
+
+    public static final String MIMETYPE_IMAGE_RAW_PEF = "image/x-raw-pentax";
+
+    public static final String MIMETYPE_IMAGE_RAW_ARW = "image/x-raw-sony";
+
+    public static final String MIMETYPE_IMAGE_RAW_X3F = "image/x-raw-sigma";
+
+    public static final String MIMETYPE_IMAGE_RAW_RW2 = "image/x-raw-panasonic";
+
+    public static final String MIMETYPE_IMAGE_RAW_RWL = "image/x-raw-leica";
+
+    public static final String MIMETYPE_IMAGE_RAW_R3D = "image/x-raw-red";
+
     public static final String MIMETYPE_APPLICATION_EPS = "application/eps";
 
     public static final String MIMETYPE_JAVASCRIPT = "application/x-javascript";
