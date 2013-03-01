@@ -2,12 +2,18 @@ package org.alfresco.util;
 
 public class FileFilterMode
 {
-    // clients for which specific hiding/visibility behaviour may be requested. Do not remove or change the order of
-    // entries.
+    /**
+     *  Clients for which specific hiding/visibility behaviour may be requested.
+     *  Do not remove or change the order of
+     */
     public static enum Client
     {
         cifs, imap, webdav, nfs, script, webclient, ftp, cmis;
         
+        /**
+         * @deprecated Use {@link Client#valueOf(String)}
+         */
+        @Deprecated
         public static Client getClient(String clientStr)
         {
             if(clientStr.equals("cifs"))
