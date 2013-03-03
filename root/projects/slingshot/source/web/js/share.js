@@ -2178,7 +2178,7 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
        * Keeps track of iFrames that have been hidden during resize events so that they can be
        * made visible once resizing is complete.
        * 
-       * @property 
+       * @property _hiddenOnResize
        */
       _hiddenOnResize: null,
       
@@ -2189,6 +2189,18 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
        */
       onResize: function DashletResizer_onResize()
       {
+         this.dashletTitle = Selector.query("div.title", this.dashlet, true); 
+         var titlePadding = parseInt(Dom.getStyle(this.dashletTitle, "padding-bottom"), 10) + parseInt(Dom.getStyle(this.dashletTitle, "padding-bottom"), 10); 
+         var toolbars = YUISelector.query("div.toolbar", this.dashlet); 
+         var toolbarHeight = 0; 
+
+         for (i = 0; i < toolbars.length; i++) 
+         { 
+            toolbarHeight += parseInt(toolbars[i].clientHeight, 10); 
+         } 
+
+         this.heightDelta = toolbarHeight + parseInt(this.dashletTitle.clientHeight, 10) + titlePadding; 
+     
          var height = parseInt(Dom.getStyle(this.dashlet, "height"), 10) - this.heightDelta;
          
          // Find all the iFrames in the body of the dashlet and hide any that are visible. This

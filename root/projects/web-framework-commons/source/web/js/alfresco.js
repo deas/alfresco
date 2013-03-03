@@ -1341,13 +1341,16 @@ Alfresco.util.renderRelativeTime = function(id)
  */
 Alfresco.util.relativeTime = function(from, to)
 {
+   var originalFrom = from;
+
    if (YAHOO.lang.isString(from))
    {
       from = Alfresco.util.fromISO8601(from);
    }
-   else if (!(from instanceof Date))
+
+   if (!(from instanceof Date))
    {
-      return "";
+      return originalFrom;
    }
 
    if (YAHOO.lang.isUndefined(to))

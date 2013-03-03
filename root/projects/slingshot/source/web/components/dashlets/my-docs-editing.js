@@ -186,7 +186,7 @@
                item = items[i];
                
                var siteURL = $siteURL("dashboard", { site: item.site.shortName }),
-                   editMsg = this.msg("text.edited-on", '<span class="relativeTime">' + Alfresco.util.relativeTime(item.modifiedOn) + '</span>', '<a class="theme-color-1 site-link" href="' + siteURL + '">' + $html(item.site.title) + '</a>');
+                   editMsg = this.msg("text.edited-on", '<span class="relativeTime">' + item.modifiedOn + '</span>', '<a class="theme-color-1 site-link" href="' + siteURL + '">' + $html(item.site.title) + '</a>');
                
                var params = {
                   name: $html(item.displayName),

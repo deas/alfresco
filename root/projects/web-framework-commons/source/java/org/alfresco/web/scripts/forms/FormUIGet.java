@@ -1687,15 +1687,34 @@ public class FormUIGet extends DeclarativeWebScript
                 JSONObject fieldDefinition, FormField fieldConfig) throws JSONException
     {
         // setup mandatory constraint if field is marked as such
-        if (field.isMandatory() && field.isDisabled() == false)
+        if (!field.isDisabled())
         {
-            Constraint constraint = generateConstraintModel(context, field, fieldDefinition, 
-                        fieldConfig, CONSTRAINT_MANDATORY);
-            
-            if (constraint != null)
+            if (field.isMandatory())
             {
-                // add the constraint to the context
-                context.getConstraints().add(constraint);
+                Constraint constraint = generateConstraintModel(context, field, fieldDefinition, fieldConfig, CONSTRAINT_MANDATORY);
+                if (constraint != null)
+                {
+                    // add the constraint to the context
+                    context.getConstraints().add(constraint);
+                }
+            }
+            // add form constraints defined in custom config
+            Map<String, ConstraintHandlerDefinition> fieldConstraints = fieldConfig.getConstraintDefinitionMap();
+            for (String constraintId : fieldConstraints.keySet())
+            {
+                Constraint constraint = null;
+                // get the custom handler for the constraint
+                ConstraintHandlerDefinition customConstraintConfig = fieldConstraints.get(constraintId);
+                if (customConstraintConfig != null)
+                {
+                    // generate and process the constraint model
+                    constraint = generateConstraintModel(context, field, fieldConfig, constraintId, new JSONObject(), customConstraintConfig);
+                }
+                if (constraint != null)
+                {
+                    // add the constraint to the context
+                    context.getConstraints().add(constraint);
+                }
             }
         }
         

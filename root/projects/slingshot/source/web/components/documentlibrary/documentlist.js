@@ -4048,6 +4048,13 @@
          if (params.filter && params.filter.filterId === "path")
          {
             params.path = params.filter.filterData;
+
+            // ALF-17145
+            if (this.currentFilter.filterData != params.path)
+            {
+               Alfresco.logger.debug("currentFilter.filterData was [" + this.currentFilter.filterData + "] now [" + params.path + "]");
+               this.currentFilter.filterData = params.path;
+            }
          }
          var requestParams = this._buildDocListParams(params);
          Alfresco.logger.debug("DataSource requestParams: ", requestParams);

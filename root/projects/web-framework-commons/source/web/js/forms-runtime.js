@@ -696,7 +696,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             for (var x = 0, xx = nodes.length; x < xx; x++)
             {
                var elem = nodes[x];
-               if (elem["htmlFor"] == fieldId)
+               if ((elem["htmlFor"] == fieldId) || (elem["htmlFor"] == fieldId+"-cntrl"))
                {
                   // get the text for the label
                   label = elem.firstChild.nodeValue;
