@@ -595,6 +595,11 @@
          <mimetype mimetype="text/x-markdown" display="Markdown">
             <extension default="true">md</extension>
          </mimetype>
+         
+         <!-- RSS  -->
+         <mimetype mimetype="application/rss+xml" text="true" display="RSS">
+            <extension>rss</extension>
+         </mimetype>
 
       </mimetypes>
    </config>
