@@ -30,22 +30,12 @@ function main()
    }
    model.userIsSiteManager = userIsSiteManager;
    
-   // Widget instantiation metadata...
-   var pages = [];
-   if (model.pageList != null)
-   {
-      for (var i=0; i<model.pageList.pages.length; i++)
-      {
-         pages.push(model.pageList.pages[i].name);
-      }
-   }
-
    var wikiDashlet = {
       id : "WikiDashlet", 
       name : "Alfresco.dashlet.WikiDashlet",
       assignTo : "wiki",
       options : {
-         pages : pages,
+         pages: (model.pageList != null) ? model.pageList : [],
          guid : instance.object.id,
          siteId : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : ""
       }
