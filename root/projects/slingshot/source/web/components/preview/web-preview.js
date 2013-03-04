@@ -360,7 +360,7 @@
             nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime();
          download = download ? "a=true" : "a=false";
-         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/" + Fixed + "?c=force&" + noCache + "&" + download
+         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/" + encodeURIComponent(this.options.name) + "?c=force&" + noCache + "&" + download
       },
 
       /**
