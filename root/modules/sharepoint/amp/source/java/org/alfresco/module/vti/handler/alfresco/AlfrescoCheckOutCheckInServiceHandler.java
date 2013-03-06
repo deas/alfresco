@@ -29,6 +29,7 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
+import org.alfresco.repo.webdav.LockInfo;
 import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
@@ -256,6 +257,14 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     // (Many creation routes do lazy versioning)
                     Map<QName, Serializable> initialVersionProps = new HashMap<QName, Serializable>(1, 1.0f);
                     versionService.ensureVersioningEnabled(documentFileInfo.getNodeRef(), initialVersionProps);
+
+                    // ALF-16846: to emulate Sharepoint, we allow a write-locked document to be checked out
+                    LockInfo lockInfo = webDAVlockService.getLockInfo(documentFileInfo.getNodeRef());
+                    if (lockInfo.isLocked()
+                            && !webDAVlockService.isLockedAndReadOnly(documentFileInfo.getNodeRef()))
+                    {
+                        webDAVlockService.unlock(documentFileInfo.getNodeRef());
+                    }
 
                     // Now, perform the checkout of the file
                     NodeRef workingCopy = checkOutCheckInService.checkout(documentFileInfo.getNodeRef());

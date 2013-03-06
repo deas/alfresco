@@ -316,6 +316,8 @@ public final class Path implements Iterable<Path.Element>, Serializable
      */
     public abstract static class Element implements Serializable
     {
+        private static final long serialVersionUID = 5396069341092867660L;
+
         /**
          * @return Returns the path element portion including leading '/' and never null
          */
