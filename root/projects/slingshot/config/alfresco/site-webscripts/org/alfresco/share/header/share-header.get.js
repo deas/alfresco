@@ -193,12 +193,50 @@ var getPages = function(includeUnusedPages)
       {
          pages = [];
 
-         // todo: Use a proper json parser since json may consist of user input,
-         var sitePages = eval('(' + dashboardPageData.properties.sitePages + ')') || [],
-            pageMetadata = eval('(' + dashboardPageData.properties.pageMetadata + ')') || {},
+         // Wrap sitePages array in a temporary object so jsonUtils.toObject can be used to parse the string
+         var sitePages = dashboardPageData.properties.sitePages,
+            pageMetadata = dashboardPageData.properties.pageMetadata,
             configPages = config.scoped["SitePages"]["pages"].childrenMap["page"],
             urlMap = {},
             pageId;
+
+         if (sitePages)
+         {
+            try
+            {
+               // Parse json using Java to a org.json.simple.JSONArray (wrap in an object to keep toObject happy)
+               sitePages = jsonUtils.toObject('{"tmp":' + dashboardPageData.properties.sitePages + '}').tmp;
+
+               // Print array as json and use eval so we get a Rhino javascript array to execute as usual
+               sitePages = eval("(" + sitePages.toString() + ")");
+            }
+            catch(e)
+            {
+               sitePages = [];
+            }
+         }
+         else
+         {
+            sitePages = [];
+         }
+         if (pageMetadata)
+         {
+            try
+            {
+               // Parse json using Java to a org.json.simple.JSONObject
+               pageMetadata = jsonUtils.toObject(pageMetadata);
+
+               // Print object as json and use eval so we get a Rhino javascript object to execute as usual
+               pageMetadata = eval("(" + pageMetadata.toString() + ")");
+            }
+            catch(e){
+               pageMetadata = {};
+            }
+         }
+         else
+         {
+            pageMetadata = {};
+         }
 
          // Get the page urls from config
          for (var i = 0; i < configPages.size(); i++)

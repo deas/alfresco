@@ -249,6 +249,10 @@ public class CSRFFilter implements Filter
         {
             return new AssertOriginAction();
         }
+        else if (name.equals("throwError"))
+        {
+            return new ThrowErrorAction();
+        }
         return null;
     }
 
@@ -319,7 +323,7 @@ public class CSRFFilter implements Filter
         }
         
         // Match path
-        if (rule.getPath() != null && !matchString(request.getRequestURI(). substring(request.getContextPath().length()), rule.getPath()))
+        if (rule.getPath() != null && !matchString(request.getRequestURI().substring(request.getContextPath().length()), rule.getPath()))
         {
             return false;
         }
@@ -747,8 +751,8 @@ public class CSRFFilter implements Filter
 
             if (logger.isDebugEnabled())
                 logger.debug("Assert referer " + request.getMethod() + " " + request.getRequestURI() + " :: referer: '" +
-                        request.getHeader(HEADER_REFERER) + "' vs server & context: '" + currentServer + "'" +
-                        (refererServer != null ? " or /" + refererServer + "/" : "")
+                        request.getHeader(HEADER_REFERER) + "' vs server & context: " + currentServer + " (string)" +
+                        (refererServer != null ? " or " + refererServer + " (regexp)" : "")
                 );
 
             // Note! Add slashes at the end to avoid missing when the victim's domain is "site.com"
@@ -843,8 +847,8 @@ public class CSRFFilter implements Filter
 
             if (logger.isDebugEnabled())
                 logger.debug("Assert origin " + request.getMethod() + " " + request.getRequestURI() + " :: origin: '" +
-                        request.getHeader(HEADER_ORIGIN) + "' vs server: '" + currentServer + "'" +
-                        (originServer != null ? " or /" + originServer + "/" : ""));
+                        request.getHeader(HEADER_ORIGIN) + "' vs server: " + currentServer + " (string)" +
+                        (originServer != null ? " or " + originServer + " (regexp)" : ""));
 
             if (originHeader.isEmpty() && params.get(PARAM_ALWAYS).equals("false"))
             {
@@ -871,6 +875,41 @@ public class CSRFFilter implements Filter
                     throw new ServletException(message);
                 }
             }
+        }
+    }
+
+
+    /**
+     * An action that asserts the request's 'Origin' header matches the current server name or the "origin" param .
+     */
+    private class ThrowErrorAction extends Action
+    {
+        public static final String PARAM_MESSAGE = "message";
+
+        /**
+         * Requires the following params; a boolean deciding if the origin header MUST be present when validated.
+         * Defined in a param with key "always".
+         *
+         * @param params The action parameters
+         * @throws ServletException
+         */
+        public void init(Map<String, String> params) throws ServletException
+        {
+            super.init(params);
+        }
+
+        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        {
+            String message = "Request is not allowed to be executed.";
+            if (params.containsKey("message"))
+            {
+                message = params.get(PARAM_MESSAGE);
+            }
+            message += " Request: " + request.getMethod() + " " + request.getRequestURI();
+            if (logger.isInfoEnabled())
+                logger.info(message);
+
+            throw new ServletException(message);
         }
     }
 }

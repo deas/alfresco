@@ -44,6 +44,18 @@
    -->
 
    <!--
+      To run the CSRF Token Filter behind 1 or more proxies that do not rewrite the Origin or Referere headers:
+
+      1. Copy the "CSRFPolicy" default config in share-security-config.xml and paste it into this file.
+      2. Replace the old config by setting the <config> element's "replace" attribute to "true" like below:
+         <config evaluator="string-compare" condition="CSRFPolicy" replace="true">
+      3. To every <action name="assertReferer"> element add the following child element
+         <param name="referer">http://www.proxy1.com/.*|http://www.proxy2.com/.*</param>
+      4. To every <action name="assertOrigin"> element add the following child element
+         <param name="origin">http://www.proxy1.com|http://www.proxy2.com</param>
+   -->
+
+   <!--
       Remove the default wildcard setting and use instead a strict whitelist of the only domains that shall be allowed
       to be used inside iframes (i.e. in the WebView dashlet on the dashboards)
    -->

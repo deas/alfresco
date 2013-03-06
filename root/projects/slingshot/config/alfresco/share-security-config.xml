@@ -11,7 +11,8 @@
       Note!
       These settings are used to mitigate phishing attacks (i.e. displaying a login form).
       These settings are NOT used to mitigate clickjacking attacks and do NOT control if or when Share is allowed
-      to be included into pages (using an <iframe>) from other domains.
+      to be included into pages (using an <iframe>) from other domains, that is instead controlled by the
+      "X-Frame-Options" header inside the "SecurityHeadersPolicy" config.
    -->
    <config evaluator="string-compare" condition="IFramePolicy">
 
@@ -32,21 +33,21 @@
    </config>
 
    <!--
-      CSRF Filter config to mitigate XSRF & Seasurfing attacks
+      CSRF filter config to mitigate CSRF/Seasurfing/XSRF attacks
 
-      To disable the CSRF token filter override the <filter> to not contain any values, see share-config-custom.xml for
+      To disable the CSRF filter override the <filter> to not contain any values, see share-config-custom.xml for
       an example.
 
       If you have a custom resource(s) that a client POST to that can't accept a token, for whatever reason, then make
       sure to copy the entire CSRFPolicy config and place it in your share-config-custom.xml file
       with the replace="true" attribute and make sure to add a new <rule> in the top of the <filter> element,
-      which has a <request> element matching your requests and uses only the "assertReferer" & "assertOrigin" actions.
+      which has a <request> element matching your requests, and uses only the "assertReferer" & "assertOrigin" actions.
 
       I.e.
       <rule>
          <request>
             <method>POST</method>
-            <path>^\/some\/resource|^\/some\/resource2</path>
+            <path>/proxy/alfresco/custom/repoWebscript/withoutParams|/service/custom/shareResource/thatMayHaveParams(\?.+)?</path>
          </request>
          <action name="assertReferer">
             <param name="always">false</param>
@@ -71,14 +72,28 @@
 
       <!-- The first rule with a matching request will get its action invoked, the remaining rules will be ignored. -->
       <filter>
+
          <!--
-            Certain Surf POST requests form the WebScript console must be allowed to pass without a token since
+            Certain webscripts shall not be allowed to be accessed directly form the browser.
+            Make sure to throw an error if they are used.
+         -->
+         <rule>
+            <request>
+               <path>/proxy/alfresco/remoteadm/.*</path>
+            </request>
+            <action name="throwError">
+               <param name="message">It is not allowed to access this url from your browser</param>
+            </action>
+         </rule>
+
+         <!--
+            Certain Surf POST requests from the WebScript console must be allowed to pass without a token since
             the Surf WebScript console code can't be dependent on a Share specific filter.
          -->
          <rule>
             <request>
                <method>POST</method>
-               <path>^\/page\/caches\/dependency\/clear|^\/page\/index|^\/page\/surfBugStatus|^\/page\/modules\/deploy|^\/page\/modules\/module|^\/page\/api\/javascript\/debugger</path>
+               <path>/page/caches/dependency/clear|/page/index|/page/surfBugStatus|/page/modules/deploy|/page/modules/module|/page/api/javascript/debugger</path>
             </request>
             <action name="assertReferer">
                <param name="always">false</param>
@@ -92,7 +107,7 @@
          <rule>
             <request>
                <method>POST</method>
-               <path>^/page/dologin.*|^\/page/site\/[^\/]+\/start-workflow|^\/page/start-workflow</path>
+               <path>/page/dologin(\?.+)?|/page/site/[^/]+/start-workflow|/page/start-workflow</path>
             </request>
             <action name="assertReferer">
                <param name="always">false</param>
@@ -106,7 +121,7 @@
          <rule>
             <request>
                <method>GET</method>
-               <path>^/page/dologout.*</path>
+               <path>/page/dologout(\?.+)?</path>
             </request>
             <action name="clearToken">
                <param name="session">Alfresco-CSRFToken</param>
@@ -118,9 +133,9 @@
          <rule>
             <request>
                <session>
-                  <attribute name="_alf_USER_ID">.*</attribute>
+                  <attribute name="_alf_USER_ID">.+</attribute>
                   <attribute name="Alfresco-CSRFToken"/>
-                  <!-- empty attribute element indicates null -->
+                  <!-- empty attribute element indicates null, meaning the token has not yet been set -->
                </session>
             </request>
             <action name="generateToken">
@@ -133,10 +148,10 @@
          <rule>
             <request>
                <method>GET</method>
-               <path>^/page/.*</path>
+               <path>/page/.*</path>
                <session>
-                  <attribute name="_alf_USER_ID">.*</attribute>
-                  <attribute name="Alfresco-CSRFToken">.*</attribute>
+                  <attribute name="_alf_USER_ID">.+</attribute>
+                  <attribute name="Alfresco-CSRFToken">.+</attribute>
                </session>
             </request>
             <action name="generateToken">
@@ -145,13 +160,16 @@
             </action>
          </rule>
 
-         <!-- Verify multipart requests contains the token as a parameter and also correct referer & origin header if available -->
+         <!--
+            Verify multipart requests from logged in users contain the token as a parameter
+            and also correct referer & origin header if available
+         -->
          <rule>
             <request>
                <method>POST</method>
-               <header name="Content-Type">^multipart/.*</header>
+               <header name="Content-Type">multipart/.+</header>
                <session>
-                  <attribute name="_alf_USER_ID">.*</attribute>
+                  <attribute name="_alf_USER_ID">.+</attribute>
                </session>
             </request>
             <action name="assertToken">
@@ -167,16 +185,16 @@
          </rule>
 
          <!--
-            Verify there is a token in the header for remaining state changing requests and also correct
-            referer & origin headers if available. We "catch" all content types since just setting it to
+            Verify that all remaining state changing requests from logged in users' requests contains a token in the
+            header and correct referer & origin headers if available. We "catch" all content types since just setting it to
             "application/json.*" since a webscript that doesn't require a json request body otherwise would be
-            successfully executed using i.e. "text/plain".
+            successfully executed using i.e."text/plain".
          -->
          <rule>
             <request>
                <method>POST|PUT|DELETE</method>
                <session>
-                  <attribute name="_alf_USER_ID">.*</attribute>
+                  <attribute name="_alf_USER_ID">.+</attribute>
                </session>
             </request>
             <action name="assertToken">
