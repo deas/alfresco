@@ -22,6 +22,19 @@ function main()
    // can optionally pass JSON list of fav sites if they are already known to the caller
    if (args.favsites)
    {
+      try
+      {
+         // Parse json using Java to a org.json.simple.JSONObject
+         favourites = jsonUtils.toObject(args.favsites);
+
+         // Print object as json and use eval so we get a Rhino javascript object to execute as usual
+         favourites = eval("(" + favourites.toString() + ")");
+      }
+      catch(e)
+      {
+         favourites = {};
+      }
+
       favourites = eval('(' + args.favsites + ')');
    }
    else
