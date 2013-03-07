@@ -256,7 +256,7 @@ h4 .lighter
 
 .dashlet .detail-list-item
 {
-   border-bottom: 1px solid #ccc;
+   border-bottom: 1px solid #eee;
 }
 
 .dashlet.dynamic-welcome
@@ -1600,6 +1600,12 @@ body.alfresco-guest
 .node-header .node-path
 {
    padding-top: 0 !important;
+}
+
+.node-header .status-banner
+{
+   margin-top: 0 !important;
+   margin-bottom: 0.75em;
 }
 
 /** tweak width of global picker treeview to avoid wrap*/
