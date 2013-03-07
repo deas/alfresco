@@ -45,9 +45,27 @@ function getLocationType()
       var p = sitedata.getPage("site/" + siteId + "/dashboard");
       if (p != null)
       {
-         pageMetadata = eval('(' + p.properties.pageMetadata + ')');
-         pageMetadata = pageMetadata != null ? pageMetadata : {};
-         doclibMeta = pageMetadata[page.id] || {};
+         var pageMetadata = p.properties.pageMetadata;
+         if (pageMetadata)
+         {
+            try
+            {
+               // Parse json using Java to a org.json.simple.JSONObject
+               pageMetadata = jsonUtils.toObject(pageMetadata);
+
+               // Print object as json and use eval so we get a Rhino javascript object to execute as usual
+               pageMetadata = eval("(" + pageMetadata.toString() + ")");
+            }
+            catch(e){
+               pageMetadata = {};
+            }
+         }
+         else
+         {
+            pageMetadata = {};
+         }
+
+         var doclibMeta = pageMetadata[page.id] || {};
          if (doclibMeta.titleId != null)
          {
             // Save the overridden page title into the request context
@@ -57,7 +75,7 @@ function getLocationType()
       }
 
       var connector = remote.connect("alfresco");
-      result = connector.get("/slingshot/doclib/container/" + siteId + "/" + containerId + "?type=" + toRepoType(contentType));
+      var result = connector.get("/slingshot/doclib/container/" + siteId + "/" + containerId + "?type=" + toRepoType(contentType));
       if (result.status == 200)
       {
          var data = eval('(' + result + ')');
