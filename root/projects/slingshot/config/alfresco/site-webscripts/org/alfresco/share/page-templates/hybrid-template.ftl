@@ -60,15 +60,6 @@
    <#-- Additional template resources -->
    </@markup>
 
-   <#if (templateStylesheets?? && templateStylesheets?size > 0)>
-      <!-- Template & Component Resources' stylesheets gathered to workaround IEBug KB262161 -->
-      <style type="text/css" media="screen">
-         <#list templateStylesheets as href>
-            @import "${href}";
-         </#list>
-      </style>
-   </#if>
-
    <#-- Component Resources from .get.head.ftl files or from dependency directives processed before the
         <@outputJavaScript> and <@outputCSS> directives. -->
    ${head}

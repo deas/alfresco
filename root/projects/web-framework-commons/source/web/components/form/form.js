@@ -125,7 +125,7 @@
       /**
        * The forms runtime instance.
        * 
-       * @property
+       * @property formsRuntime
        * @type object
        */
       formsRuntime: null, 
@@ -281,7 +281,7 @@
        */
       onJsonPostFailure: function FormUI_onJsonPostFailure(response)
       {
-         var errorMsg = this._msg("form.jsonsubmit.failed");
+         var errorMsg = this.msg("form.jsonsubmit.failed");
          if (response.json && response.json.message)
          {
             errorMsg = errorMsg + ": " + response.json.message;

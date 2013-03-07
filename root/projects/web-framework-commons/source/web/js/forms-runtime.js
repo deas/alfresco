@@ -902,7 +902,55 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             }
          }
       },
-      
+
+      /**
+       * Helper method that inspects the url and adds or refreshes the CSRF token parameter
+       *
+       * @param url
+       * @return {*}
+       * @private
+       */
+      _setCSRFParameter: function(url)
+      {
+         // Make sure there is a CSRF parameter with the token present in submission
+         var pathAndParams = url.split("?"),
+               tokenParam = Alfresco.util.CSRFPolicy.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRFPolicy.getToken());
+         if (pathAndParams.length == 1)
+         {
+            url += "?" + tokenParam;
+         }
+         else
+         {
+            var params = pathAndParams[1].split("&"),
+                  pi = 0,
+                  nameAndValue,
+                  newParams = "",
+                  firstParam = true;
+            for (; pi < params.length; pi++)
+            {
+               nameAndValue = params[pi].split("=");
+               if (nameAndValue.length > 0 && nameAndValue[0] == Alfresco.util.CSRFPolicy.getParameter())
+               {
+                  // Don't use the old token param, add a new one after the loop instead
+               }
+               else
+               {
+                  // Pass on parameter
+                  newParams += firstParam ? "?" : "&";
+                  newParams += params[pi];
+                  firstParam = false;
+               }
+            }
+            if (pi == params.length)
+            {
+               newParams += firstParam ? "?" : "&";
+               newParams += tokenParam;
+            }
+            url = pathAndParams[0] + newParams;
+         }
+         return url;
+      },
+
       /**
        * Event handler called when the form is submitted.
        * 
@@ -961,43 +1009,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                   // Pass the CSRF token if the CSRF token filter is enabled
                   if (Alfresco.util.CSRFPolicy.isFilterEnabled())
                   {
-                     // Make sure there is a CSRF parameter with the token present in submission
-                     var pathAndParams = submitUrl.split("?"),
-                           tokenParam = Alfresco.util.CSRFPolicy.getParameter() + "=" + encodeURIComponent(Alfresco.util.CSRFPolicy.getToken());
-                     if (pathAndParams.length == 1)
-                     {
-                        submitUrl += "?" + tokenParam;
-                     }
-                     else
-                     {
-                        var params = pathAndParams[1].split("&"),
-                              pi = 0,
-                              nameAndValue,
-                              newParams = "",
-                              firstParam = true;
-                        for (; pi < params.length; pi++)
-                        {
-                           nameAndValue = params[pi].split("=");
-                           if (nameAndValue.length > 0 && nameAndValue[0] == Alfresco.util.CSRFPolicy.getParameter())
-                           {
-                              // Don't use the old token param, add a new one after the loop instead
-                           }
-                           else
-                           {
-                              // Pass on parameter
-                              newParams += firstParam ? "?" : "&";
-                              newParams += params[pi];
-                              firstParam = false;
-                           }
-                        }
-                        if (pi == params.length)
-                        {
-                           newParams += firstParam ? "?" : "&";
-                           newParams += tokenParam;
-                        }
-                        submitUrl = pathAndParams[0] + newParams;
-                     }
-                     form.attributes.action.nodeValue = submitUrl;
+                     form.attributes.action.nodeValue = this._setCSRFParameter(submitUrl);
                   }
 
                   form.target = iframe.name;
@@ -1108,6 +1120,14 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                   // set up specific config
                   config.dataForm = form;
                   Alfresco.util.Ajax.request(config);
+               }
+            }
+            else
+            {
+               if (form.enctype && form.enctype == "multipart/form-data" && Alfresco.util.CSRFPolicy.isFilterEnabled())
+               {
+                  // We are submitting the form as  multipart/form-data and leaving the page, make sure the CSRF token is set
+                  form.attributes.action.nodeValue = this._setCSRFParameter(form.attributes.action.nodeValue);
                }
             }
          }

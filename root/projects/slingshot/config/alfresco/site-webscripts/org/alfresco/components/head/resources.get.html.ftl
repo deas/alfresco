@@ -172,15 +172,6 @@
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css" group="share" forceAggregation="true"/>
 </@>
 
-<#if (templateStylesheets?? && templateStylesheets?size > 0)>
-   <!-- Common stylesheets gathered to workaround IEBug KB262161 -->
-   <style type="text/css" media="screen">
-      <#list templateStylesheets as href>
-         @import "${href}";
-      </#list>
-   </style>
-</#if>
-
 <@markup id="resources">
    <#-- Use this "markup id" to add in a extension's resources -->
 </@>
