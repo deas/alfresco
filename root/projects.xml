@@ -606,6 +606,7 @@
    <target name="build-tck" 
            depends="package-repository">
       <war warfile="${dir.project.repository.dist}/${file.name.war.jcr.tck}" 
+           manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.repository.src.webinf}\JCRTCK\web.xml">
          <fileset dir="${dir.project.repository.src.web}" 
                   excludes="WEB-INF/**" />
@@ -646,10 +647,7 @@
                   includes="alfresco/version.properties"/>
          <manifest>
              <attribute name="Specification-Title" value="Alfresco JCR TCK"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco JCR TCK ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
    </target>
@@ -1347,14 +1345,12 @@
       </copy>
 
       <war warfile="${dir.project.slingshot.dist}/${file.name.war.slingshot}" 
+           manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.slingshot.src.webinf}/web.xml">
          <fileset dir="${dir.project.slingshot.assemble}" />
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Share"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco Share ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
    	
@@ -1550,14 +1546,12 @@
 
    <target name="package-webeditor-war" depends="assemble-webeditor-war">
       <war warfile="${dir.project.webeditor.dist}/${file.name.war.webeditor}" 
+           manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.webeditor.src.webinf}/web.xml">
          <fileset dir="${dir.project.webeditor.assemble.war}" />
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Web Editor"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco Web Editor ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
    </target>
@@ -1704,6 +1698,7 @@
    <target name="package-webeditor-customersite-sample-war" 
            depends="package-webeditor-taglib-jar, package-webeditor-customersite-sample-jar">
       <war warfile="${dir.project.webeditorsamples.customersite.dist}/${file.name.war.webeditor.sample.customersite}" 
+           manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.webeditorsamples.customersite.src.web}/WEB-INF/web.xml">
          <fileset dir="${dir.project.webeditorsamples.customersite.src.web}" excludes="WEB-INF/*" />
          <zipfileset file="${dir.project.webeditor.src.java}/log4j.properties" prefix="WEB-INF/classes" />
@@ -1720,10 +1715,7 @@
          <zipfileset dir="${dir.project.3rdparty}/lib" prefix="WEB-INF/lib" includes="json.jar" />
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Sample Customer Site"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco Sample Customer Site ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
    </target>
@@ -1799,14 +1791,12 @@
 
       <mkdir dir="${dir.project.webclient.dist}" />
       <war warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" 
+           manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.webclient.src.webinf}/web.xml">
          <fileset dir="${dir.project.webclient.assemble}" />
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Repository"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco Repository ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
 
@@ -1992,6 +1982,7 @@
 
       <mkdir dir="${dir.project.webclient.dist}"/>
       <war destfile="${dir.project.webclient.dist}/${file.name.war.webclient.website}"
+           manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.webclient.test.resources}/websites/alfresco/ROOT/WEB-INF/web.xml">
          <lib dir="${dir.project.3rdparty.lib}">
             <include name="standard.jar"/>
@@ -2005,10 +1996,7 @@
          <webinf file="${dir.project.webclient.test.resources}/websites/alfresco/ROOT/WEB-INF/pr.tld"/>
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Sample Website"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco Sample Website ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
       </war>
    </target>
@@ -2379,14 +2367,12 @@
     <target name="package-wcmquickstart-webapp-war" 
             depends="assemble-wcmquickstart-webapp">
       <war warfile="${dir.project.wcmquickstart-webapp.dist}/${file.name.war.wcmquickstart-webapp}" 
+             manifest="${dir.project.repository.dist}/MANIFEST.MF"
              webxml="${dir.project.wcmquickstart-webapp.src.webinf}/web.xml">
          <fileset dir="${dir.project.wcmquickstart-webapp.assemble}" />
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Web Quick Start"/>
-             <attribute name="Specification-Version" value="${version.number}"/>
              <attribute name="Implementation-Title" value="Alfresco Web Quick Start ${file.name.codeline}"/>
-             <attribute name="Implementation-Version" value="${version.number}-${alf.build.number}"/>
-             <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
          </manifest>
         </war>
     </target>

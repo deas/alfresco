@@ -301,6 +301,14 @@
           <replacefilter token="-b@build-number@" value="${display.build.number}" />
           <replacefilter token="version.edition=Community" value="version.edition=${file.name.codeline}" />
       </replace>
+
+      <manifest file="${dir.project.repository.dist}/MANIFEST.MF">
+         <attribute name="Specification-Version" value="${version.major}.${version.minor}.${version.revision}"/>
+         <attribute name="Implementation-Version" value="${version.number}${display.build.number}"/>
+         <attribute name="Implementation-Edition" value="${file.name.codeline}"/>
+         <attribute name="Build-Date" value="${DSTAMP}-${TSTAMP}"/>
+      </manifest>
+
    </target>
 
 

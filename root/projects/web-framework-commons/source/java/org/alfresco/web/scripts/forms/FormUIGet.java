@@ -1698,22 +1698,26 @@ public class FormUIGet extends DeclarativeWebScript
                     context.getConstraints().add(constraint);
                 }
             }
-            // add form constraints defined in custom config
-            Map<String, ConstraintHandlerDefinition> fieldConstraints = fieldConfig.getConstraintDefinitionMap();
-            for (String constraintId : fieldConstraints.keySet())
+      
+            if  (fieldConfig != null && fieldConfig.getConstraintDefinitionMap() != null)
             {
-                Constraint constraint = null;
-                // get the custom handler for the constraint
-                ConstraintHandlerDefinition customConstraintConfig = fieldConstraints.get(constraintId);
-                if (customConstraintConfig != null)
+                // add form constraints defined in custom config
+                Map<String, ConstraintHandlerDefinition> fieldConstraints = fieldConfig.getConstraintDefinitionMap();
+                for (String constraintId : fieldConstraints.keySet())
                 {
-                    // generate and process the constraint model
-                    constraint = generateConstraintModel(context, field, fieldConfig, constraintId, new JSONObject(), customConstraintConfig);
-                }
-                if (constraint != null)
-                {
-                    // add the constraint to the context
-                    context.getConstraints().add(constraint);
+                    Constraint constraint = null;
+                    // get the custom handler for the constraint
+                    ConstraintHandlerDefinition customConstraintConfig = fieldConstraints.get(constraintId);
+                    if (customConstraintConfig != null)
+                    {
+                        // generate and process the constraint model
+                        constraint = generateConstraintModel(context, field, fieldConfig, constraintId, new JSONObject(), customConstraintConfig);
+                    }
+                    if (constraint != null)
+                    {
+                        // add the constraint to the context
+                        context.getConstraints().add(constraint);
+                    }
                 }
             }
         }

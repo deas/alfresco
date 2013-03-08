@@ -1874,7 +1874,12 @@
 
          // TODO: No-cache? - add to URL retrieved from DataSource
          // "&noCache=" + new Date().getTime();
-         
+
+         if (Alfresco.util.CSRFPolicy.isFilterEnabled())
+         {
+            this.widgets.dataSource.connMgr.initHeader(Alfresco.util.CSRFPolicy.getHeader(), Alfresco.util.CSRFPolicy.getToken(), false);
+         }
+
          this.widgets.dataSource.sendRequest(YAHOO.lang.JSON.stringify(requestParams),
          {
             success: successHandler,
