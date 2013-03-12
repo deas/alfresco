@@ -961,7 +961,7 @@ function generateUserItems() {
                      id: "HEADER_USER_MENU_PROFILE",
                      label: "my_profile.label",
                      iconClass: "alf-user-profile-icon",
-                     targetUrl: "user/" + user.name + "/profile"
+                     targetUrl: "user/" + encodeURIComponent(user.name) + "/profile"
                   }
                },
                {
@@ -972,7 +972,7 @@ function generateUserItems() {
                      id: "HEADER_USER_MENU_CHANGE_PASSWORD",
                      label: "change_password.label",
                      iconClass: "alf-user-password-icon",
-                     targetUrl: "user/" + user.name + "/change-password"
+                     targetUrl: "user/" + encodeURIComponent(user.name) + "/change-password"
                   }
                },
                {
