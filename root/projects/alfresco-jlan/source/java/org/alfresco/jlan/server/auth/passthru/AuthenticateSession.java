@@ -1032,6 +1032,9 @@ public class AuthenticateSession {
 
           // NT LM 1.2 SMB dialect
 
+          int defFlags2 = SMBPacket.FLG2_UNICODE;
+          pkt.setFlags2(defFlags2);
+
           pkt.setParameterCount(13);
           pkt.setAndXCommand(0xFF); // no secondary command
           pkt.setParameter(1, 0); // offset to next command
@@ -1074,19 +1077,19 @@ public class AuthenticateSession {
 
           // Pack the account/client details
 
-          pkt.packString(userName, false);
+          pkt.packString(userName, true);
 
           // Check if the share has a domain, if not then use the default domain string
 
           if (getPCShare().hasDomain())
-              pkt.packString(getPCShare().getDomain(), false);
+              pkt.packString(getPCShare().getDomain(), true);
           else if ( domain != null)
-            pkt.packString( domain, false);
+            pkt.packString( domain, true);
           else
-              pkt.packString("?", false);
+              pkt.packString("?", true);
 
-          pkt.packString("Java VM", false);
-          pkt.packString("Alfresco CIFS", false);
+          pkt.packString("Java VM", true);
+          pkt.packString("Alfresco CIFS", true);
           
           // Set the packet length
 
