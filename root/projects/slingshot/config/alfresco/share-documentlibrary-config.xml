@@ -668,6 +668,7 @@
                <permission allow="true">CancelCheckOut</permission>
             </permissions>
             <evaluator>evaluator.doclib.metadata.isLocked</evaluator> 
+            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
          </action>
 
          <!-- Manage folder rules -->
