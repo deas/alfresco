@@ -46,6 +46,7 @@ function main()
       }
    };
    model.widgets = [mySites, dashletResizer, dashletTitleBarActions];
+   model.showCreateSite = true;
 }
 
 main();

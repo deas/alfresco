@@ -61,6 +61,7 @@ public class UserDashboardInterceptor extends AbstractWebFrameworkInterceptor
             HttpServletRequest req = MTAuthenticationFilter.getCurrentServletRequest();
             if (req != null)
             {
+                ServletUtil.setRequest(req);
                 try
                 {
                     // init the user object so we can test the current user ID against the page uri

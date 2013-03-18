@@ -577,7 +577,10 @@
       onFileSelection: function DNDUpload_onFileSelection(evt)
       {
          var files = evt.target.files; // FileList object
-            
+         if (files != null)
+         {
+            this.showConfig.files = files;
+
             // This is done even if no files are selected to ensure the display is correct if the next upload is via drag and drop...
             if (this.dataTable != null)
             {
@@ -585,10 +588,25 @@
                this.dataTable.set("height", "204px", true);
             }
             
-         if (files != null)
+            // Do some checks to ensure that we can proceed with some kind of upload
+            var allZeroByteFiles = true;
+            for (var i=0; i<files.length; i++)
                {
-            this.showConfig.files = files;
+               if (files[i].size !== 0)
+               {
+                  allZeroByteFiles = false;
+                  break;
+               }
+            }
             
+            if (allZeroByteFiles)
+            {
+               // All the files selected are zero bytes in length - process the files anyway as this will
+               // properly validate for errors but we won't change the appearance of the file selection.
+               this.processFilesForUpload(this.showConfig.files);
+            }
+            else
+            {
                if (this.suppliedConfig.mode == this.MODE_SINGLE_UPDATE)
                {
                   // If we're doing an update then we don't want to start the upload immediately as this 
@@ -605,6 +623,7 @@
                   this.processFilesForUpload(this.showConfig.files);
                }
             }
+         }
          else
          {
             // No files selected, do nothing.
@@ -679,7 +698,7 @@
 
             // Only set the multiple attribute on the input element if running in multi-file upload
             // (i.e. we don't want to allow multiple file selection when updating a file)
-            if (this.suppliedConfig.mode !== this.MODE_SINGLE_UPDATE)
+            if (this.suppliedConfig.mode !== this.MODE_SINGLE_UPLOAD && this.suppliedConfig.mode !== this.MODE_SINGLE_UPDATE)
             {
                Dom.setAttribute(this.fileSelectionInput, "multiple", "");
             }
@@ -1430,11 +1449,23 @@
       _applyConfig: function DNDUpload__applyConfig()
       {
          // Generate the title based on number of files and destination
-         var title = "",
-            i18n = this.showConfig.files.length == 1 ? "header.singleUpload" : "header.multiUpload",
-            location = this.showConfig.uploadDirectoryName == "" ? this.msg("label.documents") : this.showConfig.uploadDirectoryName;
-
+         var title, i18n;
+         if (this.showConfig.mode === this.MODE_SINGLE_UPLOAD)
+         {
+            i18n = this.msg("header.singleUpload");
+            this.titleText.innerHTML = i18n;
+         }
+         else if (this.showConfig.mode === this.MODE_MULTI_UPLOAD)
+         {
+            i18n = this.showConfig.files.length == 1 ? "header.multiUpload.singleFile" : "header.multiUpload";
+            var location = this.showConfig.uploadDirectoryName == "" ? this.msg("label.documents") : this.showConfig.uploadDirectoryName;
             this.titleText.innerHTML = this.msg(i18n, '<img src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-open-16.png" class="title-folder" />' + $html(location));
+         }
+         else if (this.showConfig.mode === this.MODE_SINGLE_UPDATE)
+         {
+            i18n = this.msg("header.singleUpdate");
+            this.titleText.innerHTML = i18n;
+         }
 
          if (this.showConfig.mode === this.MODE_SINGLE_UPDATE)
          {

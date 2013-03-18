@@ -97,7 +97,7 @@ Alfresco.WebPreview.prototype.Plugins.WebPreviewer.prototype =
       // Create flash web preview by using swfobject
       // Note! "WebPreviewer_" is used and must match in global js callback methods
       var swfId = "WebPreviewer_" + this.wp.id;
-      var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "components/preview/WebPreviewer.swf",
+      var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "res/components/preview/WebPreviewer.swf",
             swfId, "100%", "100%", "9.0.45");
       so.addVariable("fileName", this.wp.options.name);
       so.addVariable("paging", this.attributes.paging);

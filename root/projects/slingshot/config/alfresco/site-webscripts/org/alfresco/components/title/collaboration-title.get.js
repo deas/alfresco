@@ -92,7 +92,7 @@ function main()
    {
       links.push(
       {
-         id: "customiseSite-link",
+         id: "customiseDashboard-link",
          href: "customise-site-dashboard",
          cssClass: "customise-site-dashboard" == activePage ? "active-page" : null,
          label: "link.customiseDashboard"
@@ -107,10 +107,13 @@ function main()
          label: "link.more",
          options: [
             { value: "editSite", label: "link.editSite" },
-            { value: "customiseSite", label: "link.customiseSite" },
-            { value: "leaveSite", label: "link.leave" }
+            { value: "customiseSite", label: "link.customiseSite" }
          ]
       };
+      if (userIsDirectMember)
+      {
+         moreMenu.options.push({ value: "leaveSite", label: "link.leave" });
+      }
    }
    else if (userIsMember)
    {

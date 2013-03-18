@@ -2058,6 +2058,8 @@
       <mkdir dir="${dir.module.spp.dist}" />
       <jar jarfile="${dir.module.spp.dist}/${file.name.jar.spp}"
            basedir="${dir.module.spp.classes}" encoding="UTF-8" />
+      <jar jarfile="${dir.module.spp.dist}/${file.name.jar.spp.config}"
+           basedir="${dir.module.spp.config}" encoding="UTF-8" />
    </target>
 
    <target name="package-spp-war"

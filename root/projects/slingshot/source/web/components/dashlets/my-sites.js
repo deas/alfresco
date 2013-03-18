@@ -177,7 +177,11 @@
          });
 
          // Listen on clicks for the create site link
-         Event.addListener(this.id + "-createSite-button", "click", this.onCreateSite, this, true);
+         var createSiteLink = Dom.get(this.id + "-createSite-button");
+         if (createSiteLink)
+         {
+            Event.addListener(createSiteLink, "click", this.onCreateSite, this, true);
+         }
 
          // DataSource definition
          this.widgets.dataSource = new YAHOO.util.DataSource(this.sites,

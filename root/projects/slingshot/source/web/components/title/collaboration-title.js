@@ -28,7 +28,8 @@
 (function()
 {
    var Dom = YAHOO.util.Dom,
-      Event = YAHOO.util.Event;
+      Event = YAHOO.util.Event,
+      Selector = YAHOO.util.Selector;
 
    /**
     * CollaborationTitle constructor.
@@ -164,6 +165,9 @@
                }
             }, this, true);
          }
+
+         // Make the buttons and menus visible now that the dom has been enhanced
+         Dom.removeClass(Selector.query(".links", this.id, true), "hidden");
       },
 
       /**

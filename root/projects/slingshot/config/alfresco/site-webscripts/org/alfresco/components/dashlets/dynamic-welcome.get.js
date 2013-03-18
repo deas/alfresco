@@ -151,6 +151,9 @@ function main()
    }
 
    model.showDashlet = true;
+   model.userIsMember = false;
+   model.userIsSiteManager = false;
+   model.userIsSiteConsumer = false;
 
    // This WebScript will render welcome dashlets for both user and site dashboards, however
    // since each is handled differently we need to determine which type is being rendered.
@@ -219,7 +222,7 @@ function main()
       catch (e)
       {
       }
-
+   
       if (hideDashlet)
       {
          // If the user has opted not to see the welcome dashlet for this site dashboard then
@@ -233,19 +236,19 @@ function main()
          dashboardId = "site/" + page.url.templateArgs.site + "/dashboard";
          dashboardUrl = dashboardId;
          model.siteURL = page.url.templateArgs.site;
-
+   
          var siteTitle = (profile.title != "") ? profile.title : profile.shortName;
-
+   
          model.site = siteTitle;
          model.title="welcome.site";
          model.description="welcome.site.description";
-
+   
          // Call the repository to see if the user is site manager or not
          var userIsSiteManager = false,
             userIsMember = false,
             userIsSiteConsumer = true,
             obj = null;
-
+   
          json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
          if (json.status == 200)
          {
@@ -256,8 +259,11 @@ function main()
             userIsMember = true;
             userIsSiteManager = obj.role == "SiteManager";
             userIsSiteConsumer = obj.role == "SiteConsumer";
+            model.userIsMember = userIsMember;
+            model.userIsSiteManager = userIsSiteManager;
+            model.userIsSiteConsumer = userIsSiteConsumer;
          }
-
+   
          // Configure the columns in the dashlet based on the users ownership and access rights...
          if (userIsSiteManager)
          {
@@ -270,7 +276,7 @@ function main()
          {
             columns[0] = getBrowseSiteColumn()
             columns[1] = getSiteMembersColumn();
-            
+               
             if (userIsSiteConsumer)
             {
                // Configure the 3rd column for a user with read access...

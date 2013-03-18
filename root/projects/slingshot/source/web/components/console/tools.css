@@ -24,6 +24,11 @@
    padding-top: 0.5em;
 }
 
+.tool ul.simpleLink
+{
+   padding-top: 1em;
+}
+
 .tool ul.toolLink .first-link
 {
    position: relative;

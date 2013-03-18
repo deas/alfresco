@@ -115,10 +115,19 @@ function main()
       }
    }
 
-   // Prepare the model for the template
+   // Prepare models
+   model.siteTitle = siteTitle;
+
+   // Helpers and legacy model values
+   model.siteActive = siteTitle.length > 0;
    model.currentSiteIsFav = currentSiteIsFav;
    model.favouriteSites = favouriteSites;
-   model.siteTitle = siteTitle;
+
+   // Menu items
+   model.showFavourites = favouriteSites.length > 0;
+   model.showAddFavourites = siteTitle.length > 0 && !currentSiteIsFav;
+   model.showFindSites = true;
+   model.showCreateSite = true;
 }
 
 main();

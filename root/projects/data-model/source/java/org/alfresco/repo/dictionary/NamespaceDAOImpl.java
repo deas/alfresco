@@ -32,8 +32,9 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
-import org.alfresco.repo.tenant.TenantContextHolder;
 import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.repo.tenant.TenantUtil;
+import org.alfresco.repo.tenant.TenantUtil.TenantRunAsWork;
 import org.alfresco.service.namespace.NamespaceException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -528,21 +529,13 @@ public class NamespaceDAOImpl implements NamespaceDAO
         else
         {
             // ALF-6029
-            String currentTenantDomain = TenantContextHolder.setTenantDomain(TenantService.DEFAULT_DOMAIN);
-            try
+            return TenantUtil.runAsSystemTenant(new TenantRunAsWork<List<String>>()
             {
-                return AuthenticationUtil.runAs(new RunAsWork<List<String>>()
+                public List<String> doWork() throws Exception
                 {
-                    public List<String> doWork()
-                    {
-                        return getNamespaceRegistry(TenantService.DEFAULT_DOMAIN).getUrisCache();
-                    }
-                }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
-            }
-            finally
-            {
-                TenantContextHolder.setTenantDomain(currentTenantDomain);
-            }
+                    return getNamespaceRegistry(TenantService.DEFAULT_DOMAIN).getUrisCache();
+                }
+            }, TenantService.DEFAULT_DOMAIN);
         }
     }
     
@@ -571,21 +564,13 @@ public class NamespaceDAOImpl implements NamespaceDAO
         else
         {
             // ALF-6029
-            String currentTenantDomain = TenantContextHolder.setTenantDomain(TenantService.DEFAULT_DOMAIN);
-            try
+            return TenantUtil.runAsSystemTenant(new TenantRunAsWork<Map<String, String>>()
             {
-                return AuthenticationUtil.runAs(new RunAsWork<Map<String, String>>()
+                public Map<String, String> doWork() throws Exception
                 {
-                    public Map<String, String> doWork()
-                    {
-                        return getNamespaceRegistry(TenantService.DEFAULT_DOMAIN).getPrefixesCache();
-                    }
-                }, AuthenticationUtil.getSystemUserName()+TenantService.SEPARATOR); // force default domain (TODO refactor namespace init)
-            }
-            finally
-            {
-                TenantContextHolder.setTenantDomain(currentTenantDomain);
-            }
+                    return getNamespaceRegistry(TenantService.DEFAULT_DOMAIN).getPrefixesCache();
+                }
+            }, TenantService.DEFAULT_DOMAIN);
         }
     }
     

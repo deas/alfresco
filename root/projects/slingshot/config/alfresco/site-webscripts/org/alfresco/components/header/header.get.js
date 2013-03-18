@@ -141,7 +141,7 @@ function main()
          tokens : {
             site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
             pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
-            userid: user.name
+            userid: encodeURIComponent(user.name)
          }
       }
    };   

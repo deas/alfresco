@@ -67,8 +67,8 @@
 
       return this;
    };
-   
-   Alfresco.SiteMembers.prototype =
+
+   YAHOO.extend(Alfresco.SiteMembers, Alfresco.component.Base,
    {
       /**
        * Object container for initialization options
@@ -188,43 +188,6 @@
        */
       isSearching: false,
 
-      /**
-       * Set multiple initialization options at once.
-       *
-       * @method setOptions
-       * @param obj {object} Object literal specifying a set of options
-       * @return {Alfresco.Search} returns 'this' for method chaining
-       */
-      setOptions: function SiteMembers_setOptions(obj)
-      {
-         this.options = YAHOO.lang.merge(this.options, obj);
-         return this;
-      },
-      
-      /**
-       * Set messages for this component.
-       *
-       * @method setMessages
-       * @param obj {object} Object literal specifying a set of messages
-       * @return {Alfresco.Search} returns 'this' for method chaining
-       */
-      setMessages: function SiteMembers_setMessages(obj)
-      {
-         Alfresco.util.addMessages(obj, this.name);
-         return this;
-      },
-      
-      /**
-       * Fired by YUILoaderHelper when required component script files have
-       * been loaded into the browser.
-       *
-       * @method onComponentsLoaded
-       */
-      onComponentsLoaded: function SiteMembers_onComponentsLoaded()
-      {
-         Event.onContentReady(this.id, this.onReady, this, true);
-      },
-      
       /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -359,209 +322,14 @@
           * These MUST be inline in order to have access to the Alfresco.SiteMembers class (via the "me" variable).
           */
          var me = this;
-          
-         /**
-          * User avatar custom datacell formatter
-          *
-          * @method renderCellAvatar
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellAvatar = function SiteMembers_renderCellAvatar(elCell, oRecord, oColumn, oData)
-         {
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-            var userName = oRecord.getData("userName"),
-               userUrl = Alfresco.constants.URL_PAGECONTEXT + "user/" + userName + "/profile",
-               avatarUrl = Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
-            
-            if (oRecord.getData("avatar") !== undefined)
-            {
-               avatarUrl = Alfresco.constants.PROXY_URI + oRecord.getData("avatar") + "?c=queue&ph=true";
-            }
-
-            elCell.innerHTML = '<a href="' + userUrl + '"><img src="' + avatarUrl + '" alt="avatar" /></a>';
-         };
-
-         /**
-          * Description/detail custom datacell formatter
-          *
-          * @method renderCellDescription
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellDescription = function SiteMembers_renderCellDescription(elCell, oRecord, oColumn, oData)
-         {
-            // Currently rendering all results the same way
-            var userName = oRecord.getData("userName"),
-               name = userName,
-               firstName = oRecord.getData("firstName"),
-               lastName = oRecord.getData("lastName"),
-               userStatus = oRecord.getData("userStatus"),
-               userStatusTime = oRecord.getData("userStatusTime");
-
-            if ((firstName !== undefined) || (lastName !== undefined))
-            {
-               name = firstName ? firstName + " " : "";
-               name += lastName ? lastName : "";
-            }
-
-            var url = Alfresco.constants.URL_PAGECONTEXT + "user/" + userName + "/profile",
-               title = oRecord.getData("jobtitle") ? oRecord.getData("jobtitle") : "",
-               organization = oRecord.getData("organization") ? oRecord.getData("organization") : "",
-               desc = '<h3><a href="' + url + '">' + $html(name) + '</a></h3>';
-            
-            if (title.length > 0)
-            {
-               desc += '<div><span class="attr-name">' + me._msg('label.title') + ': </span>&nbsp;<span class="attr-value">' + $html(title) + '</span></div>';
-            }
-            if (organization.length > 0)
-            {
-               desc += '<div><span class="attr-name">' + me._msg('label.company') + ':</span>&nbsp;<span class="attr-value">' + $html(organization) + '</span></div>';
-            }
-            if (typeof userStatus != "undefined")
-            {
-               desc += '<div class="user-status">' + $html(userStatus) + ' <span>(' + Alfresco.util.relativeTime(Alfresco.util.fromISO8601(userStatusTime.iso8601)) + ')</span></div>';
-            }
-            
-            elCell.innerHTML = desc;
-         };
-         
-         /**
-          * Role select custom datacell formatter
-          *
-          * @method renderCellRoleSelect
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellRoleSelect = function SiteMembers_renderCellRoleSelect(elCell, oRecord, oColumn, oData)
-         {
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-            Dom.setStyle(elCell.parentNode, "text-align", "right");
-            Dom.addClass(elCell, "overflow");
-            
-            var currentRole = oRecord.getData("role");
-            
-            if (me.isCurrentUserSiteAdmin)
-            {
-               // create HTML for representing buttons
-               var userName = oRecord.getData("userName");
-               elCell.innerHTML = '<span id="' + me.id + '-roleSelector-' + userName + '"></span>';
-               
-               // create the roles menu
-               var rolesMenu = [],
-                  role;
-               
-               for (var x = 0, xx = me.options.roles.length; x < xx; x++)
-               {
-                  role = me.options.roles[x];
-                  rolesMenu.push(
-                  {
-                     text: me._msg("role." + role),
-                     value: role,
-                     onclick:
-                     {
-                        fn: me.onRoleSelect,
-                        obj:
-                        {
-                           user: userName,
-                           currentRole: currentRole,
-                           newRole: role,
-                           recordId: oRecord.getId()
-                        },
-                        scope: me
-                     }
-                  }
-                  );
-               }
-               
-               // create the role selector button
-               var roleSelector = new YAHOO.widget.Button(
-               {
-                  container: me.id + '-roleSelector-' + userName,
-                  type: "menu",
-                  label: me._msg("role." + currentRole),
-                  menu: rolesMenu
-               });
-               
-               // store a reference to the role selector button
-               me.listWidgets[userName] =
-               {
-                  roleSelector: roleSelector
-               };
-               
-               // store the buttons
-               me.buttons[userName + "-roleSelector"] =
-               {
-                  roleSelector: roleSelector
-               };
-            }
-            else
-            {
-               // output padding div so layout is not messed up due to missing buttons
-               elCell.innerHTML = '<div>' + me._msg("role." + currentRole) + '</div>';
-            }
-         };
-         
-         /**
-          * Uninvite button custom datacell formatter
-          *
-          * @method renderCellUninvite
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellUninvite = function SiteMembers_renderCellUninvite(elCell, oRecord, oColumn, oData)
-         {
-            Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
-            if (me.isCurrentUserSiteAdmin)
-            {
-               // create HTML for representing buttons
-               var userName = oRecord.getData("userName");
-               elCell.innerHTML = '<span id="' + me.id + '-button-' + userName + '"></span>';
-               
-               // create the uninvite button
-               var button = new YAHOO.widget.Button(
-               {
-                   container: me.id + '-button-' + userName,
-                   label: me._msg("site-members.uninvite"),
-                   disabled: oRecord.getData("isMemberOfGroup"),
-                   onclick:
-                   {
-                      fn: me.doRemove,
-                      obj: userName,
-                      scope: me
-                     }
-               });
-               
-               // store the buttons
-               me.buttons[userName + "-button"] =
-               {
-                  button: button
-               };
-            }
-            else
-            {
-               // output padding div so layout is not messed up due to missing buttons
-               elCell.innerHTML = '<div></div>';
-            }
-         };
 
          // DataTable column defintions
          var columnDefinitions =
          [
-            { key: "userName", label: "User Name", sortable: false, formatter: renderCellAvatar, width: 64 },
-            { key: "bio", label: "Bio", sortable: false, formatter: renderCellDescription },
-            { key: "role", label: "Select Role", formatter: renderCellRoleSelect, width: 140 },
-            { key: "uninvite", label: "Uninvite", formatter: renderCellUninvite, width: 80 }
+            { key: "userName", label: "User Name", sortable: false, formatter: this.bind(this.renderCellAvatar), width: 64 },
+            { key: "bio", label: "Bio", sortable: false, formatter: this.bind(this.renderCellDescription) },
+            { key: "role", label: "Select Role", formatter: this.bind(this.renderCellRoleSelect), width: 140 },
+            { key: "uninvite", label: "Uninvite", formatter: this.bind(this.renderCellUninvite), width: 80 }
          ];
 
          // DataTable definition
@@ -569,7 +337,7 @@
          {
             renderLoopSize: 32,
             initialLoad: false,
-            MSG_EMPTY: '<span style="white-space: nowrap;">' + this._msg("site-members.enter-search-term") + '</span>'
+            MSG_EMPTY: '<span style="white-space: nowrap;">' + this.msg("site-members.enter-search-term") + '</span>'
          });
 
          // Override abstract function within DataTable to set custom error message
@@ -602,6 +370,213 @@
       },
 
       /**
+       * User avatar custom datacell formatter
+       *
+       * @method renderCellAvatar
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellAvatar: function SiteMembers_renderCellAvatar(elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+         var userName = oRecord.getData("userName"),
+            userUrl = Alfresco.constants.URL_PAGECONTEXT + "user/" + userName + "/profile",
+            avatarUrl = Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
+
+         if (oRecord.getData("avatar") !== undefined)
+         {
+            avatarUrl = Alfresco.constants.PROXY_URI + oRecord.getData("avatar") + "?c=queue&ph=true";
+         }
+
+         elCell.innerHTML = '<a href="' + userUrl + '"><img src="' + avatarUrl + '" alt="avatar" /></a>';
+      },
+
+      /**
+       * Description/detail custom datacell formatter
+       *
+       * @method renderCellDescription
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellDescription: function SiteMembers_renderCellDescription(elCell, oRecord, oColumn, oData)
+      {
+         // Currently rendering all results the same way
+         var userName = oRecord.getData("userName"),
+            name = userName,
+            firstName = oRecord.getData("firstName"),
+            lastName = oRecord.getData("lastName"),
+            userStatus = oRecord.getData("userStatus"),
+            userStatusTime = oRecord.getData("userStatusTime");
+
+         if ((firstName !== undefined) || (lastName !== undefined))
+         {
+            name = firstName ? firstName + " " : "";
+            name += lastName ? lastName : "";
+         }
+
+         var url = Alfresco.constants.URL_PAGECONTEXT + "user/" + userName + "/profile",
+            title = oRecord.getData("jobtitle") ? oRecord.getData("jobtitle") : "",
+            organization = oRecord.getData("organization") ? oRecord.getData("organization") : "",
+            desc = '<h3><a href="' + url + '">' + $html(name) + '</a></h3>';
+
+         if (title.length > 0)
+         {
+            desc += '<div><span class="attr-name">' + this.msg('label.title') + ': </span>&nbsp;<span class="attr-value">' + $html(title) + '</span></div>';
+         }
+         if (organization.length > 0)
+         {
+            desc += '<div><span class="attr-name">' + this.msg('label.company') + ':</span>&nbsp;<span class="attr-value">' + $html(organization) + '</span></div>';
+         }
+         if (userStatus && userStatusTime)
+         {
+            desc += '<div class="user-status">' + $html(userStatus) + ' <span>(' + Alfresco.util.relativeTime(Alfresco.util.fromISO8601(userStatus.iso8601)) + ')</span></div>';
+         }
+
+         elCell.innerHTML = desc;
+      },
+
+      /**
+       * Returns the base roles that was passed in using the options.
+       * Suitable for override if the roles menu shall be user specific.
+       *
+       * @method getRoles
+       * @param oRecordData {object}
+       */
+      getRoles: function(oRecordData)
+      {
+         return this.options.roles;
+      },
+
+      /**
+       * Role select custom datacell formatter
+       *
+       * @method renderCellRoleSelect
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellRoleSelect: function SiteMembers_renderCellRoleSelect(elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+         Dom.setStyle(elCell.parentNode, "text-align", "right");
+         Dom.addClass(elCell, "overflow");
+
+         var currentRole = oRecord.getData("role");
+
+         if (this.isCurrentUserSiteAdmin)
+         {
+            // create HTML for representing buttons
+            var userName = oRecord.getData("userName");
+            elCell.innerHTML = '<span id="' + this.id + '-roleSelector-' + userName + '"></span>';
+
+            // create the roles menu
+            var rolesMenu = [],
+               roles = this.getRoles(oRecord.getData()),
+               role;
+
+            for (var x = 0, xx = roles.length; x < xx; x++)
+            {
+               role = roles[x];
+               rolesMenu.push(
+               {
+                  text: this.msg("role." + role),
+                  value: role,
+                  onclick:
+                  {
+                     fn: this.onRoleSelect,
+                     obj:
+                     {
+                        user: userName,
+                        currentRole: currentRole,
+                        newRole: role,
+                        recordId: oRecord.getId()
+                     },
+                     scope: this
+                  }
+               }
+               );
+            }
+
+            // create the role selector button
+            var roleSelector = new YAHOO.widget.Button(
+            {
+               container: this.id + '-roleSelector-' + userName,
+               type: "menu",
+               label: this.msg("role." + currentRole),
+               menu: rolesMenu
+            });
+
+            // store a reference to the role selector button
+            this.listWidgets[userName] =
+            {
+               roleSelector: roleSelector
+            };
+
+            // store the buttons
+            this.buttons[userName + "-roleSelector"] =
+            {
+               roleSelector: roleSelector
+            };
+         }
+         else
+         {
+            // output padding div so layout is not messed up due to missing buttons
+            elCell.innerHTML = '<div>' + this.msg("role." + currentRole) + '</div>';
+         }
+      },
+
+      /**
+       * Uninvite button custom datacell formatter
+       *
+       * @method renderCellUninvite
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellUninvite: function SiteMembers_renderCellUninvite(elCell, oRecord, oColumn, oData)
+      {
+         Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
+
+         if (this.isCurrentUserSiteAdmin)
+         {
+            // create HTML for representing buttons
+            var userName = oRecord.getData("userName");
+            elCell.innerHTML = '<span id="' + this.id + '-button-' + userName + '"></span>';
+
+            // create the uninvite button
+            var button = new YAHOO.widget.Button(
+            {
+                container: this.id + '-button-' + userName,
+                label: this.msg("site-members.uninvite"),
+                onclick:
+                {
+                   fn: this.doRemove,
+                   obj: userName,
+                   scope: this
+                  }
+            });
+
+            // store the buttons
+            this.buttons[userName + "-button"] =
+            {
+               button: button
+            };
+         }
+         else
+         {
+            // output padding div so layout is not messed up due to missing buttons
+            elCell.innerHTML = '<div></div>';
+         }
+      },
+
+      /**
        * Search event handler
        *
        * @method onSearch
@@ -613,7 +588,7 @@
          {
             Alfresco.util.PopupManager.displayMessage(
             {
-               text: this._msg("message.minimum-length", this.options.minSearchTermLength)
+               text: this.msg("message.minimum-length", this.options.minSearchTermLength)
             });
             return;
          }
@@ -633,7 +608,7 @@
          // show a wait message
          this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
          {
-            text: this._msg("message.removing"),
+            text: this.msg("message.removing"),
             spanClass: "wait",
             displayTime: 0
          });
@@ -647,7 +622,7 @@
             // show popup message to confirm
             Alfresco.util.PopupManager.displayMessage(
             {
-               text: this._msg("site-members.remove-success", user)
+               text: this.msg("site-members.remove-success", user)
             });
          
             // remove the entry
@@ -673,7 +648,7 @@
                obj: user,
                scope: this
             },
-            failureMessage: this._msg("site-members.remove-failure", user),
+            failureMessage: this.msg("site-members.remove-failure", user),
             failureCallback:
             {
                fn: failure,
@@ -701,7 +676,7 @@
             // show a wait message
             this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
             {
-               text: this._msg("message.changingrole"),
+               text: this.msg("message.changingrole"),
                spanClass: "wait",
                displayTime: 0
             });
@@ -754,7 +729,7 @@
                   },
                   scope: this
                },
-               failureMessage: this._msg("site-members.change-role-failure", user),
+               failureMessage: this.msg("site-members.change-role-failure", user),
                failureCallback:
                {
                   fn: failure,
@@ -814,7 +789,7 @@
             this._setDefaultDataTableErrors(this.widgets.dataTable);
 
             // Display loading message
-            this.widgets.dataTable.set("MSG_EMPTY", this._msg("site-members.searching"));
+            this.widgets.dataTable.set("MSG_EMPTY", this.msg("site-members.searching"));
 
             // empty results table
             this.widgets.dataTable.deleteRows(0, this.widgets.dataTable.getRecordSet().getLength());
@@ -911,19 +886,7 @@
          });
          
          return params;
-      },
-      
-      /**
-       * Gets a custom message
-       *
-       * @method _msg
-       * @param messageId {string} The messageId to retrieve
-       * @return {string} The custom message
-       * @private
-       */
-      _msg: function SiteMembers__msg(messageId)
-      {
-         return Alfresco.util.message.call(this, messageId, "Alfresco.SiteMembers", Array.prototype.slice.call(arguments).slice(1));
       }
-   };
+
+   });
 })();

@@ -30,7 +30,7 @@
 
       <#-- ACTIONS -->
       <@markup id="actions">
-      <div class="links title-button">
+      <div class="links title-button hidden">
 
          <#-- LINKS -->
          <@markup id="links">

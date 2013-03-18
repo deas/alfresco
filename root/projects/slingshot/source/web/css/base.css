@@ -1630,10 +1630,10 @@ body.brand-bg-1 .sticky-wrapper
    background-color: #8ADC00
 }
 
-.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-1,
-.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-2,
-.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-3,
-.passwordStrengthMeter .passwordStrengthMeter-best li.passwordStrengthMeterStrength-4
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-1,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-2,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-3,
+.passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-4
 {
    background-color: #46B31B;
 }

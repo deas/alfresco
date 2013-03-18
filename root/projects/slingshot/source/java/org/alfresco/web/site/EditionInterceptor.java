@@ -62,6 +62,9 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
     
     private static Log logger = LogFactory.getLog(EditionInterceptor.class);
     
+    /** From repository REST API exception message - @see AbstractAuthenticationService.GUEST_AUTHENTICATION_NOT_SUPPORTED */
+    private static final String GUEST_AUTH_NOT_SUPPORTED = "Guest authentication not supported";
+    
     private static EditionInfo EDITIONINFO = null;
     private static volatile boolean outputInfo = false;
     private static final ReadWriteLock editionLock = new ReentrantReadWriteLock();
@@ -90,8 +93,9 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
                         Connector conn = rc.getServiceRegistry().getConnectorService().getConnector("alfresco");
                         ConnectorContext ctx = new ConnectorContext();
                         ctx.setExceptionOnError(false);
-                        Response response = conn.call("/api/admin/restrictions?guest=true", ctx);
-                        if (response.getStatus().getCode() == Status.STATUS_UNAUTHORIZED)
+                        Response response = conn.call("/api/admin/restrictions?guest=true");
+                        if (response.getStatus().getCode() == Status.STATUS_UNAUTHORIZED ||
+                            (response.getStatus().getCode() == Status.STATUS_INTERNAL_SERVER_ERROR && response.getText().contains(GUEST_AUTH_NOT_SUPPORTED)))
                         {
                             // if this occurs we may be running a multi-tennant repository or guest auth is disabled
                             if (MTAuthenticationFilter.getCurrentServletRequest() != null)

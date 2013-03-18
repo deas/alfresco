@@ -1,10 +1,10 @@
 <@markup id="css" >
-   <#-- CSS Dependencies -->
+<#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/colleagues.css" group="dashlets"/>
 </@>
 
 <@markup id="js">
-   <#-- No JavaScript Dependencies -->
+<#-- No JavaScript Dependencies -->
 </@>
 
 <@markup id="widgets">
@@ -13,57 +13,130 @@
 
 <@markup id="html">
    <@uniqueIdDiv>
-      <div class="dashlet colleagues">
+   <div class="dashlet colleagues">
+
+      <#-- TITLE -->
+      <@markup id="title">
          <div class="title">${msg("header")}</div>
-            <#if userMembership.isManager>
+      </@markup>
+
+      <#if userMembership.isManager>
+
+         <#-- MANAGER TOOLBAR -->
+         <@markup id="managerToolbar">
             <div class="toolbar flat-button">
                <div>
+                  <div class="align-left">
+
+                     <#-- MANAGER TOOLBAR - EMPTY LEFT -->
+                     <@markup id="managerToolbar-emptyLeft">
+                     </@markup>
+
+                  </div>
                   <span class="align-right yui-button-align">
-                     <span class="first-child">
-                        <a href="invite" class="theme-color-1">
-                           <img src="${url.context}/res/components/images/user-16.png" style="vertical-align: text-bottom" width="16" />
+
+                     <#-- INVITE -->
+                     <@markup id="managerToolbar-inviteLink">
+                        <span class="first-child">
+                           <a href="invite" class="theme-color-1">
+                              <img src="${url.context}/res/components/images/user-16.png" style="vertical-align: text-bottom" width="16" />
                            ${msg("link.invite")}</a>
-                     </span>
+                        </span>
+                     </@markup>
+
                   </span>
+                  <div class="clear"></div>
                </div>
             </div>
-            </#if>
+         </@markup>
+
+      </#if>
+
+      <#-- TOOLBAR -->
+      <@markup id="toolbar">
          <div class="toolbar flat-button">
             <div>
                <div class="align-left paginator">
-                  ${msg("pagination.template", 1, memberships?size, totalResults?string)}
+
+               <#-- PAGINATION -->
+               <@markup id="toolbar-pagination">
+                ${msg("pagination.template", 1, memberships?size, totalResults?string)}
+               </@markup>
+
                </div>
                <span class="align-right yui-button-align">
-                  <span class="first-child">
-               <a href="site-members" class="theme-color-1">${msg("link.all-members")}</a>
-                  </span>
+
+                  <#-- ALL MEMBERS LINK -->
+                  <@markup id="toolbar-allMembersLink">
+                     <span class="first-child">
+                        <a href="site-members" class="theme-color-1">${msg("link.all-members")}</a>
+                     </span>
+                  </@markup>
+
                </span>
                <div class="clear"></div>
             </div>
          </div>
-         <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
-            <#if (memberships?size == 1 && memberships[0].authority.userName = user.id)>
-            <div class="info">
-               <h3>${msg("empty.title")}</h3>
-            </div>
-            </#if>
-            <#list memberships as m>
-            <div class="detail-list-item">
-               <div class="avatar">
-                  <img src="${url.context}<#if m.authority.avatar??>/proxy/alfresco/${m.authority.avatar}<#else>/res/components/images/no-user-photo-64.png</#if>" alt="" />
+      </@markup>
+
+   <#-- LIST -->
+   <@markup id="list">
+      <div class="body scrollableList" style="<#if args.height??>height: ${args.height}px;</#if>">
+         <#if (memberships?size == 1 && memberships[0].authority.userName = user.id)>
+
+            <#-- LIST - EMPTY -->
+            <@markup id="list-empty">
+               <div class="info">
+                  <h3>${msg("empty.title")}</h3>
                </div>
-               <div class="person">
-                  <h3><a href="${url.context}/page/user/${m.authority.userName?url}/profile" class="theme-color-1">${m.authority.firstName?html} <#if m.authority.lastName??>${m.authority.lastName?html}</#if></a></h3>
-                  <div>${msg("role." + m.role)}</div>
-                  <#if m.authority.userStatus??>
-                     <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(<span class="relativeTime">${(m.authority.userStatusTime.iso8601!"")?html}</span>)</span></div>
-                  </#if>
+            </@markup>
+
+         </#if>
+
+         <#list memberships as m>
+
+            <#-- LIST - ITEM -->
+            <@markup id="list-item">
+               <div class="detail-list-item">
+
+                  <div class="avatar">
+
+                     <#-- LIST - ITEM - AVATAR -->
+                     <@markup id="list-item-avatar">
+                        <img src="${url.context}<#if m.authority.avatar??>/proxy/alfresco/${m.authority.avatar}<#else>/res/components/images/no-user-photo-64.png</#if>" alt="" />
+                     </@markup>
+
+                  </div>
+                  <div class="person">
+
+                     <#-- LIST - ITEM - PERSON -->
+                     <@markup id="list-item-person">
+                        <h3><a href="${url.context}/page/user/${m.authority.userName?url}/profile" class="theme-color-1">${m.authority.firstName?html} <#if m.authority.lastName??>${m.authority.lastName?html}</#if></a></h3>
+                     </@markup>
+
+                     <#-- LIST - ITEM - ROLE -->
+                     <@markup id="list-item-role">
+                        <div>${msg("role." + m.role)}</div>
+                     </@markup>
+
+                     <#if m.authority.userStatus??>
+
+                        <#-- LIST - ITEM - STATUS -->
+                        <@markup id="list-item-status">
+                           <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(${(m.authority.userStatusRelativeTime!"")?html})</span></div>
+                        </@markup>
+
+                     </#if>
+
+                  </div>
+                  <div class="clear"></div>
                </div>
-               <div class="clear"></div>
-            </div>
-            </#list>
-         </div>
+            </@markup>
+
+         </#list>
       </div>
-      <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}");</script>
+   </@markup>
+   </div>
+   <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}");</script>
    </@>
 </@>

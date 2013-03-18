@@ -117,6 +117,9 @@
         <!-- SPP -->
         <mvndeploypom file="${dir.module.spp.dist}/${file.name.amp.spp}"
             artifactId="alfresco-spp"
+            classifiers="classes,config"
+            types="jar,jar"
+            files="${dir.module.spp.dist}/${file.name.jar.spp},${dir.module.spp.dist}/${file.name.jar.spp.config}"
             pomFile="${dir.module.spp}/pom.xml" />
 
         <!-- FDK Repo AMP  - TODO: add pom.xml? -->

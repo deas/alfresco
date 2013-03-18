@@ -1153,6 +1153,40 @@ div.theme-bg-color-8
    );
 }
 
+.theme-bg-3
+{
+   background-color: #CCCCCC;
+   background-image: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, rgb(204,204,204)),
+      color-stop(1, rgb(232,232,232))
+   );
+   background-image: -moz-linear-gradient(
+       center top,
+       rgb(204,204,204) 0%,
+       rgb(232,232,232) 100%
+   );
+}
+
+.theme-bg-4
+{
+   background-color: #33FF66;
+   background-image: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, rgb(51,255,102)),
+      color-stop(1, rgb(51,153,102))
+   );
+   background-image: -moz-linear-gradient(
+      top,
+      rgb(51,255,102) 0%,
+      rgb(51,153,102) 100%
+   );
+}
+
 .theme-bg-selected
 {
    background-color: #fff7c9;
@@ -1178,6 +1212,11 @@ div.theme-bg-color-8
 .theme-border-4
 {
    border: 1px solid #DDD6A0;
+}
+
+.theme-border-5
+{
+   border: 1px solid #c2c2c2;
 }
 
 .alfresco-guest .theme-overlay

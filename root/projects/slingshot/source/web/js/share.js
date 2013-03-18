@@ -2346,7 +2346,7 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
  */
 Alfresco.Share.userAvatar = function(userName, size)
 {
-   var imgUrl = Alfresco.constants.URL_CONTEXT + "components/images/no-user-photo-64.png";
+   var imgUrl = Alfresco.constants.URL_CONTEXT + "res/components/images/no-user-photo-64.png";
    if (userName)
    {
       imgUrl = Alfresco.constants.PROXY_URI + "slingshot/profile/avatar/" + encodeURIComponent(userName);

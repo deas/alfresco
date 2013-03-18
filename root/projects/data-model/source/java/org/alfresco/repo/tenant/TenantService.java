@@ -67,6 +67,8 @@ public interface TenantService extends TenantUserService
     
     /**
      * @return          the reference <b>with</b> the tenant-specific ID attached
+     * 
+     * @deprecated
      */
     public StoreRef getName(String username, StoreRef storeRef);
     

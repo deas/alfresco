@@ -11,11 +11,8 @@
 <@markup id="widgets">
    <@createWidgets group="upload"/>
    <@inlineScript group="upload">
-      <#assign fileUploadConfig = config.scoped["DocumentLibrary"]["file-upload"]!>
-      <#if fileUploadConfig.getChildValue??>
-         <#assign inMemoryLimit = fileUploadConfig.getChildValue("in-memory-limit")!"262144000">
-      </#if>
-      dndUpload.setInMemoryLimit("${inMemoryLimit}"); 
+      dndUpload.setInMemoryLimit("${inMemoryLimit}");
+      dndUpload.setMaximumFileSizeLimit(${fileUploadSizeLimit});
    </@>
 </@>
 

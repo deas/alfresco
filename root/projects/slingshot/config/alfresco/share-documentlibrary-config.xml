@@ -153,6 +153,11 @@
             As of April 2011, the only known browser that requires this restriction is Firefox 3.6.
           -->
          <in-memory-limit>262144000</in-memory-limit>
+         <!--
+            The maximum number of bytes per file that Share will allow to be uploaded.
+            A value of 0 means that any size is allowed.
+         -->
+         <maximum-file-size-limit>0</maximum-file-size-limit>
       </file-upload>
 
       <!--

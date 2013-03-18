@@ -77,7 +77,7 @@ public class SlingshotEvaluatorUtil {
      * @param defaultValue
      * @return A trimmed evaluator parameter OR defaultValue if no value has been provided.
      */
-    protected String getEvaluatorParam(Map<String, String> params, String name, String defaultValue)
+    public String getEvaluatorParam(Map<String, String> params, String name, String defaultValue)
     {
         String value = params.get(name);
         if (value != null && !value.trim().isEmpty())
@@ -93,7 +93,7 @@ public class SlingshotEvaluatorUtil {
      * @param context
      * @return true if we are viewed from inside a portal
      */
-    protected Boolean getPortletHost(RequestContext context)
+    public Boolean getPortletHost(RequestContext context)
     {
         Boolean portletHost = (Boolean) context.getAttribute(PORTLET_HOST);
         if (portletHost == null)
@@ -109,7 +109,7 @@ public class SlingshotEvaluatorUtil {
      * @param context
      * @return the portal url if we are inside a portal, otherwise null.
      */
-    protected String getPortletUrl(RequestContext context)
+    public String getPortletUrl(RequestContext context)
     {
         String portletUrl = (String) context.getAttribute(PORTLET_URL);
         if (portletUrl == null)
@@ -137,7 +137,7 @@ public class SlingshotEvaluatorUtil {
      * @param context
      * @return The current site id OR null if we aren't in a site
      */
-    protected String getSite(RequestContext context)
+    public String getSite(RequestContext context)
     {
         // Look for siteId in url path & parameters
         String site = context.getUriTokens().get(SITE);
@@ -167,7 +167,7 @@ public class SlingshotEvaluatorUtil {
      * @return The site's sitePreset OR null if something goes wrong.
      */
     @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
-    protected String getSitePreset(RequestContext context, String siteId)
+    public String getSitePreset(RequestContext context, String siteId)
     {
         // Get the preset request cache
         HashMap sitePresetCache = (HashMap) context.getAttributes().get(SITE_PRESET_CACHE);
@@ -209,7 +209,7 @@ public class SlingshotEvaluatorUtil {
      * @param uri The uri to get the content for (MUST contain a json response)
      * @return The content of the uri resource parsed into a json object.
      */
-    private JSONObject jsonGet(String uri)
+    public JSONObject jsonGet(String uri)
     {
         ScriptRemote scriptRemote = serviceRegistry.getScriptRemote();
         Response response = scriptRemote.connect().get(uri);

@@ -142,7 +142,16 @@
 .header .user-items
 {
    float: right;
+}
+
+.header .user-items .user-status
+{
    text-align: right;
+}
+
+.header .user-items .user-status span.yui-button span.first-child
+{
+   padding-left: 0;
 }
 
 .header .user-items .yuimenu

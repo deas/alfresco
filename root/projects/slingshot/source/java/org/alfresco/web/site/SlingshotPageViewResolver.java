@@ -89,6 +89,7 @@ public class SlingshotPageViewResolver extends PageViewResolver
             view.setUrl(viewName);
             view.setPage(page);
             view.setUriTokens(ThreadLocalRequestContext.getRequestContext().getUriTokens());
+            view.setUrlHelperFactory(getUrlHelperFactory());
         }
         
         return view;

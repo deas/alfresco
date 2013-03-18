@@ -39,10 +39,10 @@
       </#if>
       
       <@markup id="form">
-         <form id="${el}-form" accept-charset="UTF-8" method="post" action="${url.context}/page/dologin" class="form-fields">
+         <form id="${el}-form" accept-charset="UTF-8" method="post" action="${loginUrl}" class="form-fields">
             <@markup id="fields">
-            <input type="hidden" id="${el}-success" name="success" value="${successUrl?html}"/>
-            <input type="hidden" name="failure" value="${url.context}/page/type/login?error=true"/>
+            <input type="hidden" id="${el}-success" name="success" value="${successUrl?js_string}"/>
+            <input type="hidden" name="failure" value="${failureUrl?js_string}"/>
             <div class="form-field">
                <label for="${el}-username">${msg("label.username")}</label><br/>
                <input type="text" id="${el}-username" name="username" maxlength="255" value="<#if lastUsername??>${lastUsername?html}</#if>" />
@@ -62,6 +62,26 @@
       
       <@markup id="footer">
          <span class="faded tiny">${msg("label.copyright")}</span>
+      </@markup>
+      
+      <@markup id="preloader">
+         <script type="text/javascript">//<![CDATA[
+            window.onload = function() 
+            {
+                setTimeout(function()
+                {
+                    var xhr;
+                    <#list dependencies as dependency>
+                       xhr = new XMLHttpRequest();
+                       xhr.open('GET', '<@checksumResource src="${url.context}/res/${dependency}"/>');
+                       xhr.send('');
+                    </#list>
+                    <#list images as image>
+                       new Image().src = "${url.context}/res/${image}";
+                    </#list>
+                }, 1000);
+            };
+         //]]></script>
       </@markup>
 
       </div>

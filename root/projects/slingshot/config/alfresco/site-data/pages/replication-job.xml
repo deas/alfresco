@@ -11,7 +11,10 @@
       <!-- Title -->
       <component>
          <region-id>title</region-id>
-         <url>/components/title/admin-console</url>
+         <url>/components/title/simple-title</url>
+         <properties>
+            <title>page.adminConsole.title</title>
+         </properties>
       </component>
 
    </components>

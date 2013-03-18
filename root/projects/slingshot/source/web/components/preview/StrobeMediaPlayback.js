@@ -228,7 +228,7 @@ Alfresco.WebPreview.prototype.Plugins.StrobeMediaPlayback.prototype =
 
       // Create flash web preview by using swfobject
       var swfId = "StrobeMediaPlayback_" + this.wp.id;
-      var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "components/preview/StrobeMediaPlayback.swf",
+      var so = new YAHOO.deconcept.SWFObject(Alfresco.constants.URL_CONTEXT + "res/components/preview/StrobeMediaPlayback.swf",
             swfId, "100%", "100%", "9.0.45");
       
       so.addVariable("src", ctx.src);

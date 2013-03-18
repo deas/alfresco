@@ -29,6 +29,11 @@
    background-image: url('images/about-bg-enterprise.png');
 }
 
+.about-share .logo-vanilla
+{
+   background-image: url('images/about-bg-vanilla.png');
+}
+
 .about-share .about
 {
    color: #666;

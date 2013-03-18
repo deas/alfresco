@@ -10,6 +10,9 @@
 
 <@markup id="widgets">
    <@createWidgets group="upload"/>
+   <@inlineScript group="upload">
+      htmlUpload.setMaximumFileSizeLimit(${fileUploadSizeLimit});
+   </@>
 </@>
 
 <@markup id="html">

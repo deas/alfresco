@@ -28,9 +28,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.alfresco.util.Pair;
 
@@ -183,6 +183,31 @@ public abstract class CollectionUtils
             {
                 results.add(result);
             }
+        }
+        return results;
+    }
+    
+    /**
+     * Converts a {@link Map} having keys of type F to a new {@link Map} instance having keys of type T. The object references
+     * in the value set are copied to the transformed map, thus reusing the same objects.
+     * @param <F> From type
+     * @param <T> To type
+     * @param <V> The value type of the before and after maps.
+     * @param map the map to convert.
+     * @param transformer Used to convert keys.
+     * @return a new Map instance with transformed keys and unchanged values. These values will be the same object references.
+     */
+    public static <F, T, V> Map<T, V> transformKeys(Map<F, V> map, Function<? super F, ? extends T> transformer)
+    {
+        if(map == null || map.isEmpty())
+        {
+            return new HashMap<T, V>();
+        }
+        Map<T, V> results = new HashMap<T, V>(map.size());
+        for (Entry<F, V> entry : map.entrySet())
+        {
+            T transformedKey = transformer.apply(entry.getKey());
+            results.put(transformedKey, entry.getValue());
         }
         return results;
     }
@@ -394,5 +419,78 @@ public abstract class CollectionUtils
                 return values.contains(value);
             }
         };
+    }
+    
+    /**
+     * This method returns a new ArrayList which is the intersection of the two List parameters, based on {@link Object#equals(Object) equality}
+     * of their elements.
+     * The intersection list will contain elements in the order they have in list1 and any references in the resultant list will be
+     * to elements within list1 also.
+     * 
+     * @return a new ArrayList whose values represent the intersection of the two Lists.
+     */
+    public static <T> List<T> intersect(List<? extends T> list1, List<? extends T> list2)
+    {
+        if (list1 == null || list1.isEmpty() || list2 == null || list2.isEmpty())
+        {
+            return Collections.emptyList();
+        }
+        
+        List<T> result = new ArrayList<T>();
+        result.addAll(list1);
+        
+        result.retainAll(list2);
+        
+        return result;
+    }
+    
+    /**
+     * This method returns a new HashMap which is the intersection of the two Map parameters, based on {@link Object#equals(Object) equality}
+     * of their entries.
+     * Any references in the resultant map will be to elements within map1.
+     * 
+     * @return a new HashMap whose values represent the intersection of the two Maps.
+     */
+    public static <K, V> Map<K, V> intersect(Map<K, V> map1, Map<K, V> map2)
+    {
+        if (map1 == null || map1.isEmpty() || map2 == null || map2.isEmpty())
+        {
+            return Collections.emptyMap();
+        }
+        
+        // We now know neither map is null.
+        Map<K, V> result = new HashMap<K, V>();
+        for (Map.Entry<K, V> item : map1.entrySet())
+        {
+            V value = map2.get(item.getKey());
+            if (value != null && value.equals(item.getValue()))
+            {
+                result.put(item.getKey(), item.getValue());
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * This method returns a new HashSet which is the intersection of the two Set parameters, based on {@link Object#equals(Object) equality}
+     * of their elements.
+     * Any references in the resultant set will be to elements within set1.
+     * 
+     * @return a new HashSet whose values represent the intersection of the two Sets.
+     */
+    public static <T> Set<T> intersect(Set<? extends T> set1, Set<? extends T> set2)
+    {
+        if (set1 == null || set1.isEmpty() || set2 == null || set2.isEmpty())
+        {
+            return Collections.emptySet();
+        }
+        
+        Set<T> result = new HashSet<T>();
+        result.addAll(set1);
+        
+        result.retainAll(set2);
+        
+        return result;
     }
 }

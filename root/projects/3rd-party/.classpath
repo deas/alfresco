@@ -222,7 +222,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-security-core-3.1.0.RC2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT.jar" sourcepath="src/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar">
+	    <attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/mybatis-3.0.4-javadoc.jar!/"/>
+		</attributes>
+    </classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1-patched.jar" sourcepath="src/PDFRenderer-0.9.1-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/hazelcast-1.9.4.6.jar" sourcepath="src/hazelcast-1.9.4.6-src.zip"/>

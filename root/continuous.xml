@@ -737,6 +737,7 @@
    <!-- Build installers -->
    <target name="distribute-installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
+<!-- Temporarily comment the creation of installers. DO NOT MERGE!!
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
             <antcall target="windows-deployment-installer"/>
@@ -744,6 +745,7 @@
             <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-64-bit-deployment-installer"/>
+DO NOT MERGE!! End -->
    </target>
    
    

@@ -24,6 +24,7 @@
       </#macro>
       <div id="${el}-body" class="profile">
          <div id="${el}-readview" class="hidden">
+            <@markup id="viewControls">
             <#if isEditable>
             <div class="editcolumn">
                <div class="btn-edit">
@@ -55,11 +56,13 @@
             </div>
             </#if>
             </#if>
+            </@markup>
             <div class="viewcolumn">
+            <@markup id="viewAbout">
                <div class="header-bar">${msg("label.about")}</div>
                <div class="photorow">
                   <div class="photo">
-                     <img class="photoimg" src="${url.context}<#if profile.properties.avatar??>/proxy/alfresco/api/node/${profile.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force<#else>/components/images/no-user-photo-64.png</#if>" alt="" />
+                     <img class="photoimg" src="${url.context}<#if profile.properties.avatar??>/proxy/alfresco/api/node/${profile.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force<#else>/res/components/images/no-user-photo-64.png</#if>" alt="" />
                   </div>
                   <div class="namelabel">${displayname?html}</div>
                   <#if profile.jobTitle?? && profile.jobTitle?length!=0><div class="fieldlabel">${profile.jobTitle?html}</div></#if>
@@ -73,7 +76,9 @@
                   <div>${biohtml}</div>
                </div>
                </#if>
+            </@markup>
 
+            <@markup id="viewContactInfo">
                <div class="header-bar">${msg("label.contactinfo")}</div>
                <#if profile.email?? && profile.email?length!=0>
                <div class="row">
@@ -111,7 +116,9 @@
                   <span class="fieldvalue">${profile.googleUsername?html}</span>
                </div>
                </#if>
+            </@markup>
 
+            <@markup id="viewCompanyInfo">
                <div class="header-bar">${msg("label.companyinfo")}</div>
                <#if profile.organization?? && profile.organization?length!=0>
                <div class="row">
@@ -150,6 +157,7 @@
                   <span class="fieldvalue">${profile.companyEmail?html}</span>
                </div>
                </#if>
+            </@markup>
             </div>
          </div>
 
@@ -193,12 +201,14 @@
             <div class="header-bar">${msg("label.photo")}</div>
             <div class="photorow">
                <div class="photo">
-                  <img class="photoimg" src="${url.context}<#if profile.properties.avatar??>/proxy/alfresco/api/node/${profile.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force<#else>/components/images/no-user-photo-64.png</#if>" alt="" />
+                  <img class="photoimg" src="${url.context}<#if profile.properties.avatar??>/proxy/alfresco/api/node/${profile.properties.avatar?replace('://','/')}/content/thumbnails/avatar?c=force<#else>/res/components/images/no-user-photo-64.png</#if>" alt="" />
                </div>
                <div class="photobtn">
+            <#if uploadable>
                   <span class="yui-button yui-push-button" id="${el}-button-upload">
                      <span class="first-child"><button>${msg("button.upload")}</button></span>
                   </span>
+            </#if>
                   <span class="yui-button yui-push-button" id="${el}-button-clearphoto">
                      <span class="first-child"><button>${msg("button.usedefault")}</button></span>
                   </span>
@@ -235,7 +245,6 @@
                <span class="label"><label for="${el}-input-googleusername">${msg("label.googleusername")}:</label></span>
                <span><input type="text" maxlength="256" size="30" id="${el}-input-googleusername" value="" <@immutablefield field="googleusername" /> /></span>
             </div>
-
             </@markup>
 
             <#-- EDIT COMPANY INFO -->
@@ -281,9 +290,11 @@
                <button id="${el}-button-save" name="save">${msg("button.savechanges")}</button>
                <button id="${el}-button-cancel" name="cancel">${msg("button.cancel")}</button>
             </div>
+
             </form>
          </div>
          </#if>
+
       </div>
       <script>Alfresco.util.renderRelativeTime("${args.htmlid?js_string}-body");</script>
    </@>

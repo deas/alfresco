@@ -25,7 +25,7 @@
             </div>
          </div>
          <div class="yui-b" id="alf-filters">
-            <@region id="tools" scope="template" />
+            <@region id="tools" scope="page" />
          </div>
       </div>
       <@region id="html-upload" scope="template" />

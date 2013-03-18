@@ -10,7 +10,7 @@
 
 .profile .header-bar
 {
-   height: 1.1em;
+   min-height: 1.1em;
    padding: 0.3em;
    margin: 1.5em 1em 0em 1em;
    background-color: #e3eaec;
@@ -67,7 +67,7 @@
 
 .profile .drow
 {
-   height: 2em;
+   min-height: 2em;
    padding: 0.5em;
    width: 57em;
 }
@@ -76,7 +76,7 @@
 {
    margin-left: 4em;
    padding: 0.333em;
-   height: 8em;
+   min-height: 7em;
 }
 
 .profile .biorow
@@ -94,7 +94,7 @@
 {
    padding-left: 6.5em;
    padding-top: 1em;
-   height: 5.5em;
+   min-height: 5.5em;
 }
 
 .profile .phototxt

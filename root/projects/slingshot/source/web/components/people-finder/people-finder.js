@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * PeopleFinder component.
  * 
@@ -390,53 +390,52 @@
       },
       
       /**
-       * Setup the YUI DataTable with custom renderers.
+       * DataTable Cell Renderers
        *
-       * @method _setupDataTable
-       * @private
+       * Each cell has a custom renderer defined as a custom function. See YUI documentation for details.
        */
-      _setupDataTable: function PeopleFinder__setupDataTable()
+      
+      /**
+       * User avatar custom datacell formatter
+       *
+       * @method renderCellAvatar
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      fnRenderCellAvatar: function PeopleFinder_renderCellAvatar()
       {
-         /**
-          * DataTable Cell Renderers
-          *
-          * Each cell has a custom renderer defined as a custom function. See YUI documentation for details.
-          * These MUST be inline in order to have access to the Alfresco.PeopleFinder class (via the "me" variable).
-          */
          var me = this;
-          
-         /**
-          * User avatar custom datacell formatter
-          *
-          * @method renderCellAvatar
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellAvatar = function PeopleFinder_renderCellAvatar(elCell, oRecord, oColumn, oData)
+         
+         return function PeopleFinder_renderCellAvatar(elCell, oRecord, oColumn, oData)
          {
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
-
+   
             var avatarUrl = Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
             if (oRecord.getData("avatar") !== undefined)
             {
                avatarUrl = Alfresco.constants.PROXY_URI + oRecord.getData("avatar") + "?c=queue&ph=true";
             }
-
+   
             elCell.innerHTML = '<img class="avatar" src="' + avatarUrl + '" alt="avatar" />';
          };
-
-         /**
-          * Description/detail custom datacell formatter
-          *
-          * @method renderCellDescription
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellDescription = function PeopleFinder_renderCellDescription(elCell, oRecord, oColumn, oData)
+      },
+      
+      /**
+       * Description/detail custom datacell formatter
+       *
+       * @method renderCellDescription
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      fnRenderCellDescription: function PeopleFinder_renderCellDescription()
+      {
+         var me = this;
+         
+         return function PeopleFinder_renderCellDescription(elCell, oRecord, oColumn, oData)
          {
             var userName = oRecord.getData("userName"),
                name = userName,
@@ -483,17 +482,22 @@
             }
             elCell.innerHTML = desc;
          };
+      },
+      
+      /**
+       * Actions datacell formatter
+       * 
+       * @method renderCellActions
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      fnRenderCellActions: function PeopleFinder_renderCellActions()
+      {
+         var me = this;
          
-         /**
-          * Actions datacell formatter
-          * 
-          * @method renderCellActions
-          * @param elCell {object}
-          * @param oRecord {object}
-          * @param oColumn {object}
-          * @param oData {object|string}
-          */
-         var renderCellActions = function PeopleFinder_renderCellActions(elCell, oRecord, oColumn, oData)
+         return function PeopleFinder_renderCellActions(elCell, oRecord, oColumn, oData)
          {
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
             Dom.setStyle(elCell.parentNode, "text-align", "right");
@@ -528,9 +532,9 @@
                   me.userSelectButtons[userName].set("disabled", true);
                }
             }
+            
             // Create the Follow/Unfollow buttons for the people
-            if (me.followingAllowed && me.options.viewMode === Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE &&
-                me.options.userId !== userName)
+            if (me._renderFollowingActions(oRecord))
             {
                var following = me.following[userName];
                var button = new YAHOO.widget.Button(
@@ -553,13 +557,34 @@
                });
             }
          };
-
+      },
+      
+      /**
+       * Helper to retrun whether to render the Following actions for a record.
+       * 
+       * @return true to render the Following actions for the given datagrid record
+       */
+      _renderFollowingActions: function PeopleFinder__renderFollowingActions(oRecord)
+      {
+         return (this.followingAllowed &&
+                 this.options.viewMode === Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE &&
+                 this.options.userId !== oRecord.getData("userName"));
+      },
+      
+      /**
+       * Setup the YUI DataTable with custom renderers.
+       *
+       * @method _setupDataTable
+       * @private
+       */
+      _setupDataTable: function PeopleFinder__setupDataTable()
+      {
          // DataTable column defintions
          var columnDefinitions =
          [
-            { key: "avatar", label: "Avatar", sortable: false, formatter: renderCellAvatar, width: this.options.viewMode == Alfresco.PeopleFinder.VIEW_MODE_COMPACT ? 36 : 70 },
-            { key: "person", label: "Description", sortable: false, formatter: renderCellDescription },
-            { key: "actions", label: "Actions", sortable: false, formatter: renderCellActions, width: 80 }
+            { key: "avatar", label: "Avatar", sortable: false, formatter: this.fnRenderCellAvatar(), width: this.options.viewMode == Alfresco.PeopleFinder.VIEW_MODE_COMPACT ? 36 : 70 },
+            { key: "person", label: "Description", sortable: false, formatter: this.fnRenderCellDescription() },
+            { key: "actions", label: "Actions", sortable: false, formatter: this.fnRenderCellActions(), width: 80 }
          ];
 
          // DataTable definition

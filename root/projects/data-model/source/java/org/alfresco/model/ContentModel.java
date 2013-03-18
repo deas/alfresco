@@ -397,6 +397,7 @@ public interface ContentModel
     static final QName TYPE_USER = QName.createQName(USER_MODEL_URI, "user");
     static final QName PROP_USER_USERNAME = QName.createQName(USER_MODEL_URI, "username");
     static final QName PROP_PASSWORD = QName.createQName(USER_MODEL_URI, "password");
+    static final QName PROP_PASSWORD_SHA256 = QName.createQName(USER_MODEL_URI, "password2");
     static final QName PROP_ENABLED = QName.createQName(USER_MODEL_URI, "enabled");
     static final QName PROP_ACCOUNT_EXPIRES = QName.createQName(USER_MODEL_URI, "accountExpires");
     static final QName PROP_ACCOUNT_EXPIRY_DATE = QName.createQName(USER_MODEL_URI, "accountExpiryDate");

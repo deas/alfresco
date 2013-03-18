@@ -746,9 +746,20 @@ public class FormUIGet extends DeclarativeWebScript
         }
         
         // build the full submission url
-        submissionUrl = context.getRequest().getContextPath() + ALFRESCO_PROXY + submissionUrl;
+        submissionUrl = getProxyPath(context) + submissionUrl;
         
         return submissionUrl;
+    }
+
+    /**
+     * Returns the base path to the proxy to use
+     *
+     * @param context Contains the request and context path
+     * @return The base path to the proxy to use
+     */
+    protected String getProxyPath(ModelContext context)
+    {
+        return context.getRequest().getContextPath() + ALFRESCO_PROXY;
     }
     
     /**

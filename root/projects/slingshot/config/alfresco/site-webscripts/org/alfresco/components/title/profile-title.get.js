@@ -1,25 +1,33 @@
 /**
- * User Profile - Title Component
+ * User Profile - Title Component GET method
  */
 
-var profileId = page.url.templateArgs["userid"];
-if (profileId != null)
+function main()
 {
-   // load user details for the profile from the repo
-   var userObj = user.getUser(profileId);
-   if (userObj != null)
+   var profileId = page.url.templateArgs["userid"];
+   if (profileId && profileId != user.name)
    {
-      model.profile = userObj;
+      // load user details for the profile from the repo
+      var userObj = user.getUser(profileId);
+      if (userObj != null)
+      {
+         model.profile = userObj;
+      }
+      else
+      {
+         // fallback if unable to get user details
+         model.profile = user;
+      }
    }
    else
    {
-      // fallback if unable to get user details
-      // TODO: display error?
+      // no profile specified or selection is the current user
       model.profile = user;
    }
+   
+   // Save the user object to avoid multiple remote calls further down the page as the user
+   // retrieval goes via user.getUser() so is not indirectly cached like other remote calls.
+   context.setValue("userprofile", model.profile);
 }
-else
-{
-   // if no profile specified, must be current user which will allow editing
-   model.profile = user;
-}
+
+main();

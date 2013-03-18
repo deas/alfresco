@@ -26,7 +26,7 @@ import org.alfresco.util.ParameterCheck;
  * Utility helper methods to change the tenant context for threads.
  * 
  * @author janv
- * @since Thor
+ * @since 4.2
  */
 public class TenantUtil
 {
@@ -47,6 +47,8 @@ public class TenantUtil
      * @param runAsWork    the unit of work to do
      * @param uid          the user ID
      * @return Returns     the work's return value
+     * 
+     * @deprecated see runAsUserTenant
      */
     public static <R> R runAsPrimaryTenant(final TenantRunAsWork<R> runAsWork, String uid)
     {

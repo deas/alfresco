@@ -2,12 +2,12 @@
    <#assign mode = args.mode!"">
    <#list activities as activity>
       <#if activity.userProfile??>
-         <#assign userLink><a href="${activity.userProfile?html}" class="theme-color-1">${activity.fullName?html}</a></#assign>
+         <#assign userLink><a href="${activity.userProfile?html?replace("@", "%40")}" class="theme-color-1">${activity.fullName?html}</a></#assign>
       <#else>
          <#assign userLink>&quot;<em>${activity.fullName?html}</em>&quot;</#assign>
       </#if>
       <#if activity.secondUserProfile??>
-         <#assign secondUserLink><a href="${activity.secondUserProfile?html}" class="theme-color-1">${(activity.secondFullName!"")?html}</a></#assign>
+         <#assign secondUserLink><a href="${activity.secondUserProfile?html?replace("@", "%40")}" class="theme-color-1">${(activity.secondFullName!"")?html}</a></#assign>
       <#else>
          <#assign secondUserLink>&quot;<em>${(activity.secondFullName!"")?html}</em>&quot;</#assign>
       </#if>

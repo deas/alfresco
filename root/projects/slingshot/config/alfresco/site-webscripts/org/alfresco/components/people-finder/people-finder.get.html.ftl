@@ -17,14 +17,18 @@
       <@uniqueIdDiv>
          <#assign el=args.htmlid?html>
          <div id="${el}-body" class="people-finder list theme-color-1">
-            <div class="title theme-color-2">${msg("title")}</div>
+            <div class="title theme-color-2"><label for="${el}-search-text">${msg("title")}</label></div>
             <div class="finder-wrapper">
+               <@markup id="searchBar">
                <div class="search-bar theme-bg-color-3">
                   <div class="search-text"><input type="text" id="${el}-search-text" name="-" value="" maxlength="256" tabindex="0"/></div>
                   <div class="search-button">
                      <span id="${el}-search-button" class="yui-button yui-push-button"><span class="first-child"><button>${msg("button.search")}</button></span></span>
                   </div>
                </div>
+               </@markup>
+
+               <@markup id="searchHelp">
                <div id="${el}-help" class="yui-g theme-bg-color-2 help hidden">
                   <span class="title">${msg("help.title")}</span>
                   <div class="yui-u first">
@@ -54,7 +58,11 @@
                      <span>${msg("help.result7")}</span>
                   </div>
                </div>
-               <div id="${el}-results" class="results hidden theme-bg-color-6"></div>
+               </@markup>
+
+               <@markup id="searchResults">
+               <div id="${el}-results" class="results hidden"></div>
+               </@markup>
             </div>
          </div>
       </@>

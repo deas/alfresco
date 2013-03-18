@@ -2,37 +2,54 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/components/upload/uploadable.lib.js">
 
 /**
- * User Profile Component GET method
+ * User Profile - Main Component GET method
  */
 
 function main()
 {
    var profileId = page.url.templateArgs["userid"];
-   if (profileId != null)
+   var userObj = context.properties["userprofile"];
+   if (!userObj)
    {
-      // load user details for the profile from the repo
-      var userObj = user.getUser(profileId);
-      if (userObj != null)
+      if (profileId && profileId != user.name)
       {
-         model.profile = userObj;
+         // load user details for the profile from the repo
+         userObj = user.getUser(profileId);
+         if (userObj)
+         {
+            model.profile = userObj;
+         }
+         else
+         {
+            // fallback if unable to get user details
+            model.profile = user;
+         }
       }
       else
       {
-         // fallback if unable to get user details
-         model.profile = user.getUser(user.id);
+         // if no profile specified, must be current user which will allow editing
+         model.profile = user;
       }
    }
    else
    {
-      // if no profile specified, must be current user which will allow editing
-      model.profile = user.getUser(user.id);
+      model.profile = userObj;
    }
    
-   // convert biography text to use <br/> line breaks
-   var bio = model.profile.biography;
-   if (bio != null)
+   if (model.profile)
    {
-      model.biohtml = stringUtils.replaceLineBreaks(bio);
+      // convert biography text to use <br/> line breaks
+      var bio = model.profile.biography;
+      if (bio)
+      {
+         model.biohtml = stringUtils.replaceLineBreaks(bio);
+      }
+
+      // if there's a usrStatusTime, then convert to a relative time
+      if (model.profile.properties.userStatusTime)
+      {
+         model.userStatusRelativeTime = AlfrescoUtil.relativeTime(model.profile.properties.userStatusTime);
+      }
    }
    
    // editable if request profile is for the current user
@@ -41,7 +58,7 @@ function main()
    // add follow/unfollow buttons if request profile is not for the current user
    if (!model.isEditable)
    {
-      var params = new Array(1);
+      var params = [];
       params.push(page.url.templateArgs["userid"]);
       
       var connector = remote.connect("alfresco");

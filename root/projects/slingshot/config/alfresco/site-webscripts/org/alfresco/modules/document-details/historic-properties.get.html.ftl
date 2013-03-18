@@ -3,7 +3,7 @@
 <#assign fileExt = (fileExtIndex > -1)?string(document.fileName?substring(fileExtIndex + 1), "generic")>
 <div id="${el}-dialog" class="historic-properties-viewer">
    <div class="hd">
-      <span id="${el}-header-span" class="historic-properties-header" style="background-image:url(${url.context}/components/images/filetypes/${fileExt}-file-32.png);"></span>
+      <span id="${el}-header-span" class="historic-properties-header" style="background-image:url(${url.context}/res/components/images/filetypes/${fileExt}-file-32.png);"></span>
    </div>
    <div class="bd">
       <div class="bdhd">

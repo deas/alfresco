@@ -50,6 +50,11 @@
       KeyListener = YAHOO.util.KeyListener;
 
    /**
+    * Alfresco Slingshot aliases
+    */
+   var $html = Alfresco.util.encodeHTML;
+
+   /**
     * HtmlUpload constructor.
     *
     * HtmlUpload is considered a singleton so constructor should be treated as private,
@@ -80,7 +85,8 @@
          uploadURL: null,
          username: null,
          suppressRefreshEvent: false,
-         adobeFlashEnabled: true
+         adobeFlashEnabled: true,
+         maximumFileSize: 0
       };
       this.showConfig = {};
 
@@ -135,15 +141,53 @@
       versionSection: null,
 
       /**
-       * The name of the currently selected file (not including its full path). This will be
-       * null if a file has not been selected. This value will only be available for non-Internet
-       * Explorer browsers.
+       * The name of the currently selected file (not including its full path).
        *  
        * @property _fileName
        * @type String
        */
       _fileName: null,
-      
+
+      /**
+       * The size of the currently selected file. This will be null if a file has not been selected.
+       *
+       * @property _fileSize
+       * @type number
+       */
+      _fileSize: null,
+
+      /**
+       * Restricts the allowed maximum file size for a single file (in bytes).
+       * 0 means there is no restriction.
+       *
+       * @property _maximumFileSizeLimit
+       * @private
+       * @type int
+       * @default 0
+       */
+      _maximumFileSizeLimit: 0,
+
+      /**
+       * Sets te maximum allowed size for one file.
+       *
+       * @method setMaximumFileSizeLimit
+       * @param maximumFileSizeLimit
+       */
+      setMaximumFileSizeLimit: function DNDUpload_setMaximumFileSizeLimit(maximumFileSizeLimit)
+      {
+         this._maximumFileSizeLimit = maximumFileSizeLimit;
+      },
+
+      /**
+       * Returns the maximum allowed size for one file
+       *
+       * @method getMaximumFileSizeLimit
+       */
+      getMaximumFileSizeLimit: function DNDUpload_getInMemoryLimit()
+      {
+         return this._maximumFileSizeLimit;
+      },
+
       /**
        * Fired by YUI when parent element is available for scripting.
        * Initial History Manager event registration
@@ -166,26 +210,6 @@
 
          // Save references to hidden fields so we can set them later
          this.widgets.filedata = Dom.get(this.id + "-filedata-file");
-         
-         if (YAHOO.env.ua.ie > 0)
-         {
-            // Internet Explorer does not support the "files" attribute for the input type file
-            // so there is no point in adding an on change listener to capture the value.
-         }
-         else
-         {
-            // If the browser is not Internet Explorer then add a listener to capture the name of
-            // the currently selected file (without its full or mock path as set as the value of the
-            // input element
-            YAHOO.util.Event.addListener(this.id + "-filedata-file", "change", function()
-            {
-               if (this.files.length > 0)
-               {
-                  _this._fileName = this.files[0].name;
-               }
-            }); 
-         }
-         
          this.widgets.filedata.contentEditable = false;
          this.widgets.siteId = Dom.get(this.id + "-siteId-hidden");
          this.widgets.containerId = Dom.get(this.id + "-containerId-hidden");
@@ -212,42 +236,41 @@
          var form = new Alfresco.forms.Form(this.id + "-htmlupload-form");
          this.widgets.form = form;
 
-         // Title is mandatory
-         form.addValidation(this.id + "-filedata-file", Alfresco.forms.validation.mandatory, null, "change");
-         form.addValidation(this.id + "-filedata-file", function HtmlUpload_validateFileName(field, args, event, form, silent, message)
+         // Make sure we listen to the change event so we can store details about the file (name & size) and use it in validations below
+         YAHOO.util.Event.addListener(this.id + "-filedata-file", "change", function()
          {
-            // Although the users operating system might be Unix based it is necessary that we only allow
-            // file names that are supported by the lowest common denominator (Windows)...
-            if (YAHOO.env.ua.ie > 0)
+            if (this.files && this.files.length > 0)
             {
-               // The browser is Internet Explorer. We can reasonably assume that this will only be running on 
-               // Windows and it will not be possible to select an illegally named file
-               return true;
+               _this._fileName = this.files[0].name;
+               _this._fileSize = this.files[0].size;
             }
-            else
+         });
+
+         // Title is mandatory (will look for the inout elements value)
+         form.addValidation(this.id + "-filedata-file", Alfresco.forms.validation.mandatory, null, "change", this.msg("Alfresco.forms.validation.mandatory.message"));
+
+         // Internet Explorer does not support the "files" attribute for the input type file
+         // so there is no point in adding validations
+         if (YAHOO.env.ua.ie == 0)
+         {
+            // File name must work on all OS:s
+            form.addValidation(this.id + "-filedata-file", function HtmlUpload_validateFileName(field, args)
             {
-               // A non-Windows OS may allow us to select files containing the illegal characters. However a
-               // full path will contain the "/" character so we will ignore this from our list and take the 
-               // risk.
-               var mockField = 
-               {
-                  id: field.id,
-                  value: args.uploader._fileName
-               };
-               if (!Alfresco.forms.validation.nodeName(mockField, args, event, form, silent, message))
-               {
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: args.uploader.msg("message.illegalCharacters")
-                  });
-                  return false;
-               }
-               else
-               {
-                  return true;
-               }
-            }
-         }, { uploader: this }, "change");
+               return !YAHOO.lang.isString(_this._fileName) || Alfresco.forms.validation.nodeName({ id: field.id, value: _this._fileName }, args);
+            }, null, "change", this.msg("message.illegalCharacters"));
+
+            // Make sure file doesn't exceed maximum file size
+            form.addValidation(this.id + "-filedata-file", function HtmlUpload_validateMaximumFileSize(field, args)
+            {
+               return args.maximumFileSizeLimit == 0 || !YAHOO.lang.isNumber(_this._fileSize) || _this._fileSize <= args.maximumFileSizeLimit;
+            }, { maximumFileSizeLimit: this._maximumFileSizeLimit }, "change", this.msg("message.maxFileFileSizeExceeded"));
+
+            // Make sure file isn't empty
+            form.addValidation(this.id + "-filedata-file", function HtmlUpload_validateSize(field, args)
+            {
+               return !YAHOO.lang.isNumber(_this._fileSize) || _this._fileSize > 0;
+            }, null, "change", this.msg("message.zeroByteFileSelected"));
+         }
 
          // The ok button is the submit button, and it should be enabled when the form is ready
          form.setSubmitElements(this.widgets.uploadButton);

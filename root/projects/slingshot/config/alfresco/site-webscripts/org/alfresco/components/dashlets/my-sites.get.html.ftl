@@ -7,7 +7,7 @@
 <@markup id="js">
    <#-- JavaScript Dependencies -->
    <@script type="text/javascript" src="${url.context}/res/components/dashlets/my-sites.js" group="dashlets"/>
-   <@script type="text/javascript" src="${url.context}/res/modules/delete-site.js" group="dashlets"/>   
+   <@script type="text/javascript" src="${url.context}/res/modules/delete-site.js" group="dashlets"/>
 </@>
 
 <@markup id="widgets">
@@ -32,11 +32,13 @@
                   <option value="favSites">${msg("filter.favSites")}</option>
                </select>
                <span class="align-right yui-button-align">
+                  <#if showCreateSite>
                   <span class="first-child">
                      <a href="#" id="${id}-createSite-button" class="theme-color-1">
                         <img src="${url.context}/res/components/images/site-16.png" style="vertical-align: text-bottom" />
                         ${msg("link.createSite")}</a>
                   </span>
+                  </#if>
                </span>
                <div class="clear"></div>
             </div>

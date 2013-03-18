@@ -318,11 +318,11 @@
             // Private / Moderated flag
             if (siteVisibility == "MODERATED")
             {
-               details += '<span class="moderated theme-bg-color-1">' + me.msg("site-finder.moderated")  + '</span>';
+               details += '<span class="visibility theme-color-3 theme-bg-color-1">' + me.msg("site-finder.moderated")  + '</span>';
             }
             else if (siteVisibility == "PRIVATE")
             {
-               details += '<span class="private theme-bg-color-1">' + me.msg("site-finder.private")  + '</span>';
+               details += '<span class="visibility theme-color-3 theme-bg-color-1">' + me.msg("site-finder.private")  + '</span>';
             }
             
             elCell.innerHTML = details;

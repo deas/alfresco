@@ -78,10 +78,10 @@
                </#if>
                <!-- Icon -->
                <#if isContainer>
-                  <img src="${url.context}/components/images/filetypes/generic-folder-48.png"
+                  <img src="${url.context}/res/components/images/filetypes/generic-folder-48.png"
                        title="${displayName}" class="node-thumbnail" width="48" />
                <#else>
-                  <img src="${url.context}/components/images/filetypes/${fileExt}-file-48.png"
+                  <img src="${url.context}/res/components/images/filetypes/${fileExt}-file-48.png"
                        onerror="this.src='${url.context}/res/components/images/filetypes/generic-file-48.png'"
                        title="${displayName}" class="node-thumbnail" width="48" />
                </#if>

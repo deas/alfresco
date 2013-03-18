@@ -225,8 +225,13 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     
     private DictionaryRegistry getRegistry()
     {
+        return getRegistryImpl();
+    }
+    
+    protected DictionaryRegistry getRegistryImpl()
+    {
         DictionaryRegistry registry = null;
-        
+
         registryReadLock.lock();
         try
         {
@@ -236,7 +241,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         {
             registryReadLock.unlock();
         }
-        
+
         if (registry == null)
         {
             init();
