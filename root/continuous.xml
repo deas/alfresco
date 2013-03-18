@@ -444,9 +444,13 @@
          <fileset dir="${basedir}" 
                   includes="**/alfresco.log" />
       </delete>
+      
+      <!-- don't delete repository.properties in case this is being run in local devenv -->
       <delete dir="${dir.root}" 
-              includeEmptyDirs="true" />
+              includeEmptyDirs="true"
+              excludes="repository.properties" />
    </target>
+   
    <target name="-drop-database-unknown">
       <fail message="Unknown database type for JDBC url '${db.url}'" />
    </target>

@@ -2423,24 +2423,24 @@ Alfresco.util.createInfoBalloon = function(p_context, p_params)
  * @return {object|null} Balloon instance
  */
 Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent)
-      {
-         var elContext = YUIDom.get(p_context);
-         if (YAHOO.lang.isNull(elContext))
-         {
-            return null;
-         }
+{
+   var elContext = YUIDom.get(p_context);
+   if (YAHOO.lang.isNull(elContext))
+   {
+      return null;
+   }
 
-         p_params = YAHOO.lang.merge(
-               {
-                  effectType: YAHOO.widget.ContainerEffect.FADE,
-                  effectDuration: 0.25,
-                  html: "",
-                  text: "",
-                  closeButton: true,
-                  /*width: "30em",*/
-                  wrapperClass: "balloon",
-                  arrowClass: "balloon-arrow"
-               }, p_params || {});
+   p_params = YAHOO.lang.merge(
+   {
+      effectType: YAHOO.widget.ContainerEffect.FADE,
+      effectDuration: 0.25,
+      html: "",
+      text: "",
+      closeButton: true,
+      /*width: "30em",*/
+      wrapperClass: "balloon",
+      arrowClass: "balloon-arrow"
+   }, p_params || {});
 
    var balloon = new Alfresco.widget.Balloon(elContext, p_params);
 
@@ -2454,7 +2454,7 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
    }
 
    return balloon;
-      };
+};
 
 (function()
 {
@@ -4491,10 +4491,10 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                var label = document.createElement("span");
                label.innerHTML = tag;
                var removeIcon = document.createElement("img"),
-                     removeIconEdit = document.createElement("img");
-         YUIDom.setAttribute(removeIcon, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-item-off.png");
+                  removeIconEdit = document.createElement("img");
+               YUIDom.setAttribute(removeIcon, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-item-off.png");
                YUIDom.setAttribute(removeIcon, "width", 16);
-         YUIDom.setAttribute(removeIconEdit, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-item-on.png");
+               YUIDom.setAttribute(removeIconEdit, "src", Alfresco.constants.URL_RESCONTEXT + "components/images/delete-item-on.png");
                YUIDom.setAttribute(removeIconEdit, "width", 16);
                YUIDom.addClass(removeIconEdit, "hidden");
                span.appendChild(label);

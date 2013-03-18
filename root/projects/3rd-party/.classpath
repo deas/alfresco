@@ -186,7 +186,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-net-2.2.jar" sourcepath="src/commons-net-2.2-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.1.jar" sourcepath="src/json-simple-1.1.1-src.zip"/>
-	<classpathentry kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-802.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.11-04012013.jar" sourcepath="src/activiti-engine-5.11-04012013-sources.jar"/>

@@ -45,6 +45,7 @@
                   <!-- Query language menu -->
                   <input type="button" id="${el}-lang-menu-button" name="lang-button" />
                   <select id="${el}-lang-menu-select" name="lang-select">
+                      <option>storeroot</option>
                       <option>noderef</option>
                       <option>xpath</option>
                       <option>jcr-xpath</option>

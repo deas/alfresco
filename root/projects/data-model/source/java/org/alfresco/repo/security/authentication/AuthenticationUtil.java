@@ -193,11 +193,6 @@ public class AuthenticationUtil implements InitializingBean
         
         try
         {
-            if (TenantContextHolder.getTenantDomain() == null)
-            {
-                TenantContextHolder.clearTenantDomain();
-            }
-            
             Pair<String, String> userTenant = AuthenticationUtil.getUserTenant(userNameIn);
             final String userName = userTenant.getFirst();
             final String tenantDomain = userTenant.getSecond();

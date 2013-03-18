@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -30,12 +30,16 @@ public class Tenant
     
     private String rootContentStoreDir = null; // if configured - can be null
 
+    // from Thor - unused
+    private String dbUrl = null;
+
     
-    public Tenant(String tenantDomain, boolean enabled, String rootContentStoreDir)
+    public Tenant(String tenantDomain, boolean enabled, String rootContentStoreDir, String dbUrl)
     {
         this.tenantDomain = tenantDomain;
         this.enabled = enabled;
         this.rootContentStoreDir = rootContentStoreDir;
+        this.dbUrl = dbUrl;
     }
 
     public String getTenantDomain()
@@ -51,5 +55,10 @@ public class Tenant
     public String getRootContentStoreDir()
     {
         return rootContentStoreDir;
+    }
+    
+    public String getDbUrl()
+    {
+        return dbUrl;
     }
 }

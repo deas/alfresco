@@ -2,21 +2,17 @@
 <@templateHeader />
 
 <@templateBody>
-<div id="alf-hd">
-   <@region id="header" scope="global"/>
-   <@region id="title" scope="page"/>
-</div>
-<div id="bd">
-   <#if outcome??>
-      <@region id=outcome scope="page"/>
-   <#else>
+   <div id="alf-hd">
+      <@region id="header" scope="global"/>
+      <@region id="title" scope="page"/>
+   </div>
+   <div id="bd">
       <#if outcome??>
          <@region id=outcome scope="page"/>
       <#else>
          <@region id="components" scope="page"/>
       </#if>
-   </#if>
-</div>
+   </div>
 </@>
 
 <@templateFooter>

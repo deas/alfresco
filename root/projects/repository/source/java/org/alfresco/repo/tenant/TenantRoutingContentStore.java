@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,4 +24,5 @@ package org.alfresco.repo.tenant;
  */
 public interface TenantRoutingContentStore extends TenantDeployer
 {
+    public String getRootLocation();
 }

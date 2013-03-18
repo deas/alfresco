@@ -1922,12 +1922,22 @@
                      name: "prop_cm_taggable",
                      value: record.node.properties["cm:taggable"],
                      validations: [
-                        {
-                           type: Alfresco.forms.validation.nodeName,
-                           when: "keyup",
-                           message: this.msg("validation-hint.nodeName")
-                        }
-                     ],
+                     {
+                        type: Alfresco.forms.validation.mandatory,
+                        when: "keyup",
+                        message: this.msg("validation-hint.mandatory")
+                     },
+                     {
+                        type: Alfresco.forms.validation.nodeName,
+                        when: "keyup",
+                        message: this.msg("valscopeion-hint.nodeName")
+                     },
+                     {
+                        type: Alfresco.forms.validation.length,
+                        args: { min: 1, max: 255, crop: true },
+                        when: "keyup",
+                        message: this.msg("validation-hint.length.min.max", 1, 255)
+                     }],
                      title: this.msg("tip.insitu-tag"),
                      errorMessage: this.msg("message.insitu-edit.tag.failure")
                   },

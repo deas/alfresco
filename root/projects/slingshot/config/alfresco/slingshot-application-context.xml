@@ -53,6 +53,8 @@
             <!-- Share custom config -->
             <value>classpath:alfresco/web-extension/share-config-custom.xml</value>
             <value>jar:*!/META-INF/share-config-custom.xml</value>
+            <value>classpath:alfresco/web-extension/share-config-custom-dev.xml</value>
+            <value>jar:*!/META-INF/share-config-custom-dev.xml</value>
          </list>
       </constructor-arg>
    </bean>
