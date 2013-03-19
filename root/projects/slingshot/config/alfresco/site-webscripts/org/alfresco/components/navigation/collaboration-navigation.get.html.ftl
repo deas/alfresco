@@ -16,7 +16,7 @@
       <#assign pageFamily = template.properties.pageFamily!"dashboard">
       <div class="site-navigation">
       <#if siteExists>
-         <#if url.context + "/page/site/" + activeSite + "/dashboard" == page.url.uri>
+         <#if pageFamily == "dashboard" >
             <#assign linkClass>class="active-page theme-color-4"</#assign>
          <#else>
             <#assign linkClass>class="theme-color-4"</#assign>
@@ -38,7 +38,7 @@
             </#list>
          </#if>
          <span class="navigation-separator">&nbsp;</span>
-         <#if pageFamily = "site-members">
+         <#if pageFamily == "site-members">
             <#assign linkClass>class="active-page theme-color-4"</#assign>      
          <#else>
             <#assign linkClass>class="theme-color-4"</#assign>

@@ -7,6 +7,7 @@
       <ul>
       <li>filter (Mandatory) Returns those users and/or groups with a partial match on shortName. You can use the pattern matching characters * to match zero or more characters or ? to match one character.</li>
       <li>authorityType (Optional) [all|user|group] Determines which authority types to return. Default is all if parameter not specified.</li>
+      <li>site (Optional) site shortname. Scopes the user search to a particular site</li>
       </ul>
       <br />
       Returns an Array of authorities in JSON format.

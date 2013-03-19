@@ -384,8 +384,9 @@
          {
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
             
-            var userName = oRecord.getData("invitee").userName;
-            elCell.innerHTML = '<span id="' + me.id + '-action-' + userName + '"></span>';
+            var userName = oRecord.getData("inviteeEmail"),
+               inviteId = oRecord.getData("id");
+            elCell.innerHTML = '<span id="' + me.id + '-action-' + inviteId + '"></span>';
 
             // create button
             var buttonLabel;
@@ -403,7 +404,7 @@
                type: "button",
                label: buttonLabel,
                name: me.id + "-selectbutton-" + userName,
-               container: me.id + '-action-' + userName,
+               container: me.id + '-action-' + inviteId,
                onclick:
                {
                   fn: me.onActionClick,

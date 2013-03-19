@@ -100,6 +100,11 @@ public class SearchParameters
      */
     public static final Operator AND = Operator.AND;
 
+    /**
+     * A parameter that can be passed to Solr to indicate an alternative dictionary should be used.
+     */
+    public static final String ALTERNATIVE_DICTIONARY = "alternativeDic";
+    
     /*
      * The parameters that can be set
      */

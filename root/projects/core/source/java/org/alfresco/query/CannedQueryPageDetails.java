@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -174,6 +174,15 @@ public class CannedQueryPageDetails
      */
     public int getResultsRequiredForPaging()
     {
-        return skipResults + pageCount * pageSize;
+    	int tmp = skipResults + pageCount * pageSize;
+        if(tmp < 0)
+        {
+        	// overflow
+        	return Integer.MAX_VALUE;
+        }
+        else
+        {
+        	return tmp;
+        }
     }
 }

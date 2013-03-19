@@ -124,7 +124,18 @@ var AlfrescoUtil =
       return rootNode;
    },
 
-   getSiteRoles: function getDocumentDetails(site)
+   getSite: function getSite(site)
+   {
+      var url = "/api/sites/" + encodeURIComponent(site),
+      result = remote.connect("alfresco").get(url);
+      if (result.status == 200)
+      {
+         return eval('(' + result + ')');
+      }
+      return null;
+   },
+
+   getSiteRoles: function getSiteRoles(site)
    {
       var url = "/api/sites/" + encodeURIComponent(site) + "/roles",
          result = remote.connect("alfresco").get(url);

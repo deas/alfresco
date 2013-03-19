@@ -62,6 +62,7 @@
       this.nodeData = null;
       this.settableRoles = null;
       this.settableRolesMenuData = null;
+      this.rolesWhiteList = ["Consumer", "Contributor", "Collaborator"];
       this.permissions =
       {
          isInherited: false,
@@ -131,6 +132,25 @@
        * @type boolean
        */
       inheritanceWarning: null,
+
+      /**
+       * Object container for initialization options
+       *
+       * @property options
+       * @type object
+       */
+      options:
+      {
+         /**
+          * The roles that are required to be set by the system on a node when the node doesn't inherit permissions.
+          * These roles shall NOT be editable.
+          *
+          * @property nonEditableRoles
+          * @type object
+          * @default [ "SiteManager" ]
+          */
+         nonEditableRoles: [ "SiteManager" ]
+      },
 
       /**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111q111111211222222222222221qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
        * Fired by YUI when parent element is available for scripting.
@@ -267,8 +287,18 @@
                dataWebScript: Alfresco.constants.URL_SERVICECONTEXT + "components/people-finder/authority-query",
                viewMode: Alfresco.AuthorityFinder.VIEW_MODE_COMPACT,
                singleSelectMode: true,
-               minSearchTermLength: 3
+               minSearchTermLength: 3,
+               // show both users and groups in the repo view, but only users in site view.
+               authorityType: (Alfresco.constants.SITE)? Alfresco.AuthorityFinder.AUTHORITY_TYPE_USERS : Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL
             });
+
+            if (Alfresco.constants.SITE)
+            {
+               this.modules.authorityFinder.setOptions(
+               {
+                  siteScope: Alfresco.constants.SITE
+               });
+            }
 
             // Add User/Group button
             this.widgets.addUserGroup = Alfresco.util.createYUIButton(this, "addUserGroupButton", this.onAddUserGroupButton,
@@ -340,12 +370,15 @@
          this.settableRolesMenuData = [];
          for (var i = 0, ii = data.settable.length; i < ii; i++)
          {
-            this.settableRoles[data.settable[i]] = true;
-            this.settableRolesMenuData.push(
+            if (Alfresco.util.arrayContains(this.rolesWhiteList, this.settableRoles[i]) || !Alfresco.constants.SITE)
             {
-               text: data.settable[i],
-               value: data.settable[i]
-            });
+               this.settableRoles[data.settable[i]] = true;
+               this.settableRolesMenuData.push(
+               {
+                  text: data.settable[i],
+                  value: data.settable[i]
+               });
+            }
          }
 
          this.deferredReady.fulfil("onPermissionsLoaded");
@@ -419,6 +452,7 @@
        */
       onAuthoritySelected: function Permissions_onAuthoritySelected(e, args)
       {
+         var defaultRole = (Alfresco.constants.SITE)? this.rolesWhiteList[0] : this.settableRoles[this.settableRoles.length - 1] ;
          // Construct permission descriptor and add permission row.
          this.permissions.current.push(
          {
@@ -428,7 +462,7 @@
                displayName: args[1].displayName,
                iconUrl: args[1].iconUrl
             },
-            role: this.settableRoles[this.settableRoles.length - 1],
+            role: defaultRole,
             created: true
          });
          
@@ -576,7 +610,7 @@
                menuData = [];
 
             // Special case handling for non-settable roles
-            if (!scope.settableRoles.hasOwnProperty(role))
+            if (!scope._isRoleEditable(role) || !scope.settableRoles.hasOwnProperty(role))
             {
                elCell.innerHTML = '<span>' + $html(scope._i18nRole(oRecord.getData("role"))) + '</span>';
             }
@@ -636,11 +670,16 @@
           */
          return function Permissions_renderCellActions(elCell, oRecord, oColumn, oData)
          {
+            var role = oRecord.getData("role");
+
             Dom.setStyle(elCell, "width", oColumn.width + "px");
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
 
             var html = '<div id="' + scope.id + '-actions-' + oRecord.getId() + '" class="hidden action-set">';
-            html += '<div class="onActionDelete"><a class="action-link" title="' + scope.msg("button.delete") + '"><span>' + scope.msg("button.delete") + '</span></a></div>';
+            if (scope._isRoleEditable(role))
+            {
+               html += '<div class="onActionDelete"><a class="action-link" title="' + scope.msg("button.delete") + '"><span>' + scope.msg("button.delete") + '</span></a></div>';
+            }            
             html += '</div>';
             elCell.innerHTML = html;
          };
@@ -740,11 +779,14 @@
        */
       _setupDataTables: function Permissions__setupDataTables()
       {
+         // Labels change in site mode.
+         var authlabel = (Alfresco.constants.SITE)? this.msg("column.user") : this.msg("column.authority") ;
+
          // DataTable column defintions
          var columnDefinitions =
          [
             { key: "icon", label: "", sortable: false, formatter: this.fnRenderCellAuthorityIcon(), width: 32 },
-            { key: "displayName", label: this.msg("column.authority"), sortable: false },
+            { key: "displayName", label: authlabel, sortable: false },
             { key: "role", label: this.msg("column.role"), sortable: false, formatter: this.fnRenderCellRoleText(), width: 240 }
          ];
          
@@ -760,7 +802,7 @@
          columnDefinitions =
          [
             { key: "icon", label: "", sortable: false, formatter: this.fnRenderCellAuthorityIcon(), width: 32 },
-            { key: "displayName", label: this.msg("column.authority"), sortable: false },
+            { key: "displayName", label: authlabel, sortable: false },
             { key: "role", label: this.msg("column.role"), sortable: false, formatter: this.fnRenderCellRole(), width: 240 },
             { key: "actions", label: this.msg("column.actions"), sortable: false, formatter: this.fnRenderCellActions(), width: 120 }
          ];
@@ -777,6 +819,20 @@
          this.widgets.dtDirect.subscribe("rowMouseoutEvent", this.onEventUnhighlightRow, this, true);
       },
 
+      /**
+       * Checks if the node hasn't got inherited permissions and if so if the role is required for the system to work.
+       * If so it shall not be allowed to be edited.
+       *
+       * @method _isRoleEditable
+       * @param role {String} Event object.
+       * @return True if the node 
+       * @private
+       */
+      _isRoleEditable: function Permissions__isRoleEditable(role)
+      {
+         return this.permissions.isInherited || !Alfresco.util.arrayContains(this.options.nonEditableRoles, role);
+      },
+      
       /**
        * Custom event handler to highlight row.
        *
@@ -940,7 +996,7 @@
          if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
          {
             // go back to the referrer page
-            history.go(-1);
+            window.location.href = document.referrer;
          }
          else
          {

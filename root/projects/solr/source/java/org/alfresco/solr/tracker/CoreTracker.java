@@ -57,6 +57,7 @@ import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.httpclient.HttpClientFactory;
 import org.alfresco.httpclient.HttpClientFactory.SecureCommsType;
 import org.alfresco.model.ContentModel;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
@@ -394,7 +395,7 @@ public class CoreTracker implements CloseHook
         socketTimeout = Integer.parseInt(p.getProperty("alfresco.socketTimeout", "0"));
         maxLiveSearchers =  Integer.parseInt(p.getProperty("alfresco.maxLiveSearchers", "2"));
 
-        client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(), dataModel.getNamespaceDAO());
+        client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT), dataModel.getNamespaceDAO());
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
         JobDataMap jobDataMap = new JobDataMap();
@@ -2797,7 +2798,7 @@ public class CoreTracker implements CloseHook
     private boolean mayHaveChildren(NodeMetaData nodeMetaData)
     {
         // 1) Does the type support children?
-        TypeDefinition nodeTypeDef = dataModel.getDictionaryService().getType(nodeMetaData.getType());
+        TypeDefinition nodeTypeDef = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(nodeMetaData.getType());
         if ((nodeTypeDef != null) && (nodeTypeDef.getChildAssociations().size() > 0))
         {
             return true;
@@ -2805,7 +2806,7 @@ public class CoreTracker implements CloseHook
         // 2) Do any of the applied aspects support children?
         for (QName aspect : nodeMetaData.getAspects())
         {
-            AspectDefinition aspectDef = dataModel.getDictionaryService().getAspect(aspect);
+            AspectDefinition aspectDef = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getAspect(aspect);
             if ((aspectDef != null) && (aspectDef.getChildAssociations().size() > 0))
             {
                 return true;

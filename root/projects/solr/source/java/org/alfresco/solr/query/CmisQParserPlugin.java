@@ -87,7 +87,9 @@ public class CmisQParserPlugin extends QParserPlugin
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
 
-            org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = AlfrescoSolrDataModel.getInstance(id).parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader);
+            String altDic = this.params.get(SearchParameters.ALTERNATIVE_DICTIONARY);
+            org.alfresco.repo.search.impl.querymodel.Query queryModelQuery
+              = AlfrescoSolrDataModel.getInstance(id).parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader, altDic);
             
             // build the sort param and update the params on the request if required .....
             
@@ -108,7 +110,7 @@ public class CmisQParserPlugin extends QParserPlugin
 
                         String propertyName = property.getPropertyName();
 
-                        String luceneField =  AlfrescoSolrDataModel.getInstance(id).getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS).getLuceneFieldName(propertyName);
+                        String luceneField =  AlfrescoSolrDataModel.getInstance(id).getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,altDic).getLuceneFieldName(propertyName);
 
                         if(sortParameter.length() > 0)
                         {
@@ -156,7 +158,7 @@ public class CmisQParserPlugin extends QParserPlugin
                 this.params = newParams;
             }
 
-            Query query = AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery);
+            Query query = AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery, altDic);
             if(log.isDebugEnabled())
             {
                 log.debug("AFTS QP query as lucene:\t    "+query);

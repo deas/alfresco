@@ -19,6 +19,7 @@
 package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
@@ -27,14 +28,16 @@ import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Lucene Builder for CMIS parent property
@@ -45,8 +48,8 @@ import org.apache.lucene.search.BooleanClause.Occur;
 public class ParentLuceneBuilder extends AbstractLuceneBuilder
 {
     private DictionaryService dictionaryService;
-    
-    /**
+
+	/**
      * Construct
      * 
      * @param serviceRegistry
@@ -54,7 +57,18 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     public ParentLuceneBuilder(DictionaryService dictionaryService)
     {
         super();
-        this.dictionaryService = dictionaryService;
+		this.dictionaryService = dictionaryService;
+    }
+
+    private StoreRef getStore(AbstractLuceneQueryParser lqp)
+    {
+    	ArrayList<StoreRef> stores = lqp.getSearchParameters().getStores();
+    	if(stores.size() < 1)
+    	{
+    		// default
+    		return StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+    	}
+    	return stores.get(0);
     }
 
     @Override
@@ -62,10 +76,18 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     {
         return "PARENT";
     }
-
-    private String getValueAsString(Serializable value)
+    
+    private String getValueAsString(AbstractLuceneQueryParser lqp, Serializable value)
     {
-        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), value);
+    	String nodeRefStr = (String)value;
+        if(!NodeRef.isNodeRef((String)value))
+        {
+            // assume the value (object id) is the node guid
+            StoreRef storeRef = getStore(lqp);
+        	nodeRefStr = storeRef.toString() + "/" + (String)value;
+        }
+
+        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), nodeRefStr);
         String asString = DefaultTypeConverter.INSTANCE.convert(String.class, converted);
         return asString;
     }
@@ -75,7 +97,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
             LuceneFunction luceneFunction) throws ParseException
     {
         String field = getLuceneFieldName();
-        String stringValue = getValueAsString(value);
+        String stringValue = getValueAsString(lqp, value);
         return lqp.getFieldQuery(field, stringValue, AnalysisMode.IDENTIFIER, luceneFunction);
     }
 
@@ -99,11 +121,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
 
         // Check type conversion
 
-        @SuppressWarnings("unused")
-        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), values);
-        Collection<String> asStrings = DefaultTypeConverter.INSTANCE.convert(String.class, values);
-
-        if (asStrings.size() == 0)
+        if (values.size() == 0)
         {
             if (not)
             {
@@ -112,15 +130,15 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
             {
                 return new TermQuery(new Term("NO_TOKENS", "__"));
             }
-        } else if (asStrings.size() == 1)
+        } else if (values.size() == 1)
         {
-            String value = asStrings.iterator().next();
+            Serializable value = values.iterator().next();
             if (not)
             {
-                return lqp.getDoesNotMatchFieldQuery(field, value, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
+                return lqp.getDoesNotMatchFieldQuery(field, getValueAsString(lqp, value), AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
             } else
             {
-                return lqp.getFieldQuery(field, value, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
+                return lqp.getFieldQuery(field, getValueAsString(lqp, value), AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
             }
         } else
         {
@@ -129,9 +147,9 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
             {
                 booleanQuery.add(new MatchAllDocsQuery(), Occur.MUST);
             }
-            for (String value : asStrings)
+            for (Serializable value : values)
             {
-                Query any = lqp.getFieldQuery(field, value, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
+                Query any = lqp.getFieldQuery(field, getValueAsString(lqp, value), AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
                 if (not)
                 {
                     booleanQuery.add(any, Occur.MUST_NOT);
@@ -149,7 +167,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
             LuceneFunction luceneFunction) throws ParseException
     {
         String field = getLuceneFieldName();
-        String stringValue = getValueAsString(value);
+        String stringValue = getValueAsString(lqp, value);
         return lqp.getDoesNotMatchFieldQuery(field, stringValue, AnalysisMode.IDENTIFIER, luceneFunction);
     }
 
@@ -157,7 +175,7 @@ public class ParentLuceneBuilder extends AbstractLuceneBuilder
     public Query buildLuceneLike(AbstractLuceneQueryParser lqp, Serializable value, Boolean not) throws ParseException
     {
         String field = getLuceneFieldName();
-        String stringValue = getValueAsString(value);
+        String stringValue = getValueAsString(lqp, value);
 
         if (not)
         {

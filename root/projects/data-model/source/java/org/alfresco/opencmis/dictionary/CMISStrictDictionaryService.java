@@ -37,6 +37,8 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
  */
 public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
 {
+    
+    public static final String DEFAULT = "DEFAULT_DICTIONARY";
 
     @Override
     protected void createDefinitions(DictionaryRegistry registry)

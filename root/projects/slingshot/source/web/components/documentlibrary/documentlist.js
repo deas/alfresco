@@ -1999,7 +1999,7 @@
             {
                html += '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateComments(this, record) + '</span>';
             }
-            if (!record.node.isContainer)
+            if (!record.node.isContainer && Alfresco.constants.QUICKSHARE_URL)
             {
                html += '<span class="item item-social item-separator">' + Alfresco.DocumentList.generateQuickShare(this, record) + '</span>';
             }

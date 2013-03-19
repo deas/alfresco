@@ -19,8 +19,10 @@
 package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
@@ -28,16 +30,18 @@ import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Lucene Builder for CMIS object id property.
@@ -49,14 +53,14 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
 {
     private DictionaryService dictionaryService;
     
-    /**
+	/**
      * Construct
      * 
      * @param serviceRegistry
      */
     public ObjectIdLuceneBuilder(DictionaryService dictionaryService)
     {
-        this.dictionaryService = dictionaryService;
+    	this.dictionaryService = dictionaryService;
     }
 
     @Override
@@ -65,9 +69,32 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
         return "ID";
     }
 
-    private String getValueAsString(Serializable value)
+    private StoreRef getStore(AbstractLuceneQueryParser lqp)
     {
-        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), value);
+    	ArrayList<StoreRef> stores = lqp.getSearchParameters().getStores();
+    	if(stores.size() < 1)
+    	{
+    		// default
+    		return StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+    	}
+    	return stores.get(0);
+    }
+
+    private String getValueAsString(AbstractLuceneQueryParser lqp, Serializable value)
+    {
+    	String nodeRefStr = null;
+        if(!NodeRef.isNodeRef((String)value))
+        {
+            // assume the object id is the node guid
+            StoreRef storeRef = getStore(lqp);
+        	nodeRefStr = storeRef.toString() + "/" + (String)value;
+        }
+        else
+        {
+        	nodeRefStr = (String)value;
+        }
+
+        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), nodeRefStr);
         String asString = DefaultTypeConverter.INSTANCE.convert(String.class, converted);
         return asString;
     }
@@ -76,7 +103,7 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
     public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
     {
         String field = getLuceneFieldName();
-        String stringValue = getValueAsString(value);
+        String stringValue = getValueAsString(lqp, value);
         String[] split = stringValue.split(";");
         if(split.length == 1)
         {
@@ -139,11 +166,11 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
 
         // Check type conversion
 
-        @SuppressWarnings("unused")
-        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), values);
-        Collection<String> asStrings = DefaultTypeConverter.INSTANCE.convert(String.class, values);
+//        @SuppressWarnings("unused")
+//        Object converted = DefaultTypeConverter.INSTANCE.convert(dictionaryService.getDataType(DataTypeDefinition.NODE_REF), values);
+//        Collection<String> asStrings = DefaultTypeConverter.INSTANCE.convert(String.class, values);
 
-        if (asStrings.size() == 0)
+        if (values.size() == 0)
         {
             if (not)
             {
@@ -154,9 +181,9 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
                 return new TermQuery(new Term("NO_TOKENS", "__"));
             }
         }
-        else if (asStrings.size() == 1)
+        else if (values.size() == 1)
         {
-            String value = asStrings.iterator().next();
+            Serializable value = values.iterator().next();
             if (not)
             {
                 BooleanQuery booleanQuery = new BooleanQuery();
@@ -176,7 +203,7 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
             {
                 booleanQuery.add(new MatchAllDocsQuery(), Occur.MUST);
             }
-            for (String value : asStrings)
+            for (Serializable value : values)
             {
                 Query any = buildLuceneEquality(lqp, value, mode, LuceneFunction.FIELD);
                 if (not)
@@ -219,7 +246,7 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
     public Query buildLuceneLike(AbstractLuceneQueryParser lqp, Serializable value, Boolean not) throws ParseException
     {
         String field = getLuceneFieldName();
-        String stringValue = getValueAsString(value);
+        String stringValue = getValueAsString(lqp, value);
 
         if (not)
         {

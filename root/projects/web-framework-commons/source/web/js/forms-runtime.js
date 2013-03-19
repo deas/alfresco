@@ -2044,10 +2044,26 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
          args = {};
       }
 
-      args.pattern = /^[^\(^\)^\{^\}^'^"^,^:^;^<^>^\\^\[^\]^\s^\@]+@[^\(^\)^\{^\}^'^"^,^:^;^<^>^\\^\[^\]^\s^\@]+\.[A-Za-z]{2,7}$/;
-      args.match = true;
+      var valid = false
+      if (field.value && field.value.length > 0)
+      {
+         //Strip out the name and surrounding angle brackets, if present.
+         var start = field.value.indexOf("<");
+         if (start >= 0)
+         {
+            start = start + 1;
+            var end = field.value.lastIndexOf(">");
+            if (end > start)
+            {
+               field.value = field.value.substr(start, (end -start));
+            }
+         }
+         args.pattern = /^[^\(^\)^\{^\}^'^"^,^:^;^<^>^\\^\[^\]^\s^\@]+@[^\(^\)^\{^\}^'^"^,^:^;^<^>^\\^\[^\]^\s^\@]+\.[A-Za-z]{2,7}$/;
+         args.match = true;
 
-      return Alfresco.forms.validation.regexMatch(field, args, event, form);
+         valid = Alfresco.forms.validation.regexMatch(field, args, event, form);
+      }
+      return valid;
    };
 
 

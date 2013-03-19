@@ -99,12 +99,13 @@
             <@markup id="list-item">
                <div class="detail-list-item">
 
-                  <div class="avatar">
-
-                     <#-- LIST - ITEM - AVATAR -->
-                     <@markup id="list-item-avatar">
-                        <img src="${url.context}<#if m.authority.avatar??>/proxy/alfresco/${m.authority.avatar}<#else>/res/components/images/no-user-photo-64.png</#if>" alt="" />
-                     </@markup>
+            <div class="avatar">
+               
+               <#-- LIST - ITEM - AVATAR -->
+               <@markup id="list-item-avatar">
+               <#assign avatarNodeRef>${m.authority.avatarNode!"avatar"}</#assign>
+               <img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${avatarNodeRef?string?replace('://','/')}" alt="Avatar" />
+               </@markup>
 
                   </div>
                   <div class="person">

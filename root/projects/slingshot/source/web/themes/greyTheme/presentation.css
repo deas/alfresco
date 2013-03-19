@@ -1,4 +1,3 @@
-
 /* Site-wide Styles */
 
 .yui-overlay,
@@ -1232,6 +1231,7 @@ div.theme-bg-color-8
    background-color: #FFFFFF;
    -moz-box-shadow: 3px 3px 5px #555;
    -webkit-box-shadow: 3px 3px 5px #555;
+   -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#555555')";
 }
 
 .theme-company-logo
@@ -1375,6 +1375,15 @@ font-size:108%;
 }
 
 .yui-skin-greyTheme .notifications .header-bar {
+background-color: #fff;
+border-bottom: 1px solid #cbcbcb;
+color: #666;
+margin-bottom: 6px;
+padding-bottom: 6px;
+font-size:108%;
+}
+
+.yui-skin-greyTheme .locale .header-bar {
 background-color: #fff;
 border-bottom: 1px solid #cbcbcb;
 color: #666;

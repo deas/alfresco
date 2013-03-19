@@ -37,20 +37,48 @@ var mapGroup = function(data)
    });
 };
 
+var mapSiteUser = function(data)
+{
+   return (
+   {
+      authorityType: "USER",
+      shortName: data.authority.userName,
+      fullName: data.authority.userName,
+      displayName: (data.authority.firstName ? data.authority.firstName + " " : "") + (data.authority.lastName ? data.authority.lastName : ""),
+      description: data.role,
+      metadata:
+      {
+      }
+   })
+};
+
 var getMappings = function()
 {
    var mappings = [],
-      authorityType = args.authorityType === null ? "all" : String(args.authorityType).toLowerCase();
+      authorityType = args.authorityType === null ? "all" : String(args.authorityType).toLowerCase(),
+      siteScope = args.site !== null ? true : false ;
    
    if (authorityType === "all" || authorityType == "user")
    {
-      mappings.push(
+      if (siteScope)
       {
-         type: MAPPING_TYPE.API,
-         url: "/api/people?filter=" + encodeURIComponent(args.filter),
-         rootObject: "people",
-         fn: mapUser
-      });
+         mappings.push(
+         {
+            type: MAPPING_TYPE.API,
+            url: "/api/sites/" + encodeURIComponent(args.site) + "/memberships?nf="+ encodeURIComponent(args.filter) + "&authorityType=USER",
+            rootObject: false,
+            fn: mapSiteUser
+         });
+      } else
+      {
+         mappings.push(
+         {
+            type: MAPPING_TYPE.API,
+            url: "/api/people?filter=" + encodeURIComponent(args.filter),
+            rootObject: "people",
+            fn: mapUser
+         });
+      }
    }
 
    if (authorityType === "all" || authorityType === "group")
@@ -102,9 +130,10 @@ function main()
          if (result.status == 200)
          {
             data = eval('(' + result + ')');
-            for (j = 0, jj = data[mapping.rootObject].length; j < jj; j++)
+            dataObj = (mapping.rootObject)? data[mapping.rootObject] : data;
+            for (j = 0, jj = dataObj.length; j < jj; j++)
             {
-               authorities.push(mapping.fn.call(this, data[mapping.rootObject][j]));
+               authorities.push(mapping.fn.call(this, dataObj[j]));
             }
          }
       }

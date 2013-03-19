@@ -32,10 +32,14 @@ import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PolicyTypeDefinitionImpl;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
 {
     private static final long serialVersionUID = 1L;
+    // Logger
+    protected static final Log logger = LogFactory.getLog(PolicyTypeDefintionWrapper.class);
 
     private PolicyTypeDefinitionImpl typeDef;
     private PolicyTypeDefinitionImpl typeDefInclProperties;
@@ -150,9 +154,10 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
                             + " for parent type " + getAlfrescoName() + "!");
                 }
                 children.add(child);
-            } else
+            }
+            else
             {
-                System.out.println("Not a policy: " + childName);
+                logger.info("Not a policy: " + childName);
             }
         }
     }

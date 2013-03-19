@@ -1312,6 +1312,7 @@ div.theme-bg-color-8
    background-position: top right;
    background-color: #fff;
    box-shadow: 3px 3px 5px #555;
+   -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#555555')";
 }
 
 .theme-company-logo

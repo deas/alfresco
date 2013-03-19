@@ -36,16 +36,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.mapping.CMISMapping;
-import org.alfresco.opencmis.mapping.RuntimePropertyLuceneBuilderMapping;
 import org.alfresco.opencmis.search.CMISQueryOptions;
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
 import org.alfresco.repo.cache.MemoryCache;
-import org.alfresco.repo.dictionary.CompiledModel;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
@@ -76,7 +75,6 @@ import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.MLText;
@@ -92,7 +90,6 @@ import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -136,9 +133,8 @@ public class AlfrescoSolrDataModel
 
     private DictionaryDAOImpl dictionaryDAO;
 
-    private DictionaryComponent dictionaryComponent;
-
-    private CMISStrictDictionaryService cmisDictionaryService;
+    private  Map<String,DictionaryComponent> dictionaryServices;
+    private  Map<String,CMISAbstractDictionaryService> cmisDictionaryServices;
 
     private boolean storeAll = false;
 
@@ -282,8 +278,8 @@ public class AlfrescoSolrDataModel
         dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
 
-        dictionaryComponent = new DictionaryComponent();
-        dictionaryComponent.setDictionaryDAO(dictionaryDAO);
+        dictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaryServices(dictionaryDAO);
+        DictionaryComponent dictionaryComponent = getDictionaryService(CMISStrictDictionaryService.DEFAULT);
         dictionaryComponent.setMessageLookup(new StaticMessageLookup());
 
         // cmis dictionary
@@ -294,30 +290,56 @@ public class AlfrescoSolrDataModel
         cmisMapping.setDictionaryService(dictionaryComponent);
         cmisMapping.afterPropertiesSet();
 
-        cmisDictionaryService = new CMISStrictDictionaryService();
-        cmisDictionaryService.setCmisMapping(cmisMapping);
-        cmisDictionaryService.setDictionaryService(dictionaryComponent);
-        cmisDictionaryService.setDictionaryDAO(dictionaryDAO);
-        cmisDictionaryService.setSingletonCache(new MemoryCache<String, CMISStrictDictionaryService.DictionaryRegistry>());
+        cmisDictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaries(cmisMapping, dictionaryComponent, dictionaryDAO);
 
-        RuntimePropertyLuceneBuilderMapping luceneBuilderMapping = new RuntimePropertyLuceneBuilderMapping();
-        luceneBuilderMapping.setDictionaryService(dictionaryComponent);
-        luceneBuilderMapping.setCmisDictionaryService(cmisDictionaryService);
-        cmisDictionaryService.setPropertyLuceneBuilderMapping(luceneBuilderMapping);
-
-        luceneBuilderMapping.afterPropertiesSet();
     }
 
-    public DictionaryService getDictionaryService()
+    /**
+     * Gets a DictionaryService, if an Alternative dictionary is specified it tries to get that.
+     * It will attempt to get the DEFAULT dictionary service if null is specified or it can't find
+     * a dictionary with the name of "alternativeDictionary"
+     * @param alternativeDictionary - can be null;
+     * @return DictionaryService
+     */
+    public DictionaryComponent getDictionaryService(String alternativeDictionary)
     {
+        DictionaryComponent dictionaryComponent = null;
+        
+        if (alternativeDictionary != null && !alternativeDictionary.trim().isEmpty())
+        {
+            dictionaryComponent = dictionaryServices.get(alternativeDictionary);
+        }
+        
+        if (dictionaryComponent == null)
+        {
+            dictionaryComponent = dictionaryServices.get(CMISStrictDictionaryService.DEFAULT);
+        }
         return dictionaryComponent;
     }
 
-    public CMISDictionaryService getCMISDictionaryService()
+    /**
+     * Gets the CMISDictionaryService, if an Alternative dictionary is specified it tries to get that.
+     * It will attempt to get the DEFAULT dictionary service if null is specified or it can't find
+     * a dictionary with the name of "alternativeDictionary"
+     * @param alternativeDictionary - can be null;
+     * @return CMISDictionaryService
+     */
+    public CMISDictionaryService getCMISDictionary(String alternativeDictionary)
     {
-        return cmisDictionaryService;
+        CMISDictionaryService cmisDictionary = null;
+        
+        if (alternativeDictionary != null && !alternativeDictionary.trim().isEmpty())
+        {
+            cmisDictionary = cmisDictionaryServices.get(alternativeDictionary);
+        }
+        
+        if (cmisDictionary == null)
+        {
+            cmisDictionary = cmisDictionaryServices.get(CMISStrictDictionaryService.DEFAULT);
+        }
+        return cmisDictionary;
     }
-
+    
     public NamespaceDAO getNamespaceDAO()
     {
         return namespaceDAO;
@@ -639,11 +661,11 @@ public class AlfrescoSolrDataModel
      */
     public Query getRangeQuery(SchemaField field, String part1, String part2, boolean minInclusive, boolean maxInclusive)
     {
-        SolrLuceneAnalyser defaultAnalyser = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
+        SolrLuceneAnalyser defaultAnalyser = new SolrLuceneAnalyser(getDictionaryService(CMISStrictDictionaryService.DEFAULT), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
         SolrQueryParser parser = new SolrQueryParser("TEXT", defaultAnalyser);
         parser.setDefaultOperator(Operator.AND);
         parser.setNamespacePrefixResolver(namespaceDAO);
-        parser.setDictionaryService(getDictionaryService());
+        parser.setDictionaryService(getDictionaryService(CMISStrictDictionaryService.DEFAULT));
         parser.setTenantService(tenantService);
         parser.setSearchParameters(null);
         parser.setDefaultSearchMLAnalysisMode(getMLAnalysisMode());
@@ -724,7 +746,10 @@ public class AlfrescoSolrDataModel
 
     public void afterInitModels()
     {
-        cmisDictionaryService.afterDictionaryInit();
+        for (CMISAbstractDictionaryService cds : cmisDictionaryServices.values())
+        {
+            cds.afterDictionaryInit();
+        }
     }
     
     public void setCMDefaultUri()
@@ -1035,7 +1060,7 @@ public class AlfrescoSolrDataModel
 
     public AbstractLuceneQueryParser getLuceneQueryParser(SearchParameters searchParameters, IndexReader indexReader)
     {
-        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
+        SolrLuceneAnalyser analyzer = new SolrLuceneAnalyser(getDictionaryService(CMISStrictDictionaryService.DEFAULT), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
         SolrQueryParser parser = new SolrQueryParser(searchParameters.getDefaultFieldName(), analyzer);
         Operator defaultOperator;
         if (searchParameters.getDefaultOperator() == SearchParameters.AND)
@@ -1048,7 +1073,7 @@ public class AlfrescoSolrDataModel
         }
         parser.setDefaultOperator(defaultOperator);
         parser.setNamespacePrefixResolver(namespaceDAO);
-        parser.setDictionaryService(dictionaryComponent);
+        parser.setDictionaryService(getDictionaryService(CMISStrictDictionaryService.DEFAULT));
         parser.setTenantService(tenantService);
         parser.setSearchParameters(searchParameters);
         parser.setDefaultSearchMLAnalysisMode(getMLAnalysisMode());
@@ -1058,9 +1083,9 @@ public class AlfrescoSolrDataModel
         return parser;
     }
 
-    public LuceneQueryBuilderContext getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader)
+    public LuceneQueryBuilderContext getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
     {
-        LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(dictionaryComponent, namespaceDAO, tenantService, searchParameters,
+        LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(getDictionaryService(alternativeDictionary), namespaceDAO, tenantService, searchParameters,
                 getMLAnalysisMode(), indexReader, alfrescoDataType.getQueryAnalyzer(), this);
         return luceneContext;
     }
@@ -1071,7 +1096,7 @@ public class AlfrescoSolrDataModel
         Boolean isFilter = searchParametersAndFilter.getSecond();
         
         QueryModelFactory factory = new LuceneQueryModelFactory();
-        AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(namespaceDAO, dictionaryComponent, NamespaceService.CONTENT_MODEL_1_0_URI);
+        AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(namespaceDAO, getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
 
         FTSParser.Mode mode;
 
@@ -1091,7 +1116,7 @@ public class AlfrescoSolrDataModel
 
         LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
 
-        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader);
+        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, CMISStrictDictionaryService.DEFAULT);
 
         Set<String> selectorGroup = null;
         if (queryModelQuery.getSource() != null)
@@ -1117,7 +1142,7 @@ public class AlfrescoSolrDataModel
         return contextAwareQuery;
     }
 
-    public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader)
+    public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
             throws ParseException
     {
         // convert search parameters to cmis query options
@@ -1134,8 +1159,11 @@ public class AlfrescoSolrDataModel
 
         // parse cmis syntax
         CapabilityJoin joinSupport = (mode == CMISQueryMode.CMS_STRICT) ? CapabilityJoin.NONE : CapabilityJoin.INNERONLY;
-        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
-        CMISQueryParser parser = new CMISQueryParser(options, cmisDictionaryService, joinSupport);
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, alternativeDictionary);
+        
+        CMISDictionaryService cmisDictionary = getCMISDictionary(alternativeDictionary);
+        
+        CMISQueryParser parser = new CMISQueryParser(options, cmisDictionary, joinSupport);
         org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = parser.parse(new LuceneQueryModelFactory(), functionContext);
 
         // build lucene query
@@ -1156,27 +1184,27 @@ public class AlfrescoSolrDataModel
         return queryModelQuery;
     }
 
-    public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode)
+    public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode, String alternativeDictionary)
     {
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
         CmisFunctionEvaluationContext functionContext = new CmisFunctionEvaluationContext();
-        functionContext.setCmisDictionaryService(cmisDictionaryService);
+        functionContext.setCmisDictionaryService(getCMISDictionary(alternativeDictionary));
         functionContext.setValidScopes(validScopes);
         return functionContext;
     }
-
-    public Query getCMISQuery(CMISQueryMode mode,  Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery)
+    
+    public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, String alternativeDictionary)
             throws ParseException
     {
         SearchParameters searchParameters = searchParametersAndFilter.getFirst();
         Boolean isFilter = searchParametersAndFilter.getSecond();
         
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
-        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode);
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, alternativeDictionary);
 
         Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
 
-        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader);
+        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, alternativeDictionary);
         LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
 
@@ -1550,7 +1578,7 @@ public class AlfrescoSolrDataModel
         for (QName modelName : dictionaryDAO.getModels())
         {
             M2Model m2Model = dictionaryDAO.getCompiledModel(modelName).getM2Model();
-            answer.add(new AlfrescoModel(m2Model, dictionaryComponent.getModel(modelName).getChecksum(ModelDefinition.XMLBindingType.DEFAULT)));
+            answer.add(new AlfrescoModel(m2Model, getDictionaryService(CMISStrictDictionaryService.DEFAULT).getModel(modelName).getChecksum(ModelDefinition.XMLBindingType.DEFAULT)));
         }
         return answer;
 
@@ -1562,7 +1590,7 @@ public class AlfrescoSolrDataModel
      */
     public SolrLuceneAnalyser getSolrLuceneAnalyser()
     {
-        return new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
+        return new SolrLuceneAnalyser(getDictionaryService(CMISStrictDictionaryService.DEFAULT), getMLAnalysisMode(), alfrescoDataType.getDefaultAnalyzer(), this);
     }
 
     /**
@@ -1600,7 +1628,7 @@ public class AlfrescoSolrDataModel
      */
     public SolrLuceneAnalyser getSolrLuceneQueryAnalyser()
     {
-        return new SolrLuceneAnalyser(getDictionaryService(), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
+        return new SolrLuceneAnalyser(getDictionaryService(CMISStrictDictionaryService.DEFAULT), getMLAnalysisMode(), alfrescoDataType.getDefaultQueryAnalyzer(), this);
     }
 
     /**
@@ -1609,7 +1637,7 @@ public class AlfrescoSolrDataModel
      */
     public PropertyDefinition getPropertyDefinition(QName propertyQName)
     {
-        PropertyDefinition propertyDef = getDictionaryService().getProperty(propertyQName);
+        PropertyDefinition propertyDef = getDictionaryService(CMISStrictDictionaryService.DEFAULT).getProperty(propertyQName);
         if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_AUTHOR)))
         {
             return new PropertyDefinitionWrapper(propertyDef);

@@ -36,6 +36,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
+    <classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-bindings-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-impl-0.8.0.jar"/>

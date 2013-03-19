@@ -236,6 +236,7 @@ public class SOLRAPIClientTest extends TestCase
         cmisDictionaryService.afterDictionaryInit();
     }
 
+
     protected AlfrescoHttpClient getRepoClient(ClasspathKeyResourceLoader keyResourceLoader)
     {
         // TODO i18n
@@ -243,6 +244,27 @@ public class SOLRAPIClientTest extends TestCase
         KeyStoreParameters trustStoreParameters = new KeyStoreParameters("SSL Trust Store", "JCEKS", null, "ssl-truststore-passwords.properties", "ssl.repo.client.truststore");
  
         SSLEncryptionParameters sslEncryptionParameters = new SSLEncryptionParameters(keyStoreParameters, trustStoreParameters);
+
+    	//MD5HttpClientFactory httpClientFactory = new MD5HttpClientFactory();
+//        HttpClientFactory httpClientFactory = new HttpClientFactory(SecureComm);
+//
+//        invalidKeyEncryptionService = new EncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
+//        AlfrescoHttpClient repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, invalidKeyEncryptionService);
+//        //SecureHttpClient repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, invalidKeyEncryptionService);
+//        invalidKeyClient = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
+//
+//        keyStoreParameters.setLocation("org/alfresco/solr/client/.keystore");
+//        tamperWithEncryptionService = new TamperWithEncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
+//        repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, tamperWithEncryptionService);
+////        repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, tamperWithEncryptionService);
+//        tamperWithClient = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
+//        
+//        encryptionParameters.setMessageTimeout(30*1000);
+//        keyStoreParameters.setLocation("workspace-SpacesStore/conf/.keystore");
+//        EncryptionService encryptionService = new EncryptionService("127.0.0.1", 8080, keyResourceLoader, keyStoreParameters, encryptionParameters);
+//        repoClient = httpClientFactory.getAlfrescoHttpClient("127.0.0.1", 8080, encryptionService);
+        //repoClient = new SecureHttpClient(httpClientFactory, "127.0.0.1", 8080, encryptionService);
+//        client = new SOLRAPIClient(repoClient, model.getDictionaryService(), namespaceDAO);
 
         HttpClientFactory httpClientFactory = new HttpClientFactory(SecureCommsType.getType("https"), sslEncryptionParameters, keyResourceLoader, null, null, "localhost", 8080,
                 8443, 40, 40, 0);

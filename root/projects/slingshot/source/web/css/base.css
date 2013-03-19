@@ -638,6 +638,13 @@ textarea.wide
    padding: 15px;
    position: relative;
    top: 180px;
+   font-size: 123%
+}
+
+.sticky-wrapper .info-balloon h3,
+.yui-overlay .info-balloon h3
+{
+   font-size: 100%;
 }
 
 .info-balloon-arrow
@@ -1684,4 +1691,31 @@ body.brand-bg-1 .sticky-wrapper
 .passwordStrengthMeter .passwordStrengthMeterStrength-best li.passwordStrengthMeterStrength-4
 {
    background-color: #46B31B;
+}
+
+.cloud-sync-details-success {
+   height: 0 !important;
+}
+
+.location .document-root-link {
+   padding-bottom: 5px;
+}
+
+.cloud-sync-status-heading {
+   padding-top: 10px !important;
+}
+
+.document-sync .document-sync-formContainer {
+   padding-top: 0px !important;
+}
+
+.cloud-sync-indirect-root {
+   padding-top: 5px !important;
+}
+
+.sticky-wrapper .cloud-sync-status .cloud-sync-details-info a:link,
+.sticky-wrapper .cloud-sync-status .cloud-sync-details-info a:visited,
+.sticky-wrapper .cloud-sync-status .cloud-sync-details-info a:hover,
+.sticky-wrapper .cloud-sync-status .cloud-sync-details-info a:active {
+   color: #2186D9 !important;
 }

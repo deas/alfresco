@@ -2894,6 +2894,10 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
           * The key codes that will make the typed word into a box.
           * By default just enter, but a comma could also be used by setting it to:
           * [YAHOO.util.KeyListener.KEY.ENTER, 44]
+          *
+          * @property delimiterKeyCodes
+          * @type Array
+          * @default []
           */
          delimiterKeyCodes: [ YAHOO.util.KeyListener.KEY.ENTER ],
 
@@ -2901,8 +2905,21 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
           * When pasting in text to the control the usual delimiterKeyCodes act as delimiters against the pasted string.
           * However when the paste is done newline characters are transformed to space characters.
           * To make newline characters act as delimiters on paste set this to [ YAHOO.util.KeyListener.KEY.SPACE ]
+          *
+          * @property pasteDelimiterKeyCodes
+          * @type Array
+          * @default []
           */
-         pasteDelimiterKeyCodes: []
+         pasteDelimiterKeyCodes: [],
+
+         /**
+          * The number of characters that must be entered before sending a request for auto complete suggestions
+          *
+          * @property minQueryLength
+          * @type int
+          * @default 1
+          */
+         minQueryLength: 1
       },
 
       /**
@@ -2989,8 +3006,9 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
           *
           **************************************************************************************/
          var oDS = new YAHOO.util.XHRDataSource();
-         oDS.connXhrMode = "ignoreStaleRequests";
+         oDS.connXhrMode = "cancelStaleRequests";
          oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+         oDS.maxCacheEntries = 10;
          // This schema indicates where to find the item name in the JSON response
          oDS.responseSchema =
          {
@@ -3005,8 +3023,9 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
             return YAHOO.lang.substitute(url, { query: query });
          };
          this.autoComplete.applyLocalFilter = false;  // Filter the results on the client
-         this.autoComplete.queryDelay = 0.1           // Throttle requests sent
+         this.autoComplete.queryDelay = 0.2;           // Throttle requests sent
          this.autoComplete.animSpeed = 0.08;
+         this.autoComplete.minQueryLength = this.params.minQueryLength;
          this.autoComplete.itemSelectEvent.subscribe(function(type, args)
          {
             // If the user clicks on an entry in the list then apply the selected item

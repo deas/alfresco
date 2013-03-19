@@ -277,7 +277,7 @@
       <!-- Alfresco QuickShare social widget - for creating public url that can be shared -->
       <quickshare>
          <!--
-            Will be available as Alfresco.constants.QUICKSHARE_URL using javascrip in the browser.
+            Will be available as Alfresco.constants.QUICKSHARE_URL using javascript in the browser.
             If changing this, make sure this url matches the quickshare rule in urlrewrite.xml
          -->
          <url>{context}/s/{sharedId}</url>

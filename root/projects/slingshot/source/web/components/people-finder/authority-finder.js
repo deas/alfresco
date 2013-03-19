@@ -254,6 +254,10 @@
          searchUrl += (searchUrl.indexOf("?") < 0) ? "?" : "&";
          searchUrl += "authorityType=" + this.options.authorityType + "&";
          searchUrl += "maxResults=" + this.options.maxSearchResults + "&";
+         if (this.options.siteScope)
+         {
+            searchUrl += "site=" + this.options.siteScope + "&";
+         }
          this.widgets.dataSource = new YAHOO.util.DataSource(searchUrl,
          {
             responseType: YAHOO.util.DataSource.TYPE_JSON,

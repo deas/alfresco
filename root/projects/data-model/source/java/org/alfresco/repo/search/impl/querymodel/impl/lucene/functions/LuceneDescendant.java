@@ -18,11 +18,11 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.model.ContentModel;
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
@@ -32,7 +32,7 @@ import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderCo
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Path;
-import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
 
@@ -49,6 +49,17 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
     public LuceneDescendant()
     {
         super();
+    }
+
+    private StoreRef getStore(LuceneQueryBuilderContext luceneContext)
+    {
+    	ArrayList<StoreRef> stores = luceneContext.getLuceneQueryParser().getSearchParameters().getStores();
+    	if(stores.size() < 1)
+    	{
+    		// default
+    		return StoreRef.STORE_REF_WORKSPACE_SPACESSTORE;
+    	}
+    	return stores.get(0);
     }
 
     /*
@@ -80,6 +91,7 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
                 throw new QueryModelException("Selector must be specified for child constraint (IN_TREE) and join"); 
             }
         }
+
         NodeRef nodeRef;
         if(NodeRef.isNodeRef(id))
         {
@@ -87,8 +99,11 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
         }
         else
         {
-            throw new QueryModelException("Invalid Object Id "+id);
+        	// assume id is the node uuid e.g. for OpenCMIS
+        	StoreRef storeRef = getStore(luceneContext);
+        	nodeRef = new NodeRef(storeRef, id);
         }
+
         // Lucene world 
         if(functionContext.getNodeService() != null)
         {

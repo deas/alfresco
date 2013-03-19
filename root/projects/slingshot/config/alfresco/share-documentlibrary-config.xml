@@ -606,9 +606,9 @@
             <param name="function">onActionAssignWorkflow</param>
          </action>
 
-         <!-- Manage permissions (site roles) -->
-         <action id="document-manage-site-permissions" type="javascript" icon="document-manage-permissions" label="actions.document.manage-permissions">
-            <param name="function">onActionManagePermissions</param>
+         <!-- Manage permissions (granular permissions) -->
+         <action id="document-manage-granular-permissions" type="pagelink" icon="document-manage-permissions" label="actions.document.manage-permissions">
+            <param name="page">manage-permissions?nodeRef={node.nodeRef}</param>
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
@@ -813,6 +813,7 @@
             <action index="280" id="document-assign-workflow" />
             <action index="290" id="document-cancel-editing" />
             <action index="295" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
+            <action index="297" id="document-manage-granular-permissions" />
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
             <action index="320" id="document-view-in-source-repository" />
@@ -844,7 +845,7 @@
             <action index="270" id="document-assign-workflow" />
             <action index="280" id="document-cancel-editing" />
             <action index="285" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
-            <action index="290" id="document-manage-site-permissions" />
+            <action index="290" id="document-manage-granular-permissions" />
             <action index="300" id="document-manage-repo-permissions" />
             <action index="310" id="document-manage-aspects" />
             <action index="320" id="document-change-type" />
@@ -868,7 +869,7 @@
             <action index="160" id="document-move-to" icon="folder-move-to" label="actions.folder.move-to" />
             <action index="170" id="folder-manage-rules" />
             <action index="180" id="document-delete" icon="folder-delete" label="actions.folder.delete" />
-            <action index="190" id="document-manage-site-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
+            <action index="190" id="document-manage-granular-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="200" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="210" id="document-manage-aspects" label="actions.folder.manage-aspects" />
             <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
@@ -887,7 +888,7 @@
             <action index="140" id="document-move-to" icon="folder-move-to" label="actions.folder.move-to" />
             <action index="150" id="folder-manage-rules" />
             <action index="160" id="document-delete" icon="folder-delete" label="actions.folder.delete" />
-            <action index="170" id="document-manage-site-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
+            <action index="170" id="document-manage-granular-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="180" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="190" id="document-manage-aspects" label="actions.folder.manage-aspects" />
             <action index="200" id="document-change-type" label="actions.folder.change-type" />

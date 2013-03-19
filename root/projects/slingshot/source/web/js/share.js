@@ -1090,17 +1090,23 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
             Dom.addClass(overlayEl, "yuimenu");
             Dom.addClass(overlayEl, "quickshare-action-menu");
 
-            overlayEl.innerHTML = '' +
+            var html = '' +
                '<div class="bd">' +
                '  <span class="section">' +
                '     <label for="' + this.id + '-input">' + this.msg("quickshare.link.label") + ':</label> <input id="' + this.id + '-input" type="text" tabindex="0"/>' +
                '     <a href="#" class="quickshare-action-view">' + this.msg("quickshare.view.label") + '</a>' +
                '     <a href="#" class="quickshare-action-unshare">' + this.msg("quickshare.unshare.label") + '</a>' +
-               '  </span>' +
-               '  <span class="section">' +
-               '     <label>' + this.msg("quickshare.linkshare.label") + ':</label> <span class="quickshare-linkshare"></span>' +
-               '  </span>' +
-               '</div>';
+               '  </span>';
+            if (Alfresco.constants.LINKSHARE_ACTIONS)
+            {
+               html += '' +
+                  '  <span class="section">' +
+                  '     <label>' + this.msg("quickshare.linkshare.label") + ':</label> <span class="quickshare-linkshare"></span>' +
+                  '  </span>';
+            }
+            html += '</div>';
+
+            overlayEl.innerHTML = html;
 
             this.widgets.overlay = Alfresco.util.createYUIOverlay(overlayEl,
             {
@@ -1171,10 +1177,13 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
          this.widgets.link.value = url;
          this.widgets.view.setAttribute("href", url);
 
-         this.widgets.linkshare.innerHTML = new Alfresco.LinkShare().setOptions({
-            shareUrl: url,
-            displayName: this.options.displayName
-         }).display();
+         if (this.widgets.linkshare)
+         {
+            this.widgets.linkshare.innerHTML = new Alfresco.LinkShare().setOptions({
+               shareUrl: url,
+               displayName: this.options.displayName
+            }).display();
+         }
 
          // Show overlay
          this.widgets.overlay.show();
@@ -1316,7 +1325,7 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
        */
       _render: function LinkShare_render()
       {
-         var actions = this.options.actions || Alfresco.constants.LINKSHARE_ACTIONS,
+         var actions = this.options.actions || Alfresco.constants.LINKSHARE_ACTIONS || [],
             html = '',
             action;
 
