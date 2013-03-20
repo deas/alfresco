@@ -4,13 +4,19 @@
       <div class="theme-company-logo"></div>
    </#if>
    <#if args.header??>
-      <h3 class="thin ${args.headerClass!""}">${msg(args.header?html)}</h3>
+      <#assign header = msg(args.header)/>
+      <#if header != args.header>
+         <h3 class="thin ${(args.headerClass!"")?html}">${msg(args.header?html)}</h3>
+      </#if>
    </#if>
    <#if args.header?? && args.text??>
       <hr/>
    </#if>
    <#if args.text??>
-      <p class="${args.textClass!""}">${msg(args.text)?html}</p>
+      <#assign text = msg(args.text)/>
+      <#if text != args.text>
+      <p class="${(args.textClass!"")?html}">${text}</p>
+      </#if>
    </#if>
 </div>
 <script type="text/javascript">//<![CDATA[

@@ -223,7 +223,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         }
     }
     
-    private DictionaryRegistry getRegistry()
+    protected DictionaryRegistry getRegistry()
     {
         return getRegistryImpl();
     }

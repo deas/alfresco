@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
@@ -79,13 +78,7 @@ public class ShareContentGet extends AbstractQuickShareContent
             final String tenantDomain = pair.getFirst();
             final NodeRef nodeRef = pair.getSecond();
             
-            SiteInfo siteInfo = siteService.getSite(nodeRef);
-            
-            String siteId = null;
-            if (siteInfo != null)
-            {
-                siteId = siteInfo.getShortName();
-            }
+            String siteId = siteService.getSiteShortName(nodeRef);
             
             Map<String, Object> model = new HashMap<String, Object>(3);
             model.put("sharedId", sharedId);

@@ -1931,6 +1931,8 @@
                   includes="${file.name.jar.webframeworkcommons}" />
          <fileset dir="${dir.project.jlan.dist}" 
                   includes="${file.name.jar.jlan}" />
+		 <fileset dir="${dir.project.3rdparty.lib}/opensaml" 
+                  includes="*.jar" />		  
       </copy>
 
    </target>
