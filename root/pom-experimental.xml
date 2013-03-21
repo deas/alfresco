@@ -478,6 +478,7 @@
                                         <excludes>
                                             <exclude>**/AbstractTest*.java</exclude>
                                             <exclude>**/gUnitExecutor.java</exclude>
+                                            <exclude>**/OpenCMISClientContext.java</exclude>
                                             <exclude>**/LocalWebScriptConnectorServiceImpl.java</exclude>
                                             <exclude>**/Test*.java</exclude>
                                             <exclude>**/UnitTest*.java</exclude>
@@ -485,6 +486,7 @@
                                             <exclude>**/MockedTest*.java</exclude>
                                             <exclude>**/*Test.java</exclude>
                                             <exclude>**/*Test_.java</exclude>
+                                            <exclude>**/*Test_DISABLED.java</exclude>
                                             <exclude>**/*Tester.java</exclude>
                                             <exclude>**/*TestingUtils.java</exclude>
                                             <exclude>**/*Tests.java</exclude>
@@ -539,6 +541,7 @@
                                         <includes>
                                             <include>**/AbstractTest*.java</include>
                                             <include>**/gUnitExecutor.java</include>
+                                            <include>**/OpenCMISClientContext.java</include>
                                             <include>**/LocalWebScriptConnectorServiceImpl.java</include>
                                             <include>**/Test*.java</include>
                                             <include>**/UnitTest*.java</include>
@@ -546,6 +549,7 @@
                                             <include>**/MockedTest*.java</include>
                                             <include>**/*Test.java</include>
                                             <include>**/*Test_.java</include>
+                                            <include>**/*Test_DISABLED.java</include>
                                             <include>**/*Tester.java</include>
                                             <include>**/*TestingUtils.java</include>
                                             <include>**/*Tests.java</include>
