@@ -15,14 +15,6 @@
             <name>openoffice_directory</name>
             <cliOptionName>openoffice_directory</cliOptionName>
         </directoryParameter>
-        <!--directoryParameter>
-            <ask>0</ask>
-            <default/>
-            <description>Xvfb installation directory</description>
-            <name>openoffice_xvfb_directory</name>
-            <value>${installdir}/Xvfb</value>
-            <cliOptionName>openoffice_xvfb_directory</cliOptionName>
-        </directoryParameter-->
         <stringParameter>
             <name>openoffice_port</name>
             <title>OpenOffice Server Port</title>
@@ -82,19 +74,6 @@
         </setInstallerVariable>
     </readyToInstallActionList>
     <folderList>
-        <!--folder>
-            <description>Xvfb</description>
-            <destination>${installdir}</destination>
-            <name>xvfbfiles</name>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>Xvfb</origin>
-                </distributionDirectory>
-            </distributionFileList>
-            <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            </ruleList>
-        </folder-->
         <folder>
             <description>OpenOffice</description>
             <destination>${openoffice_directory}</destination>
@@ -153,7 +132,8 @@
 		    </ruleList>
 		</substitute>
                 <substitute>
-                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${openoffice_directory}/Contents/MacOS/soffice.bin</files>
+                    <!--files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${libreoffice_directory}/Contents/MacOS/soffice.bin;${libreoffice_directory}/program/soffice.bin</files-->
+                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
@@ -178,6 +158,10 @@
                         </substitution-->
                     </substitutionList>
                 </substitute>
+                <changePermissions>
+                    <permissions>755</permissions>
+                    <files>${libreoffice_directory}</files>
+                </changePermissions>
                 <changePermissions>
                     <permissions>744</permissions>
                     <files>${openoffice_directory}/scripts/ctl.sh</files>
