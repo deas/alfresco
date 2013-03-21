@@ -5,6 +5,7 @@
 export ALF_HOME=@@BITROCK_INSTALLDIR@@
 export CATALINA_HOME=@@BITROCK_INSTALLDIR@@/@@BITROCK_TOMCAT_DIRNAME@@
 . $ALF_HOME/scripts/setenv.sh
+unset DYLD_LIBRARY_PATH
 echo "This script will apply all the AMPs in amps and amps-share to the alfresco.war and share.war files in $CATALINA_HOME/webapps"
 echo "Press control-c to stop this script . . ."
 echo "Press any other key to continue . . ."
