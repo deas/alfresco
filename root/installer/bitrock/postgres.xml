@@ -490,22 +490,6 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                 </distributionDirectory>
             </distributionFileList>
             <actionList>
-		<postgresCreateSymLinksLinuxBuildingFromWindows>
-		    <ruleList>
-			<platformTest type="linux" />
-			<platformTest type="linux-x64" negate="1"/>
-		    </ruleList>
-		</postgresCreateSymLinksLinuxBuildingFromWindows>
-		<postgresCreateSymLinksOsxBuildingFromWindows>
-		    <ruleList>
-			<platformTest type="osx" />
-		    </ruleList>
-		</postgresCreateSymLinksOsxBuildingFromWindows>
-		<postgresCreateSymLinksLinuxx64BuildingFromWindows>
-		    <ruleList>
-			<platformTest type="linux-x64" />
-		    </ruleList>
-		</postgresCreateSymLinksLinuxx64BuildingFromWindows>
                 <actionGroup>
                     <actionList>
                     <setEnvironmentVariable name="PGDATA" value="${postgres_data_directory}"/>
