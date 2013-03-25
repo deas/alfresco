@@ -273,7 +273,6 @@ public class VtiSoapAction extends VtiUtilBase implements VtiAction
             }
         }
     }
-
     /**
      * Access the WebDAVLockService.
      * 

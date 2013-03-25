@@ -26,9 +26,10 @@ import org.alfresco.util.ParameterCheck;
  * Utility helper methods to change the tenant context for threads.
  * 
  * @author janv
+ * @author Nick Smith
  * @since 4.2
  */
-public class TenantUtil
+public abstract class TenantUtil
 {
     public interface TenantRunAsWork<Result>
     {
@@ -38,41 +39,6 @@ public class TenantUtil
          * @return Return the result of the operation
          */
         Result doWork() throws Exception;
-    }
-
-    /**
-     * Execute a unit of work in a given tenant context. The thread's tenant context will be returned to its normal state
-     * after the call.
-     * 
-     * @param runAsWork    the unit of work to do
-     * @param uid          the user ID
-     * @return Returns     the work's return value
-     * 
-     * @deprecated see runAsUserTenant
-     */
-    public static <R> R runAsPrimaryTenant(final TenantRunAsWork<R> runAsWork, String uid)
-    {
-        String runAsUser = AuthenticationUtil.getRunAsUser();
-        if ((runAsUser != null) && runAsUser.equals(uid))
-        {
-            // same user (hence same primary/implied tenant) and already in runAs block (hence no runAsUserTenant switch required)
-            return runAsWork(runAsWork);
-        }
-        else
-        {
-            // TODO review - get users' primary tenant (based on domain)
-            String tenantDomain = TenantService.DEFAULT_DOMAIN;
-            if (uid != null)
-            {
-                int idx = uid.lastIndexOf(TenantService.SEPARATOR);
-                if ((idx > 0) && (idx < (uid.length()-1)))
-                {
-                    tenantDomain = uid.substring(idx+1);
-                }
-            }
-            
-            return runAsUserTenant(runAsWork, uid, tenantDomain);
-        }
     }
     
     /**
@@ -169,5 +135,31 @@ public class TenantUtil
             tenantDomain = TenantService.DEFAULT_DOMAIN;
         }
         return tenantDomain;
+    }
+    
+    public static boolean isCurrentDomainDefault()
+    {
+        return TenantService.DEFAULT_DOMAIN.equals(getCurrentDomain());
+    }
+    
+    public static String getTenantDomain(String name)
+    {
+        ParameterCheck.mandatory("name", name);
+        
+        int idx1 = name.indexOf(TenantService.SEPARATOR);
+        if (idx1 == 0)
+        {
+            int idx2 = name.indexOf(TenantService.SEPARATOR, 1);
+            if (idx2 != -1)
+            {
+                return name.substring(1, idx2);
+            }
+        }
+        return TenantService.DEFAULT_DOMAIN;
+    }
+
+    public static boolean isDefaultTenantName(String name)
+    {
+        return TenantService.DEFAULT_DOMAIN.equals(getTenantDomain(name));
     }
 }

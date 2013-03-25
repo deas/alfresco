@@ -41,6 +41,15 @@ import org.alfresco.util.Pair;
  */
 public abstract class CollectionUtils
 {
+    public static boolean isEmpty(Map<?, ?> map)
+    {
+        if (map == null)
+        {
+            return true;
+        }
+        return map.isEmpty();
+    }
+    
     public static boolean isEmpty(Collection<?> items)
     {
         if(items == null)

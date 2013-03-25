@@ -189,7 +189,6 @@ public abstract class AbstractMethod implements VtiMethod
 
        return path;
     }
-
     /**
      * Access to the WebDAVLockService.
      * 
