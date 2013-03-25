@@ -29,15 +29,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.deved.antlride.core.nature</nature>
 	</natures>
-	<filteredResources>
-		<filter>
-			<id>1363868095939</id>
-			<name></name>
-			<type>30</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-projectRelativePath-matches-false-false-build</arguments>
-			</matcher>
-		</filter>
-	</filteredResources>
 </projectDescription>
