@@ -511,16 +511,11 @@
       <property name="syncMode" ref="slingshot.scriptprocessor.syncModeConfig" />
       <property name="validMode" value="ON_PREMISE" />
    </bean>
-   <bean id="evaluator.doclib.action.isSyncModeCloud" parent="evaluator.doclib.action.syncMode">
-      <property name="syncMode" ref="slingshot.scriptprocessor.syncModeConfig" />
-      <property name="validMode" value="CLOUD" />
-   </bean>
 
    <bean id="evaluator.doclib.action.isSyncOn" parent="evaluator.doclib.action.chainedMatchOne">
       <property name="evaluators">
          <list>
             <ref bean="evaluator.doclib.action.isSyncModeOnPremise"/>
-            <ref bean="evaluator.doclib.action.isSyncModeCloud"/>
          </list>
       </property>
    </bean>

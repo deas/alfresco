@@ -12,21 +12,14 @@ function main()
    var remoteNodeInfo = AlfrescoUtil.getRemoteNodeRef(model.nodeRef),
       nodeDetails = null;
 
-   if (model.syncMode == "ON_PREMISE")
+   if (remoteNodeInfo && remoteNodeInfo.remoteNodeRef)
    {
-      if (remoteNodeInfo && remoteNodeInfo.remoteNodeRef)
-      {
-         nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteNodeRef, remoteNodeInfo.remoteNetworkId);
-      }
-      else if (remoteNodeInfo && remoteNodeInfo.remoteParentNodeRef)
-      {
-         model.isParentPath = true;
-         nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteParentNodeRef, remoteNodeInfo.remoteNetworkId);
-      }
+      nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteNodeRef, remoteNodeInfo.remoteNetworkId);
    }
-   else
+   else if (remoteNodeInfo && remoteNodeInfo.remoteParentNodeRef)
    {
-      nodeDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, true);
+      model.isParentPath = true;
+      nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteParentNodeRef, remoteNodeInfo.remoteNetworkId);
    }
 
    if (nodeDetails && nodeDetails.error && nodeDetails.error.status && nodeDetails.error.status.code === 403)
