@@ -220,7 +220,7 @@
         <dependency>
             <groupId>org.apache.chemistry.opencmis</groupId>
             <artifactId>chemistry-opencmis-server-bindings</artifactId>
-            <version>${dependency.opencmis.version}</version>
+            <version>0.8.0-20120706</version>
             <classifier>classes</classifier>
             <exclusions>
                 <exclusion>
