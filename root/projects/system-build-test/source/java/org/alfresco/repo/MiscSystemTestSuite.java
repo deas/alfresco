@@ -16,14 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.repo;
 
-import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.alfresco.repo.cmis.rest.test.CmisRelationshipSystemTest;
 import org.alfresco.repo.web.scripts.activities.SiteActivitySystemTest;
 import org.alfresco.solr.client.SOLRAPIClientTest;
 import org.alfresco.webservice.test.AccessControlServiceSystemTest;
