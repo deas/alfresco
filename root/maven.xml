@@ -195,9 +195,9 @@
         <!-- Core -->
         <mvndeploypom file="${dir.project.core.dist}/${file.name.jar.core}"
             artifactId="alfresco-core"
-            classifiers="sources,javadoc,test-resources"
-            types="jar,jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-core-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip,${dir.continuous.assemble.config}/alfresco-core-test-resources.zip"
+            classifiers="sources,javadoc,config,test-resources"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-core-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip,${dir.continuous.assemble.config}/alfresco-core-config.zip,${dir.continuous.assemble.config}/alfresco-core-test-resources.zip"
             pomFile="${dir.project.core}/pom.xml" />
 
         <!-- Datamodel -->

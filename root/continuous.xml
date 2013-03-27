@@ -735,7 +735,7 @@
     </target>
             
    <!-- Build installers -->
-   <target name="distribute-installers"
+   <target name="distribute-installers" unless="skip.installers"
            depends="continuous-init, set-build-number, set-bitrock-builder" >
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
@@ -975,12 +975,12 @@
     </target>
 	
 	<target name="assemble-sdk"
-	           depends="continuous-init,sdk-common">
+	           depends="continuous-init,generate-docs,sdk-common">
 	 </target>
 	  
 
     <target name="sdk-common"
-           depends="continuous-init,generate-docs,incremental,sdk-extras">
+           depends="continuous-init,incremental,sdk-extras">
       <mkdir dir="${dir.continuous.dist}" />
 
       <!-- -->
@@ -1038,6 +1038,8 @@
       <!-- Config jars -->
       <!-- -->
       <mkdir dir="${dir.continuous.assemble.config}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-core-config.zip"
+          basedir="${dir.project.core.src.java}" includes="log4j.properties,logging.properties" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-config.zip"
           basedir="${dir.project.datamodel.config}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-config.zip">
