@@ -451,4 +451,115 @@
         </sequential>
     </macrodef>
 
+    <target name="mvninstall">
+        <path id="maven-ant-tasks.classpath" path="projects/3rd-party/lib/devenv/maven-ant-tasks-2.1.3.jar" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+
+        <!-- Copy all pom files -->
+        <copy todir="." verbose="true">
+            <fileset dir="." includes="projects/*/pom.xml"/>
+            <fileset dir="." includes="enterpriseprojects/*/pom.xml"/>
+            <globmapper from="*/pom.xml" to="*/build/pom.xml" handledirsep="yes"/>
+        </copy>
+
+        <!-- Replace version in them -->
+        <replace dir="projects" includes="*/build/pom.xml" token="4.2.d-SNAPSHOT" value="4.2.0-SNAPSHOT"/>
+        <replace dir="enterpriseprojects" includes="*/build/pom.xml" token="4.2.d-SNAPSHOT" value="4.2.0-SNAPSHOT"/>
+
+
+        <!-- install the whole lot -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/core/build/dist/alfresco-core-4.2.0.jar" />
+            <arg value="-DpomFile=projects/core/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/data-model/build/dist/alfresco-data-model-4.2.0.jar" />
+            <arg value="-DpomFile=projects/data-model/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/deployment/build/dist/alfresco-deployment-4.2.0.jar" />
+            <arg value="-DpomFile=projects/deployment/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/alfresco-jlan/build/dist/alfresco-jlan-embed-4.2.0.jar" />
+            <arg value="-DpomFile=projects/alfresco-jlan/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/mbeans/build/dist/alfresco-mbeans-4.2.0.jar" />
+            <arg value="-DpomFile=projects/mbeans/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/remote-api/build/dist/alfresco-remote-api-4.2.0.jar" />
+            <arg value="-DpomFile=projects/remote-api/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/repository/build/dist/alfresco-repository-4.2.0.jar" />
+            <arg value="-DpomFile=projects/repository/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/wdr-deployment/build/dist/alfresco-wdr-deployment-4.2.0.jar" />
+            <arg value="-DpomFile=projects/wdr-deployment/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/web-framework-commons/build/dist/alfresco-web-framework-commons-4.2.0.jar" />
+            <arg value="-DpomFile=projects/web-framework-commons/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/web-client/build/dist/alfresco.war" />
+            <arg value="-DpomFile=projects/web-client/build/pom.xml" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/web-client/build/dist/alfresco-web-client-4.2.0.jar" />
+            <arg value="-DpomFile=projects/web-client/build/pom.xml" />
+            <arg value="-Dclassifier=classes" />
+            <arg value="-Dpackaging=jar" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/slingshot/build/dist/share.war" />
+            <arg value="-DpomFile=projects/slingshot/build/pom.xml" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/slingshot/build/dist/alfresco-share-4.2.0.jar" />
+            <arg value="-DpomFile=projects/slingshot/build/pom.xml" />
+            <arg value="-Dclassifier=classes" />
+            <arg value="-Dpackaging=jar" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=enterpriseprojects/repository/build/dist/alfresco-enterprise-repo-4.2.0.jar" />
+            <arg value="-DpomFile=enterpriseprojects/repository/build/pom.xml" />
+        </artifact:mvn>
+
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=enterpriseprojects/remote-api/build/dist/alfresco-enterprise-remote-api-4.2.0.jar" />
+            <arg value="-DpomFile=enterpriseprojects/remote-api/build/pom.xml" />
+        </artifact:mvn>
+
+    </target>
+
 </project>
