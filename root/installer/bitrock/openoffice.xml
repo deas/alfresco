@@ -132,11 +132,11 @@
 		    </ruleList>
 		</substitute>
                 <substitute>
-                    <!--files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${libreoffice_directory}/Contents/MacOS/soffice.bin;${libreoffice_directory}/program/soffice.bin</files-->
-                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc</files>
+                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${openoffice_directory}/Contents/MacOS/soffice.bin;${openoffice_directory}/program/soffice.bin</files>
+                    <!--files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc</files-->
                     <substitutionList>
                         <substitution>
-                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
+                            <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
                             <value>${openoffice_directory.unix}</value>
                         </substitution>
                     </substitutionList>
@@ -145,11 +145,11 @@
                     <files>${openoffice_directory}/scripts/ctl.sh</files>
                     <substitutionList>
                         <substitution>
-                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
+                            <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
                             <value>${openoffice_directory}</value>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OO_PORT@@</pattern>
+                            <pattern>@@BITROCK_LO_PORT@@</pattern>
                             <value>${openoffice_port}</value>
                         </substitution>
                         <!--substitution>
@@ -160,7 +160,7 @@
                 </substitute>
                 <changePermissions>
                     <permissions>755</permissions>
-                    <files>${libreoffice_directory}</files>
+                    <files>${openoffice_directory}</files>
                 </changePermissions>
                 <changePermissions>
                     <permissions>744</permissions>
@@ -203,15 +203,15 @@
                     <files>${openoffice_directory}/scripts/servicerun.bat;${openoffice_directory}/scripts/serviceinstall.bat</files>
                     <substitutionList>
                         <substitution>
-                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
+                            <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
                             <value>${openoffice_directory.dos}</value>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OO_PORT@@</pattern>
+                            <pattern>@@BITROCK_LO_PORT@@</pattern>
                             <value>${openoffice_port}</value>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OO_SERVICE_NAME@@</pattern>
+                            <pattern>@@BITROCK_LO_SERVICE_NAME@@</pattern>
                             <value>${OpenOfficeUniqueServiceName}</value>
                         </substitution>
                     </substitutionList>
