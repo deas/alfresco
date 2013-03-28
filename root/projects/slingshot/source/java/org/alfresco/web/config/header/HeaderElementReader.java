@@ -74,29 +74,35 @@ public class HeaderElementReader implements ConfigElementReader
         // Set the maximum number of recent items that can be displayed...
         Element maxRecentSitesEl = headerElement.element(HeaderItemsElementReader.ELEMENT_MAX_RECENT_SITES);
         Integer maxRecentSites = null;
-        try
+        if (maxRecentSites != null)
         {
-            maxRecentSites = Integer.parseInt(maxRecentSitesEl.getStringValue());
+            try
+            {
+                maxRecentSites = Integer.parseInt(maxRecentSitesEl.getStringValue());
+            }
+            finally
+            {
+                // No action required for NumberFormatException
+            }
+            result.setMaxRecentSites(maxRecentSites);
         }
-        finally
-        {
-            // No action required for NumberFormatException
-        }
-        result.setMaxRecentSites(maxRecentSites);
-        
+
         // Set the maximum number of site pages to display...
         Element maxDisplayedSitePagesEl = headerElement.element(HeaderItemsElementReader.ELEMENT_MAX_DISPLAYED_SITE_PAGES);
         Integer maxDisplayedSitePages = null;
-        try
+        if (maxDisplayedSitePages != null)
         {
-            maxDisplayedSitePages = Integer.parseInt(maxDisplayedSitePagesEl.getStringValue());
+            try
+            {
+                maxDisplayedSitePages = Integer.parseInt(maxDisplayedSitePagesEl.getStringValue());
+            }
+            finally
+            {
+                // No action required for NumberFormatException
+            }
+            result.setMaxDisplayedSitePages(maxDisplayedSitePages);
         }
-        finally
-        {
-            // No action required for NumberFormatException
-        }
-        result.setMaxDisplayedSitePages(maxDisplayedSitePages);
-        
+
         // Go through each of the <app-items> tags under <header>
         for (Object obj : headerElement.selectNodes("./app-items"))
         {
