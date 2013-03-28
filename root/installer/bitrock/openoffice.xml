@@ -132,12 +132,24 @@
 		    </ruleList>
 		</substitute>
                 <substitute>
-                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${openoffice_directory}/Contents/MacOS/soffice.bin;${openoffice_directory}/program/soffice.bin</files>
-                    <!--files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc</files-->
+                    <!--files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc;${openoffice_directory}/Contents/MacOS/soffice.bin;${openoffice_directory}/program/soffice.bin</files-->
+                    <files>${openoffice_directory}/Contents/MacOS/bootstraprc;${openoffice_directory}/program/bootstraprc</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
                             <value>${openoffice_directory.unix}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                 <substitute>
+                    <files>${openoffice_directory}/program/soffice.bin</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
+                            <value>${openoffice_directory.unix}</value>
+                            <ruleList>
+                                <fileTest path="${openoffice_directory}/program/.soffice.bin" condition="exists" />
+                            </ruleList>
                         </substitution>
                     </substitutionList>
                 </substitute>
