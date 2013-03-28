@@ -156,7 +156,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-impl-0.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.8.0.jar" sourcepath="src/chemistry-opencmis-commons-api-0.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.8.0.jar" sourcepath="src/chemistry-opencmis-commons-impl-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.8.0.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.8.0-20120706.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.8.0-20120706-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.8.0.jar" sourcepath="src/chemistry-opencmis-server-support-0.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.8.0.jar" sourcepath="src/chemistry-opencmis-test-browser-0.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.8.0.jar" sourcepath="src/chemistry-opencmis-test-tck-0.8.0-sources.jar"/>
