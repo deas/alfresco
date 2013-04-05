@@ -502,7 +502,7 @@ function getTokenMap()
       tokenMap = {
          site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
-         userid: user.name
+         userid: encodeURIComponent(user.name)
       }
    }
    return tokenMap;
@@ -707,8 +707,8 @@ function generateWidgetDef(item, nestingIndex)
 {
    // Get the localized form of the label...
    var labelTokens = labelTokens = [ user.name || "", user.firstName || "", user.lastName || "", user.fullName || ""],
-       label = msg.get(item.label, labelTokens),
-       description = msg.get(item.description, labelTokens);
+       label = encodeURIComponent(msg.get(item.label, labelTokens)),
+       description = encodeURIComponent(msg.get(item.description, labelTokens));
    
    var widgetDef = null;
    if (!satisfiesPermissions(item))
@@ -862,7 +862,7 @@ function generateAppItems() {
          config: {
             id: "HEADER_HOME",
             label: "header.menu.home.label",
-            targetUrl: "user/" + user.name + "/dashboard"
+            targetUrl: "user/" + encodeURIComponent(user.name) + "/dashboard"
          }
       },
 //      {
@@ -886,7 +886,7 @@ function generateAppItems() {
             id: "HEADER_SITES_MENU",
             label: "header.menu.sites.label",
             currentSite: page.url.templateArgs.site,
-            currentUser: user.name
+            currentUser: encodeURIComponent(user.name)
          }
       },
       {
@@ -950,6 +950,7 @@ function generateUserItems() {
          name: "alfresco/header/AlfMenuBarPopup",
          config: {
             id: "HEADER_USER_MENU",
+//            label: encodeURIComponent(user.fullName),
             label: user.fullName,
             widgets: [
                getUserStatusWidget(),
@@ -1180,7 +1181,7 @@ else if (page.url.templateArgs.site != null)
             publishTopic: "ALF_BECOME_SITE_MANAGER",
             publishPayload: {
                site: page.url.templateArgs.site,
-               user: user.name
+               user: encodeURIComponent(user.name)
             }
          }
       })
@@ -1225,7 +1226,7 @@ else if (page.url.templateArgs.site != null)
                publishTopic: "ALF_EDIT_SITE",
                publishPayload: {
                   site: page.url.templateArgs.site,
-                  user: user.name
+                  user: encodeURIComponent(user.name)
                }
             }
          },
@@ -1247,7 +1248,7 @@ else if (page.url.templateArgs.site != null)
                publishTopic: "ALF_LEAVE_SITE",
                publishPayload: {
                   site: page.url.templateArgs.site,
-                  user: user.name
+                  user: encodeURIComponent(user.name)
                }
             }
          }
@@ -1265,7 +1266,7 @@ else if (page.url.templateArgs.site != null)
             publishTopic: "ALF_LEAVE_SITE",
             publishPayload: {
                site: page.url.templateArgs.site,
-               user: user.name
+               user: encodeURIComponent(user.name)
             }
          }
       });
@@ -1282,7 +1283,7 @@ else if (page.url.templateArgs.site != null)
             publishTopic: "ALF_JOIN_SITE",
             publishPayload: {
                site: page.url.templateArgs.site,
-               user: user.name
+               user: encodeURIComponent(user.name)
             }
          }
       });
@@ -1387,7 +1388,7 @@ model.jsonModel = {
                            name: "alfresco/header/Title",
                            align: "left",
                            config: {
-                              title: pageTitle
+                              label: pageTitle
                            }
                         },
                         {

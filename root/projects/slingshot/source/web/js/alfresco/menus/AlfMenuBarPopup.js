@@ -59,6 +59,20 @@ define(["dojo/_base/declare",
       labelWithIconClass: "alf-menu-bar-popup-label-node",
       
       /**
+       * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
+       * to ensure that an unencoded label isn't set and then replaced. 
+       * 
+       * @method postMixInProperties
+       */
+      postMixInProperties: function alf_menus_AlfMenuBarPopup__postMixInProperties() {
+         if (this.label)
+         {
+            this.label = this.encodeHTML(this.message(this.label));
+         }
+         this.inherited(arguments);
+      },
+      
+      /**
        * Sets the label of the menu item that represents the popup and creates a new alfresco/menus/AlfMenuGroups
        * instance containing all of the widgets to be displayed in the popup. Ideally the array of widgets should
        * be instances of alfresco/menus/AlfMenuGroup (where instance has its own list of menu items). However, this
@@ -67,10 +81,7 @@ define(["dojo/_base/declare",
        * @method postCreate
        */
       postCreate: function alf_menus_AlfMenuBarPopup__postCreate() {
-         if (this.label)
-         {
-            this.set("label", this.message(this.label));
-         }
+         
          if (this.iconClass && this.iconClass != "dijitNoIcon")
          {
             domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode, "first");

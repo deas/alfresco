@@ -74,14 +74,25 @@ define(["dojo/_base/declare",
       targetUrlLocation: "CURRENT",
       
       /**
+       * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
+       * to ensure that an unencoded label isn't set and then replaced. 
+       * 
+       * @method postMixInProperties
+       */
+      postMixInProperties: function alfresco_menus__AlfMenuItemMixin__postMixInProperties() {
+         if (this.label)
+         {
+            this.label = this.encodeHTML(this.message(this.label));
+         }
+         this.inherited(arguments);
+      },
+      
+      /**
        * Ensures that the supplied menu item label is translated.
        * @method postCreate
        */
       postCreate: function alfresco_menus__AlfMenuItemMixin__postCreate() {
-         if (this.label)
-         {
-            this.set("label", this.encodeHTML(this.message(this.label)));
-         }
+         this.set("label", this.label);
          this.inherited(arguments);
       },
 

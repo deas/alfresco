@@ -41,13 +41,26 @@ define(["dojo/_base/declare",
       /**
        * @property {string} title The title to be displayed. This should be a localized value.
        */
-      title: null,
+      label: null,
+      
+      /**
+       * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
+       * to ensure that an unencoded label isn't set and then replaced. 
+       * 
+       * @method postMixInProperties
+       */
+      postMixInProperties: function alfresco_header_Title__postMixInProperties() {
+         if (this.label)
+         {
+            this.label = this.encodeHTML(this.label != null ? this.label : "");
+         }
+      },
       
       /**
        * @method postCreate
        */
       postCreate: function alfresco_header_Title__postCreate() {
-         this.textNode.innerHTML = this.encodeHTML(this.title != null ? this.title : "");
+         this.textNode.innerHTML = this.label;
       }
    });
 });
