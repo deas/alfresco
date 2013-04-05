@@ -1118,6 +1118,11 @@
        */
       _resetGUI: function DNDUpload__resetGUI()
       {
+         if (this.statusText == null)
+         {
+            this.onReady();
+         }
+         
          // Reset references and the gui before showing it
          this.state = this.STATE_UPLOADING; // We're going to start uploading as soon as the dialog is shown
          this.noOfFailedUploads = 0;
