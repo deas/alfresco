@@ -47,7 +47,7 @@ define(["alfresco/forms/controls/MultipleEntryCreator",
        * to indicate what is being dragged.
        */
       createDNDAvatarNode: function(widget) {
-         return domConstruct.create("div", { innerHTML: this.encodeHTML((widget && widget.value && widget.value.field) ? widget.value.field : ""}));
+         return domConstruct.create("div", { innerHTML: this.encodeHTML((widget && widget.value && widget.value.field) ? widget.value.field : "")});
       },
       
       constructor: function(args) {

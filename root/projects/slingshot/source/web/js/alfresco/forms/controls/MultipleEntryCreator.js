@@ -141,7 +141,7 @@ define(["dojo/_base/declare",
        * be overridden by extending classes to make sure that the Avatar shows the appropriate information.
        */
       createDNDAvatarNode: function(widget) {
-         return domConstruct.create("div", { innerHTML: this.encodeHTML((widget && widget.value && widget.value.value) ? widget.value.value : ""}));
+         return domConstruct.create("div", { innerHTML: this.encodeHTML((widget && widget.value && widget.value.value) ? widget.value.value : "")});
       },
       
       /**
