@@ -78,6 +78,12 @@ define(["dojo/_base/declare",
       _blurredWidth: "100",
       
       /**
+       * @property {string} site The current site that the search box relates to. If null, search is not initially confined to site
+       * @default null
+       */
+      site: null,
+      
+      /**
        * @method postCreate
        */
       postCreate: function alfresco_header_SearchBox__postCreate() {
@@ -125,8 +131,15 @@ define(["dojo/_base/declare",
          if (evt.charCode == 0 && evt.keyCode == 13)
          {
             this.alfLog("log", "Search request for: ", this._searchTextNode.value);
+            
+            var url = "search?t=" + this._searchTextNode.value;
+            if (this.site != null)
+            {
+               url = "site/" + this.site + "/" + url;
+            }
+            
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
-               url: "search?t=" + this._searchTextNode.value,
+               url: url,
                type: "SHARE_PAGE_RELATIVE",
                target: "CURRENT"
             });

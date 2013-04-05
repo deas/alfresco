@@ -1358,7 +1358,8 @@ model.jsonModel = {
                            name: "alfresco/header/SearchBox",
                            align: "right",
                            config: {
-                              id: "HEADER_SEARCH_BOX"
+                              id: "HEADER_SEARCH_BOX",
+                              site: page.url.templateArgs.site
                            }
                         }
                      ],
