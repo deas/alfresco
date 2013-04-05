@@ -36,17 +36,17 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.core-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>
-    <classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.web-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-bindings-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-impl-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-bindings-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-support-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-test-browser-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-test-tck-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/antlr-3.4-complete.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-bindings-0.8.0-20120706.jar" sourcepath="/3rd Party/src/chemistry-opencmis-server-bindings-0.8.0-20120706-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
