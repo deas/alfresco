@@ -35,7 +35,7 @@
                   <div class="add-user-group">
                      <span id="${id}-addUserGroupButton" class="yui-button yui-push-button">
                         <span class="first-child">         
-                           <button><#if (page.url.templateArgs.site != "")??>${msg("button.addUser")}<#else>${msg("button.addUserGroup")}</button>
+                           <button><#if (page.url.templateArgs.site != "")??>${msg("button.addUser")}<#else>${msg("button.addUserGroup")}</#if></button>
                         </span>
                      </span>
                   </div>
