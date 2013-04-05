@@ -25,8 +25,9 @@ define(["dojo/_base/declare",
         "dojox/uuid/generateRandomUuid",
         "dojo/request/xhr",
         "dojo/json",
-        "dojo/date/stamp"], 
-        function(declare, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp) {
+        "dojo/date/stamp",
+        "dojox/html/entities"], 
+        function(declare, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp, htmlEntities) {
    
    return declare(null, {
       
@@ -154,6 +155,18 @@ define(["dojo/_base/declare",
          // TODO: Need to check this works with old Share strings...
          msg = lang.replace(msg, tokens);
          return msg;
+      },
+      
+      /**
+       * Use this function to ensure that all text added to the HTML page is encoded to prevent XSS style
+       * attacks. This wraps the dojox/html/entities encode function. It is intentionally wrapped so that
+       * if we need to make a change (e.g. change the encoding handling) we can make it in one place
+       * 
+       * @method encodeHTML
+       * @returns The encoded input string
+       */
+      encodeHTML: function alfresco_core_Core__encodeHTML(textIn) {
+         return htmlEntities.encode(textIn);
       },
       
       /**

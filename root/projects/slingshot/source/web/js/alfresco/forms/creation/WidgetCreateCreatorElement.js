@@ -46,7 +46,7 @@ define(["alfresco/forms/controls/MultipleEntryElement",
        */
       createReadDisplay: function() {
          var value = this.getValue();
-         this.readDisplay.innerHTML = "'" + value.id + "'";
+         this.readDisplay.innerHTML = this.encodeHTML("'" + value.id + "'");
       },
 
       /**

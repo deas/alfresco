@@ -80,7 +80,7 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_menus__AlfMenuItemMixin__postCreate() {
          if (this.label)
          {
-            this.set("label", this.message(this.label));
+            this.set("label", this.encodeHTML(this.message(this.label)));
          }
          this.inherited(arguments);
       },

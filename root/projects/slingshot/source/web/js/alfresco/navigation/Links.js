@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
                   var nodeRef = page.value.replace("://", "/"),
                       uri = Alfresco.constants.URL_PAGECONTEXT + "hdp/ws/rpr/" + nodeRef;
                   domConstruct.create("div", {
-                     innerHTML: "<a href='" + uri + "'>" + page.label + "</a>"
+                     innerHTML: "<a href='" + uri + "'>" + this.encodeHTML(page.label) + "</a>"
                   }, _this.linksNode);
                }
             });

@@ -51,7 +51,7 @@ define(["alfresco/forms/controls/MultipleEntryElement",
       
       createReadDisplay: function() {
          var value = this.getValue();
-         this.readDisplay.innerHTML = "Field name = " + value.field;
+         this.readDisplay.innerHTML = this.encodeHTML("Field name = " + value.field);
       },
 
       createEditDisplay: function() {

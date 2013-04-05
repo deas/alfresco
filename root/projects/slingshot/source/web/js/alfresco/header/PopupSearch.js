@@ -35,7 +35,7 @@ define(["dojo/_base/declare",
      
       postCreate: function() {
          
-         this.labelNode.innerHTML = this.message("search.label");
+         this.labelNode.innerHTML = this.encodeHTML(this.message("search.label"));
          
          this.textArea = new Textarea({
             value: this.message("search.instruction"),

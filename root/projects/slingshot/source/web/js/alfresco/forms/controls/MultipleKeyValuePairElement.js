@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
        */
       createReadDisplay: function() {
          // Set the innerHTML of the read display to be the value...
-         this.readDisplay.innerHTML = this.value.value._key + " = " + this.value.value._value;
+         this.readDisplay.innerHTML = this.encodeHTML(this.value.value._key + " = " + this.value.value._value);
       },
       
       _keyTextBox: null,

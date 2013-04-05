@@ -100,7 +100,7 @@ define(["dojo/_base/declare",
          {
             this.value.value = "";
          }
-         this.readDisplay.innerHTML = this.value.value;
+         this.readDisplay.innerHTML = this.encodeHTML(this.value.value);
       },
       
       createEditDisplay: function() {

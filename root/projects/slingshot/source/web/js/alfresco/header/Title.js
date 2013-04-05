@@ -47,7 +47,7 @@ define(["dojo/_base/declare",
        * @method postCreate
        */
       postCreate: function alfresco_header_Title__postCreate() {
-         this.textNode.innerHTML = this.title != null ? this.title : "";
+         this.textNode.innerHTML = this.encodeHTML(this.title != null ? this.title : "");
       }
    });
 });

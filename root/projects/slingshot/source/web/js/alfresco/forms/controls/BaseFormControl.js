@@ -689,12 +689,12 @@ define(["dojo/_base/declare",
          this.alf_Disabled(this._disabled);
          
          // Set the label...
-         this._labelNode.innerHTML = this.message(this.label);
+         this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
          
          // Set the units label...
          if (this.unitsLabel != null && this.unitsLabel != "")
          {
-            this._unitsNode.innerHTML = this.message(this.unitsLabel);
+            this._unitsNode.innerHTML = this.encodeHTML(this.message(this.unitsLabel));
          }
          else
          {
@@ -706,7 +706,7 @@ define(["dojo/_base/declare",
          if (this.validationConfig != null && typeof this.validationConfig.errorMessage == "string")
          {
             // TODO: This message might not make much sense if it is just missing data for a required field...
-            this._validationMessage.innerHTML = this.message(this.validationConfig.errorMessage);
+            this._validationMessage.innerHTML = this.encodeHTML(this.message(this.validationConfig.errorMessage));
          }
          
          if (this.wrappedWidget != null && this.description != "")

@@ -76,7 +76,7 @@ define(["dojo/_base/declare",
          {
             // Make sure that an attempt is made to get the localized label...
             this.label = this.message(this.label);
-            this._groupTitleNode.innerHTML = this.label;
+            this._groupTitleNode.innerHTML = this.encodeHTML(this.label);
          }
          
          // Setup the Drop down menu as normal...
