@@ -579,7 +579,7 @@
 
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
-            <arg value="-Dfile=projects/wdr-deployment/build/dist/alfresco-wdr-deployment-4.2.0.jar" />
+            <arg value="-Dfile=projects/wdr-deployment/build/dist/alfresco-wdr-deployment.jar" />
             <arg value="-DpomFile=projects/wdr-deployment/build/pom.xml" />
         </artifact:mvn>
 
