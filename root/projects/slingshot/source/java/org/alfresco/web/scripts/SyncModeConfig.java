@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.web.site.EditionInterceptor;
-import org.alfresco.web.site.EditionInterceptor.EditionInfo;
+import org.alfresco.web.site.EditionInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;

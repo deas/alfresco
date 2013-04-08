@@ -56,10 +56,10 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
     /** public name of the value in the RequestContext */
     public static final String EDITION_INFO = "editionInfo";
     
-    public static final String ENTERPRISE_EDITION = "ENTERPRISE";
-    public static final String TEAM_EDITION = "TEAM";
-    public static final String UNKNOWN_EDITION = "UNKNOWN";
-    
+    public static final String ENTERPRISE_EDITION = EditionInfo.ENTERPRISE_EDITION;
+    public static final String TEAM_EDITION = EditionInfo.TEAM_EDITION;
+    public static final String UNKNOWN_EDITION = EditionInfo.UNKNOWN_EDITION;
+
     private static Log logger = LogFactory.getLog(EditionInterceptor.class);
     
     private static EditionInfo EDITIONINFO = null;
@@ -193,65 +193,5 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
     @Override
     public void afterCompletion(WebRequest request, Exception ex) throws Exception
     {
-    }
-    
-    
-    /**
-     * Simple structure class wrapping the edition and license restriction information
-     */
-    public static class EditionInfo implements Serializable
-    {
-        private final long users;
-        private final long documents;
-        private final String edition;
-        private final boolean response;
-        
-        public EditionInfo()
-        {
-            this.users = -1L;
-            this.documents = -1L;
-            this.edition = UNKNOWN_EDITION;
-            this.response = false;
-        }
-        
-        public EditionInfo(String response) throws JSONException
-        {
-            JSONObject json = new JSONObject(response);
-            this.users = json.optLong("users", -1L);
-            this.documents = json.optLong("documents", -1L);
-            this.edition = json.getString("licenseMode");
-            this.response = true;
-        }
-        
-        public long getUsers()
-        {
-            return this.users;
-        }
-        
-        public long getDocuments()
-        {
-            return this.documents;
-        }
-        
-        public String getEdition()
-        {
-            return this.edition;
-        }
-        
-        /**
-         * @return true if the Edition info object was constuctor from a server response,
-         *         false if this is a default construction - used until the server responds.
-         */
-        public boolean getValidResponse()
-        {
-            return this.response;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "Users: " + this.users + "  Documents: " + this.documents +
-                   "  Edition: " + this.edition + "  Built from server response: " + this.response;
-        }
     }
 }
