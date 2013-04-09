@@ -694,6 +694,11 @@
    <target name="compile-remoteapi" 
            depends="init">
       <compile-java-inc-generated projectdir="${dir.project.remoteapi}" />
+      <compile-java-javac srcdir="${dir.project.remoteapi.src.test}" classesdir="${dir.project.remoteapi.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.remoteapi.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-remoteapi" 
@@ -701,6 +706,10 @@
       <mkdir dir="${dir.project.remoteapi.dist}" />
       <jar jarfile="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}" 
            basedir="${dir.project.remoteapi.classes}">
+         <metainf dir="${dir.project.remoteapi.src.metainf}" />
+      </jar>
+      <jar jarfile="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi.test}" 
+           basedir="${dir.project.remoteapi.classes.test}">
          <metainf dir="${dir.project.remoteapi.src.metainf}" />
       </jar>
    </target>

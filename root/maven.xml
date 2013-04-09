@@ -486,8 +486,8 @@
         <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
 
         <!-- Copy all pom files -->
-        <copy file="pom-experimental.xml" todir="build" verbose="true"/>
-        <copy todir="." verbose="true">
+        <copy file="pom-experimental.xml" todir="build" overwrite="true"/>
+        <copy todir="." overwrite="true">
             <fileset dir="." includes="projects/*/pom.xml"/>
             <fileset dir="." includes="enterpriseprojects/*/pom.xml"/>
             <fileset dir="." includes="modules/*/*/pom.xml"/>
@@ -560,6 +560,12 @@
         </artifact:mvn>
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
+            <arg value="-Dfile=projects/remote-api/build/dist/alfresco-remote-api-4.2.0-test.jar" />
+            <arg value="-DpomFile=projects/remote-api/build/pom.xml" />
+            <arg value="-Dclassifier=tests" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
             <arg value="-Dfile=${dir.assemble.config}/alfresco-remote-api-config.zip" />
             <arg value="-DpomFile=projects/remote-api/build/pom.xml" />
             <arg value="-Dclassifier=config" />
@@ -599,6 +605,7 @@
             <arg value="-Dfile=${dir.assemble.config}/alfresco-web-client-config.zip" />
             <arg value="-DpomFile=projects/web-client/build/pom.xml" />
             <arg value="-Dclassifier=config" />
+            <arg value="-Dpackaging=jar" />
         </artifact:mvn>
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
@@ -618,6 +625,7 @@
             <arg value="-Dfile=${dir.assemble.config}/alfresco-share-config.zip" />
             <arg value="-DpomFile=projects/slingshot/build/pom.xml" />
             <arg value="-Dclassifier=config" />
+            <arg value="-Dpackaging=jar" />
         </artifact:mvn>
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-install-plugin:2.4:install-file" />
