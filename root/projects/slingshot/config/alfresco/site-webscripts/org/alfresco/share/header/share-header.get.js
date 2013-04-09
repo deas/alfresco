@@ -1342,6 +1342,7 @@ model.jsonModel = {
                   config: {
                      widgets: [
                         {
+                           id: "AppItems",
                            name: "alfresco/header/AlfMenuBar",
                            align: "left",
                            config: {
@@ -1349,6 +1350,7 @@ model.jsonModel = {
                            }
                         },
                         {
+                           id: "UserItems",
                            name: "alfresco/header/AlfMenuBar",
                            align: "right",
                            config: {
@@ -1356,6 +1358,7 @@ model.jsonModel = {
                            }
                         },
                         {
+                           id: "SearchBox",
                            name: "alfresco/header/SearchBox",
                            align: "right",
                            config: {
@@ -1363,7 +1366,7 @@ model.jsonModel = {
                               site: page.url.templateArgs.site
                            }
                         }
-                     ],
+                     ]
                   }
                },
                {
