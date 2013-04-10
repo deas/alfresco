@@ -2070,7 +2070,8 @@
       <jar jarfile="${dir.module.spp.dist}/${file.name.jar.spp}"
            basedir="${dir.module.spp.classes}" encoding="UTF-8" />
       <jar jarfile="${dir.module.spp.dist}/${file.name.jar.spp.config}"
-           basedir="${dir.module.spp.config}" encoding="UTF-8" />
+           basedir="${dir.module.spp.config}" encoding="UTF-8"
+           excludes="alfresco/module/org.alfresco.module.vti/module-context.xml" />
    </target>
 
    <target name="package-spp-war"
