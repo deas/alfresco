@@ -47,6 +47,6 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-test-tck-0.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/antlr-3.4-complete.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-bindings-0.8.0-20120706.jar" sourcepath="/3rd Party/src/chemistry-opencmis-server-bindings-0.8.0-20120706-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-server-bindings-0.8.0-classes.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
