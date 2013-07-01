@@ -22,7 +22,7 @@
                             </span>
                             <p>${(article.description!'no preview')?html}</p>
                             <h3>${msg('tags')}</h3>
-                            <#if article.tags?size == 0>
+                            <#if !article.tags?? || article.tags?size == 0>
                                 <p class="tag-list">${msg('tags.none')}</p>
                             <#else>
                                 <ul class="tag-list">

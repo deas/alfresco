@@ -19,15 +19,16 @@
          <div class="title">${msg("header")}</div>
          <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
 
-            <#-- DOCUMENTS -->
-            <@markup id="documents">
             <div id="${el}-message" class="my-docs-editing-message hidden"></div>
             <div id="${el}-my-docs" class="my-docs-editing">
+               <@markup id="documents">
                <div class="hdr">
                   <h3>${msg('text.documents')}</h3>
                </div>
                <div id="${el}-documents" class="hidden"></div>
                <div id="${el}-documents-wait" class="my-docs-editing-wait"></div>
+               </@markup>
+               <@markup id="content">
                <div class="hdr">
                   <h3>${msg('text.blogposts')}</h3>
                </div>
@@ -41,8 +42,8 @@
                </div>
                <div id="${el}-forumposts" class="hidden"></div>
                <div id="${el}-content-wait" class="my-docs-editing-wait"></div>
+               </@markup>
             </div>
-            </@markup>
 
          </div>
       </div>

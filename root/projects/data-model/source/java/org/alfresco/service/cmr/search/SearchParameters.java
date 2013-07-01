@@ -159,6 +159,8 @@ public class SearchParameters
     private Boolean useInMemorySort;
     
     private Integer maxRawResultSetSizeForInMemorySort;
+    
+    private boolean excludeTenantFilter = false;
 
     /**
      * Default constructor
@@ -196,6 +198,7 @@ public class SearchParameters
         sp.textAttributes.addAll(this.textAttributes);
         sp.useInMemorySort = this.useInMemorySort;
         sp.maxRawResultSetSizeForInMemorySort = this.maxRawResultSetSizeForInMemorySort;
+        sp.excludeTenantFilter = this.excludeTenantFilter;
         return sp;
     }
     
@@ -834,22 +837,42 @@ public class SearchParameters
         return sortLocale;
     }
 
+    public void setExcludeTenantFilter(boolean excludeTenantFilter)
+    {
+        this.excludeTenantFilter = excludeTenantFilter;
+    }
+    
+    /**
+     * 
+     */
+    public boolean getExcludeTenantFilter()
+    {
+        return excludeTenantFilter;
+    }
+    
+
+  
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString()
     {
-        return "SearchParameters [allAttributes="
-                + allAttributes + ", defaultFTSFieldOperator=" + defaultFTSFieldOperator
-                + ", defaultFTSOperator=" + defaultFTSOperator + ", defaultFieldName=" + defaultFieldName + ", excludeDataInTheCurrentTransaction="
-                + excludeDataInTheCurrentTransaction + ", language=" + language + ", limit=" + limit + ", limitBy=" + limitBy + ", locales=" + locales + ", maxItems=" + maxItems
-                + ", maxPermissionCheckTimeMillis=" + maxPermissionCheckTimeMillis + ", maxPermissionChecks=" + maxPermissionChecks + ", mlAnalaysisMode=" + mlAnalaysisMode
-                + ", namespace=" + namespace + ", permissionEvaluation=" + permissionEvaluation + ", query=" + query + ", queryParameterDefinitions=" + queryParameterDefinitions
-                + ", queryTemplates=" + queryTemplates + ", skipCount=" + skipCount + ", sortDefinitions=" + sortDefinitions + ", stores=" + stores + ", textAttributes="
-                + textAttributes + ", fieldFacets=" + fieldFacets + "]";
+        return "SearchParameters [language="
+                + language + ", query=" + query + ", stores=" + stores + ", queryParameterDefinitions=" + queryParameterDefinitions + ", excludeDataInTheCurrentTransaction="
+                + excludeDataInTheCurrentTransaction + ", sortDefinitions=" + sortDefinitions + ", locales=" + locales + ", mlAnalaysisMode=" + mlAnalaysisMode + ", limitBy="
+                + limitBy + ", permissionEvaluation=" + permissionEvaluation + ", limit=" + limit + ", allAttributes=" + allAttributes + ", textAttributes=" + textAttributes
+                + ", maxItems=" + maxItems + ", skipCount=" + skipCount + ", defaultFTSOperator=" + defaultFTSOperator + ", defaultFTSFieldOperator=" + defaultFTSFieldOperator
+                + ", queryTemplates=" + queryTemplates + ", namespace=" + namespace + ", maxPermissionChecks=" + maxPermissionChecks + ", maxPermissionCheckTimeMillis="
+                + maxPermissionCheckTimeMillis + ", defaultFieldName=" + defaultFieldName + ", fieldFacets=" + fieldFacets + ", useInMemorySort=" + useInMemorySort
+                + ", maxRawResultSetSizeForInMemorySort=" + maxRawResultSetSizeForInMemorySort + ", excludeTenentFilter=" + excludeTenantFilter + "]";
     }
 
-    
-    
-    
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode()
     {
@@ -860,6 +883,7 @@ public class SearchParameters
         result = prime * result + ((defaultFTSOperator == null) ? 0 : defaultFTSOperator.hashCode());
         result = prime * result + ((defaultFieldName == null) ? 0 : defaultFieldName.hashCode());
         result = prime * result + (excludeDataInTheCurrentTransaction ? 1231 : 1237);
+        result = prime * result + (excludeTenantFilter ? 1231 : 1237);
         result = prime * result + ((fieldFacets == null) ? 0 : fieldFacets.hashCode());
         result = prime * result + ((language == null) ? 0 : language.hashCode());
         result = prime * result + limit;
@@ -868,6 +892,7 @@ public class SearchParameters
         result = prime * result + maxItems;
         result = prime * result + (int) (maxPermissionCheckTimeMillis ^ (maxPermissionCheckTimeMillis >>> 32));
         result = prime * result + maxPermissionChecks;
+        result = prime * result + ((maxRawResultSetSizeForInMemorySort == null) ? 0 : maxRawResultSetSizeForInMemorySort.hashCode());
         result = prime * result + ((mlAnalaysisMode == null) ? 0 : mlAnalaysisMode.hashCode());
         result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
         result = prime * result + ((permissionEvaluation == null) ? 0 : permissionEvaluation.hashCode());
@@ -878,9 +903,13 @@ public class SearchParameters
         result = prime * result + ((sortDefinitions == null) ? 0 : sortDefinitions.hashCode());
         result = prime * result + ((stores == null) ? 0 : stores.hashCode());
         result = prime * result + ((textAttributes == null) ? 0 : textAttributes.hashCode());
+        result = prime * result + ((useInMemorySort == null) ? 0 : useInMemorySort.hashCode());
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj)
     {
@@ -910,6 +939,8 @@ public class SearchParameters
         else if (!defaultFieldName.equals(other.defaultFieldName))
             return false;
         if (excludeDataInTheCurrentTransaction != other.excludeDataInTheCurrentTransaction)
+            return false;
+        if (excludeTenantFilter != other.excludeTenantFilter)
             return false;
         if (fieldFacets == null)
         {
@@ -941,6 +972,13 @@ public class SearchParameters
         if (maxPermissionCheckTimeMillis != other.maxPermissionCheckTimeMillis)
             return false;
         if (maxPermissionChecks != other.maxPermissionChecks)
+            return false;
+        if (maxRawResultSetSizeForInMemorySort == null)
+        {
+            if (other.maxRawResultSetSizeForInMemorySort != null)
+                return false;
+        }
+        else if (!maxRawResultSetSizeForInMemorySort.equals(other.maxRawResultSetSizeForInMemorySort))
             return false;
         if (mlAnalaysisMode != other.mlAnalaysisMode)
             return false;
@@ -997,8 +1035,22 @@ public class SearchParameters
         }
         else if (!textAttributes.equals(other.textAttributes))
             return false;
+        if (useInMemorySort == null)
+        {
+            if (other.useInMemorySort != null)
+                return false;
+        }
+        else if (!useInMemorySort.equals(other.useInMemorySort))
+            return false;
         return true;
     }
+
+
+
+
+
+
+
 
 
 

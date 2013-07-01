@@ -19,12 +19,22 @@
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
+        "alfresco/core/NotificationUtils",
         "dojo/request/xhr",
         "dojo/json",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, AlfXhr, xhr, JSON, lang) {
+        "dojo/_base/lang",
+        "dojo/dom-construct",
+        "alfresco/buttons/AlfButton"],
+        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang, domConstruct, AlfButton) {
    
-   return declare([AlfCore, AlfXhr], {
+   return declare([AlfCore, AlfXhr, NotificationUtils], {
+      
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @property i18nRequirements {Array}
+       */
+      i18nRequirements: [{i18nFile: "./i18n/SiteService.properties"}],
       
       /**
        * Sets up the subscriptions for the SiteService
@@ -36,7 +46,8 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
          this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
          this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, "joinSite"));
-         this.alfSubscribe("ALF_LEAVE_SITE", lang.hitch(this, "leaveSite"));
+         this.alfSubscribe("ALF_LEAVE_SITE", lang.hitch(this, "leaveSiteRequest"));
+         this.alfSubscribe("ALF_LEAVE_SITE_CONFIRMATION", lang.hitch(this, "leaveSite"));
          this.alfSubscribe("ALF_CREATE_SITE", lang.hitch(this, "createSite"));
          this.alfSubscribe("ALF_EDIT_SITE", lang.hitch(this, "editSite"));
          this.alfSubscribe("ALF_ADD_FAVOURITE_SITE", lang.hitch(this, "addSiteAsFavourite"));
@@ -216,7 +227,6 @@ define(["dojo/_base/declare",
        * @param {object} config The configuration for the join request. 
        */
       joinSite: function alf_services_SiteService__joinSite(config) {
-         
          if (config.site && config.user)
          {
             // PLEASE NOTE: The default role for joining a site is "SiteConsumer", however this can be overridden
@@ -313,6 +323,38 @@ define(["dojo/_base/declare",
       }, 
       
       /**
+       * Handles a request to leave a site.
+       * 
+       * @method leaveSiteRequest
+       * @param {object} payload
+       */
+      leaveSiteRequest: function alf_services_SiteService__leaveSiteReqest(payload) {
+         
+         this.displayPrompt({
+            title: this.message("message.leave", { "0": payload.siteTitle}),
+            textContent: this.message("message.leave-site-prompt", { "0": payload.siteTitle}),
+            widgetsButtons: [
+               {
+                  name: "alfresco/buttons/AlfButton",
+                  config: {
+                     label: this.message("button.leave-site.confirm-label"),
+                     publishTopic: "ALF_LEAVE_SITE_CONFIRMATION",
+                     publishPayload: payload
+                  }
+               },
+               {
+                  name: "alfresco/buttons/AlfButton",
+                  config: {
+                     label: this.message("button.leave-site.cancel-label"),
+                     publishTopic: "ALF_LEAVE_SITE_CANCELLATION",
+                     publishPayload: payload
+                  }
+               }
+            ]
+         });
+      },
+      
+      /**
        * 
        * @method leaveSite
        * @param {string} site The name of the site to leave
@@ -326,7 +368,9 @@ define(["dojo/_base/declare",
             this.serviceXhr({url : url,
                              method: "DELETE",
                              site: config.site,
+                             siteTitle: config.siteTitle,
                              user: config.user,
+                             userFullName: config.userFullName,
                              successCallback: this.siteLeft,
                              callbackScope: this});
          }
@@ -353,6 +397,7 @@ define(["dojo/_base/declare",
        */
       siteLeft: function alf_services_SiteService__siteJoined(response, originalRequestConfig) {
          this.alfLog("log", "User has successfully left a site", response, originalRequestConfig);
+         this.displayMessage(this.message("message.leaving", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
          this.alfPublish("ALF_SITE_LEFT", { site: originalRequestConfig.site, user: originalRequestConfig.user});
          this.reloadPage();
       },

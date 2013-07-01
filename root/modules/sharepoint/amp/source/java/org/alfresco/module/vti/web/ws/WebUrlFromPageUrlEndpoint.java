@@ -21,6 +21,7 @@ package org.alfresco.module.vti.web.ws;
 import java.net.URLDecoder;
 
 import org.alfresco.module.vti.handler.MethodHandler;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -80,7 +81,7 @@ public class WebUrlFromPageUrlEndpoint extends AbstractEndpoint
         String server = getHost(soapRequest);
         String context = soapRequest.getAlfrescoContextName();
                 
-        String[] uris = handler.decomposeURL(pageUrl.replaceAll(server, ""), context);
+        String[] uris = handler.decomposeURL(URIUtil.getPath(pageUrl), context);
 
         // creating soap response
         Element responseElement = soapResponse.getDocument().addElement("WebUrlFromPageUrlResponse", namespace);

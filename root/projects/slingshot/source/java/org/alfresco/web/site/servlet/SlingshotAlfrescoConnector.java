@@ -21,14 +21,9 @@ package org.alfresco.web.site.servlet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.extensions.config.RemoteConfigElement.ConnectorDescriptor;
-import org.springframework.extensions.webscripts.RequestCachingConnector;
 import org.springframework.extensions.webscripts.connector.AlfrescoConnector;
-import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.ConnectorContext;
-import org.springframework.extensions.webscripts.connector.ConnectorService;
 import org.springframework.extensions.webscripts.connector.ConnectorSession;
 import org.springframework.extensions.webscripts.connector.Credentials;
 import org.springframework.extensions.webscripts.connector.RemoteClient;
@@ -76,7 +71,7 @@ import org.springframework.extensions.webscripts.connector.RemoteClient;
  * 
  * @author adavis
  */
-public class SlingshotAlfrescoConnector extends RequestCachingConnector
+public class SlingshotAlfrescoConnector extends AlfrescoConnector
 {
     /**
      * The name of the element in the {@link ConnectorDescriptor} 

@@ -78,6 +78,9 @@ public class GetDocsMetaInfoMethod extends AbstractMethod
             String path = URIUtil.getPath(url);
             if (urlIsAbsolute(url))
             {
+                // Remove context path
+                path = path.substring(context.length());
+                
                 if (path.length() > 1 && path.startsWith("/"))
                 {
                     // Remove preceding slash if one exists.

@@ -202,6 +202,29 @@ public class DefaultControlsConfigTest extends BaseTest
         List<ControlParam> actualControlParams = combinedElem.getItems().get("text").getParamsAsList();
         assertEquals("Wrong count of control-params", 0, actualControlParams.size());
     }
+    
+    /**
+     * Tests the combination of a DefaultControlsConfigElement with another
+     * with only new data types.
+     */
+    public void testCombineDefaultControlsWithNewDataType()
+    {
+        DefaultControlsConfigElement initialElement = new DefaultControlsConfigElement();
+        List<ControlParam> testParams = new ArrayList<ControlParam>();
+        testParams.add(new ControlParam("A", "1"));
+        initialElement.addDataMapping("text", "path/textbox.ftl", testParams);
+
+        // This element is unrelated to the above, just adding another data type
+        DefaultControlsConfigElement newElement = new DefaultControlsConfigElement();
+        newElement.addDataMapping("text4444", "path/textbox.ftl", null);
+
+        DefaultControlsConfigElement combinedElem
+               = (DefaultControlsConfigElement)initialElement.combine(newElement);
+
+        assertEquals("path/textbox.ftl", combinedElem.getItems().get("text").getTemplate());
+        List<ControlParam> actualControlParams = combinedElem.getItems().get("text").getParamsAsList();
+        assertEquals("Wrong count of control-params", 1, actualControlParams.size());
+    }
 
     /**
      * @see junit.framework.TestCase#setUp()

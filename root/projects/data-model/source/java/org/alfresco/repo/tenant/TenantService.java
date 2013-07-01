@@ -163,4 +163,12 @@ public interface TenantService extends TenantUserService
      * @return          the tenant-specific ID for specified identifier
      */
     public String getDomain(String name, boolean checkCurrentDomain);
+
+    /**
+     * Get the primary domain for user, if one exists.
+     *  
+     * @param user The user whose primary domain is to be returned 
+     * @return The primary domain of user, or null if the domain does not exist in the system.
+     */
+	public String getPrimaryDomain(String user);
 }

@@ -62,6 +62,10 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
       !YAHOO.lang.isObject(data) === null ||
       !(YAHOO.lang.isString(data.nodeRef) || YAHOO.lang.isString(data.parentNodeRef)))
    {
+      if (callback)
+      {
+         callback();
+      }
       return;
    }
 

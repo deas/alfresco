@@ -434,7 +434,7 @@
          }
          if (userStatus && userStatusTime)
          {
-            desc += '<div class="user-status">' + $html(userStatus) + ' <span>(' + Alfresco.util.relativeTime(Alfresco.util.fromISO8601(userStatus.iso8601)) + ')</span></div>';
+            desc += '<div class="user-status">' + $html(userStatus) + ' <span>(' + Alfresco.util.relativeTime(Alfresco.util.fromISO8601(userStatusTime.iso8601)) + ')</span></div>';
          }
 
          elCell.innerHTML = desc;
@@ -469,7 +469,7 @@
 
          var currentRole = oRecord.getData("role");
 
-         if (this.isCurrentUserSiteAdmin)
+         if (this.isCurrentUserSiteAdmin && oRecord.getData("userName") !== this.options.currentUser)
          {
             // create HTML for representing buttons
             var userName = oRecord.getData("userName");
@@ -484,22 +484,22 @@
             {
                role = roles[x];
                rolesMenu.push(
-               {
-                  text: this.msg("role." + role),
-                  value: role,
-                  onclick:
                   {
-                     fn: this.onRoleSelect,
-                     obj:
+                     text: this.msg("role." + role),
+                     value: role,
+                     onclick:
                      {
-                        user: userName,
-                        currentRole: currentRole,
-                        newRole: role,
-                        recordId: oRecord.getId()
-                     },
-                     scope: this
+                        fn: this.onRoleSelect,
+                        obj:
+                        {
+                           user: userName,
+                           currentRole: currentRole,
+                           newRole: role,
+                           recordId: oRecord.getId()
+                        },
+                        scope: this
+                     }
                   }
-               }
                );
             }
 
@@ -560,7 +560,7 @@
                    fn: this.doRemove,
                    obj: userName,
                    scope: this
-                  }
+                }
             });
 
             // store the buttons
@@ -678,6 +678,7 @@
             {
                text: this.msg("message.changingrole"),
                spanClass: "wait",
+               effect: null,
                displayTime: 0
             });
 
@@ -690,7 +691,8 @@
                // show popup message to confirm
                Alfresco.util.PopupManager.displayMessage(
                {
-                  text: this._msg("site-members.change-role-success", userRole.user, this._msg("role." + userRole.role))
+                  text: this.msg("site-members.change-role-success", userRole.user, this.msg("role." + userRole.role)),
+                  effect: null
                });
 
                // update the data and table

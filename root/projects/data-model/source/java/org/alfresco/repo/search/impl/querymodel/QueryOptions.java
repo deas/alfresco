@@ -73,6 +73,8 @@ public class QueryOptions
     private Boolean useInMemorySort;
 
     private Integer maxRawResultSetSizeForInMemorySort;
+    
+    private boolean excludeTenantFilter = false;
 
     public static QueryOptions create(SearchParameters searchParameters)
     {
@@ -99,6 +101,7 @@ public class QueryOptions
         ///options.setQuery(query); Done on construction.
         options.setUseInMemorySort(searchParameters.getUseInMemorySort());
         options.setMaxRawResultSetSizeForInMemorySort(searchParameters.getMaxRawResultSetSizeForInMemorySort());
+        options.setExcludeTenantFilter(searchParameters.getExcludeTenantFilter());
         return options;
     }
     /**
@@ -422,4 +425,20 @@ public class QueryOptions
     {
         this.maxRawResultSetSizeForInMemorySort = maxRawResultSetSizeForInMemorySort;
     }
+    /**
+     * @return the tenants
+     */
+    public boolean getExcludeTenantFilter()
+    {
+        return excludeTenantFilter;
+    }
+    /**
+     * @param tenants the tenants to set
+     */
+    public void setExcludeTenantFilter(boolean excludeTenantFilter)
+    {
+        this.excludeTenantFilter = excludeTenantFilter;
+    }
+    
+    
 }

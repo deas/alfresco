@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ChildAssociationDefinition;
@@ -50,7 +51,7 @@ import org.alfresco.service.namespace.QName;
     private Map<QName,PropertyDefinition> properties = new HashMap<QName,PropertyDefinition>();
     private Map<QName,AssociationDefinition> associations = new HashMap<QName,AssociationDefinition>();
     private Map<QName,ChildAssociationDefinition> childassociations = new HashMap<QName,ChildAssociationDefinition>();
-    
+    private transient MessageLookup staticMessageLookup = new StaticMessageLookup();
 
     /**
      * Construct
@@ -114,6 +115,17 @@ import org.alfresco.service.namespace.QName;
         return QName.createQName(NamespaceService.DICTIONARY_MODEL_1_0_URI, "anonymous#" + type.getName().getLocalName());
     }
 
+    @Override
+    public String getDescription()
+    {
+        return getDescription(staticMessageLookup);
+    }
+    
+    @Override
+    public String getTitle()
+    {
+        return getTitle(staticMessageLookup);
+    }
     
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ClassDefinition#getTitle()

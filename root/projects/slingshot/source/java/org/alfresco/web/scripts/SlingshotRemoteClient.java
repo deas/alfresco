@@ -23,11 +23,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.Header;
+import org.htmlparser.*;
+import org.htmlparser.tags.DoctypeTag;
+import org.htmlparser.util.NodeIterator;
+import org.htmlparser.util.ParserException;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.extensions.webscripts.connector.HttpMethod;
 import org.springframework.extensions.webscripts.connector.RemoteClient;
@@ -69,7 +74,7 @@ public class SlingshotRemoteClient extends RemoteClient
                     }
                     
                     // examine the mimetype to see if additional processing is required
-                    if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml"))
+                    if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml") || mimetype.equals("text/xml"))
                     {
                         // found HTML content we need to process in-memory and perform stripping on
                         ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
@@ -94,10 +99,22 @@ public class SlingshotRemoteClient extends RemoteClient
                             
                             // convert to appropriate string format
                             String content = encoding != null ? new String(bos.toByteArray(), encoding) : new String(bos.toByteArray());
-                            
-                            // process with HTML stripper
-                            content = StringUtils.stripUnsafeHTMLTags(content, false);
-                            
+
+                            if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml"))
+                            {
+                                // process with HTML stripper
+                                content = StringUtils.stripUnsafeHTMLTags(content, false);
+                            }
+                            else if (mimetype.equals("text/xml"))
+                            {
+                                // If docType is set to xml browsers (at least IE & Chrome) will treat it like it
+                                // does for a svg+xml document
+                                if (hasDocType(content, "svg", false))
+                                {
+                                    res.setContentType("text/plain");
+                                }
+                            }
+
                             // push the modified response to the real outputstream
                             try
                             {
@@ -114,7 +131,7 @@ public class SlingshotRemoteClient extends RemoteClient
                         }
                         processed = true;
                     }
-                    else if (mimetype.equals("application/x-shockwave-flash"))
+                    else if (mimetype.equals("application/x-shockwave-flash") || mimetype.equals("image/svg+xml"))
                     {
                         String msg = I18NUtil.getMessage("security.insecuremimetype");
                         try
@@ -140,5 +157,42 @@ public class SlingshotRemoteClient extends RemoteClient
         {
             super.copyResponseStreamOutput(url, res, out, method, contentType, bufferSize);
         }
+    }
+
+    protected boolean hasDocType(String content, String docType, boolean encode)
+    {
+        try
+        {
+            Parser parser = Parser.createParser(content, "UTF-8");
+            PrototypicalNodeFactory factory = new PrototypicalNodeFactory();
+            parser.setNodeFactory(factory);
+            NodeIterator itr = parser.elements();
+            while (itr.hasMoreNodes())
+            {
+                Node node = itr.nextNode();
+                if (node instanceof DoctypeTag)
+                {
+                    // Found the doctype tag, now lets see if can find the searched for doctype attribute.
+                    DoctypeTag docTypeTag = (DoctypeTag)node;
+                    Vector<Attribute> attrs = docTypeTag.getAttributesEx();
+                    if (attrs != null && attrs.size() > 1)
+                    {
+                        for (Attribute attr : attrs)
+                        {
+                            String name = attr.getName();
+                            if (name != null && name.equalsIgnoreCase(docType))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (ParserException e)
+        {
+            // Not a valid xml document, return false below
+        }
+        return false;
     }
 }

@@ -23,9 +23,8 @@
  * @namespace Alfresco
  * @class Alfresco.CalendarAgendaView
  */
-( function() 
+(function()
 {
-   
    /**
     * Alfresco Slingshot aliases
     */
@@ -179,7 +178,7 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       write = this.options.permitToCreateEvents;
 
       // NOTE: DOM order (Delete, Edit, Info) is reverse of display order (Info, Edit, Delete), due to right float.      
-      if (write) {
+      if (write && !data.isoutlook) {
          // Delete
          actions.push(YAHOO.lang.substitute(template, 
          {

@@ -1,6 +1,6 @@
 <div class="blog-categ">
     <h3>${msg('section.tags')}</h3>
-    <#if section.tags?size == 0>
+    <#if !section.tags?? || section.tags?size == 0>
         <p>${msg('tags.none')}</p>
     <#else>
         <ul class="tag-list">

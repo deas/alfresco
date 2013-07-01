@@ -1,7 +1,7 @@
 <#if field.control.params.rows??><#assign rows=field.control.params.rows><#else><#assign rows=3></#if>
 <#if field.control.params.columns??><#assign columns=field.control.params.columns><#else><#assign columns=60></#if>
 
-<div class="form-field">
+<div class="form-field alf-textarea">
    <#if form.mode == "view">
    <div class="viewmode-field">
       <#if field.mandatory && field.value == "">
@@ -17,11 +17,11 @@
    </div>
    <#else>
    <label for="${fieldHtmlId}">${field.label?html}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></label>
+   <@formLib.renderFieldHelp field=field />
    <textarea id="${fieldHtmlId}" name="${field.name}" rows="${rows}" cols="${columns}" tabindex="0"
       <#if field.description??>title="${field.description}"</#if>
       <#if field.control.params.styleClass??>class="${field.control.params.styleClass}"</#if>
       <#if field.control.params.style??>style="${field.control.params.style}"</#if>
       <#if field.disabled && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if>>${field.value?html}</textarea>
-   <@formLib.renderFieldHelp field=field />
    </#if>
 </div>

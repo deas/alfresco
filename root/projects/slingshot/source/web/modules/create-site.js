@@ -366,8 +366,8 @@
             // The site has been successfully created - add it to the user's favourites and navigate to it
             var preferencesService = new Alfresco.service.Preferences(),
                shortName = response.config.dataObj.shortName;
-            
-            preferencesService.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + shortName, true,
+               
+            preferencesService.favouriteSite(shortName,
             {
                successCallback:
                {

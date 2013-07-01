@@ -1,12 +1,13 @@
 <#assign el=args.htmlid?html>
 
+
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link href="${url.context}/res/components/profile/profile.css" group="profile"/>
 </@>
 
 <@markup id="js">
-   <#-- No JavaScript Dependencies -->
+   <@script src="${url.context}/res/components/profile/following.js" group="profile"></@script>
 </@>
 
 <@markup id="widgets">
@@ -18,14 +19,12 @@
       <div id="${el}-body" class="profile">
          <div class="viewcolumn">
             <div class="header-bar">${msg("label.following")}
-               <#if activeUserProfile>
+            <#if activeUserProfile>
                <div class="private">
-                  <form id="${el}-form-following-private" action="${url.context}/service/components/profile/following-private" method="post">
-                     <input id="${el}-checkbox-following-private" type="checkbox" name="private" value="1" onclick="submit();" <#if privatelist>checked=""</#if>/>
-                     <label for="${el}-checkbox-following-private">${msg("label.private")}</label>
-                  </form>
+                  <input id="${el}-checkbox-following-private" type="checkbox" name="private" value="1" <#if privatelist>checked=""</#if>/>
+                <label for="${el}-checkbox-following-private">${msg("label.private")}</label>
                </div>
-               </#if>
+            </#if>
             </div>
             <#if (numPeople > 0)>
             <ul class="people">
@@ -45,14 +44,9 @@
                         </#if>
                      </div>
                      <#if (activeUserProfile)>
-                     <div class="button-wrapper">
-                        <form id="${el}-form-unfollow" action="${url.context}/service/components/profile/following" method="post">
-                           <input type="hidden" name="unfollowuser" value="${user.userName?html}"/>
-                           <span class="yui-button yui-push-button" id="${el}-button-unfollow">
-                              <span class="first-child"><button name="unfollow">${msg("button.unfollow")}</button></span>
-                           </span>
-                        </form>
-                     </div>
+                        <div class="button-wrapper">
+                           <button class="alfresco-button" name=".onFollowingClick" value="${user.userName?html}">${msg("button.unfollow")}</button>
+                        </div>
                      </#if>
                   </div>
                </li>

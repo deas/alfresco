@@ -66,6 +66,9 @@ public interface ContentModel
     static final QName ASPECT_HIDDEN = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "hidden");
     static final QName PROP_VISIBILITY_MASK = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "clientVisibilityMask");
     static final QName PROP_HIDDEN_FLAG = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "hiddenFlag");
+    static final QName PROP_CASCADE_HIDDEN = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "cascadeHidden");
+    static final QName PROP_CASCADE_INDEX_CONTROL = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "cascadeIndexControl");
+    static final QName PROP_CLIENT_CONTROLLED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "clientControlled");
 
     // tag for soft delete (CIFS rename shuffle)
     static final QName ASPECT_SOFT_DELETE  = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "softDelete");

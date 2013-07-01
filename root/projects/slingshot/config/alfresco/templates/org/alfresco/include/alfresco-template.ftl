@@ -76,7 +76,7 @@
    <!-- Android & iPad CSS overrides -->
    <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href="${tabletCSS}"/>
    <script type="text/javascript">
-      if (navigator.userAgent.indexOf(" Android ") !== -1)  document.write("<link rel='stylesheet' type='text/css' href='${tabletCSS}'/>");
+      if (navigator.userAgent.indexOf(" Android ") !== -1 || navigator.userAgent.indexOf("iPad;") !== -1 || navigator.userAgent.indexOf("iPhone;") !== -1 )  document.write("<link rel='stylesheet' type='text/css' href='${tabletCSS}'/>");
    </script>
    </@markup>
 <#if !PORTLET>

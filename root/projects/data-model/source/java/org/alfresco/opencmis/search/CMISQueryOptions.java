@@ -71,7 +71,8 @@ public class CMISQueryOptions extends QueryOptions
         //options.setQueryMode(); Should set afterwards
         options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
         options.setDefaultFieldName(searchParameters.getDefaultFieldName());
-
+        options.setExcludeTenantFilter(searchParameters.getExcludeTenantFilter());
+        
         return options;
     }
     

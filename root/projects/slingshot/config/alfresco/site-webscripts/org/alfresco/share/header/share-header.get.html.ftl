@@ -17,7 +17,7 @@
 <@markup id="widgets">
    <@inlineScript group="dashlets">
       <#if page.url.templateArgs.site??>
-         Alfresco.constants.DASHLET_RESIZE = ${userIsSiteManager?string} && YAHOO.env.ua.mobile === null;
+         Alfresco.constants.DASHLET_RESIZE = ${siteData.userIsSiteManager?string} && YAHOO.env.ua.mobile === null;
       <#else>
          Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string} && YAHOO.env.ua.mobile === null;
       </#if>

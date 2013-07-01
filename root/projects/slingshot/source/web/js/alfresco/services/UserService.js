@@ -69,7 +69,10 @@ define(["dojo/_base/declare",
          //       writing the only subscriber to this publication is coded to handle status updates
          //       that DO include a status message.
          this.alfLog("log", "User Status Update Success", response);
-         var response = JSON.parse(this.cleanupJSONResponse(response));
+         if (typeof response == "string")
+         {
+            var response = JSON.parse(this.cleanupJSONResponse(response));
+         }
          this.alfPublish("ALF_USER_STATUS_UPDATED", {
             userStatus: null,
             userStatusTime: response.userStatusTime.iso8601
@@ -85,7 +88,10 @@ define(["dojo/_base/declare",
        */
       userStatusUpdateFailure: function alf_services_UserService__userStatusUpdateFailure(response, originalRequestConfig) {
          this.alfLog("log", "User Status Update Failure", response);
-         var response = JSON.parse(this.cleanupJSONResponse(response));
+         if (typeof response == "string")
+         {
+            var response = JSON.parse(this.cleanupJSONResponse(response));
+         }
          this.alfPublish("ALF_USER_STATUS_UPDATE_FAILURE", response);
       }
    });

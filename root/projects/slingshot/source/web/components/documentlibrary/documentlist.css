@@ -938,9 +938,10 @@ body .doclist tr.yui-dt-highlighted
    font-size: 1.2em;
    width: 100%;
    white-space: nowrap;
-   background: url("../images/black-50-transparency.png") repeat;
+   background: url("../images/black-50-transparency.png") repeat !important;
    z-index: 1;
    visibility: hidden;
+   margin: 0 !important;
 }
 .alf-gallery-item.alf-hover .alf-header,
 .alf-selected .alf-gallery-item .alf-header
@@ -955,21 +956,21 @@ body .doclist tr.yui-dt-highlighted
    top: 50%;
    margin-top: -10px;
    height: 16px;
+   left: 4%;
 }
 
 .alf-gallery-item .alf-show-detail
 {
    float: right;
    position: relative;
-   right: 4%;
-   top: 50%;
+   right: 2%;
+   top: 52%;
    background-image: url(images/show-detail.png);
    background-repeat: no-repeat;
    padding: 0px 0px 0px 16px;
    margin-top: -8px;
    line-height: 16px;
    text-decoration: none !important;
-   margin-right: 2%;
 }
 
 .alf-gallery-item .alf-separator
@@ -1031,8 +1032,8 @@ body .doclist tr.yui-dt-highlighted
 }
 .alf-gallery-item .alf-detail .alf-detail-thumbnail img
 {
-   max-width: 330px;
-   max-height: 240px;
+   max-width: 350px;
+   max-height: 265px;
 }
 .alf-gallery-item .alf-detail .detail span.item-social:last-child
 {

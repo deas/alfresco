@@ -21,6 +21,7 @@ package org.alfresco.repo.content;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -556,9 +557,18 @@ public class MimetypeMap implements MimetypeService
      * @return Returns a valid mimetype if found, or {@link #MIMETYPE_BINARY
      *         binary} as default.
      */
+    @Override
     public String getMimetype(String extension)
     {
-        String mimetype = MIMETYPE_BINARY;
+        return getMimetype(extension, MIMETYPE_BINARY);
+    }
+    
+    /**
+     * Get the mimetype for the specified extension or returns the supplied default if unknown.
+     */
+    private String getMimetype(String extension, String defaultMimetype)
+    {
+        String mimetype = null;
         if (extension != null)
         {
             extension = extension.toLowerCase();
@@ -567,7 +577,7 @@ public class MimetypeMap implements MimetypeService
                 mimetype = mimetypesByExtension.get(extension);
             }
         }
-        return mimetype;
+        return mimetype == null ? defaultMimetype : mimetype;
     }
 
     public Map<String, String> getDisplaysByExtension()
@@ -779,5 +789,52 @@ public class MimetypeMap implements MimetypeService
         logger.info("Tika detected a type of " + tikaType + " for file " + filename
                 + " which Alfresco doesn't know about. Consider " + " adding that type to your configuration");
         return tikaType;
+    }
+    
+    /**
+     * Returns a collection of mimetypes ordered by extension.
+     * @param extension to restrict the collection to one entry
+     */
+    public Collection<String> getMimetypes(String extension)
+    {
+        Collection<String> sourceMimetypes;
+        if (extension == null)
+        {
+            sourceMimetypes = getMimetypes();
+            sourceMimetypes = sortMimetypesByExt(sourceMimetypes);
+        }
+        else
+        {
+            String mimetype = getMimetype(extension, null);
+            if (mimetype == null)
+            {
+                sourceMimetypes = Collections.emptySet();
+            }
+            else
+            {
+                sourceMimetypes = Collections.singleton(mimetype);
+            }
+        }
+        return sourceMimetypes;
+    }
+
+    /**
+     * Copies and sorts the supplied mimetypes by their file extensions
+     * @param mimetypes to be sorted
+     * @return a new List of sorted mimetypes
+     */
+    private Collection<String> sortMimetypesByExt(Collection<String> mimetypes)
+    {
+        List<String> result = new ArrayList<String>(mimetypes);
+        for (int i=result.size()-1; i>= 0; i--)
+        {
+            result.set(i, getExtension(result.get(i)));
+        }
+        Collections.sort(result);
+        for (int i=result.size()-1; i>= 0; i--)
+        {
+            result.set(i, getMimetype(result.get(i)));
+        }
+        return result;
     }
 }

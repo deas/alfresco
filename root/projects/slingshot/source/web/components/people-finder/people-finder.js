@@ -334,15 +334,7 @@
                       }
                   }
                }
-               
-               // Sort the user list by name
-               items.sort(function (user1, user2)
-               {
-                  var name1 = user1.firstName + user1.lastName,
-                     name2 = user2.firstName + user2.lastName;
-                  return (name1 > name2) ? 1 : (name1 < name2) ? -1 : 0;
-               });
-               
+
                me.notAllowed = {};
                if (oFullResponse.notAllowed)
                {

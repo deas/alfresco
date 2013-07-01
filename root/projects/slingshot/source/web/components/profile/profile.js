@@ -103,7 +103,7 @@
                   type: "submit"
                });
             this.widgets.cancel = Alfresco.util.createYUIButton(this, "button-cancel", this.onCancel);
-            
+
             // Form definition
             var form = new Alfresco.forms.Form(this.id + "-form");
             this.widgets.form = form;
@@ -124,7 +124,7 @@
             // Initialise the form
             form.init();
          }
-         
+
          // If the profile is editable and the link includes a request to edit it, then reveal the edit form...
          if (this.options.profile.isEditable && window.location.hash == "#edit")
          {
@@ -135,6 +135,9 @@
             // Finally show the main component body here to prevent UI artifacts on YUI button decoration
             Dom.removeClass(this.id + "-readview", "hidden");
          }
+
+         // Listen to following button clicks
+         this.widgets.following = Alfresco.util.createYUIButton(this, "button-following", this.onFollowing);
       },
       
       /**
@@ -322,6 +325,32 @@
       {
          Dom.addClass(this.id + "-editview", "hidden");
          Dom.removeClass(this.id + "-readview", "hidden");
+      },
+
+      /**
+       * Toggles the following of profile user for the current user
+       *
+       * @param e
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onFollowing: function UP_onFollowing(e, p_obj)
+      {
+         var webscript = "/api/subscriptions/" + encodeURIComponent(Alfresco.constants.USERNAME) +
+               "/" + (this.options.follows ? "unfollow" : "follow");
+         Alfresco.util.Ajax.jsonPost(
+         {
+            url: Alfresco.constants.PROXY_URI + webscript,
+            dataObj: [ this.options.profile.name ],
+            successCallback:
+            {
+               fn: function()
+               {
+                  window.location.reload();
+               },
+               scope: this
+            }
+         });
       }
 
    });

@@ -60,6 +60,7 @@ function main()
       name : "Alfresco.UserProfile",
       options : {
          userId : user.name,
+         follows: model.follows,
          profile : {
             isEditable : model.isEditable,
             name : (model.profile.name != null) ? model.profile.name : "",

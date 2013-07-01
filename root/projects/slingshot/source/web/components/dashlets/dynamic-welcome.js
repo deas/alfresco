@@ -161,7 +161,8 @@
          else
          {
             // Use the preferences services to update the users preferences for this site...
-            var updatedSite = this.site.substring(1).replace(/\//g, "-");
+            // replace the forward slash "/" and dot "." characters with dash "-"
+            var updatedSite = this.site.substring(1).replace(/\/|\./g, "-");
             this.services.preferences.set("org.alfresco.share.siteWelcome." + updatedSite, false,
             {
                successCallback:

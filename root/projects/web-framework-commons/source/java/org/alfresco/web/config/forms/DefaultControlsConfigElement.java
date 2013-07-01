@@ -90,7 +90,7 @@ public class DefaultControlsConfigElement extends ConfigElementAdapter
         for (String nextDataType : datatypeDefCtrlMappings.keySet())
         {
             String nextTemplate = getTemplateFor(nextDataType);
-            Control nextDefaultControls = otherDCCElement.datatypeDefCtrlMappings
+            Control nextDefaultControls = datatypeDefCtrlMappings
                     .get(nextDataType);
             List<ControlParam> nextControlParams = null;
             if (nextDefaultControls != null)

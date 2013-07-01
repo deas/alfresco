@@ -216,7 +216,8 @@ function main()
          }
          else
          {
-            hideDashlet = dashletprefs[profile.node.substring(1).replace(/\//g, "-")] != null;
+            // replace the forward slash "/" and dot "." characters with dash "-"
+            hideDashlet = dashletprefs[profile.node.substring(1).replace(/\/|\./g, "-")] != null;
          }
       }
       catch (e)

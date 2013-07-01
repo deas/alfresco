@@ -260,7 +260,7 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
                     // ALF-16846: to emulate Sharepoint, we allow a write-locked document to be checked out
                     LockInfo lockInfo = webDAVlockService.getLockInfo(documentFileInfo.getNodeRef());
-                    if (lockInfo.isLocked()
+                    if (lockInfo != null && lockInfo.isLocked()
                             && !webDAVlockService.isLockedAndReadOnly(documentFileInfo.getNodeRef()))
                     {
                         webDAVlockService.unlock(documentFileInfo.getNodeRef());

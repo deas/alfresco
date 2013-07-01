@@ -46,6 +46,7 @@
    <bean id="webframework.factory.requestcontext.servlet" class="org.alfresco.web.site.ClusterAwareRequestContextFactory" parent="webframework.factory.base">
       <property name="linkBuilderFactory" ref="webframework.factory.linkbuilder.servlet" />
       <property name="extensibilityModuleHandler" ref="webscripts.extensibility.handler" />
+      <property name="dependencyHandler" ref="dependency.handler" />
       <property name="clusterObjectPersister" ref="webframework.slingshot.persister.remote" />
    </bean>
    -->

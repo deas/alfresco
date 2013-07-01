@@ -7,8 +7,8 @@
 
 .login
 {
-   width: 30em;
-   padding: 1.5em 2em;
+   padding: 1.5em 2em !important;
+   width: 42em;
 }
 
 .login form

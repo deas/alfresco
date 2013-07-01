@@ -85,7 +85,8 @@ public class CheckInFileEndpoint extends AbstractEndpoint
         }
         
         String docPath = URLDecoder.decode(docE.getTextTrim());
-        docPath = URIUtil.getPath(docPath);
+        String context = soapRequest.getAlfrescoContextName();
+        docPath = URIUtil.getPath(docPath).substring(context.length());
 
         // Get the comment
         xpath = new Dom4jXPath(buildXPath(prefix, "/CheckInFile/comment"));

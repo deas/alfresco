@@ -31,5 +31,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.8.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.8.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.18-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.18-patched.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/htmlparser-2.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

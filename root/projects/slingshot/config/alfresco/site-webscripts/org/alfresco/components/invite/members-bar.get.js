@@ -48,7 +48,6 @@ function main()
          cssClass: (model.activePage == "pending-invites") ? "theme-color-4" : null,
          label: msg.get("link.pending-invites")
       });
-
    }
 }
 

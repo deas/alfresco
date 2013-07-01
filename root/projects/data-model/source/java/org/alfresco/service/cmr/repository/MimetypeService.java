@@ -18,12 +18,12 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.repo.content.encoding.ContentCharsetFinder;
 import org.alfresco.service.NotAuditable;
-import org.alfresco.service.PublicService;
 
 
 /**
@@ -148,4 +148,11 @@ public interface MimetypeService
      */
     @NotAuditable
     public ContentCharsetFinder getContentCharsetFinder();
+    
+    /**
+     * Returns a collection of mimetypes ordered by extension.
+     * @param extension to restrict the collection to one entry
+     */
+    @NotAuditable
+    public Collection<String> getMimetypes(String extension);
 }

@@ -496,7 +496,7 @@
 
         <!-- Replace version in them -->
         <property name="maven.version.before" value="4.2.d-SNAPSHOT"/>
-        <property name="maven.version.after" value="4.2.0-SNAPSHOT"/>
+        <property name="maven.version.after" value="4.2.0-QA-SNAPSHOT"/>
         <replace dir="." token="${maven.version.before}" value="${maven.version.after}" summary="true">
             <include name="build/pom-experimental.xml" />
             <include name="projects/*/build/pom.xml" />

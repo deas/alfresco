@@ -17,6 +17,7 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 define(["dojo/_base/declare",
+        "dojo/_base/lang",
         "dijit/_WidgetBase",
         "dijit/_OnDijitClickMixin",
         "dijit/_TemplatedMixin",
@@ -28,7 +29,7 @@ define(["dojo/_base/declare",
         "dojo/dom-attr",
         "dojo/dom-construct",
         "dojo/on"], 
-        function(declare, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _FocusMixin, template,  AlfCore, AlfMenuBar, fx, domAttr, domConstruct, on) {
+        function(declare, lang, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _FocusMixin, template,  AlfCore, AlfMenuBar, fx, domAttr, domConstruct, on) {
    
    return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _FocusMixin, AlfCore], {
       
@@ -84,6 +85,12 @@ define(["dojo/_base/declare",
       site: null,
       
       /**
+       * @property {boolean} advancedSearch True to show the AdvancedSearch option, false to hide it.
+       * @default true
+       */
+      advancedSearch: true,
+      
+      /**
        * @method postCreate
        */
       postCreate: function alfresco_header_SearchBox__postCreate() {
@@ -93,32 +100,35 @@ define(["dojo/_base/declare",
             _this.onSearchBoxKeyDown(evt);
          });
          
-         this._searchMenu = new AlfMenuBar({
-            widgets: [
-               {
-                  name: "alfresco/header/AlfMenuBarPopup",
-                  config: {
-                     id: this.id + "_DROPDOWN_MENU",
-                     showArrow: false,
-                     label: "",
-                     iconClass: "alf-search-icon",
-                     widgets: [
-                        {
-                           name: "alfresco/menus/AlfMenuItem",
-                           config: {
-                              id: this.id + "_ADVANCED_SEARCH",
-                              i18nScope: "org.alfresco.SearchBox",
-                              label: "search.advanced",
-                              targetUrl: "advsearch"
+         if (this.advancedSearch)
+         {
+            this._searchMenu = new AlfMenuBar({
+               widgets: [
+                  {
+                     name: "alfresco/header/AlfMenuBarPopup",
+                     config: {
+                        id: this.id + "_DROPDOWN_MENU",
+                        showArrow: false,
+                        label: "",
+                        iconClass: "alf-search-icon",
+                        widgets: [
+                           {
+                              name: "alfresco/menus/AlfMenuItem",
+                              config: {
+                                 id: this.id + "_ADVANCED_SEARCH",
+                                 i18nScope: "org.alfresco.SearchBox",
+                                 label: "search.advanced",
+                                 targetUrl: "advsearch"
+                              }
                            }
-                        }
-                     ]
+                        ]
+                     }
                   }
-               }
-            ]
-         });
-         this._searchMenu.placeAt(this._searchMenuNode);
-         this._searchMenu.startup();
+               ]
+            });
+            this._searchMenu.placeAt(this._searchMenuNode);
+            this._searchMenu.startup();
+         }
       },
       
       /**
@@ -130,19 +140,23 @@ define(["dojo/_base/declare",
       onSearchBoxKeyDown: function alfresco_header_SearchBox__onSearchBoxKeyDown(evt) {
          if (evt.charCode == 0 && evt.keyCode == 13)
          {
-            this.alfLog("log", "Search request for: ", this._searchTextNode.value);
-            
-            var url = "search?t=" + this._searchTextNode.value;
-            if (this.site != null)
+            var terms = lang.trim(this._searchTextNode.value);
+            if (terms.length !== 0)
             {
-               url = "site/" + this.site + "/" + url;
+               this.alfLog("log", "Search request for: ", terms);
+               
+               var url = "search?t=" + encodeURIComponent(terms);
+               if (this.site != null)
+               {
+                  url = "site/" + this.site + "/" + url;
+               }
+               
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
+                  url: url,
+                  type: "SHARE_PAGE_RELATIVE",
+                  target: "CURRENT"
+               });
             }
-            
-            this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
-               url: url,
-               type: "SHARE_PAGE_RELATIVE",
-               target: "CURRENT"
-            });
          }
       },
       

@@ -368,7 +368,7 @@
          </bean>
       </property>
    </bean>
-   
+
    <bean id="evaluator.doclib.action.isLocked" parent="evaluator.doclib.action.chainedMatchOne">
       <property name="evaluators">
          <list>

@@ -148,6 +148,12 @@
 .search .results div.details span.tags
 {
    background: url(../images/tag-16.png) no-repeat 0 2px;
+   padding-left: 22px;
+}
+
+.search .results div.details .searchByTag
+{
+   padding-right: 2px;
 }
 
 .search .yui-dt .yui-dt-message

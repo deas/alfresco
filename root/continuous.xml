@@ -1,5 +1,5 @@
-<project name="continuous"
-         default="continuous" >
+<project name="continuous" default="continuous"
+    xmlns:jacoco="antlib:org.jacoco.ant">
 
    <!-- ********************************** -->
    <!-- ** Initialisation/Configuration ** -->
@@ -1307,7 +1307,39 @@
             classfile="${dir.continuous.assemble.sdk}/lib/remote/.classpath">
       </generate-classpath>
 </target>
-   
+
+   <!-- *************************** -->
+   <!-- ** Test Coverage targets ** -->
+   <!-- *************************** -->
+
+    <target name="coverage-report" depends="continuous-init">
+        <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+            <classpath path="${dir.project.3rdparty.lib}/${dir.name.devenv}/${file.name.jar.jacoco}"/>
+        </taskdef>
+
+        <!-- Generate the JaCoCo report for coverage -->
+        <mkdir dir="${dir.continuous.dist}/jacoco/report" />
+        <jacoco:report>
+            <executiondata>
+                <fileset dir="${basedir}" includes="*projects/*/build/jacoco.exec" />
+            </executiondata>
+            <structure name="Test Coverage ${version.number} ${DSTAMP}-${TSTAMP}">
+                <classfiles>
+                    <fileset dir="${basedir}" includes="*projects/*/build/dist/*.jar"
+                        excludes="projects/web-editor-plugin/build/dist/alfresco-webeditor-plugin-*.jar"/>
+                </classfiles>
+                <sourcefiles encoding="${javac.encoding}">
+                </sourcefiles>
+            </structure>
+            <html destdir="${dir.continuous.dist}/jacoco/report"/>
+        </jacoco:report>
+
+        <!-- Zip the coverage files, for convenience -->
+        <zip destfile="${dir.continuous.dist}/jacoco/coveragefiles.zip">
+            <fileset dir="${basedir}" includes="*projects/*/build/jacoco.exec" />
+        </zip>
+    </target>
+
    <!-- *************************** -->
    <!-- ** Documentation targets ** -->
    <!-- *************************** -->

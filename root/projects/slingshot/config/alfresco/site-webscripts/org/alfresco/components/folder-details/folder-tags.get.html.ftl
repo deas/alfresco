@@ -28,7 +28,7 @@
                ${msg("label.tags")}
                <#if allowMetaDataUpdate>
                   <span class="alfresco-twister-actions">
-                     <a href="${siteURL("edit-metadata?nodeRef=" + nodeRef?js_string)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
+                     <a href="${siteURL("edit-metadata?nodeRef=" + nodeRef?html)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
                   </span>
                </#if>
             </h2>

@@ -55,6 +55,22 @@ if (typeof Alfresco == "undefined" || !Alfresco)
 Alfresco.constants = Alfresco.constants || {};
 
 /**
+ * Alfresco CSRF Policy.
+ *
+ * @namespace Alfresco.constants
+ * @class Alfresco.constants.CSRF_POLICY
+ */
+Alfresco.constants.CSRF_POLICY = Alfresco.constants.CSRF_POLICY || {enabled: false};
+
+/**
+ * Alfresco IFrame Policy.
+ *
+ * @namespace Alfresco.constants
+ * @class Alfresco.constants.IFRAME_POLICY
+ */
+Alfresco.constants.IFRAME_POLICY = Alfresco.constants.IFRAME_POLICY || {sameDomain: "allow", crossDomainUrls: ["*"]};
+
+/**
  * Alfresco top-level template namespace.
  *
  * @namespace Alfresco
@@ -928,21 +944,58 @@ Alfresco.util.getPasswordStrength = function(password, config)
    // Merge default config with overrides
    var c = YAHOO.lang.merge({
       username: null,
-      minLength: 0
+      minLength: 0,
+      minUpper: 0,
+      minLower: 0,
+      minNumeric: 0,
+      minSymbols: 0
    }, config);
 
    // Note we are avoiding character classes to make algorithm i18n safe.
    var strength = 0,
-      DIGITS = /\d/,
-      NODIGITS = /\D/,
-      SPECIAL_CHARS = /([!,@,#,$,%,^,&,*,?,_,~])/,
+      DIGITS = /\d/g,
+      NODIGITS = /\D/g,
+      SPECIAL_CHARS = /([!,@,#,$,%,^,&,*,?,_,~])/g,
       tmp;
    if ((!password || password.length < config.minLength) && config.minLength > 0)
    {
       // Its too short to be a valid password.
       return null;
    }
-   else if (config.username && config.username.indexOf(password) != -1 || password.indexOf(config.username) != -1)
+   // Count the number of upper and lower case characters
+   var upper = 0, lower = 0, ch;
+   for (var i = 0; i < password.length; i++)
+   {
+      ch = password.charAt(i);
+      if (ch.toUpperCase() != ch.toLowerCase())
+      {
+         // Ok now we now it is an actual character (can't use regexp since they dont handle foreign characters)
+         if (ch.toUpperCase() == ch)
+         {
+            upper++;
+         }
+         if (ch.toLowerCase() == ch)
+         {
+            lower++;
+         }
+      }
+   }
+   if (c.minUpper > upper || c.minLower > lower)
+   {
+      // A required minimum number of upper and/or lower case characters was not provided
+      return null;
+   }
+   if (c.minNumeric > (password.match(DIGITS) || []).length)
+   {
+      // A required minimum number of numeric characters was not provided
+      return null;
+   }
+   if (c.minSymbols > (password.match(SPECIAL_CHARS) || []).length)
+   {
+      // A required minimum number of special characters was not provided
+      return null;
+   }
+   if (config.username && config.username.indexOf(password) != -1 || password.indexOf(config.username) != -1)
    {
       // The password matches the username, in other words its W.E.A.K.
       strength = 0;
@@ -978,23 +1031,6 @@ Alfresco.util.getPasswordStrength = function(password, config)
       }
 
       // Reward mixing upper and lower case
-      var upper = 0, lower = 0, c;
-      for (var i = 0; i < password.length; i++)
-      {
-         c = password.charAt(i);
-         if (c.toUpperCase() != c.toLowerCase())
-         {
-            // Ok now we now it is an actual character (can't use regexp since they dont handle foreign characters)
-            if (c.toUpperCase() == c)
-            {
-               upper++;
-            }
-            if (c.toLowerCase() == c)
-            {
-               lower++;
-            }
-         }
-      }
       if (upper > 0 && lower > 0)
       {
          strength += 10;
@@ -2683,9 +2719,45 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
           *
           * @property minLength
           * @type int
-          * @default 8
+          * @default 0
           */
-         minLength: 8
+         minLength: 0,
+
+         /**
+          * Minimum number of upper case characters required in passwords
+          *
+          * @property minPasswordUpper
+          * @type int
+          * @default 0
+          */
+         minUpper: 0,
+
+         /**
+          * Minimum number of lower case characters required in passwords
+          *
+          * @property minPasswordLower
+          * @type int
+          * @default 0
+          */
+         minLower: 0,
+
+         /**
+          * Minimum number of numeric characters required in passwords
+          *
+          * @property minPasswordNumeric
+          * @type int
+          * @default 0
+          */
+         minNumeric: 0,
+
+         /**
+          * Minimum number of non-alphanumeric characters required in passwords
+          *
+          * @property minPasswordSymbols
+          * @type int
+          * @default 0
+          */
+         minSymbols: 0
       },
 
       /**
@@ -2735,7 +2807,12 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
          // Display password strength if it is a password
          var strength = Alfresco.util.getPasswordStrength(password, {
             username: this.params.username,
-            minLength: this.params.minLength
+            minLength: this.params.minLength,
+            minUpper: this.params.minUpper,
+            minLower: this.params.minLower,
+            minNumeric: this.params.minNumeric,
+            minSymbols: this.params.minSymbols
+            
          });
          if (strength)
          {
@@ -4244,6 +4321,8 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                   Event.stopEvent(e);
                   this.inputBox.value = this.params.value;
                   this.doHide(true);
+                  this.form.validate();
+                  this.form.hideErrorContainer();
                }, this, true);
 
                this.inputBox = eInput.get("element");
@@ -6960,6 +7039,11 @@ Alfresco.util.FilterManager = function()
  */
 Alfresco.util.CSRFPolicy = function()
 {
+   var properties = Alfresco.constants.CSRF_POLICY.properties || {};
+   function resolve(str)
+   {
+      return YAHOO.lang.substitute(str, properties);
+   }
    return {
 
       /**
@@ -6981,7 +7065,7 @@ Alfresco.util.CSRFPolicy = function()
        */
       getHeader: function()
       {
-         return Alfresco.constants.CSRF_POLICY.header;
+         return resolve(Alfresco.constants.CSRF_POLICY.header);
       },
 
       /**
@@ -6992,7 +7076,7 @@ Alfresco.util.CSRFPolicy = function()
        */
       getParameter: function()
       {
-         return Alfresco.constants.CSRF_POLICY.parameter;
+         return resolve(Alfresco.constants.CSRF_POLICY.parameter);
       },
 
       /**
@@ -7003,7 +7087,7 @@ Alfresco.util.CSRFPolicy = function()
        */
       getCookie: function()
       {
-         return Alfresco.constants.CSRF_POLICY.cookie;
+         return resolve(Alfresco.constants.CSRF_POLICY.cookie);
       },
 
       /**
@@ -8864,6 +8948,18 @@ Alfresco.service.BaseService.prototype =
       },
 
       /**
+       * Updates a set of preferences
+       *
+       * @method update
+       * @param value {object} The preferences to set
+       * @param responseConfig {object} A config object with only success and failure callbacks and messages
+       */
+      update: function Preferences_set(preference, responseConfig)
+      {
+         this._jsonCall(Alfresco.util.Ajax.POST, this._url(), preference, responseConfig);
+      },
+
+      /**
        * Adds a value to a user specific property that is treated as a multi value.
        * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.
        *
@@ -8904,6 +9000,288 @@ Alfresco.service.BaseService.prototype =
          this.request(name, rc);
       },
 
+      favouriteDocumentOrFolder: function Preferences_favouriteDocumentOrFolder(node, responseConfig)
+      {
+         var name = node.isContainer ? "org.alfresco.share.folders.favourites" : "org.alfresco.share.documents.favourites";
+         var n = "org.alfresco";
+         var v = node.nodeRef;
+         var rc = responseConfig ? responseConfig : {};
+         var originalSuccessCallback = rc.successCallback;
+         rc.successCallback =
+         {
+            fn: function (response, obj)
+            {
+               // Make sure the original succes callback is used
+               rc.successCallback = originalSuccessCallback;
+
+               // Get the value for the preference name
+               var preferences = Alfresco.util.dotNotationToObject(name, null);
+               preferences = YAHOO.lang.merge(preferences, response.json);
+               var values = Alfresco.util.findValueByDotNotation(preferences, name);
+
+               // Parse string to array, add the value and convert to string again
+               if (typeof values == "string" || values === null)
+               {
+                  var arrValues = values ? values.split(",") : [];
+                  arrValues.push(v);
+
+                  if(node.isContainer)
+                  {
+                     var value =
+                     {
+                        org :
+                        {
+                           alfresco :
+                           {
+                              ext :
+                              {
+                                 folders :
+                                 {
+                                    favourites :
+                                    {
+                                    }
+                                 }
+                              },
+                              share :
+                              {
+                                 folders :
+                                 {
+                                    favourites : arrValues.join(",")
+                                 }
+                              }
+                           }
+                        }
+                     };
+                     value.org.alfresco.ext.folders.favourites[v] =
+                     {
+                        createdAt: new Date()
+                     };
+                      
+                     // Save preference with the new value
+                     this.update(value, rc);
+                  }
+                  else
+                  {
+                     var value =
+                     {
+                        org :
+                        {
+                           alfresco :
+                           {
+                              ext :
+                              {
+                                 documents :
+                                 {
+                                    favourites :
+                                    {
+                                    }
+                                 }
+                              },
+                              share :
+                              {
+                                 documents :
+                                 {
+                                    favourites : arrValues.join(",")
+                                 }
+                              }
+                           }
+                        }
+                     };
+                     value.org.alfresco.ext.documents.favourites[v] =
+                     {
+                        createdAt: new Date()
+                     };
+
+                     // Save preference with the new value
+                     this.update(value, rc);
+                  }
+               }
+            },
+            scope: this
+         };
+         this.request(name, rc);
+      },
+
+      unFavouriteDocumentOrFolder: function Preferences_unFavouriteDocumentOrFolder(node, responseConfig)
+      {
+         var name = node.isContainer ? "org.alfresco.share.folders.favourites" : "org.alfresco.share.documents.favourites";
+         var n = "org.alfresco";
+         var v = node.nodeRef;
+         var rc = responseConfig ? responseConfig : {};
+         var originalSuccessCallback = rc.successCallback;
+         rc.successCallback =
+         {
+            fn: function (response, obj)
+            {
+               // Make sure the original succes callback is used
+               rc.successCallback = originalSuccessCallback;
+
+               // Get the value for the preference name
+               var preferences = Alfresco.util.dotNotationToObject(name, null);
+               preferences = YAHOO.lang.merge(preferences, response.json);
+               var values = Alfresco.util.findValueByDotNotation(preferences, name);
+
+               // Parse string to array, add the value and convert to string again
+               if (typeof values == "string")
+               {
+                  var arrValues = values ? values.split(",") : [];
+                  arrValues = Alfresco.util.arrayRemove(arrValues, v);
+
+                  if(node.isContainer)
+                  {
+                     var value =
+                     {
+                        org :
+                        {
+                            alfresco :
+                            {
+                                ext :
+                                {
+                                   folders :
+                                   {
+                                      favourites :
+                                      {
+                                      }
+                                   }
+                                },
+                                share :
+                                {
+                                   folders :
+                                   {
+                                      favourites : arrValues.join(",")
+                                   }
+                                }
+                            }
+                        }
+                     };
+                     value.org.alfresco.ext.folders.favourites[v] =
+                     {
+                        createdAt: null
+                     };
+                      
+                     // Save preference with the new value
+                     this.update(value, rc);
+                  }
+                  else
+                  {
+                     var value =
+                     {
+                        org :
+                        {
+                            alfresco :
+                            {
+                                ext :
+                                {
+                                   documents :
+                                   {
+                                      favourites :
+                                      {
+                                      }
+                                   }
+                                },
+                                share :
+                                {
+                                   documents :
+                                   {
+                                      favourites : arrValues.join(",")
+                                   }
+                                }
+                             }
+                         }
+                     };
+                     value.org.alfresco.ext.documents.favourites[v] =
+                     {
+                        createdAt: null
+                     };
+
+                     // Save preference with the new value
+                     this.update(value, rc);
+                  }
+               }
+            },
+            scope: this
+         };
+         this.request(name, rc);
+      },
+
+      favouriteSite: function Preferences_favouriteSite(siteId, responseConfig)
+      {
+         var value =
+         {
+            org :
+            {
+               alfresco :
+               {
+                  ext :
+                  {
+                     sites :
+                     {
+                        favourites :
+                        {
+                        }
+                     }
+                  },
+                  share :
+                  {
+                     sites :
+                     {
+                        favourites :
+                        {
+                        }
+                     }
+                  }
+               }
+            }
+         };
+         value.org.alfresco.share.sites.favourites[siteId] = true;
+         value.org.alfresco.ext.sites.favourites[siteId] =
+         {
+            createdAt: new Date()
+         };
+              
+         // Save preference with the new value
+         this.update(value, responseConfig);
+      },
+
+      unFavouriteSite: function Preferences_unFavouriteSite(siteId, responseConfig)
+      {
+         var value =
+         {
+            org :
+            {
+               alfresco :
+               {
+                  ext :
+                  {
+                     sites :
+                     {
+                        favourites :
+                        {
+                        }
+                     }
+                  },
+                  share :
+                  {
+                     sites :
+                     {
+                        favourites :
+                        {
+                        }
+                     }
+                  }
+               }
+            }
+         };
+         value.org.alfresco.share.sites.favourites[siteId] = false;
+         value.org.alfresco.ext.sites.favourites[siteId] =
+         {
+            createdAt: null
+         };
+              
+         // Save preference with the new value
+         this.update(value, responseConfig);
+      },
+      
       /**
        * Removes a value from a user specific property that is treated as a multi value.
        * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.

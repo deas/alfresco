@@ -2,24 +2,25 @@
    <@formLib.renderFormsRuntime formId=formId />
 </#if>
 
-<div id="${args.htmlid}-dialog">
-   <div id="${args.htmlid}-dialogTitle" class="hd">${msg("title")}</div>
+<#assign el=args.htmlid?html>
+<div id="${el}-dialog">
+   <div id="${el}-dialogTitle" class="hd">${msg("title")}</div>
    <div class="bd">
 
       <div id="${formId}-container" class="form-container">
 
          <div class="yui-g">
-            <h2 id="${args.htmlid}-dialogHeader">${msg("header")}</h2>
+            <h2 id="${el}-dialogHeader">${msg("header")}</h2>
          </div>
    
          <#if form.showCaption?exists && form.showCaption>
             <div id="${formId}-caption" class="caption"><span class="mandatory-indicator">*</span>${msg("form.required.fields")}</div>
          </#if>
       
-         <form id="${formId}" method="${form.method}" accept-charset="utf-8" enctype="${form.enctype}" action="${form.submissionUrl}">
+         <form id="${formId}" method="${form.method}" accept-charset="utf-8" enctype="${form.enctype}" action="${form.submissionUrl?html}">
    
          <#if form.destination??>
-            <input id="${formId}-destination" name="alf_destination" type="hidden" value="${form.destination}" />
+            <input id="${formId}-destination" name="alf_destination" type="hidden" value="${form.destination?html}" />
          </#if>
    
             <div id="${formId}-fields" class="form-fields">

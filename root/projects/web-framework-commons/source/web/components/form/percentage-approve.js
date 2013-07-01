@@ -83,6 +83,7 @@
       onReady: function PercentageApprove_onReady()
       {
          Dom.get(this.id).value = this.options.currentValue;
+         this._updateCurrentValue();
 
          // Add listener for input field to keep the generated value up-to-date
          Event.addListener(this.id, "keyup", this._handleFieldChange, this, true);

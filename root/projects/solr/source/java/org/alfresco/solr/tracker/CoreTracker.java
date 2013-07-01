@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -2314,7 +2315,8 @@ public class CoreTracker implements CloseHook
                         // it will be indexed later
                         continue;
                     }
-                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
+                    LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited);
                 }
 
 
@@ -2392,7 +2394,8 @@ public class CoreTracker implements CloseHook
                             if (docSet.size() > 0)
                             {
                                 log.debug("... cascade updating aux doc");
-                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
+                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited);
                             }
                             else
                             {
@@ -2654,7 +2657,31 @@ public class CoreTracker implements CloseHook
 
     }
 
-    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException, IOException, JSONException
+    {
+        if(stack.contains(parentNodeMetaData.getId()))
+        {
+            log.warn("Found aux data loop for node id "+parentNodeMetaData.getId());
+            log.warn("... stack to node ="+stack);
+            return;
+        }
+        else
+        {
+            try
+            {
+                stack.add(parentNodeMetaData.getId());
+                doUpdateDescendantAuxDocs(parentNodeMetaData, overwrite, solrIndexSearcher, stack);
+            }
+            finally
+            {
+                stack.remove(parentNodeMetaData.getId());
+            }
+            
+        }
+        
+    }
+        
+    private void doUpdateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException, IOException, JSONException
     {
         HashSet<Long>childIds = new HashSet<Long>();
 
@@ -2709,7 +2736,7 @@ public class CoreTracker implements CloseHook
             {
                 if (mayHaveChildren(nodeMetaData))
                 {
-                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher);
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, stack);
                 }
 
                 // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
@@ -2728,7 +2755,6 @@ public class CoreTracker implements CloseHook
                     auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
                     core.getUpdateHandler().addDoc(auxDocCmd);
-
                 }
                 else
                 {

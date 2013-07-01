@@ -1,0 +1,34 @@
+.alfresco-dialog-AlfDialog.dijitDialog {
+   border: $theme-border-1;
+   border-radius: 6px 6px 6px 6px;
+   box-shadow: $theme-box-shadow;
+   font-family: $theme-font-family-2;
+   font-size: $theme-font-size-1;
+}
+
+.alfresco-dialog-AlfDialog .dijitDialogPaneContent {
+   border-top: $theme-border-1;
+}
+
+.alfresco-dialog-AlfDialog .dijitDialogTitleBar {
+   background-color: $theme-bg-color-2;
+   background-image: none;
+   border: none;
+   text-align: center;
+}
+
+.alfresco-dialog-AlfDialog .dijitDialogTitleBar .dijitDialogTitle {
+   font-family: $theme-font-family-1;
+   font-size: 230%;
+   line-height: 1em;
+   padding: 0.25em;
+   color: $theme-color-1;
+}
+
+.alfresco-dialog-AlfDialog .footer {
+   background-color: $theme-bg-color-2;
+   background-image: none;
+   border: none;
+   border-top: $theme-border-1;
+   text-align: center;
+}

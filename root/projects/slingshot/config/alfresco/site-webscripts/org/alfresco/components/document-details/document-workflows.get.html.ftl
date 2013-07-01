@@ -47,7 +47,7 @@
                         <#if workflow.initiator.avatarUrl??>
                         <img src="${url.context}/proxy/alfresco/${workflow.initiator.avatarUrl}" alt="${msg("label.avatar")}"/>
                         <#else>
-                        <img src="${url.context}/components/images/no-user-photo-64.png" alt="${msg("label.avatar")}"/>
+                        <img src="${url.context}/res/components/images/no-user-photo-64.png" alt="${msg("label.avatar")}"/>
                         </#if>
                         <a href="${siteURL("workflow-details?workflowId=" + workflow.id?js_string + "&nodeRef=" + (args.nodeRef!"")?js_string)}"><#if workflow.message?? && workflow.message?length &gt; 0>${workflow.message?html}<#else>${msg("workflow.no_message")?html}</#if></a>
                         <div class="title">${workflow.title?html}</div>

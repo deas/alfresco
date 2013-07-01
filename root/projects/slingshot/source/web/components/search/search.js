@@ -223,7 +223,13 @@
             connXhrMode: "queueRequests",
             responseSchema:
             {
-                resultsList: "items"
+               resultsList: "items",
+               metaFields:
+               {
+                  paginationRecordOffset: "startIndex",
+                  totalRecords: "totalRecords",
+                  totalRecordsUpper: "totalRecordsUpper"
+               }
             }
          });
          
@@ -232,6 +238,17 @@
          {
             me.currentPage = state.page;
             me.widgets.paginator.setState(state);
+            
+            // run the search with page settings
+            me._performSearch(
+            {
+               searchTerm: me.searchTerm,
+               searchTag: me.searchTag,
+               searchAllSites: me.searchAllSites,
+               searchRepository: me.searchRepository,
+               searchSort: me.searchSort,
+               page: me.currentPage
+            });
          };
          this.widgets.paginator = new YAHOO.widget.Paginator(
          {
@@ -437,7 +454,7 @@
             if (tags.length !== 0)
             {
                var i, j;
-               desc += '<div class="details"><span class="tags">' + me.msg("label.tags") + ': ';
+               desc += '<div class="details"><span class="tags">';
                for (i = 0, j = tags.length; i < j; i++)
                {
                    desc += '<span id="' + me.id + '-' + $html(tags[i]) + '" class="searchByTag"><a class="search-tag" href="#">' + $html(tags[i]) + '</a> </span>';
@@ -465,7 +482,7 @@
             paginator: this.widgets.paginator,
             MSG_LOADING: ""
          });
-
+         
          // show initial message
          this._setDefaultDataTableErrors(this.widgets.dataTable);
          if (this.options.initialSearchTerm.length === 0 && this.options.initialSearchTag.length === 0)
@@ -493,32 +510,36 @@
                // clear the empty error message
                me.widgets.dataTable.set("MSG_EMPTY", "");
                
-               // update the results count, update hasMoreResults.
-               me.hasMoreResults = (oResponse.results.length > me.options.maxSearchResults);
-               if (me.hasMoreResults)
-               {
-                  oResponse.results = oResponse.results.slice(0, me.options.maxSearchResults);
-                  me.resultsCount = me.options.maxSearchResults;
-               }
-               else
-               {
-                  me.resultsCount = oResponse.results.length;
-               }
-               
-               if (me.resultsCount > me.options.pageSize)
-               {
-                  Dom.removeClass(me.id + "-paginator-top", "hidden");
-                  Dom.removeClass(me.id + "-search-bar-bottom", "hidden");
-               }
-               
                // display help text if no results were found
-               if (me.resultsCount === 0)
+               if (oResponse.results.length === 0)
                {
                   Dom.removeClass(me.id + "-help", "hidden");
                }
             }
             // Must return true to have the "Loading..." message replaced by the error message
             return true;
+         };
+         
+         // Update totalRecords on the fly with value from server
+         me.widgets.dataTable.handleDataReturnPayload = function handleDataReturnPayload(oRequest, oResponse, oPayload)
+         {
+            me.resultsCount = oResponse.meta.totalRecordsUpper;
+            
+            // update the results count, update hasMoreResults.
+            if (me.hasMoreResults = (me.resultsCount > me.options.maxSearchResults))
+            {
+               // user just needs to know there are "more" not exactly how many were in server-side resultset
+               me.resultsCount = me.options.maxSearchResults;
+            }
+            
+            // show the pagination controls as needed
+            if (me.resultsCount > me.options.pageSize)
+            {
+               Dom.removeClass(me.id + "-paginator-top", "hidden");
+               Dom.removeClass(me.id + "-search-bar-bottom", "hidden");
+            }
+            
+            return oResponse.meta;
          };
          
          // Rendering complete event handler
@@ -782,7 +803,8 @@
              searchTag = YAHOO.lang.trim(args.searchTag),
              searchAllSites = args.searchAllSites,
              searchRepository = args.searchRepository,
-             searchSort = args.searchSort;
+             searchSort = args.searchSort,
+             page = args.page || 1;
          
          if (this.options.searchQuery.length === 0 &&
              searchTag.length === 0 &&
@@ -798,7 +820,12 @@
          // empty results table
          this.widgets.dataTable.deleteRows(0, this.widgets.dataTable.getRecordSet().getLength());
          
+         // hide paginator controls
+         Dom.addClass(this.id + "-paginator-top", "hidden");
+         Dom.addClass(this.id + "-search-bar-bottom", "hidden");
+         
          // update the ui to show that a search is on-going
+         Dom.get(this.id + '-search-info').innerHTML = this.msg("search.info.searching");
          this.widgets.dataTable.set("MSG_EMPTY", "");
          this.widgets.dataTable.render();
          
@@ -849,7 +876,8 @@
             }
          }
          
-         this.widgets.dataSource.sendRequest(this._buildSearchParams(searchRepository, searchAllSites, searchTerm, searchTag, searchSort),
+         this.widgets.dataSource.sendRequest(this._buildSearchParams(
+            searchRepository, searchAllSites, searchTerm, searchTag, searchSort, page),
          {
             success: successHandler,
             failure: failureHandler,
@@ -899,10 +927,10 @@
        *
        * @method _buildSearchParams
        */
-      _buildSearchParams: function Search__buildSearchParams(searchRepository, searchAllSites, searchTerm, searchTag, searchSort)
+      _buildSearchParams: function Search__buildSearchParams(searchRepository, searchAllSites, searchTerm, searchTag, searchSort, page)
       {
          var site = searchAllSites ? "" : this.options.siteId;
-         var params = YAHOO.lang.substitute("site={site}&term={term}&tag={tag}&maxResults={maxResults}&sort={sort}&query={query}&repo={repo}&rootNode={rootNode}",
+         var params = YAHOO.lang.substitute("site={site}&term={term}&tag={tag}&maxResults={maxResults}&sort={sort}&query={query}&repo={repo}&rootNode={rootNode}&pageSize={pageSize}&startIndex={startIndex}",
          {
             site: encodeURIComponent(site),
             repo: searchRepository.toString(),
@@ -911,7 +939,9 @@
             sort: encodeURIComponent(searchSort),
             query: encodeURIComponent(this.options.searchQuery),
             rootNode: encodeURIComponent(this.options.searchRootNode),
-            maxResults: this.options.maxSearchResults + 1 // to calculate whether more results were available
+            maxResults: this.options.maxSearchResults + 1, // to calculate whether more results were available
+            pageSize: this.options.pageSize,
+            startIndex: (page - 1) * this.options.pageSize
          });
          
          return params;

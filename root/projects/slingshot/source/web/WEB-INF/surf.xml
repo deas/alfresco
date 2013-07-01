@@ -65,7 +65,7 @@
          <calculate-webscript-dependencies>true</calculate-webscript-dependencies>
          <generate-css-data-images>true</generate-css-data-images>
          
-         <enable-remote-resource-resolving>true</enable-remote-resource-resolving>
+         <enable-remote-resource-resolving>false</enable-remote-resource-resolving>
          
          <!-- This is the Dojo configuration settings for Surf -->
          <dojo-pages>

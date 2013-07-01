@@ -84,51 +84,38 @@
          </fileset>
       </path>
       <path id="classpath.unit.test">
-         <!--
-         <dirset dir="${dir.projects}">
-            <include name="**/${dir.name.build}/${dir.name.classes}" />
-         </dirset>
-         <pathelement location="${user.home}"/>
-         <pathelement location="${dir.project.datamodel.config}"/>
-         <pathelement location="${dir.project.repository.config}"/>
-         <pathelement location="${dir.project.webclient.config}"/>
-         <pathelement location="${dir.project.deployment.config}"/>
-         <pathelement location="${dir.project.remoteapi.config}"/>
-         <dirset dir="${dir.projects}">
-            <include name="**/${dir.name.source}/${dir.name.test.resources}" />
-         </dirset>
-         <fileset dir="${dir.project.3rdparty.lib}">
-            <include name="**/*.jar" />
-         </fileset>
-         -->
          <pathelement location="${user.home}" />
          <pathelement location="${dir.project.core.classes}" />
          <pathelement location="${dir.project.core.src.java}" />
          <pathelement location="${dir.project.datamodel.classes}" />
-         <pathelement location="${dir.project.catalinavirtual.classes}" />
          <pathelement location="${dir.project.jlan.classes}" />
          <pathelement location="${dir.project.mbeans.classes}" />
-         <pathelement location="${dir.project.jndi.classes}" />
          <pathelement location="${dir.project.deployment.classes}" />
-         <pathelement location="${dir.project.remoteapi.classes}" />
          <pathelement location="${dir.project.repository.classes}" />
-         <pathelement location="${dir.project.system-build-test.classes}" />
          <pathelement location="${dir.project.wdrdeployment.classes}" />
-         <pathelement location="${dir.project.webframeworkcommons.classes}" />
-         <pathelement location="${dir.project.webclient.classes}" />
-         <pathelement location="${dir.project.webserviceclient.classes}" />
          <pathelement location="${dir.project.3rdparty.lib}/junit-dep-4.11.jar" />
-         <!-- <pathelement location="${alf.build.location.data}"/> -->
          
          <pathelement location="${dir.project.datamodel.config}" />
          <pathelement location="${dir.project.repository.config}" />
-         <pathelement location="${dir.project.webclient.config}" />
          <pathelement location="${dir.project.deployment.config}" />
-         <pathelement location="${dir.project.remoteapi.config}" />
          
          <pathelement location="${dir.project.core}/${dir.name.source}/${dir.name.test.resources}" />
-         <pathelement location="${dir.project.remoteapi}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.repository}/${dir.name.source}/${dir.name.test.resources}" />
+      </path>
+
+      <path id="classpath.unit.test.beyondrepo">
+         <pathelement location="${dir.project.jndi.classes}" />
+         <pathelement location="${dir.project.catalinavirtual.classes}" />
+         <pathelement location="${dir.project.remoteapi.classes}" />
+         <pathelement location="${dir.project.system-build-test.classes}" />
+         <pathelement location="${dir.project.webframeworkcommons.classes}" />
+         <pathelement location="${dir.project.webclient.classes}" />
+         <pathelement location="${dir.project.webserviceclient.classes}" />
+
+         <pathelement location="${dir.project.remoteapi.config}" />
+         <pathelement location="${dir.project.webclient.config}" />
+
+         <pathelement location="${dir.project.remoteapi}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.webclient}/${dir.name.source}/${dir.name.test.resources}" />
       </path>
 
@@ -219,7 +206,6 @@
          <!-- Model (Multilingual and File Folder) Tests -->
          <exclude name="**/org/alfresco/repo/model/**/*Test.java" />
          <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
-         <include name="**/org/alfresco/repo/model/filefolder/HiddenAspectTest.java" />
          <!-- Publishing Tests -->
          <exclude name="**/org/alfresco/repo/publishing/**/*Test.java" />
          <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
@@ -679,7 +665,6 @@
          <fileset dir="${dir.project.3rdparty.lib}" includes="*.jar" 
                   excludes="${dir.name.devenv}/**" />
          <fileset dir="${dir.project.3rdparty.lib}/optional" includes="*.jar" /> 
-         <fileset dir="${dir.project.3rdparty.lib}/jibx" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/openoffice" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/jmagick" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/commons" includes="*.jar" />

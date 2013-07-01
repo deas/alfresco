@@ -50,24 +50,48 @@
             <path>/proxy/alfresco/custom/repoWebscript/withoutParams|/service/custom/shareResource/thatMayHaveParams(\?.+)?</path>
          </request>
          <action name="assertReferer">
-            <param name="always">false</param>
+            <param name="referer">{referer}</param>
          </action>
          <action name="assertOrigin">
-            <param name="always">false</param>
+            <param name="origin">{origin}</param>
          </action>
       </rule>
    -->
    <config evaluator="string-compare" condition="CSRFPolicy">
 
       <!--
-         Will be used and exposed to the client side code in Alfresco.contants.CSRF_POLICY.
-         Use the Alfresco.util.CSRFPolicy.getHeader() or Alfresco.util.CSRFPolicy.getParameter() with Alfresco.util.CSRFPolicy.getToken()
-         to set the token in custom 3rd party code.
-       -->
+         Properties that may be used inside the rest of the CSRFPolicy config to avoid repetition but
+         also making it possible to provide different values in different environments.
+         I.e. Different "Referer" & "Origin" properties for test & production etc.
+         Reference a property using "{propoertyName}".
+      -->
+      <properties>
+
+         <!-- There is normally no need to override this property -->
+         <token>Alfresco-CSRFToken</token>
+
+         <!--
+            Override and set this property with a regexp that if you have placed Share behind a proxy that
+            does not rewrite the Referer header.
+         -->
+         <referer></referer>
+
+         <!--
+            Override and set this property with a regexp that if you have placed Share behind a proxy that
+            does not rewrite the Origin header.
+         -->
+         <origin></origin>
+      </properties>
+
+      <!--
+        Will be used and exposed to the client side code in Alfresco.contants.CSRF_POLICY.
+        Use the Alfresco.util.CSRFPolicy.getHeader() or Alfresco.util.CSRFPolicy.getParameter() with Alfresco.util.CSRFPolicy.getToken()
+        to set the token in custom 3rd party code.
+      -->
       <client>
-         <cookie>Alfresco-CSRFToken</cookie>
-         <header>Alfresco-CSRFToken</header>
-         <parameter>Alfresco-CSRFToken</parameter>
+         <cookie>{token}</cookie>
+         <header>{token}</header>
+         <parameter>{token}</parameter>
       </client>
 
       <!-- The first rule with a matching request will get its action invoked, the remaining rules will be ignored. -->
@@ -87,6 +111,23 @@
          </rule>
 
          <!--
+            Certain Repo webscripts should be allowed to pass without a token since they have no Share knowledge.
+            TODO: Refactor the publishing code so that form that is posted to this URL is a Share webscript with the right tokens.
+         -->
+         <rule>
+            <request>
+               <method>POST</method>
+               <path>/proxy/alfresco/api/publishing/channels/.+</path>
+            </request>
+            <action name="assertReferer">
+               <param name="referer">{referer}</param>
+            </action>
+            <action name="assertOrigin">
+               <param name="origin">{origin}</param>
+            </action>
+         </rule>
+
+         <!--
             Certain Surf POST requests from the WebScript console must be allowed to pass without a token since
             the Surf WebScript console code can't be dependent on a Share specific filter.
          -->
@@ -96,10 +137,10 @@
                <path>/page/caches/dependency/clear|/page/index|/page/surfBugStatus|/page/modules/deploy|/page/modules/module|/page/api/javascript/debugger</path>
             </request>
             <action name="assertReferer">
-               <param name="always">false</param>
+               <param name="referer">{referer}</param>
             </action>
             <action name="assertOrigin">
-               <param name="always">false</param>
+               <param name="origin">{origin}</param>
             </action>
          </rule>
 
@@ -110,22 +151,28 @@
                <path>/page/dologin(\?.+)?|/page/site/[^/]+/start-workflow|/page/start-workflow</path>
             </request>
             <action name="assertReferer">
-               <param name="always">false</param>
+               <param name="referer">{referer}</param>
             </action>
             <action name="assertOrigin">
-               <param name="always">false</param>
+               <param name="origin">{origin}</param>
             </action>
          </rule>
 
-         <!-- Clear the token when logging out -->
+         <!-- Assert logout is done from a valid domain, if so clear the token when logging out -->
          <rule>
             <request>
                <method>GET</method>
                <path>/page/dologout(\?.+)?</path>
             </request>
+            <action name="assertReferer">
+               <param name="referer">{referer}</param>
+            </action>
+            <action name="assertOrigin">
+               <param name="origin">{origin}</param>
+            </action>
             <action name="clearToken">
-               <param name="session">Alfresco-CSRFToken</param>
-               <param name="cookie">Alfresco-CSRFToken</param>
+               <param name="session">{token}</param>
+               <param name="cookie">{token}</param>
             </action>
          </rule>
 
@@ -134,13 +181,13 @@
             <request>
                <session>
                   <attribute name="_alf_USER_ID">.+</attribute>
-                  <attribute name="Alfresco-CSRFToken"/>
+                  <attribute name="{token}"/>
                   <!-- empty attribute element indicates null, meaning the token has not yet been set -->
                </session>
             </request>
             <action name="generateToken">
-               <param name="session">Alfresco-CSRFToken</param>
-               <param name="cookie">Alfresco-CSRFToken</param>
+               <param name="session">{token}</param>
+               <param name="cookie">{token}</param>
             </action>
          </rule>
 
@@ -151,12 +198,12 @@
                <path>/page/.*</path>
                <session>
                   <attribute name="_alf_USER_ID">.+</attribute>
-                  <attribute name="Alfresco-CSRFToken">.+</attribute>
+                  <attribute name="{token}">.+</attribute>
                </session>
             </request>
             <action name="generateToken">
-               <param name="session">Alfresco-CSRFToken</param>
-               <param name="cookie">Alfresco-CSRFToken</param>
+               <param name="session">{token}</param>
+               <param name="cookie">{token}</param>
             </action>
          </rule>
 
@@ -173,14 +220,14 @@
                </session>
             </request>
             <action name="assertToken">
-               <param name="session">Alfresco-CSRFToken</param>
-               <param name="parameter">Alfresco-CSRFToken</param>
+               <param name="session">{token}</param>
+               <param name="parameter">{token}</param>
             </action>
             <action name="assertReferer">
-               <param name="always">false</param>
+               <param name="referer">{referer}</param>
             </action>
             <action name="assertOrigin">
-               <param name="always">false</param>
+               <param name="origin">{origin}</param>
             </action>
          </rule>
 
@@ -198,18 +245,18 @@
                </session>
             </request>
             <action name="assertToken">
-               <param name="session">Alfresco-CSRFToken</param>
-               <param name="header">Alfresco-CSRFToken</param>
+               <param name="session">{token}</param>
+               <param name="header">{token}</param>
             </action>
             <action name="assertReferer">
-               <param name="always">false</param>
+               <param name="referer">{referer}</param>
             </action>
             <action name="assertOrigin">
-               <param name="always">false</param>
+               <param name="origin">{origin}</param>
             </action>
-
          </rule>
       </filter>
+
    </config>
 
    <!--

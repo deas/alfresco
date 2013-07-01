@@ -1045,7 +1045,12 @@
                      <control-param name="style">width: 95%</control-param>
                   </control>
                </field>
-               <field id="bpm:workflowDueDate" label-id="workflow.field.due" set="info" />
+               <field id="bpm:workflowDueDate" label-id="workflow.field.due" set="info">
+                  <control template="/org/alfresco/components/form/controls/date.ftl">
+                     <control-param name="submitTime">false</control-param>
+                     <control-param name="showTime">false</control-param>
+                  </control>
+               </field> 
                <field id="bpm:workflowPriority" label-id="workflow.field.priority" set="info">
                   <control template="/org/alfresco/components/form/controls/workflow/priority.ftl" />
                </field>
@@ -1078,7 +1083,12 @@
                      <control-param name="style">width: 95%</control-param>
                   </control>
                </field>
-               <field id="bpm:workflowDueDate" label-id="workflow.field.due" set="info" />
+               <field id="bpm:workflowDueDate" label-id="workflow.field.due" set="info">
+                  <control template="/org/alfresco/components/form/controls/date.ftl">
+                     <control-param name="submitTime">false</control-param>
+                     <control-param name="showTime">false</control-param>
+                  </control>
+               </field> 
                <field id="bpm:workflowPriority" label-id="workflow.field.priority" set="info">
                   <control template="/org/alfresco/components/form/controls/workflow/priority.ftl" />
                </field>

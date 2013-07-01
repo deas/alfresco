@@ -768,6 +768,9 @@
          // Display validation errors
          if (messages)
          {
+            Dom.addClass(this.id + "-filelist-table", "hidden");
+            Dom.addClass(this.id + "-aggregate-data-wrapper", "hidden");
+            Dom.removeClass(this.id + "-file-selection-controls", "hidden");
             Alfresco.util.PopupManager.displayPrompt(
             {
                title: this.msg("header.error"),

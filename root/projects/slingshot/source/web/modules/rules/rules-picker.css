@@ -7,7 +7,7 @@
 
 .global-folder.rules-picker .treeview
 {
-   width:15em;
+   width: 15em !important;
 }
 
 .global-folder.rules-picker .repository-mode .treeview

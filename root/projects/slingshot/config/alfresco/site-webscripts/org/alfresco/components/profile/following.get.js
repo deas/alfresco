@@ -29,5 +29,17 @@ function main()
    {
       model.privatelist = eval('(' + result + ')')['private'];
    }
+
+   // Widget instantiation metadata...
+   var following = {
+      id: "Following",
+      name: "Alfresco.Following",
+      options:
+      {
+         isPrivate: model.privatelist
+      }
+   };
+   model.widgets = [following];
 }
+
 main();

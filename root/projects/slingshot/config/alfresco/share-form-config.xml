@@ -1140,33 +1140,6 @@
       </forms>
    </config>
    
-   <!-- Google Docs (Subsystem) -->
-   <config evaluator="string-compare" condition="Alfresco:Type=Configuration,Category=googledocs,id1=default">
-      <forms>
-         <form>
-            <field-visibility>
-               <show id="googledocs.googleeditable.enabled" />
-               <show id="googledocs.username" />
-               <show id="googledocs.password" for-mode="edit" />
-            </field-visibility>
-            <appearance>
-               <set id="" appearance="title" label-id="form.set.general" />
-               <set id="googledocs" appearance="" template="/org/alfresco/components/form/2-column-set.ftl" />
-
-               <field id="googledocs.username" label-id="googledocs.field.username" set="googledocs" />
-               <field id="googledocs.password" label-id="googledocs.field.password" set="googledocs">
-                  <control>
-                     <control-param name="password">true</control-param>
-                  </control>
-               </field>
-               <field id="googledocs.googleeditable.enabled" label-id="googledocs.field.enabled">
-                  <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
-               </field>
-            </appearance>
-         </form>
-      </forms>
-   </config>
-   
    <!-- Workflow -->
    <config evaluator="string-compare" condition="Alfresco:Name=WorkflowInformation">
       <forms>

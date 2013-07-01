@@ -108,6 +108,11 @@ blockquote
 
 /* Share pages */
 
+#share-header
+{
+   min-height: 96px;
+}
+
 .alfresco-share .sticky-wrapper p,
 .yui-overlay p
 {
@@ -126,6 +131,7 @@ blockquote
    clear: both;
 }
 
+.alfresco-share .yui-u hr,
 .alfresco-share .yui-menu-button-menu hr,
 .yui-overlay .yui-menu-button-menu hr
 {

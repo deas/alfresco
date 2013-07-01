@@ -75,7 +75,11 @@ public abstract class AbstractMethod implements VtiMethod
         {
             try
             {
-                getLockService().setCurrentSession(request.getSession());
+                if (getLockService() != null)
+                {
+                    getLockService().setCurrentSession(request.getSession());
+                }
+                
                 response.setContentType(VtiFilter.CONTENT_TYPE_HTML);
 
                 doExecute(request, response);

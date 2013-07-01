@@ -93,7 +93,7 @@
       <!-- load the JIBX task definition -->
       <taskdef name="bind" 
                classname="org.jibx.binding.ant.CompileTask"
-               classpath="${dir.project.3rdparty.lib}/jibx/jibx-bind.jar;${dir.project.3rdparty.lib}/jibx/jibx-run.jar;${dir.project.3rdparty.lib}/bcel.jar;${dir.project.3rdparty.lib}/xpp3-1.1.3_8.jar" />
+               classpath="${dir.project.3rdparty.lib}/jibx-bind-1.2.5.jar;${dir.project.3rdparty.lib}/jibx-run-1.2.5.jar;${dir.project.3rdparty.lib}/bcel.jar;${dir.project.3rdparty.lib}/xpp3-1.1.3_8.jar" />
 
       <bind verbose="false" 
             load="true">
@@ -282,7 +282,7 @@
 	   	   
 	   <target name="test-wdrdeployment" 
 	           depends="compile-wdrdeployment">
-	      <run-tests projectdir="${dir.project.wdrdeployment}" />
+	      <run-tests projectdir="${dir.project.wdrdeployment}" additionalclasspath="classpath.unit.test.beyondrepo" />
 	   </target>
 	   
 	   <target name="generate-javadocs-wdrdeployment" 
@@ -322,7 +322,7 @@
       <!-- load the JIBX task definition -->
       <taskdef name="bind" 
                classname="org.jibx.binding.ant.CompileTask"
-               classpath="${dir.project.3rdparty.lib}/jibx/jibx-bind.jar;${dir.project.3rdparty.lib}/jibx/jibx-run.jar;${dir.project.3rdparty.lib}/bcel.jar;${dir.project.3rdparty.lib}/xpp3-1.1.3_8.jar" />
+               classpath="${dir.project.3rdparty.lib}/jibx-bind-1.2.5.jar;${dir.project.3rdparty.lib}/jibx-run-1.2.5.jar;${dir.project.3rdparty.lib}/bcel.jar;${dir.project.3rdparty.lib}/xpp3-1.1.3_8.jar" />
 
       <bind verbose="false" 
             load="true" 
@@ -619,8 +619,6 @@
               excludes="${dir.name.devenv}/**,jcr-1.0.jar" />
          <lib dir="${dir.project.3rdparty.lib}/optional" 
              includes="*.jar" />
-         <lib dir="${dir.project.3rdparty.lib}/jibx" 
-              includes="*.jar" />
          <lib dir="${dir.project.3rdparty.lib}/openoffice" 
               includes="*.jar" />
          <lib dir="${dir.project.3rdparty.lib}/jmagick" 
@@ -716,7 +714,7 @@
    
    <target name="test-remoteapi" 
            depends="compile-remoteapi">
-      <run-tests projectdir="${dir.project.remoteapi}" />
+      <run-tests projectdir="${dir.project.remoteapi}" additionalclasspath="classpath.unit.test.beyondrepo"/>
    </target>
    
    <target name="generate-javadocs-remoteapi" 
@@ -1014,7 +1012,7 @@
    
    <target name="test-solr" 
            depends="compile-solr">
-      <run-tests projectdir="${dir.project.solr}" />
+      <run-tests projectdir="${dir.project.solr}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
    
    <target name="generate-javadocs-solr" 
@@ -1198,7 +1196,7 @@
 
    <target name="test-catalinavirtual" 
            depends="compile-catalinavirtual">
-      <run-tests projectdir="${dir.project.catalinavirtual}" />
+      <run-tests projectdir="${dir.project.catalinavirtual}" additionalclasspath="classpath.unit.test.beyondrepo"/>
    </target>
 
    <target name="generate-javadocs-catalinavirtual" 
@@ -1283,7 +1281,7 @@
    
    <target name="test-webframeworkcommons" 
            depends="compile-webframeworkcommons">
-      <run-tests projectdir="${dir.project.webframeworkcommons}" />
+      <run-tests projectdir="${dir.project.webframeworkcommons}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
    
    <target name="generate-javadocs-webframeworkcommons" 
@@ -1500,8 +1498,6 @@
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
       </concat>-->
       
-      <touch file="${dir.project.slingshot.assemble}/modules/about-share-min.js" />
-
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.project.slingshot.assemble}" 
                            destdir="${dir.project.slingshot.assemble}" />
@@ -1509,7 +1505,7 @@
 
    <target name="test-slingshot" 
            depends="compile-slingshot">
-      <run-tests projectdir="${dir.project.slingshot}" />
+      <run-tests projectdir="${dir.project.slingshot}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
    
    <target name="generate-javadocs-slingshot" 
@@ -1623,7 +1619,7 @@
    </target>
    
    <target name="test-webeditor" depends="compile-webeditor">
-      <run-tests projectdir="${dir.project.webeditor}" />
+      <run-tests projectdir="${dir.project.webeditor}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
    
    <target name="generate-javadocs-webeditor" depends="init">
@@ -1870,6 +1866,9 @@
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}"
                   excludes="**/extension/**" />
+         <fileset dir="${dir.project.repository.src}/test-resources/"
+                  includes="quick/quick.*"
+                  excludes="quick/quick.*.*" />
          <!-- 
          Add dev-context.xml (if present) to WEB-INF/classes.
          This allows developers doing private builds to override
@@ -1899,8 +1898,6 @@
          <fileset dir="${dir.project.webclient.dist}" 
                   includes="${file.name.jar.webclient}" />
          <fileset dir="${dir.project.3rdparty.lib}/optional" 
-                  includes="*.jar" />
-         <fileset dir="${dir.project.3rdparty.lib}/jibx" 
                   includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/openoffice" 
                   includes="*.jar" />
@@ -2014,7 +2011,7 @@
 
    <target name="test-webclient" 
            depends="compile-webclient">
-      <run-tests projectdir="${dir.project.webclient}" />
+      <run-tests projectdir="${dir.project.webclient}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
 
    <target name="generate-javadocs-webclient" 
@@ -2073,6 +2070,17 @@
            basedir="${dir.module.spp.config}" encoding="UTF-8"
            excludes="alfresco/module/org.alfresco.module.vti/module-context.xml" />
    </target>
+   
+   <!-- NOTE: This target presumes dependencies are already compiled -->
+   <target name="package-spp-jar-only" depends="init">
+      <mkdir dir="${dir.module.spp.dist}" />
+      <compile-java projectdir="${dir.module.spp}" />
+      <jar jarfile="${dir.module.spp.dist}/${file.name.jar.spp}"
+           basedir="${dir.module.spp.classes}" encoding="UTF-8" />
+      <jar jarfile="${dir.module.spp.dist}/${file.name.jar.spp.config}"
+           basedir="${dir.module.spp.config}" encoding="UTF-8"
+           excludes="alfresco/module/org.alfresco.module.vti/module-context.xml" />
+   </target>
 
    <target name="package-spp-war"
            depends="package-spp-extension">
@@ -2114,7 +2122,7 @@
 
    <target name="test-spp"
            depends="compile-spp">
-      <run-tests projectdir="${dir.module.spp}" />
+      <run-tests projectdir="${dir.module.spp}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
 
    <target name="generate-javadocs-spp"
@@ -2445,7 +2453,7 @@
    
    <target name="test-webserviceclient" 
            depends="compile-webserviceclient">
-      <run-tests projectdir="${dir.project.webserviceclient}" />
+      <run-tests projectdir="${dir.project.webserviceclient}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
    
    <target name="generate-javadocs-webserviceclient" 

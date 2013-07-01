@@ -65,7 +65,6 @@ function main()
 
    model.links = [];
 
-
    // Add Invite People button
    if (model.currentUserRole == "SiteManager")
    {
@@ -80,4 +79,3 @@ function main()
 }
 
 main();
-

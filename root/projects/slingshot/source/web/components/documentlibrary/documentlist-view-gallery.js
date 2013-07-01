@@ -51,7 +51,7 @@
    
    // Other constants
    var DEFAULT_GALLERY_COLUMNS = 7, // Only used if option is undefined
-      DETAIL_PANEL_WIDTH = '377px',
+      DETAIL_PANEL_WIDTH = '397px',
       DETAIL_PANEL_OFFSET = [-40, -20],
       DETAIL_PANEL_DEFAULT_TIMEOUT = 700,
       WINDOW_RESIZE_CHECK_TIME = 20,
@@ -614,6 +614,20 @@
       Dom.removeClass(matchedEl, 'alf-hover');
    };
    
+   Alfresco.DocumentListGalleryViewRenderer.prototype.onActionShowMore = function DL_GVR_onActionShowMore(scope, record, elMore)
+   {
+      Alfresco.DocumentListGalleryViewRenderer.superclass.onActionShowMore.call(this, scope, record, elMore);
+      var fnHideMoreActions = function DL_GVR_fnHideMoreActions()
+      {
+         if (scope.hideMoreActionsFn)
+         {
+            scope.hideMoreActionsFn.call(this);
+         }
+      };
+      var elMoreActions = Dom.getNextSibling(elMore);
+      Event.on(elMoreActions, "mouseleave", fnHideMoreActions, elMoreActions);
+   };
+   
    /**
     * Handler for selection of a gallery items
     *
@@ -1037,7 +1051,7 @@
          // Hide pop-up timer function
          var fnHideDetailPanel = function DL_GVR_fnHideDetailPanel()
          {
-            galleryViewRenderer.onEventUnhighlightRow(scope, event, matchedEl);
+            galleryViewRenderer.onEventUnhighlightRow(scope, event, galleryItem);
             galleryItemDetailDiv.panel.hide(galleryItemDetailDiv.panel);
             Dom.setStyle(galleryItemDetailDiv, 'display', 'none');
          };

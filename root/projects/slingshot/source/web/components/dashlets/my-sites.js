@@ -136,7 +136,7 @@
             "all": true,
             "favSites": true
          },
-          
+         
          /**
           * Flag if IMAP server is enabled
           *
@@ -372,7 +372,10 @@
          {
             p_items[i].isSiteManager = p_items[i].siteRole === "SiteManager";
             p_items[i].isFavourite = !this.favSites[p_items[i].shortName] ? false : this.favSites[p_items[i].shortName];
-            p_items[i].isIMAPFavourite = !this.imapfavSites[p_items[i].shortName] ? false : this.imapfavSites[p_items[i].shortName];
+            if (this.imapfavSites)
+            {
+               p_items[i].isIMAPFavourite = !this.imapfavSites[p_items[i].shortName] ? false : this.imapfavSites[p_items[i].shortName];
+            }
          }
 
          this.sites = [];
@@ -613,6 +616,8 @@
          site.isFavourite = !site.isFavourite;
 
          this.widgets.dataTable.updateRow(record, site);
+         
+         var fnPref = site.isFavourite ? "favouriteSite" : "unFavouriteSite";
 
          // Assume the call will succeed, but register a failure handler to replace the UI state on failure
          var responseConfig =
@@ -655,8 +660,7 @@
             }
          };
 
-         // Update user preferences
-         this.services.preferences.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + siteId, site.isFavourite, responseConfig);
+         this.services.preferences[fnPref].call(this.services.preferences, siteId, responseConfig);
 
          // Update cached local copy
          this.favSites[siteId] = site.isFavourite;

@@ -179,50 +179,58 @@
             // Check for notification event
             if (obj)
             {
-               // Callback function specified?
-               var callback = null;
-               if (obj.callback && obj.callback.fn)
+               var postGenericActionHandler = function()
                {
-                  callback = obj.callback.fn.call((typeof obj.callback.scope == "object" ? obj.callback.scope : this),
+                  // Callback function specified?
+                  if (obj.callback && obj.callback.fn)
                   {
-                     config: data.config,
-                     json: data.json,
-                     serverResponse: data.serverResponse
-                  }, obj.callback.obj);
-               }
+                     obj.callback.fn.call((typeof obj.callback.scope == "object" ? obj.callback.scope : this),
+                     {
+                        config: data.config,
+                        json: data.json,
+                        serverResponse: data.serverResponse
+                     }, obj.callback.obj);
+                  }
+
+                  // Event(s) specified?
+                  if (obj.event && obj.event.name)
+                  {
+                     YAHOO.Bubbling.fire(obj.event.name, obj.event.obj);
+                  }
+                  if (YAHOO.lang.isArray(obj.events))
+                  {
+                     for (var i = 0, ii = obj.events.length; i < ii; i++)
+                     {
+                        YAHOO.Bubbling.fire(obj.events[i].name, obj.events[i].obj);
+                     }
+                  }
+
+                  // Please wait pop-up active?
+                  if (obj.popup)
+                  {
+                     obj.popup.destroy();
+                  }
+                  // Message?
+                  if (obj.message)
+                  {
+                     Alfresco.util.PopupManager.displayMessage(
+                     {
+                        text: obj.message
+                     });
+                  }
+               };
+
                // Activity specified?
                if (obj.activity !== undefined)
                {
-                  doclibActions.postActivity(obj.activity.siteId, obj.activity.activityType, obj.activity.page, obj.activity.activityData, callback);
+                  doclibActions.postActivity(obj.activity.siteId, obj.activity.activityType, obj.activity.page, obj.activity.activityData, postGenericActionHandler);
                }
-               // Event(s) specified?
-               if (obj.event && obj.event.name)
+               else
                {
-                  YAHOO.Bubbling.fire(obj.event.name, obj.event.obj);
-               }
-               if (YAHOO.lang.isArray(obj.events))
-               {
-                  for (var i = 0, ii = obj.events.length; i < ii; i++)
-                  {
-                     YAHOO.Bubbling.fire(obj.events[i].name, obj.events[i].obj);
-                  }
-               }
-               
-               // Please wait pop-up active?
-               if (obj.popup)
-               {
-                  obj.popup.destroy();
-               }
-               // Message?
-               if (obj.message)
-               {
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: obj.message
-                  });
+                  postGenericActionHandler();
                }
             }
-         }
+         };
          
          // Please Wait... message pop-up?
          if (wait && wait.message)
@@ -307,6 +315,10 @@
          // No activities in Repository mode
          if (!Alfresco.util.isValueSet(siteId))
          {
+            if (callback)
+            {
+               callback();
+            }
             return;
          }
 

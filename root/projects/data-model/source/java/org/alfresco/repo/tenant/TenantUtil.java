@@ -115,14 +115,14 @@ public abstract class TenantUtil
         {
             return runAsWork.doWork();
         }
-        catch (Throwable exception)
+        catch (Throwable e)
         {
             // Re-throw the exception
-            if (exception instanceof RuntimeException)
+            if (e instanceof RuntimeException)
             {
-                throw (RuntimeException) exception;
+                throw (RuntimeException) e;
             }
-            throw new RuntimeException("Error during run as.", exception);
+            throw new RuntimeException("Error encountered while performing TenantUtil.runAsWork: " + e.getMessage(), e);
         }
     }
     

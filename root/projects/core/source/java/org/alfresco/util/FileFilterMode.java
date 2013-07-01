@@ -8,7 +8,7 @@ public class FileFilterMode
      */
     public static enum Client
     {
-        cifs, imap, webdav, nfs, script, webclient, ftp, cmis;
+        cifs, imap, webdav, nfs, script, webclient, ftp, cmis, admin;
         
         /**
          * @deprecated Use {@link Client#valueOf(String)}
@@ -47,6 +47,10 @@ public class FileFilterMode
             else if(clientStr.equals("cmis"))
             {
                 return cmis;
+            }
+            else if(clientStr.equals("admin"))
+            {
+                return admin;
             }
             else
             {
@@ -95,6 +99,8 @@ public class FileFilterMode
             case nfs :
             case ftp :
             case webdav :
+            case cmis :
+            case admin :
                 return Mode.ENHANCED;
             default:
                 return Mode.BASIC;

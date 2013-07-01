@@ -124,7 +124,9 @@
 
                         <#-- LIST - ITEM - STATUS -->
                         <@markup id="list-item-status">
-                           <div class="user-status">${(m.authority.userStatus!"")?html} <span class="time">(${(m.authority.userStatusRelativeTime!"")?html})</span></div>
+                           <#if m.authority.userStatus??>
+                           <div class="user-status">${m.authority.userStatus?html} <span class="time">(<span class="relativeTime">${m.authority.userStatusTime.iso8601?html}</span>)</span></div>
+                           </#if>
                         </@markup>
 
                      </#if>

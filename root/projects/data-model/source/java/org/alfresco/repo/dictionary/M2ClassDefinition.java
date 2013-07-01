@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ChildAssociationDefinition;
@@ -70,6 +71,7 @@ import org.alfresco.util.EqualsHelper;
     private Boolean includedInSuperTypeQuery = null;
     private Boolean inheritedIncludedInSuperTypeQuery = null;
     private String  analyserResourceBundleName;
+    private transient MessageLookup staticMessageLookup = new StaticMessageLookup();
     
     /**
      * Construct
@@ -355,6 +357,18 @@ import org.alfresco.util.EqualsHelper;
         return name;
     }
 
+    @Override
+    public String getDescription()
+    {
+        return getDescription(staticMessageLookup);
+    }
+    
+    @Override
+    public String getTitle()
+    {
+        return getTitle(staticMessageLookup);
+    }
+    
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.ClassDefinition#getTitle()
      */

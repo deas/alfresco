@@ -237,6 +237,12 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       _FIELD_EVENT_VALIDATE: 2,
 
       /**
+       * Name of the attribute to be applied to HTML elements where a HTML validation message must be stored
+       * temporarily
+       */
+      _VALIDATION_MSG_ATTR: "alf-validation-msg",
+
+      /**
        * The fields that are considered to have been visited by the user.
        * Meaning that they will display balloon and red color if users tabs out of them.
        */
@@ -528,8 +534,10 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
        *        arguments to pass to the validation handler function
        * @param when {string} Name of the event when validation shall be triggered, i.e. "keyup", "blur"
        *        If null, the validation will
-       * @param message {string|function|null} Message to be displayed when validation fails,
-       *        if a function it will be invoked and shall return a string,
+       * @param message {string|object|function|null} Message to be displayed to the user when validation fails,
+       *        if a function it will be invoked and shall return a string, which may contain HTML,
+       *        if an object different values may be provided for rendering a HTML or text message as necessary 
+       *        in the 'html' and 'text' property values, which may themselves be strings, functions or null,
        *        if omitted or null the default message in the handler is used
        * @param config {object|function} Contains advanced instructions for the form, i.e. tooltip behaviour when widgets are used
        * @param config.validationType {string} Set to "mandatory" if a custom mandatory validator is used (rather than Alfresco.forms.mandatory)
@@ -877,7 +885,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                   if (this._fieldEvents[fieldId + ":" + "focus"] != this._FIELD_EVENT_VALIDATE)
                   {
                      // Display error if "focus" event hadn't been added to trigger validation
-                     var message = Dom.get(fieldId).getAttribute("title");
+                     var message = Dom.get(fieldId).getAttribute(this._VALIDATION_MSG_ATTR);
                      this.tooltips[fieldId].html(message);
                      this.tooltips[fieldId].show();
                   }
@@ -1297,10 +1305,12 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       {
          var allErrors = [],
             errorsByField = {},
+            errorsByFieldText = {},
             allWarnings = [],
             warningsByField = {},
             fieldMsg,
             message,
+            textMessage,
             validationType,
             MANDATORY = "mandatory",
             INVALID = "invalid",
@@ -1318,21 +1328,31 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             field = Dom.get(val.fieldId);
             if (field !== null && !field.disabled)
             {
+               textMessage = null;
                valFieldId = field.getAttribute("id");
                errorsByField[valFieldId] = errorsByField[valFieldId] || [];
+               errorsByFieldText[valFieldId] = errorsByFieldText[valFieldId] || [];
                warningsByField[valFieldId] = warningsByField[valFieldId] || [];
 
                // Make sure invalid fields are showed as mandatory until the user has had a chance of changing the value
                validationType = this._isMandatoryValidator(val) && !this._isFieldVisited(valFieldId) ? MANDATORY : INVALID;
-               if (val.message)
+               if (typeof val.message === "object" && val.message != null)
                {
-                  message = val.message;
-                  if (YAHOO.lang.isFunction(val.message))
+                  message = val.message.html || null;
+                  textMessage = val.message.text || null;
+               }
+               else
+               {
+                  message = val.message || null;
+               }
+               if (message)
+               {
+                  if (YAHOO.lang.isFunction(message))
                   {
                      // Validator wanted to create error message manually
-                     message = val.message.call(this, val.args);
+                     message = message.call(this, val.args);
                   }
-                  if (message)
+                  else
                   {
                      // Make sure message parameters based on validator args are resolved
                      message = YAHOO.lang.substitute(message, val.args);
@@ -1351,6 +1371,24 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                      key = "Alfresco.forms.validation.invalid.message";
                   }
                   message = Alfresco.util.message(key);
+               }
+               if (textMessage)
+               {
+                  if (YAHOO.lang.isFunction(textMessage))
+                  {
+                     // Validator wanted to create error message manually
+                     textMessage = textMessage.call(this, val.args);
+                  }
+                  else
+                  {
+                     // Make sure message parameters based on validator args are resolved
+                     textMessage = YAHOO.lang.substitute(textMessage, val.args);
+                  }
+               }
+               else
+               {
+                  // Last resort - strip HTML tags from the HTML message
+                  textMessage = message.replace(/<\/?[^>]+(>|$)/g, "");
                }
 
                // Make sure that validation notifications aren't triggered by events from other validations for the same field
@@ -1373,7 +1411,9 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                   {
                      // Make sure that error containers are created for custom fields as well
                      errorsByField[errorField.id] = errorsByField[errorField.id] || [];
+                     errorsByFieldText[errorField.id] = errorsByFieldText[errorField.id] || [];
                      errorsByField[errorField.id].push(message);
+                     errorsByFieldText[errorField.id].push(textMessage);
                   }
 
                   // Mark the first field with an error as the primary field (will be used if user tried to submit form)
@@ -1416,11 +1456,22 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                            YAHOO.util.Dom.removeClass(field, INVALID);
                         }
 
-                        // Update message
-                        field.setAttribute("title", message);
+                        // Update message with the first validation failure (ALF-19012)
+                        if (errorsByField[valFieldId].length == 0)
+                        {
+                           field.setAttribute("title", textMessage);
+                           field.setAttribute(this._VALIDATION_MSG_ATTR, message);
+                        }
+                        else
+                        {
+                           field.setAttribute("title", errorsByFieldText[valFieldId][0]);
+                           field.setAttribute(this._VALIDATION_MSG_ATTR, errorsByField[valFieldId][0]);
+                        }
                      }
+                     
                      allErrors.push({ id: valFieldId, msg: fieldMsg });
                      errorsByField[valFieldId].push(message);
+                     errorsByFieldText[valFieldId].push(textMessage);
                   }
                   else
                   {
@@ -1440,6 +1491,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                            }
                            field.setAttribute("title", message);
                         }
+                        field.setAttribute(this._VALIDATION_MSG_ATTR, message);
                      }
                      warningsByField[valFieldId].push(message);
                      allWarnings.push({ id: valFieldId, msg: fieldMsg });
@@ -1473,6 +1525,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                      if (errorsByField[valFieldId].length == 0 && warningsByField[valFieldId].length == 0)
                      {
                         field.setAttribute("title", val.originalTitle);
+                        field.setAttribute(this._VALIDATION_MSG_ATTR, "");
                         if (this.tooltips[valFieldId])
                         {
                            this.tooltips[valFieldId].html("");
@@ -1539,7 +1592,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                         {
                            break;
                         }
-                        html += '<div>' + Alfresco.util.encodeHTML(errorsByField[errorFieldId][i]) + '</div>';
+                        html += '<div>' + errorsByField[errorFieldId][i] + '</div>';
                      }
                      this.tooltips[errorFieldId].html(html);
                      this.tooltips[errorFieldId].show();
@@ -1575,7 +1628,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                         {
                            break;
                         }
-                        html += '<div><label for="' + allErrors[i].id + '">' + Alfresco.util.encodeHTML(allErrors[i].msg) + '</label></div>';
+                        html += '<div><label for="' + allErrors[i].id + '">' + allErrors[i].msg + '</label></div>';
                      }
                      htmlNode.style.display = "block";
                      htmlNode.innerHTML = html;
@@ -1741,6 +1794,65 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
    };
 
    /**
+    * Validate that the content of a password adheres to the policy provided in the supplied configuration
+    * 
+    * @method passwordContent
+    * @param field {object} The element representing the field the validation is for
+    * @param args {object} Object providing the password content policy
+    *        {
+    *           minUpper: 1, // Minimum number of uppercase characters
+    *           minLower: 1, // Minimum number of lowercase characters
+    *           minNumeric: 1, // Minimum number of numeric characters
+    *           minSymbols: 1 // Minimum number of special characters (!,@,#,$,%,^,&,*,?,_,~)
+    *        }
+    * @param event {object} The event that caused this handler to be called, maybe null
+    * @param form {object} The forms runtime class instance the field is being managed by
+    * @static
+    * @returns {Boolean}   True if the password adheres to policy, false otherwise
+    */
+   Alfresco.forms.validation.passwordContent = function passwordContent(field, args, event, form)
+   {
+      if (Alfresco.logger.isDebugEnabled())
+         Alfresco.logger.debug("Validating password content of field '" + field.id +
+                            "' using args: " + YAHOO.lang.dump(args));
+      // Empty input elements should not be marked as invalid, leave this to the mandatory check
+      if (YAHOO.lang.trim(field.value).length == 0)
+      {
+         return true;
+      }
+      var myArgs = YAHOO.lang.merge(
+         {
+            minUpper: 0,
+            minLower: 0,
+            minNumeric: 0,
+            minSymbols: 0
+         }, args),
+         password = field.value, 
+         DIGITS = /\d/g,
+         SPECIAL_CHARS = /([!,@,#,$,%,^,&,*,?,_,~])/g,
+         numeric = (password.match(DIGITS) || []).length,
+         symbols = (password.match(SPECIAL_CHARS) || []).length,
+         upper = 0, lower = 0, ch;
+      for (var i = 0; i < password.length; i++)
+      {
+         ch = password.charAt(i);
+         if (ch.toUpperCase() != ch.toLowerCase())
+         {
+            // Ok now we now it is an actual character (can't use regexp since they dont handle foreign characters)
+            if (ch.toUpperCase() == ch)
+            {
+               upper++;
+            }
+            if (ch.toLowerCase() == ch)
+            {
+               lower++;
+            }
+         }
+      }
+      return myArgs.minUpper <= upper && myArgs.minLower <= lower && myArgs.minNumeric <= numeric && myArgs.minSymbols <= symbols;
+   };
+
+   /**
     * Length validation handler, tests that the given field's value has either
     * a minimum and/or maximum length.
     *
@@ -1761,19 +1873,20 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       if (Alfresco.logger.isDebugEnabled())
          Alfresco.logger.debug("Validating length of field '" + field.id +
                                "' using args: " + YAHOO.lang.dump(args));
-      if (YAHOO.lang.trim(field.value).length == 0)
-      {
-         return true;
-      }
-
       var valid = true;
       var myArgs = YAHOO.lang.merge(
       {
          min: -1,
          max: -1,
          crop: false,
-         includeWhitespace: true
+         includeWhitespace: true,
+         ignoreEmpty: false
       }, args);
+      
+      if (YAHOO.lang.trim(field.value).length == 0 && myArgs.ignoreEmpty)
+      {
+         return true;
+      }
 
       if (myArgs.minLength)
       {
@@ -1994,7 +2107,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       args.match = false;
 
       return Alfresco.forms.validation.regexMatch(field, args, event, form, silent, message);
-   };   
+   };
 
    /**
     * NodeRef validation handler, tests that the given field's value is a valid

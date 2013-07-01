@@ -301,8 +301,8 @@
                }
             }
          };
-
-         this.preferencesService.set(Alfresco.service.Preferences.FAVOURITE_SITES + "." + site.shortName, true, responseConfig);
+            
+         this.preferencesService.favouriteSite(site.shortName, responseConfig);
       }      
    });
 })();

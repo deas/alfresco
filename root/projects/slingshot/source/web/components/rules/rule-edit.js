@@ -148,6 +148,17 @@
       },
 
       /**
+       * Returns the base ruleTemplate that was passed-in using the options.
+       * Suitable for overriding if the ruleTemplate default values need to be changed.
+       *
+       * @method getRuleTemplate
+       */
+      getRuleTemplate: function()
+      {
+         return this.options.ruleTemplate;
+      },
+
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Template initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -332,7 +343,7 @@
          }
          else
          {
-            this.displayRule(this.options.ruleTemplate);
+            this.displayRule(this.getRuleTemplate());
          }
 
          // Finally initialise the form
@@ -412,7 +423,7 @@
             {
                text: this.msg("message.createAnotherRule") 
             });
-            this.displayRule(this.options.ruleTemplate);
+            this.displayRule(this.getRuleTemplate());
             this.widgets.cancelButton.set("disabled", false);
          }
          else

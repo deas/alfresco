@@ -25,5 +25,5 @@ package org.alfresco.service.cmr.search;
  */
 public enum PermissionEvaluationMode
 {
-    EAGER; // LAZY
+    EAGER, NONE; 
 }

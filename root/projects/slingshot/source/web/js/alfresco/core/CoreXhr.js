@@ -187,7 +187,17 @@ define(["dojo/_base/declare",
                var responseObj = JSON.parse(response.response.text);
                if (responseObj.message)
                {
-                  this.displayPrompt(responseObj.message);
+                  var msg = responseObj.message;
+                  // generic exception message (from standard error template for REST APIs)
+                  // attempt to strip out message text if in standard format:
+                  // "org.alfresco.package.SpecificException: 12345678 Rest Of Message"
+                  // - give up and display all if not
+                  var eIndex = msg.indexOf("Exception: ");
+                  if (eIndex !== -1 && msg.length > eIndex + 20)
+                  {
+                     msg = msg.substring(eIndex + 20);
+                  }
+                  this.displayPrompt(msg);
                }
             }
             catch (e)

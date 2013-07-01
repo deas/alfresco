@@ -21,10 +21,11 @@ package org.alfresco.web.site.servlet;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -52,16 +53,17 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * A CSRF Filter class for the web-tier checking that certain requests supply a secret token that is compared
  * to the token existing in the user's session to mitigate CSRF attacks. It is also possible to check the referer or
  * origin headers.
- *
+ * <p>
  * The logic is configurable making it possible to: disable the filter, use 1 and same token per session, refresh the
  * token when certain urls are requested (i.e. on a new page visit, which is recommended) OR refresh the token on
  * every request made to the server (which is not recommended since multiple requests might span over each other making
  * some tokens stale and therefor get treated as a CSRF attack).
- *
+ * <p>
  * It is recommended to run the filter with a filter-mapping that NOT includes client side resources since that
  * is pointless and unnecessarily would decrease the performance of the webapp (even though the filter still would work).
  *
  * @author Erik Winlof
+ * @since 4.1.4
  */
 public class CSRFFilter implements Filter
 {
@@ -71,6 +73,7 @@ public class CSRFFilter implements Filter
     
     private Boolean enabled = true;
     private List<Rule> rules = null;
+    private Map<String, String> properties = new HashMap<String, String>();
 
     /**
      * Parses the filter rule config.
@@ -97,6 +100,23 @@ public class CSRFFilter implements Filter
         }
         else
         {
+            // Parse properties
+            ConfigElement propertiesConfig = csrfConfig.getConfigElement("properties");
+            if (propertiesConfig != null)
+            {
+                List<ConfigElement> propertiesConfigList = propertiesConfig.getChildren();
+                String value;
+                if (propertiesConfigList != null && propertiesConfigList.size() > 0)
+                {
+                    for (ConfigElement propertyConfig : propertiesConfigList)
+                    {
+                        value = propertyConfig.getValue();
+                        properties.put(propertyConfig.getName(), value != null ? value : "");
+                    }
+                }
+            }
+
+            // Parse filter and its rules
             ConfigElement filterConfig = csrfConfig.getConfigElement("filter");
             if (filterConfig == null)
             {
@@ -141,10 +161,10 @@ public class CSRFFilter implements Filter
         if (requestConfig != null)
         {
             // Method
-            rule.setMethod(requestConfig.getChildValue("method"));
+            rule.setMethod(resolve(requestConfig.getChildValue("method")));
             
             // Path
-            rule.setPath(requestConfig.getChildValue("path"));
+            rule.setPath(resolve(requestConfig.getChildValue("path")));
             
             // Headers
             List<ConfigElement> headerConfigs = requestConfig.getChildren("header");
@@ -155,7 +175,7 @@ public class CSRFFilter implements Filter
                 for (ConfigElement headerConfig : headerConfigs)
                 {
                     value = headerConfig.getValue();
-                    headers.put(headerConfig.getAttribute("name"), value);
+                    headers.put(resolve(headerConfig.getAttribute("name")), resolve(value));
                 }
                 rule.setHeaders(headers);
             }
@@ -173,7 +193,7 @@ public class CSRFFilter implements Filter
                     for (ConfigElement attributeConfig : attributeConfigs)
                     {
                         value = attributeConfig.getValue();
-                        sessionAttributes.put(attributeConfig.getAttribute("name"), value);
+                        sessionAttributes.put(resolve(attributeConfig.getAttribute("name")), resolve(value));
                     }
                     rule.setSessionAttributes(sessionAttributes);
                 }
@@ -191,7 +211,7 @@ public class CSRFFilter implements Filter
             List<ConfigElement> actionParameterConfigs;
             for (ConfigElement actionConfig : actionConfigs)
             {
-                actionName = actionConfig.getAttribute("name");
+                actionName = resolve(actionConfig.getAttribute("name"));
                 action = createAction(actionName);
                 if (action == null)
                 {
@@ -209,7 +229,7 @@ public class CSRFFilter implements Filter
                 {
                     for (ConfigElement actionParameterConfig : actionParameterConfigs)
                     {
-                        parameters.put(actionParameterConfig.getAttribute("name"), actionParameterConfig.getValue());
+                        parameters.put(resolve(actionParameterConfig.getAttribute("name")), resolve(actionParameterConfig.getValue()));
                     }
                 }
                 action.init(parameters);
@@ -306,6 +326,17 @@ public class CSRFFilter implements Filter
     }
 
     /**
+     * Returns the path for a request where a path is the request uri with the request context stripped out.
+     *
+     * @param request The http request
+     * @return The path for a request where a path is the request uri with the request context stripped out.
+     */
+    protected String getPath(HttpServletRequest request)
+    {
+        return request.getRequestURI().substring(request.getContextPath().length());
+    }
+
+    /**
      * Compare the requets against the configured rules.
      *
      * @param rule The rule to match against the request and session
@@ -323,7 +354,7 @@ public class CSRFFilter implements Filter
         }
         
         // Match path
-        if (rule.getPath() != null && !matchString(request.getRequestURI().substring(request.getContextPath().length()), rule.getPath()))
+        if (rule.getPath() != null && !matchString(getPath(request), rule.getPath()))
         {
             return false;
         }
@@ -475,14 +506,45 @@ public class CSRFFilter implements Filter
      */
     private String getServerString(HttpServletRequest request)
     {
-        String currentServerContext = request.getScheme() + "://" + request.getServerName();
-        if (request.getServerPort() != 80)
+        final String scheme = request.getScheme();
+        final int port = request.getServerPort();
+        String currentServerContext;
+        if (("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443))
         {
-            currentServerContext += ":" + request.getServerPort();
+            currentServerContext = scheme + "://" + request.getServerName();
+        }
+        else
+        {
+            currentServerContext = scheme + "://" + request.getServerName() + ':' + port;
         }
         return currentServerContext;
     }
 
+    private String resolve(String str)
+    {
+        return resolve(str, properties);
+    }
+
+    private String resolve(String str, Map<String, String> propertyMap)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+        Pattern pattern = Pattern.compile("\\{(.+?)\\}");
+        Matcher matcher = pattern.matcher(str);
+        StringBuffer buffer = new StringBuffer();
+        while (matcher.find())
+        {
+            if (propertyMap.containsKey(matcher.group(1)))
+            {
+                String replacement = resolve(propertyMap.get(matcher.group(1)), propertyMap);
+                matcher.appendReplacement(buffer, replacement != null ? Matcher.quoteReplacement(replacement) : "null");
+            }
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
 
     /**
      * Abstract base class representing a rule action.
@@ -513,6 +575,9 @@ public class CSRFFilter implements Filter
         public static final String PARAM_COOKIE = "cookie";
         private final SecureRandom random = new SecureRandom();
 
+        private String session = null;
+        private String cookie = null;
+
         /**
          * Requires the following params; the name of the cookie to set the token in and the name of the session
          * attribute to place the token in. Defined in params with key "cookie" and "session".
@@ -523,41 +588,53 @@ public class CSRFFilter implements Filter
         public void init(Map<String, String> params) throws ServletException
         {
             super.init(params);
+
+            if (params != null)
+            {
+                if (params.containsKey(PARAM_SESSION))
+                {
+                    session = params.get(PARAM_SESSION);
+                }
+                if (params.containsKey(PARAM_COOKIE))
+                {
+                    cookie = params.get(PARAM_COOKIE);
+                }
+            }
             
             // Check for mandatory parameters
-            if (params == null || params.size() == 0)
+            if (session == null || cookie == null)
             {
-                String message = "Parameter '" + PARAM_SESSION + "' or '" + PARAM_COOKIE + "' must be defined.";
+                String message = "Parameter '" + PARAM_SESSION + "' and '" + PARAM_COOKIE + "' must be defined.";
                 if (logger.isErrorEnabled())
                     logger.error(message);
                 throw new ServletException(message);
             }
         }
         
-        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+        public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession)
         {
             final byte[] bytes = new byte[32];
             random.nextBytes(bytes);
             final String newToken = Base64.encodeBytes(bytes);
             
             if (logger.isDebugEnabled())
-                logger.debug("Generate token " + request.getMethod() + " " + request.getRequestURI() + " :: '" + newToken + "'");
+                logger.debug("Generate token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: '" + newToken + "'");
             
             // Set in session
-            if (params.get(PARAM_SESSION) != null && session != null)
+            if (session != null && httpSession != null)
             {
-                session.setAttribute(params.get(PARAM_SESSION), newToken);
+                httpSession.setAttribute(session, newToken);
             }
             
             // Set in cookie
-            if (params.get(PARAM_COOKIE) != null)
+            if (cookie != null)
             {
                 // Expose token as a cookie to the client
                 int TIMEOUT = 60*60*24*7;
-                Cookie userCookie = new Cookie(params.get(PARAM_COOKIE), URLEncoder.encode(newToken));
-                userCookie.setPath(request.getContextPath());
+                Cookie userCookie = new Cookie(cookie, URLEncoder.encode(newToken));
+                userCookie.setPath(httpServletRequest.getContextPath());
                 userCookie.setMaxAge(TIMEOUT);
-                response.addCookie(userCookie);
+                httpServletResponse.addCookie(userCookie);
             }
         }
     }
@@ -572,6 +649,10 @@ public class CSRFFilter implements Filter
         public static final String PARAM_HEADER = "header";
         public static final String PARAM_PARAMETER = "parameter";
 
+        private String session = null;
+        private String header = null;
+        private String parameter = null;
+
         /**
          * Requires the following params; the name of the request header to look for the token in, the name of the url
          * parameter to look for the token and the name of the session attribute that holds the user's session.
@@ -584,15 +665,31 @@ public class CSRFFilter implements Filter
         {
             super.init(params);
 
+            if (params != null)
+            {
+                if (params.containsKey(PARAM_SESSION))
+                {
+                    session = params.get(PARAM_SESSION);
+                }
+                if (params.containsKey(PARAM_HEADER))
+                {
+                    header = params.get(PARAM_HEADER);
+                }
+                if (params.containsKey(PARAM_PARAMETER))
+                {
+                    parameter = params.get(PARAM_PARAMETER);
+                }
+            }
+
             // Check for mandatory parameters
-            if (params == null || !params.containsKey(PARAM_SESSION))
+            if (session == null)
             {
                 String message = "Parameter '" + PARAM_SESSION + "' must be defined.";
                 if (logger.isErrorEnabled())
                     logger.error(message);
                 throw new ServletException(message);
             }
-            if (!params.containsKey(PARAM_HEADER) && !params.containsKey(PARAM_PARAMETER))
+            if (header == null && parameter == null)
             {
                 String message = "Parameter '" + PARAM_HEADER + "' or '" + PARAM_PARAMETER + "' must be defined.";
                 if (logger.isErrorEnabled())
@@ -601,43 +698,43 @@ public class CSRFFilter implements Filter
             }
         }
         
-        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession) throws ServletException
         {
             String sessionToken = null;
-            if (session != null)
+            if (httpSession != null)
             {
-                sessionToken = (String) session.getAttribute(params.get(PARAM_SESSION));
+                sessionToken = (String) httpSession.getAttribute(session);
             }
-            if (params.containsKey(PARAM_HEADER))
+            if (header != null)
             {
-                String headerToken = request.getHeader(params.get(PARAM_HEADER));
+                String headerToken = httpServletRequest.getHeader(header);
                 
                 if (logger.isDebugEnabled())
-                    logger.debug("Assert token " + request.getMethod() + " " + request.getRequestURI() + " :: session: '"
+                    logger.debug("Assert token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: session: '"
                             + sessionToken + "' vs header: '" + headerToken + "'");
                 
                 if (headerToken == null || sessionToken == null || !headerToken.equals(sessionToken))
                 {
                     String message = "Possible CSRF attack noted when comparing token in session and request header. Request: "
-                            + request.getMethod() + " " + request.getRequestURI();
+                            + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
                     throw new ServletException(message);
                 }
             }
-            else if (params.containsKey(PARAM_PARAMETER))
+            else if (parameter != null)
             {
-                String parameterToken = request.getParameter(params.get(PARAM_PARAMETER));
+                String parameterToken = httpServletRequest.getParameter(parameter);
                 
                 if (logger.isDebugEnabled())
-                    logger.debug("Assert token " + request.getMethod() + " " + request.getRequestURI() + " :: session: '"
+                    logger.debug("Assert token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: session: '"
                             + sessionToken + "' vs parameter: '" + parameterToken + "'");
                 
                 if (parameterToken == null || sessionToken == null || !parameterToken.equals(sessionToken))
                 {
                     String message = "Possible CSRF attack noted when comparing token in session and request parameter. Request: "
-                            + request.getMethod() + " " + request.getRequestURI();
+                            + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
@@ -655,6 +752,9 @@ public class CSRFFilter implements Filter
         public static final String PARAM_SESSION = "session";
         public static final String PARAM_COOKIE = "cookie";
 
+        private String cookie = null;
+        private String session = null;
+
         /**
          * Requires the following params; the name of the cookie to clear the value of and the name of the session
          * attribute to clear the value of . Defined in params with key "cookie" and "session".
@@ -666,36 +766,44 @@ public class CSRFFilter implements Filter
         {
             super.init(params);
 
-            // Check for mandatory parameters
-            if (params == null || params.size() == 0)
+            if (params != null)
             {
-                String message = "Parameter '" + PARAM_SESSION + "' or '" + PARAM_COOKIE + "' must be defined.";
+                if (params.containsKey(PARAM_SESSION))
+                {
+                    session = params.get(PARAM_SESSION);
+                }
+                if (params.containsKey(PARAM_COOKIE))
+                {
+                    cookie = params.get(PARAM_COOKIE);
+                }
+            }
+
+            // Check for mandatory parameters
+            if (session == null || cookie == null)
+            {
+                String message = "Parameter '" + PARAM_SESSION + "' and '" + PARAM_COOKIE + "' must be defined.";
                 if (logger.isErrorEnabled())
                     logger.error(message);
                 throw new ServletException(message);
             }
         }
         
-        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+        public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession)
         {
             if (logger.isDebugEnabled())
-                logger.debug("Clear token " + request.getMethod() + " " + request.getRequestURI());
+                logger.debug("Clear token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI());
             
             // Remove token from session
-            if (params.get(PARAM_SESSION) != null && session != null)
+            if (httpSession != null)
             {
-                session.setAttribute(params.get(PARAM_SESSION), null);
+                httpSession.setAttribute(session, null);
             }
             
-            // Clear token cookie
-            if (params.get(PARAM_COOKIE) != null)
-            {
-                // Expose token as a cookie to the client
-                Cookie userCookie = new Cookie(params.get(PARAM_COOKIE), "");
-                userCookie.setPath(request.getContextPath());
-                userCookie.setMaxAge(0);
-                response.addCookie(userCookie);
-            }
+            // Expose token as a cookie to the client
+            Cookie userCookie = new Cookie(cookie, "");
+            userCookie.setPath(httpServletRequest.getContextPath());
+            userCookie.setMaxAge(0);
+            httpServletResponse.addCookie(userCookie);
         }
     }
 
@@ -710,6 +818,9 @@ public class CSRFFilter implements Filter
         public static final String PARAM_REFERER = "referer";
         public static final String HEADER_REFERER = "Referer";
 
+        private boolean always = false;
+        private String referer = null;
+
         /**
          * Requires the following params; a boolean deciding if the referer header MUST be present when validated.
          * Defined in a param with key "always".
@@ -722,37 +833,40 @@ public class CSRFFilter implements Filter
             super.init(params);
 
             // Check for mandatory parameters
-            if (params == null || !params.containsKey(PARAM_ALWAYS))
+            if (params != null)
             {
-                String message = "Parameter '" + PARAM_ALWAYS + "' must be defined.";
-                if (logger.isErrorEnabled())
-                    logger.error(message);
-                throw new ServletException(message);
-            }
-            if (!params.get(PARAM_ALWAYS).equals("true") && !params.get(PARAM_ALWAYS).equals("false"))
-            {
-                String message = "Parameter '" + PARAM_ALWAYS + "' must be a boolean and be set to true or false.";
-                if (logger.isErrorEnabled())
-                    logger.error(message);
-                throw new ServletException(message);
+                if (params.containsKey(PARAM_ALWAYS))
+                {
+                    String alwaysParam = params.get(PARAM_ALWAYS);
+                    if (!alwaysParam.equals("true") && !alwaysParam.equals("false"))
+                    {
+                        String message = "Parameter '" + PARAM_ALWAYS + "' must be a boolean and be set to true or false.";
+                        if (logger.isErrorEnabled())
+                            logger.error(message);
+                        throw new ServletException(message);
+                    }
+                    always = alwaysParam.equals("true");
+                }
+                if (params.containsKey(PARAM_REFERER))
+                {
+                    referer = params.get(PARAM_REFERER);
+                }
             }
         }
 
-        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession) throws ServletException
         {
-            String refererHeader = request.getHeader(HEADER_REFERER);
+            String refererHeader = httpServletRequest.getHeader(HEADER_REFERER);
             if (refererHeader == null)
             {
                 refererHeader = "";
             }
 
-            String currentServer = getServerString(request);
-            String refererServer = params.containsKey(PARAM_REFERER) ? params.get(PARAM_REFERER) : null;
-
+            String currentServer = getServerString(httpServletRequest);
             if (logger.isDebugEnabled())
-                logger.debug("Assert referer " + request.getMethod() + " " + request.getRequestURI() + " :: referer: '" +
-                        request.getHeader(HEADER_REFERER) + "' vs server & context: " + currentServer + " (string)" +
-                        (refererServer != null ? " or " + refererServer + " (regexp)" : "")
+                logger.debug("Assert referer " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: referer: '" +
+                        httpServletRequest.getHeader(HEADER_REFERER) + "' vs server & context: " + currentServer + " (string)" +
+                        (referer != null ? " or " + referer + " (regexp)" : "")
                 );
 
             // Note! Add slashes at the end to avoid missing when the victim's domain is "site.com"
@@ -762,7 +876,7 @@ public class CSRFFilter implements Filter
                 currentServer += "/";
             }
 
-            if (refererHeader.isEmpty() && params.get(PARAM_ALWAYS).equals("false"))
+            if (refererHeader.isEmpty() && !always)
             {
                 // The referrer header might be blank or no existing due to a variety of "valid" reasons, i.e:
                 // * If a website is accessed from a HTTP Secure (HTTPS) connection and a link points to anywhere except
@@ -778,15 +892,15 @@ public class CSRFFilter implements Filter
                 {
                     valid = true;
                 }
-                if (refererServer != null && refererHeader.matches(refererServer))
+                if (referer != null && !referer.isEmpty() && refererHeader.matches(referer))
                 {
                     valid = true;
                 }
                 if (!valid)
                 {
                     String message = "Possible CSRF attack noted when asserting referer header '" +
-                            request.getHeader(HEADER_REFERER) + "'. Request: " + request.getMethod() + " " +
-                            request.getRequestURI();
+                            httpServletRequest.getHeader(HEADER_REFERER) + "'. Request: " + httpServletRequest.getMethod() + " " +
+                            httpServletRequest.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
@@ -806,6 +920,9 @@ public class CSRFFilter implements Filter
         public static final String PARAM_ORIGIN = "origin";
         public static final String HEADER_ORIGIN = "Origin";
 
+        private boolean always = false;
+        private String origin = null;
+
         /**
          * Requires the following params; a boolean deciding if the origin header MUST be present when validated.
          * Defined in a param with key "always".
@@ -818,39 +935,43 @@ public class CSRFFilter implements Filter
             super.init(params);
 
             // Check for mandatory parameters
-            if (params == null || !params.containsKey(PARAM_ALWAYS))
+            if (params != null)
             {
-                String message = "Parameter '" + PARAM_ALWAYS + "' must be defined.";
-                if (logger.isErrorEnabled())
-                    logger.error(message);
-                throw new ServletException(message);
-            }
-            if (!params.get(PARAM_ALWAYS).equals("true") && !params.get(PARAM_ALWAYS).equals("false"))
-            {
-                String message = "Parameter '" + PARAM_ALWAYS + "' must be a boolean and be set to true or false.";
-                if (logger.isErrorEnabled())
-                    logger.error(message);
-                throw new ServletException(message);
+                if (params.containsKey(PARAM_ALWAYS))
+                {
+                    String alwaysParam = params.get(PARAM_ALWAYS);
+                    if (!alwaysParam.equals("true") && !alwaysParam.equals("false"))
+                    {
+                        String message = "Parameter '" + PARAM_ALWAYS + "' must be a boolean and be set to true or false.";
+                        if (logger.isErrorEnabled())
+                            logger.error(message);
+                        throw new ServletException(message);
+                    }
+                    always = alwaysParam.equals("true");
+                }
+                if (params.containsKey(PARAM_ORIGIN))
+                {
+                    origin = params.get(PARAM_ORIGIN);
+                }
             }
         }
 
-        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession) throws ServletException
         {
-            String originHeader = request.getHeader(HEADER_ORIGIN);
+            String originHeader = httpServletRequest.getHeader(HEADER_ORIGIN);
             if (originHeader == null)
             {
                 originHeader = "";
             }
 
-            String currentServer = getServerString(request);
-            String originServer = params.containsKey(PARAM_ORIGIN) ? params.get(PARAM_ORIGIN) : null;
+            String currentServer = getServerString(httpServletRequest);
 
             if (logger.isDebugEnabled())
-                logger.debug("Assert origin " + request.getMethod() + " " + request.getRequestURI() + " :: origin: '" +
-                        request.getHeader(HEADER_ORIGIN) + "' vs server: " + currentServer + " (string)" +
-                        (originServer != null ? " or " + originServer + " (regexp)" : ""));
+                logger.debug("Assert origin " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: origin: '" +
+                        httpServletRequest.getHeader(HEADER_ORIGIN) + "' vs server: " + currentServer + " (string)" +
+                        (origin != null ? " or " + origin + " (regexp)" : ""));
 
-            if (originHeader.isEmpty() && params.get(PARAM_ALWAYS).equals("false"))
+            if (originHeader.isEmpty() && !always)
             {
                 // Only valid reason for the Origin header not being sent should be due to an old browser NOT supporting it.
             }
@@ -861,14 +982,14 @@ public class CSRFFilter implements Filter
                 {
                     valid = true;
                 }
-                if (originServer != null && originHeader.matches(originServer))
+                if (origin != null && !origin.isEmpty() && originHeader.matches(origin))
                 {
                     valid = true;
                 }
                 if (!valid)
                 {
-                    String message = "Possible CSRF attack noted when asserting origin header '" + request.getHeader(HEADER_ORIGIN) + "'. " +
-                            "Request: " + request.getMethod() + " " + request.getRequestURI();
+                    String message = "Possible CSRF attack noted when asserting origin header '" + httpServletRequest.getHeader(HEADER_ORIGIN) + "'. " +
+                            "Request: " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI();
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
@@ -886,6 +1007,8 @@ public class CSRFFilter implements Filter
     {
         public static final String PARAM_MESSAGE = "message";
 
+        private String message = "Request is not allowed to be executed.";
+
         /**
          * Requires the following params; a boolean deciding if the origin header MUST be present when validated.
          * Defined in a param with key "always".
@@ -896,20 +1019,23 @@ public class CSRFFilter implements Filter
         public void init(Map<String, String> params) throws ServletException
         {
             super.init(params);
+
+            if (params != null)
+            {
+                if (params.containsKey("message"))
+                {
+                    message = params.get(PARAM_MESSAGE);
+                }
+            }
         }
 
-        public void run(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException
+        public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession) throws ServletException
         {
-            String message = "Request is not allowed to be executed.";
-            if (params.containsKey("message"))
-            {
-                message = params.get(PARAM_MESSAGE);
-            }
-            message += " Request: " + request.getMethod() + " " + request.getRequestURI();
+            String str = message + " Request: " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI();
             if (logger.isInfoEnabled())
-                logger.info(message);
+                logger.info(str);
 
-            throw new ServletException(message);
+            throw new ServletException(str);
         }
     }
 }

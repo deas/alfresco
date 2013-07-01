@@ -16,6 +16,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/3rd Party/lib/quartz-1.8.3-patched.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-impl-0.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.8.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

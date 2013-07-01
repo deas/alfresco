@@ -1,4 +1,4 @@
-<project name="macros">
+<project name="macros" xmlns:jacoco="antlib:org.jacoco.ant">
 
 	<!-- **************************************************************************** -->
 	<!-- ** This file contains the macro definitions used by the main build script ** -->
@@ -142,51 +142,70 @@
 		</sequential>
 	</macrodef>
 
+    <!-- Extension point for overriding -->
+    <path id="empty.classpath"/>
+
 	<macrodef name="run-tests-startup" description="Runs the startup tests for the given project">
 		<attribute name="projectdir" />
+		<attribute name="additionalclasspath" default="empty.classpath"/>
 		<sequential>
+            <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+                <classpath path="${dir.project.3rdparty.lib}/${dir.name.devenv}/${file.name.jar.jacoco}"/>
+            </taskdef>
+
 			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-			<junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
-				<jvmarg value="-server"/>
-				<jvmarg value="-XX:MaxPermSize=256M"/>
-				<jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
-				<jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
-				<jvmarg value="-Dcom.sun.management.jmxremote"/>
-				<classpath>
-					<path refid="classpath.unit.test"/>
-					<path refid="classpath.unit.test.extension"/>
-				</classpath>
-				<formatter type="xml" />
-				<batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
-					<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
-						<patternset refid="files.tests.startup" />
-					</fileset>
-				</batchtest>
-			</junit>
+            <jacoco:coverage destfile="@{projectdir}/${dir.name.build}/jacoco.exec" includes="org.alfresco.*">
+                <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
+                    <jvmarg value="-server"/>
+                    <jvmarg value="-XX:MaxPermSize=256M"/>
+                    <jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
+                    <jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
+                    <jvmarg value="-Dcom.sun.management.jmxremote"/>
+                    <classpath>
+                        <path refid="classpath.unit.test"/>
+                        <path refid="classpath.unit.test.extension"/>
+                        <path refid="@{additionalclasspath}"/>
+                    </classpath>
+                    <formatter type="xml" />
+                    <batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
+                        <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+                            <patternset refid="files.tests.startup" />
+                        </fileset>
+                    </batchtest>
+                </junit>
+            </jacoco:coverage>
 		</sequential>
 	</macrodef>
 
 	<macrodef name="run-tests" description="Runs the tests for the given project">
 		<attribute name="projectdir" />
+		<attribute name="additionalclasspath" default="empty.classpath"/>
 		<sequential>
+            <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+                <classpath path="${dir.project.3rdparty.lib}/${dir.name.devenv}/${file.name.jar.jacoco}"/>
+            </taskdef>
+
 			<mkdir dir="@{projectdir}/${dir.name.build}/${dir.name.test.results}" />
-			<junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java" failureproperty="tests.failed">
-				<jvmarg value="-server"/>
-				<jvmarg value="-XX:MaxPermSize=256M"/>
-				<jvmarg value="-Dcom.sun.management.jmxremote"/>
-				<jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
-				<jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
-				<classpath>
-					<path refid="classpath.unit.test"/>
-					<path refid="classpath.unit.test.extension"/>
-				</classpath>
-				<formatter type="xml" />
-				<batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
-					<fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
-						<patternset refid="files.tests" />
-					</fileset>
-				</batchtest>
+            <jacoco:coverage destfile="@{projectdir}/${dir.name.build}/jacoco.exec" includes="org.alfresco.*">
+                <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java" failureproperty="tests.failed">
+                    <jvmarg value="-server"/>
+                    <jvmarg value="-XX:MaxPermSize=256M"/>
+                    <jvmarg value="-Dcom.sun.management.jmxremote"/>
+                    <jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
+                    <jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
+                    <classpath>
+                        <path refid="classpath.unit.test"/>
+                        <path refid="classpath.unit.test.extension"/>
+                        <path refid="@{additionalclasspath}"/>
+                    </classpath>
+                    <formatter type="xml" />
+                    <batchtest todir="@{projectdir}/${dir.name.build}/${dir.name.test.results}">
+                        <fileset dir="@{projectdir}/${dir.name.source}/${dir.name.java}">
+                            <patternset refid="files.tests" />
+                        </fileset>
+                    </batchtest>
 			</junit>
+            </jacoco:coverage>
 		</sequential>
 	</macrodef>
 
@@ -240,31 +259,34 @@
 		<attribute name="sourcedir" />
 		<attribute name="destdir" />
 		<sequential>
-			<apply executable="java" parallel="false" dest="@{destdir}">
-				<fileset dir="@{sourcedir}">
-					<include name="**/*.js" />
-					<exclude name="**/*-min.js" />
-					<exclude name="**/WEB-INF/**" />
-					<exclude name="**/tiny_mce/**" />
-					<exclude name="**/yui/**" />
-                    <exclude name="js/lib/dojo*/**" />
-					<exclude name="**/log4javascript*.js" />
-				</fileset>
-				<arg line="-jar"/>
-				<arg path="${dir.project.3rdparty.lib}/yuicompressor-2.4.7.jar"/>
-				<arg line="-o"/>
-				<targetfile />
-				<srcfile />
-				<mapper type="glob" from="*.js" to="*-min.js"/>
-			</apply>
-		</sequential>
+         <taskdef name="yui-compressor" 
+             classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask"
+             classpath="${dir.project.3rdparty.lib}/guava-13.0.1.jar;${dir.project.3rdparty.lib}/yuicompressor-2.4.7-rhino.jar;${dir.project.3rdparty.lib}/yui-compressor-ant-task-0.6.0.jar">
+         </taskdef>
+         <yui-compressor 
+             warn="false"
+             munge="true"
+             jsSuffix=".js"
+             jsDestSuffix="-min.js"
+             preserveAllSemiColons="false"
+             fromDir="@{sourcedir}"
+             toDir="@{destdir}">
+				<include name="**/*.js" />
+				<exclude name="**/*-min.js" />
+				<exclude name="**/WEB-INF/**" />
+				<exclude name="**/tiny_mce/**" />
+				<exclude name="**/yui/**" />
+            <exclude name="js/lib/dojo*/**" />
+				<exclude name="**/log4javascript*.js" />
+         </yui-compressor>
+      </sequential>
 	</macrodef>
 
 	<macrodef name="minimize-javascript-file">
 		<attribute name="sourcefile" />
 		<attribute name="destfile" />
 		<sequential>
-			<apply executable="java" parallel="false">
+			<apply executable="java" parallel="false" failonerror="true">
 				<fileset file="@{sourcefile}">
 			        <exclude name="js/lib/**"/>
 				</fileset>

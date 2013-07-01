@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 
 /**
@@ -232,17 +231,26 @@ public final class NodeRef implements EntityRef, Serializable
      */
     public static class Status
     {
+        private final Long dbId;
         private final NodeRef nodeRef;
         private final String changeTxnId;
         private final Long dbTxnId;
         private final boolean deleted;
         
-        public Status(NodeRef nodeRef, String changeTxnId, Long dbTxnId, boolean deleted)
+        public Status(Long dbId, NodeRef nodeRef, String changeTxnId, Long dbTxnId, boolean deleted)
         {
+            this.dbId = dbId;
             this.nodeRef = nodeRef;
             this.changeTxnId = changeTxnId;
             this.dbTxnId = dbTxnId;
             this.deleted = deleted;
+        }
+        /**
+         * Return the database ID for the node
+         */
+        public Long getDbId()
+        {
+            return dbId;
         }
         /**
          * @return Returns the NodeRef that to which this status applies
@@ -282,6 +290,7 @@ public final class NodeRef implements EntityRef, Serializable
             StringBuilder sb = new StringBuilder(50);
             
             sb.append("Status[")
+              .append("id=").append(dbId)
               .append("changeTxnId=").append(changeTxnId)
               .append(", dbTxnId=").append(dbTxnId)
               .append(", deleted=").append(deleted)

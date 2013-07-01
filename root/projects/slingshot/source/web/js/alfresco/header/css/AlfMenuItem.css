@@ -54,6 +54,13 @@
    width: 20px;
 }
 
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-admin-icon {
+   background: url("./images/admin.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
 .alfresco-share .dijitIcon.dijitMenuItemIcon.alf-loading-icon {
    background: url("./images/wait.gif");
    background-repeat: no-repeat;

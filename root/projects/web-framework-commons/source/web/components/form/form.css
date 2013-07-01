@@ -158,6 +158,31 @@
    border-radius: 5px;
 }
 
+.form-container .alf-textarea .help-icon
+{
+   float: right;
+   position: relative;
+}
+
+.form-container .alf-textarea .help-icon img
+{
+   vertical-align: 0px;
+}
+
+.form-container .alf-textarea label
+{
+   float: left;
+}
+
+.form-container .alf-textarea .help-text
+{
+   margin-top: 0;
+   text-align: center;
+   top: -0.4em;
+   position: relative;
+   float: right;
+}
+
 .form-container .viewmode-field
 {
    margin-bottom: 0.7em;

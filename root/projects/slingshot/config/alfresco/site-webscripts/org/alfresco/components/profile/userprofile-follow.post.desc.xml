@@ -1,5 +1,0 @@
-<webscript>
-  <shortname>Follow and Unfollow</shortname>
-  <description>Follow or unfollow a person</description>
-  <url>/components/profile/userprofile-follow</url>
-</webscript>

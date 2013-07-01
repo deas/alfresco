@@ -356,15 +356,8 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
         {
             // Yearly is the same as monthly, we just increase interval
             String recRule = meeting.getRecurrenceRule().replace("YEARLY", "MONTHLY");
-            interval *= 12;
-            recRule = recRule.replace("INTERVAL=" + eventParam.get("INTERVAL"), "INTERVAL=" + interval);
+            recRule = recRule.replace("INTERVAL=" + interval, "INTERVAL=" + interval*12);
 
-            if (eventParam.get("BYMONTHDAY") != null)
-            {
-                recRule = recRule.replace("BYMONTHDAY=" + eventParam.get("BYMONTHDAY") + ";", "");
-                recRule = recRule + ";BYSETPOS=" + eventParam.get("BYMONTHDAY") + ";";
-                recRule = recRule + "BYDAY=SU,MO,TU,WE,TH,FR,SA;";
-            }
             meeting.setRecurrenceRule(recRule);
             reloadEventParam = true;
         }

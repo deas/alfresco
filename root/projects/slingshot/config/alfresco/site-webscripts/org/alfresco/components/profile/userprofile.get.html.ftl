@@ -36,23 +36,7 @@
             <#else>
             <#if follows??>
             <div class="editcolumn">
-               <form id="${htmlid}-follow-form" action="${url.context}/service/components/profile/userprofile-follow" method="post">
-               <#if follows>
-               <input type="hidden" name="unfollowuser" value="${profile.name?html}"/>
-               <div class="btn-unfollow">
-                  <span class="yui-button yui-push-button" id="${el}-button-unfollow">
-                     <span class="first-child"><button name="unfollow">${msg("button.unfollow")}</button></span>
-                  </span>
-               </div>
-               <#else>
-               <input type="hidden" name="followuser" value="${profile.name?html}"/>
-               <div class="btn-follow">
-                  <span class="yui-button yui-push-button"  id="${el}-button-follow">
-                     <span class="first-child"><button name="follow">${msg("button.follow")}</button></span>
-                  </span>
-               </div>
-               </#if>
-               </form>
+               <button id="${el}-button-following"><#if follows>${msg("button.unfollow")}<#else>${msg("button.follow")}</#if></button>
             </div>
             </#if>
             </#if>

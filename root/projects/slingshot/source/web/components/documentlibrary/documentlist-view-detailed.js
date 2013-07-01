@@ -358,15 +358,15 @@
                         },
                         validations: [
                         {
-                           type: Alfresco.forms.validation.nodeName,
-                           when: "keyup",
-                           message: scope.msg("validation-hint.nodeName")
-                        },
-                        {
                            type: Alfresco.forms.validation.length,
                            args: { min: 1, max: 255, crop: true },
                            when: "keyup",
                            message: scope.msg("validation-hint.length.min.max", 1, 255)
+                        },
+                        {
+                           type: Alfresco.forms.validation.nodeName,
+                           when: "keyup",
+                           message: scope.msg("validation-hint.nodeName")
                         }],
                         title: scope.msg("tip.insitu-rename"),
                         errorMessage: scope.msg("message.insitu-edit.name.failure")

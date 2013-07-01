@@ -1762,9 +1762,6 @@
        */
       _setupMetadataRenderers: function DL__setupMetadataRenderers()
       {
-         /**
-          *
-          */
          this.registerRenderer("i18nLabel", function(record, label)
          {
             // Just return the label, removing the trailing ": "
@@ -1923,18 +1920,13 @@
                      value: record.node.properties["cm:taggable"],
                      validations: [
                      {
-                        type: Alfresco.forms.validation.mandatory,
-                        when: "keyup",
-                        message: this.msg("validation-hint.mandatory")
-                     },
-                     {
                         type: Alfresco.forms.validation.nodeName,
                         when: "keyup",
                         message: this.msg("valscopeion-hint.nodeName")
                      },
                      {
                         type: Alfresco.forms.validation.length,
-                        args: { min: 1, max: 255, crop: true },
+                        args: { min: 1, max: 255, crop: true, ignoreEmpty: true },
                         when: "keyup",
                         message: this.msg("validation-hint.length.min.max", 1, 255)
                      }],
@@ -3773,6 +3765,7 @@
          record.isFavourite = !record.isFavourite;
          this.widgets.dataTable.updateRow(oRecord, record);
 
+         var fnPref = record.isFavourite ? "favouriteDocumentOrFolder" : "unFavouriteDocumentOrFolder";
          var responseConfig =
          {
             failureCallback:
@@ -3795,11 +3788,7 @@
                obj: row
             }
          };
-
-         var fnPref = record.isFavourite ? "add" : "remove",
-            prefKey = node.isContainer ? Alfresco.service.Preferences.FAVOURITE_FOLDERS : Alfresco.service.Preferences.FAVOURITE_DOCUMENTS;
-
-         this.services.preferences[fnPref].call(this.services.preferences, prefKey, nodeRef, responseConfig);
+         this.services.preferences[fnPref].call(this.services.preferences, node, responseConfig);
       },
       
       /**
@@ -3812,7 +3801,6 @@
       {
          this._resizeRowContainers();
       },
-
 
       /**
        * PRIVATE FUNCTIONS

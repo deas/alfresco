@@ -103,7 +103,7 @@
                      </#if>
                      <#if showComments == "true">
                      <span class="item item-separator item-social">
-                        <a href="#" name="@commentNode" rel="${nodeRef?js_string}" class="theme-color-1 comment ${id}" title="${msg("comment.${itemType}.tip")}" tabindex="0">${msg("comment.${itemType}.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
+                        <a href="#" name="@commentNode" rel="${item.nodeRef?html}" class="theme-color-1 comment ${id}" title="${msg("comment.${itemType}.tip")}" tabindex="0">${msg("comment.${itemType}.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
                      </span>
                      </#if>
                      <#if showQuickShare == "true">
@@ -116,7 +116,7 @@
                   <!-- Download Button -->
                   <span class="yui-button yui-link-button onDownloadDocumentClick">
                      <span class="first-child">
-                        <a href="${url.context}/proxy/alfresco/${node.contentURL?js_string}?a=true" tabindex="0">${msg("button.download")}</a>
+                        <a href="${url.context}/proxy/alfresco/${node.contentURL?html}?a=true" tabindex="0">${msg("button.download")}</a>
                      </span>
                   </span>
                </#if>

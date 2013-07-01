@@ -33,7 +33,7 @@ buildmenu:function(menuid, arrowsvar){
 					var menuleft=this.istopheader? 0 : this._dimensions.w
 					menuleft=(this._offsets.left+menuleft+this._dimensions.subulw>$(window).width())? (this.istopheader? -this._dimensions.subulw+this._dimensions.w : -this._dimensions.w) : menuleft
 					if ($targetul.queue().length<=1) //if 1 or less queued animations
-						$targetul.css({left:menuleft+"px", width:this._dimensions.subulw+'px'}).slideDown(jqueryslidemenu.animateduration.over)
+						$targetul.css({left:menuleft+"px", width:this._dimensions.subulw+'px', 'z-index':'1'}).slideDown(jqueryslidemenu.animateduration.over)
 				},
 				function(e){
 					var $targetul=$(this).children("ul:eq(0)")

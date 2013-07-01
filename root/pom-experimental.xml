@@ -145,7 +145,7 @@
     <db.password>alfresco</db.password>
 
     <!-- Maven specific build properties -->
-    <maven.build.sourceVersion>1.6</maven.build.sourceVersion>
+    <maven.build.sourceVersion>1.7</maven.build.sourceVersion>
     <maven.build.filtering.enabled>false</maven.build.filtering.enabled>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -167,15 +167,15 @@
 
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
-    <dependency.jibx.version>1.2.3</dependency.jibx.version>
+    <dependency.jibx.version>1.2.5</dependency.jibx.version>
     <dependency.tika.version>1.3-20121218</dependency.tika.version>
     <dependency.vorbisJava.version>0.3-20130206</dependency.vorbisJava.version>
     <dependency.opencmis.version>0.8.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.junit.version>4.11</dependency.junit.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
-    <dependency.surf.version>1.2.0-SNAPSHOT</dependency.surf.version>
-    <dependency.activiti.version>5.11-alf-20130104</dependency.activiti.version>
+    <dependency.surf.version>1.2.0-M7</dependency.surf.version>
+    <dependency.activiti.version>5.11-alf-20130627</dependency.activiti.version>
     <dependency.poi.version>3.9-beta1-20121109</dependency.poi.version>
   </properties>
   

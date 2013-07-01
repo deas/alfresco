@@ -193,4 +193,13 @@ public class SingleTServiceImpl implements TenantService
     {
         return false;
     }
+
+    /**
+     * In a single tenant system, always return the DEFAULT_DOMAIN.
+     * 
+     * @see TenantService
+     */
+	public String getPrimaryDomain(String user) {
+		return DEFAULT_DOMAIN;
+	}
 }

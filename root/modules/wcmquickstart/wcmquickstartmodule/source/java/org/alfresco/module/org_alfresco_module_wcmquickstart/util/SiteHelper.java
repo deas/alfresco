@@ -247,7 +247,8 @@ public class SiteHelper implements WebSiteModel
         SiteInfo siteInfo = getRelevantShareSite(noderef);
         NodeRef websiteId = getRelevantWebSite(noderef);
         NodeRef shareSiteId = siteInfo == null ? null : siteInfo.getNodeRef();
-        if (siteInfo != null && nodeService.exists(shareSiteId) && !nodeService.getNodeStatus(shareSiteId).isDeleted())
+        // ALF-18325 fix, check that site is not null, exists, is not deleted and is not being deleted
+        if (siteInfo != null && nodeService.exists(shareSiteId) && !nodeService.getNodeStatus(shareSiteId).isDeleted() && !nodeService.hasAspect(shareSiteId, ContentModel.ASPECT_PENDING_DELETE))
         {
             if (websiteId == null)
             {

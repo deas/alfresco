@@ -7,10 +7,13 @@
 }
 
 .alfresco-share .alf-search-box {
-   background-color: #ccc;
+   background-color: #eee;
    border-radius: 16px;
+   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) inset;
    color: #333;
    margin: 3px 20px 3px 10px;
+   padding: 0 0 2px 8px;
+   max-height: 20px;
 }
 
 .alfresco-share .alf-search-box-menu {
@@ -18,7 +21,7 @@
 }
 
 .alfresco-share .alf-search-box-text {
-   background-color: #ccc;
+   background-color: #eee;
    border: none !important;
    padding: 0 !important;
    margin-right: 8px;
@@ -45,6 +48,6 @@
 .alfresco-share .alf-header .alf-search-box-menu .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
    height: 16px;
    margin-top: 0;
-   padding-left: 2px;
+   margin-left: -2px;
    padding-right: 2px;
 }

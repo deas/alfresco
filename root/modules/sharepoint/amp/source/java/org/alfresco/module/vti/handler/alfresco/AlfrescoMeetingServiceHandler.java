@@ -156,7 +156,7 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         {
             throw new SiteTypeException("vti.meeting.error.bad_type");
         }
-        if (meeting.getSubject() == null)
+        if (meeting.getSubject() == null || meeting.getSubject().isEmpty())
         {
             throw new RuntimeException(getMessage("vti.meeting.error.no_subject"));
         }

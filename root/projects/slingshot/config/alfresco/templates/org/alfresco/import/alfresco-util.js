@@ -457,11 +457,11 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a org.json.simple.JSONObject
-                  pageMetadata = jsonUtils.toObject(pageMetadata);
+                  // Parse json using Java to a org.json.simple.JSONObject with an Arra
+                  pageMetadata = jsonUtils.toObject('{"tmp":[' + pageMetadata + ']}').tmp;
 
                   // Print object as json and use eval so we get a Rhino javascript object to execute as usual
-                  pageMetadata = eval("(" + pageMetadata.toString() + ")");
+                  pageMetadata = eval("(" + pageMetadata.toString() + ")")[0];
                }
                catch(e){
                   pageMetadata = {};

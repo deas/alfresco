@@ -329,10 +329,12 @@ define(["dojo/_base/declare",
       createWidgetDomNode: function alfresco_core_Core__createWidgetDomNode(widget, rootNode, rootClassName) {
          // Add a new <div> element to the "main" domNode (defined by the "data-dojo-attach-point"
          // in the HTML template)...
-         var className = (rootClassName) ? rootClassName : "";
-         var outerDiv = domConstruct.create("div", { className: className}, rootNode);
-         var innerDiv = domConstruct.create("div", {}, outerDiv);
-         return innerDiv;
+         var tmp = rootNode;
+         if (rootClassName != null && rootClassName != "")
+         {
+            tmp = domConstruct.create("div", { className: rootClassName}, rootNode);
+         }
+         return domConstruct.create("div", {}, tmp);
       },
       
       /**
@@ -408,51 +410,6 @@ define(["dojo/_base/declare",
                   declare.safeMixin(_this, mixinInstance);
                });
             });
-         }
-      },
-      
-      /**
-       * This function handles displaying popup messages. It currently uses the legacy YUI functions that are defined
-       * in alfresco.js and are expected to be available in the JavaScript global namespace until Share is merged
-       * completely to the new UI framework. At some point in time this function should be updated to use alternative
-       * means of displaying a message. 
-       * 
-       * @method displayMessage
-       * @param msg {String} The message to be displayed.
-       */
-      displayMessage: function alfresco_core_Core__displayMessage(msg) {
-         if (Alfresco && Alfresco.util && Alfresco.util.PopupManager)
-         {
-            Alfresco.util.PopupManager.displayMessage({
-               text: msg
-            });
-         }
-         else
-         {
-            this.alfLog("error", "Alfresco.util.PopupManager not available for handling displayMessage requests.");
-         }
-      },
-      
-      /**
-       * This function handles displaying popup messages that require some acknowledgement. 
-       * It currently uses the legacy YUI functions that are defined
-       * in alfresco.js and are expected to be available in the JavaScript global namespace until Share is merged
-       * completely to the new UI framework. At some point in time this function should be updated to use alternative
-       * means of displaying a message. 
-       * 
-       * @method displayMessage
-       * @param msg {String} The message to be displayed.
-       */
-      displayPrompt: function alfresco_core_Core__displayPrompt(msg) {
-         if (Alfresco && Alfresco.util && Alfresco.util.PopupManager)
-         {
-            Alfresco.util.PopupManager.displayPrompt({
-               text: msg
-            });
-         }
-         else
-         {
-            this.alfLog("error", "Alfresco.util.PopupManager not available for handling displayMessage requests.");
          }
       },
       

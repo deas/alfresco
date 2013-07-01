@@ -90,8 +90,16 @@
          enabled: ${((config.scoped["CSRFPolicy"]["filter"].getChildren("rule")?size > 0)?string)!false},
          cookie: "${config.scoped["CSRFPolicy"]["client"].getChildValue("cookie")!""}",
          header: "${config.scoped["CSRFPolicy"]["client"].getChildValue("header")!""}",
-         parameter: "${config.scoped["CSRFPolicy"]["client"].getChildValue("parameter")!""}"
-      };   
+         parameter: "${config.scoped["CSRFPolicy"]["client"].getChildValue("parameter")!""}",
+         properties: {}
+      };
+      <#if config.scoped["CSRFPolicy"]["properties"]??>
+         <#assign csrfProperties = (config.scoped["CSRFPolicy"]["properties"].children)![]>
+         <#list csrfProperties as csrfProperty>
+      Alfresco.constants.CSRF_POLICY.properties["${csrfProperty.name?js_string}"] = "${(csrfProperty.value!"")?js_string}";
+         </#list>
+      </#if>
+
       Alfresco.constants.IFRAME_POLICY =
       {
          sameDomain: "${config.scoped["IFramePolicy"]["same-domain"].value!"allow"}",
@@ -126,6 +134,8 @@
       <!-- Share Constants -->
       Alfresco.service.Preferences.FAVOURITE_DOCUMENTS = "org.alfresco.share.documents.favourites";
       Alfresco.service.Preferences.FAVOURITE_FOLDERS = "org.alfresco.share.folders.favourites";
+      Alfresco.service.Preferences.FAVOURITE_FOLDER_EXT = "org.alfresco.ext.folders.favourites.";
+      Alfresco.service.Preferences.FAVOURITE_DOCUMENT_EXT = "org.alfresco.ext.documents.favourites.";
       Alfresco.service.Preferences.FAVOURITE_SITES = "org.alfresco.share.sites.favourites";
       Alfresco.service.Preferences.IMAP_FAVOURITE_SITES = "org.alfresco.share.sites.imapFavourites";
       Alfresco.service.Preferences.COLLAPSED_TWISTERS = "org.alfresco.share.twisters.collapsed";

@@ -120,6 +120,12 @@
        */
       onReady: function DocumentVersions_onReady()
       {
+         var containerElement = Dom.get(this.id + "-olderVersions");
+         if (!containerElement)
+         {
+            return;
+         }
+         
          this.widgets.alfrescoDataTable = new Alfresco.util.DataTable(
          {
             dataSource:

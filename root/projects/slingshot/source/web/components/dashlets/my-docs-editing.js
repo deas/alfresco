@@ -126,40 +126,43 @@
          });
          
          // Execute the request to retrieve the list of wiki pages, blog and forum posts to display
-         Alfresco.util.Ajax.jsonRequest(
+         if (Dom.get(this.id + "-content-wait") !== null)
          {
-            url: Alfresco.constants.PROXY_URI + "slingshot/dashlets/my-contents",
-            successCallback:
+            Alfresco.util.Ajax.jsonRequest(
             {
-               fn: function(response)
+               url: Alfresco.constants.PROXY_URI + "slingshot/dashlets/my-contents",
+               successCallback:
                {
-                  var items = response.json,
-                      elTemplate = Dom.get(this.id + "-item-template");
-                  this.renderContentItems(items["blogPosts"].items, "-blogposts", "blog-postview?postId=", "blogpost-32.png", elTemplate);
-                  this.renderContentItems(items["wikiPages"].items, "-wikipages", "wiki-page?title=", "wikipage-32.png", elTemplate);
-                  this.renderContentItems(items["forumPosts"].items, "-forumposts", "discussions-topicview?topicId=", "topicpost-32.png", elTemplate);
-                  Dom.getElementsByClassName("relativeTime", "span", Dom.get(this.id + "-my-docs-dashlet"), function()
+                  fn: function(response)
                   {
-                     this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
-                  });
+                     var items = response.json,
+                         elTemplate = Dom.get(this.id + "-item-template");
+                     this.renderContentItems(items["blogPosts"].items, "-blogposts", "blog-postview?postId=", "blogpost-32.png", elTemplate);
+                     this.renderContentItems(items["wikiPages"].items, "-wikipages", "wiki-page?title=", "wikipage-32.png", elTemplate);
+                     this.renderContentItems(items["forumPosts"].items, "-forumposts", "discussions-topicview?topicId=", "topicpost-32.png", elTemplate);
+                     Dom.getElementsByClassName("relativeTime", "span", Dom.get(this.id + "-my-docs-dashlet"), function()
+                     {
+                        this.innerHTML = Alfresco.util.relativeTime(this.innerHTML);
+                     });
+                  },
+                  scope: this
                },
-               scope: this
-            },
-            failureCallback:
-            {
-               fn: function(response)
+               failureCallback:
                {
-                  // remove the ajax wait spinner
-                  Dom.addClass(this.id + "-content-wait", "hidden");
-                  
-                  // add the failure message inline
-                  var elMessage = Dom.get(this.id + "-message");
-                  elMessage.innerHTML += "<p>" + $html(response.json.message); + "</p>";
-                  Dom.removeClass(elMessage, "hidden");
-               },
-               scope: this
-            }
-         });
+                  fn: function(response)
+                  {
+                     // remove the ajax wait spinner
+                     Dom.addClass(this.id + "-content-wait", "hidden");
+                     
+                     // add the failure message inline
+                     var elMessage = Dom.get(this.id + "-message");
+                     elMessage.innerHTML += "<p>" + $html(response.json.message); + "</p>";
+                     Dom.removeClass(elMessage, "hidden");
+                  },
+                  scope: this
+               }
+            });
+         }
       },
       
       /**

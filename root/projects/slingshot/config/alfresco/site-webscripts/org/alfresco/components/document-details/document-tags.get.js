@@ -25,6 +25,7 @@ function main()
    var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
+      model.nodeRef = documentDetails.item.nodeRef;
       model.tags = DocumentTags.getTags(documentDetails.item);
       model.allowMetaDataUpdate = documentDetails.item.node.permissions.user["Write"] || false;
    }
