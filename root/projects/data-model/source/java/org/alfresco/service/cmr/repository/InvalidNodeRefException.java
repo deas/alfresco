@@ -38,7 +38,12 @@ public class InvalidNodeRefException extends RuntimeException
 
     public InvalidNodeRefException(String msg, NodeRef nodeRef)
     {
-        super(msg);
+        this(msg, nodeRef, null);
+    }
+
+    public InvalidNodeRefException(String msg, NodeRef nodeRef, Throwable cause)
+    {
+        super(msg, cause);
         this.nodeRef = nodeRef;
     }
 
