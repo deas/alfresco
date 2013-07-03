@@ -1289,7 +1289,7 @@ function getTitleBarModel() {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
                      user: user.name,
-                     userFullName: encodeURIComponent(user.fullName)
+                     userFullName: user.fullName
                   }
                }
             })
@@ -1339,7 +1339,7 @@ function getTitleBarModel() {
                         site: page.url.templateArgs.site,
                         siteTitle: siteData.profile.title,
                         user: user.name,
-                        userFullName: encodeURIComponent(user.fullName)
+                        userFullName: user.fullName
                      }
                   }
                },
@@ -1365,7 +1365,7 @@ function getTitleBarModel() {
                         site: page.url.templateArgs.site,
                         siteTitle: siteData.profile.title,
                         user: user.name,
-                        userFullName: encodeURIComponent(user.fullName)
+                        userFullName: user.fullName
                      }
                   }
                }
@@ -1386,7 +1386,7 @@ function getTitleBarModel() {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
                      user: user.name,
-                     userFullName: encodeURIComponent(user.fullName)
+                     userFullName: user.fullName
                   }
                }
             });
@@ -1406,7 +1406,7 @@ function getTitleBarModel() {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
                      user: user.name,
-                     userFullName: encodeURIComponent(user.fullName)
+                     userFullName: user.fullName
                   }
                }
             });
