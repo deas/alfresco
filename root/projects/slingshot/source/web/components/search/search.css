@@ -288,7 +288,7 @@
 /* collapse form-buttons div as it is not used */
 .search .form-container .form-buttons
 {
-   margin: 0;
+   margin: 2em;
    padding: 0;
 }
 
