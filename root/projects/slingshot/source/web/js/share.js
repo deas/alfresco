@@ -1805,16 +1805,15 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
          {
             this.actionsNode = document.createElement("div");
             Dom.addClass(this.actionsNode, "titleBarActions");  // This class sets the position of the actions.
-            if (YAHOO.env.ua.ie > 0)
+            if (YAHOO.env.ua.ie > 0 && YAHOO.env.ua.ie < 9)
             {
-               // IE doesn't handle the fading in/out very well so we won't do it. 
+               // IE 6-8 doesn't handle the fading in/out very well so we won't do it. 
                Dom.setStyle(this.actionsNode, "display", "none");
             }
             else
             {
                Dom.setStyle(this.actionsNode, "opacity", DASHLET_TITLE_BAR_ACTIONS_OPACITY);
             }
-          
 
             // Add the actions node before the dashlet body...
             this.dashlet.insertBefore(this.actionsNode, this.dashletBody);
