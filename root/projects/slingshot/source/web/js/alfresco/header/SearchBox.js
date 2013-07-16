@@ -138,7 +138,7 @@ define(["dojo/_base/declare",
        * @param {object} evt The keydown event
        */
       onSearchBoxKeyDown: function alfresco_header_SearchBox__onSearchBoxKeyDown(evt) {
-         if (evt.charCode == 0 && evt.keyCode == 13)
+         if (evt.keyCode === 13)
          {
             var terms = lang.trim(this._searchTextNode.value);
             if (terms.length !== 0)
