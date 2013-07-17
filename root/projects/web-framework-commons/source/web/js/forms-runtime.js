@@ -1538,10 +1538,9 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
          }
 
          // Use focused field as context for the error container ...
-         var errorFieldId = document.activeElement.id || null;
+         var errorFieldId = (document.activeElement && document.activeElement.id ? document.activeElement.id : null);
          if (notificationLevel >= Alfresco.forms.Form.NOTIFICATION_LEVEL_CONTAINER)
          {
-
             if ((event == null || event.type == "submit") && primaryErrorFieldId &&
                   (!warningsByField[errorFieldId] || warningsByField[errorFieldId].length == 0) &&
                   (!errorsByField[errorFieldId] || errorsByField[errorFieldId].length == 0))
