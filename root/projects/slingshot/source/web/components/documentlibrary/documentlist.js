@@ -4103,6 +4103,8 @@
          }
 
          // Build the URI stem
+         // NOTE: the %2525 double encoding madness is to cope with the fail of urlrewrite filter to correctly cope with encoded paths
+         // see urlrewrite.xml
          var uriPart = siteMode ? "site/{site}/{container}" : "node/alfresco/company/home",
             params = YAHOO.lang.substitute("{type}/" + uriPart + (obj.filter.filterId === "path" ? "{path}" : ""),
             {

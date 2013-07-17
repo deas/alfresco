@@ -615,6 +615,8 @@ var AlfrescoUtil =
     */
    getPaths: function getPaths(itemDetails, targetPage, targetPageLabel)
    {
+      // NOTE: the %2525 double encoding madness is to cope with the fail of urlrewrite filter to correctly cope with encoded paths
+      // see urlrewrite.xml
       var item = itemDetails.item,
          isContainer = item.node.isContainer,
          path = item.location.path,
@@ -642,7 +644,7 @@ var AlfrescoUtil =
                pathUrl += "/" + folders[x];
                paths.push(
                {
-                  href: targetPage + (y - x == 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl),
+                  href: targetPage + (y - x == 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl).replace(/%25/g,"%2525"),
                   label: folders[x],
                   cssClass: "folder-link " + (y - x == 1 ? "folder-closed" : "folder-open")
                });
@@ -667,7 +669,7 @@ var AlfrescoUtil =
                pathUrl += "/" + folders[x];
                paths.push(
                {
-                  href: targetPage + (y - x < 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl),
+                  href: targetPage + (y - x < 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl).replace(/%25/g,"%2525"),
                   label: folders[x],
                   cssClass: "folder-link folder-open"
                });
