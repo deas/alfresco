@@ -412,7 +412,7 @@ function getSiteNavigationWidgets() {
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
             id: "HEADER_SITE_DASHBOARD",
-            label: "Dashboard",
+            label: msg.get("page.siteDashboard.title"),
             targetUrl: "site/" + page.url.templateArgs.site + "/dashboard",
             selected: (page.titleId == "page.siteDashboard.title")
          }
@@ -435,7 +435,7 @@ function getSiteNavigationWidgets() {
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
             id: "HEADER_SITE_MEMBERS",
-            label: "Members",
+            label: msg.get("page.siteMembers.title"),
             targetUrl: "site/" + page.url.templateArgs.site + "/site-members",
             selected: (page.titleId == "page.siteMembers.title")
          }
