@@ -329,7 +329,6 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       leaveSiteRequest: function alf_services_SiteService__leaveSiteReqest(payload) {
-         
          this.displayPrompt({
             title: this.message("message.leave", { "0": payload.siteTitle}),
             textContent: this.message("message.leave-site-prompt", { "0": payload.siteTitle}),
@@ -372,6 +371,7 @@ define(["dojo/_base/declare",
                              user: config.user,
                              userFullName: config.userFullName,
                              successCallback: this.siteLeft,
+                             failureCallback: this.siteLeftFailure,
                              callbackScope: this});
          }
          else
@@ -395,11 +395,23 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
-      siteLeft: function alf_services_SiteService__siteJoined(response, originalRequestConfig) {
+      siteLeft: function alf_services_SiteService__siteLeft(response, originalRequestConfig) {
          this.alfLog("log", "User has successfully left a site", response, originalRequestConfig);
          this.displayMessage(this.message("message.leaving", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
          this.alfPublish("ALF_SITE_LEFT", { site: originalRequestConfig.site, user: originalRequestConfig.user});
          this.reloadPage();
+      },
+      
+      /**
+       * This function is called when a user has failued to leave a site.
+       * 
+       * @method siteLeftFailure
+       * @param {object} response The response from the XHR request to leave the site.
+       * @param {object} originalRequestConfig The original configuration passed when the request was made.
+       */
+      siteLeftFailure: function alf_services_SiteService__siteLeftFailure(response, originalRequestConfig) {
+         this.alfLog("log", "User has failed to leave a site", response, originalRequestConfig);
+         this.displayMessage(this.message("message.leave-failure", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
       },
       
       /**
