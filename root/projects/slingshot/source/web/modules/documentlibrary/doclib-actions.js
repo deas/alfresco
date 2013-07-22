@@ -315,7 +315,7 @@
          // No activities in Repository mode
          if (!Alfresco.util.isValueSet(siteId))
          {
-            if (callback)
+            if (typeof callback === "function")
             {
                callback();
             }
@@ -324,7 +324,7 @@
 
          var fnCallback = function()
          {
-            if (callback)
+            if (typeof callback === "function")
             {
                callback();
             }
