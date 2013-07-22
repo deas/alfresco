@@ -197,7 +197,7 @@ define(["dojo/_base/declare",
                   {
                      msg = msg.substring(eIndex + 20);
                   }
-                  this.displayPrompt(msg);
+                  this.displayMessage(msg);
                }
             }
             catch (e)
