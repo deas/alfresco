@@ -963,7 +963,7 @@ function generateAppItems() {
             id: "HEADER_SITES_MENU",
             label: "header.menu.sites.label",
             currentSite: page.url.templateArgs.site,
-            currentUser: encodeURIComponent(user.name)
+            currentUser: user.name
          }
       },
       {
