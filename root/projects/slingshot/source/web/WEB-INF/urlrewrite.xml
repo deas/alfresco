@@ -10,20 +10,12 @@
    
    <!-- Spring Surf -->
    <rule>
-      <from>^/proxy/(.*)\?(.*)</from>
-      <to>/page/proxy/${escape:$1}?$2</to>
-   </rule>
-   <rule>
       <from>^/proxy/(.*)</from>
-      <to>/page/proxy/${escape:$1}</to>
-   </rule>
-   <rule>
-      <from>^/service/(.*)\?(.*)</from>
-      <to>/page/${escape:$1}?$2</to>
+      <to>/page/proxy/$1</to>
    </rule>
    <rule>
       <from>^/service/(.*)</from>
-      <to>/page/${escape:$1}</to>
+      <to>/page/$1</to>
    </rule>
    <rule>
       <from>^/feedservice/(.*)</from>
