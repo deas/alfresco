@@ -2,13 +2,12 @@ function main()
 {
    // Repository Library root node
    var rootNode = "alfresco://company/home",
-      repoConfig = config.scoped["RepositoryLibrary"]["root-node"];
+       repoConfig = config.scoped["RepositoryLibrary"]["root-node"];
    
-   if (repoConfig !== null)
+   if (repoConfig !== null && repoConfig.value !== null)
    {
       rootNode = repoConfig.value;
    }
-   
    model.rootNode = rootNode;
    
    // Widget instantiation metadata...
