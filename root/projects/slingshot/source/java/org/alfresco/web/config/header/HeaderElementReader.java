@@ -73,9 +73,9 @@ public class HeaderElementReader implements ConfigElementReader
 
         // Set the maximum number of recent items that can be displayed...
         Element maxRecentSitesEl = headerElement.element(HeaderItemsElementReader.ELEMENT_MAX_RECENT_SITES);
-        Integer maxRecentSites = null;
-        if (maxRecentSites != null)
+        if (maxRecentSitesEl != null)
         {
+            Integer maxRecentSites = null;
             try
             {
                 maxRecentSites = Integer.parseInt(maxRecentSitesEl.getStringValue());
@@ -89,9 +89,9 @@ public class HeaderElementReader implements ConfigElementReader
 
         // Set the maximum number of site pages to display...
         Element maxDisplayedSitePagesEl = headerElement.element(HeaderItemsElementReader.ELEMENT_MAX_DISPLAYED_SITE_PAGES);
-        Integer maxDisplayedSitePages = null;
-        if (maxDisplayedSitePages != null)
+        if (maxDisplayedSitePagesEl != null)
         {
+            Integer maxDisplayedSitePages = null;
             try
             {
                 maxDisplayedSitePages = Integer.parseInt(maxDisplayedSitePagesEl.getStringValue());

@@ -90,7 +90,7 @@
              <value>${vti.server.port}</value>
         </property>
         <property name="headerBufferSize">
-             <value>8192</value>
+             <value>32768</value>
         </property>
     </bean>
 
@@ -104,7 +104,7 @@
              <value>${vti.server.port}</value>
         </property>
         <property name="headerBufferSize">
-             <value>8192</value>
+             <value>32768</value>
         </property>
         <property name="maxIdleTime">
              <value>30000</value>
@@ -229,17 +229,7 @@
                         </map>
                     </property>
                     <property name="action" ref="vtiUnlockAction"/>
-                </bean>
-                <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
-                    <property name="customRules">
-                        <map>
-                            <entry key="Request-method">
-                                <value>PUT</value>
-                            </entry>
-                        </map>
-                    </property>
-                    <property name="action" ref="vtiPutAction"/>
-                </bean>                
+                </bean>               
                 <bean class="org.alfresco.module.vti.web.VtiRequestDispatcher$ActionMapping">
                     <property name="customRules">
                         <map>
@@ -369,8 +359,6 @@
     <bean id="vtiDeleteAction" class="org.alfresco.module.vti.web.actions.VtiDeleteAction" parent="abstractDAVAction"/>
 
     <bean id="vtiLockAction" class="org.alfresco.module.vti.web.actions.VtiLockAction" parent="abstractDAVAction"/>
-
-    <bean id="vtiPutAction" class="org.alfresco.module.vti.web.actions.VtiPutAction" parent="abstractDAVAction"/>
 
     <bean id="vtiUnlockAction" class="org.alfresco.module.vti.web.actions.VtiUnlockAction" parent="abstractDAVAction"/>
 
@@ -1059,6 +1047,25 @@
         </property>
         <property name="sysAdminParams">
             <ref bean="sysAdminParams" />
+        </property>
+    </bean>
+    
+    <!-- JMX resporce for management -->
+    <bean id="VTIResource" parent="managedResource">
+        <property name="resource">
+            <bean class="org.alfresco.module.vti.management.SPPMBean">
+                <property name="port">
+                    <value>${vti.server.external.port}</value>
+                </property>
+                <property name="host">
+                    <value>${vti.server.external.host}</value>
+                </property>
+             </bean>
+        </property>
+ 
+        <!-- Make SPP look like a subsystem -->
+        <property name="objectName">
+            <value>Alfresco:Type=Configuration,Category=Sharepoint Protocol,id1=default</value>
         </property>
     </bean>
 

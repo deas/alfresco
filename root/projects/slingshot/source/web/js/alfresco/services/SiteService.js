@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/services/SiteService
+ * @extends module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreXhr
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
@@ -32,14 +39,15 @@ define(["dojo/_base/declare",
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance
+       * @type i18nRequirements {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/SiteService.properties"}],
       
       /**
        * Sets up the subscriptions for the SiteService
        * 
-       * @constructor 
+       * @instance 
        * @param {array} args The constructor arguments.
        */
       constructor: function alf_services_SiteService__constructor(args) {
@@ -66,7 +74,7 @@ define(["dojo/_base/declare",
        * in this service it requires a specific callback function and scope to be provided in the request
        * as it doesn't make sense to just publish site information.
        * 
-       * @method getSiteDetails
+       * @instance
        * @param {object} config An object with the details of the site to retrieve the data for.
        */
       getSiteDetails: function alf_services_SiteService__getSiteDetails(config) {
@@ -92,7 +100,7 @@ define(["dojo/_base/declare",
       /**
        * Publishes the details of a site on the requested topic. This is called
        * 
-       * @method publishSiteDetails
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -111,7 +119,7 @@ define(["dojo/_base/declare",
       /**
        * Handles requesting that a site be made a favourite.
        * 
-       * @method addSiteAsFavourite
+       * @instance
        * @param {config} config The payload containing the details of the site to add to the favourites list
        */
       addSiteAsFavourite: function alf_services_SiteService__addSiteAsFavourite(config) {
@@ -141,7 +149,7 @@ define(["dojo/_base/declare",
        * This handles successfully completed requests to remove a site from the favourites list for a user. It publishes the
        * details on "ALF_FAVOURITE_SITE_ADDED" topic.
        * 
-       * @method favouriteSiteAdded
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -154,7 +162,7 @@ define(["dojo/_base/declare",
       /**
        * Handles requesting that a site be removed from favourites
        * 
-       * @method removeSiteFromFavourites
+       * @instance
        * @param {config} config The payload containing the details of the site to remove from the favourites list
        */
       removeSiteFromFavourites: function alf_services_SiteService__removeSiteFromFavourites(config) {
@@ -180,7 +188,7 @@ define(["dojo/_base/declare",
        * This handles successfully completed requests to remove a site from the favourites list for a user. It publishes the
        * details on "ALF_FAVOURITE_SITE_REMOVED" topic.
        * 
-       * @method favouriteSiteRemoved
+       * @instance
        * @param {object} response The response from the XHR request to remove the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
@@ -192,7 +200,7 @@ define(["dojo/_base/declare",
       /**
        * Handles XHR posting to make a user a site manager.
        * 
-       * @method becomeSiteManager
+       * @instance
        * @param {object} data The payload containing the user status to post.
        */
       becomeSiteManager: function alf_services_SiteService__becomeSiteManager(config) {
@@ -223,7 +231,7 @@ define(["dojo/_base/declare",
        * Performs and XHR put request to make the user a member of the site. The argument supplied must include
        * the attributes "site" and "user" and can optionally include an attribute "role".
        * 
-       * @method joinSite
+       * @instance
        * @param {object} config The configuration for the join request. 
        */
       joinSite: function alf_services_SiteService__joinSite(config) {
@@ -266,7 +274,7 @@ define(["dojo/_base/declare",
       /**
        * This function is called when a user successfully joins a site.
        * 
-       * @method siteJoined
+       * @instance
        * @param {object} response The response from the XHR request to join the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
@@ -279,7 +287,7 @@ define(["dojo/_base/declare",
       /**
        * This method delegates site creation to the legacy YUI popup.
        * 
-       * @method createSite
+       * @instance
        * @param {string} site
        */
       createSite: function alf_services_SiteService__editSite(config) {
@@ -301,7 +309,7 @@ define(["dojo/_base/declare",
       /**
        * This method delegates site editing to the legacy YUI popup.
        * 
-       * @method editSite
+       * @instance
        * @param {string} site
        */
       editSite: function alf_services_SiteService__editSite(config) {
@@ -325,7 +333,7 @@ define(["dojo/_base/declare",
       /**
        * Handles a request to leave a site.
        * 
-       * @method leaveSiteRequest
+       * @instance
        * @param {object} payload
        */
       leaveSiteRequest: function alf_services_SiteService__leaveSiteReqest(payload) {
@@ -355,7 +363,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method leaveSite
+       * @instance
        * @param {string} site The name of the site to leave
        * @param {string} user The name of the user to leave the site
        */
@@ -391,7 +399,7 @@ define(["dojo/_base/declare",
       /**
        * This function is called when a user has successfully left a site.
        * 
-       * @method siteLeft
+       * @instance
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
@@ -399,7 +407,7 @@ define(["dojo/_base/declare",
          this.alfLog("log", "User has successfully left a site", response, originalRequestConfig);
          this.displayMessage(this.message("message.leaving", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
          this.alfPublish("ALF_SITE_LEFT", { site: originalRequestConfig.site, user: originalRequestConfig.user});
-         this.reloadPage();
+         this.leaveSiteSuccess();
       },
       
       /**
@@ -433,13 +441,9 @@ define(["dojo/_base/declare",
        * that a user can be immediately ejected from a site as soon as they are removed from it (e.g. A Site Manager
        * removes a user from a site and if that user is viewing the site they are "ejected").
        * 
-       * @method leaveSiteSuccess
-       * 
+       * @instance
        */
       leaveSiteSuccess: function alf_services_SiteService__leaveSiteSuccess(response, requestConfig) {
-         
-         // TODO: Check that the current user is viewing the site...
-         // TODO: Check that the user removed is the current user...
          window.location.href = Alfresco.constants.URL_CONTEXT;
       }
    });

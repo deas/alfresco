@@ -80,6 +80,7 @@ import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.CachingDateFormat.SimpleDateFormatAndResolution;
+import org.alfresco.util.GUID;
 import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
@@ -282,15 +283,16 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             "rock", "rôle", "rose", "filler" };
 
     private String[] orderLocaliseMLText_de = new String[] { "Arg", "Ärgerlich", "Arm", "Assistent", "Aßlar", "Assoziation", "Udet", "Übelacker", "Uell", "Ülle", "Ueve", "Üxküll",
-            "Uffenbach", "", "", "" };
+            "Uffenbach", "apple", "and", "aardvark" };
 
-    private String[] orderLocaliseMLText_fr = new String[] { "cote", "côte", "coté", "côté", "", "", "", "", "", "", "", "", "", "", "", "" };
+    private String[] orderLocaliseMLText_fr = new String[] { "cote", "côte", "coté", "côté", "rock", "lemur", "lemonade", "lemon", "kale", "guava", "cheese", "beans",
+            "bananana", "apple", "and", "aardvark" };
 
     private String[] orderLocaliseMLText_en = new String[] { "zebra", "tiger", "rose", "rôle", "rock", "lemur", "lemonade", "lemon", "kale", "guava", "cheese", "beans",
             "bananana", "apple", "and", "aardvark" };
 
     private String[] orderLocaliseMLText_es = new String[] { "radio", "ráfaga", "rana", "rápido", "rastrillo", "arroz", "campo", "chihuahua", "ciudad", "limonada", "llaves",
-            "luna", "", "", "", "" };
+            "luna", "bananana", "apple", "and", "aardvark" };
 
     /**
      * 
@@ -1082,6 +1084,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         orderTextCount = 0;
 
+       
+        
         try
         {
             boolean remove = true;
@@ -1112,12 +1116,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             properties.store(new FileOutputStream(config), null);
 
             // add core
+            
+            NamedList<Object> before = new SimpleOrderedMap<Object>();
+            rsp.add("Before", before);
 
             CoreDescriptor dcore = new CoreDescriptor(coreContainer, name, newCore.toString());
             dcore.setCoreProperties(null);
             SolrCore core = coreContainer.create(dcore);
             coreContainer.register(name, core, false);
-            rsp.add("core", core.getName());
+            before.add("core", core.getName());
 
             SolrResourceLoader loader = core.getSchema().getResourceLoader();
             String id = loader.getInstanceDir();
@@ -1129,7 +1136,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
             NodeRef rootNodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             addStoreRoot(core, dataModel, rootNodeRef, 1, 1, 1, 1);
-            rsp.add("RootNode", 1);
+            before.add("StoreRoot", 1);
 
             // 1
 
@@ -1385,29 +1392,29 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
             // run tests
 
-            checkRootNode(rsp, core, dataModel);
-            checkPaths(rsp, core, dataModel);
-            checkQNames(rsp, core, dataModel);
-            checkPropertyTypes(rsp, core, dataModel, testDate, n01NodeRef.toString());
-            checkType(rsp, core, dataModel);
-            checkText(rsp, core, dataModel);
-            checkMLText(rsp, core, dataModel);
-            checkAll(rsp, core, dataModel);
-            checkDataType(rsp, core, dataModel);
-            checkNullAndUnset(rsp, core, dataModel);
-            checkNonField(rsp, core, dataModel);
-            checkRanges(rsp, core, dataModel);
-            checkInternalFields(rsp, core, dataModel, n01NodeRef.toString());
-            checkAuthorityFilter(rsp, core, dataModel);
-            checkPaging(rsp, core, dataModel);
+            checkRootNode(before, core, dataModel);
+            checkPaths(before, core, dataModel);
+            checkQNames(before, core, dataModel);
+            checkPropertyTypes(before, core, dataModel, testDate, n01NodeRef.toString());
+            checkType(before, core, dataModel);
+            checkText(before, core, dataModel);
+            checkMLText(before, core, dataModel);
+            checkAll(before, core, dataModel);
+            checkDataType(before, core, dataModel);
+            checkNullAndUnset(before, core, dataModel);
+            checkNonField(before, core, dataModel);
+            checkRanges(before, core, dataModel);
+            checkInternalFields(before, core, dataModel, n01NodeRef.toString());
+            checkAuthorityFilter(before, core, dataModel);
+            checkPaging(before, core, dataModel);
 
-            testSort(rsp, core, dataModel);
+            testSort(before, core, dataModel);
 
             //
 
-            testAFTS(rsp, core, dataModel);
-            testAFTSandSort(rsp, core, dataModel);
-            testCMIS(rsp, core, dataModel);
+            testAFTS(before, core, dataModel);
+            testAFTSandSort(before, core, dataModel);
+            testCMIS(before, core, dataModel);
 
             long start = System.nanoTime();
             for (int i = 0; i < 100; i++)
@@ -1469,30 +1476,33 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                         "/" + n02QName.toString() + "/" + n13QNameLink + "/" + n14QName }, n15NodeRef, true);
             }
 
-            checkRootNode(rsp, core, dataModel);
-            checkPaths(rsp, core, dataModel);
-            checkQNames(rsp, core, dataModel);
-            checkPropertyTypes(rsp, core, dataModel, testDate, n01NodeRef.toString());
-            checkType(rsp, core, dataModel);
-            checkText(rsp, core, dataModel);
-            checkMLText(rsp, core, dataModel);
-            checkAll(rsp, core, dataModel);
-            checkDataType(rsp, core, dataModel);
-            checkNullAndUnset(rsp, core, dataModel);
-            checkNonField(rsp, core, dataModel);
-            checkRanges(rsp, core, dataModel);
+            NamedList<Object> after = new SimpleOrderedMap<Object>();
+            rsp.add("After", after);
+            
+            checkRootNode(after, core, dataModel);
+            checkPaths(after, core, dataModel);
+            checkQNames(after, core, dataModel);
+            checkPropertyTypes(after, core, dataModel, testDate, n01NodeRef.toString());
+            checkType(after, core, dataModel);
+            checkText(after, core, dataModel);
+            checkMLText(after, core, dataModel);
+            checkAll(after, core, dataModel);
+            checkDataType(after, core, dataModel);
+            checkNullAndUnset(after, core, dataModel);
+            checkNonField(after, core, dataModel);
+            checkRanges(after, core, dataModel);
 
-            testSort(rsp, core, dataModel);
-
-            //
-
-            testAFTS(rsp, core, dataModel);
-            testAFTSandSort(rsp, core, dataModel);
-            testCMIS(rsp, core, dataModel);
+            testSort(after, core, dataModel);
 
             //
 
-            testChildNameEscaping(rsp, core, dataModel, rootNodeRef);
+            testAFTS(after, core, dataModel);
+            testAFTSandSort(after, core, dataModel);
+            testCMIS(after, core, dataModel);
+
+            //
+
+            testChildNameEscaping(after, core, dataModel, rootNodeRef);
 
             // remove core
 
@@ -1818,7 +1828,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
                 NodeRef rootNodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
                 addStoreRoot(core, dataModel, rootNodeRef, 1, 1, 1, 1);
-                rsp.add("RootNode", 1);
+                rsp.add("StoreRootNode", 1);
 
                 // Base
 
@@ -1996,6 +2006,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     private void runCmisTests(SolrQueryRequest req, SolrQueryResponse rsp)
     {
 
+        TimeZone.setDefault(null);
         try
         {
             boolean remove = true;
@@ -2043,7 +2054,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
             NodeRef rootNodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             addStoreRoot(core, dataModel, rootNodeRef, 1, 1, 1, 1);
-            rsp.add("RootNode", 1);
+            rsp.add("StoreRootNode", 1);
 
             // Base
 
@@ -2229,7 +2240,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content01Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("AA%"));
             content01Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content01Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date01 = new Date();
+            Date date01 = new Date(date00.getTime() + 1000);
             content01Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date01)));
             content01Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date01)));
             HashMap<QName, String> content01Content = new HashMap<QName, String>();
@@ -2251,7 +2262,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content02Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("BB_"));
             content02Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content02Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date02 = new Date();
+            Date date02 = new Date(date01.getTime() + 1000);
             content02Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date02)));
             content02Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date02)));
             HashMap<QName, String> content02Content = new HashMap<QName, String>();
@@ -2273,7 +2284,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content03Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("CC\\"));
             content03Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content03Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date03 = new Date();
+            Date date03 = new Date(date02.getTime() + 1000);
             content03Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date03)));
             content03Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date03)));
             HashMap<QName, String> content03Content = new HashMap<QName, String>();
@@ -2295,7 +2306,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content04Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("DD\'"));
             content04Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content04Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date04 = new Date();
+            Date date04 = new Date(date03.getTime() + 1000);
             content04Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date04)));
             content04Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date04)));
             HashMap<QName, String> content04Content = new HashMap<QName, String>();
@@ -2318,7 +2329,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content05Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("EE.aa"));
             content05Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content05Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date05 = new Date();
+            Date date05 = new Date(date04.getTime() + 1000);
             content05Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date05)));
             content05Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date05)));
             content05Properties.put(ContentModel.PROP_EXPIRY_DATE,
@@ -2344,7 +2355,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content06Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("FF.EE"));
             content06Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content06Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date06 = new Date();
+            Date date06 = new Date(date05.getTime() + 1000);
             content06Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date06)));
             content06Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date06)));
             HashMap<QName, String> content06Content = new HashMap<QName, String>();
@@ -2378,7 +2389,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content07Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("GG*GG"));
             content07Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content07Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date07 = new Date();
+            Date date07 = new Date(date06.getTime() + 1000);
             content07Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date07)));
             content07Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date07)));
             HashMap<QName, String> content07Content = new HashMap<QName, String>();
@@ -2412,7 +2423,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content08Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("HH?HH"));
             content08Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content08Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date08 = new Date();
+            Date date08 = new Date(date07.getTime() + 1000);
             content08Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date08)));
             content08Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date08)));
             HashMap<QName, String> content08Content = new HashMap<QName, String>();
@@ -2446,7 +2457,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content09Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("aa"));
             content09Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content09Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date09 = new Date();
+            Date date09 = new Date(date08.getTime() + 1000);
             content09Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date09)));
             content09Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date09)));
             content09Properties.put(ContentModel.PROP_VERSION_LABEL, new StringPropertyValue("label"));
@@ -2482,7 +2493,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             content10Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("aa-thumb"));
             content10Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content10Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
-            Date date10 = new Date();
+            Date date10 = new Date(date09.getTime() + 1000);
             content10Properties.put(ContentModel.PROP_CREATED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date10)));
             content10Properties.put(ContentModel.PROP_MODIFIED, new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date10)));
             content10Properties.put(ContentModel.PROP_VERSION_LABEL, new StringPropertyValue("label"));
@@ -5066,15 +5077,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     /**
-     * @param rsp
+     * @param before
      * @param core
      * @param dataModel
      * @throws IOException
      */
-    private void testAFTS(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    private void testAFTS(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("AFS", report);
+        before.add("AFS", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID desc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null,
                 (String) null);
@@ -5302,10 +5313,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
     }
 
-    private void testSort(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    private void testSort(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Sort", report);
+        before.add("Sort", report);
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
                 (String) null);
@@ -5412,20 +5423,20 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 12, 13, 14, 16 }, null, null, null, (String) null);
     }
 
-    private void testCMIS(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    private void testCMIS(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("CMIS", report);
+        before.add("CMIS", report);
         testQueryByHandler(report, core, "/cmis", "select * from cmis:document", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "select * from cmis:document D WHERE CONTAINS(D,'lazy')", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT * FROM cmis:document D JOIN cm:ownable O ON D.cmis:objectId = O.cmis:objectId", 0, null, null, null, null, null,
                 (String) null);
     }
 
-    private void testAFTSandSort(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    private void testAFTSandSort(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("AFS and Sort", report);
+        before.add("AFS and Sort", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT.toString() + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
                 13, 14, 16, 15 }, null, null, null, (String) null);
@@ -5515,7 +5526,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         // TODO: report to rsp
 
         NamedList<Object> queryReport = new SimpleOrderedMap<Object>();
-        report.add(query, queryReport);
+        report.add(GUID.generate(), queryReport);
+        queryReport.add("Query", query);
 
         boolean passed = true;
         boolean ordered = true;
@@ -5640,13 +5652,13 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     /**
-     * @param rsp
+     * @param after
      * @param core
      * @param dataModel
      * @throws IOException
      * @throws org.apache.lucene.queryParser.ParseException
      */
-    private void testChildNameEscaping(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef) throws IOException,
+    private void testChildNameEscaping(NamedList<Object> after, SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef) throws IOException,
             org.apache.lucene.queryParser.ParseException
     {
         String COMPLEX_LOCAL_NAME = "\u0020\u0060\u00ac\u00a6\u0021\"\u00a3\u0024\u0025\u005e\u0026\u002a\u0028\u0029\u002d\u005f\u003d\u002b\t\n\\\u0000\u005b\u005d\u007b\u007d\u003b\u0027\u0023\u003a\u0040\u007e\u002c\u002e\u002f\u003c\u003e\u003f\\u007c\u005f\u0078\u0054\u0036\u0035\u0041\u005f";
@@ -5667,7 +5679,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 + pathNumericNameEscapingQName.toString() }, numericNameEscapingNodeRef, true);
 
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("TestChildNameEscaping", report);
+        after.add("TestChildNameEscaping", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -5739,15 +5751,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     }
 
     /**
-     * @param rsp
+     * @param before
      * @return
      * @throws IOException
      * @throws org.apache.lucene.queryParser.ParseException
      */
-    private void checkRootNode(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkRootNode(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("RootNode", report);
+        before.add("RootNode", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -5766,10 +5778,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkQNames(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkQNames(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("QNames", report);
+        before.add("QNames", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -5791,10 +5803,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkType(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkType(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Type", report);
+        before.add("Type", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -5831,10 +5843,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkText(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkText(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Text", report);
+        before.add("Text", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -5960,10 +5972,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkAll(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkAll(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("MLText", report);
+        before.add("ALL", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -5985,10 +5997,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkDataType(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkDataType(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("MLText", report);
+        before.add("DataType", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6009,10 +6021,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkNullAndUnset(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkNullAndUnset(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("ISNULL/ISUNSET/ISNOTNULL", report);
+        before.add("ISNULL/ISUNSET/ISNOTNULL", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6041,10 +6053,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkNonField(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkNonField(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("NonField", report);
+        before.add("NonField", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6073,10 +6085,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkRanges(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkRanges(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Ranges", report);
+        before.add("Ranges", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6097,11 +6109,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkInternalFields(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, String nodeRef) throws IOException,
+    private void checkInternalFields(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel, String nodeRef) throws IOException,
             org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Internal", report);
+        before.add("Internal", report);
 
         for (int i = 1; i < 16; i++)
         {
@@ -6242,10 +6254,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null, null, null, (String) null);
     }
 
-    private void checkAuthorityFilter(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkAuthorityFilter(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Read Access", report);
+        before.add("Read Access", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null, "{!afts}|AUTHORITY:andy");
@@ -6288,10 +6300,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null, "{!afts}|AUTHSET:\":andy:bob:cid\"");
     }
 
-    private void checkPaging(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkPaging(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Read Access", report);
+        before.add("Paging", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
                 (String) null);
@@ -6301,10 +6313,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 13, 14, 15, 16 }, null, 6, 12, (String) null);
     }
 
-    private void checkMLText(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private void checkMLText(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("MLText", report);
+        before.add("MLText", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6385,11 +6397,11 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private void checkPropertyTypes(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, Date testDate, String n01NodeRef) throws IOException,
+    private void checkPropertyTypes(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel, Date testDate, String n01NodeRef) throws IOException,
             org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("PropertyTypes", report);
+        before.add("PropertyTypes", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6467,51 +6479,67 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 }
 
                 String sDate = df.getSimpleDateFormat().format(testDate);
+                
+                NamedList<Object> subReport = new SimpleOrderedMap<Object>();
+                report.add(sDate, subReport);
+                
 
                 if (sDate.length() >= 9)
                 {
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":\"" + sDate + "\"", 1);
                 }
-                testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
                         + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":\"" + sDate + "\"", 1);
 
                 sDate = df.getSimpleDateFormat().format(date);
-                testQuery(dataModel, report, solrIndexSearcher, "\\@cm\\:CrEaTeD:[MIN TO " + sDate + "]", 1);
-                testQuery(dataModel, report, solrIndexSearcher, "\\@cm\\:created:[MIN TO NOW]", 1);
-                testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(ContentModel.PROP_CREATED.toString()) + ":[MIN TO " + sDate + "]", 1);
+                testQuery(dataModel, subReport, solrIndexSearcher, "\\@cm\\:CrEaTeD:[MIN TO " + sDate + "]", 1);
+                testQuery(dataModel, subReport, solrIndexSearcher, "\\@cm\\:created:[MIN TO NOW]", 1);
+                testQuery(dataModel, subReport, solrIndexSearcher, "\\@" + SolrQueryParser.escape(ContentModel.PROP_CREATED.toString()) + ":[MIN TO " + sDate + "]", 1);
 
                 if (sDate.length() >= 9)
                 {
                     sDate = df.getSimpleDateFormat().format(testDate);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[" + sDate + " TO " + sDate + "]", 1);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[MIN  TO " + sDate + "]", 1);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[" + sDate + " TO MAX]", 1);
                 }
 
                 sDate = CachingDateFormat.getDateFormat().format(testDate);
-                testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
                         + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[MIN TO " + sDate + "]", 1);
 
                 sDate = df.getSimpleDateFormat().format(testDate);
                 for (long i : new long[] { 333, 20000, 20 * 60 * 1000, 8 * 60 * 60 * 1000, 10 * 24 * 60 * 60 * 1000, 4 * 30 * 24 * 60 * 60 * 1000,
                         10 * 12 * 30 * 24 * 60 * 60 * 1000 })
                 {
+                    NamedList<Object> subSubReport1 = new SimpleOrderedMap<Object>();
+                    NamedList<Object> subSubReport2 = new SimpleOrderedMap<Object>();
+                    NamedList<Object> subSubReport3 = new SimpleOrderedMap<Object>();
+                    NamedList<Object> subSubReport4 = new SimpleOrderedMap<Object>();
+                    NamedList<Object> subSubReport5 = new SimpleOrderedMap<Object>();
+                    
+                    subReport.add("1_"+i, subSubReport1);
+                    subReport.add("2_"+i, subSubReport2);
+                    subReport.add("3_"+i, subSubReport3);
+                    subReport.add("4_"+i, subSubReport4);
+                    subReport.add("5_"+i, subSubReport5);
+                    
                     String startDate = df.getSimpleDateFormat().format(new Date(testDate.getTime() - i));
                     String endDate = df.getSimpleDateFormat().format(new Date(testDate.getTime() + i));
 
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subSubReport1, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + startDate + " TO " + endDate + "]", 1);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subSubReport2, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + sDate + " TO " + endDate + "]", 1);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subSubReport3, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + startDate + " TO " + sDate + "]", 1);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subSubReport4, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":{" + sDate + " TO " + endDate + "}", 0);
-                    testQuery(dataModel, report, solrIndexSearcher, "\\@"
+                    testQuery(dataModel, subSubReport5, solrIndexSearcher, "\\@"
                             + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":{" + startDate + " TO " + sDate + "}", 0);
 
                 }
@@ -6590,10 +6618,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    private String checkPaths(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
+    private String checkPaths(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
-        rsp.add("Paths", report);
+        before.add("Paths", report);
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
@@ -6708,19 +6736,23 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         long start = System.nanoTime();
         Query query = dataModel.getLuceneQueryParser(searchParameters, solrIndexSearcher.getIndexReader()).parse(queryString);
         TopDocs docs = solrIndexSearcher.search(query, count * 2 + 10);
+        
+        NamedList<Object> subReport = new SimpleOrderedMap<Object>();
+        report.add(GUID.generate(), subReport);
+        
         long end = System.nanoTime();
         if (count != null)
         {
             if (docs.totalHits != count)
             {
-                report.add("FAILED: " + fixQueryString(queryString, name), docs.totalHits);
+                subReport.add("FAILED: " + fixQueryString(queryString, name), docs.totalHits);
             }
             else
             {
-                report.add("Passed: " + fixQueryString(queryString, name), docs.totalHits);
+                subReport.add("Passed: " + fixQueryString(queryString, name), docs.totalHits);
             }
         }
-        report.add("Time (s): " + fixQueryString(queryString, name), ((end - start) / 1000000000.0f));
+        subReport.add("Time (s): " + fixQueryString(queryString, name), ((end - start) / 1000000000.0f));
     }
 
     private void testFTSQuery(AlfrescoSolrDataModel dataModel, NamedList<Object> report, SolrIndexSearcher solrIndexSearcher, String queryString, Integer count, Locale locale,
@@ -6750,19 +6782,23 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         long start = System.nanoTime();
         Query query = dataModel.getFTSQuery(new Pair<SearchParameters, Boolean>(searchParameters, Boolean.FALSE), solrIndexSearcher.getIndexReader());
         TopDocs docs = solrIndexSearcher.search(query, count * 2 + 10);
+        
+        NamedList<Object> subReport = new SimpleOrderedMap<Object>();
+        report.add(GUID.generate(), subReport);
+        
         long end = System.nanoTime();
         if (count != null)
         {
             if (docs.totalHits != count)
             {
-                report.add("FAILED: " + fixQueryString(queryString, name), docs.totalHits);
+                subReport.add("FAILED: " + fixQueryString(queryString, name), docs.totalHits);
             }
             else
             {
-                report.add("Passed: " + fixQueryString(queryString, name), docs.totalHits);
+                subReport.add("Passed: " + fixQueryString(queryString, name), docs.totalHits);
             }
         }
-        report.add("Time (s): " + fixQueryString(queryString, name), ((end - start) / 1000000000.0f));
+        subReport.add("Time (s): " + fixQueryString(queryString, name), ((end - start) / 1000000000.0f));
     }
 
     private String fixQueryString(String queryString, String... name)
@@ -7193,28 +7229,57 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         long lastTxIdOnServer = tracker.getLastTxIdOnServer();
         Date lastIndexTxCommitDate = new Date(lastIndexTxCommitTime);
         Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
-
+        long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
+        if(transactionsToDo < 0)
+        {
+            transactionsToDo = 0;
+        }
+        
         long lastIndexChangeSetCommitTime = tracker.getLastIndexedChangeSetCommitTime();
         long lastIndexedChangeSetId = tracker.getLastIndexedChangeSetId();
         long lastChangeSetCommitTimeOnServer = tracker.getLastChangeSetCommitTimeOnServer();
         long lastChangeSetIdOnServer = tracker.getLastChangeSetIdOnServer();
         Date lastIndexChangeSetCommitDate = new Date(lastIndexChangeSetCommitTime);
         Date lastChangeSetOnServerDate = new Date(lastChangeSetCommitTimeOnServer);
+        long changeSetsToDo = lastChangeSetIdOnServer - lastIndexedChangeSetId;
+        if(changeSetsToDo < 0)
+        {
+            changeSetsToDo = 0;
+        }
 
-        long remainingTxTimeMillis = (long) ((lastTxIdOnServer - lastIndexedTxId) * tracker.getTrackerStats().getMeanDocsPerTx() * tracker.getTrackerStats().getMeanNodeIndexTime() / tracker
+        long remainingTxTimeMillis = (long) (transactionsToDo * tracker.getTrackerStats().getMeanDocsPerTx() * tracker.getTrackerStats().getMeanNodeIndexTime() / tracker
                 .getTrackerStats().getNodeIndexingThreadCount());
         Date now = new Date();
         Date end = new Date(now.getTime() + remainingTxTimeMillis);
         Duration remainingTx = new Duration(now, end);
 
-        long remainingChangeSetTimeMillis = (long) ((lastChangeSetIdOnServer - lastIndexedChangeSetId)
+        long remainingChangeSetTimeMillis = (long) (changeSetsToDo
                 * tracker.getTrackerStats().getMeanAclsPerChangeSet() * tracker.getTrackerStats().getMeanAclIndexTime() / tracker.getTrackerStats().getNodeIndexingThreadCount());
         now = new Date();
         end = new Date(now.getTime() + remainingChangeSetTimeMillis);
         Duration remainingChangeSet = new Duration(now, end);
 
         Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
+        if(lastIndexTxCommitDate.compareTo(lastTxOnServerDate) > 0)
+        {
+            txLag = new Duration();
+        }
+        long txLagSeconds = (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000;
+        if(txLagSeconds < 0)
+        {
+            txLagSeconds = 0;
+        }
+        
         Duration changeSetLag = new Duration(lastIndexChangeSetCommitDate, lastChangeSetOnServerDate);
+        if(lastIndexChangeSetCommitDate.compareTo(lastChangeSetOnServerDate) > 0)
+        {
+            changeSetLag = new Duration();
+        }
+        long changeSetLagSeconds =  (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000;
+        if(txLagSeconds < 0)
+        {
+            txLagSeconds = 0;
+        }
 
         coreSummary.add("Active", tracker.isRunning());
 
@@ -7222,26 +7287,26 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         coreSummary.add("Last Index TX Commit Time", lastIndexTxCommitTime);
         coreSummary.add("Last Index TX Commit Date", lastIndexTxCommitDate);
-        coreSummary.add("TX Lag", (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000 + " s");
+        coreSummary.add("TX Lag",  txLagSeconds+ " s");
         coreSummary.add("TX Duration", txLag.toString());
         coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
         coreSummary.add("Date for last TX on server", lastTxOnServerDate);
         coreSummary.add("Id for last TX on server", lastTxIdOnServer);
         coreSummary.add("Id for last TX in index", lastIndexedTxId);
-        coreSummary.add("Approx transactions remaining", lastTxIdOnServer - lastIndexedTxId);
+        coreSummary.add("Approx transactions remaining", transactionsToDo);
         coreSummary.add("Approx transaction indexing time remaining", remainingTx.largestComponentformattedString());
 
         // Change set
 
         coreSummary.add("Last Index Change Set Commit Time", lastIndexChangeSetCommitTime);
         coreSummary.add("Last Index Change Set Commit Date", lastIndexChangeSetCommitDate);
-        coreSummary.add("Change Set Lag", (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000 + " s");
+        coreSummary.add("Change Set Lag", changeSetLagSeconds + " s");
         coreSummary.add("Change Set Duration", changeSetLag.toString());
         coreSummary.add("Timestamp for last Change Set on server", lastChangeSetCommitTimeOnServer);
         coreSummary.add("Date for last Change Set on server", lastChangeSetOnServerDate);
         coreSummary.add("Id for last Change Set on server", lastChangeSetIdOnServer);
         coreSummary.add("Id for last Change Set in index", lastIndexedChangeSetId);
-        coreSummary.add("Approx change sets remaining", lastChangeSetIdOnServer - lastIndexedChangeSetId);
+        coreSummary.add("Approx change sets remaining", changeSetsToDo);
         coreSummary.add("Approx change set indexing time remaining", remainingChangeSet.largestComponentformattedString());
 
         // Stats

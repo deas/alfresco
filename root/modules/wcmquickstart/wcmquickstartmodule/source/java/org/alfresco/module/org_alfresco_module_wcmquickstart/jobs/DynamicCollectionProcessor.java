@@ -19,11 +19,15 @@ package org.alfresco.module.org_alfresco_module_wcmquickstart.jobs;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.WebassetCollectionHelper;
 import org.alfresco.repo.admin.RepositoryState;
+import org.alfresco.repo.lock.JobLockService;
+import org.alfresco.repo.lock.JobLockService.JobLockRefreshCallback;
+import org.alfresco.repo.lock.LockAcquisitionException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
@@ -32,7 +36,10 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
+import org.alfresco.util.VmShutdownListener.VmShutdownException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -47,6 +54,12 @@ public class DynamicCollectionProcessor implements WebSiteModel
 	/** Query */
 	private static final String QUERY = "+ TYPE:\"ws:webassetCollection\" + @ws\\:isDynamic:true";
 	
+    /** The time this lock will persist in the database (60 sec but refreshed at regular intervals) */
+    private static final long LOCK_TTL = 60000L;
+
+    /** The name of the lock used to ensure that feedback processor does not run on more than one node at the same time */
+    private static final QName LOCK_QNAME = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.DynamicCollectionProcessor");
+
 	/** Transaction service */
     private TransactionService transactionService;
     
@@ -61,6 +74,18 @@ public class DynamicCollectionProcessor implements WebSiteModel
     
     /** Repository State */
     private RepositoryState repositoryState;
+    
+    /** Job Lock service **/
+    private JobLockService jobLockService;
+    
+    /**
+     * Sets the job lock service
+     * @param jobLockService   service for managing job locks
+     */
+    public void setJobLockService(JobLockService jobLockService)
+    {
+        this.jobLockService = jobLockService;
+    }
     
     /**
      * Sets the repository state
@@ -107,6 +132,28 @@ public class DynamicCollectionProcessor implements WebSiteModel
         this.collectionHelper = collectionHelper;
     }
 
+
+    private class LockCallback implements JobLockRefreshCallback
+    {
+        final AtomicBoolean running = new AtomicBoolean(true);
+
+        @Override
+        public boolean isActive()
+        {
+            return running.get();
+        }
+
+        @Override
+        public void lockReleased()
+        {
+            running.set(false);
+            if (log.isDebugEnabled())
+            {
+                log.debug("Lock released : " + LOCK_QNAME);
+            }
+        }
+    }
+
     /**
      * Run the processor job.  Refreshing any dynamic queries who's refresh date is before today.
      */
@@ -120,6 +167,65 @@ public class DynamicCollectionProcessor implements WebSiteModel
             }
             return;
         }
+        
+        LockCallback lockCallback = new LockCallback();
+        String lockToken = null;
+        try
+        {
+            lockToken = jobLockService.getLock(LOCK_QNAME, LOCK_TTL);
+            if (lockToken == null)
+            {
+                if (log.isTraceEnabled())
+                {
+                    log.trace("Can't get lock : " + LOCK_QNAME);
+                }
+                return;
+            }
+
+            if (log.isDebugEnabled())
+            {
+                log.trace("Activities dynamicCollection processor started");
+            }
+
+            jobLockService.refreshLock(lockToken, LOCK_QNAME, LOCK_TTL, lockCallback);
+
+            runInternal();
+
+            // Done
+            if (log.isDebugEnabled())
+            {
+                log.trace("Activities dynamicCollection processor completed");
+            }
+        }
+        catch (LockAcquisitionException e)
+        {
+            // Job being done by another process
+            if (log.isDebugEnabled())
+            {
+                log.debug("Activities dynamicCollection processor already underway");
+            }
+        }
+        catch (VmShutdownException e)
+        {
+            // Aborted
+            if (log.isDebugEnabled())
+            {
+                log.debug("Activities dynamicCollection processor aborted");
+            }
+        }
+        finally
+        {
+            // The lock will self-release if answer isActive in the negative
+            lockCallback.running.set(false);
+            if (lockToken != null)
+            {
+                jobLockService.releaseLock(lockToken, LOCK_QNAME);
+            }
+        }
+    }
+
+    private void runInternal()
+    {
         AuthenticationUtil.runAs(new RunAsWork<Object>()
         {
             @Override

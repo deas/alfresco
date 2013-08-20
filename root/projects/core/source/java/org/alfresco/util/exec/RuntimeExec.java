@@ -138,7 +138,8 @@ public class RuntimeExec
           .append("   command:    ");
         if (command == null)
         {
-            sb.append(command).append("\n");
+            // command is 'null', so there's nothing to toString
+            sb.append("'null'\n");
         }
         else
         {
@@ -722,7 +723,7 @@ public class RuntimeExec
             boolean arg = false;
             for (String element: command)
             {
-                if (command == null)
+                if (element == null)
                 {
                     continue;
                 }

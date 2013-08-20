@@ -40,6 +40,11 @@ public class FTPConfigSection extends ConfigSection {
   
   public static final String SectionName = "FTP";
 
+  // Default key store/trust store types
+  
+  public static final String DefaultKeyStoreType	= "JKS";
+  public static final String DefaultTrustStoreType	= "JKS";
+  
   //  Bind address and FTP server port. A port of -1 indicates do not start FTP server.
   
   private InetAddress m_ftpBindAddress;
@@ -59,7 +64,7 @@ public class FTPConfigSection extends ConfigSection {
   private int m_ftpDataPortLow;
   private int m_ftpDataPortHigh;
   
-  //  FTP authenticaor interface
+  //  FTP authenticator interface
   
   private FTPAuthenticator m_ftpAuthenticator;
   
@@ -81,12 +86,15 @@ public class FTPConfigSection extends ConfigSection {
   
   // FTPS configuration
   //
-  // Path to the keystore/truststore files
+  // Keystore/truststore details
   
   private String m_keyStorePath;
-  private String m_trustStorePath;
+  private String m_keyStoreType = DefaultKeyStoreType;
+  private char[] m_keyStorePass;
   
-  private char[] m_passphrase;
+  private String m_trustStorePath;
+  private String m_trustStoreType = DefaultTrustStoreType;
+  private char[] m_trustStorePass;
   
   // Only allow FTPS/encrypted session logons
   
@@ -246,7 +254,8 @@ public class FTPConfigSection extends ConfigSection {
    * @return boolean
    */
   public final boolean isFTPSEnabled() {
-	  if ( getKeyStorePath() != null && getTrustStorePath() != null && getPassphrase() != null)
+      // MNT-7301 FTPS server requires unnecessarly to have a trustStore while a keyStore should be sufficient
+	  if ( getKeyStorePath() != null)
 		  return true;
 	  return false;
   }
@@ -261,6 +270,15 @@ public class FTPConfigSection extends ConfigSection {
   }
   
   /**
+   * Return the key store type
+   * 
+   * @return String
+   */
+  public final String getKeyStoreType() {
+	  return m_keyStoreType;
+  }
+  
+  /**
    * Return the trust store path
    * 
    * @return String
@@ -268,14 +286,32 @@ public class FTPConfigSection extends ConfigSection {
   public final String getTrustStorePath() {
 	  return m_trustStorePath;
   }
+
+  /**
+   * Return the trust store type
+   * 
+   * @return String
+   */
+  public final String getTrustStoreType() {
+	  return m_trustStoreType;
+  }
   
   /**
-   * Return the passphrase for the key store/trust store
+   * Return the passphrase for the key store
    * 
    * @return char[]
    */
-  public final char[] getPassphrase() {
-	  return m_passphrase;
+  public final char[] getKeyStorePassphrase() {
+	  return m_keyStorePass;
+  }
+  
+  /**
+   * Return the passphrase for the trust store
+   * 
+   * @return char[]
+   */
+  public final char[] getTrustStorePassphrase() {
+	  return m_trustStorePass;
   }
   
   /**
@@ -584,6 +620,28 @@ public class FTPConfigSection extends ConfigSection {
   }
   
   /**
+   * Set the key store type
+   * 
+   * @param typ String
+   * @return int
+   */
+  public final int setKeyStoreType(String typ)
+	  throws InvalidConfigurationException {
+
+	  //  Inform listeners, validate the configuration change
+	    
+	  int sts = fireConfigurationChange(ConfigId.FTPKeyStoreType, typ);
+
+	  //  Set the key store type
+
+	  m_keyStoreType = typ;
+	      
+	  //  Return the change status
+	    
+	  return sts;
+  }
+  
+  /**
    * Set the trust store path
    * 
    * @param path String
@@ -606,21 +664,65 @@ public class FTPConfigSection extends ConfigSection {
   }
   
   /**
-   * Set the key/trust store passphrase
+   * Set the trust store type
    * 
-   * @param passphrase String
+   * @param typ String
    * @return int
    */
-  public final int setPassphrase(String passphrase)
+  public final int setTrustStoreType(String typ)
   	throws InvalidConfigurationException {
 
 	  //  Inform listeners, validate the configuration change
 	    
-	  int sts = fireConfigurationChange(ConfigId.FTPPassphrase, passphrase);
+	  int sts = fireConfigurationChange(ConfigId.FTPTrustStoreType, typ);
 	
-	  //  Set the key/trust store passphrase
+	  //  Set the trust store type
 	
-	  m_passphrase = passphrase.toCharArray();
+	  m_trustStoreType = typ;
+	      
+	  //  Return the change status
+	    
+	  return sts;
+  }
+  
+  /**
+   * Set the key store passphrase
+   * 
+   * @param passphrase String
+   * @return int
+   */
+  public final int setKeyStorePassphrase(String passphrase)
+  	throws InvalidConfigurationException {
+
+	  //  Inform listeners, validate the configuration change
+	    
+	  int sts = fireConfigurationChange(ConfigId.FTPKeyPassphrase, passphrase);
+	
+	  //  Set the key store passphrase
+	
+	  m_keyStorePass = passphrase.toCharArray();
+	      
+	  //  Return the change status
+	    
+	  return sts;
+  }
+  
+  /**
+   * Set the trust store passphrase
+   * 
+   * @param passphrase String
+   * @return int
+   */
+  public final int setTrustStorePassphrase(String passphrase)
+  	throws InvalidConfigurationException {
+
+	  //  Inform listeners, validate the configuration change
+	    
+	  int sts = fireConfigurationChange(ConfigId.FTPTrustPassphrase, passphrase);
+	
+	  //  Set the trust store passphrase
+	
+	  m_trustStorePass = passphrase.toCharArray();
 	      
 	  //  Return the change status
 	    

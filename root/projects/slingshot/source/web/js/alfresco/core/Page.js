@@ -16,14 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is used as the default root object when instantiating a page. There should be no need
+ * to ever instantiate this widget directly.
+ * 
+ * @module alfresco/core/Page
+ * @extends module:alfresco/core/ProcessWidgets
+ * @author Dave Draper
+ */
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
         "dojo/dom-construct",
-        "dojo/_base/array"], 
-        function(ProcessWidgets, declare, domConstruct, array) {
+        "dojo/_base/array",
+        "dojo/_base/lang"], 
+        function(ProcessWidgets, declare, domConstruct, array, lang) {
    
    return declare([ProcessWidgets], {
-      postCreate: function() {
+      
+      /**
+       * Overrides the superclass implementation to call [processServices]{@link module:alfresco/core/Core#processServices}
+       * and [processWidgets]{@link module:alfresco/core/Core#processWidgets} as applicable.
+       * 
+       * @instance
+       */
+      postCreate: function alfresco_core_Page__postCreate() {
          
          if (this.services)
          {
@@ -34,9 +51,37 @@ define(["alfresco/core/ProcessWidgets",
          {
             this.processWidgets(this.widgets, this.containerNode);
          }
+      },
+      
+      /**
+       * @instance
+       */
+      allWidgetsProcessed: function alfresco_core_Page__allWidgetsProcessed(widgets) {
+         this.alfLog("log", "All page widgets processed");
+         // TODO: Need to be able to notify widgets that they can start publications in the knowledge that other widgets are available
+         // to respond...
          
-         this.alfLog("log", "Page widgets and service processed", {});
-         this.alfPublish("PageReady", {});
+         if (this.publishOnLoad != null)
+         {
+            array.forEach(this.publishOnLoad, lang.hitch(this, "onLoadPublish"));
+         }
+      },
+      
+      /**
+       * @instance
+       */
+      onLoadPublish: function alfresco_core_Page__onLoadPublish(publicationDetails) {
+         if (publicationDetails != null && 
+             publicationDetails.publishTopic != null &&
+             publicationDetails.publishTopic != "")
+         {
+            this.alfLog("log", "Onload publication", publicationDetails);
+            this.alfPublish(publicationDetails.publishTopic, publicationDetails.publishPayload);
+         }
+         else
+         {
+            this.alfLog("warn", "The page was configured with an onload publication but no 'publishTopic' was provided", publicationDetails, this);
+         }
       }
    });
 });

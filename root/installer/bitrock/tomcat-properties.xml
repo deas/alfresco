@@ -1,6 +1,6 @@
 <component>
     <name>tomcatwriteproperties</name>
-    <description>Tomcat Write Properties</description>
+    <description>//Tomcat Write Properties</description>
     <canBeEdited>0</canBeEdited>
     <show>0</show>
     <selected>1</selected>
@@ -58,6 +58,32 @@
                         <platformTest type="windows"/>
                     </ruleList>
                 </iniFileGet>
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>${installdir}/properties.ini</file>
+                            <section>Tomcat</section>
+                            <key>tomcat_user</key>
+                            <variable>tomcat_user</variable>
+                        </iniFileGet>
+                        <setInstallerVariable name="tomcat_user" value="tomcat" >
+                            <ruleList>
+                                <compareText text="${tomcat_user}" logic="equals" value=""/>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <iniFileGet>
+                            <file>${installdir}/properties.ini</file>
+                            <section>Tomcat</section>
+                            <key>tomcat_group</key>
+                            <variable>tomcat_group</variable>
+                        </iniFileGet>
+                        <setInstallerVariable name="tomcat_group" value="tomcat" >
+                            <ruleList>
+                                <compareText text="tomcat_group" logic="equals" value=""/>
+                            </ruleList>
+                        </setInstallerVariable>
+                    </actionList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <fileExists path="${installdir}/properties.ini"/>
@@ -116,6 +142,25 @@
                 <platformTest type="windows"/>
             </ruleList>
         </iniFileSet>
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>Tomcat</section>
+                    <key>tomcat_group</key>
+                    <value>${tomcat_group}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>Tomcat</section>
+                    <key>tomcat_user</key>
+                    <value>${tomcat_user}</value>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <platformTest type="unix" />
+            </ruleList>
+        </actionGroup>
     </postInstallationActionList>
 </component>
 

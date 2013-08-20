@@ -162,7 +162,7 @@
          var renderCellModificationDate = function ConsoleTagManagement_onReady_renderCellModificationDate(elCell, oRecord, oColumn, oData)
          {
             var modificationDate = oRecord.getData().modified;
-            var messageDesc = '<span>' + $date(modificationDate, "dd mmm yyyy HH:MM") + '</span>';
+            var messageDesc = '<span>' + $date(modificationDate, me.msg("date-format.default")) + '</span>';
             elCell.innerHTML = messageDesc ;
          };
          

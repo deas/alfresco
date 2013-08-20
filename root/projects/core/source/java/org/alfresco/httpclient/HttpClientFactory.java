@@ -49,6 +49,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.logging.Log;
@@ -441,7 +442,8 @@ public class HttpClientFactory
     	        // encrypt body
     	        Pair<byte[], AlgorithmParameters> encrypted = encryptor.encrypt(KeyProvider.ALIAS_SOLR, null, message);
     	        encryptionUtils.setRequestAlgorithmParameters(method, encrypted.getSecond());
-
+    	        
+    	        ((PostMethod)method).getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, encrypted.getFirst().length > DEFAULT_SAVEPOST_BUFFER);
     	        ByteArrayRequestEntity requestEntity = new ByteArrayRequestEntity(encrypted.getFirst(), "application/octet-stream");
     	        ((PostMethod)method).setRequestEntity(requestEntity);
         	}

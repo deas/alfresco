@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfDropDownMenu
+ * @extends dijit/DropDownMenu
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/DropDownMenu",
         "alfresco/core/Core",
@@ -31,7 +38,9 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/AlfDropDownMenu.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDropDownMenu.css"}],
       
@@ -39,7 +48,7 @@ define(["dojo/_base/declare",
        * Updates the default template with some additional CSS class information and then processes
        * the widgets supplied.
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_menus_AlfDropDownMenu__postCreate() {
          
@@ -60,7 +69,7 @@ define(["dojo/_base/declare",
        * Callback implementation following instantiation of all of the widgets defined in by the "widgets"
        * instance property. 
        * 
-       * @method allWidgetsProcessed
+       * @instance
        * @param {array} widgets An array of the instantiated widgets (as defined by the widgets instance property).
        */
       allWidgetsProcessed: function alfresco_menus_AlfDropDownMenu__allWidgetsProcessed(widgets) {
@@ -73,7 +82,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method addChild
+       * @instance
        * @param {object} widget The widget to add as the new child
        * @param {integer} insertIndex The index at which to insert the child
        */
@@ -84,7 +93,7 @@ define(["dojo/_base/declare",
             // If the entry is not a table row then we will wrap it within one (provided by the
             // AlfMenuItemWrapper widget) such that the menu item is rendered correctly within the
             // menu.
-            var itemToAdd = new AlfMenuItemWrapper({ item: widget });
+            var itemToAdd = new AlfMenuItemWrapper({pubSubScope: widget.pubSubScope, item: widget });
             
             // Call the super class function with NEW arguments...
             this.inherited(arguments, [itemToAdd, insertIndex]);
@@ -97,16 +106,6 @@ define(["dojo/_base/declare",
             // containing 4 columns.
             this.inherited(arguments);
          }
-         
-         // Instead of doing this, maybe the focusNext and focusPrev methods should be overridden...
-         
-         // Add some extra handling on key presses to ensure that navigation can be 
-         // made across groups...
-         var _this = this;
-         on(widget, "keypress", function(evt) {
-            _this._itemKeyPress(evt);
-         });
-         
          this.setFirstAndLastMarkerClasses();
       },
       
@@ -115,7 +114,7 @@ define(["dojo/_base/declare",
        * current focused child is the last element in the current group then the first item in the next group
        * will be focused (rather than iterating back around to the first item in the current group).
        * 
-       * @method focusNext
+       * @instance
        */
       focusNext: function alfresco_menus_AlfDropDownMenu__focusNext() {
          
@@ -151,7 +150,7 @@ define(["dojo/_base/declare",
        * current focused child is the first element in the current group then the last item in the previous group
        * will be focused (rather than iterating back around to the last item in the current group).
        * 
-       * @method focusPrev
+       * @instance
        */
       focusPrev: function alfresco_menus_AlfDropDownMenu__focusPrev() {
          
@@ -193,7 +192,7 @@ define(["dojo/_base/declare",
        * Extends the default implementation to call the "setFirstAndLastMarkerClasses" classes after
        * the child has been removed.
        * 
-       * @method removeChild
+       * @instance
        * @param {object} widget The child to remove
        */
       removeChild: function alfresco_menus_AlfDropDownMenu__removeChild(widget) {
@@ -208,7 +207,7 @@ define(["dojo/_base/declare",
        * 
        * It also adds "first-entry" and "last-entry" as well for use in styling.
        * 
-       * @method setFirstAndLastMarkerClasses
+       * @instance
        */
       setFirstAndLastMarkerClasses: function alfresco_menus_AlfDropDownMenu__setFirstAndLastMarkerClasses() {
          
@@ -249,19 +248,6 @@ define(["dojo/_base/declare",
             domClass.add(children[0].domNode, "first-entry");
             domClass.add(children[noOfChildren-1].domNode, "last-entry");
          }
-      },
-      
-      /**
-       * Extension point for handling item key press events. This has been specifically added so that 
-       * "alfresco/menus/AlfMenuGroup" instances can handle users navigating between drop down menus
-       * using the keyboard.
-       * 
-       * @method _itemKeyPress
-       * @param {object} evt The key press event
-       */
-      _itemKeyPress: function alfresco_menus_AlfDropDownMenu____itemKeyPress(evt) {
-         // No action. This is an extension point.
-         this.alfLog("log", "Extension point unimplemented");
       }
    });
 });

@@ -39,6 +39,11 @@
    overflow-y: auto;
 }
 
+.data-picker div.data-picker-list.yui-dt
+{
+   width: 33em;
+}
+
 .data-picker .data-picker-list table
 {
    width: 33em;

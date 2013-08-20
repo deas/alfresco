@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source/java"/>
+	<classpathentry kind="src" path="source/test-java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-1.2.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-1.2.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-1.2.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-1.2.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/j2ee/servlet.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-1.9.4.6.jar" sourcepath="/3rd Party/src/hazelcast-1.9.4.6-src.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-2.4.jar" sourcepath="/3rd Party/src/hazelcast-2.4-src.zip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Alfresco JLAN"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Web Framework Commons"/>
@@ -27,10 +28,12 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/portlet_20_doc.zip!/doc"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-opencmis-extension-0.3.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.8.0.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.8.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.18-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.18-patched.zip"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/htmlparser-2.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-opencmis-extension-0.6.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.10.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.10.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

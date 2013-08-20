@@ -27,6 +27,7 @@ import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.util.Pair;
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
@@ -87,9 +88,12 @@ public class CmisQParserPlugin extends QParserPlugin
             String id = req.getSchema().getResourceLoader().getInstanceDir();
             IndexReader indexReader = req.getSearcher().getIndexReader();
 
+            String cmisVersionString = this.params.get("cmisVersion");
+            CmisVersion cmisVersion = (cmisVersionString == null ? CmisVersion.CMIS_1_0 : CmisVersion.valueOf(cmisVersionString));
+            
             String altDic = this.params.get(SearchParameters.ALTERNATIVE_DICTIONARY);
             org.alfresco.repo.search.impl.querymodel.Query queryModelQuery
-              = AlfrescoSolrDataModel.getInstance(id).parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader, altDic);
+              = AlfrescoSolrDataModel.getInstance(id).parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader, altDic, cmisVersion);
             
             // build the sort param and update the params on the request if required .....
             
@@ -110,7 +114,7 @@ public class CmisQParserPlugin extends QParserPlugin
 
                         String propertyName = property.getPropertyName();
 
-                        String luceneField =  AlfrescoSolrDataModel.getInstance(id).getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,altDic).getLuceneFieldName(propertyName);
+                        String luceneField =  AlfrescoSolrDataModel.getInstance(id).getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,cmisVersion,altDic).getLuceneFieldName(propertyName);
 
                         if(sortParameter.length() > 0)
                         {
@@ -158,7 +162,7 @@ public class CmisQParserPlugin extends QParserPlugin
                 this.params = newParams;
             }
 
-            Query query = AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery, altDic);
+            Query query = AlfrescoSolrDataModel.getInstance(id).getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery, cmisVersion, altDic);
             if(log.isDebugEnabled())
             {
                 log.debug("AFTS QP query as lucene:\t    "+query);

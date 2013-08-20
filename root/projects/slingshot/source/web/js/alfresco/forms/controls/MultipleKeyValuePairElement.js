@@ -16,57 +16,143 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/MultipleKeyValuePairElement
+ * @extends module:alfresco/forms/controls/MultipleEntryElement
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/forms/controls/MultipleEntryElement", 
         "dijit/form/TextBox",
+        "dojo/_base/lang",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dijit/registry"], 
-        function(declare, MultipleEntryElement, TextBox, domConstruct, domClass, registry) {
+        function(declare, MultipleEntryElement, TextBox, lang, domConstruct, domClass, registry) {
    
    return declare([MultipleEntryElement], {
       
-      determineKeyAndValue: function() {
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {Array} i18nRequirements
+       */
+      i18nRequirements: [{i18nFile: "./i18n/MultipleKeyValuePairElement.properties"}],
+
+      /**
+       * @instance
+       * @type {string}
+       * @default "label"
+       */
+      keyProp: "label",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "multi.kvp.key.label"
+       */
+      keyLabel: "multi.kvp.key.label",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "multi.kvp.key.description"
+       */
+      keyDescription: "multi.kvp.key.description",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "value"
+       */
+      valueProp: "value",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "multi.kvp.value.label"
+       */
+      valueLabel: "multi.kvp.value.label",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "multi.kvp.value.description"
+       */
+      valueDescription: "multi.kvp.value.description",
+      
+      /**
+       * @instance
+       */
+      determineKeyAndValue: function alfresco_forms_controls_MultipleKeyValuePairElement__determineKeyAndValue() {
          this.inherited(arguments);
-         
-         if (typeof this.value.value == "undefined")
+         if (this.elementValue[this.keyProp] === undefined)
          {
-            // TODO: We should probably deal with null values better here. For example, we don't really
-            // want to have an object with lots of keys that are the empty string. Some form of validation
-            // is going to be required.
-            this.value.value = {};
-            this.value.value._key = "";
-            this.value.value._value = "";
+            this.elementValue[this.keyProp] = "";
+         }
+         if (this.elementValue[this.valueProp] === undefined)
+         {
+            this.elementValue[this.valueProp] = "";
          }
       },
       
       /**
        * The default read display simply shows the value of the element.
+       * 
+       * @instance
        */
-      createReadDisplay: function() {
-         // Set the innerHTML of the read display to be the value...
-         this.readDisplay.innerHTML = this.encodeHTML(this.value.value._key + " = " + this.value.value._value);
+      createReadDisplay: function alfresco_forms_controls_MultipleKeyValuePairElement__createReadDisplay() {
+         var currentValue = this.getValue();
+         this.readDisplay.innerHTML = this.encodeHTML(currentValue[this.keyProp] + " = " + currentValue[this.valueProp]);
       },
       
-      _keyTextBox: null,
-      
-      _valueTextBox: null,
-      
-      createEditDisplay: function() {
-         domConstruct.empty(this.editDisplay);
-         var _this = this;
-         this._keyTextBox = new TextBox({value: this.value.value._key});
-         this._keyTextBox.placeAt(this.editDisplay);
-         this._keyTextBox.watch("value", function(name, oldValue, value) {
-            _this.value.value._key = value;
-            _this.createReadDisplay();
-         }, this);
-         this._valueTextBox = new TextBox({value: this.value.value._value});
-         this._valueTextBox.placeAt(this.editDisplay);
-         this._valueTextBox.watch("value", function(name, oldValue, value) {
-            _this.value.value._value = value; // Best line of JavaScript EVER !!!
-            _this.createReadDisplay();
-         }, this);
+      /**
+       * Returns the widgets to be used in the form created for edit mode.
+       * 
+       * @instance
+       * @returns {object[]}
+       */
+      getFormWidgets: function alfresco_forms_controls_MultipleKeyValuePairElement__getFormWidgets() {
+         return [
+            {
+               // This is the hidden id and needs to be included to ensure that the id is persisted.
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  name: "fieldId",
+                  label: "fieldId",
+                  value: this.elementValue.fieldId,
+                  visibilityConfig: {
+                     initialValue: false
+                  }
+               }
+            },
+            {
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  name: this.keyProp,
+                  label: this.keyLabel,
+                  description: this.keyDescription,
+                  value: this.elementValue[this.keyProp],
+                  requirementConfig: {
+                     initialValue: true
+                  }
+               }
+            },
+            {
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  name: this.valueProp,
+                  label: this.valueLabel,
+                  description: this.valueDescription,
+                  value: this.elementValue[this.valueProp],
+                  requirementConfig: {
+                     initialValue: true
+                  }
+               }
+            }
+         ];
       }
    });
 });

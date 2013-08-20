@@ -277,7 +277,13 @@
          // preformat some values
          var postViewUrl = Alfresco.util.blog.generateBlogPostViewUrl(this.options.siteId, this.options.containerId, data.name);
          var statusLabel = Alfresco.util.blog.generatePostStatusLabel(this, data);
-         var authorLink = Alfresco.util.people.generateUserLink(data.author);
+         //ALF-18527
+         var authorLink = data.author.username;
+         // firstName is a mandatory field for user
+         if (typeof data.author.firstName != "undefined")
+         {
+            authorLink = Alfresco.util.people.generateUserLink(data.author);
+         }
           
          var html = '<div id="' + this.id + '-postview" class="node post postview theme-bg-color-6 theme-border-3">';
          html += Alfresco.util.blog.generateBlogPostActions(this, data, 'div', this.showPublishingActions);

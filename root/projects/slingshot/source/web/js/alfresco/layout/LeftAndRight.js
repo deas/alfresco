@@ -16,25 +16,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/layouts/LeftAndRight
+ * @extends module:alfresco/core/ProcessWidgets
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/core/ProcessWidgets",
         "dojo/text!./templates/LeftAndRight.html",
         "dojo/dom-construct",
         "dojo/_base/array"], 
-        function(declare,ProcessWidgets, template, domConstruct, array) {
+        function(declare, ProcessWidgets, template, domConstruct, array) {
    
    return declare([ProcessWidgets], {
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/LeftAndRight.css"}]
        */
-      cssRequirements: [{cssFile:"./css/LeftAndRight.css",mediaType:"screen"}],
+      cssRequirements: [{cssFile:"./css/LeftAndRight.css"}],
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {string}
        */
       templateString: template,
       
@@ -42,7 +51,7 @@ define(["dojo/_base/declare",
        * Iterates through the array of widgets to be created and creates the appropriate DOM node based
        * on the "align" attribute of the widget configuration. 
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_layout_LeftAndRight__postCreate() {
          var _this = this;
@@ -59,7 +68,7 @@ define(["dojo/_base/declare",
                {
                   domNode = _this.createWidgetDomNode(entry, _this.leftWidgets, entry.className);
                }
-               _this.createWidget(entry.name, entry.config, domNode);
+               _this.createWidget(entry, domNode);
             });
          }
       },
@@ -68,7 +77,7 @@ define(["dojo/_base/declare",
        * Overrides the default implementation to ensure that the DOM node created has the appropriate CSS
        * classes applied such that they are aligned appropriately.
        * 
-       * @method createWidgetDomNode
+       * @instance
        * @param {object} widget The configuration for the widget to create a new DOM node for.
        * @param {element} rootNode The DOM node to add the new DOM node as a child of
        * @param {string} rootClassName The CSS class (or space separated list of CSS classes) to be applied to the DOM node

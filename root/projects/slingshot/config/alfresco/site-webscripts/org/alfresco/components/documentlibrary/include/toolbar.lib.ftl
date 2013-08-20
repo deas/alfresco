@@ -2,7 +2,7 @@
 <#macro toolbarTemplate>
 <#nested>
 <#assign id=args.htmlid?html>
-<div id="${id}-body" class="toolbar no-check-bg">
+<div id="${id}-tb-body" class="toolbar no-check-bg">
 
    <div id="${id}-headerBar" class="header-bar flat-button theme-bg-2">
       <div class="left">

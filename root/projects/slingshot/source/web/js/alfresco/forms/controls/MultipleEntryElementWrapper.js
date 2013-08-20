@@ -16,6 +16,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This widget is used to wrap individual [multiple entry elements]{@link module:alfresco/forms/controls/MultipleEntryElement}
+ * to allow them to be deleted and to switch them between edit and read mode. Read mode is designed to given a condensed human
+ * readable description of the what each element represents and the edit mode allows the user to configure the behaviour.
+ * 
+ * @module alfresco/forms/controls/MultipleEntryElementWrapper
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes dijit/_FocusMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
@@ -28,26 +41,42 @@ define(["dojo/_base/declare",
         function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, array, domClass, focusUtil) {
    
    return declare([_Widget, _Templated, _FocusMixin, AlfCore], {
+      
+      /**
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {String} template
+       */
       templateString: template,
       
       /**
        * This keeps track of the MultipleEntryCreator that created this wrapper. It is required so that the
        * MultipleEntryCreator can be updated with delete requests.
+       * 
+       * @instance
+       * @default null
        */
       creator: null,
       
+      /**
+       * @instance
+       */
       constructor: function(args) {
          declare.safeMixin(this, args);
-         // The data supplied to the widget will be some form of JSON. It should be an array
-         // where each element will correspond to a MultipleEntryElement.
-         
       },
       
       /**
        * The widget should be passed as a constructor configuration argument.
+       * 
+       * @instance
+       * @type {object}
+       * @default null
        */
       widget: null,
       
+      /**
+       * @instance
+       */
       postCreate: function() {
          
          // Check that a widget has been provided and then add it into the correct node...
@@ -59,7 +88,19 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Handles the completion of editing an item
+       * 
+       * @instance
+       */
+      doneEditingElement: function() {
+         this.alfLog("log", "Done editing buttonclicked", this);
+         this.blurWrapper();
+      },
+      
+      /**
        * This called when the edit button is clicked. It switches the element from read to edit mode.
+       * 
+       * @instance
        */
       editElement: function() {
          this.alfLog("log", "Edit element clicked", {});
@@ -72,15 +113,22 @@ define(["dojo/_base/declare",
             // Hide the edit and delete buttons...
             if (this.deleteButton)
             {
-               domClass.add(this.deleteButton, "multiple-entry-element-clear-hide");
+               domClass.remove(this.doneEditingButton, "clear-hide");
+            }
+            if (this.deleteButton)
+            {
+               domClass.add(this.deleteButton, "clear-hide");
             }
             if (this.editButton)
             {
-               domClass.add(this.editButton, "multiple-entry-element-clear-hide");
+               domClass.add(this.editButton, "clear-hide");
             }
          }
       },
       
+      /**
+       * @instance
+       */
       deleteElement: function(e) {
          this.alfLog("log", "Delete element clicked", {});
          
@@ -91,25 +139,29 @@ define(["dojo/_base/declare",
       
       /**
        * When the widget loses focus we want to leave edit mode.
+       * 
+       * @instance
        */
       _onBlur: function(){
          
-         var _this = this;
-         if (array.some(focusUtil.activeStack, function(item) { return item == _this.id; }))
-         {
-            // The wrapped widget is still in the stack so don't leave edit mode yet.
-            this.alfLog("log", "Blur detected but wrapped widget still in active stack");
-         }
-         else
-         {
-            this.alfLog("log", "Lost focus so leaving edit mode", {});
-            this.blurWrapper();
-         }
+//         var _this = this;
+//         if (array.some(focusUtil.activeStack, function(item) { return item == _this.id; }))
+//         {
+//            // The wrapped widget is still in the stack so don't leave edit mode yet.
+//            this.alfLog("log", "Blur detected but wrapped widget still in active stack");
+//         }
+//         else
+//         {
+//            this.alfLog("log", "Lost focus so leaving edit mode", {});
+//            this.blurWrapper();
+//         }
          this.inherited(arguments);
       },
       
       /**
        * Handles blurring of the wrapper
+       * 
+       * @instance
        */
       blurWrapper: function() {
          if (this.widget && typeof this.widget.editMode == "function")
@@ -120,11 +172,15 @@ define(["dojo/_base/declare",
             // extension has overridden the template to remove them)...
             if (this.deleteButton)
             {
-               domClass.remove(this.deleteButton, "multiple-entry-element-clear-hide");
+               domClass.add(this.doneEditingButton, "clear-hide");
+            }
+            if (this.deleteButton)
+            {
+               domClass.remove(this.deleteButton, "clear-hide");
             }
             if (this.editButton)
             {
-               domClass.remove(this.editButton, "multiple-entry-element-clear-hide");
+               domClass.remove(this.editButton, "clear-hide");
             }
          }
       }

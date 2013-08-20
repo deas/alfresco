@@ -119,11 +119,3 @@
 
    </div>
 </div>
-<script type="text/javascript">//<![CDATA[
-   Alfresco.util.ComponentManager.findFirst("Alfresco.CalendarView").setOptions(
-   {
-      defaultStartTime: "${config.script.config.defaultStart}",
-      defaultEndTime: "${config.script.config.defaultEnd}"
-   }
-   )
-//]]></script>

@@ -1,0 +1,651 @@
+<!-- ********************************************************* -->
+<!-- **              Alfresco Parent POM                    ** -->
+<!-- **                                                     ** -->
+<!-- ** This Maven build is NOT usable to build Alfresco,   ** -->
+<!-- ** you should use the standard Ant build for that.     ** -->
+<!-- ** This POM is instead used to produce POMs to develop ** -->
+<!-- ** against Alfresco with Maven. POMs, dependencies and ** -->
+<!-- ** projects information are up to date and released    ** -->
+<!-- ** together with the official Alfresco artifacts at    ** -->
+<!---**          https://artifacts.alfresco.com.            ** -->  
+<!---** Fox the SDK and Maven project samples check         ** -->
+<!---** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
+<!-- ********************************************************* -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.alfresco</groupId>
+  <artifactId>alfresco-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>4.2.0-QA-SNAPSHOT</version>
+  <name>Alfresco Parent Project</name>
+
+  <url>http://www.alfresco.org/</url>
+  <inceptionYear>2005</inceptionYear>
+  <organization>
+    <name>Alfresco Software</name>
+    <url>http://www.alfresco.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>${maven.license.name}</name>
+      <url>${maven.license.url}</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>${maven.scm.connection}</connection>
+    <developerConnection>${maven.scm.developerConnection}</developerConnection>
+    <url>${maven.scm.url}</url>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.alfresco.com/jira/browse/ALF</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Bamboo</system>
+    <url>https://bamboo.alfresco.com/bamboo/browse/ALF</url>
+  </ciManagement>
+
+  <prerequisites>
+    <maven>3.0.3</maven>
+  </prerequisites>
+
+  <repositories>
+    <!-- Pointing to Alfresco repository group. Value is switched between community and enterprise -->
+    <repository>
+      <id>alfresco-public</id>
+      <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>chemistry-opencmis</id>
+      <url>https://repository.apache.org/content/repositories/orgapachechemistry-089</url>
+    </repository>
+    <!-- Snapshot repository for Spring Surf -->
+    <repository>
+        <id>surf-snapshots</id>
+        <url>http://extensions.springframework.org/snapshot/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+      <!-- For now internal releases repositories -->
+      <repository>
+          <id>alfresco-internal</id>
+          <url>${maven.distributionManagement.url}</url>
+      </repository>
+      <!-- For now internal snapshot repositories -->
+      <snapshotRepository>
+          <id>alfresco-internal-snapshots</id>
+          <url>${maven.distributionManagement.snapshot.url}</url>
+      </snapshotRepository>      
+      <site>      
+          <id>alfresco-site</id>
+          <name>Alfresco Maven site</name>
+          <url>http://localhost/</url>
+      </site>      
+  </distributionManagement>
+
+  <modules>
+    <module>projects/core</module>
+    <module>projects/data-model</module>
+    <module>projects/alfresco-jlan</module>
+    <module>projects/mbeans</module>
+    <module>projects/deployment</module>
+    <module>projects/repository</module>
+    <module>projects/wdr-deployment</module>
+    <module>projects/remote-api</module>
+    <module>projects/web-framework-commons</module>
+    <module>projects/jndi-client</module>
+    <module>projects/catalina-virtual</module>
+    <module>projects/web-client</module>
+    <module>projects/web-service-client</module>
+    <module>projects/slingshot</module>
+    <module>projects/web-editor</module>
+    <module>projects/web-editor-plugin</module>
+    <module>projects/solr</module>
+    <module>projects/file-transfer-receiver</module>
+    <!-- Currently being worked out... see BDE-118
+    <module>projects/system-build-test</module>
+    -->
+    <module>modules/sharepoint/amp</module>
+    <module>modules/wcmquickstart/wcmquickstartmodule</module>
+    <module>modules/wcmquickstart/wcmquickstartclientapi</module>
+    <module>modules/wcmquickstart/wcmquickstartwebsite</module>
+    <module>projects/web-editor-samples/customer-site</module>
+  </modules>
+
+  <properties>
+    <tomcat.default.alfresco.port>8080</tomcat.default.alfresco.port>
+    <tomcat.default.share.port>8081</tomcat.default.share.port>
+    <tomcat.default.solr.port>8082</tomcat.default.solr.port>
+    
+    <!-- Database properties - default values to be overridden in settings.xml -->
+    <db.skip>true</db.skip>
+    <db.driver>org.postgresql.Driver</db.driver>
+    <db.name>alfresco</db.name>
+    <db.url>jdbc:postgresql:${db.name}</db.url>
+    <db.master.url>jdbc:postgresql:template1</db.master.url>
+    <db.username>alfresco</db.username>
+    <db.password>alfresco</db.password>
+
+    <!-- Maven specific build properties -->
+    <maven.build.sourceVersion>1.7</maven.build.sourceVersion>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Sonar specific properties -->
+    <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.exclusions></sonar.exclusions>
+    <sonar.skippedModules></sonar.skippedModules>
+    <sonar.branch>HEAD</sonar.branch>
+
+    <!-- Community build specific properties -->
+    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
+    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
+    <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
+    <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/public</maven.repository.url>
+    <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</maven.distributionManagement.snapshot.url>
+    <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/releases</maven.distributionManagement.url>
+    <maven.license.name>GNU Lesser General Public License v3.0 or later</maven.license.name>
+    <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
+
+    <!-- Centralized dependency versions -->
+    <dependency.lucene.version>2.4.1</dependency.lucene.version>
+    <dependency.jibx.version>1.2.5</dependency.jibx.version>
+    <dependency.tika.version>1.5-20130720-alfresco-patched</dependency.tika.version>
+    <dependency.vorbisJava.version>0.3-20130206</dependency.vorbisJava.version>
+    <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
+    <dependency.antlr.version>3.4</dependency.antlr.version>
+    <dependency.junit.version>4.11</dependency.junit.version>
+    <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
+    <dependency.surf.version>1.2.0-M9</dependency.surf.version>
+    <dependency.activiti.version>5.13-alf-20130709</dependency.activiti.version>
+    <dependency.poi.version>3.10-beta2-20130720</dependency.poi.version>
+    <dependency.dojo.version>1.8.3</dependency.dojo.version>
+  </properties>
+  
+  <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${dependency.junit.version}</version>
+        </dependency>    
+    </dependencies>
+  </dependencyManagement>
+
+  <build>                  
+    <!-- Non standard folder layout -->
+    <sourceDirectory>source/java</sourceDirectory>
+    <testSourceDirectory>source/test-java</testSourceDirectory>
+    <resources>
+        <resource>
+            <directory>config</directory>
+        </resource>
+    </resources>
+    <testResources>
+        <testResource>
+             <directory>source/test-resources</directory> 
+        </testResource>
+    </testResources>
+
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-enforcer-plugin</artifactId>
+			<version>1.2</version>
+			<executions>
+				<execution>
+					<id>enforce-java</id>
+					<goals>
+						<goal>enforce</goal>
+					</goals>
+					<configuration>
+						<rules>
+							<requireJavaVersion>
+								<version>1.7.0</version>
+							</requireJavaVersion>
+						</rules>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>build-helper-maven-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>add-source</id>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>add-source</goal>
+					</goals>
+					<configuration>
+						<sources>
+							<source>source/generated</source>
+						</sources>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+		<!-- Create a jar of test classes, to be reused later in remote-api -->
+		<plugin>
+			<artifactId>maven-jar-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>create-test-jar</id>
+					<!-- Usually bound to package phase, but set earlier so that we can trigger it in sonar.phase -->
+					<!-- That's because this jar is used later in enterprise-repository, and Sonar hits MDEP-98 -->
+                    <!-- <phase>process-test-classes</phase> -->
+					<goals>
+						<goal>test-jar</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+
+    <!-- Defining version and some configuration of Maven plugins -->
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${maven.build.sourceVersion}</source>
+                    <target>${maven.build.sourceVersion}</target>
+                </configuration>        
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.14</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14</version>
+                <configuration>
+                    <!-- To prevent tests alfresco.log to be created in project roots and bother while synchronizing with SCM -->
+                    <workingDirectory>${project.build.directory}</workingDirectory>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <runOrder>alphabetical</runOrder>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m -Duser.language=en -Dcom.sun.management.jmxremote</argLine>
+                    <systemPropertyVariables>
+                        <!-- Modified BaseTest and AVMServiceTestBase to accept these properties
+                         Otherwise test were looking in hardcoded relative locations -->
+                        <alfresco.test.resources.dir>source/test-resources</alfresco.test.resources.dir>
+                        <alfresco.web.resources.dir>source/web</alfresco.web.resources.dir>
+                        <alfresco.java.sources.dir>source/test-java</alfresco.java.sources.dir>
+                        <!-- Database related properties -->
+                        <db.url>${db.url}</db.url>
+                        <db.driver>${db.driver}</db.driver>
+                        <db.name>${db.name}</db.name>
+                        <db.username>${db.username}</db.username>
+                        <db.password>${db.password}</db.password>
+                        <dir.root>${basedir}/target/alf_test_data</dir.root>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <javadocDirectory>source/javadoc</javadocDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <warSourceDirectory>source/web</warSourceDirectory>
+                    <useCache>true</useCache>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.11.v20130520</version>
+                <configuration>
+                    <webAppSourceDirectory>source/web</webAppSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-archiver</artifactId>
+                        <version>2.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <version>${dependency.antlr.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.5</version>
+                <configuration>
+                    <skip>${db.skip}</skip>
+                    <autocommit>true</autocommit>
+                    <driver>${db.driver}</driver>
+                    <url>${db.master.url}</url>
+                    <username>${db.username}</username>
+                    <password>${db.password}</password>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>9.1-901.jdbc4</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.14</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1-alpha-2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+            </plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.2</version>
+			</plugin>
+			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+			<plugin>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>
+										sql-maven-plugin
+									</artifactId>
+									<versionRange>[1.5,)</versionRange>
+									<goals>
+										<goal>execute</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore></ignore>
+								</action>
+							</pluginExecution>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-dependency-plugin</artifactId>
+									<versionRange>[2.7,)</versionRange>
+									<goals>
+										<goal>unpack</goal>
+										<goal>copy-dependencies</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore></ignore>
+								</action>
+							</pluginExecution>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>
+										maven-war-plugin
+									</artifactId>
+									<versionRange>[2.3,)</versionRange>
+									<goals>
+										<goal>exploded</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<execute>
+										<runOnConfiguration>true</runOnConfiguration>
+									</execute>
+								</action>
+							</pluginExecution>
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>com.google.code.maven-replacer-plugin</groupId>
+                                    <artifactId>replacer</artifactId>
+                                    <versionRange>1.5.0</versionRange>
+                                    <goals>
+                                        <goal>replace</goal>
+                                    </goals>
+                                </pluginExecutionFilter>
+                                <action>
+                                    <execute>
+                                    	<runOnIncremental>true</runOnIncremental>
+                                    	<runOnConfiguration>true</runOnConfiguration>
+                                    </execute>
+                                </action>
+                                <comment>source: </comment>
+                            </pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
+				</configuration>
+			</plugin>
+        </plugins>
+    </pluginManagement>
+  </build>
+
+  <reporting>
+    <plugins>
+        <plugin>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.3</version>
+        </plugin>
+        <plugin>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>index</report>
+                  <report>summary</report>
+                  <report>dependencies</report>
+                  <report>dependency-convergence</report>
+                  <report>dependency-management</report>
+                  <report>license</report>
+                  <report>modules</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+        </plugin>
+        <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>2.14</version>
+        </plugin>
+        <plugin>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.0.1</version>
+            <configuration>
+                <targetJdk>${maven.build.sourceVersion}</targetJdk>
+            </configuration>
+        </plugin>
+        <plugin>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>2.3</version>
+            <configuration>
+                <aggregate>false</aggregate>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>2.5.2</version>
+        </plugin>
+    </plugins>
+  </reporting>
+
+  <profiles>
+    <!-- Profile to build alfresco-enterprise -->
+    <profile>
+        <id>enterprise</id>
+        <modules>
+            <module>enterpriseprojects/repository</module>
+            <module>enterpriseprojects/remote-api</module>
+            <module>enterpriseprojects/overlays</module>
+        </modules>
+        <properties>
+            <!-- Enterprise specific properties -->
+            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
+            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
+            <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
+            <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
+            <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</maven.distributionManagement.snapshot.url>
+            <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</maven.distributionManagement.url>
+            <maven.license.name>Alfresco Enterprise License</maven.license.name>
+            <maven.license.url>http://www.alfresco.com/legal</maven.license.url>
+        </properties>
+    </profile>
+    <!-- Profile to build alfresco-cloud -->
+    <profile>
+        <id>cloud</id>
+        <modules>
+            <module>privatemodules</module>
+        </modules>
+    </profile>
+
+	<!-- Behavioral profiles inherited by all modules -->
+	<profile>
+		<id>mysql</id>
+		<properties>
+			<db.master.url>jdbc:mysql://localhost/${db.name}</db.master.url>
+			<!-- Database properties - default values to be overridden in settings.xml -->
+		    <db.driver>com.mysql.jdbc.Driver</db.driver>
+    		<db.name>alfresco</db.name>
+    		<db.url>jdbc:mysql://localhost/${db.name}</db.url>
+    	</properties>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<configuration>
+						<systemProperties>
+							<db.driver>com.mysql.jdbc.Driver</db.driver>
+							<db.url>${db.master.url}</db.url>
+						</systemProperties>
+					</configuration>
+					<dependencies>
+			            <dependency>
+			                <groupId>mysql</groupId>
+			                <artifactId>mysql-connector-java</artifactId>
+			                <version>5.1.14</version>
+			            </dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</build>
+		<dependencies>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.1.14</version>
+			</dependency>
+		</dependencies>
+	</profile>
+	<profile>
+		<id>solr-http</id>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<configuration>
+						<systemProperties>
+							<index.subsystem.name>solr</index.subsystem.name>
+							<solr.host>localhost</solr.host>
+							<solr.port>${tomcat.default.solr.port}</solr.port>
+							<solr.secureComms>none</solr.secureComms>
+							<solr.backup.alfresco.numberToKeep>0</solr.backup.alfresco.numberToKeep>
+                            <solr.backup.archive.numberToKeep>0</solr.backup.archive.numberToKeep>
+						</systemProperties>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+  </profiles>
+</project>

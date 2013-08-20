@@ -26,7 +26,7 @@ public class ContentServiceLocator extends org.apache.axis.client.Service implem
     }
 
     // Use to get a proxy class for ContentService
-    private java.lang.String ContentService_address = "http://localhost:8080/alfresco/api/ContentService";
+    private java.lang.String ContentService_address = "http://localhost:8080/alfresco/soapapi/ContentService";
 
     public java.lang.String getContentServiceAddress() {
         return ContentService_address;

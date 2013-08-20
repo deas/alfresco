@@ -86,6 +86,7 @@ public class UserDashboardInterceptor extends AbstractWebFrameworkInterceptor
                        // reset the user context to ensure Guest or similar is not applied - this will avoid
                        // issues with SSO filters or similar that expect empty user after interceptor execution
                        rc.setUser(null);
+                       rc.setPage(ThreadLocalRequestContext.getRequestContext().getRootPage());
                     }
                 }
                 catch (UserFactoryException uerr)

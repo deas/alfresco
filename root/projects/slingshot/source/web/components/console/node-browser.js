@@ -135,7 +135,11 @@
                 type: "menu",
                 menu: parent.id + "-lang-menu-select"
              });
-            parent.widgets.langMenuButton.on("selectedMenuItemChange", onSelectedMenuItemChange);
+            parent.widgets.langMenuButton.on("selectedMenuItemChange", function() {
+               onSelectedMenuItemChange.apply(this, arguments);
+               // Disable the query field if 'storeroot' is selected
+               Dom.get(parent.id + "-search-text").disabled = (parent.widgets.langMenuButton.get("value") == "storeroot");
+            });
             parent.widgets.langMenuButton.set("value", parent.searchLanguage);
             parent.widgets.langMenuButton.set("label", parent.searchLanguage);
             
@@ -149,7 +153,8 @@
                   metaFields:
                   {
                      recordOffset: "startIndex",
-                     totalRecords: "totalResults"
+                     totalRecords: "totalResults",
+                     searchElapsedTime: "searchElapsedTime"
                   }
                }
             });
@@ -163,7 +168,8 @@
                
                if (oFullResponse)
                {
-                  var items = oFullResponse.results;
+                  var items = oFullResponse.results,
+                     searchElapsedTime = parseInt(oFullResponse.searchElapsedTime, 10);
                   
                   // initial sort by username field
                   items.sort(function(a, b)
@@ -177,15 +183,30 @@
                      "results": items
                   };
                }
-               
-               // update Results Bar message with number of results found
+
+               var elapsedTimeMsg = "";
+               if (searchElapsedTime < 1000) // Less than 1s
+               {
+                  elapsedTimeMsg = "" + searchElapsedTime + parent.msg("label.elapsedMilliseconds"); // e.g. 15ms
+               }
+               else if (searchElapsedTime >= 1000 && searchElapsedTime < 10000) // Between 1 and 10s
+               {
+                  elapsedTimeMsg = "" + (Math.round(searchElapsedTime/100) / 10) + 
+                     parent.msg("label.elapsedSeconds"); // e.g. 2.6s
+               }
+               else // More than 10s
+               {
+                  elapsedTimeMsg = "" + Math.round(searchElapsedTime/1000) + parent.msg("label.elapsedSeconds"); // e.g. 18s
+               }
+
+               // update Results Bar message with number of results found and how long it took
                if (items.length < parent.options.maxSearchResults)
                {
-                  me._setResultsMessage("message.results", $html(parent.searchTerm), items.length);
+                  me._setResultsMessage("message.results", $html(parent.searchTerm), items.length, elapsedTimeMsg);
                }
                else
                {
-                  me._setResultsMessage("message.maxresults", parent.options.maxSearchResults);
+                  me._setResultsMessage("message.maxresults", $html(parent.searchTerm), parent.options.maxSearchResults, elapsedTimeMsg);
                }
                
                return updatedResponse;
@@ -193,27 +214,15 @@
             
             // Setup the main datatable
             this._setupDataTable();
-            
-            // register the "enter" event on the search text field
-            var searchText = Dom.get(parent.id + "-search-text");
-            
-            new YAHOO.util.KeyListener(searchText,
-            {
-               keys: YAHOO.util.KeyListener.KEY.ENTER
-            },
-            {
-               fn: function() 
-               {
-                  parent.onSearchClick();
-               },
-               scope: parent,
-               correctScope: true
-            }, "keydown").enable();
          },
          
          onShow: function ConsoleNodeBrowser_SearchPanelHandler_onShow()
          {
-            Dom.get(parent.id + "-search-text").focus();
+            if (!Dom.get(parent.id + "-search-text").disabled)
+            {
+               Dom.get(parent.id + "-search-text").focus();
+               Dom.get(parent.id + "-search-text").select();
+            }
          },
          
          onUpdate: function ConsoleNodeBrowser_SearchPanelHandler_onUpdate()
@@ -225,6 +234,9 @@
             // Update language menu
             parent.widgets.langMenuButton.set("value", parent.searchLanguage);
             parent.widgets.langMenuButton.set("label", parent.searchLanguage);
+            
+            // Disable the query field if 'storeroot' is selected
+            Dom.get(parent.id + "-search-text").disabled = (parent.widgets.langMenuButton.get("value") == "storeroot");
             
             // Update language menu
             if (parent.widgets.storeMenuButton)
@@ -475,10 +487,10 @@
           * @param messageId {string} The messageId to display
           * @private
           */
-         _setResultsMessage: function ConsoleNodeBrowser_SearchPanelHandler_setResultsMessage(messageId, arg1, arg2)
+         _setResultsMessage: function ConsoleNodeBrowser_SearchPanelHandler_setResultsMessage(messageId)
          {
             var resultsDiv = Dom.get(parent.id + "-search-bar");
-            resultsDiv.innerHTML = parent._msg(messageId, arg1, arg2);
+            resultsDiv.innerHTML = parent._msg.apply(this, arguments);
          },
          
          /**
@@ -526,9 +538,8 @@
          onLoad: function ConsoleNodeBrowser_ViewPanelHandler_onLoad()
          {
             // Buttons
-            parent.widgets.gobackButton = Alfresco.util.createYUIButton(parent, "goback-button", parent.onGoBackClick);
-            parent.widgets.deleteuserButton = Alfresco.util.createYUIButton(parent, "deleteuser-button", parent.onDeleteUserClick);
-            parent.widgets.edituserButton = Alfresco.util.createYUIButton(parent, "edituser-button", parent.onEditUserClick);
+            Alfresco.util.createYUIButton(parent, "goback-button", parent.onGoBackClick);
+            Alfresco.util.createYUIButton(parent, "goback-button-top", parent.onGoBackClick);
          },
          
          onBeforeShow: function ConsoleNodeBrowser_ViewPanelHandler_onBeforeShow()

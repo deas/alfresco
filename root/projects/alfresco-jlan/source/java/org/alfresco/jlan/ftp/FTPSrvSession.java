@@ -52,6 +52,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
@@ -4796,28 +4797,33 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 		
 	    // Load the key store and trust store
 	    
-        KeyStore keyStore   = KeyStore.getInstance("JKS");
-        KeyStore trustStore = KeyStore.getInstance("JKS");
+        KeyStore keyStore   = KeyStore.getInstance( ftpConfig.getKeyStoreType());
 
-        char[] passphrase = ftpConfig.getPassphrase();
-
-        keyStore.load(new FileInputStream( ftpConfig.getKeyStorePath()), passphrase);
-        trustStore.load(new FileInputStream( ftpConfig.getTrustStorePath()), passphrase);
+        keyStore.load(new FileInputStream( ftpConfig.getKeyStorePath()), ftpConfig.getKeyStorePassphrase());
 
         String defaultAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
 
         KeyManagerFactory keyFactory = KeyManagerFactory.getInstance(defaultAlgorithm);
         
-        keyFactory.init(keyStore, passphrase);
+        keyFactory.init(keyStore, ftpConfig.getKeyStorePassphrase());
 
         defaultAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
 
-        TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(defaultAlgorithm);
-        trustFactory.init( trustStore);
-
         m_sslContext = SSLContext.getInstance( engineTyp);
+        
+        // MNT-7301 FTPS server requires unnecessarly to have a trustStore while a keyStore should be sufficient
+        TrustManager[] trManager = null;
+        
+        if (ftpConfig.getTrustStorePath() != null)
+        {
+            KeyStore trustStore = KeyStore.getInstance( ftpConfig.getTrustStoreType());
+            trustStore.load(new FileInputStream( ftpConfig.getTrustStorePath()), ftpConfig.getTrustStorePassphrase());
+            TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(defaultAlgorithm);
+            trustFactory.init( trustStore);
+            trManager = trustFactory.getTrustManagers();
+        }
 
-        m_sslContext.init( keyFactory.getKeyManagers(), trustFactory.getTrustManagers(), null);
+        m_sslContext.init( keyFactory.getKeyManagers(), trManager, null);
         
         m_sslEngine = m_sslContext.createSSLEngine();
         m_sslEngine.setUseClientMode( false);

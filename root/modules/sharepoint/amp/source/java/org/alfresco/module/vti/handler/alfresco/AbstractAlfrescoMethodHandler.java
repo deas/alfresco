@@ -961,13 +961,11 @@ public abstract class AbstractAlfrescoMethodHandler implements MethodHandler
                 }
                 versionProps = Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MINOR);
             }
-            
-
-            if (getNodeService().hasAspect(curDocumentNodeRef, ContentModel.ASPECT_AUTHOR) == false)
+            else
             {
-                getNodeService().addAspect(curDocumentNodeRef, ContentModel.ASPECT_AUTHOR, null);
-            }
-            getNodeService().setProperty(curDocumentNodeRef, ContentModel.PROP_AUTHOR, getAuthenticationService().getCurrentUserName());
+                // The document is new: Set the author to the current user
+                getNodeService().setProperty(curDocumentNodeRef, ContentModel.PROP_AUTHOR, getAuthenticationService().getCurrentUserName());                
+            }            
 
             ContentWriter writer = getContentService().getWriter(curDocumentNodeRef, ContentModel.PROP_CONTENT, true);
             String mimetype = getMimetypeService().guessMimetype(documentName);

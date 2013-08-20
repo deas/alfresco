@@ -1,0 +1,11 @@
+.alfresco-renderers-MoreInfo {
+   margin-right: 20px;
+   background-image: url(./images/show-detail.png);
+   width: 16px;
+   height: 16px;
+}
+
+.alfresco-dialog-AlfDialog .alfresco-renderers-Thumbnail img {
+   max-width: 330px;
+   max-height: 240px;
+}

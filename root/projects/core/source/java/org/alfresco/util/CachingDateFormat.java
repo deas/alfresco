@@ -29,6 +29,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.extensions.surf.exception.PlatformRuntimeException;
 
 /**
@@ -288,18 +292,15 @@ public class CachingDateFormat extends SimpleDateFormat
     
     public static Pair<Date, Integer> lenientParse(String text, int minimumResolution) throws ParseException
     {
+        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
         try
         {
-             Date parsed = ISO8601DateFormat.parse(text);
-             return new Pair<Date, Integer>(parsed, Calendar.MILLISECOND);
+            Date parsed = fmt.parseDateTime(text).toDate();
+            return new Pair<Date, Integer>(parsed, Calendar.MILLISECOND);    
         }
-        catch(PlatformRuntimeException e)
+        catch(IllegalArgumentException e)
         {
-            
-        }
-        catch(AlfrescoRuntimeException e)
-        {
-            
+           
         }
         
         SimpleDateFormatAndResolution[] formatters = getLenientFormatters();
@@ -307,18 +308,19 @@ public class CachingDateFormat extends SimpleDateFormat
         {
             if(formatter.resolution >= minimumResolution)
             {
-                try
-                {
-                    Date parsed = formatter.simpleDateFormat.parse(text);
-                    return new Pair<Date, Integer>(parsed, formatter.resolution);
-                }
-                catch (ParseException e)
+                ParsePosition pp = new ParsePosition(0);
+                Date parsed = formatter.simpleDateFormat.parse(text, pp);
+                if ((pp.getIndex() < text.length()) || (parsed == null))
                 {
                     continue;
                 }
+                return new Pair<Date, Integer>(parsed, formatter.resolution);
             }
         }
+        
         throw new ParseException("Unknown date format", 0);
+        
+        
     }
     
     public static SimpleDateFormatAndResolution[] getLenientFormatters()

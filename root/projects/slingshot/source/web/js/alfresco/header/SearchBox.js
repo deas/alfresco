@@ -16,12 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/SearchBox
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_OnDijitClickMixin
+ * @mixes dijit/_TemplatedMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dijit/_WidgetBase",
         "dijit/_OnDijitClickMixin",
         "dijit/_TemplatedMixin",
-        "dijit/_FocusMixin",
         "dojo/text!./templates/SearchBox.html",
         "alfresco/core/Core",
         "alfresco/header/AlfMenuBar",
@@ -29,69 +37,80 @@ define(["dojo/_base/declare",
         "dojo/dom-attr",
         "dojo/dom-construct",
         "dojo/on"], 
-        function(declare, lang, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _FocusMixin, template,  AlfCore, AlfMenuBar, fx, domAttr, domConstruct, on) {
+        function(declare, lang, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, template,  AlfCore, AlfMenuBar, fx, domAttr, domConstruct, on) {
    
-   return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, _FocusMixin, AlfCore], {
+   return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, AlfCore], {
       
       /**
        * The scope to use for i18n messages.
        * 
-       * @property i18nScope {String}
+       * @instance
+       * @type {string}
        */
       i18nScope: "org.alfresco.SearchBox",
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/SearchBox.css"}]
        */
       cssRequirements: [{cssFile:"./css/SearchBox.css"}],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance
+       * @type {{i18nFile: string}[]}
+       * @default [{i18nFile: "./i18n/SearchBox.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/SearchBox.properties"}],
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type template {String}
        */
       templateString: template,
 
       /**
-       * @property {object} _searchMenu This should be instantiated with the menu bar widget for the search options.
+       * @instance
+       * @type {object} _searchMenu This should be instantiated with the menu bar widget for the search options.
        * @default null
        */
       _searchMenu: null,
       
       /**
-       * @property {integer} _focusedWidth The width of the search box when it is focused (in pixels)
+       * @instance
+       * @type {integer} _focusedWidth The width of the search box when it is focused (in pixels)
        * @default 250
        */
       _focusedWidth: "250",
       
       /**
-       * @property {integer} _blurredWidth The width of the search box when it does not have focus (in pixels)
+       * @instance
+       * @type {integer} _blurredWidth The width of the search box when it does not have focus (in pixels)
        * @default 100
        */
       _blurredWidth: "100",
       
       /**
-       * @property {string} site The current site that the search box relates to. If null, search is not initially confined to site
+       * @instance
+       * @type {string} site The current site that the search box relates to. If null, search is not initially confined to site
        * @default null
        */
       site: null,
       
       /**
-       * @property {boolean} advancedSearch True to show the AdvancedSearch option, false to hide it.
+       * @instance
+       * @type {boolean} advancedSearch True to show the AdvancedSearch option, false to hide it.
        * @default true
        */
       advancedSearch: true,
       
       /**
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_header_SearchBox__postCreate() {
          var _this = this;
@@ -133,8 +152,7 @@ define(["dojo/_base/declare",
       
       /**
        * Handles keydown events that occur on the <input> element used for capturing search terms.
-       * @method onSearchBoxKeyDown. If the key pressed is the the "enter" key then the search
-       * page will be loaded with the contents of the input element passed as a request parameter.
+       * @instance
        * @param {object} evt The keydown event
        */
       onSearchBoxKeyDown: function alfresco_header_SearchBox__onSearchBoxKeyDown(evt) {
@@ -161,41 +179,21 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Implements the dijit/_FocusMixin callback to expand the width of the search box input field when this
-       * widget gains focus.
-       *  
-       * @method _onFocus
+       * When the search node gains focus then search instruction should be removed. 
+       * @instance
        */
-      _onFocus: function alfresco_header_SearchBox___onFocus() {
-         var me = this;
+      onSearchNodeFocus: function alfresco_header_SearchBox__onSearchNodeFocus() {
          domAttr.set(this._searchTextNode, "value", "");
-         fx.animateProperty({
-            node: this._searchTextNode,
-            properties: {
-               width: this._focusedWidth
-            },
-            onEnd: function() {
-               me._searchTextNode.focus();
-            }
-         }).play();
-         this.inherited(arguments);
+         this._searchTextNode.focus();
       },
      
       /**
-       * Implements the dijit/_FocusMixin callback to contract the width of the search box input field when this
-       * widget loses focus.
+       * When the search node loses focus the search instruction should be reset.
        * 
-       * @method _onBlur
+       * @instance
        */
-      _onBlur: function alfresco_header_SearchBox___onBlur() {
-         fx.animateProperty({
-            node: this._searchTextNode,
-            properties: {
-              width: this._blurredWidth
-            }
-         }).play();
+      onSearchNodeBlur: function alfresco_header_SearchBox__onSearchNodeBlur() {
          domAttr.set(this._searchTextNode, "value", this.message("search.instruction"));
-         this.inherited(arguments);
       }
    });
 });

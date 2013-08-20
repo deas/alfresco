@@ -45,7 +45,7 @@
       <div class="yui-g wikipage-bar">
 
          <div class="title-bar">
-            <div id="${args.htmlid}-viewButtons" class="yui-u first pageTitle">${page.url.args["title"]?replace("_", " ")?html}</div>
+      <div id="${args.htmlid}-viewButtons" class="yui-u first pageTitle">${page.url.args["title"]?html}</div>
             <div class="yui-u align-right">
       <#assign action = page.url.args.action!"view">
       <#assign tabs =

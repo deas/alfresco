@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.alfresco.solr.AlfrescoSolrEventListener;
+import org.alfresco.solr.ResizeableArrayList;
 import org.alfresco.solr.AlfrescoSolrEventListener.AclLookUp;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.apache.lucene.index.Term;
@@ -60,7 +61,7 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
      
         long[] aclByDocId = (long[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_ID_BY_DOC_ID);
         HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp> lookups = (HashMap<AlfrescoSolrEventListener.AclLookUp, AlfrescoSolrEventListener.AclLookUp>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ACL_LOOKUP);
-        AlfrescoSolrEventListener.CacheEntry[] aclThenLeafOrderedEntries = ( AlfrescoSolrEventListener.CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
+        ResizeableArrayList<AlfrescoSolrEventListener.CacheEntry> aclThenLeafOrderedEntries = ( ResizeableArrayList<AlfrescoSolrEventListener.CacheEntry>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
       
         
         DocSet aclDocSet;
@@ -96,7 +97,7 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
                 {
                     for(int i = value.getStart(); i < value.getEnd(); i++)
                     {
-                        readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
+                        readableDocSet.add(aclThenLeafOrderedEntries.get(i).getLeaf());
                     }
                 }
             }
@@ -114,7 +115,7 @@ public class SolrCachingReaderScorer extends AbstractSolrCachingScorer
                 {
                     for(int i = value.getStart(); i < value.getEnd(); i++)
                     {
-                        readableDocSet.add(aclThenLeafOrderedEntries[i].getLeaf());
+                        readableDocSet.add(aclThenLeafOrderedEntries.get(i).getLeaf());
                     }
                 }
             }

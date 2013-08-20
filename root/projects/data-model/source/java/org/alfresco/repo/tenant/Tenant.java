@@ -61,4 +61,32 @@ public class Tenant
     {
         return dbUrl;
     }
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((tenantDomain == null) ? 0 : tenantDomain.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tenant other = (Tenant) obj;
+		if (tenantDomain == null) {
+			if (other.tenantDomain != null)
+				return false;
+		} else if (!tenantDomain.equals(other.tenantDomain))
+			return false;
+		return true;
+	}
 }

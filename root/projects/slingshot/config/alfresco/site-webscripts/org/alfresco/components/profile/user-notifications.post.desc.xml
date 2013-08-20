@@ -3,4 +3,5 @@
   <description>User Notifications Update POST component</description>
   <format default="json" />
   <url>/components/profile/user-notifications</url>
+  <authentication>user</authentication>
 </webscript>

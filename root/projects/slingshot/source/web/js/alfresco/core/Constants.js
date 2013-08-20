@@ -16,13 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is a placeholder module for adding constants, e.g. similar to "Alfresco.constants.URL" etc, only I've not 
+ * figured out the best way to do it, so it's currently empty!
+ * 
+ * @module alfresco/core/Constants
+ */
 define(["dojo/_base/declare"], 
         function(declare) {
    
    return declare(null, {
-      
-      
-      
       
    })
 });

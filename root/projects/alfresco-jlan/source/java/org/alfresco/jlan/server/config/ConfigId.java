@@ -99,8 +99,13 @@ public class ConfigId {
 	public static final int FTPIPv6Enable 		= GroupFTP + 12;
 	public static final int FTPKeyStore 		= GroupFTP + 13;
 	public static final int FTPTrustStore 		= GroupFTP + 14;
-	public static final int FTPPassphrase 		= GroupFTP + 15;
+	public static final int FTPKeyPassphrase	= GroupFTP + 15;
 	public static final int FTPRequireSecure	= GroupFTP + 16;
+	public static final int FTPKeyStoreType		= GroupFTP + 17;
+	public static final int FTPTrustStoreType	= GroupFTP + 18;
+	public static final int FTPTrustPassphrase  = GroupFTP + 19;
+	public static final int FTPKeyProvider		= GroupFTP + 20;
+	public static final int FTPTrustProvider	= GroupFTP + 21;
 
 	// NFS server variables
 

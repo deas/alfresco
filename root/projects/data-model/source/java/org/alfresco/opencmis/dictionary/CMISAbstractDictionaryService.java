@@ -128,9 +128,11 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     private final WriteLock registryWriteLock = registryLock.writeLock();
     private final ReadLock registryReadLock = registryLock.readLock();
     
-    // note: cache is tenant-aware (if using EhCacheAdapter shared cache)
+    // note: cache is tenant-aware (if using TransctionalCache impl)
     private SimpleCache<String, DictionaryRegistry> singletonCache; // eg. for openCmisDictionaryRegistry
     private final String KEY_OPENCMIS_DICTIONARY_REGISTRY = "key.openCmisDictionaryRegistry";
+    
+    protected String key_opencmis_dictionary_registry = null;
     
     /**
      * CMIS Dictionary registry
@@ -235,7 +237,11 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         registryReadLock.lock();
         try
         {
-            registry = singletonCache.get(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+            // Avoid NPE due to null cache key.
+            if (key_opencmis_dictionary_registry != null)
+            {
+                registry = singletonCache.get(key_opencmis_dictionary_registry);
+            }
         }
         finally
         {
@@ -245,7 +251,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         if (registry == null)
         {
             init();
-            registry = singletonCache.get(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+            registry = singletonCache.get(key_opencmis_dictionary_registry);
         }
         return registry;
     }
@@ -397,11 +403,12 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     /**
      * Dictionary Initialization - creates a new registry
      */
-    private void init()
+    protected void init()
     {
         registryWriteLock.lock();
         try
         {
+        	this.key_opencmis_dictionary_registry = KEY_OPENCMIS_DICTIONARY_REGISTRY + "." + cmisMapping.getCmisVersion().toString();
             DictionaryRegistry registry = new DictionaryRegistry();
             
             if (logger.isDebugEnabled())
@@ -441,7 +448,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
             }
             
             // publish new registry
-            singletonCache.put(KEY_OPENCMIS_DICTIONARY_REGISTRY, registry);
+            singletonCache.put(key_opencmis_dictionary_registry, registry);
             
             if (logger.isInfoEnabled())
                 logger.info("Initialized CMIS Dictionary. Types:" + registry.typeDefsByTypeId.size() + ", Base Types:"
@@ -483,7 +490,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         registryWriteLock.lock();
         try
         {
-            singletonCache.remove(KEY_OPENCMIS_DICTIONARY_REGISTRY);
+            singletonCache.remove(key_opencmis_dictionary_registry);
         }
         finally
         {

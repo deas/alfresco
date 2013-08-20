@@ -3,4 +3,5 @@
   <description>Admin Console Application Tool POST form submission processing</description>
   <format default="json" />
   <url>/components/console/application</url>
+  <authentication>user</authentication>
 </webscript>

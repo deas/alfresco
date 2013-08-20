@@ -392,17 +392,17 @@ public class Duration implements Comparable, Serializable
       boolean positive = true;
       Date start;
       Date end;
-      if (start_in.before(end_in))
+      if (end_in.before(start_in))
+      {
+         start = end_in;
+         end = start_in;
+         positive = false; 
+      }
+      else
       {
          start = start_in;
          end = end_in;
          positive = true;
-      }
-      else
-      {
-         start = end_in;
-         end = start_in;
-         positive = false;
       }
       Calendar cstart = Calendar.getInstance();
       cstart.setTime(start);

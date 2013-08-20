@@ -27,6 +27,8 @@
             <!-- Pick the mode: development, production -->
             <mode>production</mode>
          </autowire>
+         
+         <use-checksum-dependencies>true</use-checksum-dependencies>
       </web-framework>
    </config>
 

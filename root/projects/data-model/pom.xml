@@ -9,8 +9,8 @@
     <parent>
         <artifactId>alfresco-parent</artifactId>
         <groupId>org.alfresco</groupId>
-        <version>4.2.d-SNAPSHOT</version>
-        <relativePath>../../pom-experimental.xml</relativePath>
+        <version>4.2.0-QA-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <build>
@@ -22,7 +22,7 @@
                 <version>${dependency.jibx.version}</version>
                 <configuration>
                     <load>true</load>
-                    <schemaBindingDirectory>${maven.build.layout.jibx.bindings.folder}</schemaBindingDirectory>
+                    <schemaBindingDirectory>${project.build.sourceDirectory}/org/alfresco/repo/dictionary</schemaBindingDirectory>
                     <includeSchemaBindings>
                         <includeSchemaBinding>m2binding.xml</includeSchemaBinding>
                     </includeSchemaBindings>
@@ -36,19 +36,26 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--  Create a jar of test classes, to be reused later in repository -->
+            
+            
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                 <executions>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
                     <execution>
-                        <id>create-test-jar</id>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>test-jar</goal>
+                            <goal>add-source</goal>
                         </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/java/</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
+             </plugin>
 
             <!-- Copy ANTLR grammar files in dedicated location -->
             <plugin>
@@ -59,10 +66,10 @@
                         <phase>validate</phase>
                         <goals><goal>copy-resources</goal></goals>
                         <configuration>
-                            <outputDirectory>${maven.build.layout.src.main.folder}/../antlr</outputDirectory>
+                            <outputDirectory>${project.build.directory}/antlr</outputDirectory>
                             <resources>          
                                 <resource>
-                                    <directory>${legacy.sources.folder}</directory>
+                                    <directory>${project.build.sourceDirectory}</directory>
                                     <includes>
                                         <include>**/*.g</include>
                                     </includes>
@@ -73,7 +80,7 @@
                 </executions>
             </plugin>
 
-            <!-- Generate code through ANTLR -->
+            <!-- Generate code through ANTLR
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr3-maven-plugin</artifactId>
@@ -84,12 +91,65 @@
                             <goal>antlr</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${maven.build.layout.src.main.folder}/../antlr</sourceDirectory>
+                            <sourceDirectory>${project.build.directory}/antlr</sourceDirectory>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin> -->
+            
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>org/alfresco/repo/search/impl/parsers/CMISParser.java</exclude>
+                        <exclude>org/alfresco/repo/search/impl/parsers/CMISLexer.java</exclude>
+                        <exclude>org/alfresco/repo/search/impl/parsers/FTSParser.java</exclude>
+                        <exclude>org/alfresco/repo/search/impl/parsers/FTSLexer.java</exclude>
+                        <exclude>org/alfresco/repo/search/impl/parsers/CMIS_FTSParser.java</exclude>
+                        <exclude>org/alfresco/repo/search/impl/parsers/CMIS_FTSLexer.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
+            
+            
+            
         </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>org.jibx</groupId>
+        								<artifactId>
+        									maven-jibx-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.2.5,)
+        								</versionRange>
+        								<goals>
+        									<goal>bind</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<execute>
+        									<runOnConfiguration>true</runOnConfiguration>
+        									<runOnIncremental>true</runOnIncremental>
+        								</execute>
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
     </build>
 
     <dependencies>
@@ -98,6 +158,19 @@
             <artifactId>alfresco-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--  
+            | provided dependencies (are not transitive and not included in webapps)
+            | see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope
+            --> 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--  
+            | compile dependencies
+            --> 
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
@@ -187,12 +260,14 @@
         <dependency>
             <groupId>org.apache.chemistry.opencmis</groupId>
             <artifactId>chemistry-opencmis-server-bindings</artifactId>
-            <version>0.8.0-alfresco-patched</version>
+            <version>${dependency.opencmis.version}</version>
             <exclusions>
+<!--
                 <exclusion>
                     <groupId>com.sun.xml.ws</groupId>
                     <artifactId>jaxws-rt</artifactId>
                 </exclusion>
+-->
             </exclusions>
         </dependency>
 
@@ -268,7 +343,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

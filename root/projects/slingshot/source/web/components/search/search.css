@@ -195,7 +195,7 @@
 
 .search .search-bar span.yui-button span.first-child
 {
-   background-repeat: no-repeat;
+   background-color: transparent;
    border-width: 0px;
 }
 
@@ -216,7 +216,7 @@
 
 .search .form-row
 {
-   margin: 1.5em 0 1.5em 1.5em;
+   margin: 1.5em 0 1.5em 2.2em !important;
    width: 830px;
 }
 

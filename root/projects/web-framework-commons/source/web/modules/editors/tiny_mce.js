@@ -11,6 +11,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
       {
          config.mode = 'exact';
          config.relative_urls = true;
+         config.convert_urls = false;
          config.elements = id;
 
          // Need to set new size values to ensure that they work with the <font> tag
@@ -19,7 +20,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          // Allow back the 'embed' tag as TinyMCE now removes it - this is allowed by our editors
          // if the HTML stripping is disabled via the 'allowUnfilteredHTML' config attribute
          var extValidElements = config.extended_valid_elements;
-         extValidElements = (extValidElements && extValidElements != "") ? (extValidElements = "," + extValidElements) : "";
+         extValidElements = (extValidElements && extValidElements != "") ? (extValidElements = extValidElements + ",") : "";
          config.extended_valid_elements = extValidElements + "embed[src|type|width|height|flashvars|wmode]";
          
          config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari,legacyoutput': 'safari,legacyoutput';

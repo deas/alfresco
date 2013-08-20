@@ -54,6 +54,23 @@
       options:
       {
          /**
+          * Current page context, if any (e.g. "mine", "shared" - as extracted from URI template)
+          * 
+          * @property pagecontext
+          * @type string
+          * @default null
+          */
+         pagecontext: null,
+         
+         /**
+          * 
+          * @property libraryRoot
+          * @type string
+          * @default null
+          */
+         libraryRoot: null,
+         
+         /**
           * Reference to the current document
           *
           * @property nodeRef
@@ -62,12 +79,20 @@
          nodeRef: null,
 
          /**
-          * Current siteId, if any.
+          * Requested siteId, if any.
           *
           * @property siteId
           * @type string
           */
          siteId: "",
+
+         /**
+          * Actual siteId, if any.
+          *
+          * @property actualSiteId
+          * @type string
+          */
+         actualSiteId: "",
 
          /**
           * Root page to create links to.
@@ -87,6 +112,15 @@
           */
          rootLabelId: "path.documents",
 
+         /**
+          * Show only the location. Overrides the other option settings.
+          * 
+          * @property showOnlyLocation
+          * @type boolean
+          * @default false
+          */
+         showOnlyLocation: false,
+         
          /**
           * Flag indicating whether or not to show favourite
           *
@@ -184,9 +218,33 @@
        */
       onReady: function NodeHeader_onReady()
       {
+          // MNT-9081 fix, redirect user to the correct location, if requested site is not the actual site where document is located
+          if (this.options.siteId != this.options.actualSiteId)
+          {
+            var correctUrl = window.location.href.replace(this.options.siteId, this.options.actualSiteId);
+            Alfresco.util.PopupManager.displayPrompt(
+            {
+               text: this.msg("message.document.moved", this.options.actualSiteId),
+               buttons: [
+               {
+                  text: this.msg("button.ok"),
+                  handler: function()
+                  {
+                     window.location = correctUrl;
+                  },
+                  isDefault: true
+               }]
+            });
+            YAHOO.lang.later(10000, this, function()
+            {
+               window.location = correctUrl;
+            });
+            return;
+         }
+
          this.nodeType = this.options.isContainer ? "folder" : "document";
 
-         if (this.options.showLikes)
+         if (this.options.showLikes && !this.options.showOnlyLocation)
          {
             // Create like widget
             new Alfresco.Like(this.id + '-like').setOptions(
@@ -198,7 +256,7 @@
             }).display(this.options.likes.isLiked, this.options.likes.totalLikes);
          }
 
-         if (this.options.showFavourite)
+         if (this.options.showFavourite && !this.options.showOnlyLocation)
          {
             // Create favourite widget
             new Alfresco.Favourite(this.id + '-favourite').setOptions(
@@ -208,7 +266,7 @@
             }).display(this.options.isFavourite);
          }
 
-         if (this.options.showQuickShare)
+         if (this.options.showQuickShare && !this.options.showOnlyLocation)
          {
             // Create favourite widget
             new Alfresco.QuickShare(this.id + '-quickshare').setOptions(
@@ -219,8 +277,16 @@
          }
          
          // Parse the date
-         var dateEl = Dom.get(this.id + '-modifyDate');
-         dateEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(dateEl.innerHTML), Alfresco.util.message("date-format.default"));
+         if (!this.options.showOnlyLocation)
+         {
+            var dateEl = Dom.get(this.id + '-modifyDate');
+            dateEl.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(dateEl.innerHTML), Alfresco.util.message("date-format.default"));
+         }
+         else
+         {
+            var nodeHeader = YAHOO.util.Dom.getElementsByClassName("node-header")[0];
+            YAHOO.util.Dom.setStyle(nodeHeader, 'min-height', "2em");
+         }
       },
 
       /**
@@ -234,7 +300,7 @@
 
          var url = 'components/node-details/node-header?nodeRef={nodeRef}&rootPage={rootPage}' +
             '&rootLabelId={rootLabelId}&showFavourite={showFavourite}&showLikes={showLikes}' +
-            '&showComments={showComments}&showQuickShare={showQuickShare}&showDownload={showDownload}&showPath={showPath}' +
+            '&showComments={showComments}&showQuickShare={showQuickShare}&showDownload={showDownload}&showPath={showPath}&pagecontext={pagecontext}&libraryRoot={libraryRoot}' +
             (this.options.siteId ? '&site={siteId}' :  '');
 
          this.refresh(url);

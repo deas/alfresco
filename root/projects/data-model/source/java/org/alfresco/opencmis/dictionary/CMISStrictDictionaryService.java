@@ -25,6 +25,7 @@ import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 
 /**
  * CMIS Dictionary which provides Types that strictly conform to the CMIS
@@ -33,6 +34,7 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
  * That is, only maps types to one of root Document, Folder, Relationship &
  * Policy.
  * 
+ * @author steveglover
  * @author davidc
  */
 public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
@@ -40,7 +42,7 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
     
     public static final String DEFAULT = "DEFAULT_DICTIONARY";
 
-    @Override
+	@Override
     protected void createDefinitions(DictionaryRegistry registry)
     {
         createTypeDefs(registry, dictionaryService.getAllTypes());
@@ -70,11 +72,18 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_DOCUMENT, classQName);
                 objectTypeDef = new DocumentTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            } else if (cmisMapping.isValidCmisFolder(classQName))
+            }
+            else if (cmisMapping.isValidCmisFolder(classQName))
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_FOLDER, classQName);
                 objectTypeDef = new FolderTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            } else if (cmisMapping.isValidCmisPolicy(classQName))
+            }
+            else if (cmisMapping.getCmisVersion().equals(CmisVersion.CMIS_1_1) && cmisMapping.isValidCmisSecondaryType(classQName))
+            {
+                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_SECONDARY, classQName);
+                objectTypeDef = new SecondaryTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+            }
+            else if (cmisMapping.getCmisVersion().equals(CmisVersion.CMIS_1_0) && cmisMapping.isValidCmisPolicy(classQName))
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
                 objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);

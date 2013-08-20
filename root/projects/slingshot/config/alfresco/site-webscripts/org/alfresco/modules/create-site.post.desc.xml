@@ -6,4 +6,5 @@
    </description>
    <format default="json"/>
    <url>/modules/create-site</url>
+   <authentication>user</authentication>
 </webscript>

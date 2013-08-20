@@ -131,7 +131,7 @@
                fileName: response.config.dataObj.prop_cm_name,
                nodeRef: this.options.nodeRef
             };
-         this.modules.actions.postActivity(siteId, "inline-edit", "document-details", data, {}, this._navigateForward());
+         this.modules.actions.postActivity(siteId, "inline-edit", "document-details", data, this.bind(function(){this._navigateForward()}));
       },
       
       /**

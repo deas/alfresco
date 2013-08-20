@@ -62,7 +62,6 @@
       this.nodeData = null;
       this.settableRoles = null;
       this.settableRolesMenuData = null;
-      this.rolesWhiteList = ["Consumer", "Contributor", "Collaborator"];
       this.permissions =
       {
          isInherited: false,
@@ -117,6 +116,8 @@
        */
       permissions: null,
 
+	  sitePermissions: {},
+
       /**
        * Visibility state of Authority Finder
        *
@@ -149,10 +150,11 @@
           * @type object
           * @default [ "SiteManager" ]
           */
-         nonEditableRoles: [ "SiteManager" ]
+         nonEditableRoles: [ "SiteManager" ],
+         showGroups: true
       },
 
-      /**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111q111111211222222222222221qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -187,6 +189,26 @@
             failureMessage: this.msg("message.authorityFinderFail"),
             execScripts: true
          });
+
+         if (this.options.site)
+         {
+            Alfresco.util.Ajax.request( 
+            {
+               url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(this.options.site) + "/memberships/",
+               successCallback:
+               {
+                  fn: function(o)
+                  {
+                     for (var i = 0; i < o.json.length; i++) 
+                     {
+                        this.sitePermissions[o.json[i].authority.fullName] = o.json[i].role;
+                     }
+                  },
+                  scope: this
+               }
+            });
+         }
+		 
 
          // Finally show the component body here to prevent UI artifacts on YUI button decoration
          Dom.setStyle(this.id + "-body", "visibility", "visible");
@@ -288,17 +310,8 @@
                viewMode: Alfresco.AuthorityFinder.VIEW_MODE_COMPACT,
                singleSelectMode: true,
                minSearchTermLength: 3,
-               // show both users and groups in the repo view, but only users in site view.
-               authorityType: (Alfresco.constants.SITE)? Alfresco.AuthorityFinder.AUTHORITY_TYPE_USERS : Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL
+               authorityType: (this.options.showGroups)? Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL : Alfresco.AuthorityFinder.AUTHORITY_TYPE_USERS
             });
-
-            if (Alfresco.constants.SITE)
-            {
-               this.modules.authorityFinder.setOptions(
-               {
-                  siteScope: Alfresco.constants.SITE
-               });
-            }
 
             // Add User/Group button
             this.widgets.addUserGroup = Alfresco.util.createYUIButton(this, "addUserGroupButton", this.onAddUserGroupButton,
@@ -370,15 +383,12 @@
          this.settableRolesMenuData = [];
          for (var i = 0, ii = data.settable.length; i < ii; i++)
          {
-            if (Alfresco.util.arrayContains(this.rolesWhiteList, this.settableRoles[i]) || !Alfresco.constants.SITE)
+            this.settableRoles[data.settable[i]] = true;
+            this.settableRolesMenuData.push(
             {
-               this.settableRoles[data.settable[i]] = true;
-               this.settableRolesMenuData.push(
-               {
-                  text: data.settable[i],
-                  value: data.settable[i]
-               });
-            }
+               text: data.settable[i],
+               value: data.settable[i]
+            });
          }
 
          this.deferredReady.fulfil("onPermissionsLoaded");
@@ -452,7 +462,12 @@
        */
       onAuthoritySelected: function Permissions_onAuthoritySelected(e, args)
       {
-         var defaultRole = (Alfresco.constants.SITE)? this.rolesWhiteList[0] : this.settableRoles[this.settableRoles.length - 1] ;
+         var defaultRole = this.sitePermissions[args[1].itemName];
+         if (defaultRole == null)
+         {
+            //set default role
+            defaultRole = this.settableRoles[this.settableRoles.length - 1];
+         }
          // Construct permission descriptor and add permission row.
          this.permissions.current.push(
          {
@@ -780,7 +795,7 @@
       _setupDataTables: function Permissions__setupDataTables()
       {
          // Labels change in site mode.
-         var authlabel = (Alfresco.constants.SITE)? this.msg("column.user") : this.msg("column.authority") ;
+         var authlabel = (this.options.showGroups)? this.msg("column.authority") : this.msg("column.user") ;
 
          // DataTable column defintions
          var columnDefinitions =
@@ -992,17 +1007,7 @@
        */
       _navigateForward: function Permissions__navigateForward()
       {
-         /* Did we come from the document library? If so, then direct the user back there */
-         if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
-         {
-            // go back to the referrer page
-            window.location.href = document.referrer;
-         }
-         else
-         {
-            // go forward to the appropriate details page for the node
-            window.location.href = $siteURL(this.nodeData.type + "-details?nodeRef=" + this.nodeData.nodeRef);
-         }
+         window.history.go(-1);
       }
    });
 })();

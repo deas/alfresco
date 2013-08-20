@@ -16,24 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-// This class is intended to be mixed into to all menu item instances to ensure that they all share common behaviour 
+
+/**
+ * @module alfresco/menus/_AlfMenuItemMixin
+ * @extends module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreRwd
+ * @mixes module:alfresco/menus/_AlfPopupCloseMixin
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
-        "alfresco/core/Core"], 
-        function(declare, AlfCore) {
+        "alfresco/core/Core",
+        "alfresco/core/CoreRwd",
+        "alfresco/menus/_AlfPopupCloseMixin",
+        "dojo/dom-class", 
+        "dojo/dom-style"],
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domClass, domStyle) {
    
-   return declare([AlfCore], {
+   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/_AlfMenuItemMixin.css"}]
        */
       cssRequirements: [{cssFile:"./css/_AlfMenuItemMixin.css"}],
       
       /**
        * Defines the image width for the menu item icon. An image is only used if no explicit CSS class is set.
        * 
-       * @property {string} iconImageWidth
+       * @instance
+       * @type {string} 
        * @default "16px"
        */
       iconImageWidth: "16px",
@@ -41,7 +55,8 @@ define(["dojo/_base/declare",
       /**
        * Defines the image height for the menu item icon. An image is only used if no explicit CSS class is set.
        * 
-       * @property {string} iconImageWidth
+       * @instance
+       * @type {string} 
        * @default "16px"
        */
       iconImageHeight: "16px",
@@ -50,7 +65,9 @@ define(["dojo/_base/declare",
        * If a 'targetUrl' attribute is provided the value will be passed as a publication event to the NavigationService
        * to reload the page to the URL defined.
        * 
-       * @property {string} targetUrl The URL that should be loaded when the menu item is clicked on.
+       * @instance
+       * @type {string}
+       * @default null
        */
       targetUrl: null,
       
@@ -60,7 +77,8 @@ define(["dojo/_base/declare",
        * will be appended to the 'Alfresco.constants.URL_PAGECONTEXT' Global JavaScript constant. This can be overridden
        * on instantiation to indicate that another URL type, such as "FULL_PATH" should be used.
        * 
-       * @property {string} targetUrlType
+       * @instance
+       * @type {string}
        * @default "SHARE_PAGE_RELATIVE"
        */
       targetUrlType: "SHARE_PAGE_RELATIVE",
@@ -68,7 +86,8 @@ define(["dojo/_base/declare",
       /**
        * Indicates whether or not the URL should be opened in the current window/tab or in a new window. 
        * 
-       * @property {string} targetUrlLocation
+       * @instance
+       * @type {string}
        * @default "SHARE_PAGE_RELATIVE"
        */
       targetUrlLocation: "CURRENT",
@@ -77,7 +96,7 @@ define(["dojo/_base/declare",
        * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
        * to ensure that an unencoded label isn't set and then replaced. 
        * 
-       * @method postMixInProperties
+       * @instance
        */
       postMixInProperties: function alfresco_menus__AlfMenuItemMixin__postMixInProperties() {
          if (this.label)
@@ -89,7 +108,7 @@ define(["dojo/_base/declare",
       
       /**
        * Ensures that the supplied menu item label is translated.
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_menus__AlfMenuItemMixin__postCreate() {
          this.set("label", this.label);
@@ -97,13 +116,51 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * @instance
+       */
+      setupIconNode: function alfresco_menus__AlfMenuItemMixin__setupIconNode() {
+         if (this.iconClass && this.iconClass != "dijitNoIcon" && this.iconNode)
+         {
+            domClass.add(this.iconNode, this.iconClass);
+         }
+         else if (this.iconImage && this.iconNode)
+         {
+            /* The Dojo CSS class "dijitNoIcon" will automatically have been applied to a menu item
+             * if it is not overridden. Therefore in order to ensure that the icon is displayed it
+             * is necessary to set the height and width and to ensure that the display is set to
+             * block. Because the style is being explicitly set it will take precedence over the
+             * Dojo CSS class.
+             */
+            domStyle.set(this.iconNode, { backgroundImage: "url(" + this.iconImage + ")",
+                                          width: this.iconImageWidth,
+                                          height: this.iconImageHeight,
+                                          display: "block" });
+         }
+         else
+         {
+            // If there is no iconClass or iconImage then we need to explicitly set the the
+            // parent element of the icon node to have an inherited width. This is because there
+            // is a CSS selector that fixes the width of menu items with icons to ensure that 
+            // they are all aligned. This means that there would be a space for an icon even if
+            // one was not available.
+            domStyle.set(this.iconNode.parentNode, {
+               width: "auto"
+            });
+         }
+      },
+      
+      /**
        * Overrides the default onClick function. Currently only supports page navigation.
        * 
-       * @method onClick
+       * @instance
        * @param {object} evt The click event
        */
       onClick: function alfresco_menus__AlfMenuItemMixin__onClick(evt) {
          this.alfLog("log", "AlfMenuBarItem clicked");
+
+         // Emit the event to close popups in the stack...
+         this.emitClosePopupEvent();
+         
          if (this.targetUrl != null)
          {
             // Handle URLs...

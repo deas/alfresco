@@ -1,0 +1,24 @@
+<div id="${id}">
+   <div id="${id}-dialog" class="archive-and-download hidden">
+      <div class="hd">
+         <span id="${id}-title-span">${msg("header.label")}</span>
+      </div>
+      <div class="bd">
+         <div class="status-wrapper">
+            <span id="${id}-status-span" class="status">&nbsp;</span>
+         </div>
+         <div id="${id}-aggregate-data-wrapper">
+           <div class="status-wrapper">
+              <span id="${id}-aggregate-status-span" class="status">${msg("status.label")}</span>
+              <span id="${id}-file-count-span" class="status">&nbsp;</span>
+           </div>
+           <div id="${id}-aggregate-progress-div" class="aggregate-progress-div">
+              <span id="${id}-aggregate-progress-span" class="aggregate-progressSuccess-span">&nbsp;</span>
+           </div>
+         </div>
+         <div class="bdft">
+            <input id="${id}-cancelOk-button" type="button" value="${msg("button.cancel")}" tabindex="0"/>
+         </div>
+      </div>
+   </div>
+</div>

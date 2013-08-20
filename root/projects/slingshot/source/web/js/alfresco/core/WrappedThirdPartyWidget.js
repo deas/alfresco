@@ -16,6 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This widget was originally provided as a helper for asynchronously requiring non-AMD dependencies. However
+ * Surf now supports the use of the "nonAmdDependencies" attribute for processing dependencies. Therefore
+ * this widget is now largely irrelevant and should probably be deleted. 
+ * 
+ * @module alfresco/core/WrappedThirdPartyWidget
+ * @extends dijit/_WidgetBase
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ * @deprecated 
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dojo/_base/lang",

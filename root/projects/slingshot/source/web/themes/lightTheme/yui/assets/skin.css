@@ -104,7 +104,7 @@ margin: auto .25em;
 border-width: 0 1px;
 border-style: solid;
 border-color: #ccc;
-margin: 0 -1px;
+margin: 0;
 _margin: 0;
 }
 .yui-skin-lightTheme .yui-button button,.yui-skin-lightTheme .yui-button a {
@@ -308,6 +308,7 @@ padding: 10px 5px 10px 5px;
 margin: 0;
 }
 .yui-skin-lightTheme .yui-calcontainer .title {
+position: relative;
 background: url(sprite.png) repeat-x 0 0;
 border-bottom: 1px solid #cccccc;
 font: 100% sans-serif;
@@ -2846,9 +2847,6 @@ background-image: url(menubaritem_submenuindicator_disabled.png);
 .yui-skin-lightTheme .yuimenu {
 font-size: 93%;
 line-height: 1.5;*line-height:1.45;
-}
-.yui-skin-lightTheme .yuimenubar .yuimenu,.yui-skin-lightTheme .yuimenu .yuimenu {
-font-size: 100%;
 }
 .yui-skin-lightTheme .yuimenu .bd {*zoom:1;
 _zoom: normal;

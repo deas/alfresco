@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfMenuBar
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
@@ -39,7 +47,8 @@ define(["dojo/_base/declare",
        * This boolean attribute is used as an indicator of whether or not the MenuBar popups should
        * be locked in the open state.
        * 
-       * @property _lockPopupsOpen {boolean}
+       * @instance
+       * @type _lockPopupsOpen {boolean}
        */
       _lockPopupsOpen: false,
 
@@ -47,7 +56,7 @@ define(["dojo/_base/declare",
        * Overriden to only allow the default implementation to execute if the _lockPopupsOpen attribute
        * is set to false. 
        * 
-       * @method _closeChild
+       * @instance
        */
       _closeChild: function alfresco_menus_AlfMenuBar_CustomMenuBar___closeChild(){
          this.alfLog("log", "Custom MenuBar _closeChild");
@@ -67,34 +76,39 @@ define(["dojo/_base/declare",
       /**
        * The scope to use for i18n messages.
        * 
-       * @property i18nScope {String}
+       * @instance
+       * @type i18nScope {String}
        */
       i18nScope: "org.alfresco.Menus",
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type cssRequirements {Array}
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBar.css"}],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance
+       * @type i18nRequirements {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfMenuBar.properties"}],
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type template {String}
        */
       templateString: template,
       
       /**
        * A reference to the MenuBar
        * 
-       * @property _menuBar {Object}
+       * @instance
+       * @type _menuBar {Object}
        */
       _menuBar: null,
       
@@ -105,10 +119,10 @@ define(["dojo/_base/declare",
        * needs to prevent the MenuBar from closing popups when the dijit/form/Textarea used for capturing user 
        * status has focus.
        * 
-       * @method lockPopupsOpen
+       * @instance
        * @param b {boolean}
        */
-      lockPopupsOpen: function alf_menus_AlfMenuBar__lockPopupsOpen(b) {
+      lockPopupsOpen: function alfresco_menus_AlfMenuBar__lockPopupsOpen(b) {
          this._menuBar._lockPopupsOpen = b; 
       },
       
@@ -116,9 +130,9 @@ define(["dojo/_base/declare",
        * Instantiates the MenuBar (a custom declared implementation) and processes the widgets assigned to ensure
        * that the labels are localized before being sent for processing.
        * 
-       * @method postCreate
+       * @instance
        */
-      postCreate: function alf_menus_AlfMenuBar__postCreate() {
+      postCreate: function alfresco_menus_AlfMenuBar__postCreate() {
          
          // We need a menu...
          this._menuBar = new CustomMenuBar({});
@@ -144,10 +158,10 @@ define(["dojo/_base/declare",
       /**
        * Implements the callback to add all of the widgets into the MenuBar.
        * 
-       * @method allWidgetsProcessed
+       * @instance
        * @param widgets The widgets that have been successfully instantiated.
        */
-      allWidgetsProcessed: function alf_menus_AlfMenuBar__allWidgetsProcessed(widgets) {
+      allWidgetsProcessed: function alfresco_menus_AlfMenuBar__allWidgetsProcessed(widgets) {
          var _this = this;
          array.forEach(widgets, function(entry, i) {
             _this._menuBar.addChild(entry);

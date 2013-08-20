@@ -54,6 +54,7 @@
          treeNodeAPITemplate: "cloud/doclib/treenode/site/{site}/{container}{path}?children={evaluateChildFoldersSite}&max={maximumFolderCountSite}&network={network}",
          templateFailMessage: Alfresco.util.message("message.sync.unavailable"),
          syncOptions: {},
+         showSyncOptions: true,
          mode: 'sync'
       });
 
@@ -126,10 +127,17 @@
       _beforeShowDialog: function cloudFolder__beforeShowDialog()
       {
          Alfresco.module.DoclibCloudFolder.superclass._beforeShowDialog.call(this);
+         
+         if(!this.options.showSyncOptions)
+         {
+            var optionDiv = Dom.getElementsByClassName("cloud-options", "div", this.id + "-wrapper");
+            Dom.addClass(optionDiv[0], "hidden");
+         }
+         
          this.widgets.optionInputs = Dom.getElementsByClassName("cloudSyncOption", "input", this.id + "-wrapper");
          var optionInputs = this.widgets.optionInputs;
          for (var i in optionInputs)
-         {         
+         {        
             if (!this._selectionIncludesFolder() && optionInputs[i].id === "includeSubFolders")
             {
                Dom.addClass(Dom.get(optionInputs[i].id + "-label"), "hidden");
@@ -353,6 +361,8 @@
          };
 
          this.options.sitesAPI = YAHOO.lang.substitute(this.options.sitesAPITemplate, substitutionOptions);
+         // TODO: validate if global-folder.js should use sitesAPI instead of peopleAPI
+         this.options.peopleAPI = YAHOO.lang.substitute(this.options.sitesAPITemplate, substitutionOptions);
          this.options.containersAPI = YAHOO.lang.substitute(this.options.containersAPITemplate, substitutionOptions)
          this.options.siteTreeContainerTypes =
          {

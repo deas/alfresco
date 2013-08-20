@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,7 +33,9 @@ public class CookieHandler extends BasicHandler
     public void invoke(MessageContext context) 
         throws AxisFault 
     {
-        String sessionId = AuthenticationUtils.getAuthenticationDetails().getSessionId();
+        AuthenticationDetails authenticationDetails = AuthenticationUtils.getAuthenticationDetails();
+        String sessionId = (authenticationDetails != null) ? (authenticationDetails.getSessionId()) : (null);
+
         if (sessionId != null)
         {
             context.setProperty(HTTPConstants.HEADER_COOKIE, "JSESSIONID=" + sessionId);

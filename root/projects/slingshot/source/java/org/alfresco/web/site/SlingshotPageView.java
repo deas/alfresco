@@ -26,6 +26,7 @@ package org.alfresco.web.site;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.extensions.config.RemoteConfigElement;
 import org.springframework.extensions.config.WebFrameworkConfigElement;
@@ -49,13 +50,17 @@ import org.springframework.extensions.webscripts.connector.User;
  * <p>
  * Adds a override to the initial setup of the request context, this is used to identify
  * page objects with a theme override - allowing a theme per site or even a theme per
- * page. Crrently the UI only provides a mechanism to set the theme on a per application
+ * page. Currently the UI only provides a mechanism to set the theme on a per application
  * and per site basis.
  * 
  * @author Kevin Roast
  */
 public class SlingshotPageView extends PageView
 {
+    // Redirect session parameters
+    public static final String REDIRECT_URI   = "_redirectURI";
+    public static final String REDIRECT_QUERY = "_redirectQueryString";
+    
     private RemoteConfigElement config;
     
     /**
@@ -183,6 +188,21 @@ public class SlingshotPageView extends PageView
             }
         }
         return login;
+    }
+    
+    @Override
+    protected String buildLoginRedirectURL(HttpServletRequest request)
+    {
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute(REDIRECT_URI) != null)
+        {
+            String redirectUrl = session.getAttribute(REDIRECT_URI) +
+                    (session.getAttribute(REDIRECT_QUERY) != null ? ("?" + session.getAttribute(REDIRECT_QUERY)) : "");
+            session.removeAttribute(REDIRECT_URI);
+            session.removeAttribute(REDIRECT_QUERY);
+            return redirectUrl;
+        }
+        return super.buildLoginRedirectURL(request);
     }
     
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -139,10 +139,17 @@
          {
             _this._handleContentChange();
          });
-         this.editor.getEditor().onKeyUp.add(function(ed, e)
+         // MNT-8717
+         var submitButton = YAHOO.util.Dom.get(this.id.replace(/_prop_cm_content$/,'-form-submit-button'));
+         if (submitButton)
          {
-            _this._handleContentChange();
-         });
+            function saveClicked() 
+            {
+               _this._handleContentChange();
+            }
+
+            YAHOO.util.Event.on(submitButton, "click", saveClicked);
+         }
          // ALF-16991:
          this.editor.getEditor().onExecCommand.add(function(ed, e)
          {

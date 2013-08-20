@@ -209,6 +209,38 @@ Alfresco.util.isSharePointPluginInstalled = function()
 };
 
 /**
+ * Check whether the location is valid for online editing in MS Office application
+ *
+ * @method Alfresco.util.validLocationForOnlineEdit
+ * @param location {Object} (Required) Object describing the location of the file to edit
+ * @param location.site {Object} Object describing the site the file is located in
+ * @param location.site.name {String} The shortname of the site the file is located in
+ * @param location.container {Object} Object describing the container the file is located in
+ * @param location.container.name {String} The name of the container the files is located in
+ * @param location.path {String} The path to the file inside the container
+ * @param location.file {String} The name of the file to edit
+ * @return {Boolean} Whether the location is valid for editing online
+ */
+Alfresco.util.validLocationForOnlineEdit = function(location)
+{
+   var pathToCheck = Alfresco.util.combinePaths(location.tenant ? location.tenant : "",
+                                                location.site ? location.site.name : "",
+                                                location.container ? location.container.name : "",
+                                                location.path,
+                                                location.file);
+   var path = pathToCheck.split("/");
+   
+   for (i = 0, j = path.length; i < j; i++)
+   {
+      if ((/[~"#%&*:<>?\/\\{|}]/).test(path[i]))
+      {
+         return false;
+      }
+   }
+   return true;
+};
+
+/**
  * Creates a url for online editing with sharepoint.
  *
  * @method Alfresco.util.onlineEditUrl
@@ -231,7 +263,7 @@ Alfresco.util.onlineEditUrl = function(vtiServer, location)
    // Thor: used by overridden JS to place the tenant domain into the URL.
    var tenant = location.tenant ? location.tenant : "";
    var onlineEditUrl = vtiServer.host + ":" + vtiServer.port + "/" +
-      Alfresco.util.combinePaths(vtiServer.contextPath, tenant, location.site ? location.site.name : "", location.container ? location.container.name : "", location.path, location.file.replace(/#/g,"%23"));
+      Alfresco.util.combinePaths(vtiServer.contextPath, tenant, location.site ? location.site.name : "", location.container ? location.container.name : "", location.path.replace(/#/g,"%23"), location.file.replace(/#/g,"%23"));
    if (!(/^(http|https):\/\//).test(onlineEditUrl))
    {
       // Did they specify the protocol on the vti server bean?
@@ -1729,7 +1761,9 @@ Alfresco.util.encodeHTML.div.appendChild(Alfresco.util.encodeHTML.text);
  */
 Alfresco.util.encodeURIPath = function(text)
 {
-   return encodeURIComponent(text).replace(/%2F/g, "/");
+   // NOTE: the %2525 double encoding madness is to cope with the fail of urlrewrite filter to correctly cope with encoded paths
+   // see urlrewrite.xml - it decodes the path of the URL early - before the container gets a chance to process it - which is FAIL.
+   return encodeURIComponent(text).replace(/%2F/g, "/").replace(/%25/g,"%2525");
 };
 
 /**
@@ -1850,10 +1884,13 @@ Alfresco.util.useAsButton = function(el, callbackFn, callbackObj, callbackScope)
    {
       fn.call(scope, type, obj || arg);
    };
-   new YAHOO.util.KeyListener(el,
-         {
-            keys: [ YAHOO.util.KeyListener.KEY.ENTER ]
-         }, callback).enable();
+   if (el.tagName != "A")
+   {
+      new YAHOO.util.KeyListener(el,
+      {
+         keys: [ YAHOO.util.KeyListener.KEY.ENTER ]
+      }, callback).enable();
+   }
 };
 
 /**
@@ -2079,7 +2116,7 @@ Alfresco.util.createYUIButton = function(p_scope, p_name, p_onclick, p_obj, p_oE
  */
 Alfresco.util.disableYUIButton = function(p_button)
 {
-   if (p_button.set && p_button.get)
+   if (p_button && p_button.set && p_button.get)
    {
       p_button.set("disabled", true);
       if (p_button.get("type") == "link")
@@ -2518,25 +2555,23 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
    Alfresco.widget.Balloon = function(p_context, p_params)
    {
       this.context = p_context;
-      var balloon = new Alfresco.util.createYUIOverlay(Alfresco.util.generateDomId(),
-            {
-               context:
-                     [
-                        p_context,
-                        "bl",
-                        "tl",
-            ["beforeShow", "windowResize", "windowScroll", "textResize"]
-                     ],
-               constraintoviewport: true,
-               visible: false,
-               width: p_params.width || "auto",
-               effect:
-               {
-                  effect: p_params.effectType,
-                  duration: p_params.effectDuration
-         },
-         fireHideShowEvents: false
-            });
+      var balloon = new Alfresco.util.createYUIOverlay(Alfresco.util.generateDomId(), {
+            context: [
+               p_context,
+               "bl",
+               "tl",
+               ["beforeShow", "windowResize", "windowScroll", "textResize"]
+            ],
+            constraintoviewport: true,
+            visible: false,
+            width: p_params.width || "auto",
+            zIndex: 10,
+            effect: {
+               effect: p_params.effectType,
+               duration: p_params.effectDuration
+            },
+            fireHideShowEvents: false
+         });
 
       var wrapper = document.createElement("div"),
             arrow = document.createElement("div");
@@ -2675,6 +2710,276 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
    };
 })();
 
+
+(function()
+{
+   /**
+    * YUI Library aliases
+    */
+   var Dom = YAHOO.util.Dom,
+       Event = YAHOO.util.Event,
+       Anim = YAHOO.util.Anim;
+   
+   /**
+    * Alfresco library aliases
+    */
+   var $html = Alfresco.util.encodeHTML;
+   
+   /**
+    * Alfresco.widget.FullScreen constructor.
+    * Toggles full-screen mode for the given context element
+    *
+    * @param p_context {object} the HTML element ID to be made full-screen
+    * @param p_params {object} the parameters
+    * @return {Alfresco.widget.FullScreen} The new instance
+    * @constructor
+    */
+   Alfresco.widget.FullScreen = function(p_context, p_params)
+   {
+      this.context = Dom.get(p_context);
+      if (p_params)
+      {
+         this.params = YAHOO.lang.merge(Alfresco.util.deepCopy(this.params), p_params);
+      }
+      var fullScreenInstance = this;
+      document.addEventListener("fullscreenchange", function()
+      {
+         fullScreenInstance.onFullScreenChange();
+      }, false);
+      document.addEventListener("mozfullscreenchange", function()
+      {
+         fullScreenInstance.onFullScreenChange();
+      }, false);
+      document.addEventListener("webkitfullscreenchange", function()
+      {
+         fullScreenInstance.onFullScreenChange();
+      }, false);
+      
+      return this;
+   };
+   
+   Alfresco.widget.FullScreen.prototype =
+   {
+      /**
+       * The element to make full screen
+       *
+       * @property context
+       */
+      context: null,
+      
+      /**
+       * The current full screen mode
+       *
+       * @property context
+       */
+      isWindowOnly: true,
+      
+      /**
+       * The parameters for full screen
+       *
+       * @property params
+       */
+      params:
+      {
+         pageContainerId: "Share"
+      },
+      
+      /**
+       * Toggles full-screen mode for the current context element
+       *
+       * @method toggleFullScreen
+       */
+      toggleFullScreen: function FullScreen_toggleFullScreen(isWindowOnly)
+      {
+         if (this.context != null)
+         {
+            if (!document.fullscreen && !document.mozFullScreen && !document.webkitFullScreen)
+            {
+               this.requestFullScreen(isWindowOnly);
+            }
+            else
+            {
+               this.cancelFullScreen();
+            }
+         }
+      },
+      
+      /**
+       * Enters full-screen mode for the current context element
+       *
+       * @method requestFullScreen
+       */
+      requestFullScreen: function FullScreen_requestFullScreen(isWindowOnly)
+      {
+         if (isWindowOnly != null)
+         {
+            this.isWindowOnly = isWindowOnly;
+         }
+         if (this.isWindowOnly)
+         {
+            this.toggleFullWindow();
+            return;
+         }
+         var container = Dom.get(this.context);
+         if (container.requestFullscreen || container.mozRequestFullScreen || container.webkitRequestFullScreen)
+         {
+            Dom.addClass(container, 'alf-fullscreen');
+            Dom.addClass(container, 'alf-entering-true-fullscreen');
+         }
+         if (container.requestFullscreen)
+         {
+            container.requestFullscreen();
+         }
+         else if (container.mozRequestFullScreen)
+         {
+            container.mozRequestFullScreen();
+         }
+         else if (container.webkitRequestFullScreen)
+         {
+            // TODO Safari bug doesn't support keyboard input
+            if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1)
+            {
+               container.webkitRequestFullScreen();
+            }
+            else
+            {
+               container.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+         }
+         else
+         {
+            this.toggleFullWindow();
+         }
+      },
+      
+      /**
+       * Exits full-screen mode for the current context element
+       *
+       * @method cancelFullScreen
+       */
+      cancelFullScreen: function FullScreen_cancelFullScreen()
+      {
+         if (this.isWindowOnly)
+         {
+            this.toggleFullWindow();
+            return;
+         }
+         if (document.exitFullscreen)
+         {
+            document.exitFullscreen();
+         }
+         else if (document.mozCancelFullScreen)
+         {
+            document.mozCancelFullScreen();
+         }
+         else if (document.webkitCancelFullScreen)
+         {
+            document.webkitCancelFullScreen();
+         }
+         else
+         {
+            this.toggleFullWindow();
+         }
+      },
+      
+      /**
+       * Handles changes to the full screen mode
+       *
+       * @method onFullScreenChange
+       */
+      onFullScreenChange: function FullScreen_onFullScreenChange()
+      {
+         if (this.context != null)
+         {
+            var container = Dom.get(this.context);
+            if (Dom.hasClass(container, 'alf-entering-true-fullscreen'))
+            {
+               Dom.removeClass(container, 'alf-entering-true-fullscreen');
+               // Let resizing take place then add the true-fullscreen class
+               setTimeout(function()
+               {
+                  Dom.addClass(container, 'alf-true-fullscreen');
+               }, 1000);
+            }
+            else
+            {
+               if (Dom.hasClass(container, 'alf-true-fullscreen'))
+               {
+                  if (Dom.hasClass(container, 'alf-fullscreen'))
+                  {
+                     // Exiting true fullscreen complete
+                     Dom.removeClass(container, 'alf-fullscreen');
+                     Dom.removeClass(container, 'alf-true-fullscreen');
+                     YAHOO.Bubbling.fire("fullScreenExitComplete",
+                     {
+                         scope: this.context,
+                         eventGroup: this.context.id
+                     });
+                  }
+               }
+               else
+               {
+                  // We've probably been programatically called in fullwindow mode
+                  if (!Dom.hasClass(container, 'alf-fullscreen'))
+                  {
+                     Dom.addClass(container, 'alf-fullscreen');
+                     YAHOO.Bubbling.fire("fullScreenEnterComplete",
+                     {
+                         scope: this.context,
+                         eventGroup: this.context.id
+                     });
+                  }
+                  else
+                  {
+                     Dom.removeClass(container, 'alf-fullscreen');
+                     YAHOO.Bubbling.fire("fullScreenExitComplete",
+                     {
+                         scope: this.context,
+                         eventGroup: this.context.id
+                     });
+                  }
+               }
+            }
+         }
+      },
+      
+      /**
+       * Toggles full-window mode for the current context element for browsers that don't support full-screen or
+       * explicit setting of params.isWindowOnly=true.
+       *
+       * @method toggleFullWindow
+       */
+      toggleFullWindow: function FullScreen_toggleFullWindow()
+      {
+         if (this.context != null)
+         {
+            var pageContainer = Dom.get(this.params.pageContainerId);
+            var container = Dom.get(this.context);
+            if (!Dom.hasClass(pageContainer, 'alf-fullwindow'))
+            {
+               Dom.addClass(pageContainer, 'alf-fullwindow');
+               var fullscreen = this;
+               this.context.escKeyListener = function(e)
+               {
+                  if (e.keyCode == 27) {
+                     fullscreen.toggleFullWindow();
+                  }
+               }
+               document.addEventListener("keydown", this.context.escKeyListener, false);
+            }
+            else
+            {
+               Dom.removeClass(pageContainer, 'alf-fullwindow');
+               if (this.context.escKeyListener)
+               {
+                  document.removeEventListener("keydown", this.context.escKeyListener, false);
+               }
+            }
+            this.onFullScreenChange();
+         }
+      }
+   }
+})();
 
 (function()
 {
@@ -4365,6 +4670,11 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                {
                   this.form.addValidation(this.inputBox, vals[i].type, vals[i].args, vals[i].when, vals[i].message);
                }
+               this.form.addValidation(this.inputBox, Alfresco.forms.validation.length,
+               {
+                  max: 255,
+                  crop: true
+               }, "keyup");
 
                // Initialise the form
                this.form.init();
@@ -5450,10 +5760,14 @@ Alfresco.util.renderUriTemplate = function(template, obj, absolute)
       if (obj.hasOwnProperty("site"))
       {
          // A site parameter was given - is it valid?
-         if (!Alfresco.util.isValueSet(obj.site))
+         if (!Alfresco.util.isValueSet(obj.site) && (Alfresco.constants.PAGECONTEXT.length == 0))
          {
             // Not valid - remove site part of template
             template = template.replace("/site/{site}", "");
+         }
+         else if (Alfresco.constants.PAGECONTEXT.length > 0)
+         {
+            template = template.replace("/site/{site}", "/context/" + Alfresco.constants.PAGECONTEXT);
          }
       }
       else
@@ -5462,6 +5776,10 @@ Alfresco.util.renderUriTemplate = function(template, obj, absolute)
          {
             // We're currently in a Site, so generate an in-Site link
             obj.site = Alfresco.constants.SITE;
+         }
+         else if (Alfresco.constants.PAGECONTEXT.length > 0)
+         {
+            template = template.replace("/site/{site}", "/context/" + Alfresco.constants.PAGECONTEXT);
          }
          else
          {
@@ -7101,8 +7419,18 @@ Alfresco.util.CSRFPolicy = function()
        */
       getToken: function()
       {
+         var token = null;
          var cookieName = this.getCookie();
-         return cookieName ? YAHOO.util.Cookie.get(cookieName) : null;
+         if (cookieName)
+         {
+            token = YAHOO.util.Cookie.get(cookieName);
+            if (token)
+            {
+               // remove quotes to support Jetty app-server - bug where it quotes a valid cookie value see ALF-18823
+               token = token.replace(/"/g, '');
+            }
+         }
+         return token;
       }
    };
 }();
@@ -7736,11 +8064,14 @@ Alfresco.util.Ajax = function()
             if (config.responseContentType == "application/json")
             {
                json = Alfresco.util.parseJSON(serverResponse.responseText);
-               Alfresco.util.PopupManager.displayPrompt(
-                     {
-                        title: json.status.name,
-                        text: json.message
-                     });
+               if (json != null)
+               {
+                  Alfresco.util.PopupManager.displayPrompt(
+                  {
+                     title: json.status.name,
+                     text: json.message
+                  });
+               }
             }
             else if (serverResponse.statusText)
             {
@@ -10490,10 +10821,15 @@ Alfresco.util.RENDERLOOPSIZE = 25;
              */
             onFormSubmitFailure: function FormManager_onFormSubmitFailure(response)
             {
+         var failureMsg = null;
+         if (response.json && response.json.message && response.json.message.indexOf("Failed to persist field 'prop_cm_name'") !== -1)
+         {
+            failureMsg = this.msg("message.details.failure.name");
+         }
                Alfresco.util.PopupManager.displayPrompt(
                      {
                         title: this.msg(this.options.failureMessageKey),
-                        text: (response.json && response.json.message ? response.json.message : this.msg(this.options.failureMessageKey))
+            text: failureMsg ? failureMsg : (response.json && response.json.message ? response.json.message : this.msg("message.details.failure"))
                      });
             },
 
@@ -10961,8 +11297,11 @@ Alfresco.util.RENDERLOOPSIZE = 25;
                {
                   success: function DataTable_loadDataTable_success(oRequest, oResponse, oPayload)
                   {
+                     me.lastResultCount = oResponse.results.length;
+                     
                      // Will end up making the doBeforeLoadData being called
                      me.widgets.dataTable.onDataReturnSetRows(oRequest, oResponse, oPayload);
+                     
                      var filter = me.currentFilter;
                      if (!filter.filterId)
                      {
@@ -11432,7 +11771,11 @@ Alfresco.util.generateThumbnailUrl = function(jsNode, thumbnailName)
    }
    if (YAHOO.lang.isUndefined(url) || YAHOO.lang.isNull(url))
    {
-      url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true";
+      // This has been updated to include a lastModified request parameter to allow the thumbnail to be cached. Because thumbnails
+      // that are genuine previews are "taken care of" by updates to the "cm:lastThumbnailModification" property then there are more
+      // benefits to allowing non-preview types to be cached. File association thumbnails change infrequently and there is no
+      // major problem with them not updating if they do - the benefits of not revalidating them from performance are far greater...
+      url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true&lastModified=1";
    }
    return url;
 };

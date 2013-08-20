@@ -402,11 +402,11 @@
                docfolder: event.docfolder || "",
                startAt:
                {
-                  iso8601: event.start
+                  iso8601: toISO8601(event.start)
                },
                endAt:
                {
-                  iso8601: end
+                  iso8601: toISO8601(end)
                },
                page: Alfresco.constants.PAGEID,
                site: Alfresco.constants.SITE,

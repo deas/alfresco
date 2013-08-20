@@ -1,12 +1,18 @@
 function main()
 {
-   var req = json.toString();
-   var reqJSON = eval('(' + req + ')');
+   // parse the input json into an object - to retrieve shortName
+   var reqJSON = eval('(' + json.toString() + ')');
+   
+   // collect up objects to delete later - as the repo removes component
+   // definitions and we cannot retrieve them after
+   var dashboardURL = "site/" + reqJSON.shortName + "/dashboard",
+       dashboardPage = sitedata.getPage(dashboardURL),
+       components = sitedata.findComponents("page", null, dashboardURL, null);
    
    // Call the repo to delete the site
-   var conn = remote.connect("alfresco");
-   var res = conn.del("/api/sites/" + reqJSON.shortName);
-   var resJSON = eval('(' + res + ')');
+   var conn = remote.connect("alfresco"),
+       res = conn.del("/api/sites/" + reqJSON.shortName),
+       resJSON = eval('(' + res + ')');
    
    // Check if we got a positive result
    if (resJSON.success)
@@ -14,15 +20,12 @@ function main()
       // Yes we did - now remove sitestore model artifacts...
       
       // remove dashboard page instance
-      var dashboardURL = "site/" + reqJSON.shortName + "/dashboard";
-      var dashboardPage = sitedata.getPage(dashboardURL);
       if (dashboardPage != null)
       {
          dashboardPage.remove();
       }
       
       // remove component instances
-      var components = sitedata.findComponents("page", null, dashboardURL, null);
       for (var i=0; i < components.length; i++)
       {
          components[i].remove();

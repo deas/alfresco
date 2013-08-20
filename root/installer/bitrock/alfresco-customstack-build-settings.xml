@@ -40,18 +40,18 @@
         <setInstallerVariable name="alfresco_awe_war_source_file" value="${alfresco_svn_rootdir.unix}/build/assemble/awe.war" />
         <setInstallerVariable name="alfresco_awe_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartwebsite/config/alfresco" />
         <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartclientapi/config/alfresco" />
-        <setInstallerVariable name="alfresco_googledocs_source_file" value="${binaries_folder}/../../googledocs/alfresco-googledocs-repo-2.0.1-14.amp" />
-        <setInstallerVariable name="alfresco_googledocs_share_source_file" value="${binaries_folder}/../../googledocs/alfresco-googledocs-share-2.0.1-14.amp" />
+        <setInstallerVariable name="alfresco_googledocs_source_file" value="${binaries_folder}/../../googledocs/alfresco-googledocs-repo-2.0.4-4.amp" />
+        <setInstallerVariable name="alfresco_googledocs_share_source_file" value="${binaries_folder}/../../googledocs/alfresco-googledocs-share-2.0.4-4.amp" />
 
         <!-- Binaries -->
-        <setInstallerVariable name="common_distribution_folder" value="${binaries_folder}/common-20120810" />
-        <setInstallerVariable name="postgres_distribution_folder" value="${binaries_folder}/postgresql-9.0.4" />
-        <setInstallerVariable name="imagemagick_distribution_folder_windows" value="${binaries_folder}/ImageMagick6.5.6-10" />
-        <setInstallerVariable name="imagemagick_distribution_folder_unix" value="${binaries_folder}/ImageMagick6.5.6-10" />
-        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.7.0_07" />
-        <setInstallerVariable name="openoffice_distribution_folder" value="${binaries_folder}/libreoffice-4.0" />
+        <setInstallerVariable name="common_distribution_folder" value="${binaries_folder}/common-20130725" />
+        <setInstallerVariable name="postgres_distribution_folder" value="${binaries_folder}/postgresql-9.2.4" />
+        <setInstallerVariable name="imagemagick_distribution_folder_windows" value="${binaries_folder}/ImageMagick-6.8.6" />
+        <setInstallerVariable name="imagemagick_distribution_folder_unix" value="${binaries_folder}/ImageMagick-6.8.6" />
+        <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.7.0_25" />
+        <setInstallerVariable name="libreoffice_distribution_folder" value="${binaries_folder}/libreoffice-4.0" />
         <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.2" />
-        <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat-7.0.30" />
+        <setInstallerVariable name="tomcat_distribution_folder" value="${binaries_folder}/apache-tomcat-7.0.42" />
 
 
         <!-- END ALFRESCO BUILD SYSTEM-->

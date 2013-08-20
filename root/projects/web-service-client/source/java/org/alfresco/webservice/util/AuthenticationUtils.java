@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -53,7 +53,18 @@ public class AuthenticationUtils implements CallbackHandler
          "     </requestFlow >" +
          "   </globalConfiguration>" +
          "</deployment>";
-    
+
+    /** WS simple information */
+    private static final String WS_SIMPLE_INFO = 
+         "<deployment xmlns='http://xml.apache.org/axis/wsdd/' xmlns:java='http://xml.apache.org/axis/wsdd/providers/java'>" +
+         "   <transport name='http' pivot='java:org.apache.axis.transport.http.HTTPSender'/>" +
+         "   <globalConfiguration >" +
+         "     <requestFlow >" +
+         "       <handler name='cookieHandler' type='java:org.alfresco.webservice.util.CookieHandler' />" +
+         "     </requestFlow >" +
+         "   </globalConfiguration>" +
+         "</deployment>";
+
     /** Thread local containing the current authentication details */
     private static ThreadLocal<AuthenticationDetails> authenticationDetails = new ThreadLocal<AuthenticationDetails>();
     
@@ -208,4 +219,14 @@ public class AuthenticationUtils implements CallbackHandler
     {
         return new FileProvider(new ByteArrayInputStream(WS_SECURITY_INFO.getBytes()));
     }    
+
+    /**
+     * Gets the simple engine configuration used to create the authentication service references
+     * 
+     * @return {@link EngineConfiguration} the simple engine configuration
+     */
+    public static EngineConfiguration getSimpleConfiguration()
+    {
+        return new FileProvider(new ByteArrayInputStream(WS_SIMPLE_INFO.getBytes()));
+    }
 }

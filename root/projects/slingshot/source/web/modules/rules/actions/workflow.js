@@ -242,7 +242,7 @@
          // The ok button is the submit button, and it should be enabled when the form is ready
          form.setSubmitElements(this.widgets.okButton);
 
-         // Stop the form from being submitted and fire and event from the collected information        
+         // Stop the form from being submitted and fire and event from the collected information
          form.doBeforeAjaxRequest =
          {
             fn: function(p_config, p_obj)
@@ -287,7 +287,7 @@
             scope: this,
             correctScope: true
          });
-         escapeListener.enable();                  
+         escapeListener.enable();
 
          // Show the dialog
          this._showDialog(workflowConfig);
@@ -318,6 +318,7 @@
 
          // Update submit elements & show the dialog
          this.widgets.form.validate();
+         this.widgets.form._toggleSubmitElements(true);
          this.widgets.dialog.show();
       },
 
@@ -364,7 +365,7 @@
          var pathNodeRef = Dom.get(this.id + "-nodeRef").value;
          this.widgets.destinationDialog.setOptions(
          {
-            pathNodeRef: pathNodeRef ? new Alfresco.util.NodeRef(pathNodeRef) : null              
+            pathNodeRef: pathNodeRef ? new Alfresco.util.NodeRef(pathNodeRef) : null
          });
 
          // Show dialog

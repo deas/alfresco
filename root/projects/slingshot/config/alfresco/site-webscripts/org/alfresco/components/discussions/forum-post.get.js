@@ -14,12 +14,6 @@ function main()
       }
       return jsonUtils.toJSONString(post);
    }
-   else
-   {
-      status.code = result.status.code;
-      status.message = msg.get("message.failure");
-      status.redirect = true;
-   }
 }
 
 model.post = main();

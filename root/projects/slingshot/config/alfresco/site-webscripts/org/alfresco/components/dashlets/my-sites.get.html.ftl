@@ -30,6 +30,7 @@
                <select id="${id}-type-menu">
                   <option value="all">${msg("filter.all")}</option>
                   <option value="favSites">${msg("filter.favSites")}</option>
+                  <option value="recentSites">${msg("filter.recentSites")}</option>
                </select>
                <span class="align-right yui-button-align">
                   <#if showCreateSite>

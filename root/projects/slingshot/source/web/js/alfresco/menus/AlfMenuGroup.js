@@ -16,31 +16,47 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This widget can be used to group menu items within a popup menu such as an [AlfMenuBarPopup]{@link module:alfresco/menus/AlfMenuBarPopup}
+ * or a [AlfCascadingMenu]{@link module:alfresco/menus/AlfCascadingMenu}. When an item is added to any [AlfMenuGroups]{@link module:alfresco/menus/AlfMenuGroups}
+ * popup such as in those widgets then a new instance will automatically be wrapped any child widget that is not in a group.
+ * 
+ * @module alfresco/menus/AlfMenuGroup
+ * @extends module:alfresco/menus/AlfDropDownMenu
+ * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreRwd
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dojo/text!./templates/AlfMenuGroup.html",
         "alfresco/core/Core",
         "alfresco/menus/AlfDropDownMenu",
+        "alfresco/core/CoreRwd",
         "dojo/_base/event",
         "dojo/dom-style",
         "dojo/dom-class",
         "dojo/keys",
         "dijit/popup"], 
-        function(declare, template, AlfCore, AlfDropDownMenu, event, domStyle, domClass, keys, popup) {
+        function(declare, template, AlfCore, AlfDropDownMenu, CoreRwd, event, domStyle, domClass, keys, popup) {
    
-   return declare([AlfDropDownMenu, AlfCore], {
+   return declare([AlfDropDownMenu, AlfCore, CoreRwd], {
       
       // TODO: There's an argument that this should actually extend (rather than wrap) the DropDownMenu to avoid needing to delegate the functions
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {string}
        */
       templateString: template,
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/AlfMenuGroup.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuGroup.css"}],
       
@@ -49,12 +65,16 @@ define(["dojo/_base/declare",
        * hidden completely. The value assigned to label can either be an i18n property key or a value
        * but an attempt will be made to look up the assigned value in the available i18n keys.
        * 
-       * @property {string} label#
+       * @instance
+       * @type {string}
        * @default ""
        */
       label: "",
       
-      constructor: function alfresco_services_NavigationService__constructor(args) {
+      /**
+       * @instance
+       */
+      constructor: function alfresco_menus_AlfMenuGroup__constructor(args) {
          this.ddmTemplateString = AlfDropDownMenu.prototype.templateString;
       },
       
@@ -63,9 +83,9 @@ define(["dojo/_base/declare",
        * Sets the group label and creates a new alfresco/menus/AlfDropDownMenu to contain the items 
        * in the group.
        * 
-       * @method postCreate
+       * @instance
        */
-      postCreate: function alf_menus_AlfMenuGroup__postCreate() {
+      postCreate: function alfresco_menus_AlfMenuGroup__postCreate() {
          
          if (this.label == "")
          {
@@ -85,72 +105,65 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method isFocusable
+       * @instance
        */
-      isFocusable: function alf_menus_AlfMenuGroup__isFocusable() {
+      isFocusable: function alfresco_menus_AlfMenuGroup__isFocusable() {
          return this.hasChildren();
       },
       
       /**
-       * This function is set as the _itemKeyPress handler on the "alfresco/menus/AlfDropDownMenu" that is created for 
-       * this group. It's purpose is to handle keyboard navigation events that occur within the drop down menu. It is 
-       * necessary to handle these events explicitly because of the additional widgets that are placed in the menu 
-       * stack that allow Alfresco specific behaviour and styling.
+       * Overrides the inherited function in order to address the additional Alfesco object
+       * placed in the chain between the Dojo menu objects. 
        * 
-       * 
-       * @method dropDownMenuItemKeyPress
-       * @param {object} evt The key press event
+       * @instance
+       * @param {object} evt
        */
-      _itemKeyPress: function alf_menus_AlfMenuGroup___itemKeyPress(evt) {
-         
-         this.alfLog("log", "Item key press", evt);
-         
-         // Set up sensible variables for the various contexts...
-         var dropDownMenu = this,
-             menuGroup = this,
-             groupParent = menuGroup.getParent(); 
-
-         // Get the key code... depending upon how the event has been generated there might be different properties
-         // available for accessing the key code. Try the charOrCode attribute first (this comes from Dojo) and then
-         // fall back to keyCode...         
-         var keyCode = (evt.charOrCode) ? evt.charOrCode : evt.keyCode;
-         if (keyCode == menuGroup._openSubMenuKey)
+      _onRightArrow: function(/*Event*/ evt){
+         if(this.focusedChild && this.focusedChild.popup && !this.focusedChild.disabled)
          {
-            // Open cascading menu if available but if there is no cascading menu then find a menu bar in the 
-            // stack and focus the next item on it.
-            if(this.focusedChild && this.focusedChild.popup && !this.focusedChild.disabled)
+             // This first block is identical to that of the inherited function...
+             this.alfLog("log", "Open cascading menu");
+             this._moveToPopup(evt);
+         }
+         else 
+         {
+            // Find the top menu and focus next in it...
+            this.alfLog("log", "Try and find a menu bar in the stack and move to next");
+            var menuBarAncestor = this.findMenuBarAncestor(this.getParent());
+            if (menuBarAncestor)
             {
-                // This first block is identical to that of the inherited function...
-                this.alfLog("log", "Open cascading menu");
-                this.onItemClick(this.focusedChild, evt);
-            }
-            else 
-            {
-               // Find the top menu and focus next in it...
-               this.alfLog("log", "Try and find a menu bar in the stack and move to next");
-               var menuBarAncestor = this.findMenuBarAncestor(groupParent);
-               if (menuBarAncestor)
-               {
-                  this.alfLog("log", "Go to next item in menu bar");
-                  menuBarAncestor.focusNext()
-               }
+               this.alfLog("log", "Go to next item in menu bar");
+               menuBarAncestor.focusNext()
             }
          }
-         else if (keyCode == menuGroup._closeSubMenuKey)
+      },
+      
+      /**
+       * Overrides the inherited function in order to address the additional Alfesco object
+       * placed in the chain between the Dojo menu objects. 
+       * 
+       * @instance
+       * @param {object} evt
+       */
+      _onLeftArrow: function(evt) {
+         if(this.getParent().parentMenu && !this.getParent().parentMenu._isMenuBar)
          {
-            // Close sub-menus and if there is no sub-menu but the group is a child of a menu bar then then 
-            // move to the previous item in that menu bar...
-            if (groupParent.parentMenu && !groupParent.parentMenu._isMenuBar)
+            this.alfLog("log", "Close cascading menu");
+            this.getParent().parentMenu.focusChild(this.getParent().parentMenu.focusedChild);
+            popup.close(this.getParent());
+         }
+         else
+         {
+            var menuBarAncestor = this.findMenuBarAncestor(this.getParent());
+            if (menuBarAncestor)
             {
-               this.alfLog("log", "Close cascading menu");
-               this.getParent().parentMenu.focus();
-               popup.close(this.getParent());
-            }
-            else if (groupParent.parentMenu && groupParent.parentMenu._isMenuBar)
-            {
-               // Focus the previous item of the menu bar...
                this.alfLog("log", "Focus previous item in menu bar");
-               groupParent.parentMenu.focusPrev()
+               menuBarAncestor.focusPrev();
+            }
+            else
+            {
+               evt.stopPropagation();
+               evt.preventDefault();
             }
          }
       },
@@ -162,10 +175,10 @@ define(["dojo/_base/declare",
        * but not all widgets in the Alfresco menu stack have this attribute (and it was not possible to
        * set it correctly during the widget processing phase). 
        * 
-       * @method findMenuBarAncestor
+       * @instance
        * @return Either null if a menu bar cannot be found or a menu bar widget.
        */
-      findMenuBarAncestor: function alf_menus_AlfMenuGroup__findMenuBarAncestor(currentMenu) {
+      findMenuBarAncestor: function alfresco_menus_AlfMenuGroup__findMenuBarAncestor(currentMenu) {
          var reachedMenuTop = false;
          while (!reachedMenuTop && !currentMenu._isMenuBar)
          {

@@ -92,11 +92,13 @@
 .groups td.yui-dt-last .yui-dt-liner a.update
 {
    background-image: url(../images/edit-16.png);
+   cursor: pointer;
 }
 
 .groups td.yui-dt-last .yui-dt-liner a.delete
 {
    background-image: url(../images/delete-16.png);
+   cursor: pointer;
 }
 
 .groups td.yui-dt-last .yui-dt-liner a.delete-disabled

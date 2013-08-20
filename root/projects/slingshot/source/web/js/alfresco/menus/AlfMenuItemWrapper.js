@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfMenuItemWrapper
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes dijit/_Contained
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
@@ -34,30 +43,35 @@ define(["dojo/_base/declare",
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {string}
        */
       templateString: template,
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/AlfMenuItemWrapper.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuItemWrapper.css"}],
       
       /**
        * The item to be wrapped.
        * 
-       * @property item {object}
+       * @instance
+       * @type {object}
+       * @default null
        */
       item: null,
       
       /**
        * Add the assigned item (the thing that is to be wrapped) to the appropriate DOM node in the HTML template. 
        * 
-       * @method postCreate
+       * @instance
        */
-      postCreate: function alf_menus_AlfMenuItemWrapper__postCreate() {
+      postCreate: function alfresco_menus_AlfMenuItemWrapper__postCreate() {
          if (this.item)
          {
             domConstruct.place(this.item.domNode, this._itemNode);
@@ -68,7 +82,7 @@ define(["dojo/_base/declare",
        * This function is implemented to indicate whether or not the wrapped item can be focused. It is focusable if
        * the item has a focus function that can be called.
        * 
-       * @method isFocusable
+       * @instance
        * @returns {boolean} true if there is a wrapped item and it has a focus function.
        */
       isFocusable: function  alf_menus_AlfMenuItemWrapper__isFocusable() {
@@ -80,9 +94,9 @@ define(["dojo/_base/declare",
       /**
        * This function is implemented to delegate the handling of focus events to the wrapped item.
        * 
-       * @method focus
+       * @instance
        */
-      focus: function alf_menus_AlfMenuItemWrapper__focus() {
+      focus: function alfresco_menus_AlfMenuItemWrapper__focus() {
          this.alfLog("log", "Item Wrapper focus");
          if (this.item && this.item.focus)
          {
@@ -91,12 +105,27 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This function is implemented to delegate the handling of item focus events to the wrapped item. This
+       * was added as a result of ALF-19367 because the omitted function was resulting in an error being generated
+       * in IE.
+       * 
+       * @instance
+       * @param {object} arg The argument to pass on
+       */
+      _onItemFocus: function alfresco_menus_AlfMenuItemWrapper___onItemFocus(arg) {
+         if (typeof this.item._onItemFocus === "function")
+         {
+            this.item._onItemFocus(arg);
+         }
+      },
+      
+      /**
        * This function is implemented to delegate the handling of _setSelected calls to the wrapped item.
        * 
-       * @method _setSelected
+       * @instance
        * @param {boolean} Indicates whether ot not the item is selected
        */
-      _setSelected: function alf_menus_AlfMenuItemWrapper___setSelected(selected) {
+      _setSelected: function alfresco_menus_AlfMenuItemWrapper___setSelected(selected) {
          this.alfLog("log", "Item Wrapper _setSelected", selected);
          if (this.item && this.item._setSelected)
          {
@@ -107,10 +136,10 @@ define(["dojo/_base/declare",
       /**
        * This function is implemented to delegate the handling of onClick calls to the wrapped item.
        * 
-       * @method onClick
+       * @instance
        * @param {object} evt The click event
        */
-      onClick: function alf_menus_AlfMenuItemWrapper__onClick(evt){
+      onClick: function alfresco_menus_AlfMenuItemWrapper__onClick(evt){
          this.alfLog("log", "Item Wrapper onClick", evt);
          if (this.item && typeof this.item.onClick == "function")
          {

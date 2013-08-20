@@ -31,15 +31,20 @@
 
       // Re-register with our own name
       this.name = "Alfresco.module.DoclibCopyMoveTo";
+      var DLGF = Alfresco.module.DoclibGlobalFolder;
+
       Alfresco.util.ComponentManager.reregister(this);
 
       this.options = YAHOO.lang.merge(this.options,
       {
          allowedViewModes:
          [
-            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE,
-            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY,
-            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME
+            DLGF.VIEW_MODE_SITE,
+            DLGF.VIEW_MODE_RECENT_SITES,
+            DLGF.VIEW_MODE_FAVOURITE_SITES,
+            DLGF.VIEW_MODE_SHARED,
+            DLGF.VIEW_MODE_REPOSITORY,
+            DLGF.VIEW_MODE_USERHOME
          ],
          extendedTemplateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/documentlibrary/copy-move-to"
       });
@@ -75,7 +80,7 @@
             myOptions.dataWebScript = dataWebScripts[obj.mode];
          }
          
-         myOptions.viewMode = Alfresco.util.isValueSet(this.options.siteId) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
+         myOptions.viewMode = Alfresco.util.isValueSet(this.options.siteId) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_RECENT_SITES : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
          // Actions module
          this.modules.actions = new Alfresco.module.DoclibActions();
 

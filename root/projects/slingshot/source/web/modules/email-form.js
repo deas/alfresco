@@ -73,7 +73,6 @@
          templateUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/email-form"
       },
 
-
       /**
        * Object container for storing component instances.
        *
@@ -403,30 +402,38 @@
             }
             else if (recipientId.indexOf("GROUP_") == 0)
             {
-               Alfresco.util.Ajax.jsonGet(
+               if (recipientId === "GROUP_EVERYONE")
                {
-                  url: Alfresco.constants.PROXY_URI_RELATIVE + "api/groups/" + recipientId.substring(6),
-                  successCallback:
+                  this.recipientsCache[recipientId] = "EVERYONE";
+                  this._renderRecipients(recipientIds);
+               }
+               else
+               {
+                  Alfresco.util.Ajax.jsonGet(
                   {
-                     fn: function (p_oResponse, p_oObj)
+                     url: Alfresco.constants.PROXY_URI_RELATIVE + "api/groups/" + recipientId.substring(6),
+                     successCallback:
                      {
-                        var group = p_oResponse.json.data;
-                        this.recipientsCache[recipientId] = group.displayName;
-                        this._renderRecipients(p_oObj.recipientIds);
-                     },
-                     obj:
-                     {
-                        recipientIds: recipientIds
-                     },
-                     scope: this
-                  }
-               });
+                        fn: function (p_oResponse, p_oObj)
+                        {
+                           var group = p_oResponse.json.data;
+                           this.recipientsCache[recipientId] = group.displayName;
+                           this._renderRecipients(p_oObj.recipientIds);
+                        },
+                        obj:
+                        {
+                           recipientIds: recipientIds
+                        },
+                        scope: this
+                     }
+                  });
+               }
             }
             else
             {
                Alfresco.util.Ajax.jsonGet(
                {
-                  url: Alfresco.constants.PROXY_URI_RELATIVE + "api/people/" + recipientId,
+                  url: Alfresco.constants.PROXY_URI_RELATIVE + "api/people/" + encodeURIComponent(recipientId),
                   successCallback:
                   {
                      fn: function (p_oResponse, p_oObj)

@@ -46,6 +46,7 @@
       YAHOO.Bubbling.on("rulesLinkedTo", this.onRulesLinkedTo, this);
       YAHOO.Bubbling.on("folderRulesetDetailsAvailable", this.onFolderRulesetDetailsAvailable, this);
       YAHOO.Bubbling.on("folderRulesDetailsChanged", this.onFolderRulesDetailsChanged, this);
+      YAHOO.Bubbling.on("inheritChange", this.onInheritChange, this);
 
       return this;
    };
@@ -207,8 +208,6 @@
        * Checks if any rules are inherited and then hides or show them
        *
        * @method _displayInheritedRules
-       * @param layer
-       * @param args
        */
       _displayInheritedRules: function RulesHeader__displayInheritedRules(layer, args)
       {
@@ -224,6 +223,18 @@
             // Found no inherited rules make sure the component is hidden
             Dom.addClass(this.widgets.inheritedRulesList, "hidden");            
          }
+      },
+
+      /**
+       *
+       * Tiggered when the Rules Header component shows a change in
+       *
+       * @method onInheritChange
+       */
+      onInheritChange: function RulesHeader_onInheritChange(layer, args)
+      {
+         // Reload page so appropriate components will be displayed in stead of the current ones
+         window.location.reload();
       },
 
       /**

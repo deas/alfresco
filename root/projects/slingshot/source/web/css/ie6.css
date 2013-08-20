@@ -545,6 +545,7 @@ div.filter
 .aspects .list-left,
 .aspects .list-right
 {
+   overflow-x: auto;
    overflow-y: scroll;
 }
 .aspects .yui-g .yui-u

@@ -39,6 +39,7 @@ import org.alfresco.repo.search.impl.querymodel.impl.functions.Upper;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.Cardinality;
@@ -56,7 +57,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public static BaseTypeId[] STRICT_SCOPES = new BaseTypeId[] { BaseTypeId.CMIS_DOCUMENT, BaseTypeId.CMIS_FOLDER };
 
     public static BaseTypeId[] ALFRESCO_SCOPES = new BaseTypeId[] { BaseTypeId.CMIS_DOCUMENT, BaseTypeId.CMIS_FOLDER,
-            BaseTypeId.CMIS_POLICY };
+            BaseTypeId.CMIS_POLICY, BaseTypeId.CMIS_SECONDARY };
 
     private Map<String, NodeRef> nodeRefs;
 
@@ -501,6 +502,40 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
             throw new CmisInvalidArgumentException("Unknown column/property " + propertyName);
         }
         return propDef.getPropertyDefinition().getCardinality() == Cardinality.MULTI;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext#getAlfrescoQName(org.alfresco.service.namespace.QName)
+     */
+    @Override
+    public String getAlfrescoPropertyName(String propertyName)
+    {
+        PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
+        if(propertyDef != null)
+        {
+            return propertyDef.getPropertyLuceneBuilder().getLuceneFieldName().substring(1);
+        }
+        else
+        {
+            throw new CmisInvalidArgumentException("Unknown column/property " + propertyName);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext#getAlfrescoTypeName(java.lang.String)
+     */
+    @Override
+    public String getAlfrescoTypeName(String typeName)
+    {
+        TypeDefinitionWrapper typeDef = cmisDictionaryService.findType(typeName);
+        if(typeDef != null)
+        {
+            return typeDef.getAlfrescoClass().toString();
+        }
+        else
+        {
+            throw new CmisInvalidArgumentException("Unknown type " + typeName);
+        }
     }
      
 }

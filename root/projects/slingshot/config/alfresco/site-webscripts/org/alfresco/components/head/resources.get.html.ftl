@@ -81,6 +81,7 @@
       Alfresco.constants.URL_FEEDSERVICECONTEXT = "${url.context}/feedservice/";
       Alfresco.constants.USERNAME = "${(user.name!"")?js_string}";
       Alfresco.constants.SITE = "<#if page??>${(page.url.templateArgs.site!"")?js_string}</#if>";
+      Alfresco.constants.PAGECONTEXT = "<#if page??>${(page.url.templateArgs.pagecontext!"")?js_string}</#if>";
       Alfresco.constants.PAGEID = "<#if page??>${(page.url.templateArgs.pageid!"")?js_string}</#if>";
       Alfresco.constants.PORTLET = ${PORTLET?string};
       Alfresco.constants.PORTLET_URL = unescape("${(context.attributes.portletUrl!"")?js_string}");
@@ -174,10 +175,7 @@
    <@script type="text/javascript" src="${url.context}/res/js/share.js" group="template-common"/>
    <@script type="text/javascript" src="${url.context}/res/js/lightbox.js" group="template-common"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/presentation.css" group="template-common" />
-   <@link href="${url.context}/res/modules/header/sites.css" group="template-common"/>
-   <@link href="${url.context}/res/modules/header/sites.css" group="template-common"/>
    <@script src="${url.context}/res/modules/create-site.js" group="template-common"/>
-   <@script src="${url.context}/res/modules/header/sites.js" group="template-common"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css" group="share" forceAggregation="true"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css" group="share" forceAggregation="true"/>
 </@>

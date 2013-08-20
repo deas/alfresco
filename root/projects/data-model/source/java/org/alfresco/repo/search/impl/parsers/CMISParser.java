@@ -1,4 +1,4 @@
-// $ANTLR 3.4 W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2012-08-28 10:47:23
+// $ANTLR 3.4 W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2013-08-07 19:43:06
 
     package org.alfresco.repo.search.impl.parsers;
     import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
@@ -132,7 +132,7 @@ public TreeAdaptor getTreeAdaptor() {
     return adaptor;
 }
     public String[] getTokenNames() { return CMISParser.tokenNames; }
-    public String getGrammarFileName() { return "W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g"; }
+    public String getGrammarFileName() { return "W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g"; }
 
 
         private Stack<String> paraphrases = new Stack<String>();
@@ -286,7 +286,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "query"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:285:1: query : SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:285:1: query : SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) ;
     public final CMISParser.query_return query() throws RecognitionException {
         CMISParser.query_return retval = new CMISParser.query_return();
         retval.start = input.LT(1);
@@ -317,8 +317,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in query"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:294:9: ( SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:9: SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:294:9: ( SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:9: SELECT selectList fromClause ( whereClause )? ( orderByClause )? EOF
             {
             SELECT1=(Token)match(input,SELECT,FOLLOW_SELECT_in_query415); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_SELECT.add(SELECT1);
@@ -338,7 +338,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_fromClause.add(fromClause3.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: ( whereClause )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: ( whereClause )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -347,7 +347,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt1) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: whereClause
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:38: whereClause
                     {
                     pushFollow(FOLLOW_whereClause_in_query421);
                     whereClause4=whereClause();
@@ -362,7 +362,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: ( orderByClause )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: ( orderByClause )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -371,7 +371,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt2) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: orderByClause
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:295:51: orderByClause
                     {
                     pushFollow(FOLLOW_orderByClause_in_query424);
                     orderByClause5=orderByClause();
@@ -391,7 +391,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: fromClause, whereClause, selectList, orderByClause
+            // elements: selectList, fromClause, orderByClause, whereClause
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -405,7 +405,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 296:17: -> ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:25: ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:25: ^( QUERY selectList fromClause ( whereClause )? ( orderByClause )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -416,14 +416,14 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_fromClause.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:55: ( whereClause )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:55: ( whereClause )?
                 if ( stream_whereClause.hasNext() ) {
                     adaptor.addChild(root_1, stream_whereClause.nextTree());
 
                 }
                 stream_whereClause.reset();
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:68: ( orderByClause )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:297:68: ( orderByClause )?
                 if ( stream_orderByClause.hasNext() ) {
                     adaptor.addChild(root_1, stream_orderByClause.nextTree());
 
@@ -474,7 +474,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "selectList"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:300:1: selectList : ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:300:1: selectList : ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) );
     public final CMISParser.selectList_return selectList() throws RecognitionException {
         CMISParser.selectList_return retval = new CMISParser.selectList_return();
         retval.start = input.LT(1);
@@ -498,7 +498,7 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in select list"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:309:9: ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:309:9: ( STAR -> ^( ALL_COLUMNS ) | selectSubList ( COMMA selectSubList )* -> ^( COLUMNS ( selectSubList )+ ) )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -605,7 +605,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt4) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:310:9: STAR
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:310:9: STAR
                     {
                     STAR7=(Token)match(input,STAR,FOLLOW_STAR_in_selectList526); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_STAR.add(STAR7);
@@ -626,7 +626,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 311:17: -> ^( ALL_COLUMNS )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:312:25: ^( ALL_COLUMNS )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:312:25: ^( ALL_COLUMNS )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -645,7 +645,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:11: selectSubList ( COMMA selectSubList )*
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:11: selectSubList ( COMMA selectSubList )*
                     {
                     pushFollow(FOLLOW_selectSubList_in_selectList584);
                     selectSubList8=selectSubList();
@@ -654,7 +654,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_selectSubList.add(selectSubList8.getTree());
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:25: ( COMMA selectSubList )*
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:25: ( COMMA selectSubList )*
                     loop3:
                     do {
                         int alt3=2;
@@ -667,7 +667,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:26: COMMA selectSubList
+                    	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:313:26: COMMA selectSubList
                     	    {
                     	    COMMA9=(Token)match(input,COMMA,FOLLOW_COMMA_in_selectList587); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA9);
@@ -704,7 +704,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 314:17: -> ^( COLUMNS ( selectSubList )+ )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:315:25: ^( COLUMNS ( selectSubList )+ )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:315:25: ^( COLUMNS ( selectSubList )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -766,7 +766,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "selectSubList"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:318:1: selectSubList : ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:318:1: selectSubList : ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) );
     public final CMISParser.selectSubList_return selectSubList() throws RecognitionException {
         CMISParser.selectSubList_return retval = new CMISParser.selectSubList_return();
         retval.start = input.LT(1);
@@ -791,12 +791,12 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_columnName=new RewriteRuleSubtreeStream(adaptor,"rule columnName");
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:319:9: ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:319:9: ( valueExpression ( ( AS )? columnName )? -> ^( COLUMN valueExpression ( columnName )? ) | qualifier DOTSTAR -> ^( ALL_COLUMNS qualifier ) )
             int alt7=2;
             alt7 = dfa7.predict(input);
             switch (alt7) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:9: valueExpression ( ( AS )? columnName )?
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:9: valueExpression ( ( AS )? columnName )?
                     {
                     pushFollow(FOLLOW_valueExpression_in_selectSubList673);
                     valueExpression11=valueExpression();
@@ -805,7 +805,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_valueExpression.add(valueExpression11.getTree());
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:25: ( ( AS )? columnName )?
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:25: ( ( AS )? columnName )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
@@ -820,9 +820,9 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt6) {
                         case 1 :
-                            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )? columnName
+                            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )? columnName
                             {
-                            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )?
+                            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: ( AS )?
                             int alt5=2;
                             int LA5_0 = input.LA(1);
 
@@ -831,7 +831,7 @@ public TreeAdaptor getTreeAdaptor() {
                             }
                             switch (alt5) {
                                 case 1 :
-                                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: AS
+                                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:320:26: AS
                                     {
                                     AS12=(Token)match(input,AS,FOLLOW_AS_in_selectSubList676); if (state.failed) return retval; 
                                     if ( state.backtracking==0 ) stream_AS.add(AS12);
@@ -857,7 +857,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: valueExpression, columnName
+                    // elements: columnName, valueExpression
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -871,7 +871,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 321:17: -> ^( COLUMN valueExpression ( columnName )? )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:25: ^( COLUMN valueExpression ( columnName )? )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:25: ^( COLUMN valueExpression ( columnName )? )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -880,7 +880,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         adaptor.addChild(root_1, stream_valueExpression.nextTree());
 
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:50: ( columnName )?
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:322:50: ( columnName )?
                         if ( stream_columnName.hasNext() ) {
                             adaptor.addChild(root_1, stream_columnName.nextTree());
 
@@ -899,7 +899,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:323:11: qualifier DOTSTAR
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:323:11: qualifier DOTSTAR
                     {
                     pushFollow(FOLLOW_qualifier_in_selectSubList744);
                     qualifier14=qualifier();
@@ -927,7 +927,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 324:17: -> ^( ALL_COLUMNS qualifier )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:325:25: ^( ALL_COLUMNS qualifier )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:325:25: ^( ALL_COLUMNS qualifier )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -979,7 +979,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "valueExpression"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:328:1: valueExpression : ( columnReference -> columnReference | valueFunction -> valueFunction );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:328:1: valueExpression : ( columnReference -> columnReference | valueFunction -> valueFunction );
     public final CMISParser.valueExpression_return valueExpression() throws RecognitionException {
         CMISParser.valueExpression_return retval = new CMISParser.valueExpression_return();
         retval.start = input.LT(1);
@@ -998,7 +998,7 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in value expression"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:337:9: ( columnReference -> columnReference | valueFunction -> valueFunction )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:337:9: ( columnReference -> columnReference | valueFunction -> valueFunction )
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -1135,7 +1135,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt8) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:338:9: columnReference
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:338:9: columnReference
                     {
                     pushFollow(FOLLOW_columnReference_in_valueExpression837);
                     columnReference16=columnReference();
@@ -1170,7 +1170,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:340:11: valueFunction
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:340:11: valueFunction
                     {
                     pushFollow(FOLLOW_valueFunction_in_valueExpression869);
                     valueFunction17=valueFunction();
@@ -1239,7 +1239,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "columnReference"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:344:1: columnReference : ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:344:1: columnReference : ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) ;
     public final CMISParser.columnReference_return columnReference() throws RecognitionException {
         CMISParser.columnReference_return retval = new CMISParser.columnReference_return();
         retval.start = input.LT(1);
@@ -1261,15 +1261,15 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in column reference"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:353:9: ( ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )? columnName
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:353:9: ( ( qualifier DOT )? columnName -> ^( COLUMN_REF columnName ( qualifier )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )? columnName
             {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:9: ( qualifier DOT )?
             int alt9=2;
             alt9 = dfa9.predict(input);
             switch (alt9) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:10: qualifier DOT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:354:10: qualifier DOT
                     {
                     pushFollow(FOLLOW_qualifier_in_columnReference933);
                     qualifier18=qualifier();
@@ -1310,7 +1310,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 355:17: -> ^( COLUMN_REF columnName ( qualifier )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:25: ^( COLUMN_REF columnName ( qualifier )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:25: ^( COLUMN_REF columnName ( qualifier )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -1319,7 +1319,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_columnName.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:49: ( qualifier )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:356:49: ( qualifier )?
                 if ( stream_qualifier.hasNext() ) {
                     adaptor.addChild(root_1, stream_qualifier.nextTree());
 
@@ -1370,7 +1370,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "valueFunction"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:359:1: valueFunction : (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) |{...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:359:1: valueFunction : (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) |{...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) );
     public final CMISParser.valueFunction_return valueFunction() throws RecognitionException {
         CMISParser.valueFunction_return retval = new CMISParser.valueFunction_return();
         retval.start = input.LT(1);
@@ -1404,12 +1404,12 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in function"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:368:9: (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) |{...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:368:9: (cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN ) |{...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN ) )
             int alt12=2;
             alt12 = dfa12.predict(input);
             switch (alt12) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:9: cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:9: cmisFunctionName= cmisFunction LPAREN ( functionArgument )* RPAREN
                     {
                     pushFollow(FOLLOW_cmisFunction_in_valueFunction1035);
                     cmisFunctionName=cmisFunction();
@@ -1422,7 +1422,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN21);
 
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: ( functionArgument )*
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: ( functionArgument )*
                     loop10:
                     do {
                         int alt10=2;
@@ -1459,7 +1459,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: functionArgument
+                    	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:369:46: functionArgument
                     	    {
                     	    pushFollow(FOLLOW_functionArgument_in_valueFunction1039);
                     	    functionArgument22=functionArgument();
@@ -1482,7 +1482,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: RPAREN, LPAREN, cmisFunctionName, functionArgument
+                    // elements: LPAREN, cmisFunctionName, RPAREN, functionArgument
                     // token labels: 
                     // rule labels: retval, cmisFunctionName
                     // token list labels: 
@@ -1497,7 +1497,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 370:17: -> ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:25: ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:25: ^( FUNCTION $cmisFunctionName LPAREN ( functionArgument )* RPAREN )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -1510,7 +1510,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_LPAREN.nextNode()
                         );
 
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:61: ( functionArgument )*
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:371:61: ( functionArgument )*
                         while ( stream_functionArgument.hasNext() ) {
                             adaptor.addChild(root_1, stream_functionArgument.nextTree());
 
@@ -1533,7 +1533,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:11: {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:11: {...}? =>functionName= keyWordOrId LPAREN ( functionArgument )* RPAREN
                     {
                     if ( !((strict == false)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -1551,7 +1551,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN24);
 
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: ( functionArgument )*
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: ( functionArgument )*
                     loop11:
                     do {
                         int alt11=2;
@@ -1588,7 +1588,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt11) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: functionArgument
+                    	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:372:64: functionArgument
                     	    {
                     	    pushFollow(FOLLOW_functionArgument_in_valueFunction1119);
                     	    functionArgument25=functionArgument();
@@ -1611,7 +1611,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: RPAREN, functionArgument, LPAREN, functionName
+                    // elements: LPAREN, functionName, functionArgument, RPAREN
                     // token labels: 
                     // rule labels: retval, functionName
                     // token list labels: 
@@ -1626,7 +1626,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 373:17: -> ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:25: ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:25: ^( FUNCTION $functionName LPAREN ( functionArgument )* RPAREN )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -1639,7 +1639,7 @@ public TreeAdaptor getTreeAdaptor() {
                         stream_LPAREN.nextNode()
                         );
 
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:57: ( functionArgument )*
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:374:57: ( functionArgument )*
                         while ( stream_functionArgument.hasNext() ) {
                             adaptor.addChild(root_1, stream_functionArgument.nextTree());
 
@@ -1696,7 +1696,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "functionArgument"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:377:1: functionArgument : ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:377:1: functionArgument : ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName );
     public final CMISParser.functionArgument_return functionArgument() throws RecognitionException {
         CMISParser.functionArgument_return retval = new CMISParser.functionArgument_return();
         retval.start = input.LT(1);
@@ -1719,12 +1719,12 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_columnName=new RewriteRuleSubtreeStream(adaptor,"rule columnName");
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:378:9: ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:378:9: ( qualifier DOT columnName -> ^( COLUMN_REF columnName qualifier ) | identifier | literalOrParameterName )
             int alt13=3;
             alt13 = dfa13.predict(input);
             switch (alt13) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:379:9: qualifier DOT columnName
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:379:9: qualifier DOT columnName
                     {
                     pushFollow(FOLLOW_qualifier_in_functionArgument1211);
                     qualifier27=qualifier();
@@ -1759,7 +1759,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 380:17: -> ^( COLUMN_REF columnName qualifier )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:381:25: ^( COLUMN_REF columnName qualifier )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:381:25: ^( COLUMN_REF columnName qualifier )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -1782,7 +1782,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:382:11: identifier
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:382:11: identifier
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1797,7 +1797,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:383:11: literalOrParameterName
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:383:11: literalOrParameterName
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1843,7 +1843,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "qualifier"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:386:1: qualifier : ( ( tableName )=> tableName -> tableName | correlationName -> correlationName );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:386:1: qualifier : ( ( tableName )=> tableName -> tableName | correlationName -> correlationName );
     public final CMISParser.qualifier_return qualifier() throws RecognitionException {
         CMISParser.qualifier_return retval = new CMISParser.qualifier_return();
         retval.start = input.LT(1);
@@ -1859,7 +1859,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_correlationName=new RewriteRuleSubtreeStream(adaptor,"rule correlationName");
         RewriteRuleSubtreeStream stream_tableName=new RewriteRuleSubtreeStream(adaptor,"rule tableName");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:387:9: ( ( tableName )=> tableName -> tableName | correlationName -> correlationName )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:387:9: ( ( tableName )=> tableName -> tableName | correlationName -> correlationName )
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -2773,7 +2773,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt14) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )=> tableName
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )=> tableName
                     {
                     pushFollow(FOLLOW_tableName_in_qualifier1328);
                     tableName32=tableName();
@@ -2808,7 +2808,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:390:11: correlationName
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:390:11: correlationName
                     {
                     pushFollow(FOLLOW_correlationName_in_qualifier1360);
                     correlationName33=correlationName();
@@ -2874,7 +2874,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "fromClause"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:394:1: fromClause : FROM tableReference -> tableReference ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:394:1: fromClause : FROM tableReference -> tableReference ;
     public final CMISParser.fromClause_return fromClause() throws RecognitionException {
         CMISParser.fromClause_return retval = new CMISParser.fromClause_return();
         retval.start = input.LT(1);
@@ -2893,8 +2893,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in fromClause"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:403:9: ( FROM tableReference -> tableReference )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:404:9: FROM tableReference
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:403:9: ( FROM tableReference -> tableReference )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:404:9: FROM tableReference
             {
             FROM34=(Token)match(input,FROM,FOLLOW_FROM_in_fromClause1423); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_FROM.add(FROM34);
@@ -2965,7 +2965,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "tableReference"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:408:1: tableReference : singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:408:1: tableReference : singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) ;
     public final CMISParser.tableReference_return tableReference() throws RecognitionException {
         CMISParser.tableReference_return retval = new CMISParser.tableReference_return();
         retval.start = input.LT(1);
@@ -2984,8 +2984,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in tableReference"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:417:9: ( singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:9: singleTable ( joinedTable )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:417:9: ( singleTable ( joinedTable )* -> ^( SOURCE singleTable ( joinedTable )* ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:9: singleTable ( joinedTable )*
             {
             pushFollow(FOLLOW_singleTable_in_tableReference1488);
             singleTable36=singleTable();
@@ -2994,7 +2994,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_singleTable.add(singleTable36.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: ( joinedTable )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: ( joinedTable )*
             loop15:
             do {
                 int alt15=2;
@@ -3007,7 +3007,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt15) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: joinedTable
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:418:21: joinedTable
             	    {
             	    pushFollow(FOLLOW_joinedTable_in_tableReference1490);
             	    joinedTable37=joinedTable();
@@ -3026,7 +3026,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: joinedTable, singleTable
+            // elements: singleTable, joinedTable
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3040,7 +3040,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 419:17: -> ^( SOURCE singleTable ( joinedTable )* )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:25: ^( SOURCE singleTable ( joinedTable )* )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:25: ^( SOURCE singleTable ( joinedTable )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -3049,7 +3049,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_singleTable.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:46: ( joinedTable )*
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:420:46: ( joinedTable )*
                 while ( stream_joinedTable.hasNext() ) {
                     adaptor.addChild(root_1, stream_joinedTable.nextTree());
 
@@ -3100,7 +3100,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "singleTable"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:427:1: singleTable : ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:427:1: singleTable : ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) );
     public final CMISParser.singleTable_return singleTable() throws RecognitionException {
         CMISParser.singleTable_return retval = new CMISParser.singleTable_return();
         retval.start = input.LT(1);
@@ -3119,7 +3119,7 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in singleTable"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:436:9: ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:436:9: ( simpleTable -> simpleTable | complexTable -> ^( TABLE complexTable ) )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -3142,7 +3142,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt16) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:437:9: simpleTable
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:437:9: simpleTable
                     {
                     pushFollow(FOLLOW_simpleTable_in_singleTable1588);
                     simpleTable38=simpleTable();
@@ -3177,7 +3177,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:439:11: complexTable
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:439:11: complexTable
                     {
                     pushFollow(FOLLOW_complexTable_in_singleTable1620);
                     complexTable39=complexTable();
@@ -3201,7 +3201,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 440:17: -> ^( TABLE complexTable )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:441:25: ^( TABLE complexTable )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:441:25: ^( TABLE complexTable )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -3256,7 +3256,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "simpleTable"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:444:1: simpleTable : tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:444:1: simpleTable : tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) ;
     public final CMISParser.simpleTable_return simpleTable() throws RecognitionException {
         CMISParser.simpleTable_return retval = new CMISParser.simpleTable_return();
         retval.start = input.LT(1);
@@ -3278,8 +3278,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in simpleTable"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:453:9: ( tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:9: tableName ( ( AS )? correlationName )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:453:9: ( tableName ( ( AS )? correlationName )? -> ^( TABLE_REF tableName ( correlationName )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:9: tableName ( ( AS )? correlationName )?
             {
             pushFollow(FOLLOW_tableName_in_simpleTable1711);
             tableName40=tableName();
@@ -3288,7 +3288,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_tableName.add(tableName40.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:19: ( ( AS )? correlationName )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:19: ( ( AS )? correlationName )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -3303,9 +3303,9 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt18) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )? correlationName
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )? correlationName
                     {
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )?
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: ( AS )?
                     int alt17=2;
                     int LA17_0 = input.LA(1);
 
@@ -3314,7 +3314,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt17) {
                         case 1 :
-                            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: AS
+                            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:454:20: AS
                             {
                             AS41=(Token)match(input,AS,FOLLOW_AS_in_simpleTable1714); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_AS.add(AS41);
@@ -3340,7 +3340,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: correlationName, tableName
+            // elements: tableName, correlationName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3354,7 +3354,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 455:17: -> ^( TABLE_REF tableName ( correlationName )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:25: ^( TABLE_REF tableName ( correlationName )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:25: ^( TABLE_REF tableName ( correlationName )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -3363,7 +3363,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_tableName.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:47: ( correlationName )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:456:47: ( correlationName )?
                 if ( stream_correlationName.hasNext() ) {
                     adaptor.addChild(root_1, stream_correlationName.nextTree());
 
@@ -3414,7 +3414,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "joinedTable"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:459:1: joinedTable : ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:459:1: joinedTable : ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) ;
     public final CMISParser.joinedTable_return joinedTable() throws RecognitionException {
         CMISParser.joinedTable_return retval = new CMISParser.joinedTable_return();
         retval.start = input.LT(1);
@@ -3439,10 +3439,10 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in joinedTable"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:468:9: ( ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )? JOIN tableReference joinSpecification
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:468:9: ( ( joinType )? JOIN tableReference joinSpecification -> ^( JOIN tableReference ( joinType )? joinSpecification ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )? JOIN tableReference joinSpecification
             {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: ( joinType )?
             int alt19=2;
             int LA19_0 = input.LA(1);
 
@@ -3451,7 +3451,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt19) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: joinType
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:469:9: joinType
                     {
                     pushFollow(FOLLOW_joinType_in_joinedTable1813);
                     joinType43=joinType();
@@ -3485,7 +3485,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_joinSpecification.add(joinSpecification46.getTree());
 
             // AST REWRITE
-            // elements: JOIN, joinType, joinSpecification, tableReference
+            // elements: tableReference, joinSpecification, joinType, JOIN
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3499,7 +3499,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 470:17: -> ^( JOIN tableReference ( joinType )? joinSpecification )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:25: ^( JOIN tableReference ( joinType )? joinSpecification )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:25: ^( JOIN tableReference ( joinType )? joinSpecification )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -3508,7 +3508,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_tableReference.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:47: ( joinType )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:471:47: ( joinType )?
                 if ( stream_joinType.hasNext() ) {
                     adaptor.addChild(root_1, stream_joinType.nextTree());
 
@@ -3561,7 +3561,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "complexTable"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:474:1: complexTable : ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:474:1: complexTable : ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable );
     public final CMISParser.complexTable_return complexTable() throws RecognitionException {
         CMISParser.complexTable_return retval = new CMISParser.complexTable_return();
         retval.start = input.LT(1);
@@ -3593,7 +3593,7 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in complexTable"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:483:9: ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:483:9: ( ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN -> ^( SOURCE singleTable ( joinedTable )+ ) | LPAREN complexTable RPAREN -> complexTable )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -3625,7 +3625,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt21) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )=> LPAREN singleTable ( joinedTable )+ RPAREN
                     {
                     LPAREN47=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_complexTable1929); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN47);
@@ -3638,7 +3638,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_singleTable.add(singleTable48.getTree());
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: ( joinedTable )+
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: ( joinedTable )+
                     int cnt20=0;
                     loop20:
                     do {
@@ -3652,7 +3652,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         switch (alt20) {
                     	case 1 :
-                    	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: joinedTable
+                    	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:72: joinedTable
                     	    {
                     	    pushFollow(FOLLOW_joinedTable_in_complexTable1933);
                     	    joinedTable49=joinedTable();
@@ -3694,7 +3694,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 485:17: -> ^( SOURCE singleTable ( joinedTable )+ )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:486:25: ^( SOURCE singleTable ( joinedTable )+ )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:486:25: ^( SOURCE singleTable ( joinedTable )+ )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -3724,7 +3724,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:487:11: LPAREN complexTable RPAREN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:487:11: LPAREN complexTable RPAREN
                     {
                     LPAREN51=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_complexTable1999); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN51);
@@ -3801,7 +3801,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "joinType"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:491:1: joinType : ( INNER -> INNER | LEFT ( OUTER )? -> LEFT );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:491:1: joinType : ( INNER -> INNER | LEFT ( OUTER )? -> LEFT );
     public final CMISParser.joinType_return joinType() throws RecognitionException {
         CMISParser.joinType_return retval = new CMISParser.joinType_return();
         retval.start = input.LT(1);
@@ -3821,7 +3821,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_LEFT=new RewriteRuleTokenStream(adaptor,"token LEFT");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:492:9: ( INNER -> INNER | LEFT ( OUTER )? -> LEFT )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:492:9: ( INNER -> INNER | LEFT ( OUTER )? -> LEFT )
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -3841,7 +3841,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt23) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:493:9: INNER
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:493:9: INNER
                     {
                     INNER54=(Token)match(input,INNER,FOLLOW_INNER_in_joinType2056); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_INNER.add(INNER54);
@@ -3875,13 +3875,13 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:11: LEFT ( OUTER )?
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:11: LEFT ( OUTER )?
                     {
                     LEFT55=(Token)match(input,LEFT,FOLLOW_LEFT_in_joinType2088); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LEFT.add(LEFT55);
 
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: ( OUTER )?
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: ( OUTER )?
                     int alt22=2;
                     int LA22_0 = input.LA(1);
 
@@ -3890,7 +3890,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt22) {
                         case 1 :
-                            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: OUTER
+                            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:495:16: OUTER
                             {
                             OUTER56=(Token)match(input,OUTER,FOLLOW_OUTER_in_joinType2090); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_OUTER.add(OUTER56);
@@ -3961,7 +3961,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "joinSpecification"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:499:1: joinSpecification : ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:499:1: joinSpecification : ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) ;
     public final CMISParser.joinSpecification_return joinSpecification() throws RecognitionException {
         CMISParser.joinSpecification_return retval = new CMISParser.joinSpecification_return();
         retval.start = input.LT(1);
@@ -3985,8 +3985,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in join condition"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:508:9: ( ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:509:9: ON lhs= columnReference EQUALS rhs= columnReference
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:508:9: ( ON lhs= columnReference EQUALS rhs= columnReference -> ^( ON $lhs EQUALS $rhs) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:509:9: ON lhs= columnReference EQUALS rhs= columnReference
             {
             ON57=(Token)match(input,ON,FOLLOW_ON_in_joinSpecification2154); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ON.add(ON57);
@@ -4011,7 +4011,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_columnReference.add(rhs.getTree());
 
             // AST REWRITE
-            // elements: EQUALS, rhs, lhs, ON
+            // elements: rhs, ON, EQUALS, lhs
             // token labels: 
             // rule labels: retval, rhs, lhs
             // token list labels: 
@@ -4027,7 +4027,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 510:17: -> ^( ON $lhs EQUALS $rhs)
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:511:25: ^( ON $lhs EQUALS $rhs)
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:511:25: ^( ON $lhs EQUALS $rhs)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -4086,7 +4086,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "whereClause"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:518:1: whereClause : WHERE searchOrCondition -> searchOrCondition ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:518:1: whereClause : WHERE searchOrCondition -> searchOrCondition ;
     public final CMISParser.whereClause_return whereClause() throws RecognitionException {
         CMISParser.whereClause_return retval = new CMISParser.whereClause_return();
         retval.start = input.LT(1);
@@ -4105,8 +4105,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in where"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:527:9: ( WHERE searchOrCondition -> searchOrCondition )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:528:9: WHERE searchOrCondition
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:527:9: ( WHERE searchOrCondition -> searchOrCondition )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:528:9: WHERE searchOrCondition
             {
             WHERE59=(Token)match(input,WHERE,FOLLOW_WHERE_in_whereClause2264); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_WHERE.add(WHERE59);
@@ -4177,7 +4177,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "searchOrCondition"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:535:1: searchOrCondition : searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:535:1: searchOrCondition : searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) ;
     public final CMISParser.searchOrCondition_return searchOrCondition() throws RecognitionException {
         CMISParser.searchOrCondition_return retval = new CMISParser.searchOrCondition_return();
         retval.start = input.LT(1);
@@ -4195,8 +4195,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_OR=new RewriteRuleTokenStream(adaptor,"token OR");
         RewriteRuleSubtreeStream stream_searchAndCondition=new RewriteRuleSubtreeStream(adaptor,"rule searchAndCondition");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:536:9: ( searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:9: searchAndCondition ( OR searchAndCondition )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:536:9: ( searchAndCondition ( OR searchAndCondition )* -> ^( DISJUNCTION ( searchAndCondition )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:9: searchAndCondition ( OR searchAndCondition )*
             {
             pushFollow(FOLLOW_searchAndCondition_in_searchOrCondition2321);
             searchAndCondition61=searchAndCondition();
@@ -4205,7 +4205,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_searchAndCondition.add(searchAndCondition61.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:28: ( OR searchAndCondition )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:28: ( OR searchAndCondition )*
             loop24:
             do {
                 int alt24=2;
@@ -4218,7 +4218,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt24) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:29: OR searchAndCondition
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:537:29: OR searchAndCondition
             	    {
             	    OR62=(Token)match(input,OR,FOLLOW_OR_in_searchOrCondition2324); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_OR.add(OR62);
@@ -4255,7 +4255,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 538:17: -> ^( DISJUNCTION ( searchAndCondition )+ )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:539:25: ^( DISJUNCTION ( searchAndCondition )+ )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:539:25: ^( DISJUNCTION ( searchAndCondition )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -4312,7 +4312,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "searchAndCondition"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:545:1: searchAndCondition : searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:545:1: searchAndCondition : searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) ;
     public final CMISParser.searchAndCondition_return searchAndCondition() throws RecognitionException {
         CMISParser.searchAndCondition_return retval = new CMISParser.searchAndCondition_return();
         retval.start = input.LT(1);
@@ -4330,8 +4330,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_AND=new RewriteRuleTokenStream(adaptor,"token AND");
         RewriteRuleSubtreeStream stream_searchNotCondition=new RewriteRuleSubtreeStream(adaptor,"rule searchNotCondition");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:546:9: ( searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:9: searchNotCondition ( AND searchNotCondition )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:546:9: ( searchNotCondition ( AND searchNotCondition )* -> ^( CONJUNCTION ( searchNotCondition )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:9: searchNotCondition ( AND searchNotCondition )*
             {
             pushFollow(FOLLOW_searchNotCondition_in_searchAndCondition2412);
             searchNotCondition64=searchNotCondition();
@@ -4340,7 +4340,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_searchNotCondition.add(searchNotCondition64.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:28: ( AND searchNotCondition )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:28: ( AND searchNotCondition )*
             loop25:
             do {
                 int alt25=2;
@@ -4353,7 +4353,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt25) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:29: AND searchNotCondition
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:547:29: AND searchNotCondition
             	    {
             	    AND65=(Token)match(input,AND,FOLLOW_AND_in_searchAndCondition2415); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_AND.add(AND65);
@@ -4390,7 +4390,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 548:17: -> ^( CONJUNCTION ( searchNotCondition )+ )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:549:25: ^( CONJUNCTION ( searchNotCondition )+ )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:549:25: ^( CONJUNCTION ( searchNotCondition )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -4447,7 +4447,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "searchNotCondition"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:552:1: searchNotCondition : ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:552:1: searchNotCondition : ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest );
     public final CMISParser.searchNotCondition_return searchNotCondition() throws RecognitionException {
         CMISParser.searchNotCondition_return retval = new CMISParser.searchNotCondition_return();
         retval.start = input.LT(1);
@@ -4465,12 +4465,12 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_NOT=new RewriteRuleTokenStream(adaptor,"token NOT");
         RewriteRuleSubtreeStream stream_searchTest=new RewriteRuleSubtreeStream(adaptor,"rule searchTest");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:553:9: ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:553:9: ( NOT searchTest -> ^( NEGATION searchTest ) | searchTest -> searchTest )
             int alt26=2;
             alt26 = dfa26.predict(input);
             switch (alt26) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:554:9: NOT searchTest
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:554:9: NOT searchTest
                     {
                     NOT67=(Token)match(input,NOT,FOLLOW_NOT_in_searchNotCondition2501); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT67);
@@ -4498,7 +4498,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 555:17: -> ^( NEGATION searchTest )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:556:25: ^( NEGATION searchTest )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:556:25: ^( NEGATION searchTest )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -4519,7 +4519,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:557:11: searchTest
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:557:11: searchTest
                     {
                     pushFollow(FOLLOW_searchTest_in_searchNotCondition2563);
                     searchTest69=searchTest();
@@ -4585,7 +4585,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "searchTest"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:561:1: searchTest : ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:561:1: searchTest : ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition );
     public final CMISParser.searchTest_return searchTest() throws RecognitionException {
         CMISParser.searchTest_return retval = new CMISParser.searchTest_return();
         retval.start = input.LT(1);
@@ -4607,7 +4607,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_predicate=new RewriteRuleSubtreeStream(adaptor,"rule predicate");
         RewriteRuleSubtreeStream stream_searchOrCondition=new RewriteRuleSubtreeStream(adaptor,"rule searchOrCondition");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:562:9: ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:562:9: ( predicate -> predicate | LPAREN searchOrCondition RPAREN -> searchOrCondition )
             int alt27=2;
             int LA27_0 = input.LA(1);
 
@@ -4726,7 +4726,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt27) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:563:9: predicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:563:9: predicate
                     {
                     pushFollow(FOLLOW_predicate_in_searchTest2616);
                     predicate70=predicate();
@@ -4761,7 +4761,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:565:11: LPAREN searchOrCondition RPAREN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:565:11: LPAREN searchOrCondition RPAREN
                     {
                     LPAREN71=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_searchTest2648); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN71);
@@ -4835,7 +4835,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "predicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:569:1: predicate : ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:569:1: predicate : ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate );
     public final CMISParser.predicate_return predicate() throws RecognitionException {
         CMISParser.predicate_return retval = new CMISParser.predicate_return();
         retval.start = input.LT(1);
@@ -4862,12 +4862,12 @@ public TreeAdaptor getTreeAdaptor() {
 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:570:9: ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:570:9: ( comparisonPredicate | inPredicate | likePredicate | nullPredicate | quantifiedComparisonPredicate | quantifiedInPredicate | textSearchPredicate | folderPredicate )
             int alt28=8;
             alt28 = dfa28.predict(input);
             switch (alt28) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:571:9: comparisonPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:571:9: comparisonPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4882,7 +4882,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:572:11: inPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:572:11: inPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4897,7 +4897,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:573:11: likePredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:573:11: likePredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4912,7 +4912,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:574:11: nullPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:574:11: nullPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4927,7 +4927,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:575:11: quantifiedComparisonPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:575:11: quantifiedComparisonPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4942,7 +4942,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:576:11: quantifiedInPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:576:11: quantifiedInPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4957,7 +4957,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:577:11: textSearchPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:577:11: textSearchPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -4972,7 +4972,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:578:11: folderPredicate
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:578:11: folderPredicate
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5018,7 +5018,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "comparisonPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:581:1: comparisonPredicate : valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:581:1: comparisonPredicate : valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) ;
     public final CMISParser.comparisonPredicate_return comparisonPredicate() throws RecognitionException {
         CMISParser.comparisonPredicate_return retval = new CMISParser.comparisonPredicate_return();
         retval.start = input.LT(1);
@@ -5037,8 +5037,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_compOp=new RewriteRuleSubtreeStream(adaptor,"rule compOp");
         RewriteRuleSubtreeStream stream_literalOrParameterName=new RewriteRuleSubtreeStream(adaptor,"rule literalOrParameterName");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:582:9: ( valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:583:9: valueExpression compOp literalOrParameterName
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:582:9: ( valueExpression compOp literalOrParameterName -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:583:9: valueExpression compOp literalOrParameterName
             {
             pushFollow(FOLLOW_valueExpression_in_comparisonPredicate2822);
             valueExpression82=valueExpression();
@@ -5062,7 +5062,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_literalOrParameterName.add(literalOrParameterName84.getTree());
 
             // AST REWRITE
-            // elements: compOp, valueExpression, literalOrParameterName
+            // elements: valueExpression, compOp, literalOrParameterName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5076,7 +5076,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 584:17: -> ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:585:25: ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:585:25: ^( PRED_COMPARISON SINGLE_VALUED_PROPERTY valueExpression compOp literalOrParameterName )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -5134,7 +5134,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "compOp"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:588:1: compOp : ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:588:1: compOp : ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS );
     public final CMISParser.compOp_return compOp() throws RecognitionException {
         CMISParser.compOp_return retval = new CMISParser.compOp_return();
         retval.start = input.LT(1);
@@ -5147,8 +5147,8 @@ public TreeAdaptor getTreeAdaptor() {
         Object set85_tree=null;
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:589:9: ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:589:9: ( EQUALS | NOTEQUALS | LESSTHAN | GREATERTHAN | LESSTHANOREQUALS | GREATERTHANOREQUALS )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -5202,7 +5202,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "literalOrParameterName"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:598:1: literalOrParameterName : ( literal |{...}? => parameterName );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:598:1: literalOrParameterName : ( literal |{...}? => parameterName );
     public final CMISParser.literalOrParameterName_return literalOrParameterName() throws RecognitionException {
         CMISParser.literalOrParameterName_return retval = new CMISParser.literalOrParameterName_return();
         retval.start = input.LT(1);
@@ -5217,7 +5217,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:599:9: ( literal |{...}? => parameterName )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:599:9: ( literal |{...}? => parameterName )
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -5252,7 +5252,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt29) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:600:9: literal
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:600:9: literal
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5267,7 +5267,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:601:11: {...}? => parameterName
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:601:11: {...}? => parameterName
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5318,7 +5318,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "literal"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:604:1: literal : ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:604:1: literal : ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral );
     public final CMISParser.literal_return literal() throws RecognitionException {
         CMISParser.literal_return retval = new CMISParser.literal_return();
         retval.start = input.LT(1);
@@ -5337,7 +5337,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:605:9: ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:605:9: ( signedNumericLiteral | characterStringLiteral | booleanLiteral | datetimeLiteral )
             int alt30=4;
             switch ( input.LA(1) ) {
             case DECIMAL_INTEGER_LITERAL:
@@ -5373,7 +5373,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt30) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:606:9: signedNumericLiteral
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:606:9: signedNumericLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5388,7 +5388,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:607:11: characterStringLiteral
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:607:11: characterStringLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5403,7 +5403,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:608:11: booleanLiteral
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:608:11: booleanLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5418,7 +5418,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:609:11: datetimeLiteral
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:609:11: datetimeLiteral
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -5464,7 +5464,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "inPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:612:1: inPredicate : columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:612:1: inPredicate : columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) ;
     public final CMISParser.inPredicate_return inPredicate() throws RecognitionException {
         CMISParser.inPredicate_return retval = new CMISParser.inPredicate_return();
         retval.start = input.LT(1);
@@ -5492,8 +5492,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         RewriteRuleSubtreeStream stream_inValueList=new RewriteRuleSubtreeStream(adaptor,"rule inValueList");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:613:9: ( columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:9: columnReference ( NOT )? IN LPAREN inValueList RPAREN
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:613:9: ( columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:9: columnReference ( NOT )? IN LPAREN inValueList RPAREN
             {
             pushFollow(FOLLOW_columnReference_in_inPredicate3123);
             columnReference92=columnReference();
@@ -5502,7 +5502,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference92.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: ( NOT )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: ( NOT )?
             int alt31=2;
             int LA31_0 = input.LA(1);
 
@@ -5511,7 +5511,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt31) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: NOT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:614:25: NOT
                     {
                     NOT93=(Token)match(input,NOT,FOLLOW_NOT_in_inPredicate3125); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT93);
@@ -5543,7 +5543,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: columnReference, NOT, inValueList
+            // elements: inValueList, columnReference, NOT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5557,7 +5557,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 615:17: -> ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:25: ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:25: ^( PRED_IN SINGLE_VALUED_PROPERTY columnReference inValueList ( NOT )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -5572,7 +5572,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_inValueList.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:86: ( NOT )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:616:86: ( NOT )?
                 if ( stream_NOT.hasNext() ) {
                     adaptor.addChild(root_1, 
                     stream_NOT.nextNode()
@@ -5622,7 +5622,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "inValueList"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:619:1: inValueList : literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:619:1: inValueList : literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) ;
     public final CMISParser.inValueList_return inValueList() throws RecognitionException {
         CMISParser.inValueList_return retval = new CMISParser.inValueList_return();
         retval.start = input.LT(1);
@@ -5640,8 +5640,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleSubtreeStream stream_literalOrParameterName=new RewriteRuleSubtreeStream(adaptor,"rule literalOrParameterName");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:620:9: ( literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:9: literalOrParameterName ( COMMA literalOrParameterName )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:620:9: ( literalOrParameterName ( COMMA literalOrParameterName )* -> ^( LIST ( literalOrParameterName )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:9: literalOrParameterName ( COMMA literalOrParameterName )*
             {
             pushFollow(FOLLOW_literalOrParameterName_in_inValueList3222);
             literalOrParameterName98=literalOrParameterName();
@@ -5650,7 +5650,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_literalOrParameterName.add(literalOrParameterName98.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:32: ( COMMA literalOrParameterName )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:32: ( COMMA literalOrParameterName )*
             loop32:
             do {
                 int alt32=2;
@@ -5663,7 +5663,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt32) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:33: COMMA literalOrParameterName
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:621:33: COMMA literalOrParameterName
             	    {
             	    COMMA99=(Token)match(input,COMMA,FOLLOW_COMMA_in_inValueList3225); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA99);
@@ -5700,7 +5700,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 622:17: -> ^( LIST ( literalOrParameterName )+ )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:623:25: ^( LIST ( literalOrParameterName )+ )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:623:25: ^( LIST ( literalOrParameterName )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -5757,7 +5757,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "likePredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:626:1: likePredicate : columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:626:1: likePredicate : columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) ;
     public final CMISParser.likePredicate_return likePredicate() throws RecognitionException {
         CMISParser.likePredicate_return retval = new CMISParser.likePredicate_return();
         retval.start = input.LT(1);
@@ -5779,8 +5779,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         RewriteRuleSubtreeStream stream_characterStringLiteral=new RewriteRuleSubtreeStream(adaptor,"rule characterStringLiteral");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:627:9: ( columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:9: columnReference ( NOT )? LIKE characterStringLiteral
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:627:9: ( columnReference ( NOT )? LIKE characterStringLiteral -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:9: columnReference ( NOT )? LIKE characterStringLiteral
             {
             pushFollow(FOLLOW_columnReference_in_likePredicate3311);
             columnReference101=columnReference();
@@ -5789,7 +5789,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference101.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: ( NOT )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: ( NOT )?
             int alt33=2;
             int LA33_0 = input.LA(1);
 
@@ -5798,7 +5798,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt33) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: NOT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:628:25: NOT
                     {
                     NOT102=(Token)match(input,NOT,FOLLOW_NOT_in_likePredicate3313); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT102);
@@ -5822,7 +5822,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_characterStringLiteral.add(characterStringLiteral104.getTree());
 
             // AST REWRITE
-            // elements: NOT, characterStringLiteral, columnReference
+            // elements: characterStringLiteral, columnReference, NOT
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5836,7 +5836,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 629:17: -> ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:25: ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:25: ^( PRED_LIKE columnReference characterStringLiteral ( NOT )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -5847,7 +5847,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_characterStringLiteral.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:76: ( NOT )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:630:76: ( NOT )?
                 if ( stream_NOT.hasNext() ) {
                     adaptor.addChild(root_1, 
                     stream_NOT.nextNode()
@@ -5897,7 +5897,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "nullPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:633:1: nullPredicate : ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:633:1: nullPredicate : ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) );
     public final CMISParser.nullPredicate_return nullPredicate() throws RecognitionException {
         CMISParser.nullPredicate_return retval = new CMISParser.nullPredicate_return();
         retval.start = input.LT(1);
@@ -5925,12 +5925,12 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_NULL=new RewriteRuleTokenStream(adaptor,"token NULL");
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:634:9: ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:634:9: ( columnReference IS NULL -> ^( PRED_EXISTS columnReference NOT ) | columnReference IS NOT NULL -> ^( PRED_EXISTS columnReference ) )
             int alt34=2;
             alt34 = dfa34.predict(input);
             switch (alt34) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:635:9: columnReference IS NULL
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:635:9: columnReference IS NULL
                     {
                     pushFollow(FOLLOW_columnReference_in_nullPredicate3404);
                     columnReference105=columnReference();
@@ -5962,7 +5962,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 636:17: -> ^( PRED_EXISTS columnReference NOT )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:637:25: ^( PRED_EXISTS columnReference NOT )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:637:25: ^( PRED_EXISTS columnReference NOT )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -5987,7 +5987,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:638:11: columnReference IS NOT NULL
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:638:11: columnReference IS NOT NULL
                     {
                     pushFollow(FOLLOW_columnReference_in_nullPredicate3470);
                     columnReference108=columnReference();
@@ -6023,7 +6023,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 639:17: -> ^( PRED_EXISTS columnReference )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:640:25: ^( PRED_EXISTS columnReference )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:640:25: ^( PRED_EXISTS columnReference )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -6075,7 +6075,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "quantifiedComparisonPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:643:1: quantifiedComparisonPredicate : literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:643:1: quantifiedComparisonPredicate : literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) ;
     public final CMISParser.quantifiedComparisonPredicate_return quantifiedComparisonPredicate() throws RecognitionException {
         CMISParser.quantifiedComparisonPredicate_return retval = new CMISParser.quantifiedComparisonPredicate_return();
         retval.start = input.LT(1);
@@ -6097,8 +6097,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_compOp=new RewriteRuleSubtreeStream(adaptor,"rule compOp");
         RewriteRuleSubtreeStream stream_literalOrParameterName=new RewriteRuleSubtreeStream(adaptor,"rule literalOrParameterName");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:644:9: ( literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:645:9: literalOrParameterName compOp ANY columnReference
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:644:9: ( literalOrParameterName compOp ANY columnReference -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:645:9: literalOrParameterName compOp ANY columnReference
             {
             pushFollow(FOLLOW_literalOrParameterName_in_quantifiedComparisonPredicate3557);
             literalOrParameterName112=literalOrParameterName();
@@ -6126,7 +6126,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference115.getTree());
 
             // AST REWRITE
-            // elements: compOp, columnReference, ANY, literalOrParameterName
+            // elements: columnReference, compOp, ANY, literalOrParameterName
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6140,7 +6140,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 646:17: -> ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:647:25: ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:647:25: ^( PRED_COMPARISON ANY literalOrParameterName compOp columnReference )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -6198,7 +6198,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "quantifiedInPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:650:1: quantifiedInPredicate : ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:650:1: quantifiedInPredicate : ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) ;
     public final CMISParser.quantifiedInPredicate_return quantifiedInPredicate() throws RecognitionException {
         CMISParser.quantifiedInPredicate_return retval = new CMISParser.quantifiedInPredicate_return();
         retval.start = input.LT(1);
@@ -6229,8 +6229,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         RewriteRuleSubtreeStream stream_inValueList=new RewriteRuleSubtreeStream(adaptor,"rule inValueList");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:651:9: ( ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:9: ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:651:9: ( ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN -> ^( PRED_IN ANY columnReference inValueList ( NOT )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:9: ANY columnReference ( NOT )? IN LPAREN inValueList RPAREN
             {
             ANY116=(Token)match(input,ANY,FOLLOW_ANY_in_quantifiedInPredicate3650); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ANY.add(ANY116);
@@ -6243,7 +6243,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_columnReference.add(columnReference117.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: ( NOT )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: ( NOT )?
             int alt35=2;
             int LA35_0 = input.LA(1);
 
@@ -6252,7 +6252,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt35) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: NOT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:652:29: NOT
                     {
                     NOT118=(Token)match(input,NOT,FOLLOW_NOT_in_quantifiedInPredicate3654); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_NOT.add(NOT118);
@@ -6284,7 +6284,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: inValueList, ANY, NOT, columnReference
+            // elements: inValueList, NOT, ANY, columnReference
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6298,7 +6298,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 653:17: -> ^( PRED_IN ANY columnReference inValueList ( NOT )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:25: ^( PRED_IN ANY columnReference inValueList ( NOT )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:25: ^( PRED_IN ANY columnReference inValueList ( NOT )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -6313,7 +6313,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_inValueList.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:67: ( NOT )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:654:67: ( NOT )?
                 if ( stream_NOT.hasNext() ) {
                     adaptor.addChild(root_1, 
                     stream_NOT.nextNode()
@@ -6363,7 +6363,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "textSearchPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:657:1: textSearchPredicate : CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:657:1: textSearchPredicate : CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) ;
     public final CMISParser.textSearchPredicate_return textSearchPredicate() throws RecognitionException {
         CMISParser.textSearchPredicate_return retval = new CMISParser.textSearchPredicate_return();
         retval.start = input.LT(1);
@@ -6391,8 +6391,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         RewriteRuleSubtreeStream stream_textSearchExpression=new RewriteRuleSubtreeStream(adaptor,"rule textSearchExpression");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:658:9: ( CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:9: CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:658:9: ( CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN -> ^( PRED_FTS textSearchExpression ( qualifier )? ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:9: CONTAINS LPAREN ( qualifier COMMA )? textSearchExpression RPAREN
             {
             CONTAINS123=(Token)match(input,CONTAINS,FOLLOW_CONTAINS_in_textSearchPredicate3751); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_CONTAINS.add(CONTAINS123);
@@ -6402,7 +6402,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN124);
 
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:25: ( qualifier COMMA )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:25: ( qualifier COMMA )?
             int alt36=2;
             int LA36_0 = input.LA(1);
 
@@ -6414,7 +6414,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt36) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:26: qualifier COMMA
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:659:26: qualifier COMMA
                     {
                     pushFollow(FOLLOW_qualifier_in_textSearchPredicate3756);
                     qualifier125=qualifier();
@@ -6459,7 +6459,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 660:17: -> ^( PRED_FTS textSearchExpression ( qualifier )? )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:25: ^( PRED_FTS textSearchExpression ( qualifier )? )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:25: ^( PRED_FTS textSearchExpression ( qualifier )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -6468,7 +6468,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 adaptor.addChild(root_1, stream_textSearchExpression.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:57: ( qualifier )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:661:57: ( qualifier )?
                 if ( stream_qualifier.hasNext() ) {
                     adaptor.addChild(root_1, stream_qualifier.nextTree());
 
@@ -6516,7 +6516,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "folderPredicate"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:664:1: folderPredicate : ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:664:1: folderPredicate : ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) );
     public final CMISParser.folderPredicate_return folderPredicate() throws RecognitionException {
         CMISParser.folderPredicate_return retval = new CMISParser.folderPredicate_return();
         retval.start = input.LT(1);
@@ -6537,7 +6537,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_IN_FOLDER=new RewriteRuleTokenStream(adaptor,"token IN_FOLDER");
         RewriteRuleSubtreeStream stream_folderPredicateArgs=new RewriteRuleSubtreeStream(adaptor,"rule folderPredicateArgs");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:665:9: ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:665:9: ( IN_FOLDER folderPredicateArgs -> ^( PRED_CHILD folderPredicateArgs ) | IN_TREE folderPredicateArgs -> ^( PRED_DESCENDANT folderPredicateArgs ) )
             int alt37=2;
             int LA37_0 = input.LA(1);
 
@@ -6557,7 +6557,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt37) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:666:9: IN_FOLDER folderPredicateArgs
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:666:9: IN_FOLDER folderPredicateArgs
                     {
                     IN_FOLDER129=(Token)match(input,IN_FOLDER,FOLLOW_IN_FOLDER_in_folderPredicate3848); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IN_FOLDER.add(IN_FOLDER129);
@@ -6585,7 +6585,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 667:17: -> ^( PRED_CHILD folderPredicateArgs )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:668:25: ^( PRED_CHILD folderPredicateArgs )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:668:25: ^( PRED_CHILD folderPredicateArgs )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -6606,7 +6606,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:669:11: IN_TREE folderPredicateArgs
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:669:11: IN_TREE folderPredicateArgs
                     {
                     IN_TREE131=(Token)match(input,IN_TREE,FOLLOW_IN_TREE_in_folderPredicate3910); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_IN_TREE.add(IN_TREE131);
@@ -6634,7 +6634,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 670:17: -> ^( PRED_DESCENDANT folderPredicateArgs )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:671:25: ^( PRED_DESCENDANT folderPredicateArgs )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:671:25: ^( PRED_DESCENDANT folderPredicateArgs )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -6686,7 +6686,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "folderPredicateArgs"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:674:1: folderPredicateArgs : LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:674:1: folderPredicateArgs : LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? ;
     public final CMISParser.folderPredicateArgs_return folderPredicateArgs() throws RecognitionException {
         CMISParser.folderPredicateArgs_return retval = new CMISParser.folderPredicateArgs_return();
         retval.start = input.LT(1);
@@ -6711,14 +6711,14 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_qualifier=new RewriteRuleSubtreeStream(adaptor,"rule qualifier");
         RewriteRuleSubtreeStream stream_folderId=new RewriteRuleSubtreeStream(adaptor,"rule folderId");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:675:9: ( LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:9: LPAREN ( qualifier COMMA )? folderId RPAREN
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:675:9: ( LPAREN ( qualifier COMMA )? folderId RPAREN -> folderId ( qualifier )? )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:9: LPAREN ( qualifier COMMA )? folderId RPAREN
             {
             LPAREN133=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_folderPredicateArgs3993); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN133);
 
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:16: ( qualifier COMMA )?
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:16: ( qualifier COMMA )?
             int alt38=2;
             int LA38_0 = input.LA(1);
 
@@ -6730,7 +6730,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt38) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:17: qualifier COMMA
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:676:17: qualifier COMMA
                     {
                     pushFollow(FOLLOW_qualifier_in_folderPredicateArgs3996);
                     qualifier134=qualifier();
@@ -6761,7 +6761,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: qualifier, folderId
+            // elements: folderId, qualifier
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -6777,7 +6777,7 @@ public TreeAdaptor getTreeAdaptor() {
             {
                 adaptor.addChild(root_0, stream_folderId.nextTree());
 
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:677:29: ( qualifier )?
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:677:29: ( qualifier )?
                 if ( stream_qualifier.hasNext() ) {
                     adaptor.addChild(root_0, stream_qualifier.nextTree());
 
@@ -6822,7 +6822,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "orderByClause"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:680:1: orderByClause : ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:680:1: orderByClause : ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) ;
     public final CMISParser.orderByClause_return orderByClause() throws RecognitionException {
         CMISParser.orderByClause_return retval = new CMISParser.orderByClause_return();
         retval.start = input.LT(1);
@@ -6849,8 +6849,8 @@ public TreeAdaptor getTreeAdaptor() {
             paraphrases.push("in order by"); 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:689:9: ( ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:9: ORDER BY sortSpecification ( COMMA sortSpecification )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:689:9: ( ORDER BY sortSpecification ( COMMA sortSpecification )* -> ^( ORDER ( sortSpecification )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:9: ORDER BY sortSpecification ( COMMA sortSpecification )*
             {
             ORDER138=(Token)match(input,ORDER,FOLLOW_ORDER_in_orderByClause4070); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ORDER.add(ORDER138);
@@ -6867,7 +6867,7 @@ public TreeAdaptor getTreeAdaptor() {
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_sortSpecification.add(sortSpecification140.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:36: ( COMMA sortSpecification )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:36: ( COMMA sortSpecification )*
             loop39:
             do {
                 int alt39=2;
@@ -6880,7 +6880,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt39) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:37: COMMA sortSpecification
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:690:37: COMMA sortSpecification
             	    {
             	    COMMA141=(Token)match(input,COMMA,FOLLOW_COMMA_in_orderByClause4077); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA141);
@@ -6917,7 +6917,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 691:17: -> ^( ORDER ( sortSpecification )+ )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:692:25: ^( ORDER ( sortSpecification )+ )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:692:25: ^( ORDER ( sortSpecification )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -6977,7 +6977,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "sortSpecification"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:695:1: sortSpecification : ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC |by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:695:1: sortSpecification : ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC |by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) );
     public final CMISParser.sortSpecification_return sortSpecification() throws RecognitionException {
         CMISParser.sortSpecification_return retval = new CMISParser.sortSpecification_return();
         retval.start = input.LT(1);
@@ -6996,12 +6996,12 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_DESC=new RewriteRuleTokenStream(adaptor,"token DESC");
         RewriteRuleSubtreeStream stream_columnReference=new RewriteRuleSubtreeStream(adaptor,"rule columnReference");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:696:9: ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC |by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:696:9: ( columnReference -> ^( SORT_SPECIFICATION columnReference ASC ) | columnReference (by= ASC |by= DESC ) -> ^( SORT_SPECIFICATION columnReference $by) )
             int alt41=2;
             alt41 = dfa41.predict(input);
             switch (alt41) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:697:9: columnReference
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:697:9: columnReference
                     {
                     pushFollow(FOLLOW_columnReference_in_sortSpecification4163);
                     columnReference143=columnReference();
@@ -7025,7 +7025,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 698:17: -> ^( SORT_SPECIFICATION columnReference ASC )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:699:25: ^( SORT_SPECIFICATION columnReference ASC )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:699:25: ^( SORT_SPECIFICATION columnReference ASC )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -7050,7 +7050,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:700:11: columnReference (by= ASC |by= DESC )
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:700:11: columnReference (by= ASC |by= DESC )
                     {
                     pushFollow(FOLLOW_columnReference_in_sortSpecification4225);
                     columnReference144=columnReference();
@@ -7059,7 +7059,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_columnReference.add(columnReference144.getTree());
 
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:701:9: (by= ASC |by= DESC )
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:701:9: (by= ASC |by= DESC )
                     int alt40=2;
                     int LA40_0 = input.LA(1);
 
@@ -7079,7 +7079,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     switch (alt40) {
                         case 1 :
-                            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:702:17: by= ASC
+                            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:702:17: by= ASC
                             {
                             by=(Token)match(input,ASC,FOLLOW_ASC_in_sortSpecification4255); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ASC.add(by);
@@ -7088,7 +7088,7 @@ public TreeAdaptor getTreeAdaptor() {
                             }
                             break;
                         case 2 :
-                            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:703:19: by= DESC
+                            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:703:19: by= DESC
                             {
                             by=(Token)match(input,DESC,FOLLOW_DESC_in_sortSpecification4277); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_DESC.add(by);
@@ -7116,7 +7116,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 705:17: -> ^( SORT_SPECIFICATION columnReference $by)
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:706:25: ^( SORT_SPECIFICATION columnReference $by)
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:706:25: ^( SORT_SPECIFICATION columnReference $by)
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -7170,7 +7170,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "correlationName"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:709:1: correlationName : identifier ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:709:1: correlationName : identifier ;
     public final CMISParser.correlationName_return correlationName() throws RecognitionException {
         CMISParser.correlationName_return retval = new CMISParser.correlationName_return();
         retval.start = input.LT(1);
@@ -7183,8 +7183,8 @@ public TreeAdaptor getTreeAdaptor() {
 
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:710:9: ( identifier )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:711:9: identifier
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:710:9: ( identifier )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:711:9: identifier
             {
             root_0 = (Object)adaptor.nil();
 
@@ -7228,7 +7228,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "tableName"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:719:1: tableName : identifier -> identifier ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:719:1: tableName : identifier -> identifier ;
     public final CMISParser.tableName_return tableName() throws RecognitionException {
         CMISParser.tableName_return retval = new CMISParser.tableName_return();
         retval.start = input.LT(1);
@@ -7241,8 +7241,8 @@ public TreeAdaptor getTreeAdaptor() {
 
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:720:9: ( identifier -> identifier )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:721:9: identifier
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:720:9: ( identifier -> identifier )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:721:9: identifier
             {
             pushFollow(FOLLOW_identifier_in_tableName4407);
             identifier146=identifier();
@@ -7306,7 +7306,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "columnName"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:725:1: columnName : identifier -> identifier ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:725:1: columnName : identifier -> identifier ;
     public final CMISParser.columnName_return columnName() throws RecognitionException {
         CMISParser.columnName_return retval = new CMISParser.columnName_return();
         retval.start = input.LT(1);
@@ -7319,8 +7319,8 @@ public TreeAdaptor getTreeAdaptor() {
 
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:726:9: ( identifier -> identifier )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:727:9: identifier
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:726:9: ( identifier -> identifier )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:727:9: identifier
             {
             pushFollow(FOLLOW_identifier_in_columnName4460);
             identifier147=identifier();
@@ -7384,7 +7384,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "parameterName"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:731:1: parameterName : COLON identifier -> ^( PARAMETER identifier ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:731:1: parameterName : COLON identifier -> ^( PARAMETER identifier ) ;
     public final CMISParser.parameterName_return parameterName() throws RecognitionException {
         CMISParser.parameterName_return retval = new CMISParser.parameterName_return();
         retval.start = input.LT(1);
@@ -7400,8 +7400,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
         RewriteRuleSubtreeStream stream_identifier=new RewriteRuleSubtreeStream(adaptor,"rule identifier");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:732:9: ( COLON identifier -> ^( PARAMETER identifier ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:733:9: COLON identifier
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:732:9: ( COLON identifier -> ^( PARAMETER identifier ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:733:9: COLON identifier
             {
             COLON148=(Token)match(input,COLON,FOLLOW_COLON_in_parameterName4513); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_COLON.add(COLON148);
@@ -7429,7 +7429,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 734:17: -> ^( PARAMETER identifier )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:735:25: ^( PARAMETER identifier )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:735:25: ^( PARAMETER identifier )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -7479,7 +7479,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "folderId"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:738:1: folderId : characterStringLiteral -> characterStringLiteral ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:738:1: folderId : characterStringLiteral -> characterStringLiteral ;
     public final CMISParser.folderId_return folderId() throws RecognitionException {
         CMISParser.folderId_return retval = new CMISParser.folderId_return();
         retval.start = input.LT(1);
@@ -7492,8 +7492,8 @@ public TreeAdaptor getTreeAdaptor() {
 
         RewriteRuleSubtreeStream stream_characterStringLiteral=new RewriteRuleSubtreeStream(adaptor,"rule characterStringLiteral");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:739:9: ( characterStringLiteral -> characterStringLiteral )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:740:9: characterStringLiteral
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:739:9: ( characterStringLiteral -> characterStringLiteral )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:740:9: characterStringLiteral
             {
             pushFollow(FOLLOW_characterStringLiteral_in_folderId4596);
             characterStringLiteral150=characterStringLiteral();
@@ -7557,7 +7557,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "textSearchExpression"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:744:1: textSearchExpression : QUOTED_STRING ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:744:1: textSearchExpression : QUOTED_STRING ;
     public final CMISParser.textSearchExpression_return textSearchExpression() throws RecognitionException {
         CMISParser.textSearchExpression_return retval = new CMISParser.textSearchExpression_return();
         retval.start = input.LT(1);
@@ -7570,8 +7570,8 @@ public TreeAdaptor getTreeAdaptor() {
         Object QUOTED_STRING151_tree=null;
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:745:9: ( QUOTED_STRING )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:746:9: QUOTED_STRING
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:745:9: ( QUOTED_STRING )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:746:9: QUOTED_STRING
             {
             root_0 = (Object)adaptor.nil();
 
@@ -7616,7 +7616,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "identifier"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:749:1: identifier : ( ID -> ID |{...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:749:1: identifier : ( ID -> ID |{...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) );
     public final CMISParser.identifier_return identifier() throws RecognitionException {
         CMISParser.identifier_return retval = new CMISParser.identifier_return();
         retval.start = input.LT(1);
@@ -7637,7 +7637,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_DOUBLE_QUOTE=new RewriteRuleTokenStream(adaptor,"token DOUBLE_QUOTE");
         RewriteRuleSubtreeStream stream_keyWordOrId=new RewriteRuleSubtreeStream(adaptor,"rule keyWordOrId");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:750:9: ( ID -> ID |{...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:750:9: ( ID -> ID |{...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE -> ^( keyWordOrId ) )
             int alt42=2;
             int LA42_0 = input.LA(1);
 
@@ -7657,7 +7657,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt42) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:751:9: ID
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:751:9: ID
                     {
                     ID152=(Token)match(input,ID,FOLLOW_ID_in_identifier4682); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(ID152);
@@ -7691,7 +7691,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:753:11: {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:753:11: {...}? => DOUBLE_QUOTE keyWordOrId DOUBLE_QUOTE
                     {
                     if ( !((strict == false)) ) {
                         if (state.backtracking>0) {state.failed=true; return retval;}
@@ -7728,7 +7728,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 754:17: -> ^( keyWordOrId )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:755:25: ^( keyWordOrId )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:755:25: ^( keyWordOrId )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(stream_keyWordOrId.nextNode(), root_1);
@@ -7776,7 +7776,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "signedNumericLiteral"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:758:1: signedNumericLiteral : ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:758:1: signedNumericLiteral : ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral );
     public final CMISParser.signedNumericLiteral_return signedNumericLiteral() throws RecognitionException {
         CMISParser.signedNumericLiteral_return retval = new CMISParser.signedNumericLiteral_return();
         retval.start = input.LT(1);
@@ -7792,7 +7792,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_FLOATING_POINT_LITERAL=new RewriteRuleTokenStream(adaptor,"token FLOATING_POINT_LITERAL");
         RewriteRuleSubtreeStream stream_integerLiteral=new RewriteRuleSubtreeStream(adaptor,"rule integerLiteral");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:759:9: ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:759:9: ( FLOATING_POINT_LITERAL -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL ) | integerLiteral -> integerLiteral )
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -7812,7 +7812,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt43) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:760:9: FLOATING_POINT_LITERAL
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:760:9: FLOATING_POINT_LITERAL
                     {
                     FLOATING_POINT_LITERAL156=(Token)match(input,FLOATING_POINT_LITERAL,FOLLOW_FLOATING_POINT_LITERAL_in_signedNumericLiteral4800); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_FLOATING_POINT_LITERAL.add(FLOATING_POINT_LITERAL156);
@@ -7833,7 +7833,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 761:17: -> ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:762:25: ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:762:25: ^( NUMERIC_LITERAL FLOATING_POINT_LITERAL )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -7856,7 +7856,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:763:11: integerLiteral
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:763:11: integerLiteral
                     {
                     pushFollow(FOLLOW_integerLiteral_in_signedNumericLiteral4860);
                     integerLiteral157=integerLiteral();
@@ -7922,7 +7922,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "integerLiteral"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:767:1: integerLiteral : DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:767:1: integerLiteral : DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) ;
     public final CMISParser.integerLiteral_return integerLiteral() throws RecognitionException {
         CMISParser.integerLiteral_return retval = new CMISParser.integerLiteral_return();
         retval.start = input.LT(1);
@@ -7936,8 +7936,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_DECIMAL_INTEGER_LITERAL=new RewriteRuleTokenStream(adaptor,"token DECIMAL_INTEGER_LITERAL");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:768:9: ( DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:769:9: DECIMAL_INTEGER_LITERAL
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:768:9: ( DECIMAL_INTEGER_LITERAL -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:769:9: DECIMAL_INTEGER_LITERAL
             {
             DECIMAL_INTEGER_LITERAL158=(Token)match(input,DECIMAL_INTEGER_LITERAL,FOLLOW_DECIMAL_INTEGER_LITERAL_in_integerLiteral4913); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_DECIMAL_INTEGER_LITERAL.add(DECIMAL_INTEGER_LITERAL158);
@@ -7958,7 +7958,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 770:17: -> ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:771:25: ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:771:25: ^( NUMERIC_LITERAL DECIMAL_INTEGER_LITERAL )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -8010,7 +8010,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "booleanLiteral"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:774:1: booleanLiteral : ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:774:1: booleanLiteral : ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) );
     public final CMISParser.booleanLiteral_return booleanLiteral() throws RecognitionException {
         CMISParser.booleanLiteral_return retval = new CMISParser.booleanLiteral_return();
         retval.start = input.LT(1);
@@ -8027,7 +8027,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_TRUE=new RewriteRuleTokenStream(adaptor,"token TRUE");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:775:9: ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:775:9: ( TRUE -> ^( BOOLEAN_LITERAL TRUE ) | FALSE -> ^( BOOLEAN_LITERAL FALSE ) )
             int alt44=2;
             int LA44_0 = input.LA(1);
 
@@ -8047,7 +8047,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt44) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:776:9: TRUE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:776:9: TRUE
                     {
                     TRUE159=(Token)match(input,TRUE,FOLLOW_TRUE_in_booleanLiteral4994); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_TRUE.add(TRUE159);
@@ -8068,7 +8068,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 777:17: -> ^( BOOLEAN_LITERAL TRUE )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:778:25: ^( BOOLEAN_LITERAL TRUE )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:778:25: ^( BOOLEAN_LITERAL TRUE )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -8091,7 +8091,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:779:11: FALSE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:779:11: FALSE
                     {
                     FALSE160=(Token)match(input,FALSE,FOLLOW_FALSE_in_booleanLiteral5054); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_FALSE.add(FALSE160);
@@ -8112,7 +8112,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 780:17: -> ^( BOOLEAN_LITERAL FALSE )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:781:25: ^( BOOLEAN_LITERAL FALSE )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:781:25: ^( BOOLEAN_LITERAL FALSE )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -8166,7 +8166,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "datetimeLiteral"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:784:1: datetimeLiteral : TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:784:1: datetimeLiteral : TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) ;
     public final CMISParser.datetimeLiteral_return datetimeLiteral() throws RecognitionException {
         CMISParser.datetimeLiteral_return retval = new CMISParser.datetimeLiteral_return();
         retval.start = input.LT(1);
@@ -8183,8 +8183,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_TIMESTAMP=new RewriteRuleTokenStream(adaptor,"token TIMESTAMP");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:785:9: ( TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:786:9: TIMESTAMP QUOTED_STRING
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:785:9: ( TIMESTAMP QUOTED_STRING -> ^( DATETIME_LITERAL QUOTED_STRING ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:786:9: TIMESTAMP QUOTED_STRING
             {
             TIMESTAMP161=(Token)match(input,TIMESTAMP,FOLLOW_TIMESTAMP_in_datetimeLiteral5135); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_TIMESTAMP.add(TIMESTAMP161);
@@ -8209,7 +8209,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 787:17: -> ^( DATETIME_LITERAL QUOTED_STRING )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:788:25: ^( DATETIME_LITERAL QUOTED_STRING )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:788:25: ^( DATETIME_LITERAL QUOTED_STRING )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -8261,7 +8261,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "characterStringLiteral"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:791:1: characterStringLiteral : QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:791:1: characterStringLiteral : QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) ;
     public final CMISParser.characterStringLiteral_return characterStringLiteral() throws RecognitionException {
         CMISParser.characterStringLiteral_return retval = new CMISParser.characterStringLiteral_return();
         retval.start = input.LT(1);
@@ -8275,8 +8275,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_QUOTED_STRING=new RewriteRuleTokenStream(adaptor,"token QUOTED_STRING");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:792:9: ( QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:793:9: QUOTED_STRING
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:792:9: ( QUOTED_STRING -> ^( STRING_LITERAL QUOTED_STRING ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:793:9: QUOTED_STRING
             {
             QUOTED_STRING163=(Token)match(input,QUOTED_STRING,FOLLOW_QUOTED_STRING_in_characterStringLiteral5218); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_QUOTED_STRING.add(QUOTED_STRING163);
@@ -8297,7 +8297,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 794:17: -> ^( STRING_LITERAL QUOTED_STRING )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:795:25: ^( STRING_LITERAL QUOTED_STRING )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:795:25: ^( STRING_LITERAL QUOTED_STRING )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -8349,7 +8349,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "keyWord"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:798:1: keyWord : ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:798:1: keyWord : ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction );
     public final CMISParser.keyWord_return keyWord() throws RecognitionException {
         CMISParser.keyWord_return retval = new CMISParser.keyWord_return();
         retval.start = input.LT(1);
@@ -8416,7 +8416,7 @@ public TreeAdaptor getTreeAdaptor() {
         Object FALSE190_tree=null;
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:799:9: ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:799:9: ( SELECT | AS | FROM | JOIN | INNER | LEFT | OUTER | ON | WHERE | OR | AND | NOT | IN | LIKE | IS | NULL | ANY | CONTAINS | IN_FOLDER | IN_TREE | ORDER | BY | ASC | DESC | TIMESTAMP | TRUE | FALSE | cmisFunction )
             int alt45=28;
             switch ( input.LA(1) ) {
             case SELECT:
@@ -8570,7 +8570,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt45) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:800:9: SELECT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:800:9: SELECT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8586,7 +8586,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:801:11: AS
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:801:11: AS
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8602,7 +8602,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:802:11: FROM
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:802:11: FROM
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8618,7 +8618,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 4 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:803:11: JOIN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:803:11: JOIN
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8634,7 +8634,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 5 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:804:11: INNER
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:804:11: INNER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8650,7 +8650,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 6 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:805:11: LEFT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:805:11: LEFT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8666,7 +8666,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 7 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:806:11: OUTER
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:806:11: OUTER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8682,7 +8682,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:807:11: ON
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:807:11: ON
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8698,7 +8698,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 9 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:808:11: WHERE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:808:11: WHERE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8714,7 +8714,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 10 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:809:11: OR
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:809:11: OR
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8730,7 +8730,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 11 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:810:11: AND
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:810:11: AND
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8746,7 +8746,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 12 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:811:11: NOT
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:811:11: NOT
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8762,7 +8762,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 13 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:812:11: IN
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:812:11: IN
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8778,7 +8778,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 14 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:813:11: LIKE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:813:11: LIKE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8794,7 +8794,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 15 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:814:11: IS
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:814:11: IS
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8810,7 +8810,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 16 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:815:11: NULL
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:815:11: NULL
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8826,7 +8826,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 17 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:816:11: ANY
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:816:11: ANY
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8842,7 +8842,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 18 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:817:11: CONTAINS
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:817:11: CONTAINS
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8858,7 +8858,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 19 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:818:11: IN_FOLDER
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:818:11: IN_FOLDER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8874,7 +8874,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 20 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:819:11: IN_TREE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:819:11: IN_TREE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8890,7 +8890,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 21 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:820:11: ORDER
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:820:11: ORDER
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8906,7 +8906,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 22 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:821:11: BY
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:821:11: BY
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8922,7 +8922,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 23 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:822:11: ASC
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:822:11: ASC
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8938,7 +8938,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 24 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:823:11: DESC
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:823:11: DESC
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8954,7 +8954,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 25 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:824:11: TIMESTAMP
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:824:11: TIMESTAMP
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8970,7 +8970,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 26 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:825:11: TRUE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:825:11: TRUE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -8986,7 +8986,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 27 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:826:11: FALSE
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:826:11: FALSE
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -9002,7 +9002,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 28 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:827:11: cmisFunction
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:827:11: cmisFunction
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -9048,7 +9048,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "cmisFunction"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:830:1: cmisFunction : SCORE -> SCORE ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:830:1: cmisFunction : SCORE -> SCORE ;
     public final CMISParser.cmisFunction_return cmisFunction() throws RecognitionException {
         CMISParser.cmisFunction_return retval = new CMISParser.cmisFunction_return();
         retval.start = input.LT(1);
@@ -9062,8 +9062,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_SCORE=new RewriteRuleTokenStream(adaptor,"token SCORE");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:831:9: ( SCORE -> SCORE )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:832:9: SCORE
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:831:9: ( SCORE -> SCORE )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:832:9: SCORE
             {
             SCORE192=(Token)match(input,SCORE,FOLLOW_SCORE_in_cmisFunction5656); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_SCORE.add(SCORE192);
@@ -9126,7 +9126,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "keyWordOrId"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:836:1: keyWordOrId : ( keyWord -> keyWord | ID -> ID );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:836:1: keyWordOrId : ( keyWord -> keyWord | ID -> ID );
     public final CMISParser.keyWordOrId_return keyWordOrId() throws RecognitionException {
         CMISParser.keyWordOrId_return retval = new CMISParser.keyWordOrId_return();
         retval.start = input.LT(1);
@@ -9142,7 +9142,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
         RewriteRuleSubtreeStream stream_keyWord=new RewriteRuleSubtreeStream(adaptor,"rule keyWord");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:837:9: ( keyWord -> keyWord | ID -> ID )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:837:9: ( keyWord -> keyWord | ID -> ID )
             int alt46=2;
             int LA46_0 = input.LA(1);
 
@@ -9162,7 +9162,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt46) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:838:9: keyWord
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:838:9: keyWord
                     {
                     pushFollow(FOLLOW_keyWord_in_keyWordOrId5709);
                     keyWord193=keyWord();
@@ -9197,7 +9197,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:840:11: ID
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:840:11: ID
                     {
                     ID194=(Token)match(input,ID,FOLLOW_ID_in_keyWordOrId5741); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_ID.add(ID194);
@@ -9256,8 +9256,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred1_CMIS
     public final void synpred1_CMIS_fragment() throws RecognitionException {
-        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )
-        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:10: tableName
+        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:9: ( tableName )
+        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:388:10: tableName
         {
         pushFollow(FOLLOW_tableName_in_synpred1_CMIS1323);
         tableName();
@@ -9272,8 +9272,8 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred2_CMIS
     public final void synpred2_CMIS_fragment() throws RecognitionException {
-        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )
-        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:10: LPAREN singleTable ( joinedTable )+ RPAREN
+        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:9: ( LPAREN singleTable ( joinedTable )+ RPAREN )
+        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:10: LPAREN singleTable ( joinedTable )+ RPAREN
         {
         match(input,LPAREN,FOLLOW_LPAREN_in_synpred2_CMIS1917); if (state.failed) return ;
 
@@ -9283,7 +9283,7 @@ public TreeAdaptor getTreeAdaptor() {
         state._fsp--;
         if (state.failed) return ;
 
-        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: ( joinedTable )+
+        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: ( joinedTable )+
         int cnt47=0;
         loop47:
         do {
@@ -9297,7 +9297,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             switch (alt47) {
         	case 1 :
-        	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: joinedTable
+        	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g:484:29: joinedTable
         	    {
         	    pushFollow(FOLLOW_joinedTable_in_synpred2_CMIS1921);
         	    joinedTable();
@@ -10193,9 +10193,9 @@ public TreeAdaptor getTreeAdaptor() {
     static final String DFA9_acceptS =
         "\3\uffff\1\1\27\2\36\uffff\1\1\27\2";
     static final String DFA9_specialS =
-        "\1\33\1\uffff\1\1\30\uffff\1\15\1\20\1\10\1\11\1\12\1\25\1\27\1"+
+        "\1\33\1\uffff\1\1\30\uffff\1\15\1\20\1\10\1\11\1\13\1\25\1\27\1"+
         "\22\1\21\1\23\1\34\1\37\1\35\1\30\1\32\1\2\1\3\1\0\1\6\1\4\1\5\1"+
-        "\13\1\7\1\16\1\17\1\14\1\24\1\31\1\36\1\26\30\uffff}>";
+        "\12\1\7\1\16\1\17\1\14\1\24\1\31\1\36\1\26\30\uffff}>";
     static final String[] DFA9_transitionS = {
             "\1\2\11\uffff\1\1",
             "\1\27\1\uffff\1\4\1\31\6\uffff\1\7\5\uffff\1\32\2\uffff\1\3"+
@@ -10544,22 +10544,6 @@ public TreeAdaptor getTreeAdaptor() {
                         break;
 
                     case 10 : 
-                        int LA9_31 = input.LA(1);
-
-                         
-                        int index9_31 = input.index();
-                        input.rewind();
-
-                        s = -1;
-                        if ( (LA9_31==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
-
-                         
-                        input.seek(index9_31);
-
-                        if ( s>=0 ) return s;
-                        break;
-
-                    case 11 : 
                         int LA9_48 = input.LA(1);
 
                          
@@ -10571,6 +10555,22 @@ public TreeAdaptor getTreeAdaptor() {
 
                          
                         input.seek(index9_48);
+
+                        if ( s>=0 ) return s;
+                        break;
+
+                    case 11 : 
+                        int LA9_31 = input.LA(1);
+
+                         
+                        int index9_31 = input.index();
+                        input.rewind();
+
+                        s = -1;
+                        if ( (LA9_31==DOUBLE_QUOTE) && ((strict == false))) {s = 56;}
+
+                         
+                        input.seek(index9_31);
 
                         if ( s>=0 ) return s;
                         break;
@@ -13250,7 +13250,7 @@ public TreeAdaptor getTreeAdaptor() {
         "\104\1\112\1\117\1\124\1\106\1\113\1\73\1\75\1\50\1\56\1\34\1\43"+
         "\1\20\1\25\1\10\1\5\1\13\1\0\1\4\1\125\1\121\1\114\1\105\1\76\1"+
         "\70\1\57\1\47\1\67\1\115\2\uffff\1\120\1\40\1\37\4\uffff\1\123\1"+
-        "\1\1\uffff\1\64\7\uffff\1\27\1\uffff\1\7\1\26\1\uffff\1\6\35\uffff"+
+        "\1\1\uffff\1\64\7\uffff\1\27\1\uffff\1\6\1\26\1\uffff\1\7\35\uffff"+
         "\1\60\1\uffff\1\62\45\uffff\1\122\36\uffff\1\22\36\uffff\1\32\1"+
         "\uffff\1\53\1\3\1\31\5\uffff\1\24\5\uffff\1\23\1\21\1\17\1\16\1"+
         "\15\1\44\1\41\1\36\1\35\1\33\1\30\1\55\1\61\1\63\1\45\1\46\1\52"+
@@ -13810,40 +13810,6 @@ public TreeAdaptor getTreeAdaptor() {
                         break;
 
                     case 6 : 
-                        int LA28_96 = input.LA(1);
-
-                         
-                        int index28_96 = input.index();
-                        input.rewind();
-
-                        s = -1;
-                        if ( (LA28_96==RPAREN) ) {s = 228;}
-
-                        else if ( (LA28_96==ID) && ((strict == false))) {s = 134;}
-
-                        else if ( (LA28_96==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
-
-                        else if ( (LA28_96==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
-
-                        else if ( (LA28_96==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
-
-                        else if ( (LA28_96==QUOTED_STRING) && ((strict == false))) {s = 136;}
-
-                        else if ( (LA28_96==TRUE) && ((strict == false))) {s = 86;}
-
-                        else if ( (LA28_96==FALSE) && ((strict == false))) {s = 87;}
-
-                        else if ( (LA28_96==TIMESTAMP) && ((strict == false))) {s = 88;}
-
-                        else if ( (LA28_96==COLON) && ((strict == false))) {s = 89;}
-
-                         
-                        input.seek(index28_96);
-
-                        if ( s>=0 ) return s;
-                        break;
-
-                    case 7 : 
                         int LA28_93 = input.LA(1);
 
                          
@@ -13873,6 +13839,40 @@ public TreeAdaptor getTreeAdaptor() {
 
                          
                         input.seek(index28_93);
+
+                        if ( s>=0 ) return s;
+                        break;
+
+                    case 7 : 
+                        int LA28_96 = input.LA(1);
+
+                         
+                        int index28_96 = input.index();
+                        input.rewind();
+
+                        s = -1;
+                        if ( (LA28_96==RPAREN) ) {s = 228;}
+
+                        else if ( (LA28_96==ID) && ((strict == false))) {s = 134;}
+
+                        else if ( (LA28_96==DOUBLE_QUOTE) && ((strict == false))) {s = 135;}
+
+                        else if ( (LA28_96==FLOATING_POINT_LITERAL) && ((strict == false))) {s = 84;}
+
+                        else if ( (LA28_96==DECIMAL_INTEGER_LITERAL) && ((strict == false))) {s = 85;}
+
+                        else if ( (LA28_96==QUOTED_STRING) && ((strict == false))) {s = 136;}
+
+                        else if ( (LA28_96==TRUE) && ((strict == false))) {s = 86;}
+
+                        else if ( (LA28_96==FALSE) && ((strict == false))) {s = 87;}
+
+                        else if ( (LA28_96==TIMESTAMP) && ((strict == false))) {s = 88;}
+
+                        else if ( (LA28_96==COLON) && ((strict == false))) {s = 89;}
+
+                         
+                        input.seek(index28_96);
 
                         if ( s>=0 ) return s;
                         break;

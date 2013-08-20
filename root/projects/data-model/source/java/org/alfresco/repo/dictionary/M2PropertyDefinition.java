@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -55,6 +56,7 @@ import org.springframework.util.StringUtils;
     private DataTypeDefinition dataType;
     private String  analyserResourceBundleName;
     private List<ConstraintDefinition> constraintDefs = Collections.emptyList();
+    private transient MessageLookup staticMessageLookup = new StaticMessageLookup();
     
     /*package*/ M2PropertyDefinition(
             ClassDefinition classDef,
@@ -276,6 +278,10 @@ import org.springframework.util.StringUtils;
         return name;
     }
     
+    public String getTitle()
+    {
+        return getTitle(staticMessageLookup);
+    }
     
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.PropertyDefinition#getTitle()
@@ -290,6 +296,10 @@ import org.springframework.util.StringUtils;
         return value;
     }
     
+    public String getDescription()
+    {
+        return getDescription(staticMessageLookup);
+    }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.PropertyDefinition#getDescription()

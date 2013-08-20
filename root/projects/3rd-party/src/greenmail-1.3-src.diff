@@ -683,7 +683,7 @@ Index: src/java/com/icegreen/greenmail/imap/ImapServer.java
 ===================================================================
 --- src/java/com/icegreen/greenmail/imap/ImapServer.java	(revision 48)
 +++ src/java/com/icegreen/greenmail/imap/ImapServer.java	(working copy)
-@@ -3,32 +3,51 @@
+@@ -3,33 +3,60 @@
  * This software is released under the LGPL which is available at http://www.gnu.org/copyleft/lesser.html
  * This file has been modified by the copyright holder. Original file can be found at http://james.apache.org
  * -------------------------------------------------------------------
@@ -703,6 +703,8 @@ Index: src/java/com/icegreen/greenmail/imap/ImapServer.java
  import java.net.BindException;
 +import java.net.ServerSocket;
  import java.net.Socket;
++import java.util.ArrayList;
++import java.util.List;
  import java.util.Vector;
  import java.util.Iterator;
  
@@ -730,14 +732,18 @@ Index: src/java/com/icegreen/greenmail/imap/ImapServer.java
 -
      public synchronized void quit() {
          try {
-             for (Iterator iterator = handlers.iterator(); iterator.hasNext();) {
+-            for (Iterator iterator = handlers.iterator(); iterator.hasNext();) {
++            List copyOfData = new ArrayList(handlers);
++            for (Iterator iterator = copyOfData.iterator(); iterator.hasNext();)
++            {
                  ImapHandler imapHandler = (ImapHandler) iterator.next();
                  imapHandler.resetHandler();
-+                handlers.clear();
              }
++            handlers.clear();
          } catch (Exception e) {
              throw new RuntimeException(e);
-@@ -56,7 +75,7 @@
+         }
+@@ -56,7 +79,7 @@
              while (keepOn()) {
                  try {
                      Socket clientSocket = serverSocket.accept();

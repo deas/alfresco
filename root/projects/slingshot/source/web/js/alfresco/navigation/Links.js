@@ -16,6 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is a work in progress widget - use with caution.
+ * 
+ * @module alfresco/navigation/Links
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
@@ -27,11 +37,26 @@ define(["dojo/_base/declare",
    
    return declare([_Widget, _Templated, AlfCore], {
       
-      cssRequirements: [{cssFile:"./css/Links.css",mediaType:"screen"}],
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/Links.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/Links.css"}],
       
+      /**
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {string}
+       */
       templateString: template,
       
-      postCreate: function() {
+      /**
+       * @instance
+       */
+      postCreate: function alfresco_navigation_Links__postCreate() {
          this.inherited(arguments);
          var _this = this;
          this.alfPublish("GetPages", {});
@@ -51,10 +76,6 @@ define(["dojo/_base/declare",
                }
             });
          });
-      },
-      
-      startup: function() {
-         this.inherited(arguments);
       }
    });
 });

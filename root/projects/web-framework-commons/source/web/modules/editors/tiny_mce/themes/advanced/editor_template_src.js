@@ -720,6 +720,12 @@
 			// alt+0 is the UK recommended shortcut for accessing the list of access controls.
 			ed.addShortcut('alt+0', '', 'mceShortcuts', t);
 
+			//MNT-9079 Alfresco header and footer do not stretch with TinyMCE editor
+			YUIEvent.on(window, 'resize', function() { 
+					e = DOM.get(ed.id + '_tbl');
+	                this.resizeHeaderFooter(e); 
+			}, this, true);
+
 			return {
 				iframeContainer : ic,
 				editorContainer : ed.id + '_parent',
@@ -765,6 +771,8 @@
 					w = e.clientWidth;
 					DOM.setStyle(ifr, 'width', e.clientWidth);
 				}
+				
+				this.resizeHeaderFooter(e);
 			}
 
 			// Store away the size
@@ -776,6 +784,34 @@
 			}
 		},
 
+		//MNT-9079 Alfresco header and footer do not stretch with TinyMCE editor
+		resizeHeaderFooter : function(e) {
+			header = DOM.get('alf-hd');
+			footer = DOM.get('alf-ft');
+			docWidth = YUIDom.getViewportWidth();
+			
+			widthHeader = parseInt(YUIDom.getStyle(header, 'width'), 10);
+			widthFooter = parseInt(YUIDom.getStyle(footer, 'width'), 10);
+			
+			regionTable = YUIDom.getRegion(e);
+
+			inequality = (regionTable['left'] + regionTable['width']) - widthFooter;
+
+			valueFooter = widthFooter + inequality;
+			valueHeader = widthHeader + inequality;
+			
+			if (inequality > 0 || (inequality < 0 && valueFooter > docWidth))
+			{
+				YUIDom.setStyle(header, 'width', valueHeader + 'px');
+				YUIDom.setStyle(footer, 'width', valueFooter + 'px');
+			}
+			else if (valueFooter <= docWidth)
+			{
+				YUIDom.setStyle(header, 'width', docWidth - 20 + 'px');
+				YUIDom.setStyle(footer, 'width', docWidth + 'px');
+			}
+		},
+		
 		destroy : function() {
 			var id = this.editor.id;
 

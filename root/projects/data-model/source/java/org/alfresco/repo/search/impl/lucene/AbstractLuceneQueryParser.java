@@ -70,6 +70,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParserTokenManager;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ConstantScoreRangeQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -77,7 +78,6 @@ import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardTermEnum;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.regex.RegexQuery;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
@@ -433,13 +433,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
             {
-                Collection<QName> contentAttributes = dictionaryService.getAllProperties(DataTypeDefinition.CONTENT);
-                BooleanQuery query = new BooleanQuery();
-                for (QName qname : contentAttributes)
-                {
-                    Query part = getSpanQuery(PROPERTY_FIELD_PREFIX + qname.toString(), first, last, slop, inOrder);
-                    query.add(part, Occur.SHOULD);
-                }
+                Query query = getSpanQuery(PROPERTY_FIELD_PREFIX + ContentModel.PROP_CONTENT.toString(), first, last, slop, inOrder);
                 return query;
             }
             else
@@ -1352,22 +1346,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         Set<String> text = searchParameters.getTextAttributes();
         if ((text == null) || (text.size() == 0))
         {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(DataTypeDefinition.CONTENT);
-            BooleanQuery query = new BooleanQuery();
-            for (QName qname : contentAttributes)
+            Query query = getFieldQuery(PROPERTY_FIELD_PREFIX + ContentModel.PROP_CONTENT.toString(), queryText, analysisMode, luceneFunction);
+            if (query == null)
             {
-                // The super implementation will create phrase queries etc if required
-                Query part = getFieldQuery(PROPERTY_FIELD_PREFIX + qname.toString(), queryText, analysisMode, luceneFunction);
-                if (part != null)
-                {
-                    query.add(part, Occur.SHOULD);
-                }
-                else
-                {
-                    query.add(createNoMatchQuery(), Occur.SHOULD);
-                }
+                return createNoMatchQuery();
             }
-            return query;
+            return query;    
         }
         else
         {
@@ -1447,7 +1431,20 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             }
         }
 
-        TokenStream source = getAnalyzer().tokenStream(field, new StringReader(toTokenise), analysisMode);
+        // find the positions of any escaped * and ? and ignore them
+
+        Set<Integer> wildcardPoistions = getWildcardPositions(testText);
+        
+        TokenStream source;
+        if((localePrefix.length() == 0) || (wildcardPoistions.size() > 0) || (analysisMode == AnalysisMode.IDENTIFIER))
+        {
+            source = getAnalyzer().tokenStream(field, new StringReader(toTokenise), analysisMode);
+        }
+        else
+        {
+            source = getAnalyzer().tokenStream(field, new StringReader("\u0000"+localePrefix.substring(1, localePrefix.length()-1)+"\u0000"+toTokenise), analysisMode);
+            localePrefix = "";
+        }
 
         ArrayList<org.apache.lucene.analysis.Token> list = new ArrayList<org.apache.lucene.analysis.Token>();
         org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
@@ -1481,10 +1478,6 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         {
             // ignore
         }
-
-        // find the positions of any escaped * and ? and ignore them
-
-        Set<Integer> wildcardPoistions = getWildcardPositions(testText);
 
         // add any alpha numeric wildcards that have been missed
         // Fixes most stop word and wild card issues
@@ -1772,7 +1765,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 LinkedList<LinkedList<org.apache.lucene.analysis.Token>> newAllTokeSequences = new LinkedList<LinkedList<org.apache.lucene.analysis.Token>>();
 
-                for(org.apache.lucene.analysis.Token t : tokensAtPosition)
+                FOR_FIRST_TOKEN_AT_POSITION_ONLY: for(org.apache.lucene.analysis.Token t : tokensAtPosition)
                 {
                     boolean tokenFoundSequence = false;
                     for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : allTokenSequences)
@@ -1791,6 +1784,11 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         LinkedList<org.apache.lucene.analysis.Token> newEntry = new LinkedList<org.apache.lucene.analysis.Token>();
                         newEntry.add(t);
                         newAllTokeSequences.add(newEntry);
+                    }
+                    // Limit the max number of permutations we consider
+                    if(newAllTokeSequences.size() > 64)
+                    {
+                        break FOR_FIRST_TOKEN_AT_POSITION_ONLY;
                     }
                 }
                 allTokenSequences = newAllTokeSequences;
@@ -2054,11 +2052,22 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     MultiPhraseQuery mpq = newMultiPhraseQuery();
                     mpq.setSlop(internalSlop);
                     ArrayList<Term> multiTerms = new ArrayList<Term>();
-                    int position = -1;
+                    int position = 0;
                     for (int i = 0; i < list.size(); i++)
                     {
                         nextToken = (org.apache.lucene.analysis.Token) list.get(i);
                         String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
+                        
+                        Term term = new Term(field, termText);
+                        if ((termText != null) && (termText.contains("*") || termText.contains("?")))
+                        {
+                            addWildcardTerms(multiTerms, term);
+                        }
+                        else
+                        {
+                            multiTerms.add(term);
+                        }
+                        
                         if (nextToken.getPositionIncrement() > 0 && multiTerms.size() > 0)
                         {
                             if (getEnablePositionIncrements())
@@ -2073,15 +2082,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         }
                         position += nextToken.getPositionIncrement();
 
-                        Term term = new Term(field, termText);
-                        if ((termText != null) && (termText.contains("*") || termText.contains("?")))
-                        {
-                            addWildcardTerms(multiTerms, term);
-                        }
-                        else
-                        {
-                            multiTerms.add(term);
-                        }
+                        
                     }
                     if (getEnablePositionIncrements())
                     {
@@ -2089,10 +2090,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         {
                             mpq.add((Term[]) multiTerms.toArray(new Term[0]), position);
                         }
-                        else
-                        {
-                            mpq.add(new Term[] { new Term(field, "\u0000") }, position);
-                        }
+//                        else
+//                        {
+//                            mpq.add(new Term[] { new Term(field, "\u0000") }, position);
+//                        }
                     }
                     else
                     {
@@ -2100,10 +2101,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         {
                             mpq.add((Term[]) multiTerms.toArray(new Term[0]));
                         }
-                        else
-                        {
-                            mpq.add(new Term[] { new Term(field, "\u0000") });
-                        }
+//                        else
+//                        {
+//                            mpq.add(new Term[] { new Term(field, "\u0000") });
+//                        }
                     }
                     return mpq;
 
@@ -2116,7 +2117,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         // phrase query:
                         MultiPhraseQuery mpq = newMultiPhraseQuery();
                         mpq.setSlop(internalSlop);
-                        int position = -1;
+                        int position = 0;
                         for (int i = 0; i < tokenSequence.size(); i++)
                         {
                             nextToken = (org.apache.lucene.analysis.Token) tokenSequence.get(i);
@@ -2126,14 +2127,6 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 
                             if (getEnablePositionIncrements())
                             {
-                                if(nextToken.getPositionIncrement() > 0)
-                                {
-                                    position += nextToken.getPositionIncrement();
-                                }
-                                else
-                                {
-                                    position++;
-                                }
                                 if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                                 {
                                     mpq.add(getMatchingTerms(field, term), position);
@@ -2142,6 +2135,15 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                                 {
                                     mpq.add(new Term[] { term }, position);
                                 }
+                                if(nextToken.getPositionIncrement() > 0)
+                                {
+                                    position += nextToken.getPositionIncrement();
+                                }
+                                else
+                                {
+                                    position++;
+                                }
+                                
                             }
                             else
                             {
@@ -2164,7 +2166,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 MultiPhraseQuery q = new MultiPhraseQuery();
                 q.setSlop(internalSlop);
-                int position = -1;
+                int position = 0;
                 for (int i = 0; i < list.size(); i++)
                 {
                     nextToken = (org.apache.lucene.analysis.Token) list.get(i);
@@ -2172,14 +2174,6 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     Term term = new Term(field, termText);
                     if (getEnablePositionIncrements())
                     {
-                        if(nextToken.getPositionIncrement() > 0)
-                        {
-                            position += nextToken.getPositionIncrement();
-                        }
-                        else
-                        {
-                            position++;
-                        }
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
                             q.add(getMatchingTerms(field, term), position);
@@ -2187,6 +2181,14 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         else
                         {
                             q.add(new Term[] { term }, position);
+                        }
+                        if(nextToken.getPositionIncrement() > 0)
+                        {
+                            position += nextToken.getPositionIncrement();
+                        }
+                        else
+                        {
+                            position++;
                         }
                     }
                     else
@@ -2362,21 +2364,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
             {
-                Collection<QName> contentAttributes = dictionaryService.getAllProperties(DataTypeDefinition.CONTENT);
-                BooleanQuery query = new BooleanQuery();
-                for (QName qname : contentAttributes)
+                Query query = getRangeQuery(PROPERTY_FIELD_PREFIX + ContentModel.PROP_CONTENT.toString(), part1, part2, includeLower, includeUpper, analysisMode, luceneFunction); 
+                if (query == null)
                 {
-                    // The super implementation will create phrase queries etc if required
-                    Query part = getRangeQuery(PROPERTY_FIELD_PREFIX + qname.toString(), part1, part2, includeLower, includeUpper, analysisMode, luceneFunction);
-                    if (part != null)
-                    {
-                        query.add(part, Occur.SHOULD);
-                    }
-                    else
-                    {
-                        query.add(createNoMatchQuery(), Occur.SHOULD);
-                    }
+                    return createNoMatchQuery();
                 }
+
                 return query;
             }
             else
@@ -4061,22 +4054,13 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
             {
-                Collection<QName> contentAttributes = dictionaryService.getAllProperties(DataTypeDefinition.CONTENT);
-                BooleanQuery query = new BooleanQuery();
-                for (QName qname : contentAttributes)
+                Query query =  getPrefixQuery(PROPERTY_FIELD_PREFIX + ContentModel.PROP_CONTENT.toString(), termStr, analysisMode); 
+                if (query == null)
                 {
-                    // The super implementation will create phrase queries etc if required
-                    Query part = getPrefixQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, analysisMode);
-                    if (part != null)
-                    {
-                        query.add(part, Occur.SHOULD);
-                    }
-                    else
-                    {
-                        query.add(createNoMatchQuery(), Occur.SHOULD);
-                    }
+                    return createNoMatchQuery();
                 }
-                return query;
+
+                return query;      
             }
             else
             {
@@ -4247,21 +4231,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
             {
-                Collection<QName> contentAttributes = dictionaryService.getAllProperties(DataTypeDefinition.CONTENT);
-                BooleanQuery query = new BooleanQuery();
-                for (QName qname : contentAttributes)
+                Query query =  getWildcardQuery(PROPERTY_FIELD_PREFIX + ContentModel.PROP_CONTENT.toString(), termStr, analysisMode); 
+                if (query == null)
                 {
-                    // The super implementation will create phrase queries etc if required
-                    Query part = getWildcardQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, analysisMode);
-                    if (part != null)
-                    {
-                        query.add(part, Occur.SHOULD);
-                    }
-                    else
-                    {
-                        query.add(createNoMatchQuery(), Occur.SHOULD);
-                    }
+                    return createNoMatchQuery();
                 }
+
                 return query;
             }
             else
@@ -4428,21 +4403,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             Set<String> text = searchParameters.getTextAttributes();
             if ((text == null) || (text.size() == 0))
             {
-                Collection<QName> contentAttributes = dictionaryService.getAllProperties(DataTypeDefinition.CONTENT);
-                BooleanQuery query = new BooleanQuery();
-                for (QName qname : contentAttributes)
+                Query query =  getFuzzyQuery(PROPERTY_FIELD_PREFIX + ContentModel.PROP_CONTENT.toString(), termStr, minSimilarity);
+                if (query == null)
                 {
-                    // The super implementation will create phrase queries etc if required
-                    Query part = getFuzzyQuery(PROPERTY_FIELD_PREFIX + qname.toString(), termStr, minSimilarity);
-                    if (part != null)
-                    {
-                        query.add(part, Occur.SHOULD);
-                    }
-                    else
-                    {
-                        query.add(createNoMatchQuery(), Occur.SHOULD);
-                    }
+                    return createNoMatchQuery();
                 }
+
                 return query;
             }
             else

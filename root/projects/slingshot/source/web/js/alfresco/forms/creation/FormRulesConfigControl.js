@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/creation/FormRulesConfigControl
+ * @extends module:alfresco/forms/controls/MultipleEntryFormControl
+ * @author Dave Draper
+ */
 define(["alfresco/forms/controls/MultipleEntryFormControl",
         "dojo/_base/declare",
         "alfresco/forms/creation/FormRulesConfigCreator"], 
@@ -23,24 +29,23 @@ define(["alfresco/forms/controls/MultipleEntryFormControl",
    
    return declare([MultipleEntryFormControl], {
       
-      getWidgetConfig: function() {
-         
-         // It's important that we set the pubSubScope as being the "fieldChangePubSubScope". This
-         // is done so that the widget can listen to changes regards available fields. The list of
-         // available fields is important for form rules because they need to be assigned to a field
-         // to work against.
+      /**
+       * @instance
+       */
+      getWidgetConfig: function alfresco_forms_creation_FormRulesConfigControl__getWidgetConfig() {
+         // NOTE: It's important to pass on the pubSubScope to ensure topics get scoped.
          return {
             id : this.generateUuid(),
             name: this.name,
             value: this.value,
-            pubSubScope: this.fieldChangePubSubScope,
-            parent_alfMultipleElementId: this.parent_alfMultipleElementId,
-            availableFieldsFunction: this.availableFieldsFunction,
-            availableFieldsFunctionContext: this.availableFieldsFunctionContext
+            pubSubScope: this.pubSubScope
          };
       },
       
-      createFormControl: function(config, domNode) {
+      /**
+       * @instance
+       */
+      createFormControl: function alfresco_forms_creation_FormRulesConfigControl__createFormControl(config, domNode) {
          return new FormRulesConfigCreator(config);
       }
    });

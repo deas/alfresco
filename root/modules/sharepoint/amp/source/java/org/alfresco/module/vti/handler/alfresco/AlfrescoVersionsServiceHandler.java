@@ -165,16 +165,16 @@ public class AlfrescoVersionsServiceHandler implements VersionsServiceHandler
             props.put(Version.PROP_DESCRIPTION, "");
             props.put(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR);
 
-            if (logger.isDebugEnabled())
-                logger.debug("Creating a new version for '" + fileName + "'.");
-            versionService.createVersion(documentFileInfo.getNodeRef(), props);
-
             String alfrescoVersionLabel = VtiUtils.toAlfrescoVersionLabel(fileVersion);
             VersionHistory versionHistory = versionService.getVersionHistory(documentFileInfo.getNodeRef());
             Version version = versionHistory.getVersion(alfrescoVersionLabel);
             if (logger.isDebugEnabled())
                 logger.debug("Reverting version '" + fileVersion + " for '" + fileName + "'.");
             versionService.revert(documentFileInfo.getNodeRef(), version);
+
+            if (logger.isDebugEnabled())
+                logger.debug("Creating a new version for '" + fileName + "'.");
+            versionService.createVersion(documentFileInfo.getNodeRef(), props);
 
             tx.commit();
         }

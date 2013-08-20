@@ -32,8 +32,7 @@ function main()
    if (result.status != status.STATUS_OK)
    {
       model.doRedirect = false;
-      json = eval('(' + result.response + ')');
-      model.error = json.message; // result.response;
+      model.error = result.status.message; // result.response;
    }
    else
    {

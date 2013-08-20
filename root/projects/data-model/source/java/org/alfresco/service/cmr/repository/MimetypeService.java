@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +128,20 @@ public interface MimetypeService
     @NotAuditable
     public String guessMimetype(String filename, ContentReader reader);
     
+    /**
+     * Provides a non-null best guess of the appropriate mimetype for a
+     * given file. Uses a mixture of file name and file content
+     * logic to identify the mimetype for the file, and will usually
+     * manage to identify files with incorrect extensions. 
+     * 
+     * @param filename the name of the file with an optional file extension
+     * @param input an input stream for the content 
+     * @return Returns the best guess mimetype or the mimetype for
+     *      straight binary files if no extension could be found.
+     */
+    @NotAuditable
+    public String guessMimetype(String filename, InputStream input);
+
     /**
      * Use detection heuristics to check if the mime type of the document really 
      *  matches what it claims to be.

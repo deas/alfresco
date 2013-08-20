@@ -159,22 +159,23 @@ var AlfrescoUtil =
       return null;
    },
 
-   getNodeDetails: function getNodeDetails(nodeRef, site, options)
+   getNodeDetails: function getNodeDetails(nodeRef, site, options, libraryRoot)
    {
       if (nodeRef)
       {
          var url = '/slingshot/doclib2/node/' + nodeRef.replace('://', '/');
-         return AlfrescoUtil.processNodeDetails(url, site, options);
+         return AlfrescoUtil.processNodeDetails(url, site, options, libraryRoot);
       }
       return null;
    },
 
-   processNodeDetails: function processNodeDetails(url, site, options)
+   processNodeDetails: function processNodeDetails(url, site, options, libraryRoot)
    {
       if (!site)
       {
+         var root = (libraryRoot != null) ? libraryRoot : AlfrescoUtil.getRootNode();
          // Repository mode
-         url += "?libraryRoot=" + encodeURIComponent(AlfrescoUtil.getRootNode());
+         url += "?libraryRoot=" + encodeURIComponent(root);
       }
       var result = remote.connect("alfresco").get(url);
 

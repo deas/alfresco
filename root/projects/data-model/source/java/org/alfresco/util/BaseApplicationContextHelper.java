@@ -18,12 +18,24 @@
  */
 package org.alfresco.util;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.context.support.ServletContextResourcePatternResolver;
+
+import sun.misc.CompoundEnumeration;
 
 /**
  * Helper class to provide static and common access to the Spring
@@ -35,18 +47,10 @@ public abstract class BaseApplicationContextHelper
 {
     private static ClassPathXmlApplicationContext instance;
     private static String[] usedConfiguration;
+    private static String[] usedClassLocations;
     private static boolean useLazyLoading = false;
     private static boolean noAutoStart = false;
     
-    /**
-     * Provides a static, single instance of the application context.  This method can be
-     * called repeatedly.
-     * <p/>
-     * If the configuration requested differs from one used previously, then the previously-created
-     * context is shut down.
-     * 
-     * @return Returns an application context for the given configuration
-     */
     public synchronized static ApplicationContext getApplicationContext(String[] configLocations)
     {
         if (configLocations == null)
@@ -69,6 +73,89 @@ public abstract class BaseApplicationContextHelper
                     
         usedConfiguration = configLocations;
         
+        return instance;
+    }
+    
+    /**
+     * Build a classloader for the given classLocations, using the thread's context class loader as its parent.
+     * 
+     * @param classLocations
+     * @return
+     * @throws IOException
+     */
+    public static ClassLoader buildClassLoader(String[] classLocations) throws IOException
+    {
+    	ResourceFinder resolver = new ResourceFinder();
+    	// Put the test directories at the front of the classpath
+    	Resource[] resources = resolver.getResources(classLocations);
+    	URL[] classpath = new URL[resources.length];
+    	for (int i = 0; i< resources.length; i++)
+    	{
+    		classpath[i] = resources[i].getURL();
+    	}
+    	// Let's give our classloader 'child-first' resource loading qualities!
+    	ClassLoader classLoader = new URLClassLoader(classpath, Thread.currentThread().getContextClassLoader())
+    	{
+    		@Override
+    		public URL getResource(String name)
+    		{
+    			URL ret = findResource(name);
+    			return ret == null ? super.getResource(name) : ret;
+    		}
+
+    		@SuppressWarnings("rawtypes")
+    		@Override
+    		public Enumeration<URL> getResources(String name) throws IOException
+    		{
+    			Enumeration[] tmp = new Enumeration[2];
+    			tmp[0] = findResources(name);
+    			tmp[1] = super.getResources(name);
+    			return new CompoundEnumeration<URL>(tmp);
+    		}
+    	};
+    	return classLoader;
+    }
+
+    /**
+     * Provides a static, single instance of the application context.  This method can be
+     * called repeatedly.
+     * <p/>
+     * If the configuration requested differs from one used previously, then the previously-created
+     * context is shut down.
+     * 
+     * @return Returns an application context for the given configuration
+     */
+    public synchronized static ApplicationContext getApplicationContext(String[] configLocations, String[] classLocations) throws IOException
+    {
+        if (configLocations == null)
+        {
+            throw new IllegalArgumentException("configLocations argument is mandatory.");
+        }
+        if (usedConfiguration != null && Arrays.deepEquals(configLocations, usedConfiguration) && classLocations != null && Arrays.deepEquals(classLocations, usedClassLocations))
+        {
+            // The configuration was used to create the current context
+            return instance;
+        }
+        // The config has changed so close the current context (if any)
+        closeApplicationContext();
+       
+        if(useLazyLoading || noAutoStart) {
+           instance = new VariableFeatureClassPathXmlApplicationContext(configLocations); 
+        } else {
+           instance = new ClassPathXmlApplicationContext(configLocations, false);
+        }
+
+        if(classLocations != null)
+        {
+        	ClassLoader classLoader = buildClassLoader(classLocations);
+	        instance.setClassLoader(classLoader);
+        }
+
+        instance.refresh();
+
+        usedConfiguration = configLocations;
+        usedClassLocations = classLocations;
+
         return instance;
     }
     
@@ -160,6 +247,51 @@ public abstract class BaseApplicationContextHelper
             {
                 NoAutoStartClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
             }
+        }
+    }
+
+    /**
+     * Can be used in Spring configuration to search for all resources matching an array of patterns.
+     * 
+     * @author dward
+     */
+    public static class ResourceFinder extends ServletContextResourcePatternResolver
+    {
+        public ResourceFinder()
+        {
+            super(new DefaultResourceLoader());
+        }
+
+        /**
+         * The Constructor.
+         * 
+         * @param resourceLoader
+         *            the resource loader
+         */
+        public ResourceFinder(ResourceLoader resourceLoader)
+        {
+            super(resourceLoader);
+        }
+
+        /**
+         * Gets an array of resources matching the given location patterns.
+         * 
+         * @param locationPatterns
+         *            the location patterns
+         * @return the matching resources, ordered by locationPattern index and location in the classpath
+         * @throws IOException
+         *             Signals that an I/O exception has occurred.
+         */
+        public Resource[] getResources(String... locationPatterns) throws IOException
+        {
+            List<Resource> resources = new LinkedList<Resource>();
+            for (String locationPattern : locationPatterns)
+            {
+                resources.addAll(Arrays.asList(getResources(locationPattern)));
+            }
+            Resource[] resourceArray = new Resource[resources.size()];
+            resources.toArray(resourceArray);
+            return resourceArray;
         }
     }
 }

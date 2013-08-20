@@ -16,14 +16,14 @@
 <@markup id="html">
    <#assign el=args.htmlid?html>
    <@uniqueIdDiv>
-      <div id="${el}-body" class="category-manager">
+      <div id="${el}-body" class="category-manager treeview">
          <!-- List panel -->
          <div id="${el}-list">
             <div class="yui-u first">
                <div class="title">${msg("title.category-manager")}</div>
             </div>
             <div class="yui-u align-left">
-               <div id="${el}-category-manager"></div>
+               <div id="${el}-category-manager" class="tree"></div>
             </div>
          </div>
       </div>

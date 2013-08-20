@@ -765,6 +765,7 @@ div.vevent.allday p.dates
 {
    position: absolute;
    text-indent: -999em;
+   line-height: 0px;
 }
 
 .vcalendar div.vevent.allday p.dates,
@@ -1439,12 +1440,14 @@ div.filter.tags
 #eventInfoPanel
 {
    overflow-x: hidden;
+   word-wrap: break-word;
 }
 
 #eventInfoPanel .descriptionOverflow
 {
    max-height: 10em;
    overflow-y: auto;
+   word-wrap: normal;
 }
 
 /* FullCalendar Overrides */

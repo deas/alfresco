@@ -16,34 +16,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/layouts/HorizontalWidgets
+ * @extends module:alfresco/core/ProcessWidgets
+ * @author Dave Draper
+ */
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
+        "dojo/text!./templates/HorizontalWidgets.html",
         "dojo/dom-construct",
         "dojo/dom-style"], 
-        function(ProcessWidgets, declare, domConstruct, domStyle) {
+        function(ProcessWidgets, declare, template, domConstruct, domStyle) {
    
    return declare([ProcessWidgets], {
       
       /**
-       * The scope to use for i18n messages.
-       * 
-       * @property i18nScope {String}
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {string}
        */
-      i18nScope: "org.alfresco.js.HorizontalWidgets",
+      templateString: template,
       
       /**
        * The CSS class (or a space separated list of classes) to include in the DOM node.
        * 
-       * @property {string} baseClass
+       * @instance
+       * @type {string}
        * @default "horizontal-widgets"
        */
       baseClass: "horizontal-widgets",
       
       /**
        * This will be set to a percentage value such that each widget displayed has an equal share
-       * of page widgth. 
+       * of page width. 
        * 
-       * @property {string} widgetWidth
+       * @instance
+       * @type {string}
        * @default null 
        */
       widgetWidth: null,
@@ -51,7 +60,7 @@ define(["alfresco/core/ProcessWidgets",
       /**
        * Sets up the default width to be allocated to each child widget to be added.
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_layout_HorizontalWidgets__postCreate() {
          // Split the full width between all widgets... 
@@ -69,7 +78,7 @@ define(["alfresco/core/ProcessWidgets",
        * of each widget appropriately (either based on the default generated width which is an equal
        * percentage assigned to each child widget) or the specific width configured for the widget.
        * 
-       * @method createWidgetDomNode
+       * @instance
        * @param {object} widget The definition of the widget to create the DOM node for.
        * @returns {element} A new DOM node for the widget to be attached to
        */

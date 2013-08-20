@@ -1,6 +1,6 @@
 <component>
     <name>setvariablestomcat</name>
-    <description>Set Installer Variables Tomcat</description>
+    <description>//Set Installer Variables Tomcat</description>
     <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>

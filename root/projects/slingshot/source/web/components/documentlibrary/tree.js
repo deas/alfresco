@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -239,7 +239,8 @@
                   {
                      tempNode = new YAHOO.widget.TextNode(
                      {
-                        label: "<" + this.msg("message.folders-trimmed") + ">",
+                        label: "<" + this.msg("message.folders-trimmed", results.items.length) + ">",
+                        hasIcon: false,
                         style: "folders-trimmed"
                      }, node, false);
                   }
@@ -644,7 +645,10 @@
             {
                // Node found, so rename it
                node.label = obj.file.displayName;
-               node.data.path = $combine(obj.file.location.path, obj.file.location.file);
+               // rebuild path based on existing node path data - otherwise repointed root node may not be taken into account
+               var paths = node.data.path.split("/");
+               paths.pop();
+               node.data.path = $combine(paths.join("/"), obj.file.location.file);
                this.widgets.treeview.render();
                this._showHighlight(true);
             }

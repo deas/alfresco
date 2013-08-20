@@ -282,7 +282,7 @@
          }
          this.configDialog.setOptions(
          {
-            actionUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/dashlet/config/" + encodeURIComponent(this.options.componentId)
+            actionUrl: Alfresco.constants.URL_SERVICECONTEXT + "modules/dashlet/config/" + this.options.componentId
          }).show();
       }
    });

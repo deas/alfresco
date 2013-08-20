@@ -28,3 +28,8 @@
 {
    margin-bottom: 0.5em;
 }
+
+.rules-header .rules-actions .inherit span
+{
+   border-color: transparent;
+}

@@ -1,3 +1,4 @@
+<#assign el=args.htmlid?html>
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/dashlets/notice.css" group="dashlets" />
@@ -11,12 +12,13 @@
 </@>
 
 <@markup id="widgets">
+   <#assign id=el?replace("-", "_")>
    <@inlineScript group="dashlets">
-      var editDashletEvent = new YAHOO.util.CustomEvent("onDashletConfigure");
+      var editDashletEvent${id} = new YAHOO.util.CustomEvent("onDashletConfigure");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      editDashletEvent.subscribe(dashlet.onConfigClick, dashlet, true);
+      editDashletEvent${id}.subscribe(dashlet.onConfigClick, dashlet, true);
    </@>
 </@>
 

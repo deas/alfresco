@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/MultipleEntryFormControl
+ * @extends alfresco/forms/controls/BaseFormControl
+ * @author Dave Draper
+ */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "alfresco/forms/controls/MultipleEntryCreator",
@@ -24,27 +30,44 @@ define(["alfresco/forms/controls/BaseFormControl",
    
    return declare([BaseFormControl], {
       
-      pubSubScope: null,
-      
-      constructor: function(args) {
+      /**
+       * @instance
+       */
+      constructor: function alfresco_forms_controls_MultipleEntryFormControl__constructor(args) {
          declare.safeMixin(this, args);
-         this.pubSubScope = this.generateUuid();
       },
       
-      getWidgetConfig: function() {
+      /**
+       * @instance
+       * @returns {object} The widget config.
+       */
+      getWidgetConfig: function alfresco_forms_controls_MultipleEntryFormControl__getWidgetConfig() {
          // Return the configuration for the widget
          return {
             id : this.generateUuid(),
             name: this.name,
-            value: this.value
+            value: this.value,
+            elementWrapper: (this.elementWrapper != null) ? this.elementWrapper : "alfresco/forms/controls/MultipleEntryElementWrapper",
+            elementWidget: (this.elementWidget != null) ? this.elementWidget : "alfresco/forms/controls/MultipleEntryElement"
          };
       },
       
-      createFormControl: function(config, domNode) {
-         return new MultipleEntryCreator(config);
+      /**
+       * @instance
+       * @returns {object} A new alfresco/forms/controls/MultipleEntryCreator
+       */
+      createFormControl: function alfresco_forms_controls_MultipleEntryFormControl__createFormControl(config, domNode) {
+         return this.createWidget({
+            name: "alfresco/forms/controls/MultipleEntryCreator",
+            config: config
+         });
       },
       
-      processValidationRules: function() {
+      /**
+       * @instance
+       * @returns {boolean}
+       */
+      processValidationRules: function alfresco_forms_controls_MultipleEntryFormControl__processValidationRules() {
          var valid = true;
          if (this.wrappedWidget && typeof this.wrappedWidget.validate == "function")
          {
@@ -54,7 +77,10 @@ define(["alfresco/forms/controls/BaseFormControl",
          return valid;
       },
       
-      setupChangeEvents: function() {
+      /**
+       * @instance
+       */
+      setupChangeEvents: function alfresco_forms_controls_MultipleEntryFormControl__setupChangeEvents() {
          var _this = this;
          
          // Whenever a widgets value changes then we need to publish the details out to other form controls (that exist in the

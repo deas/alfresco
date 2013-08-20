@@ -115,7 +115,16 @@
       <!-- when pages are requested from the framework, matches are attempted
            against each uri-template, and the token values returned if matched -->
       <uri-templates>
+
+         <!--  This is intended for use with remotely created pages -->
+         <uri-template id="remote-site-page">/site/{site}/{pageid}/p/{pagename}</uri-template>
+         <uri-template id="remote-page">/{pageid}/p/{pagename}</uri-template>
+
+         <!-- This needs to go BEFORE "sitepage" -->
+         <uri-template id="share-site-page">/site/{site}/{pageid}/ws/{webscript}</uri-template>
+         
          <uri-template id="sitedashboardpage">/site/{site}/dashboard</uri-template>
+         <uri-template id="contextpage">/context/{pagecontext}/{pageid}</uri-template>
          <uri-template id="sitepage">/site/{site}/{pageid}</uri-template>
          <uri-template id="userdashboardpage">/user/{userid}/dashboard</uri-template>
          <uri-template id="userpage">/user/{userid}/{pageid}</uri-template>
@@ -123,9 +132,6 @@
          <uri-template id="userdefaultpage">/user/{pageid}</uri-template>
          <uri-template id="consoletoolpage">/console/{pageid}/{toolid}</uri-template>
          <uri-template id="consolepage">/console/{pageid}</uri-template>
-         
-         <!-- This should be used to go to the refreshed Share pages -->
-         <uri-template id="share-site-page">/{pageid}/site/{site}/ws/{webscript}</uri-template>
          <uri-template id="share-page">/{pageid}/ws/{webscript}</uri-template>
          
       </uri-templates>
@@ -277,7 +283,7 @@
       <!-- Alfresco QuickShare social widget - for creating public url that can be shared -->
       <quickshare>
          <!--
-            Will be available as Alfresco.constants.QUICKSHARE_URL using javascript in the browser.
+            Will be available as Alfresco.constants.QUICKSHARE_URL using javascrip in the browser.
             If changing this, make sure this url matches the quickshare rule in urlrewrite.xml
          -->
          <url>{context}/s/{sharedId}</url>

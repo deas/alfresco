@@ -2,12 +2,27 @@
    <#-- CSS Dependencies -->
    <#include "../form/form.css.ftl"/>
    <@link href="${url.context}/res/components/workflow/workflow-form.css" group="workflow"/>
+   
+   <#-- Global Folder Picker (req'd by Copy/Move To) -->
+   <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/documentlibrary/global-folder.css" />
+   
+   <#-- Cloud Authentication -->
+   <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/cloud/cloud-auth-form.css" />
+   <#-- Cloud Folder Picker -->
+   <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/cloud/cloud-folder-picker.css" />
+   <#-- Cloud Sync Status -->
+   <@link rel="stylesheet" type="text/css" href="${page.url.context}/res/modules/cloud/cloud-sync-status.css" />
 </@>
 
 <@markup id="js">
    <#-- JavaScript Dependencies -->
    <#include "../form/form.js.ftl"/>
    <@script src="${url.context}/res/components/workflow/workflow-form.js" group="workflow"/>
+   
+   <@script src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="workflow" />
+   <@script src="${url.context}/res/modules/documentlibrary/global-folder.js" group="workflow" />
+   <@script src="${url.context}/res/modules/documentlibrary/cloud-folder.js" group="workflow" />
+   <@script src="${url.context}/res/modules/cloud-auth.js" group="workflow" />
 </@>
 
 <@markup id="widgets">

@@ -1,6 +1,6 @@
 <component>
     <name>postgresservice</name>
-    <description>Apache Service</description>
+    <description>//PostgreSQL Service</description>
     <canBeEdited>1</canBeEdited>
     <selected>1</selected>
     <show>0</show>
@@ -28,7 +28,7 @@
                         <writeFile>
                             <path>${postgres_root_directory}/bin/registerservice.bat</path>
                             <text>@echo off
-start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N ${postgres_unique_service_name} -D ${postgres_data_directory.dos.unix}"</text>
+start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register -N "${postgres_unique_service_name}" -D ${postgres_data_directory.dos.unix}"</text>
                         </writeFile>
                         <runProgram>
                             <progressText>Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}</progressText>
@@ -45,7 +45,7 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register 
                 <setInstallerVariable name="postgres_service_installed" value="1"/>
 		<runProgram>
 		    <program>sc</program>
-		    <programArguments>config ${postgres_unique_service_name} start= ${postgres_service_startup}</programArguments>
+		    <programArguments>config "${postgres_unique_service_name}" start= ${postgres_service_startup}</programArguments>
 		    <ruleList>
 			<platformTest type="windows"/>
 			<compareText text="${postgres_service_startup}" logic="does_not_equal" value="auto" />
@@ -74,7 +74,7 @@ start /MIN /WAIT cmd /c "${postgres_root_directory.dos}\bin\pg_ctl.exe register 
                 <wait ms="7000"/>
                 <runProgram>
                     <program>cmd</program>
-                    <programArguments>/C start /MIN /WAIT net start ${postgres_unique_service_name}</programArguments>
+                    <programArguments>/C start /MIN /WAIT net start "${postgres_unique_service_name}"</programArguments>
                 </runProgram>
                 <waitForPort port="${postgres_port}" timeout="10000"/>
             </actionList>

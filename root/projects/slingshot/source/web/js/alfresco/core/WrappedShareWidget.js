@@ -16,73 +16,88 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * The original purpose of this widget was to provide an easy way to wrap existing Share widgets by declaring
+ * the common set of non-AMD dependencies that are always defined in any page of Share. It also processes
+ * a standard FreeMarker template used by the style of WebScripts that were previously used to define
+ * coarse-grained widgets up until Alfresco Share 4.1
+ * 
+ * @module alfresco/core/WrappedShareWidget
+ * @extends dijit/_WidgetBase
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
-        "alfresco/core/WrappedThirdPartyWidget", 
+        "dijit/_WidgetBase", 
         "dojo/_base/lang",
-        "dojo/_base/array"],
-        function(declare, WrappedThirdPartyWidget, lang, array) {
+        "dojo/_base/array",
+        "alfresco/core/Core"],
+        function(declare, _WidgetBase, lang, array, AlfCore) {
    
-   return declare([WrappedThirdPartyWidget], {
+   return declare([_WidgetBase, AlfCore], {
       
       /**
        * This list includes all of the CSS files that would be pulled in by Share by default.
+       * 
+       * @instance
+       * @type {Array.{cssFile: string, media: string}}
        */
-      cssRequirements: [{cssFile:"../../../../css/yui-fonts-grids.css"},
-                        {cssFile:"../../../../yui/columnbrowser/assets/columnbrowser.css"},
-                        {cssFile:"../../../../yui/columnbrowser/assets/skins/default/columnbrowser-skin.css"},
-                        {cssFile:"../../../../yui/assets/skins/default/skin.css"},
-                        {cssFile:"../../../../css/base.css"},
-                        {cssFile:"../../../../css/yui-layout.css"},
-                        {cssFile:"../../../../themes/default/presentation.css"}],
-      /**
-       * These are the two global namespace objects that are required. These could be abstracted to a "wrapped
-       * Share widget" class.
-       */
-      globalObj: ["YAHOO","Alfresco"],
+      cssRequirements: [{cssFile:"/css/yui-fonts-grids.css"},
+                        {cssFile:"/yui/columnbrowser/assets/columnbrowser.css"},
+                        {cssFile:"/yui/columnbrowser/assets/skins/default/columnbrowser-skin.css"},
+                        {cssFile:"/css/base.css"},
+                        {cssFile:"/css/yui-layout.css"},
+                        {cssFile:"/themes/lightTheme/presentation.css"}],
       
       /**
        * These are all the common Share JavaScript files.
-       * TODO: We also need to add support in Surf for processing these types of dependency to be included in the layer
-       * TODO: It would be nice if we could use "<RES>" and have Surf understand that this meant to use the resource mapping. 
+       * 
+       * @instance
+       * @type {String[]} 
        */
-      shareDependencies: [Alfresco.constants.URL_RESCONTEXT + "js/log4javascript.v1.4.1.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/yahoo/yahoo-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/event/event-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/dom/dom-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/dragdrop/dragdrop-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/animation/animation-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/logger/logger-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/connection/connection-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/element/element-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/get/get-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/yuiloader/yuiloader-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/button/button-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/container/container-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/menu/menu-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/json/json-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/selector/selector-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/datasource/datasource-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/autocomplete/autocomplete-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/paginator/paginator-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/datatable/datatable-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/history/history-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/treeview/treeview-debug.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/cookie/cookie.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/uploader/uploader.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/calendar/calendar.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/resize/resize.js",
-                          Alfresco.constants.URL_RESCONTEXT + "yui/yui-patch.js",
-                          Alfresco.constants.URL_RESCONTEXT + "js/bubbling.v2.1.js",
-                          Alfresco.constants.URL_RESCONTEXT + "js/flash/AC_OETags.js",
-                          Alfresco.constants.URL_RESCONTEXT + "js/alfresco.js",
-                          Alfresco.constants.URL_RESCONTEXT + "modules/editors/tiny_mce/tiny_mce.js",
-                          Alfresco.constants.URL_RESCONTEXT + "modules/editors/tiny_mce.js",
-                          Alfresco.constants.URL_RESCONTEXT + "modules/editors/yui_editor.js",
-                          Alfresco.constants.URL_RESCONTEXT + "js/forms-runtime.js",
-                          Alfresco.constants.URL_RESCONTEXT + "js/share.js",
-                          Alfresco.constants.URL_RESCONTEXT + "js/lightbox.js"],
+      nonAmdDependencies: ["/js/log4javascript.v1.4.1.js",
+                           "/yui/yahoo/yahoo-debug.js",
+                           "/yui/event/event-debug.js",
+                           "/yui/dom/dom-debug.js",
+                           "/yui/dragdrop/dragdrop-debug.js",
+                           "/yui/animation/animation-debug.js",
+                           "/yui/logger/logger-debug.js",
+                           "/yui/connection/connection-debug.js",
+                           "/yui/element/element-debug.js",
+                           "/yui/get/get-debug.js",
+                           "/yui/yuiloader/yuiloader-debug.js",
+                           "/yui/button/button-debug.js",
+                           "/yui/container/container-debug.js",
+                           "/yui/menu/menu-debug.js",
+                           "/yui/json/json-debug.js",
+                           "/yui/selector/selector-debug.js",
+                           "/yui/datasource/datasource-debug.js",
+                           "/yui/autocomplete/autocomplete-debug.js",
+                           "/yui/paginator/paginator-debug.js",
+                           "/yui/datatable/datatable-debug.js",
+                           "/yui/history/history-debug.js",
+                           "/yui/treeview/treeview-debug.js",
+                           "/yui/cookie/cookie.js",
+                           "/yui/uploader/uploader.js",
+                           "/yui/calendar/calendar.js",
+                           "/yui/resize/resize.js",
+                           "/yui/yui-patch.js",
+                           "/js/bubbling.v2.1.js",
+                           "/js/flash/AC_OETags.js",
+                           "/js/alfresco.js",
+                           "/modules/editors/tiny_mce/tiny_mce.js",
+                           "/modules/editors/tiny_mce.js",
+                           "/modules/editors/yui_editor.js",
+                           "/js/forms-runtime.js",
+                           "/js/share.js",
+                           "/js/lightbox.js"],
       
-      constructor: function(args) {
+      /**
+       * 
+       * @instance
+       */
+      constructor: function alfresco_core_WrappedShareWidget__constructor(args) {
          declare.safeMixin(this, args);
          
          /*
@@ -130,8 +145,9 @@ define(["dojo/_base/declare",
             this.templateString = modifiedTemplate;
          }
          
-         // Merge the Share dependencies into the beginning of the specific widget dependencies...
-         this.dependencies = this.shareDependencies.concat(this.dependencies);
+         this.url = {
+            context : Alfresco.constants.URL_CONTEXT
+         };
       }
    });
 });

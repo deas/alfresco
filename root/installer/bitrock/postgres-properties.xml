@@ -1,12 +1,18 @@
 <component>
     <name>postgreswriteproperties</name>
-    <description>Postgres Write Properties</description>
+    <description>//Postgres Write Properties</description>
     <canBeEdited>0</canBeEdited>
     <show>0</show>
     <selected>1</selected>
     <readyToInstallActionList>
         <actionGroup>
             <actionList>
+                <iniFileGet>
+                    <file>${installdir}/properties.ini</file>
+                    <section>Postgres</section>
+                    <key>postgres_hostame</key>
+                    <variable>database_hostname</variable>
+                </iniFileGet>
                 <iniFileGet>
                     <file>${installdir}/properties.ini</file>
                     <section>Postgres</section>
@@ -34,6 +40,17 @@
                         <platformTest type="windows"/>
                     </ruleList>
                 </iniFileGet>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="postgres_port" value="${database_port}" persist="1" />
+                        <setInstallerVariable name="postgres_root_directory" value="${database_root_directory}" persist="1" />
+                        <setInstallerVariable name="postgres_binary_directory" value="${database_binary_directory}" persist="1" />
+                        <setInstallerVariable name="postgres_hostname" value="${database_hostname}" persist="1" />
+                    </actionList>
+                    <ruleList>
+                        <componentTest name="postgres" logic="does_not_exist" />
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <fileExists path="${installdir}/properties.ini"/>
@@ -44,20 +61,26 @@
         <iniFileSet>
             <file>${installdir}/properties.ini</file>
             <section>Postgres</section>
+            <key>postgres_hostname</key>
+            <value>${postgres_hostname}</value>
+        </iniFileSet>
+        <iniFileSet>
+            <file>${installdir}/properties.ini</file>
+            <section>Postgres</section>
             <key>postgres_port</key>
-            <value>${database_port}</value>
+            <value>${postgres_port}</value>
         </iniFileSet>
         <iniFileSet>
             <file>${installdir}/properties.ini</file>
             <section>Postgres</section>
             <key>postgres_root_directory</key>
-            <value>${database_root_directory}</value>
+            <value>${postgres_root_directory}</value>
         </iniFileSet>
         <iniFileSet>
             <file>${installdir}/properties.ini</file>
             <section>Postgres</section>
             <key>postgres_binary_directory</key>
-            <value>${database_binary_directory}</value>
+            <value>${postgres_binary_directory}</value>
         </iniFileSet>
         <iniFileSet>
             <file>${installdir}/properties.ini</file>

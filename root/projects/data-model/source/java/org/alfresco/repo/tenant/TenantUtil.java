@@ -31,6 +31,9 @@ import org.alfresco.util.ParameterCheck;
  */
 public abstract class TenantUtil
 {
+    public static final String SYSTEM_TENANT = "-system-";
+    public static final String DEFAULT_TENANT = "-default-";
+
     public interface TenantRunAsWork<Result>
     {
         /**

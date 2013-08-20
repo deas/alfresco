@@ -14,7 +14,7 @@
    <context-param>
       <description>Spring config file location</description>
       <param-name>contextConfigLocation</param-name>
-      <param-value>/WEB-INF/classes/web-application-config.xml</param-value>
+      <param-value>classpath:web-application-config.xml</param-value>
    </context-param>
 
    <filter>

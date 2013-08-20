@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.util.StringTokenizer;
 
 import org.alfresco.jlan.ftp.FTPConfigSection;
@@ -540,6 +542,40 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			ftpConfig.setKeyStorePath( keyStorePath);
 		}
 
+		// Check if a key store type has been specified
+		
+		elem = findChildNode("keyStoreType", ftp.getChildNodes());
+		if ( elem != null) {
+			
+			// Get the key store type, and validate
+			
+			String keyStoreType = getText( elem);
+			
+			if ( keyStoreType == null || keyStoreType.length() == 0)
+				throw new InvalidConfigurationException("FTPS key store type is invalid");
+			
+			try {
+				KeyStore.getInstance( keyStoreType);
+			}
+			catch ( KeyStoreException ex) {
+				throw new InvalidConfigurationException("FTPS key store type is invalid, " + keyStoreType, ex);
+			}
+			
+			// Set the key store type
+			
+			ftpConfig.setKeyStoreType( keyStoreType);
+		}
+		
+		// Check if the key store passphrase has been specified
+		
+		elem = findChildNode("keyStorePassphrase", ftp.getChildNodes());
+		if ( elem != null) {
+
+			// Set the key store passphrase
+			
+			ftpConfig.setKeyStorePassphrase( getText( elem));
+		}
+		
 		// Check if the trust store path has been specified
 		
 		elem = findChildNode("trustStore", ftp.getChildNodes());
@@ -560,14 +596,38 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 			ftpConfig.setTrustStorePath( trustStorePath);
 		}
 		
-		// Check if the store passphrase has been specified
+		// Check if a trust store type has been specified
 		
-		elem = findChildNode("storePassphrase", ftp.getChildNodes());
+		elem = findChildNode("trustStoreType", ftp.getChildNodes());
+		if ( elem != null) {
+			
+			// Get the trust store type, and validate
+			
+			String trustStoreType = getText( elem);
+			
+			if ( trustStoreType == null || trustStoreType.length() == 0)
+				throw new InvalidConfigurationException("FTPS trust store type is invalid");
+			
+			try {
+				KeyStore.getInstance( trustStoreType);
+			}
+			catch ( KeyStoreException ex) {
+				throw new InvalidConfigurationException("FTPS trust store type is invalid, " + trustStoreType, ex);
+			}
+			
+			// Set the trust store type
+			
+			ftpConfig.setTrustStoreType( trustStoreType);
+		}
+		
+		// Check if the trust store passphrase has been specified
+		
+		elem = findChildNode("trustStorePassphrase", ftp.getChildNodes());
 		if ( elem != null) {
 
-			// Set the store passphrase
+			// Set the key store passphrase
 			
-			ftpConfig.setPassphrase( getText( elem));
+			ftpConfig.setTrustStorePassphrase( getText( elem));
 		}
 		
 		// Check if only secure sessions should be allowed to logon
@@ -581,13 +641,13 @@ public class XMLServerConfiguration extends CifsOnlyXMLServerConfiguration {
 		}
 		
 		// Check that all the required FTPS parameters have been set
-		
-		if ( ftpConfig.getKeyStorePath() != null || ftpConfig.getTrustStorePath() != null || ftpConfig.getPassphrase() != null) {
+		// MNT-7301 FTPS server requires unnecessarly to have a trustStore while a keyStore should be sufficient
+		if ( ftpConfig.getKeyStorePath() != null) {
 			
 			// Make sure all parameters are set
 			
-			if ( ftpConfig.getKeyStorePath() == null || ftpConfig.getTrustStorePath() == null || ftpConfig.getPassphrase() == null)
-				throw new InvalidConfigurationException("FTPS configuration requires keyStore, trustStore and storePassphrase to be set");
+			if ( ftpConfig.getKeyStorePath() == null)
+				throw new InvalidConfigurationException("FTPS configuration requires keyStore to be set");
 		}
 		
 		// Check if SSLEngine debug output should be enabled

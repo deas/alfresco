@@ -24,10 +24,24 @@ public class SlingshotGroupModuleEvaluator implements ExtensionModuleEvaluator
     {
         boolean memberOfAllGroups = getRelationship(context, evaluationProperties);
         List<String> groups = util.getGroups(evaluationProperties.get(SlingshotGroupComponentElementEvaluator.GROUPS));
-        boolean apply = util.isMemberOfGroups(context, groups, memberOfAllGroups);
+        boolean isMember = util.isMemberOfGroups(context, groups, memberOfAllGroups);
+        boolean negate = getNegation(context, evaluationProperties);
+        boolean apply = (isMember && !negate) || (!isMember && negate);
         return apply;
     }
 
+    /**
+     * Checks for a request for to negate the ruling. The default is false.
+     * @param context
+     * @param evaluationProperties
+     * @return
+     */
+    protected boolean getNegation(RequestContext context, Map<String, String> evaluationProperties)
+    {
+        String negateParam = evaluationProperties.get(SlingshotGroupComponentElementEvaluator.NEGATE);
+        return (negateParam != null && negateParam.trim().equalsIgnoreCase(Boolean.TRUE.toString()));
+    }
+    
     /**
      * Gets the logical relationship between all the groups to test for membership of. By default
      * this boils down to a straight choice between "AND" (must be a member of ALL groups) and "OR"
@@ -46,7 +60,7 @@ public class SlingshotGroupModuleEvaluator implements ExtensionModuleEvaluator
     @Override
     public String[] getRequiredProperties()
     {
-        String[] props = { SlingshotGroupComponentElementEvaluator.GROUPS, SlingshotGroupComponentElementEvaluator.RELATION };
+        String[] props = { SlingshotGroupComponentElementEvaluator.GROUPS, SlingshotGroupComponentElementEvaluator.RELATION, SlingshotGroupComponentElementEvaluator.NEGATE };
         return props;
     }
 

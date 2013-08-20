@@ -26,6 +26,7 @@ model.jsonModel = {
                                     config: {
                                        id: "MENU_ITEM_1",
                                        label: "dd1.group1.mi1",
+                                       closeOnClick: false,
                                        publishTopic: "KEYBOARD_CLICK",
                                        publishPayload: {
                                           item: "MENU_ITEM_1"
@@ -37,6 +38,7 @@ model.jsonModel = {
                                     config: {
                                        id: "MENU_ITEM_2",
                                        label: "dd1.group1.mi2",
+                                       closeOnClick: false,
                                        publishTopic: "KEYBOARD_CLICK",
                                        publishPayload: {
                                           item: "MENU_ITEM_2"
@@ -57,6 +59,7 @@ model.jsonModel = {
                                   config: {
                                      id: "MENU_ITEM_3",
                                      label: "dd1.group1.mi3",
+                                     closeOnClick: false,
                                      publishTopic: "KEYBOARD_CLICK",
                                      publishPayload: {
                                         item: "MENU_ITEM_3"
@@ -76,6 +79,7 @@ model.jsonModel = {
                                   config: {
                                      id: "MENU_ITEM_4",
                                      label: "dd1.group1.mi4",
+                                     closeOnClick: false,
                                      publishTopic: "KEYBOARD_CLICK",
                                      publishPayload: {
                                         item: "MENU_ITEM_4"
@@ -87,6 +91,7 @@ model.jsonModel = {
                                   config: {
                                      id: "MENU_ITEM_5",
                                      label: "dd1.group1.mi5",
+                                     closeOnClick: false,
                                      publishTopic: "KEYBOARD_CLICK",
                                      publishPayload: {
                                         item: "MENU_ITEM_5"
@@ -98,6 +103,7 @@ model.jsonModel = {
                                   config: {
                                      id: "MENU_ITEM_6",
                                      label: "dd1.group1.mi6",
+                                     closeOnClick: false,
                                      publishTopic: "KEYBOARD_CLICK",
                                      publishPayload: {
                                         item: "MENU_ITEM_6"
@@ -128,6 +134,7 @@ model.jsonModel = {
                            name: "alfresco/menus/AlfMenuItem",
                            config: {
                               id: "MENU_ITEM_7",
+                              closeOnClick: false,
                               label: "dd2.mi7",
                               targetUrl: "MENU_ITEM_7"
                            }
@@ -136,6 +143,7 @@ model.jsonModel = {
                            name: "alfresco/menus/AlfMenuItem",
                            config: {
                               id: "MENU_ITEM_8",
+                              closeOnClick: false,
                               label: "dd2.mi8",
                               targetUrl: "MENU_ITEM_8"
                            }
@@ -174,6 +182,7 @@ model.jsonModel = {
                                        id: "MENU_ITEM_9",
                                        label: "dd4.group1.mi1",
                                        iconClass: "alf-edit-icon",
+                                       closeOnClick: false,
                                        publishTopic: "KEYBOARD_CLICK",
                                        publishPayload: {
                                           item: "MENU_ITEM_9"
@@ -185,6 +194,7 @@ model.jsonModel = {
                                     config: {
                                        id: "MENU_ITEM_10",
                                        label: "dd4.group1.mi2",
+                                       closeOnClick: false,
                                        iconClass: "alf-cog-icon"
                                     }
                                  }
@@ -222,6 +232,7 @@ model.jsonModel = {
                                                       config: {
                                                          id: "CASCADE_MENU_ITEM_1",
                                                          label: "cascade.mi1.label",
+                                                         closeOnClick: false,
                                                          publishTopic: "KEYBOARD_CLICK",
                                                          publishPayload: {
                                                             item: "CASCADE_MENU_ITEM_1"
@@ -233,6 +244,7 @@ model.jsonModel = {
                                                       config: {
                                                          id: "CASCADE_MENU_ITEM_2",
                                                          label: "cascade.mi2.label",
+                                                         closeOnClick: false,
                                                          publishTopic: "KEYBOARD_CLICK",
                                                          publishPayload: {
                                                             item: "CASCADE_MENU_ITEM_2"
@@ -244,6 +256,7 @@ model.jsonModel = {
                                                       config: {
                                                          id: "CASCADE_MENU_ITEM_3",
                                                          label: "cascade.mi3.label",
+                                                         closeOnClick: false,
                                                          publishTopic: "KEYBOARD_CLICK",
                                                          publishPayload: {
                                                             item: "CASCADE_MENU_ITEM_3"
@@ -270,6 +283,7 @@ model.jsonModel = {
                                                                config: {
                                                                   id: "CASCADE_MENU_ITEM_4",
                                                                   label: "cascade.mi4.label",
+                                                                  closeOnClick: false,
                                                                   publishTopic: "KEYBOARD_CLICK",
                                                                   publishPayload: {
                                                                      item: "CASCADE_MENU_ITEM_4"
@@ -281,6 +295,7 @@ model.jsonModel = {
                                                                config: {
                                                                   id: "CASCADE_MENU_ITEM_5",
                                                                   label: "cascade.mi5.label",
+                                                                  closeOnClick: false,
                                                                   publishTopic: "KEYBOARD_CLICK",
                                                                   publishPayload: {
                                                                      item: "CASCADE_MENU_ITEM_5"

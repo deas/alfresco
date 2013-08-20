@@ -508,6 +508,7 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     @Override
     protected String doCreateDws(String dwsName, String title, SessionUser user) throws HttpException, IOException
     {
+        dwsName = sanitizeShortName(dwsName);
         // Find a unique name for the site, based on the requested one
         SiteInfo siteInfo = null;
         String uniqueDwsName = null;
@@ -521,6 +522,23 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
         // Create and return the new site name
         shareUtils.createSite(user, "document-workspace", uniqueDwsName, title, "", true);
         return uniqueDwsName;
+    }
+
+    /**
+     * For a given Document Workspace name, sanitizes it such that:
+     * <ul>
+     *   <li>the name is all lower case</li>
+     *   <li>it does not contain spaces - they are replaced with hyphens</li>
+     * </ul>
+     * 
+     * @param dwsName
+     * @return sanitized short site name
+     */
+    protected String sanitizeShortName(String dwsName)
+    {
+        String sanitized = dwsName.replace(' ', '-');
+        sanitized = sanitized.toLowerCase();
+        return sanitized;
     }
 
     /**
@@ -831,6 +849,17 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             }
         }
         return result;
+    }
+
+    /**
+     * @see org.alfresco.module.vti.handler.alfresco.AbstractAlfrescoDwsServiceHandler#doGetLastUpdate(org.alfresco.service.cmr.model.FileInfo dwsFileInfo)
+     */
+    protected String doGetLastUpdate(FileInfo dwsFileInfo)
+    {
+        SiteInfo site = siteService.getSite(dwsFileInfo.getNodeRef());
+        NodeRef nodeRef = siteService.getContainer(site.getShortName(), DOC_LIB_URL);
+        Date modified = (Date)nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIED);
+        return modified == null ? "" : String.valueOf(modified.getTime());
     }
 
 }

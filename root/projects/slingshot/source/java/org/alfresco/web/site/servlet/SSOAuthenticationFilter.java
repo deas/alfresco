@@ -84,6 +84,9 @@ import org.springframework.extensions.webscripts.connector.ConnectorService;
 import org.springframework.extensions.webscripts.connector.Response;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import static org.alfresco.web.site.SlingshotPageView.REDIRECT_URI;
+import static org.alfresco.web.site.SlingshotPageView.REDIRECT_QUERY;
+
 /**
  * SSO Authentication Filter Class for web-tier, supporting NTLM and Kerberos challenges from the repository tier.
  * Thanks to Sylvain Chambon for contributing the Kerberos delegation code.
@@ -112,6 +115,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     private static final String PAGE_SERVLET_PATH = "/page";
     private static final String LOGIN_PATH_INFORMATION = "/dologin";
     private static final String LOGIN_PARAMETER = "login";
+    private static final String IGNORE_LINK = "/accept-invite";
     
     private ConnectorService connectorService;
     private String endpoint;
@@ -379,6 +383,15 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         HttpServletRequest req = (HttpServletRequest)sreq;
         HttpServletResponse res = (HttpServletResponse)sresp;
         HttpSession session = req.getSession();
+        
+        // external invitation link should not trigger any SSO
+        if (PAGE_SERVLET_PATH.equals(req.getServletPath()) && IGNORE_LINK.equals(req.getPathInfo()))
+        {
+            if (debug)
+                logger.debug("SSO is by-passed for external invitation link.");
+            chain.doFilter(sreq, sresp);
+            return;
+        }
         
         if (debug) logger.debug("Processing request " + req.getRequestURI() + " SID:" + session.getId());
         
@@ -1081,6 +1094,12 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     {
         if (logger.isDebugEnabled())
             logger.debug("Redirecting to the login page.");
+        HttpSession session = req.getSession();
+        session.setAttribute(REDIRECT_URI, req.getRequestURI());
+        if (req.getQueryString() != null)
+        {
+            session.setAttribute(REDIRECT_QUERY, req.getQueryString());
+        }
         res.sendRedirect(req.getContextPath() + "/page?pt=login");
     }
     

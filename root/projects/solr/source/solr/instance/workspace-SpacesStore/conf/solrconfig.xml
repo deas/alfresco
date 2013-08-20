@@ -385,6 +385,11 @@
       autowarmCount="0"
     />
 
+    <cache name="alfrescoArrayListCache"
+      class="org.alfresco.solr.ArrayListCache"
+    />
+
+
     <cache name="alfrescoAuthorityCache"
       class="solr.FastLRUCache"
       size="${solr.authorityCache.size:512}"

@@ -19,7 +19,8 @@
 require(["doh/runner"], function(doh) {
    try 
    {
-      doh.registerUrl("Menus Test Suite", "/share/page/dp/ws/menus-test", 50000);
+//      doh.registerUrl("Menus Test Suite", "/share/page/dp/ws/menus-test", 50000);
+      doh.registerUrl("Advanced Menus Test Suite", "/share/page/dp/ws/advanced-menus-test", 50000);
    } 
    catch(e) 
    {

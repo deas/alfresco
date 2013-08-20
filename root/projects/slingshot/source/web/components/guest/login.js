@@ -147,7 +147,7 @@
          }, this, true);
          
          // Make sure to add the hash part to the url
-         Dom.get(this.id + "-success").value += window.location.hash;
+         Dom.get(this.id + "-success").value += location.href.indexOf("#") > -1 ? location.href.substr(location.href.indexOf("#")) : "";
       },
       
       /**

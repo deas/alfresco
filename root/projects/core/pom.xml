@@ -8,29 +8,12 @@
   <parent>
     <groupId>org.alfresco</groupId>
     <artifactId>alfresco-parent</artifactId>
-    <version>4.2.d-SNAPSHOT</version>
-    <relativePath>../../pom-experimental.xml</relativePath>
+    <version>4.2.0-QA-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>alfresco-core</artifactId>
   <name>Alfresco Core</name>
   <description>Alfresco core libraries and utils</description>
-
-  <build>
-    <plugins>
-        <!-- org.alfresco.util.BaseTest is used by other modules. We need to always produce the test-jar -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>test-jar</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>           
-    </plugins>
-  </build>
 
   <dependencies>
     <!--  These dependencies have been checked against the content of 3rd-party/lib/**. 
@@ -51,12 +34,11 @@
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
-      <exclusions>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>        
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>        
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -74,15 +56,10 @@
       <version>2.0.0</version>
       <classifier>asl</classifier>
     </dependency>
-    <!-- This is now deployed at:
-        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/mybatis/mybatis/3.0.4/
-        | toghether with the original POM from mybatis 3.0.4 to avoid breaking the correct dependency chain 
-        -->
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
-      <version>3.0.4</version>
-      <classifier>patched</classifier>
+      <version>3.0.4-alfresco-patched</version>
     </dependency>
     <dependency>
       <groupId>org.mybatis</groupId>
@@ -142,9 +119,15 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.springframework.extensions.surf</groupId>
-      <artifactId>spring-surf-core-configservice</artifactId>
-      <version>${dependency.surf.version}</version>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-surf-core-configservice</artifactId>
+        <version>${dependency.surf.version}</version>
+	    <exclusions>
+		    <exclusion>
+			     <groupId>javax.servlet</groupId>
+			     <artifactId>servlet-api</artifactId>
+		    </exclusion>
+	   </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -211,12 +194,6 @@
       </exclusions>
     </dependency>
     <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>1.8.0</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -227,17 +204,30 @@
       <version>1.5.5</version>
       <scope>test</scope>
     </dependency>
-     <!-- This is now deployed at:
-        | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/commons-dbcp/commons-dbcp/1.4/
-        | toghether with the original POM from mybatis 1.4 to avoid breaking the correct dependency chain 
-        -->
+	<dependency>
+	    <groupId>org.mockito</groupId>
+	    <artifactId>mockito-all</artifactId>
+	    <version>1.8.0</version>
+	    <scope>test</scope>
+	</dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
-      <version>1.4</version>
+      <version>1.4-DBCP330</version>
       <scope>test</scope>
-      <classifier>patched</classifier>
     </dependency>
   </dependencies>
+
+  <build>
+    <resources>
+        <resource>
+            <directory>source/java</directory>
+            <includes>
+                <include>log4j.properties</include>
+                <include>logging.properties</include>
+            </includes>
+        </resource>
+    </resources>
+  </build>
 
 </project>

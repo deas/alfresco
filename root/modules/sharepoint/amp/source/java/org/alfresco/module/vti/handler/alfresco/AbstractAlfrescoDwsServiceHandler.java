@@ -345,9 +345,15 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         // set the description of the currently opened document workspace site
         dwsData.setDescription(nodeService.getProperty(dwsInfo.getNodeRef(), ContentModel.PROP_DESCRIPTION).toString());
 
-        // setting the Documents list for current document workspace site
-        List<DocumentBean> dwsContent = doGetDwsDocuments(dwsInfo);
-        dwsData.setDocumentsList(dwsContent);
+        
+        // ALF-12784 fix, don't return list of documents if last update was not changed
+        String currentLastUpdate = doGetLastUpdate(dwsInfo);
+        if (!currentLastUpdate.equals(lastUpdate))
+        {
+            // setting the Documents list for current document workspace site
+            List<DocumentBean> dwsContent = doGetDwsDocuments(dwsInfo);
+            dwsData.setDocumentsList(dwsContent);
+        }
         
         // setting the Links list for current document workspace site
         List<LinkBean> linksList = doGetDwsLinks(dwsInfo);
@@ -355,7 +361,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
         
         dwsData.setDocLibUrl(host + context + dws + "/documentLibrary.vti");
 
-        dwsData.setLastUpdate(lastUpdate);
+        dwsData.setLastUpdate(currentLastUpdate);
 
         // setting currently authenticated user
         UserBean user = getCurrentUser();
@@ -844,6 +850,14 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
     protected abstract SchemaBean doCreateTasksSchemaBean(FileInfo dwsFileInfo, List<SchemaFieldBean> fields);
 
     /**
+    * Resolves site's last update time as string
+    * 
+    * @param dwsFileInfo fileInfo of site
+    * @return last update time as string
+    */
+    protected abstract String doGetLastUpdate(FileInfo dwsFileInfo); 
+    
+    /**
      * Get current user
      * 
      * @return UserBean represent current user
@@ -883,9 +897,10 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
                 {
                     continue;
                 }
+                String name = fileInfo.isFolder() ? fileInfo.getName().replaceAll("#", "%23") : fileInfo.getName();
                 String id = "";
                 String progID = "";
-                String fileRef = documetnLibraryURL + fileInfo.getName();
+                String fileRef = documetnLibraryURL + name;
                 String objType = (fileInfo.isFolder()) ? "1" : "0";
                 String created = VtiUtils.formatPropfindDate(fileInfo.getCreatedDate());
                 String author = (String) nodeService.getProperty(fileInfo.getNodeRef(), ContentModel.PROP_AUTHOR);
@@ -903,7 +918,7 @@ public abstract class AbstractAlfrescoDwsServiceHandler implements DwsServiceHan
                 // enter in other folders recursively
                 if (fileInfo.isFolder())
                 {
-                    addDwsContentRecursive(fileInfo, result, documetnLibraryURL + fileInfo.getName() + "/");
+                    addDwsContentRecursive(fileInfo, result, documetnLibraryURL + name + "/");
                 }
             }
         }

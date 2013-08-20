@@ -16,33 +16,44 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfCascadingMenu
+ * @extends dijit/PopupMenuItem
+ * @mixes module:alfresco/menus/_AlfMenuItemMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/PopupMenuItem",
         "alfresco/menus/_AlfMenuItemMixin",
         "alfresco/menus/AlfMenuGroups",
-        "alfresco/core/Core",
-        "dojo/_base/array",
-        "dojo/dom-class",
-        "dojo/dom-style"], 
-        function(declare, PopupMenuItem, _AlfMenuItemMixin, AlfMenuGroups, AlfCore, array, domClass, domStyle) {
+        "alfresco/core/Core"], 
+        function(declare, PopupMenuItem, _AlfMenuItemMixin, AlfMenuGroups, AlfCore) {
    
-   /**
-    * Currently this extends the default Dojo implementation of a MenuItem without making any changes. Despite
-    * it not providing any additional value-add yet it should still be used such that changes can be applied
-    * without needing to modify page definition files.
-    */
    return declare([PopupMenuItem, _AlfMenuItemMixin, AlfCore], {
       
+      /**
+       * Overrides the default value provided by the _AlfMenuItemMixin
+       * @instance
+       * @type {boolean}
+       * @default false 
+       */
+      closeOnClick: false,
       
       /**
        * Ensures that the supplied menu item label is translated.
-       * @method postCreate
+       * @instance
        */
-      postCreate: function alfresco_menus__AlfCascadingMenu__postCreate() {
+      postCreate: function alfresco_menus_AlfCascadingMenu__postCreate() {
+         this.setupIconNode();
          this.inherited(arguments);
          
          // Create a popup menu and add children to it...
-         this.popup = new AlfMenuGroups({widgets: this.widgets});
+         this.popup = new AlfMenuGroups({pubSubScope: this.pubSubScope, widgets: this.widgets});
+         
+         // Call the method provided by the _AlfPopupCloseMixin to handle popup close events...
+         this.registerPopupCloseEvent();
       }
    });
 });

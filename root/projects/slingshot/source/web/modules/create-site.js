@@ -125,8 +125,8 @@
          this.widgets.isPrivate = Dom.get(this.id + "-isPrivate");
 
          // Make sure we disable moderated if public isn't selected
-         Event.addListener(this.widgets.isPublic, "focus", this.onVisibilityChange, this.widgets.isPublic, this);
-         Event.addListener(this.widgets.isPrivate, "focus", this.onVisibilityChange, this.widgets.isPrivate, this);
+         Event.addListener(this.widgets.isPublic, "change", this.onVisibilityChange, this.widgets.isPublic, this);
+         Event.addListener(this.widgets.isPrivate, "change", this.onVisibilityChange, this.widgets.isPrivate, this);
 
          // Configure the forms runtime
          var createSiteForm = new Alfresco.forms.Form(this.id + "-form");
@@ -344,6 +344,7 @@
             Dom.get(this.id + "-sitePreset").selectedIndex = 0;
             Dom.get(this.id + "-isPublic").checked = "checked";
             Dom.get(this.id + "-isModerated").checked = "";
+            Dom.get(this.id + "-isModerated").disabled = false;
          }
          catch(e)
          {
@@ -366,7 +367,7 @@
             // The site has been successfully created - add it to the user's favourites and navigate to it
             var preferencesService = new Alfresco.service.Preferences(),
                shortName = response.config.dataObj.shortName;
-               
+            
             preferencesService.favouriteSite(shortName,
             {
                successCallback:

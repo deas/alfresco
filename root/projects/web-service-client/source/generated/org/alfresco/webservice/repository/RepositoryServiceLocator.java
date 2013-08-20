@@ -26,7 +26,7 @@ public class RepositoryServiceLocator extends org.apache.axis.client.Service imp
     }
 
     // Use to get a proxy class for RepositoryService
-    private java.lang.String RepositoryService_address = "http://localhost:8080/alfresco/api/RepositoryService";
+    private java.lang.String RepositoryService_address = "http://localhost:8080/alfresco/soapapi/RepositoryService";
 
     public java.lang.String getRepositoryServiceAddress() {
         return RepositoryService_address;

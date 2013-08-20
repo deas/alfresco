@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.util.StringUtils;
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
@@ -43,6 +44,7 @@ import org.alfresco.service.namespace.QName;
     private QName name;
     private M2DataType dataType;
     private String  analyserResourceBundleName;
+    private transient MessageLookup staticMessageLookup = new StaticMessageLookup();
     
     
     /*package*/ M2DataTypeDefinition(ModelDefinition model, M2DataType propertyType, NamespacePrefixResolver resolver)
@@ -81,31 +83,37 @@ import org.alfresco.service.namespace.QName;
     /**
      * @see #getName()
      */
+    @Override
     public String toString()
     {
         return getName().toString();
     }
     
-    /* (non-Javadoc)
-     * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getModel()
-     */
+    @Override
     public ModelDefinition getModel()
     {
         return model;
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.PropertyTypeDefinition#getName()
-     */
+    @Override
     public QName getName()
     {
         return name;
     }
 
+    @Override
+    public String getTitle()
+    {
+        return getTitle(staticMessageLookup);
+    }
     
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.PropertyTypeDefinition#getTitle()
-     */
+    @Override
+    public String getDescription()
+    {
+        return getDescription(staticMessageLookup);
+    }
+
+    @Override
     public String getTitle(MessageLookup messageLookup)
     {
         String value = M2Label.getLabel(model, messageLookup, "datatype", name, "title"); 
@@ -116,10 +124,7 @@ import org.alfresco.service.namespace.QName;
         return value;
     }
     
-
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.PropertyTypeDefinition#getDescription()
-     */
+    @Override
     public String getDescription(MessageLookup messageLookup)
     {
         String value = M2Label.getLabel(model, messageLookup, "datatype", name, "description"); 
@@ -130,26 +135,18 @@ import org.alfresco.service.namespace.QName;
         return value;
     }
    
-    /* (non-Javadoc)
-     * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getAnalyserClassName(java.util.Locale)
-     */
+    @Override
     public String getDefaultAnalyserClassName()
     {
         return dataType.getDefaultAnalyserClassName();
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.service.cmr.dictionary.PropertyTypeDefinition#getJavaClassName()
-     */
+    @Override
     public String getJavaClassName()
     {
         return dataType.getJavaClassName();
     }
 
-
-    /* (non-Javadoc)
-     * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getAnalyserResourceBundleName()
-     */
     @Override
     public String getAnalyserResourceBundleName()
     {
@@ -225,7 +222,19 @@ import org.alfresco.service.namespace.QName;
         
         if(analyserClassName == null)
         {
-            analyserClassName = dataType.getDefaultAnalyserClassName();
+            // MLTEXT should fall back to TEXT for analysis 
+            if(name.equals(DataTypeDefinition.MLTEXT))
+            {
+                analyserClassName = model.getDictionaryDAO().getDataType(DataTypeDefinition.TEXT).resolveAnalyserClassName(locale);
+                if(analyserClassName == null)
+                {
+                    analyserClassName = dataType.getDefaultAnalyserClassName();
+                }
+            }
+            else
+            {
+                analyserClassName = dataType.getDefaultAnalyserClassName();
+            }
         }
         
         return analyserClassName;

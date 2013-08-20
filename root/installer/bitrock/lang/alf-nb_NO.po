@@ -1,5 +1,5 @@
-msgid "${product_fullname} OpenOffice Service"
-msgstr "${product_fullname} OpenOffice-tjeneste"
+msgid "${product_fullname} LibreOffice Service"
+msgstr "${product_fullname} LibreOffice-tjeneste"
 
 msgid "${product_fullname} Service"
 msgstr "${product_fullname}-tjeneste"
@@ -172,6 +172,9 @@ msgstr "Installasjonstype"
 msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
 msgstr "Installasjonens katalogbane er for lang. Maksimalt antall tillatte tegn er ${base_installdir_max_characters}."
 
+msgid "Installation folder"
+msgstr "Installasjonsmappe"
+
 msgid "Installation Folder"
 msgstr "Installasjonsmappe"
 
@@ -181,8 +184,8 @@ msgstr "Installasjonsmappen kan ikke inneholde mellomrom."
 msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "Installerer Alfresco Modulpakker (AMP)"
 
-msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "Installerer OpenOffice som en Windows-tjeneste med navnet ${OpenOfficeUniqueServiceName}"
+msgid "Installing LibreOffice as a Windows service with name ${LibreOfficeUniqueServiceName}"
+msgstr "Installerer LibreOffice som en Windows-tjeneste med navnet ${LibreOfficeUniqueServiceName}"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "Installerer PostgreSQL som en Windows-tjeneste med navnet ${postgres_unique_service_name}"
@@ -241,20 +244,20 @@ msgstr "Dette er ikke en installasjon med PostgreSQL versjon 8.1.4. PostgreSQL 8
 msgid "Open SSL Component"
 msgstr "Åpne SSL-komponent"
 
-msgid "OpenOffice"
-msgstr "OpenOffice"
+msgid "LibreOffice"
+msgstr "LibreOffice"
 
-msgid "OpenOffice Server Port"
-msgstr "OpenOffice-serverport"
+msgid "LibreOffice Server Port"
+msgstr "LibreOffice-serverport"
 
-msgid "OpenOffice Server port"
-msgstr "OpenOffice-serverport"
+msgid "LibreOffice Server port"
+msgstr "LibreOffice-serverport"
 
-msgid "OpenOffice installation directory"
-msgstr "OpenOffice-installasjonskatalog"
+msgid "LibreOffice installation directory"
+msgstr "LibreOffice-installasjonskatalog"
 
-msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "OpenOffice.org er en flerplattforms dokumentprogramvareserie med åpen kilde for tekstbehandling, regneark, presentasjoner, grafikk og databaser som kreves for dokumenttransformasjoner."
+msgid "LibreOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
+msgstr "LibreOffice.org er en flerplattforms dokumentprogramvareserie med åpen kilde for tekstbehandling, regneark, presentasjoner, grafikk og databaser som kreves for dokumenttransformasjoner."
 
 msgid "Parameters"
 msgstr "Parametre"
@@ -292,8 +295,8 @@ msgstr "Angi Tomcat-konfigurasjonsparametrene du vil bruke."
 msgid "Please enter the port of your database."
 msgstr "Angi porten til databasen."
 
-msgid "Please enter the port that the Openoffice Server will listen to by default."
-msgstr "Angi porten som OpenOffice-serveren skal bruke som standard."
+msgid "Please enter the port that the Libreoffice Server will listen to by default."
+msgstr "Angi porten som LibreOffice-serveren skal bruke som standard."
 
 msgid "Please enter your database 'postgres' user password."
 msgstr "Skriv inn databasens "postgres"-brukerpassord."
@@ -318,6 +321,9 @@ msgstr "Angi i hvilken katalog Tomcat er plassert."
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Angi i hvilken katalog binærfilene for psql, pg_restore og vacuumdb er plassert"
+
+msgid "Please, choose a folder to install ${product_fullname}"
+msgstr "Velg en mappe for installasjon av ${product_fullname}"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Velg en mappe for installasjon av ${product_fullname}"
@@ -454,8 +460,8 @@ msgstr "Start virtuell server"
 msgid "Start tomcat service"
 msgstr "Start Tomcat-tjenesten"
 
-msgid "Starting OpenOffice..."
-msgstr "Starter OpenOffice..."
+msgid "Starting LibreOffice..."
+msgstr "Starter LibreOffice..."
 
 msgid "Starting servers ..."
 msgstr "Starter servere…"
@@ -526,11 +532,11 @@ msgstr "Denne utgaven ble pakket for å kjøre på J2SE 5.0 eller senere. Instal
 msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
 msgstr "Denne utgaven ble pakket for å kjøre på J2SE 5.0. Installer en kompatibel Java-versjon og prøv igjen."
 
-msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
-msgstr "Denne utgaven ble pakket for å kjøre på J2SE 6.0 eller senere. Installer en kompatibel Java-versjon og prøv igjen."
+msgid "This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again."
+msgstr "Denne utgaven ble pakket for å kjøre på J2SE 7.0 eller senere. Installer en kompatibel Java-versjon og prøv igjen."
 
-msgid "This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again."
-msgstr "Denne utgaven ble pakket for å kjøre på J2SE 6.0. Installer en kompatibel Java-versjon og prøv igjen."
+msgid "This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again."
+msgstr "Denne utgaven ble pakket for å kjøre på J2SE 7.0. Installer en kompatibel Java-versjon og prøv igjen."
 
 msgid "Tomcat 5.5 Component"
 msgstr "Tomcat 5.5-komponent"
@@ -640,8 +646,8 @@ msgstr "War-filer"
 msgid "War files"
 msgstr "War-filer"
 
-msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
-msgstr "Vi finner ikke en passende JDK-installasjon på systemet ditt. ${product_fullname} krever JDK 1.5 eller senere."
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
+msgstr "Vi finner ikke en passende JDK-installasjon på systemet ditt. ${product_fullname} krever JDK ${java_min_version} eller senere."
 
 msgid "Web Project Management (AVM)"
 msgstr "Webprosjektadministrasjon (AVM)"

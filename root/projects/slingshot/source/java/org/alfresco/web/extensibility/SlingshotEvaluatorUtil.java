@@ -61,6 +61,7 @@ public class SlingshotEvaluatorUtil {
     protected static final String PORTLET_URL = "portletUrl"; // Set by the ProxyPortlet
     protected static final String SITE_PRESET = "sitePreset";
     protected static final String SITE = "site";
+    protected static final String PAGE_CONTEXT = "pagecontext";
 
     protected WebFrameworkServiceRegistry serviceRegistry = null;
 
@@ -157,6 +158,34 @@ public class SlingshotEvaluatorUtil {
             }
         }
         return site;
+    }
+    
+    /**
+     * Returns the current page context id OR null if one isn't supplied
+     *
+     * @param context
+     * @return The current page context id OR null if there is no page context
+     */
+    public String getPageContext(RequestContext context)
+    {
+        // Look for siteId in url path & parameters
+        String pageContext = context.getUriTokens().get(PAGE_CONTEXT);
+        if (pageContext == null)
+        {
+            pageContext = context.getParameter(PAGE_CONTEXT);
+        }
+        if (pageContext == null)
+        {
+            String[] pathNames = context.getUri().substring(context.getContextPath().length()).split("/");
+            for (int i = 0; i < pathNames.length; i++) {
+                if (pathNames[i].equals(PAGE_CONTEXT) && (i + 1 < pathNames.length))
+                {
+                    pageContext = pathNames[i + 1];
+                    break;
+                }
+            }
+        }
+        return pageContext;
     }
 
     /**

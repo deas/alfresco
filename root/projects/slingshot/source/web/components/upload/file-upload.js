@@ -86,7 +86,7 @@
           * @type boolean
           * @default true
           */
-         adobeFlashEnabled: true,
+         adobeFlashEnabled: false,
 
          /**
           * Class name of Flash Uploader
@@ -260,7 +260,7 @@
             }
             else
             {
-               throw new Error("No instance of uploader type '" + uploadType + "' exists.");            
+               throw new Error("No instance of uploader type '" + uploadType + "' exists.");
             }
          }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -64,7 +64,7 @@ public final class WebServiceFactory
     
     private static volatile boolean loadedProperties = false;
     /** Default endpoint address **/
-    private static final String DEFAULT_ENDPOINT_ADDRESS = "http://localhost:8080/alfresco/api";
+    private static final String DEFAULT_ENDPOINT_ADDRESS = "http://localhost:8080/alfresco/soapapi";
     private static String endPointAddress = DEFAULT_ENDPOINT_ADDRESS;
     private static final String DEFAULT_REPO_WEBAPP = "alfresco";
     private static String endPointWebapp = DEFAULT_REPO_WEBAPP;
@@ -150,9 +150,10 @@ public final class WebServiceFactory
         try 
         {
             // Get the authentication service
-            AuthenticationServiceLocator locator = new AuthenticationServiceLocator();
+            AuthenticationServiceLocator locator = new AuthenticationServiceLocator(AuthenticationUtils.getSimpleConfiguration());
             locator.setAuthenticationServiceEndpointAddress(getEndpointAddress() + AUTHENTICATION_SERVICE_ADDRESS);                
             authenticationService = (AuthenticationServiceSoapBindingStub)locator.getAuthenticationService();
+            authenticationService.setMaintainSession(true);
         }
         catch (ServiceException jre) 
         {

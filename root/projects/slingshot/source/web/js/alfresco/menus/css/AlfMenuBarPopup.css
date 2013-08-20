@@ -5,6 +5,7 @@
    margin-left: 3px;
    width: 20px;
    height: 20px;
+   padding-bottom: 2px;
 }
 
 
@@ -31,6 +32,76 @@
 /* This is used for Popup items - NOT menu items */
 .alfresco-share .alf-user-icon {
    background: url("./images/User.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-upload-icon {
+   background: url("./images/Upload.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-create-icon {
+   background: url("./images/Create.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-allselected-icon {
+   background: url("./images/AllSelected.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-someselected-icon {
+   background: url("./images/SomeSelected.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-noneselected-icon {
+   background: url("./images/NoneSelected.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-back-icon {
+   background: url("./images/back-arrow.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+   display: block;
+   float: left;
+}
+
+/* This is used for Popup items - NOT menu items */
+.alfresco-share .alf-forward-icon {
+   background: url("./images/forward-arrow-16.png");
    background-repeat: no-repeat;
    height: 20px;
    width: 20px;

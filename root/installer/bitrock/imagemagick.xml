@@ -15,7 +15,7 @@ System variables provided by this component:
 -->
 <component>
     <name>imagemagick</name>
-    <description>ImageMagick Component</description>
+    <description>//ImageMagick Component</description>
     <canBeEdited>0</canBeEdited>
     <show>0</show>
     <selected>1</selected>
@@ -30,16 +30,16 @@ System variables provided by this component:
     <parameterList>
         <directoryParameter>
             <ask>0</ask>
-            <description>ImageMagick installation directory</description>
+            <!--description>ImageMagick installation directory</description-->
             <name>imagemagick_root_directory</name>
             <cliOptionName>imagemagick_root_directory</cliOptionName>
         </directoryParameter>
         <stringParameter>
             <ask>0</ask>
-            <description>ImageMagick version</description>
+            <!--description>ImageMagick version</description-->
             <name>imagemagick_version</name>
-            <value>6.5.6</value>
-            <default>6.5.6</default>
+            <value>6.8.6</value>
+            <default>6.8.6</default>
         </stringParameter>
         <booleanParameter name="imagemagick_ghostscriptwin_included" value="0" ask="0" />
     </parameterList>
@@ -73,21 +73,19 @@ System variables provided by this component:
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="IMAGEMAGICK_DYLD_LIBRARY_PATH" value="${imagemagick_root_directory}/lib"/>
-        <setInstallerVariable name="DYLD_LIBRARY_PATH" value="${IMAGEMAGICK_DYLD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}">
+        <setInstallerVariable name="DYLD_FALLBACK_LIBRARY_PATH" value="${IMAGEMAGICK_DYLD_LIBRARY_PATH}:${DYLD_FALLBACK_LIBRARY_PATH}">
             <ruleList>
-                <compareText text="${DYLD_LIBRARY_PATH}" value="${IMAGEMAGICK_DYLD_LIBRARY_PATH}" nocase="1" logic="does_not_contain"/>
+                <compareText text="${DYLD_FALLBACK_LIBRARY_PATH}" value="${IMAGEMAGICK_DYLD_LIBRARY_PATH}" nocase="1" logic="does_not_contain"/>
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="IMAGEMAGICK_ENV_VAR">
             <value>##### IMAGEMAGICK ENV #####
 MAGICK_HOME="${imagemagick_root_directory}"
 export MAGICK_HOME
-MAGICK_CONFIGURE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config:${imagemagick_root_directory}/share/ImageMagick-${imagemagick_version}/config"
+MAGICK_CONFIGURE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config-Q16"
 export MAGICK_CONFIGURE_PATH
 MAGICK_CODER_MODULE_PATH="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/modules-Q16/coders"
 export MAGICK_CODER_MODULE_PATH
-GS_LIB="${imagemagick_root_directory}/share/ghostscript/fonts"
-export GS_LIB
 
 </value>
             <ruleList>
@@ -98,7 +96,7 @@ export GS_LIB
             <value>rem ##### IMAGEMAGICK ENV #####
 set MAGICK_HOME=${imagemagick_root_directory.dos}
 set MAGICK_CODER_MODULE_PATH=${imagemagick_root_directory.dos}\modules\coders
-set MAGICK_CONFIGURE_PATH=${imagemagick_root_directory.dos}\config
+set MAGICK_CONFIGURE_PATH=${imagemagick_root_directory.dos}
 </value>
             <ruleList>
                 <platformTest type="windows"/>
@@ -148,10 +146,10 @@ export GS_LIB
             <destination>${imagemagick_root_directory}</destination>
             <platforms>windows</platforms>
             <distributionFileList>
-                <distributionDirectory allowWildcards="1" origin="${imagemagick_distribution_folder_windows}/*"/>
+		<distributionDirectory allowWildcards="1" origin="${imagemagick_distribution_folder_windows}/*"/>
             </distributionFileList>
 	    <actionList>
-		<!-- Install x86 vcruntime on Windows x86 and x64 -->
+		<!-- Install vcruntime on Windows x32 -->
 		<runProgram>
 		    <workingDirectory>${imagemagick_root_directory}</workingDirectory>
 		    <program>vcredist_x86.exe</program>
@@ -177,23 +175,23 @@ export GS_LIB
             <actionList>
                 <actionGroup>
                     <actionList>
-                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/" >
+                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config-Q16/" >
 			    <ruleList>
 				<fileExists path="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type.xml" />
 			    </ruleList>
 			</copyFile>
-                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type-ghostscript.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/" >
+                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type-ghostscript.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config-Q16/" >
 			    <ruleList>
 				<fileExists path="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/type-ghostscript.xml" />
 			    </ruleList>
 			</copyFile>
-                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/delegates.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/" >
+                        <copyFile origin="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/delegates.xml" destination="${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config-Q16/" >
 			    <ruleList>
 				<fileExists path="${imagemagick_root_directory}/share/doc/ImageMagick/www/source/delegates.xml" />
 			    </ruleList>
 			</copyFile>
                         <substitute>
-                            <files>${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config/type-ghostscript.xml</files>
+                            <files>${imagemagick_root_directory}/lib/ImageMagick-${imagemagick_version}/config-Q16/type-ghostscript.xml</files>
                              <substitutionList>
                                  <substitution>
                                      <pattern>/usr/share/fonts/default/Type1</pattern>

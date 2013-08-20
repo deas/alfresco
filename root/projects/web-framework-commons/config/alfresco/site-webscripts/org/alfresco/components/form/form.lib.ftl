@@ -139,6 +139,6 @@
       <span class="help-icon">
          <img id="${fieldHtmlId}-help-icon" src="${url.context}/res/components/form/images/help.png" title="${msg("form.field.help")}" tabindex="0"/>
       </span>
-      <div class="help-text" id="${fieldHtmlId}-help">${field.help?html}</div>
+      <div class="help-text" id="${fieldHtmlId}-help"><#if field.helpEncodeHtml>${field.help?html}<#else>${stringUtils.stripUnsafeHTML(field.help)}</#if></div>
    </#if>
 </#macro>

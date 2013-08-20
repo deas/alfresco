@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/MultipleKeyValuePairCreator
+ * @extends alfresco/forms/controls/MultipleEntryCreator
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/forms/controls/MultipleEntryCreator", 
         "alfresco/forms/controls/MultipleEntryElementWrapper",
@@ -26,16 +32,23 @@ define(["dojo/_base/declare",
 
       /**
        * Indicates whether or not re-ordering should be enabled through the use of drag and drop
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
        */
       enableDND: false,
       
       /**
        * This function should be extended by concrete implementations to create the element to go in the
        * element wrapper.
+       * 
+       * @instance
+       * @param {object} config
+       * @returns {object} A new [MultipleKeyValuePairElement]{@link module:alfresco/forms/controls/MultipleKeyValuePairElement} instance
        */
-      createElementWidget: function(elementConfig) {
-         // By default we're just going to create the "Abstract" instance
-         return new MultipleKeyValuePairElement({elementConfig: elementConfig});
+      createElementWidget: function(config) {
+         return new MultipleKeyValuePairElement(config);
       }
    });
 });

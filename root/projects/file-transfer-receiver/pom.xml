@@ -9,8 +9,8 @@
     <parent>
         <artifactId>alfresco-parent</artifactId>
         <groupId>org.alfresco</groupId>
-        <version>4.2.d-SNAPSHOT</version>
-        <relativePath>../../pom-experimental.xml</relativePath>
+        <version>4.2.0-QA-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -28,7 +28,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

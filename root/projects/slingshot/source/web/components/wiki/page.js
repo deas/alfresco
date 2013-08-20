@@ -361,6 +361,8 @@
             theme_advanced_statusbar_location: "bottom",
             theme_advanced_path : false,
             theme_advanced_resizing: true,
+            extended_valid_elements : "style[type]",
+            valid_children : "+body[style]",
             siteId: this.options.siteId,
             language: this.options.locale
          });

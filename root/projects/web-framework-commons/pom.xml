@@ -8,23 +8,50 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-parent</artifactId>
-        <version>4.2.d-SNAPSHOT</version>
-        <relativePath>../../pom-experimental.xml</relativePath>
+        <version>4.2.0-QA-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>alfresco-web-framework-commons</artifactId>
     <name>Alfresco Web Framework common libraries</name>
     <description>Alfresco Web Framework common libraries</description>
+    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.extensions.surf</groupId>
             <artifactId>spring-surf</artifactId>
             <version>${dependency.surf.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jsp-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+             <groupId>javax.servlet</groupId>
+             <artifactId>servlet-api</artifactId>
+             <version>2.4</version>
+             <scope>provided</scope>
+        </dependency>
+        <dependency>
+             <groupId>commons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+             <version>1.1.1</version>
+             <scope>provided</scope>
         </dependency>
         <!-- Test only dependencies -->
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -48,22 +75,13 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>attach-resources-war</id>
-                            <goals><goal>war</goal></goals>
-                            <phase>package</phase>
-                            <configuration>
-                                <classifier>webapp</classifier>
-                                <!-- This allows this to an empty overlay  -->
-                                <failOnMissingWebXml>false</failOnMissingWebXml>
-                                <primaryArtifact>false</primaryArtifact>
-                                <archiveClasses>true</archiveClasses>
-                            </configuration>                        
-                        </execution>
-                    </executions>                    
+					<configuration>
+						<!-- This allows this to an empty overlay -->
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+						<archiveClasses>true</archiveClasses>
+						<attachClasses>true</attachClasses>
+					</configuration>            
                 </plugin>
-            
             </plugins>
     </build>
 </project>

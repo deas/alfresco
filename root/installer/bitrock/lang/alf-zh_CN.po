@@ -1,4 +1,4 @@
-﻿msgid "${product_fullname} OpenOffice Service"
+﻿msgid "${product_fullname} LibreOffice Service"
 msgstr "${product_fullname} LibreOffice 服务"
 
 msgid "${product_fullname} Service"
@@ -172,6 +172,9 @@ msgstr "安装类型"
 msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
 msgstr "安装目录路径太长。 允许的最大字符数为 ${base_installdir_max_characters}。"
 
+msgid "Installation folder"
+msgstr "安装文件夹"
+
 msgid "Installation Folder"
 msgstr "安装文件夹"
 
@@ -181,8 +184,8 @@ msgstr "安装文件夹不得包含空格。"
 msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "安装 Alfresco Module Package (AMP)"
 
-msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "将 LibreOffice 作为名为 ${OpenOfficeUniqueServiceName} 的 Windows 服务安装"
+msgid "Installing LibreOffice as a Windows service with name ${LibreOfficeUniqueServiceName}"
+msgstr "将 LibreOffice 作为名为 ${LibreOfficeUniqueServiceName} 的 Windows 服务安装"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "将 PostgreSQL 作为名为 ${postgres_unique_service_name} 的 Windows 服务安装"
@@ -241,19 +244,19 @@ msgstr "非 PostgreSQL 版本 8.1.4 安装。 建议使用 PostgreSQL 8.1.4。"
 msgid "Open SSL Component"
 msgstr "Open SSL 组件"
 
-msgid "OpenOffice"
+msgid "LibreOffice"
 msgstr "LibreOffice"
 
-msgid "OpenOffice Server Port"
+msgid "LibreOffice Server Port"
 msgstr "LibreOffice 服务器端口"
 
-msgid "OpenOffice Server port"
+msgid "LibreOffice Server port"
 msgstr "LibreOffice 服务器端口"
 
-msgid "OpenOffice installation directory"
+msgid "LibreOffice installation directory"
 msgstr "LibreOffice 安装目录"
 
-msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
+msgid "LibreOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
 msgstr "LibreOffice 是多平台、开源办公软件套件，适用于文字处理、电子表格、演示文稿、图形以及文档转换所需的数据库。"
 
 msgid "Parameters"
@@ -292,7 +295,7 @@ msgstr "请输入要使用的 Tomcat 配置参数。"
 msgid "Please enter the port of your database."
 msgstr "请输入数据库端口。"
 
-msgid "Please enter the port that the Openoffice Server will listen to by default."
+msgid "Please enter the port that the Libreoffice Server will listen to by default."
 msgstr "请输入 LibreOffice 服务器默认情况下侦听的端口。"
 
 msgid "Please enter your database 'postgres' user password."
@@ -454,7 +457,7 @@ msgstr "启动虚拟服务器"
 msgid "Start tomcat service"
 msgstr "启动 tomcat 服务"
 
-msgid "Starting OpenOffice..."
+msgid "Starting LibreOffice..."
 msgstr "正在启动 LibreOffice..."
 
 msgid "Starting servers ..."
@@ -520,17 +523,17 @@ msgstr "${installdir} 上没有足够的可用空间。 您需要至少 ${base_n
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "此安装程序适用于 Windows 64 位。  请下载 Windows 32 位版本。"
 
-msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
-msgstr "此版本打包后在 Java SE 7 或更高版本上运行。 请安装兼容的 Java 版本并重试。"
+msgid "This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again."
+msgstr "此版本打包后在 J2SE ${java_min_version} 或更高版本上运行。 请安装兼容的 Java 版本并重试。"
 
-msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
-msgstr "此版本打包后在 Java SE 7 上运行。 请安装兼容的 Java 版本并重试。"
+msgid "This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again."
+msgstr "此版本打包后在 J2SE ${java_min_version} 上运行。 请安装兼容的 Java 版本并重试。"
 
-msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
-msgstr "此版本打包后在 J2SE 6.0 或更高版本上运行。 请安装兼容的 Java 版本并重试。"
+msgid "This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again."
+msgstr "此版本打包后在 J2SE 7.0 或更高版本上运行。 请安装兼容的 Java 版本并重试。"
 
-msgid "This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again."
-msgstr "此版本打包后在 J2SE 6.0 上运行。 请安装兼容的 Java 版本并重试。"
+msgid "This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again."
+msgstr "此版本打包后在 J2SE 7.0 上运行。 请安装兼容的 Java 版本并重试。"
 
 msgid "Tomcat 5.5 Component"
 msgstr "Tomcat 5.5 组件"
@@ -640,8 +643,8 @@ msgstr "War 文件"
 msgid "War files"
 msgstr "War 文件"
 
-msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
-msgstr "在系统中找不到合适的 JDK 安装。 ${product_fullname} 要求 JDK 1.5 或更高版本。"
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
+msgstr "在系统中找不到合适的 JDK 安装。 ${product_fullname} 要求 JDK ${java_min_version} 或更高版本。"
 
 msgid "Web Project Management (AVM)"
 msgstr "Web Project Management (AVM)"

@@ -301,7 +301,7 @@
                }
             }
          };
-            
+         
          this.preferencesService.favouriteSite(site.shortName, responseConfig);
       }      
    });

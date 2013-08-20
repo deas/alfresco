@@ -1,0 +1,88 @@
+.alfresco-kickstart-Step,
+.alfresco-kickstart-Step.dojoDndItem,
+.alfresco-kickstart-Step.dojoDndItemAnchor,
+.alfresco-kickstart-Step.dojoDndItemSelected,
+.alfresco-kickstart-Step.dojoDndItemOver {
+   background-color: inherit;
+   background-image: none;
+   padding: 0;
+   margin: 0 0 10px;
+   border: 1px solid #d7d6d6;
+}
+
+.alfresco-kickstart-Step.dojoDndItemOver {
+   border: 1px solid #D3D3D3;
+}
+
+.alfresco-kickstart-Step .dojoDndItemOver {
+   background-color: #EEE;
+}
+
+.alfresco-kickstart-Step .title-bar {
+   border-bottom: 1px solid #d7d6d6;
+   background-color: #fafafa;
+   padding: 5px;
+}
+
+.alfresco-kickstart-Step .title-bar span {
+   display: inline-block;
+   vertical-align: middle;
+}
+
+.alfresco-kickstart-Step .title-bar .collapse-control {
+   background-image: url("./images/collapse_open.png");
+   background-repeat: no-repeat;
+   height: 16px;
+   width: 16px;
+}
+
+.alfresco-kickstart-Step .title-bar .collapse-control.collapsed {
+   background-image: url("./images/collapse_closed.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon {
+   background-repeat: no-repeat;
+   height: 32px;
+   width: 32px;
+}
+
+.alfresco-kickstart-Step .title-bar .icon.choice {
+   background-image: url("./images/choice_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon.email {
+   background-image: url("./images/email_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon.feedback {
+   background-image: url("./images/feedback_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon.parallel {
+   background-image: url("./images/parallel_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon.system {
+   background-image: url("./images/system_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon.users {
+   background-image: url("./images/users_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .icon.review {
+   background-image: url("./images/review_icon.png");
+}
+
+.alfresco-kickstart-Step .title-bar .config-control {
+   /*background-image: url("./images/configure_icon.png");
+   background-repeat: no-repeat;
+   height: 32px;
+   width: 32px;*/
+   float: right;
+}
+
+.alfresco-kickstart-Step .details {
+   background-color: #fff;
+   position: relative;
+}

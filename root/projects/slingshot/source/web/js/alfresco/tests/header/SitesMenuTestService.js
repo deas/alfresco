@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/tests/header/SitesMenuTestService
+ * @extends module:alfresco/tests/CommonTestService
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/tests/CommonTestService",
         "doh/runner",
@@ -59,6 +65,8 @@ define(["dojo/_base/declare",
       
       /**
        * Register the tests for the Header widgets
+       * 
+       * @instance
        */
       constructor: function() {
          
@@ -112,6 +120,7 @@ define(["dojo/_base/declare",
        * by using the Dijit registry to find all the widgets that are expected to be on the
        * page. These are then stored as objects in the service instance for easy reference
        * later on.
+       * @instance
        */
       testSetup: function(doh) {
          
@@ -130,6 +139,7 @@ define(["dojo/_base/declare",
       /**
        * This tests that all the data is loaded (or fails to load) as appropriate after clicking on 
        * all the menus.
+       * @instance
        */
       testRenderingPart1: function(doh) {
          var d = new doh.Deferred();
@@ -199,6 +209,7 @@ define(["dojo/_base/declare",
       /**
        * This tests that all the data is loaded (or fails to load) as appropriate after clicking on 
        * all the menus.
+       * @instance
        */
       testRenderingPart2: function(doh) {
          var d = new doh.Deferred();
@@ -240,6 +251,7 @@ define(["dojo/_base/declare",
       
       /**
        * This tests adding and removing favourites
+       * @instance
        */
       testUpdateFavourites: function(doh) {
          
@@ -281,6 +293,7 @@ define(["dojo/_base/declare",
       
       /**
        * This tests the menus ability to process favourite notifications
+       * @instance
        */
       testProcessFavourites: function(doh) {
          this.scope.alfPublish("ALF_FAVOURITE_SITE_REMOVED", {
@@ -288,7 +301,7 @@ define(["dojo/_base/declare",
          });
          this.scope.alfPublish("ALF_FAVOURITE_SITE_ADDED", {
             site: "testsite2a",
-            title: "TestSite2a"
+            title: "Test Site 2a"
          });
          
          var _this = this;

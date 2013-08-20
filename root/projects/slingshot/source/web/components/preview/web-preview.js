@@ -208,6 +208,7 @@
          
          // Setup web preview
          this.setupPreview(false);
+         YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
       },
 
       /**
@@ -290,6 +291,7 @@
                            }
 
                            // Finally! We found a plugin that works and didn't crash
+                           YAHOO.Bubbling.fire('webPreviewSetupComplete');
                            return;
                         }
                         catch(e)
@@ -384,7 +386,7 @@
          {
             if (this.options.thumbnailModification[i].indexOf(thumbnail) != -1)
             {
-               noCache = "lastModified=" + encodeURIComponent(this.options.thumbnailModification[i]);
+               noCache = "lastModified=" + encodeURIComponent(this.options.thumbnailModification[i]) + "&" + noCache;
                break;
             }
          }
@@ -404,6 +406,19 @@
       getPreviewerElement: function()
       {
          return this.widgets.previewerElement;
+      },
+
+     /**
+       * Refreshes component by metadataRefresh event
+       *
+       * @method doRefresh
+       */
+      doRefresh: function WP_doRefresh()
+      {
+         if (this.plugin)
+         {
+            this.plugin.display();
+         }
       }
 
    });

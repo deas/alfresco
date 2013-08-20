@@ -1,4 +1,4 @@
-﻿msgid "${product_fullname} OpenOffice Service"
+﻿msgid "${product_fullname} LibreOffice Service"
 msgstr "Servizio LibreOffice ${product_fullname}"
 
 msgid "${product_fullname} Service"
@@ -172,6 +172,9 @@ msgstr "Tipo di installazione"
 msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
 msgstr "Il percorso della directory di installazione è troppo lungo. Il numero massimo di caratteri consentito è ${base_installdir_max_characters}."
 
+msgid "Installation folder"
+msgstr "Cartella di installazione"
+
 msgid "Installation Folder"
 msgstr "Cartella di installazione"
 
@@ -181,8 +184,8 @@ msgstr "La cartella di installazione non può contenere spazi."
 msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "Installazione dei pacchetti di moduli Alfresco (AMP)"
 
-msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "Installazione di LibreOffice come servizio Windows con il nome ${OpenOfficeUniqueServiceName}"
+msgid "Installing LibreOffice as a Windows service with name ${LibreOfficeUniqueServiceName}"
+msgstr "Installazione di LibreOffice come servizio Windows con il nome ${LibreOfficeUniqueServiceName}"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "Installazione di PostgreSQL come servizio Windows con il nome ${postgres_unique_service_name}"
@@ -241,19 +244,19 @@ msgstr "Installazione diversa da PostgreSQL versione 8.4.1.  Si consiglia di uti
 msgid "Open SSL Component"
 msgstr "Componente OpenSSL"
 
-msgid "OpenOffice"
+msgid "LibreOffice"
 msgstr "LibreOffice"
 
-msgid "OpenOffice Server Port"
+msgid "LibreOffice Server Port"
 msgstr "Porta server LibreOffice"
 
-msgid "OpenOffice Server port"
+msgid "LibreOffice Server port"
 msgstr "Porta server LibreOffice"
 
-msgid "OpenOffice installation directory"
+msgid "LibreOffice installation directory"
 msgstr "Directory di installazione di LibreOffice"
 
-msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
+msgid "LibreOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
 msgstr "LibreOffice è una suite di software per l'ufficio multipiattaforma e open-source che fornisce strumenti di elaborazione testi, fogli di calcolo, presentazioni, grafica e database per la trasformazione di documenti."
 
 msgid "Parameters"
@@ -292,7 +295,7 @@ msgstr "Immettere i parametri di configurazione di Tomcat da utilizzare."
 msgid "Please enter the port of your database."
 msgstr "Immettere la porta del database."
 
-msgid "Please enter the port that the Openoffice Server will listen to by default."
+msgid "Please enter the port that the Libreoffice Server will listen to by default."
 msgstr "Immettere la porta di cui il server LibreOffice resterà in ascolto per default."
 
 msgid "Please enter your database 'postgres' user password."
@@ -318,6 +321,9 @@ msgstr "Specificare la directory in cui si trova Tomcat."
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Specificare la directory in cui si trovano i dati binari di psql, pg_restore e vacuumdb"
+
+msgid "Please, choose a folder to install ${product_fullname}"
+msgstr "Scegliere una cartella per l'installazione di ${product_fullname}"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Scegliere una cartella per l'installazione di ${product_fullname}"
@@ -454,7 +460,7 @@ msgstr "Avvia il server virtuale"
 msgid "Start tomcat service"
 msgstr "Avvia il servizio Tomcat"
 
-msgid "Starting OpenOffice..."
+msgid "Starting LibreOffice..."
 msgstr "Avvio di LibreOffice in corso..."
 
 msgid "Starting servers ..."
@@ -520,17 +526,17 @@ msgstr "Lo spazio disponibile in ${installdir} non è sufficiente. Sono necessar
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "Questo è il programma di installazione per Windows a 64 bit.  Scaricare la versione per Windows a 32 bit."
 
-msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
-msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in Java SE 7 o versione successiva. Installare una versione di Java compatibile e riprovare."
+msgid "This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again."
+msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in J2SE ${java_min_version} o versione successiva. Installare una versione di Java compatibile e riprovare."
 
-msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
-msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in Java SE 7. Installare una versione di Java compatibile e riprovare."
+msgid "This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again."
+msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in J2SE ${java_min_version}. Installare una versione di Java compatibile e riprovare."
 
-msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
-msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in J2SE 6.0 o versione successiva. Installare una versione di Java compatibile e riprovare."
+msgid "This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again."
+msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in J2SE 7.0 o versione successiva. Installare una versione di Java compatibile e riprovare."
 
-msgid "This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again."
-msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in J2SE 6.0. Installare una versione di Java compatibile e riprovare."
+msgid "This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again."
+msgstr "Questa versione fa parte di un pacchetto destinato all'esecuzione in J2SE 7.0. Installare una versione di Java compatibile e riprovare."
 
 msgid "Tomcat 5.5 Component"
 msgstr "Componente Tomcat 5.5"
@@ -640,8 +646,8 @@ msgstr "File WAR"
 msgid "War files"
 msgstr "File WAR"
 
-msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
-msgstr "Impossibile trovare un'installazione di JDK idonea nel sistema in uso. ${product_fullname} richiede JDK 1.5 o versione successiva."
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
+msgstr "Impossibile trovare un'installazione di JDK idonea nel sistema in uso. ${product_fullname} richiede JDK ${java_min_version} o versione successiva."
 
 msgid "Web Project Management (AVM)"
 msgstr "Web Project Management (AVM)"

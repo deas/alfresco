@@ -2076,6 +2076,12 @@
                }
             }
          }
+         
+         if (configDef.adHocPropertiesAllowed == true)
+         {
+            return {};
+         }
+         
          return null;
       },
 

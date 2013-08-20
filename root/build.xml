@@ -57,6 +57,7 @@
       <path id="classpath.compile">
          <fileset dir="${dir.project.3rdparty.lib}">
             <include name="**/*.jar" />
+            <exclude name="devenv/*.jar" />
          </fileset>
          <fileset dir="${dir.projects}">
             <include name="**/${dir.name.build}/${dir.name.dist}/*.jar" />
@@ -68,6 +69,9 @@
          </fileset>
          <fileset dir="${dir.modules}">
             <include name="**/${dir.name.build}/${dir.name.dist}/*.jar" />
+         </fileset>
+         <fileset dir="${dir.project.3rdparty.lib}">
+            <include name="devenv/*.jar" />
          </fileset>
       </path>
      <!-- Extension point for overriding -->
@@ -86,13 +90,19 @@
       <path id="classpath.unit.test">
          <pathelement location="${user.home}" />
          <pathelement location="${dir.project.core.classes}" />
+         <pathelement location="${dir.project.core.classes.test}" />
          <pathelement location="${dir.project.core.src.java}" />
          <pathelement location="${dir.project.datamodel.classes}" />
+         <pathelement location="${dir.project.datamodel.classes.test}" />
+         <pathelement location="${dir.project.datamodel.test.resources}" />
          <pathelement location="${dir.project.jlan.classes}" />
          <pathelement location="${dir.project.mbeans.classes}" />
          <pathelement location="${dir.project.deployment.classes}" />
+         <pathelement location="${dir.project.deployment.classes.test}" />
          <pathelement location="${dir.project.repository.classes}" />
+         <pathelement location="${dir.project.repository.classes.test}" />
          <pathelement location="${dir.project.wdrdeployment.classes}" />
+         <pathelement location="${dir.project.wdrdeployment.classes.test}" />
          <pathelement location="${dir.project.3rdparty.lib}/junit-dep-4.11.jar" />
          
          <pathelement location="${dir.project.datamodel.config}" />
@@ -107,10 +117,14 @@
          <pathelement location="${dir.project.jndi.classes}" />
          <pathelement location="${dir.project.catalinavirtual.classes}" />
          <pathelement location="${dir.project.remoteapi.classes}" />
+         <pathelement location="${dir.project.remoteapi.classes.test}" />
          <pathelement location="${dir.project.system-build-test.classes}" />
          <pathelement location="${dir.project.webframeworkcommons.classes}" />
+         <pathelement location="${dir.project.webframeworkcommons.classes.test}" />
          <pathelement location="${dir.project.webclient.classes}" />
+         <pathelement location="${dir.project.webclient.classes.test}" />
          <pathelement location="${dir.project.webserviceclient.classes}" />
+         <pathelement location="${dir.project.webserviceclient.classes.test}" />
 
          <pathelement location="${dir.project.remoteapi.config}" />
          <pathelement location="${dir.project.webclient.config}" />
@@ -180,6 +194,9 @@
          <exclude name="**/org/alfresco/repo/web/scripts/publishing/PublishingRestApiTest.java" />
 
          <include name="**/org/alfresco/repo/MiscSystemTestSuite.java" />
+         <include name="**/org/alfresco/repo/SolrClientTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/solr/EmbeddedSolrTest.java" />
+
 
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
@@ -194,6 +211,8 @@
          <exclude name="**/org/alfresco/repo/avm/**/*Test.java" />
          <exclude name="**/org/alfresco/repo/avm/**/*TestP.java" />
          <include name="**/org/alfresco/repo/avm/AVMTestSuite.java" />
+         <!-- "Old" CMIS Tests -->
+         <exclude name="**/org/alfresco/repo/cmis/ws/*.java" />
          <!-- Content Tests -->
          <exclude name="**/org/alfresco/repo/content/**/*Test.java" />
          <include name="**/org/alfresco/repo/content/DataModelContentTestSuite.java" />
@@ -244,6 +263,10 @@
          <!-- Messaging facade -->
          <exclude name="**/org/alfresco/repo/cluster/**/*Test.java"/> 
          <include name="**/org/alfresco/repo/cluster/BuildSafeTestSuite.java"/>
+         <!-- REST API tests -->
+         <exclude name="**/org/alfresco/repo/cmis/ws/**/*Test.java"/>
+         <include name="**/org/alfresco/rest/api/tests/ApiTest.java"/>
+
          <!-- Excluding long tests -->
          <exclude name="**/org/alfresco/deployment/impl/asr/AVMDeploymentTargetTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/deployment/impl/dmr/DMDeploymentTargetTest.java" if="minimal.testing" />
@@ -621,7 +644,7 @@
          <fileset dir="${dir.project.datamodel.config}" 
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.config}" 
-                  excludes="**/extension/**" />
+                  excludes="**/extension/**,alfresco/version.properties" />
          <fileset dir="${dir.project.remoteapi.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.webclient.config}" 
@@ -892,8 +915,6 @@
          <fileset file="${dir.project.slingshot.src.web}/modules/simple-dialog.js" />
       </concat>-->
 
-      <touch file="${dir.deploy.tomcat.application.slingshot}/modules/about-share-min.js" />
-         
       <echo>Compressing Slingshot Javascript...</echo>
       <minimize-javascript sourcedir="${dir.deploy.tomcat.application.slingshot}" 
                            destdir="${dir.deploy.tomcat.application.slingshot}"/>
@@ -1135,12 +1156,10 @@
                     incremental, 
                     test-core,
                     test-datamodel, 
-                    test-mbeans,
                     test-deployment, 
                     test-repository,
                     test-remoteapi,
                     test-wdrdeployment,
-                    test-catalinavirtual,
                     test-webframeworkcommons, 
                     test-webclient, 
                     test-webserviceclient,
@@ -1175,6 +1194,7 @@
          <classpath>
             <path refid="classpath.unit.test" />
             <path refid="classpath.unit.test.extension"/>
+            <path refid="classpath.unit.test.beyondrepo"/>
          </classpath>
          <formatter type="xml" />
          <test name="${testcase}" 

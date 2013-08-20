@@ -6,4 +6,5 @@
    </description>
    <format default="json"/>
    <url>/modules/delete-site</url>
+   <authentication>user</authentication>
 </webscript>

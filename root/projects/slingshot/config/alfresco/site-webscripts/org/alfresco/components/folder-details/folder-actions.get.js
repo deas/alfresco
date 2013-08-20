@@ -34,6 +34,11 @@ function main()
          syncMode : model.syncMode != null ? model.syncMode : ""
       }
    };
+   if (model.repositoryUrl != null)
+   {
+      folderActions.options.repositoryUrl = model.repositoryUrl;
+   }
+   
    model.widgets = [folderActions];
 }
 

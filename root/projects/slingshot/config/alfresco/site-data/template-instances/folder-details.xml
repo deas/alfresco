@@ -69,6 +69,44 @@
                         <rootLabelId>path.documents</rootLabelId>
                      </properties>
                   </evaluation>
+                  
+                  <!-- Check the page context using the "pagecontext" component evaluator
+                       for access from either the "My Files" or "Shared Files" contexts. (the
+                       page context is set via a URL token and the context allows the library
+                       root to be set so that the folder path is displayed correctly) -->
+                  <evaluation id="myfiles">
+                     <evaluators>
+                        <evaluator type="pagecontext.component.evaluator">
+                           <params>
+                              <pagecontext>mine</pagecontext>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/node-details/node-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <libraryRoot>alfresco://user/home</libraryRoot>
+                        <rootPage>context/mine/myfiles</rootPage>
+                        <rootLabelId>location.path.myfiles</rootLabelId>
+                     </properties>
+                  </evaluation>
+                  <evaluation id="shared">
+                     <evaluators>
+                        <evaluator type="pagecontext.component.evaluator">
+                           <params>
+                              <pagecontext>shared</pagecontext>
+                           </params>
+                        </evaluator>
+                     </evaluators>
+                     <url>/components/node-details/node-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <libraryRoot>alfresco://shared</libraryRoot>
+                        <rootPage>context/shared/sharedfiles</rootPage>
+                        <rootLabelId>location.path.shared</rootLabelId>
+                     </properties>
+                  </evaluation>
+                  
                   <!-- otherwise: Repo header -->
                   <evaluation id="repo">
                      <url>/components/node-details/node-header</url>

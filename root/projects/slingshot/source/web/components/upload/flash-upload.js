@@ -409,14 +409,10 @@
             {
                p.showEvent.unsubscribe(p.showMacGeckoScrollbars, p);
             }
-            if (Config.alreadySubscribed(p.showEvent, p.hideMacGeckoScrollbars, p))
+            if (Config.alreadySubscribed(p.hideEvent, p.hideMacGeckoScrollbars, p))
             {
-               p.showEvent.unsubscribe(p.hideMacGeckoScrollbars, p);
+            	 p.hideEvent.unsubscribe(p.hideMacGeckoScrollbars, p);
             }
-
-            // Remove the toggling of the "overview" style property for the dialog itself.
-            p.showMacGeckoScrollbars = function(){};
-            p.hideMacGeckoScrollbars = function(){};
 
             // Add a class for special bug fix css classes
             Dom.addClass(p.element, "reinstantiated-fix");
@@ -605,6 +601,11 @@
       _resetGUI: function FlashUpload__resetGUI()
       {
          // Reset references and the gui before showing it
+         if (this.statusText == null)
+         {
+            this.onReady();
+         }
+         
          this.state = this.STATE_BROWSING;
          this.noOfFailedUploads = 0;
          this.noOfSuccessfulUploads = 0;

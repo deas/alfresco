@@ -130,7 +130,7 @@ function getCreateContent()
                   mimetype = attr["mimetype"] ? attr["mimetype"].toString() : null,
                   itemid = attr["itemid"] ? attr["itemid"].toString() : null,
                   formid = attr["formid"] ? attr["formid"].toString() : null,
-                  url = "create-content?destination={node.nodeRef}";
+                  url = "create-content?destination={nodeRef}";
                if (permission)
                {
                   content.permission += (content.permission.length == 0 ? "" : ",") + permission;

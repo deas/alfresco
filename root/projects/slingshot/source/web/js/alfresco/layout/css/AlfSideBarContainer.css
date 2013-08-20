@@ -1,0 +1,47 @@
+.alf-sidebar-sidebar > div {
+  margin: 0 10px;
+}
+
+.alf-sidebar-container .yui-g {
+   overflow: hidden;
+}
+
+.alf-sidebar-container .yui-u {
+   overflow: hidden;
+
+}
+
+/* Convert the YUI resize handle to be transparent and slightly wider
+   to accommodate our custom image for popping the sidebar in and out */
+.alfresco-share .alf-sidebar-container .yui-resize-handle-r {
+  background-color: #ffffff;
+  width: 8px;
+  border-right: 1px solid #DFDFDF;
+}
+
+/* Ensure that the resize handle gets some colour when being used */ 
+.alfresco-share .alf-sidebar-container .yui-resize-handle-r-active {
+  background-color: #dfdfdf;
+}
+
+/* Override the default drag handle image */
+.alfresco-share .alf-sidebar-container .yui-resize-handle-inner-r {
+  background-position: 0 6px;
+  background-color: transparent;
+  border: 1px solid #DFDFDF;
+  width: 8px;
+  height: 21px;
+  cursor: default;
+  position: fixed;
+  top: 50%;
+}
+
+/* This selector should be applied when the sidebar is shown */
+.alfresco-share .alf-sidebar-container .yui-resize-handle-inner-r.pop-in {
+   background-image: url("./images/PopInArrow.png");
+}
+
+/* This selector should be applied when the sidebar is hidden */
+.alfresco-share .alf-sidebar-container .yui-resize-handle-inner-r.pop-out {
+   background-image: url("./images/PopOutArrow.png");
+}

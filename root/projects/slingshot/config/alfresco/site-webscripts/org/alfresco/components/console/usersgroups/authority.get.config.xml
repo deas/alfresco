@@ -1,8 +1,0 @@
-<config>
-   <title>tool.authority.label</title>
-   <form>
-      <itemKind>mbean</itemKind>
-      <itemId>Alfresco:Name=Authority</itemId>
-   </form>
-   <editable>false</editable>
-</config>

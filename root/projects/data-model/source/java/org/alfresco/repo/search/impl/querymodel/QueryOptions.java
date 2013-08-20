@@ -26,8 +26,10 @@ import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.parsers.FTSParser;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.LimitBy;
+import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.QueryParameterDefinition;
 import org.alfresco.service.cmr.search.SearchParameters;
+import org.alfresco.service.cmr.search.SearchService;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -75,6 +77,10 @@ public class QueryOptions
     private Integer maxRawResultSetSizeForInMemorySort;
     
     private boolean excludeTenantFilter = false;
+    
+    private boolean isBulkFetchEnabled = true;
+
+    private QueryConsistency queryConsistency = QueryConsistency.DEFAULT;
 
     public static QueryOptions create(SearchParameters searchParameters)
     {
@@ -101,7 +107,9 @@ public class QueryOptions
         ///options.setQuery(query); Done on construction.
         options.setUseInMemorySort(searchParameters.getUseInMemorySort());
         options.setMaxRawResultSetSizeForInMemorySort(searchParameters.getMaxRawResultSetSizeForInMemorySort());
+        options.setBulkFetchEnabled(searchParameters.isBulkFetchEnabled());
         options.setExcludeTenantFilter(searchParameters.getExcludeTenantFilter());
+        options.setQueryConsistency(searchParameters.getQueryConsistency());
         return options;
     }
     /**
@@ -425,6 +433,23 @@ public class QueryOptions
     {
         this.maxRawResultSetSizeForInMemorySort = maxRawResultSetSizeForInMemorySort;
     }
+    
+    /**
+     * @return true if bulk fetch is enabled
+     */
+    public boolean isBulkFetchEnabled()
+    {
+        return isBulkFetchEnabled;
+    }
+
+    /**
+     * @param isBulkFetchEnabled 
+     */
+    public void setBulkFetchEnabled(boolean isBulkFetchEnabled)
+    {
+        this.isBulkFetchEnabled = isBulkFetchEnabled;
+    }  
+    
     /**
      * @return the tenants
      */
@@ -432,6 +457,7 @@ public class QueryOptions
     {
         return excludeTenantFilter;
     }
+    
     /**
      * @param tenants the tenants to set
      */
@@ -439,6 +465,64 @@ public class QueryOptions
     {
         this.excludeTenantFilter = excludeTenantFilter;
     }
+  
+    /**
+     * @return the queryConsistency
+     */
+    public QueryConsistency getQueryConsistency()
+    {
+        return queryConsistency;
+    }
+    /**
+     * @param queryConsistency the queryConsistency to set
+     */
+    public void setQueryConsistency(QueryConsistency queryConsistency)
+    {
+        this.queryConsistency = queryConsistency;
+    }
     
+    /**
+     * @return
+     */
+    public SearchParameters getAsSearchParmeters()
+    {
+        SearchParameters searchParameters = new SearchParameters();
+        searchParameters.setDefaultFieldName(this.getDefaultFieldName());
+        searchParameters.setDefaultFTSFieldConnective(this.getDefaultFTSFieldConnective() == Connective.OR ? SearchParameters.Operator.OR : SearchParameters.Operator.AND);
+        searchParameters.setDefaultFTSOperator(this.getDefaultFTSConnective() == Connective.OR ? SearchParameters.Operator.OR : SearchParameters.Operator.AND);
+        searchParameters.setDefaultOperator(this.getDefaultFTSConnective() == Connective.OR ? SearchParameters.Operator.OR : SearchParameters.Operator.AND);
+        searchParameters.setLanguage(SearchService.LANGUAGE_FTS_ALFRESCO);
+        if(this.getMaxItems() > 0)
+        {
+            searchParameters.setLimit(this.getMaxItems());
+            searchParameters.setLimitBy(LimitBy.FINAL_SIZE);
+            searchParameters.setMaxItems(this.getMaxItems());
+        }
+        searchParameters.setMaxPermissionChecks(this.getMaxPermissionChecks());
+        searchParameters.setMaxPermissionCheckTimeMillis(this.getMaxPermissionCheckTimeMillis());
+        searchParameters.setMlAnalaysisMode(this.getMlAnalaysisMode());
+        //searchParameters.setNamespace()   TODO: Fix
+        //searchParameters.setPermissionEvaluation()
+        searchParameters.setQuery(this.getQuery());
+        searchParameters.setSkipCount(this.getSkipCount());
+        //searchParameters.addAllAttribute()
+        for(Locale locale : this.getLocales())
+        {
+            searchParameters.addLocale(locale);
+        }
+        for(QueryParameterDefinition queryParameterDefinition: this.getQueryParameterDefinitions())
+        {
+            searchParameters.addQueryParameterDefinition(queryParameterDefinition);
+        }
+        //searchParameters.addQueryTemplate(name, template)
+        //searchParameters.addSort()
+        for(StoreRef storeRef : this.getStores())
+        {
+            searchParameters.addStore(storeRef);
+        }
+        //searchParameters.addTextAttribute()
+        searchParameters.setQueryConsistency(this.getQueryConsistency());
+        return searchParameters;
+    }
     
 }

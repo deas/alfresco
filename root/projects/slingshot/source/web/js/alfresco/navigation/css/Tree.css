@@ -1,0 +1,13 @@
+.alfresco-navigation-Tree .dijitTree {
+   overflow-x: hidden;
+   overflow-y: visible;
+}
+
+.alfresco-navigation-Tree .label {
+  font-size: 123.1%;
+  font-weight: normal;
+}
+
+.alfresco-navigation-Tree {
+   margin-bottom: 20px;
+}

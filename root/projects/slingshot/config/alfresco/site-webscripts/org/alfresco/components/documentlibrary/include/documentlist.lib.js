@@ -139,7 +139,110 @@ var DocumentList =
          userIsSiteManager = false;
       }
       return userIsSiteManager;
+   },
+   
+   /**
+    * This function inspects the view renderer configuration (typically found in the "share-documentlibrary-config.xml" file)
+    * and retrieves the view renderer details. It constructs and returns an object containing the correctly ordered views
+    * (as defined by their configured index attribute) and the JavaScript and CSS resources that they depend on in order to
+    * be processed. This information is then used by the documentlist_v2.lib.ftl file to request the dependencies and add
+    * the views to the "Options" menu. Only views with an "id" attribute are added.
+    * 
+    * @returns
+    */
+   getViewData: function getViewJsDeps()
+   {
+      var data = {};
+      data.views = [];
+      data.deps = {};
+      data.deps.js = [];
+      data.deps.css = [];
+      
+      // Iterate over the view-renderer configuration...
+      var docListConfig = config.scoped["DocumentLibrary"]["doclist"];
+      var viewRenderersConfig = docListConfig.getChild("view-renderers");
+      var viewRendererList = viewRenderersConfig.getChildren("view-renderer");
+      for (var i=0; i<viewRendererList.size(); i++)
+      {
+         // Get the attributes of the current view...
+         var viewRenderer = viewRendererList.get(i);
+         var id = viewRenderer.getAttribute("id"),
+             iconClass = viewRenderer.getAttribute("iconClass"),
+             label = viewRenderer.getAttribute("label"),
+             indexStr = viewRenderer.getAttribute("index"),
+             widget = viewRenderer.getAttribute("widget");
+         
+         if (id != null)
+         {
+            // Only process the view if an "id" attribute has been set...
+            var view = {
+               id: id,
+               iconClass: (iconClass != null) ? iconClass : id,
+               label: msg.get(label),
+               index: parseInt(indexStr),
+               widget: widget
+            };
+            data.views.push(view);
+            
+            // Obtain the JS and CSS dependencies for the view...
+            var dependenciesConfig = viewRenderer.getChild("dependencies");
+            if (dependenciesConfig)
+            {
+               var jsDependencies = dependenciesConfig.getChildren("js");
+               for (var j=0; j<jsDependencies.size(); j++)
+               {
+                  var src = jsDependencies.get(j).getAttribute("src");
+                  if (src != null && src.trim() != "")
+                  {
+                     data.deps.js.push(src.trim());
+                  }
+               }
+               var cssDependencies = dependenciesConfig.getChildren("css");
+               for (var k=0; k<cssDependencies.size(); k++)
+               {
+                  var src = cssDependencies.get(k).getAttribute("src");
+                  if (src != null && src.trim() != "")
+                  {
+                     data.deps.css.push(src.trim());
+                  }
+               }
+            }
+            
+            // See if there is a JSON config to pass to the view...
+            var jsonConfig = viewRenderer.getChildValue("json-config");
+            if (jsonConfig != null) 
+            {
+               view.jsonConfig = jsonConfig;
+            }
+         }
+      }
+      
+      // Sort the views based on their index (if provided). If no index is provided for both views
+      // compared then their current order is retained. If one view has no index then it is placed
+      // after the view with an index and if both views have an index then the lower index is placed
+      // first.
+      data.views.sort(function(a, b) {
+         if (!isNaN(a.index) && isNaN(b.index))
+         {
+            return -1;
+         }
+         else if (isNaN(a.index) && !isNaN(b.index))
+         {
+            return 1;
+         }
+         else if (isNaN(a.index) && isNaN(b.index))
+         {
+            return 0;
+         }
+         else
+         {
+            return a.index - b.index;
+         }
+      });
+      
+      return data;
    }
+   
 };
 
 /**
@@ -155,7 +258,7 @@ function doclibCommon()
    {
       model.preferences.viewRendererName = (model.preferences.simpleView ? "simple" : "detailed");
    }
-   model.viewRendererNames = ["simple", "detailed", "gallery"];
+   model.viewRendererNames = ["simple", "detailed", "gallery", "filmstrip"];
    model.repositoryUrl = DocumentList.getConfigValue("DocumentLibrary", "repository-url", null);
    model.replicationUrlMappingJSON = DocumentList.getReplicationUrlMappingJSON();
    model.rootNode = DocumentList.getConfigValue("RepositoryLibrary", "root-node", "alfresco://company/home");
@@ -164,4 +267,16 @@ function doclibCommon()
    model.userIsSiteManager = DocumentList.isUserSiteManager();
    model.metadataTemplates = {};
    model.syncMode = syncMode.getValue();
+   
+   // Get the dependencies defined for each view configured...
+   var viewData = DocumentList.getViewData();
+   model.viewRendererNames = [];
+   for (var i=0; i<viewData.views.length; i++)
+   {
+      model.viewRendererNames.push(viewData.views[i].id);
+   }
+   
+   model.viewRenderers = viewData.views;
+   model.viewJsDeps = viewData.deps.js;
+   model.viewCssDeps = viewData.deps.css;
 }

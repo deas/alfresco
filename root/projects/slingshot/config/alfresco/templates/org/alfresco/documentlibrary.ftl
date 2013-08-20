@@ -24,8 +24,7 @@
       <div class="yui-t1" id="alfresco-documentlibrary">
          <div id="yui-main">
             <div class="yui-b" id="alf-content">
-               <@region id="toolbar" scope="template"/>
-               <@region id="documentlist" scope="template"/>
+               <@region id="documentlist_v2" scope="template"/>
             </div>
          </div>
          <div class="yui-b" id="alf-filters">

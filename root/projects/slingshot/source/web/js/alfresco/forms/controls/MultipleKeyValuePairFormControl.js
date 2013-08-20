@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This extends the [MultipleEntryFormControl]{@link module:alfresco/forms/controls/MultipleEntryFormControl} to 
+ * provide a creator that allows the creation of elements as a key/value pair rather than  just as single data items.
+ * 
+ * @module alfresco/forms/controls/MultipleKeyValuePairFormControl
+ * @extends module:alfresco/forms/controls/MultipleEntryFormControl
+ * @author Dave Draper
+ */
 define(["alfresco/forms/controls/MultipleEntryFormControl",
         "dojo/_base/declare",
         "alfresco/forms/controls/MultipleKeyValuePairCreator",
@@ -24,6 +33,13 @@ define(["alfresco/forms/controls/MultipleEntryFormControl",
    
    return declare([MultipleEntryFormControl], {
       
+      /**
+       * Overrides the inherited function to instantiate a new [MultipleKeyValuePairCreator]{@link module:alfresco/forms/controls/MultipleKeyValuePairCreator}
+       * @instance
+       * @param {object} config The configuration to pass to the [MultipleKeyValuePairCreator]{@link module:alfresco/forms/controls/MultipleKeyValuePairCreator}
+       * @param {Element} domNode
+       * @returns A new [MultipleKeyValuePairCreator]{@link module:alfresco/forms/controls/MultipleKeyValuePairCreator}
+       */
       createFormControl: function(config, domNode) {
          return new MultipleKeyValuePairCreator(config);
       }

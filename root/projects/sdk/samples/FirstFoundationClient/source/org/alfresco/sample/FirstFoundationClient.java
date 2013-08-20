@@ -109,7 +109,7 @@ public class FirstFoundationClient
         NodeService nodeService = serviceRegistry.getNodeService();
         ChildAssociationRef association = nodeService.createNode(companyHome, 
         		ContentModel.ASSOC_CONTAINS, 
-        		QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, name),
+        		QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
                 ContentModel.TYPE_CONTENT,
                 contentProps);
         NodeRef content = association.getChildRef();

@@ -9,8 +9,8 @@
     <parent>
         <artifactId>alfresco-parent</artifactId>
         <groupId>org.alfresco</groupId>
-        <version>4.2.d-SNAPSHOT</version>
-        <relativePath>../../pom-experimental.xml</relativePath>
+        <version>4.2.0-QA-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -18,6 +18,11 @@
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
             <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -45,17 +50,50 @@
             <artifactId>spring-core</artifactId>
             <version>${dependency.spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.extensions.surf</groupId>
+            <artifactId>spring-webscripts</artifactId>
+            <version>${dependency.surf.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>nu.validator.htmlparser</groupId>
+                    <artifactId>htmlparser</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>        
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.extensions.surf</groupId>
+            <artifactId>spring-webscripts</artifactId>
+            <version>${dependency.surf.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -71,59 +109,7 @@
                     </excludes>
                 </configuration>
            </plugin>
- 
-            <!--  Create a jar of test classes, to be reused later -->
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                 <executions>
-                    <execution>
-                        <id>create-test-jar</id>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
-
-  <profiles>
-    <!-- Complement to the legacy-layout profile to treat the source/generated folder -->
-    <!-- TODO: regenerate these properly with wsdl2java! -->
-    <profile>
-        <id>legacy-layout</id>
-        <activation>
-            <file>
-                <exists>source</exists>
-            </file>
-        </activation>
-        <build>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>copy-generated-sources</id>
-                            <phase>validate</phase>
-                            <goals><goal>copy-resources</goal></goals>
-                            <configuration>
-                                <outputDirectory>${maven.build.layout.src.main.folder}</outputDirectory>
-                                <resources>          
-                                    <resource>
-                                        <directory>source/generated</directory>
-                                        <filtering>${maven.build.filtering.enabled}</filtering>
-                                        <includes>
-                                            <include>**/*.java</include>
-                                        </includes>
-                                    </resource>
-                                </resources> 
-                            </configuration>
-                        </execution>
-                    </executions>    
-                </plugin>                            
-            </plugins>
-        </build>
-    </profile>
-  </profiles>
 
 </project>

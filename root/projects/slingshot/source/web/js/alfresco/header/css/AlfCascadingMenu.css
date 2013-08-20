@@ -1,3 +1,14 @@
+.alfresco-share .alf-header-cascading-menu .dijitMenu .dijitMenuItemHover td,
+.alfresco-share .alf-header-cascading-menu .dijitMenu .dijitMenuItemSelected td,
+.alfresco-share .alf-header-cascading-menu .dijitMenu .dijitMenuItemHover,
+.alfresco-share .alf-header-cascading-menu .dijitComboBoxMenu .dijitMenuItemHover,
+.alfresco-share .alf-header-cascading-menu .dijitMenuItemSelected {
+   background-color: #717171;
+   background-image: none;
+   background-repeat: no-repeat;
+   color: #fff;
+}
+
 /* This has been added to set the display for cascading menus - TODO this needs to be changed
    for cases where groups have not been specified. */
 .alfresco-share .dijitPopup.Popup .alf-header-cascading-menu {

@@ -26,7 +26,7 @@ public class AdministrationServiceLocator extends org.apache.axis.client.Service
     }
 
     // Use to get a proxy class for AdministrationService
-    private java.lang.String AdministrationService_address = "http://localhost:8080/alfresco/api/AdministrationService";
+    private java.lang.String AdministrationService_address = "http://localhost:8080/alfresco/soapapi/AdministrationService";
 
     public java.lang.String getAdministrationServiceAddress() {
         return AdministrationService_address;

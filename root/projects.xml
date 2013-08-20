@@ -1,4 +1,4 @@
-<project name="projects" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project name="projects" xmlns:artifact="antlib:org.apache.maven.artifact.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
    <!-- ************************************************************************** -->
    <!-- ** This file contains the targets used to build the individual projects ** -->
@@ -23,6 +23,11 @@
    <target name="compile-core" 
            depends="init">
       <compile-java projectdir="${dir.project.core}" />
+      <compile-java-javac srcdir="${dir.project.core.src.test}" classesdir="${dir.project.core.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.core.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-core"
@@ -67,6 +72,11 @@
    <target name="compile-datamodel-java" 
            depends="init">
       <compile-java projectdir="${dir.project.datamodel}" />
+      <compile-java-javac srcdir="${dir.project.datamodel.src.test}" classesdir="${dir.project.datamodel.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.datamodel.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-datamodel"
@@ -134,12 +144,7 @@
       <jar jarfile="${dir.project.mbeans.dist}/${file.name.jar.mbeans}" 
            basedir="${dir.project.mbeans.classes}" />
    </target>
-   
-   <target name="test-mbeans" 
-           depends="compile-mbeans">
-      <run-tests projectdir="${dir.project.mbeans}" />
-   </target>
-   
+
    <target name="generate-javadocs-mbeans" 
            depends="init">
       <generate-javadocs documenttitle="Alfresco Virtualization MBean ${version.number}" 
@@ -167,6 +172,11 @@
            depends="init,
    			compile-core">
       <compile-java projectdir="${dir.project.deployment}" />
+      <compile-java-javac srcdir="${dir.project.deployment.src.test}" classesdir="${dir.project.deployment.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.deployment.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-deployment"
@@ -260,6 +270,11 @@
 	   <target name="compile-wdrdeployment" 
 	           depends="init">
 	      <compile-java projectdir="${dir.project.wdrdeployment}" />
+          <compile-java-javac srcdir="${dir.project.wdrdeployment.src.test}" classesdir="${dir.project.wdrdeployment.classes.test}">
+            <addPath2>
+                <pathelement location="${dir.project.wdrdeployment.classes}" />
+            </addPath2>
+          </compile-java-javac>
 	   </target>
 	   
 	   <target name="package-wdrdeployment"
@@ -315,6 +330,13 @@
    <target name="compile-repository-java" 
            depends="init">
       <compile-java projectdir="${dir.project.repository}" />
+      <compile-java-javac srcdir="${dir.project.repository.src.test}" classesdir="${dir.project.repository.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.repository.classes}" />
+            <pathelement location="${dir.project.core.classes.test}" />
+            <pathelement location="${dir.project.datamodel.classes.test}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="compile-repository-jibx" 
@@ -417,6 +439,8 @@
       <compile-java projectdir="${dir.project.system-build-test}" >
 	  <addPath>
             <path refid="classpath.compile.system-build-test" />
+            <pathelement location="${dir.project.solr.classes.test}" />
+            <pathelement location="${dir.project.webserviceclient.classes.test}" />
          </addPath>
 		 </compile-java>
    </target>
@@ -429,16 +453,12 @@
    </target>
    
    <target name="test-system-build-test" 
-           depends="incremental-webclient-depends, incremental-webclient, package-webserviceclient, package-system-build-test">
+           depends="incremental-webclient-depends, incremental-webclient, package-webserviceclient, package-system-build-test, deploy-solr">
 
       <antcall target="-reset-database" />
 
-      <!-- TEMP - use Spring 3.0.5 (instead of Spring 3.0.0) - remove once Spring 3.0.5 moves into 3rd-party -->
-      <path id="temp.classpath.unit.test">
-         <fileset dir="${dir.project.system-build-test.lib}">
-            <include name="**/*.jar" />
-         </fileset>
-      </path>
+      <path id="temp.classpath.unit.test" />
+
       <!-- Add on all the 3rd party libs (except Spring 3.0.0) based on the eclipse project -->
       <!-- Includes libs that are both exported and non-exported -->
       <script language="javascript" classpath="${classpath.bsf_javascript}"> <![CDATA[
@@ -477,26 +497,58 @@
             }
          }
       ]]></script>
-      
-      <path id="temp.classpath.unit.test.extension">
-          <pathelement location="${dir.project.webclient.dist}" />
-          <pathelement location="${dir.project.core.dist}/${file.name.jar.core}" />
-          <pathelement location="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
-          <pathelement location="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}" />
-          <pathelement location="${dir.project.webserviceclient.dist}/${file.name.jar.webserviceclient}" />
-          <pathelement location="${dir.project.solr.dist}/${file.name.jar.solr}" />
-          <pathelement location="${dir.project.system-build-test.dist}/${file.name.jar.system-build-test}" />
-          <pathelement location="${dir.project.system-build-test}/keystore" />
-          <pathelement location="${dir.project.solr.dist}/${file.name.jar.solr}" />
-          <pathelement location="${dir.project.datamodel.config}" />
-      </path>
 
-      <sequential>
-         <mkdir dir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}" />
+     <mkdir dir="${dir.project.system-build-test}/${dir.name.build}/${dir.name.test.results}" />
+     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+         <classpath path="${dir.project.3rdparty.lib}/${dir.name.devenv}/${file.name.jar.jacoco}"/>
+     </taskdef>
+     <jacoco:coverage destfile="${dir.project.system-build-test}/${dir.name.build}/jacoco.exec" includes="org.alfresco.*">
          <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="${dir.project.system-build-test}" jvm="${env.JAVA_HOME}/bin/java">
             <classpath>
+                <pathelement location="${dir.project.system-build-test.dist}/${file.name.jar.system-build-test}" />
+
+
+                <pathelement location="${dir.project.webclient.dist}" />
+                <pathelement location="${dir.project.remoteapi.classes}" />
+                <pathelement location="${dir.project.remoteapi.classes.test}" />
+                <pathelement location="${dir.project.webserviceclient.classes}" />
+                <pathelement location="${dir.project.webserviceclient.classes.test}" />
+                <pathelement location="${dir.project.datamodel.classes}" />
+                <pathelement location="${dir.project.core.classes}" />
+
+                <pathelement location="${dir.project.repository.config}" />
+                <pathelement location="${dir.project.repository.test.resources}" />
+
+                <pathelement location="${dir.project.system-build-test}/config" />
+                <pathelement location="${dir.project.system-build-test}/keystore" />
+
+                <fileset dir="${dir.project.system-build-test}/lib/jetty-7.0">
+                    <include name="*.jar"/>
+                </fileset>
+
+                <pathelement location="${dir.project.solr.instance}" />
+                <pathelement location="${dir.project.datamodel.config}" />
+                <pathelement location="${dir.project.solr.classes}" />
+                <pathelement location="${dir.project.solr.classes.test}" />
+
+                <fileset dir="${dir.project.solr}/lib">
+                    <include name="*.jar"/>
+                </fileset>
+
                 <path refid="temp.classpath.unit.test" />
-                <path refid="temp.classpath.unit.test.extension" />
+
+                <!-- Other 3rd party dependencies 
+                <fileset dir="${dir.project.3rdparty.lib}">
+                    <include name="*.jar"/>
+                </fileset>
+                -->
+
+                <!-- Solr dependencies -->
+                <fileset dir="${dir.project.solr.instance.lib}">
+                    <include name="*.jar"/>
+                </fileset>
+
+
             </classpath>
             <jvmarg value="-server"/>
             <jvmarg value="-XX:MaxPermSize=256M"/>
@@ -509,13 +561,7 @@
                </fileset>
             </batchtest>
          </junit>
-      </sequential>
-      
-      <!--
-      <run-tests-startup projectdir="${dir.project.system-build-test}" />
-      <run-tests projectdir="${dir.project.system-build-test}" />
-      -->
-      
+      </jacoco:coverage>
    </target>
 
 
@@ -695,6 +741,7 @@
       <compile-java-javac srcdir="${dir.project.remoteapi.src.test}" classesdir="${dir.project.remoteapi.classes.test}">
         <addPath2>
             <pathelement location="${dir.project.remoteapi.classes}" />
+            <pathelement location="${dir.project.repository.classes.test}" />
         </addPath2>
       </compile-java-javac>
    </target>
@@ -1001,6 +1048,12 @@
             <path refid="classpath.compile.solr" />
          </addPath>
       </compile-java>
+      <compile-java-javac srcdir="${dir.project.solr.src.test}" classesdir="${dir.project.solr.classes.test}">
+        <addPath2>
+            <path refid="classpath.compile.solr" />
+            <pathelement location="${dir.project.solr.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-solr"
@@ -1194,11 +1247,6 @@
            basedir="${dir.project.catalinavirtual.classes}" />
    </target>
 
-   <target name="test-catalinavirtual" 
-           depends="compile-catalinavirtual">
-      <run-tests projectdir="${dir.project.catalinavirtual}" additionalclasspath="classpath.unit.test.beyondrepo"/>
-   </target>
-
    <target name="generate-javadocs-catalinavirtual" 
            depends="init">
       <generate-javadocs documenttitle="Alfresco Catalina Valve ${version.number}" 
@@ -1226,6 +1274,12 @@
    <target name="compile-webframeworkcommons" 
            depends="init">
       <compile-java projectdir="${dir.project.webframeworkcommons}" />
+      <compile-java-javac srcdir="${dir.project.webframeworkcommons.src.test}" classesdir="${dir.project.webframeworkcommons.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.webframeworkcommons.classes}" />
+            <pathelement location="${dir.project.core.classes.test}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-webframeworkcommons"
@@ -1454,6 +1508,18 @@
       
       <!-- Delete the now empty Dojo release directory -->
       <delete dir="${dir.project.slingshot.assemble}/${dojo.archive}"/>
+   </target>
+   
+   <target name="unpack-development-dojo" depends="init">
+      <delete dir="${dojo.tomcat.target}"/>
+	  <unzip src="${file.zip.slingshot.dojo.development}"
+             dest="${dir.project.slingshot.assemble}" />
+      <move todir="${dojo.tomcat.target}" includeEmptyDirs="yes" verbose="${copy.verbose}">
+         <fileset dir="${dir.project.slingshot.assemble}/${dojo.archive.development}">
+            <include name="**/*" />
+         </fileset>
+      </move>
+      <delete dir="${dir.project.slingshot.assemble}/${dojo.archive.development}"/>
    </target>
    
    <target name="minimize-slingshot-javascript"
@@ -1747,6 +1813,13 @@
    <target name="compile-webclient" 
            depends="init">
       <compile-java projectdir="${dir.project.webclient}" />
+      <compile-java-javac srcdir="${dir.project.webclient.src.test}" classesdir="${dir.project.webclient.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.webclient.classes}" />
+            <pathelement location="${dir.project.core.classes.test}" />
+            <pathelement location="${dir.project.repository.classes.test}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-webclient" 
@@ -2056,6 +2129,11 @@
    <target name="compile-spp"
            depends="init,incremental-webclient-depends">
       <compile-java projectdir="${dir.module.spp}" />
+      <compile-java-javac srcdir="${dir.module.spp.src.test}" classesdir="${dir.module.spp.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.module.spp.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
 
    <target name="package-spp"
@@ -2272,6 +2350,11 @@
    <target name="compile-wcmquickstart-clientapi" 
            depends="init">
       <compile-java projectdir="${dir.project.wcmquickstart-clientapi}" />
+      <compile-java-javac srcdir="${dir.project.wcmquickstart-clientapi.src.test}" classesdir="${dir.project.wcmquickstart-clientapi.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.wcmquickstart-clientapi.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-wcmquickstart-clientapi"
@@ -2440,6 +2523,11 @@
    <target name="compile-webserviceclient" 
            depends="init">
       <compile-java-inc-generated projectdir="${dir.project.webserviceclient}" />
+      <compile-java-javac srcdir="${dir.project.webserviceclient.src.test}" classesdir="${dir.project.webserviceclient.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.webserviceclient.classes}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
    
    <target name="package-webserviceclient"
@@ -2890,6 +2978,12 @@
                    classpathref="ftr.classpath" includeAntRuntime="false">
 
       </javac>
+      <compile-java-javac srcdir="${dir.project.file-transfer-receiver.src.test}" classesdir="${dir.project.file-transfer-receiver.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.file-transfer-receiver.classes}" />
+            <pathelement location="${dir.project.repository.classes.test}" />
+        </addPath2>
+      </compile-java-javac>
    </target>
 
    <target name="version-file-transfer-receiver">
@@ -2967,4 +3061,5 @@
          update="true"
       />
    </target>
+
 </project>

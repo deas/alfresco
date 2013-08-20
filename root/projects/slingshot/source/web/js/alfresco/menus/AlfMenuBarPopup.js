@@ -16,27 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfMenuBarPopup
+ * @extends dijit/PopupMenuBarItem
+ * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreRwd
+ * @mixes module:alfresco/menus/_AlfPopupCloseMixin
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/PopupMenuBarItem",
         "alfresco/core/Core",
+        "alfresco/core/CoreRwd",
+        "alfresco/menus/_AlfPopupCloseMixin",
         "dojo/dom-construct",
         "dojo/dom-class",
         "alfresco/menus/AlfMenuGroups"], 
-        function(declare, PopupMenuBarItem, AlfCore, domConstruct, domClass, AlfMenuGroups) {
+        function(declare, PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domConstruct, domClass, AlfMenuGroups) {
    
-   return declare([PopupMenuBarItem, AlfCore], {
+   return declare([PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin], {
       
       /**
        * The scope to use for i18n messages.
        * 
-       * @property i18nScope {String}
+       * @instance
+       * @type {string}
+       * @default "org.alfresco.Menus"
        */
       i18nScope: "org.alfresco.Menus",
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/AlfMenuBarPopup.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBarPopup.css"}],
       
@@ -44,7 +59,8 @@ define(["dojo/_base/declare",
        * Used to indicate whether or not to display a down arrow that indicates that this is a drop-down menu.
        * True by default.
        * 
-       * @property {boolean} showArrow
+       * @instance
+       * @type {boolean}
        * @default true
        */
       showArrow: true,
@@ -53,7 +69,8 @@ define(["dojo/_base/declare",
        * This CSS class is added to the container node when an icon is to be included with the label. By
        * default it simply makes room for the icon - but this can be overridden.
        * 
-       * @property {string} labelWithIconClass
+       * @instance
+       * @type {string}
        * @default "alf-menu-bar-popup-label-node"
        */
       labelWithIconClass: "alf-menu-bar-popup-label-node",
@@ -62,7 +79,7 @@ define(["dojo/_base/declare",
        * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
        * to ensure that an unencoded label isn't set and then replaced. 
        * 
-       * @method postMixInProperties
+       * @instance
        */
       postMixInProperties: function alf_menus_AlfMenuBarPopup__postMixInProperties() {
          if (this.label)
@@ -78,13 +95,13 @@ define(["dojo/_base/declare",
        * be instances of alfresco/menus/AlfMenuGroup (where instance has its own list of menu items). However, this
        * widget should be able to accommodate any widget.
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alf_menus_AlfMenuBarPopup__postCreate() {
          
          if (this.iconClass && this.iconClass != "dijitNoIcon")
          {
-            domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode, "first");
+            this.iconNode = domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode, "first");
             if (this.label)
             {
                domClass.add(this.containerNode, this.labelWithIconClass);
@@ -102,7 +119,16 @@ define(["dojo/_base/declare",
          
          // A class in the hierarchy (PopupMenuItem) is expecting a "popup" attribute that contains the
          // dropdown menu item. We are going to construct this from the widgets provided.
-         this.popup = new AlfMenuGroups({widgets: this.widgets});
+         this.createWidget({
+            name: "alfresco/menus/AlfMenuGroups",
+            assignTo: "popup",
+            config: {
+               widgets: this.widgets
+            }
+         });
+         
+         // Call the method provided by the _AlfPopupCloseMixin to handle popup close events...
+         this.registerPopupCloseEvent();
       }
    });
 });

@@ -45,6 +45,7 @@ import org.springframework.extensions.webscripts.json.JSONWriter;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
+import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
 /**
@@ -209,15 +210,16 @@ public class ClusterAwarePathStoreObjectPersister extends PathStoreObjectPersist
      * @param message   String message data
      */
     @Override
-    public void onMessage(String message)
+    public void onMessage(Message<String> message)
     {
         final boolean debug = logger.isDebugEnabled();
         
         // process message objects and extract the payload
-        MessageProcessor proc = new MessageProcessor(message);
+        String messageObj = message.getMessageObject();
+        MessageProcessor proc = new MessageProcessor(messageObj);
         if (!proc.isSender())
         {
-            if (debug) logger.debug("Received message:\r\n" + message);
+            if (debug) logger.debug("Received message:\r\n" + messageObj);
             
             // process the mesage types we understand - only this one currently
             if (PathInvalidationMessage.TYPE.equals(proc.getMessageType()))

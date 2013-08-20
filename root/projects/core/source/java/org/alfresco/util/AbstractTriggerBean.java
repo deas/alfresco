@@ -124,10 +124,27 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
             else
             {
                 logger.info("Job " + getBeanName() + " is active");
+                
+                String jobName = jobDetail.getKey().getName();
+                String groupName = jobDetail.getKey().getGroup();
+                
+                if(scheduler.getJobDetail(jobName, groupName) != null)
+                {
+                	// Job is already defined delete it
+                	if(logger.isDebugEnabled())
+                	{
+                		logger.debug("job already registered with scheduler jobName:" + jobName);
+                	}
+                	scheduler.deleteJob(jobName, groupName);
+                }
+            
+            	if(logger.isDebugEnabled())
+            	{
+            		logger.debug("schedule job:" + jobDetail + this.trigger);
+            	}
                 scheduler.scheduleJob(jobDetail, this.trigger);
             }
         }
-
     }
         
     /**

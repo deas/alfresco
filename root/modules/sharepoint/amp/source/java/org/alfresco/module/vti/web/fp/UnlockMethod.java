@@ -21,7 +21,6 @@ package org.alfresco.module.vti.web.fp;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Implements the WebDAV UNLOCK method with VTI specific
@@ -43,7 +42,7 @@ public class UnlockMethod extends org.alfresco.repo.webdav.UnlockMethod
     @Override
     protected FileInfo getNodeForPath(NodeRef rootNodeRef, String path) throws FileNotFoundException
     {
-        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, URLDecoder.decode(path));
+        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, path);
         FileInfo workingCopy = getWorkingCopy(nodeInfo.getNodeRef());
         return workingCopy != null ? workingCopy : nodeInfo;
     }

@@ -51,6 +51,7 @@
       
       // Decoupled event listeners
       YAHOO.Bubbling.on("tagRefresh", this.onTagRefresh, this);
+      YAHOO.Bubbling.on("changeFilter", this.onTagRefresh, this);	  
       
       return this;
    };

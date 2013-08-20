@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/tests/CommonTestService
+ * @extends module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "doh/runner",
@@ -30,11 +36,13 @@ define(["dojo/_base/declare",
       /**
        * This will be initialised as an object containing references to all the objects
        * that will be used in the tests. This is setup in the "testSetup" test.
+       * 
+       * @instance
        */
       testObjects: null,
       
       /**
-       * 
+       * @instance
        */
       constructor: function() {
          
@@ -67,7 +75,7 @@ define(["dojo/_base/declare",
        * 
        * At the same time it performs a DOH assertion to ensure that the object has been found.
        * 
-       * @method findTestObjects
+       * @instance
        * @param {array} targetObjects An array of Strings of the objects to find.
        */
       findTestObjects: function(targetObjects) {

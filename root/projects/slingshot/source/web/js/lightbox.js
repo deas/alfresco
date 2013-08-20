@@ -213,10 +213,13 @@ function showLightbox(objLink)
 
       // NOTE: ALFRESCO: Not required for currently supported browsers
 		// Hide select boxes as they will 'peek' through the image in IE
-		/*selects = document.getElementsByTagName("select");
-        for (i = 0; i != selects.length; i++) {
-                selects[i].style.visibility = "hidden";
-        }*/
+		/*for (i = 0; i != selects.length; i++) {
+			//MNT-8841 Unexpected result for authService.getContainingAuthorities() inside transaction
+			if (selects[i].name != "limit")
+			{
+				selects[i].style.visibility = "hidden";
+			}
+		}*/
 
       // NOTE: ALFRESCO: perform fade in effect
 	   objLightbox.style.opacity = 0;
@@ -260,9 +263,12 @@ function hideLightbox()
 
    // NOTE: ALFRESCO: Not required for currently supported browsers
 	// make select boxes visible
-	/*selects = document.getElementsByTagName("select");
-    for (i = 0; i != selects.length; i++) {
-		selects[i].style.visibility = "visible";
+	/*for (i = 0; i != selects.length; i++) {
+		//MNT-8841 Unexpected result for authService.getContainingAuthorities() inside transaction
+		if (selects[i].name != "limit")
+		{
+			selects[i].style.visibility = "visible";
+		}
 	}*/
 
 	// disable keypress listener

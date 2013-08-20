@@ -1,6 +1,6 @@
 <component>
     <name>tomcatservice</name>
-    <description>Start tomcat service</description>
+    <description>//Start tomcat service</description>
     <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>
@@ -94,7 +94,11 @@
         <actionGroup>
         <actionList>
 
-	<logMessage text="START: Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}" />
+	<logMessage text="START: Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}" >
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</logMessage>
         <runProgram abortOnError="0" showMessageOnError="0">
             <progressText>Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}</progressText>
             <program>${application_server_directory.dos}\scripts\serviceinstall.bat</program>
@@ -124,7 +128,11 @@
                 <compareValues value1="${tomcatservice_username}" logic="does_not_equal" value2=""/>
             </ruleList>
         </runProgram>
-	<logMessage text="END: Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}" />
+	<logMessage text="END: Installing Tomcat as a Windows service with name ${tomcat_unique_service_name}" >
+	    <ruleList>
+		<platformTest type="windows" />
+	    </ruleList>
+	</logMessage>
 
         </actionList>
         <ruleList>
@@ -132,6 +140,7 @@
         </ruleList>
         </actionGroup>
 
+        <logMessage text="START: wait for port ${application_server_port}" />
         <waitForPort port="${application_server_port}" timeout="30000">
             <ruleList>
                 <platformTest type="windows"/>
@@ -139,6 +148,7 @@
                 <isTrue value="${tomcatservice_waittostart}" />
             </ruleList>
         </waitForPort>
+        <logMessage text="END: wait for port ${application_server_port}" />
 
 	<runProgram>
 	    <program>sc</program>

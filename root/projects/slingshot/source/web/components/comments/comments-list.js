@@ -35,7 +35,8 @@
 
       YAHOO.Bubbling.on("editorInitialized", this.onEditorInitialized, this);
       YAHOO.Bubbling.on("commentNode", this.onCommentNode, this);
-
+	  YAHOO.Bubbling.on("versionReverted", function(){ this.widgets.alfrescoDataTable.reloadDataTable(); }, this);
+	  
       this.busy = false;
       this.hashChecked = false;
       return this;
@@ -297,6 +298,10 @@
          }
          
          // create the form that does the validation/submit
+         if (this.widgets.commentForm != null)
+         {
+            this.widgets.commentForm.hideErrorContainer();
+         }
          var commentForm = new Alfresco.forms.Form(formId);
          this.widgets.commentForm = commentForm;
          commentForm.addValidation(rowId + "-content", Alfresco.forms.validation.mandatory, null);
@@ -474,7 +479,7 @@
          {
             this.hashChecked = true;
             // Ensure comments form is visible and in view
-            this.onAddCommentClick();
+            this.onAddCommentClick(true);
             Dom.get(this.id + "-add-comment").scrollIntoView();
          }
       },
@@ -500,9 +505,22 @@
        *
        * @method onAddCommentClick
        */
-      onAddCommentClick: function CommentsList_onAddCommentClick()
+      onAddCommentClick: function CommentsList_onAddCommentClick(hackArg)
       {
          this.restoreEditForm();
+         
+         // This is a quite unashamed hack that has been added to solve the issues raised
+         // by ALF-18688. The forms runtime validation has tried to be applied in this
+         // context and is not working properly between editing/adding/cancelling comments.
+         // In order to resolve the issues this was the only fix that was found after several
+         // hours of investigation. "hackArg" is only passed from "onEditorInitialized" function
+         // which ensures the form renders correctly on page load, but without the hack the call
+         // to "setupAddCommentForm" ensures posts are successful when adding a new comment after
+         // editing an existing one.
+         if (hackArg == null)
+         {
+            this.setupAddCommentForm();
+         }
          Dom.addClass(this.widgets.onAddCommentClick.get("element"), "hidden");
          this.widgets.addCommentEditor.setContent("");
          this.widgets.addCommentEditor.save();
@@ -613,11 +631,18 @@
             return;
          }
 
+         
          // ajax request success handler
          var success = function CommentsList_deleteComment_success(response, object)
          {
             // remove busy message
             this._releaseBusy();
+            if (this.widgets.alfrescoDataTable.lastResultCount == 1 &&
+                this.widgets.alfrescoDataTable.currentSkipCount > 0)
+            {
+               var adt = this.widgets.alfrescoDataTable;
+               adt.currentSkipCount = adt.currentSkipCount - adt.currentMaxItems;
+            }
             this.widgets.alfrescoDataTable.reloadDataTable();
          };
 

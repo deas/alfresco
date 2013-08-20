@@ -16,6 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is an abstract class that is calls [processWidgets]{@link module:alfresco/core/Core#processWidgets} to
+ * instantiate the defined widgets. 
+ * 
+ * @module alfresco/core/ProcessWidgets
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
@@ -25,37 +36,40 @@ define(["dojo/_base/declare",
         "dojo/_base/array"], 
         function(declare, _Widget, _Templated, AlfCore, template, domConstruct, array) {
    
-   /**
-    * TODO: It's possible that this widget is not really needed anymore - need to check.
-    */
    return declare([_Widget, _Templated, AlfCore], {
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {String} template
        */
       templateString: template,
       
       /**
-       * @property {object} config
+       * @instance
+       * @type {Object} config 
        * @default null
+       * @deprecated Not sure that this is required anymore?
        */
       config: null,
       
       /**
-       * @property {string} configUrl
+       * @instance {string} configUrl
        * @default ""
+       * @deprecated Not sure that this is required anymore?
        */
       configUrl: "",
       
       /**
-       * @property {string} baseClass
+       * @instance {string} baseClass
        * @default "widgets"
+       * @deprecated Not sure that this is required anymore?
        */
       baseClass: "widgets",
       
       /**
-       * @method postCreate
+       * Implements the Dojo widget lifecycle function to call [processWidgets]{@link module:alfresco/core/Core#processWidgets}
+       * @instance postCreate
        */
       postCreate: function alfresco_core_ProcessWidgets__postCreate() {
          if (this.widgets)

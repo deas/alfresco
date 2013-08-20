@@ -32,6 +32,8 @@
        Cookie = YAHOO.util.Cookie,
        WebEditor = YAHOO.org.springframework.extensions.webeditor;
 
+   var markerSpan;
+
    YAHOO.namespace('org.alfresco.awe.app');
 
    /**
@@ -61,17 +63,38 @@
          // edit content icon event
          Bubbling.on(YAHOO.org.alfresco.awe.app.AWE_EDIT_CONTENT_CLICK_EVENT, function onEditContent_click(e, args) 
          {
-            this.loadEditForm(args[1]);
+	    if (args[1].hasWritePermission == true)
+	    {
+               this.loadEditForm(args[1]);
+	    }
+	    else
+	    {
+               this.showAccessDeniedDialog(args[1].title);
+	    }
          }, this);
          // create content icon event
          Bubbling.on(YAHOO.org.alfresco.awe.app.AWE_NEW_CONTENT_CLICK_EVENT, function onNewContent_click(e, args) 
          {
-            this.loadCreateForm(args[1]);
+            if (args[1].hasWritePermission == true)
+            {
+               this.loadCreateForm(args[1]);
+            }
+            else
+            {
+               this.showAccessDeniedDialog(args[1].title);
+            }
          }, this);
          // delete content icon event
          Bubbling.on(YAHOO.org.alfresco.awe.app.AWE_DELETE_CONTENT_CLICK_EVENT, function onDeleteContent_click(e, args) 
          {
-            this.confirmDeleteNode(args[1]);
+            if (args[1].hasDeletePermission == true)
+            {
+               this.confirmDeleteNode(args[1]);
+            }
+            else
+            {
+               this.showAccessDeniedDialog(Alfresco.util.message.call(this, 'title.confirm.delete'));
+            }
          }, this);
 
          // login/logoff
@@ -212,6 +235,28 @@
                   });
          document.location.replace(args.config.redirectUrl);
       },
+      
+     showAccessDeniedDialog: function AWE_App_showAccessDeniedDialog(title)
+     {
+       var configDialog = Alfresco.util.PopupManager.displayPrompt(
+         {
+            title: title,
+            text: this.getMessage('message.do-not-have-permission'),
+            modal: true,
+            spanClass: "wait",
+            displayTime: 0,
+            buttons: [
+            {
+               text: this.getMessage("button.ok"),
+               handler: function AWE_Ok()
+               {
+               this.hide();
+                  this.destroy();
+               }
+            }
+            ]
+         }, Dom.get('wef'));     
+     },
       
       confirmDeleteNode: function AWE_App_confirmDeleteNode(editable)
       {
@@ -478,6 +523,10 @@
 	     for (var i = 0; i < editables.length; i++) 
 	     {
 	        var editable = editables[i].config;
+                if (editable.hasWritePermission == false)
+                {
+                    continue;
+                }
 	        if(types[editable.type] == null)
 	        {
 		       var o = Alfresco.util.deepCopy(editable);
@@ -505,6 +554,10 @@
          for (var i = 0; i < editables.length; i++) 
          {
             var editable = editables[i].config, modifiedTitle = editable.title.replace("Edit ","");
+	    if (editable.hasWritePermission == false)
+            {
+               continue;
+            }
             menuConfig.push(
             {
 	           text: Alfresco.util.message.call(this, 'message.edit', '', modifiedTitle),
@@ -651,7 +704,7 @@
             var config = configs[i];
             var node = nodes[i];
             var id = config.id;
-            var markerSpan = Dom.get(id);
+            markerSpan = Dom.get(id);
 
             if(node.error)
             {
@@ -698,7 +751,7 @@
                   imgElem.setAttribute("title", Alfresco.util.message.call(this, 'message.edit', '', editableConfig.title)); 
                }
 
-               Event.on(elem, 'click', function AWE_EDIT_CONTENT_CLICK_EVENT(e, o)
+               Event.addListener(elem, 'click', function AWE_EDIT_CONTENT_CLICK_EVENT(e, o)
                {
                   Event.preventDefault(e);
                   Bubbling.fire(YAHOO.org.alfresco.awe.app.AWE_EDIT_CONTENT_CLICK_EVENT, o);
@@ -716,7 +769,7 @@
                   imgElem.setAttribute("title", Alfresco.util.message.call(this, 'message.create', '', editableConfig.typeTitle)); 
                }
 
-               Event.on(newElem, 'click', function AWE_NEW_CONTENT_CLICK_EVENT(e, o)
+               Event.addListener(newElem, 'click', function AWE_NEW_CONTENT_CLICK_EVENT(e, o)
                {
                   Event.preventDefault(e);
                   Bubbling.fire(YAHOO.org.alfresco.awe.app.AWE_NEW_CONTENT_CLICK_EVENT, o);
@@ -734,7 +787,7 @@
                   imgElem.setAttribute("title", Alfresco.util.message.call(this, 'message.delete', '', editableConfig.title)); 
                }
 
-               Event.on(deleteElem, 'click', function AWE_DELETE_CONTENT_CLICK_EVENT(e, o)
+               Event.addListener(deleteElem, 'click', function AWE_DELETE_CONTENT_CLICK_EVENT(e, o)
                {
                   Event.preventDefault(e);
                   Bubbling.fire(YAHOO.org.alfresco.awe.app.AWE_DELETE_CONTENT_CLICK_EVENT, o);
@@ -927,6 +980,12 @@
                            fn: function logoutSuccess(e)
                            {
                               Bubbling.fire('awe' + WEF.SEPARATOR + 'loggedout', ribbonObj);
+                              var elem = Selector.query('a.alfresco-content-edit', markerSpan, true);
+                              Event.removeListener(elem, 'click');
+                              var newElem = Selector.query('a.alfresco-content-new', markerSpan, true);
+                              Event.removeListener(newElem, 'click');
+                              var deleteElem = Selector.query('a.alfresco-content-delete', markerSpan, true);
+                              Event.removeListener(deleteElem, 'click');
                               this.hide();
                               this.destroy();
                            },

@@ -1,0 +1,17 @@
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView {
+   padding: 10px;
+}
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView table {
+   border-collapse: separate;
+   border-spacing: 0;
+   width: 100%;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView > TR {
+   border-bottom: 1px solid #F0F0F0;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView.dndHighlight {
+   outline: 2px solid #4F94C9;
+   outline-offset: -2px;
+}

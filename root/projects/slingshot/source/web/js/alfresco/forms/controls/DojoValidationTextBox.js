@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/DojoValidationTextBox
+ * @extends module:alfresco/forms/controls/BaseFormControl
+ * @author Dave Draper
+ */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "dijit/form/ValidationTextBox"], 
@@ -23,7 +29,10 @@ define(["alfresco/forms/controls/BaseFormControl",
    
    return declare([BaseFormControl], {
       
-      getWidgetConfig: function() {
+      /**
+       * @instance
+       */
+      getWidgetConfig: function alfresco_forms_controls_DojoValidationTextBox__getWidgetConfig() {
          // Return the configuration for the widget
          return {
             id : this.generateUuid(),
@@ -32,17 +41,28 @@ define(["alfresco/forms/controls/BaseFormControl",
          };
       },
       
-      createFormControl: function(config, domNode) {
+      /**
+       * @instance
+       */
+      createFormControl: function alfresco_forms_controls_DojoValidationTextBox__createFormControl(config, domNode) {
          return new ValidationTextBox(config);
       },
       
       /**
        * This will be set to the last known value of the text box before the current keyup event.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
        */
       _oldValue: null,
       
       /**
        * This is used as a temporary buffer variable to keep track of changes to the old value. 
+       * 
+       * @instance
+       * @type {string}
+       * @default null
        */
       __oldValue: null,
 
@@ -50,8 +70,10 @@ define(["alfresco/forms/controls/BaseFormControl",
        * Overrides the default change events to use blur events on the text box. This is done so that we can validate
        * on every single keypress. However, we need to keep track of old values as this information is not readily
        * available from the text box itself.
+       * 
+       * @instance
        */
-      setupChangeEvents: function() {
+      setupChangeEvents: function alfresco_forms_controls_DojoValidationTextBox__setupChangeEvents() {
          var _this = this;
          
          if (this.wrappedWidget)

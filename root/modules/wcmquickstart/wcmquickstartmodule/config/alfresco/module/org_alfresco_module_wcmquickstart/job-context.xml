@@ -11,13 +11,8 @@
             <property name="concurrent" value="false" />
          </bean>
       </property>
-      <property name="scheduler">
-         <ref bean="schedulerFactory" />
-      </property>
-      <property name="cronExpression">
-         <!-- The default is to check every 30 seconds. May well want to reduce the frequency on a production box. -->
-         <value>${wcmqs.feedbackProcessor.schedule}</value>
-      </property>
+      <property name="scheduler" ref="schedulerFactory" />
+      <property name="cronExpression" value="${wcmqs.feedbackProcessor.schedule}" />
    </bean>
 
    <bean id="feedbackProcessor" class="org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.FeedbackProcessor">
@@ -25,6 +20,7 @@
       <property name="searchService" ref="searchService" />
       <property name="txHelper" ref="retryingTransactionHelper" />
       <property name="repositoryState" ref="repositoryState"/>
+      <property name="jobLockService" ref="jobLockService" />
    </bean>
 
    <bean id="feedbackProcessorHandler" abstract="true" init-method="init">
@@ -56,18 +52,14 @@
                   <property name="txHelper" ref="retryingTransactionHelper" />
                   <property name="behaviourFilter" ref="policyBehaviourFilter" />
                   <property name="repositoryState" ref="repositoryState"/>
+                  <property name="jobLockService" ref="jobLockService" />
                </bean>
             </property>
             <property name="targetMethod" value="run" />
          </bean>
       </property>
-      <property name="scheduler">
-         <ref bean="schedulerFactory" />
-      </property>
-      <property name="cronExpression">
-         <!-- Normally check at midnight each day. -->
-         <value>0 0 0 * * ?</value>
-      </property>
+      <property name="scheduler" ref="schedulerFactory" />
+      <property name="cronExpression" value="0 0 0 * * ?" />
    </bean>
 
    <bean id="org_alfresco_module_wcmquickstart_processPublishingQueues" class="org.alfresco.util.CronTriggerBean">
@@ -79,19 +71,15 @@
                   <property name="transactionService" ref="TransactionService" />
                   <property name="publishService" ref="org_alfresco_module_wcmquickstart_publishingService" />
                   <property name="repositoryState" ref="repositoryState"/>
+                  <property name="jobLockService" ref="jobLockService" />
                </bean>
             </property>
             <property name="targetMethod" value="run" />
             <property name="concurrent" value="false" />
          </bean>
       </property>
-      <property name="scheduler">
-         <ref bean="schedulerFactory" />
-      </property>
-      <property name="cronExpression">
-         <!-- The default is to check every minute. -->
-         <value>${wcmqs.publishQueueProcessor.schedule}</value>
-      </property>
+      <property name="scheduler" ref="schedulerFactory" />
+      <property name="cronExpression" value="${wcmqs.publishQueueProcessor.schedule}" />
    </bean>
 
    <bean id="org_alfresco_module_wcmquickstart_dynamicQueryRefreshProcess" class="org.alfresco.util.CronTriggerBean">
@@ -104,20 +92,15 @@
                   <property name="nodeService" ref="nodeService" />
                   <property name="collectionHelper" ref="org_alfresco_module_wcmquickstart_collectionHelper" />
                   <property name="repositoryState" ref="repositoryState"/>
+                  <property name="jobLockService" ref="jobLockService" />
                </bean>
             </property>
             <property name="targetMethod" value="run" />
             <property name="concurrent" value="false" />
          </bean>
       </property>
-      <property name="scheduler">
-         <ref bean="schedulerFactory" />
-      </property>
-      <property name="cronExpression">
-         <!-- The default is to check every minute. May well want to reduce the frequency on a production box. -->
-         <value>${wcmqs.dynamicCollectionProcessor.schedule}</value>
-      </property>
+      <property name="scheduler" ref="schedulerFactory" />
+      <property name="cronExpression" value="${wcmqs.dynamicCollectionProcessor.schedule}" />
    </bean>
-
 
 </beans>

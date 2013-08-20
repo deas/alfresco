@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/MultipleEntryFormControl
+ * @extends alfresco/forms/controls/BaseFormControl
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
@@ -34,14 +40,35 @@ define(["dojo/_base/declare",
                  focusUtil, registry, aspect, Source, domConstruct) {
    
    return declare([_Widget, _Templated, AlfCore], {
+      
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type cssRequirements {Array}
+       */
       cssRequirements: [{cssFile:"./css/MultipleEntryCreator.css"}],
+      
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {Array} i18nRequirements
+       */
       i18nRequirements: [{i18nFile: "./i18n/MultipleEntryCreator.properties"}],
+      
+      /**
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {String} template
+       */
       templateString: template,
       
       /**
        * This constructor ensures that valid data has been set.
+       * @instance
        */
-      constructor: function(args) {
+      constructor: function alfresco_forms_controls_MultipleEntryCreator__constructor(args) {
          declare.safeMixin(this, args);
          // The data supplied to the widget will be some form of JSON. It should be an array
          // where each element will correspond to a MultipleEntryElement.
@@ -72,12 +99,19 @@ define(["dojo/_base/declare",
 
       /**
        * Indicates whether or not re-ordering should be enabled through the use of drag and drop
+       * @instance
+       * @type {boolean}
+       * @default false
        */
-      enableDND: true,
+      enableDND: false,
       
       /**
        * This is a refrence to the Drag-And-Drop source container. This will be set to be the
        * "currentEntries" node during the constructor (unless overridden by and extending class)
+       * 
+       * @instance
+       * @type {object}
+       * @default null
        */
       _dndSource : null,
       
@@ -85,8 +119,13 @@ define(["dojo/_base/declare",
        * This function is used to create drag and drop elements from the supplied item data. It is used
        * to construct BOTH avatars (the item when being dragged) and item templates. The item template is 
        * constructed by the createElementWrapper function
+       * 
+       * @instance
+       * @param {object} item The item to create an avatar or element for
+       * @param {string} hint Indicates what to create
+       * @return {object} 
        */
-      dndCreator: function(item, hint) {
+      dndCreator: function alfresco_forms_controls_MultipleEntryCreator__dndCreator(item, hint) {
          
          var type = this.getDNDType(); 
          var node; // The node will either be the avatar or the wrapper...
@@ -112,8 +151,11 @@ define(["dojo/_base/declare",
        * starts the nodes being moved will be selected) and finds the widget mapped to the node of the
        * item supplied. This widget contains all of the information required to pass on to the 
        * "createDNDAvatarNode" function.
+       * 
+       * @instance
+       * @param {object} item The item to create an object for
        */
-      getDNDAvatarWidget: function(item) {
+      getDNDAvatarWidget: function alfresco_forms_controls_MultipleEntryCreator__getDNDAvatarWidget(item) {
          var widget = null;
          var selectedNodes = this._dndSource.getSelectedNodes();
          array.forEach(selectedNodes, function(node, index) {
@@ -139,25 +181,34 @@ define(["dojo/_base/declare",
        * This creates the default Avatar DOM node for a MultipleEntryElement. It is nothing more than a basic
        * DIV element where the inner HTML is set to the value field of the widget value. This function should
        * be overridden by extending classes to make sure that the Avatar shows the appropriate information.
+       * 
+       * @instance
+       * @param {object} widget
        */
-      createDNDAvatarNode: function(widget) {
+      createDNDAvatarNode: function alfresco_forms_controls_MultipleEntryCreator__createDNDAvatarNode(widget) {
          return domConstruct.create("div", { innerHTML: this.encodeHTML((widget && widget.value && widget.value.value) ? widget.value.value : "")});
       },
       
       /**
-       *  This is the list of elements to display/edit. It will be instantiated in the constructor. 
+       * This is the list of elements to display/edit. It will be instantiated in the constructor.
+       * @instance
+       * @default null 
        */
       elements: null,
       
       /**
        * Keeps track of all the wrapper objects - should this be a map??
+       * @instance
+       * @default
        */
       elementWrappers: null,
       
       /**
        * Creates each element to display/edit
+       * 
+       * @instance
        */
-      postCreate: function() {
+      postCreate: function alfresco_forms_controls_MultipleEntryCreator__postCreate() {
          // Setup up the initial contents of the widget... 
          // Drag-and-drop...
          /*
@@ -182,8 +233,11 @@ define(["dojo/_base/declare",
        * the MultipleEntryCreator. By default it returns the value returned by calling the
        * "getDNDType" function as only element in an array. This function should be overridden
        * if the extending class wishes to support other types being droppped into it.
+       * 
+       * @instance
+       * @returns {string[]}
        */
-      getAcceptedDNDTypes: function() {
+      getAcceptedDNDTypes: function alfresco_forms_controls_MultipleEntryCreator__getAcceptedDNDTypes() {
          return [this.getDNDType()];
       },
       
@@ -192,8 +246,11 @@ define(["dojo/_base/declare",
        * this returns "MultipleEntryElementWrapper". This function should be overridden by
        * extending classes to specify more specific data. This is especially important if 
        * the accepted types that can be dropped needs to be constrained.
+       * 
+       * @instance
+       * @returns {string}
        */
-      getDNDType: function() {
+      getDNDType: function alfresco_forms_controls_MultipleEntryCreator__getDNDType() {
          return "MultipleEntryElementWrapper";
       },
       
@@ -201,8 +258,10 @@ define(["dojo/_base/declare",
        * This function is used to create all of the entries. It is provided for use at both widget
        * instantiation and when a new value is passed. It will iterate over the supplied array
        * and create wrappers and elements for each entry.
+       * 
+       * @instance
        */
-      createEntries: function(elements) {
+      createEntries: function alfresco_forms_controls_MultipleEntryCreator__createEntries(elements) {
          if (elements == null) 
          {
             elements = [];
@@ -235,13 +294,20 @@ define(["dojo/_base/declare",
       
       /**
        * Creates the wrapper that wraps the widget. Calls "createElementWidget" to create the widget.
+       * 
+       * @instance
+       * @param {object} elementConfig
        */
-      createElementWrapper: function(elementConfig) {
+      createElementWrapper: function alfresco_forms_controls_MultipleEntryCreator__createElementWrapper(elementConfig) {
          // Create the element widget from the element configuration and then create a new
          // wrapper to hold it and add the wrapper at the end of the list of entries...
          this.alfLog("log", "Creating MultipleEntryElementWrapper", elementConfig);
          var _this = this;
-         var elementWidget = this.createElementWidget(elementConfig);
+         
+         // It's important that we pass on the pubSubScope correctly when instantiating the elements...
+         var elementWidget = this.createElementWidget({pubSubScope: this.pubSubScope,
+                                                       dataScope: this.dataScope,
+                                                       elementConfig: elementConfig});
          var wrapper = new MultipleEntryElementWrapper({creator: this, widget: elementWidget});
          aspect.after(wrapper, "blurWrapper", function(deferred) {
             _this.alfLog("log", "Wrapper 'blurWrapper' function processed");
@@ -251,7 +317,10 @@ define(["dojo/_base/declare",
          return wrapper;
       },
       
-      validationRequired: function() {
+      /**
+       * @instance
+       */
+      validationRequired: function alfresco_forms_controls_MultipleEntryCreator__validationRequired() {
          // This function does nothing but is used purely so that a form control can wrap it.
          this.alfLog("log", "Validation Required function called");
       },
@@ -259,20 +328,32 @@ define(["dojo/_base/declare",
       /**
        * This function should be extended by concrete implementations to create the element to go in the
        * element wrapper.
+       * 
+       * @instance
+       * @param {object} config The configuration to instantiate the element with
+       * @returns {object} A nwe MultipleEntryElement instance.
        */
-      createElementWidget: function(elementConfig) {
-         // By default we're just going to create the "Abstract" instance
-         return new MultipleEntryElement({elementConfig: elementConfig});
+      createElementWidget: function alfresco_forms_controls_MultipleEntryCreator__createElementWidget(config) {
+//         return new MultipleEntryElement(config);
+         
+         // Relies on the dependency already being in the Dojo cache!
+         var widget = null;
+         var requires = [this.elementWidget];
+         require(requires, function(WidgetType) {
+            widget = new WidgetType(config);
+         });
+         return widget;
       },
       
       /**
        * This function is called when the add entry button is clicked. We need to add a new element in edit mode.
+       * 
+       * @instance
+       * @param {object} e
        */
-      addEntry: function(e) {
-         var wrapper,
-             elementConfig = {
-            _alfMultipleElementId: this.generateUuid()
-         };
+      addEntry: function alfresco_forms_controls_MultipleEntryCreator__addEntry(e) {
+         var wrapper;
+         var elementConfig = {};
          if (this.enableDND)
          {
             // By clearing the previously selected nodes we will be able to select the node
@@ -305,40 +386,44 @@ define(["dojo/_base/declare",
       
       /**
        * Deletes the wrapper provided.
+       * 
+       * @instance
        */
-      deleteEntry: function(wrapper) {
-         wrapper.destroy();
+      deleteEntry: function alfresco_forms_controls_MultipleEntryCreator__deleteEntry(wrapper) {
+         wrapper.destroyRecursive();
       },
       
-      getValue: function(meaningful) {
+      /**
+       * @instance
+       * @returns {object}
+       */
+      getValue: function alfresco_forms_controls_MultipleEntryCreator__getValue() {
          var value = [];
          var wrappers = registry.findWidgets(this.currentEntries);
-         var _this = this;
          array.forEach(wrappers, function(wrapper, index) {
             var widget = wrapper.widget;
             if (typeof widget.getValue == "function")
             {
-               value.push(widget.getValue(meaningful));
+               value.push(widget.getValue());
             }
             else
             {
-               _this.alfLog("warn", "The following widget has no getValue() function", widget);
+               this.alfLog("warn", "The following widget has no getValue() function", widget);
             }
-         });
-         this.alfLog("log", "Returning value from MultipleEntryCreator", value);
+         }, this);
          return value;
       },
       
-      setValue: function(value) {
-         // TODO: We could maintain a list of the wrappers which we could control through
-         //       the addEntry and deleteEntry methods and then use this for deletion
-         //       but I am currently relying on the registry as it should ensure that
-         //       extending classes don't break behaviour
+      /**
+       * @instance
+       * @param {object} value
+       */
+      setValue: function alfresco_forms_controls_MultipleEntryCreator__setValue(value) {
          // Destroy all the wrapper widgets
-         this.alfLog("log", "Setting value of MultipleEntryCreator", value);
+         this.alfLog("log", "Setting value of MultipleEntryCreator", this, value);
          var wrappers = registry.findWidgets(this.currentEntries);
          array.forEach(wrappers, function(wrapper, index) {
-            wrapper.destroy();
+            wrapper.destroyRecursive();
          });
          if (!value instanceof Array)
          {
@@ -351,14 +436,17 @@ define(["dojo/_base/declare",
          }
       },
       
-      validate: function() {
+      /**
+       * @instance
+       * @returns {boolean}
+       */
+      validate: function alfresco_forms_controls_MultipleEntryCreator__validate() {
          var valid = true;
          var wrappers = registry.findWidgets(this.currentEntries);
          var _this = this;
          array.forEach(wrappers, function(wrapper, index) {
             valid = valid && wrapper.widget.validate();
          });
-         this.alfLog("log", "MultipleEntryCreator validation result:", valid);
          return valid;
       }
    });

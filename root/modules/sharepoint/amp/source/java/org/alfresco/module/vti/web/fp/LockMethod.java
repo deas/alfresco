@@ -34,7 +34,6 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.version.VersionType;
 import org.alfresco.service.namespace.QName;
 import org.dom4j.io.OutputFormat;
-import org.springframework.extensions.surf.util.URLDecoder;
 
 /**
  * Implements the WebDAV LOCK method with VTI specific
@@ -56,7 +55,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     @Override
     protected FileInfo getNodeForPath(NodeRef rootNodeRef, String path) throws FileNotFoundException
     {
-        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, URLDecoder.decode(path));
+        FileInfo nodeInfo = super.getNodeForPath(rootNodeRef, path);
         FileInfo workingCopy = getWorkingCopy(nodeInfo.getNodeRef());
         return workingCopy != null ? workingCopy : nodeInfo;
     }
@@ -115,7 +114,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
     }
 
     @Override
-    protected void executeImpl() throws WebDAVServerException, Exception
+    protected void attemptLock() throws WebDAVServerException, Exception
     {
         try
         {
@@ -140,7 +139,7 @@ public class LockMethod extends org.alfresco.repo.webdav.LockMethod
                 }
             }
             
-            super.executeImpl();
+            super.attemptLock();
         }
         catch (AccessDeniedException e) 
         {

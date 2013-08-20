@@ -9,8 +9,8 @@
     <parent>
         <artifactId>alfresco-parent</artifactId>
         <groupId>org.alfresco</groupId>
-        <version>4.2.d-SNAPSHOT</version>
-        <relativePath>../../pom-experimental.xml</relativePath>
+        <version>4.2.0-QA-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -23,21 +23,51 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.14</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-	    <!-- Filter integration tests for now -->
+            <!-- Wipe the database before starting tests -->
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-		    <excludes>
-		        <exclude>**/*DeploymentTargetTest.*</exclude>
-		    </excludes>
-                </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>wipe-database</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <sqlCommand>drop database if exists alfresco</sqlCommand>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-database</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <sqlCommand>create database alfresco</sqlCommand>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

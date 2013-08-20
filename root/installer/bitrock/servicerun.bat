@@ -12,6 +12,7 @@ if exist @@BITROCK_INSTALLDIR@@\postgresql\scripts\servicerun.bat (start /MIN /W
 if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat START)
+if exist @@BITROCK_INSTALLDIR@@\resin\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\resin\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat START)
 if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat START)
@@ -21,7 +22,7 @@ if exist @@BITROCK_INSTALLDIR@@\third_application\scripts\servicerun.bat (start 
 goto end
 
 :stop
-
+echo "Stopping services ..."
 if exist @@BITROCK_INSTALLDIR@@\third_application\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\third_application\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\lucene\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\lucene\scripts\servicerun.bat STOP)
 rem RUBY_APPLICATION_STOP
@@ -29,6 +30,7 @@ if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\servicerun.bat (start /MIN /W
 if exist @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\jetty\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\hypersonic\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\server\hsql-sample-database\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\jboss\scripts\servicerun.bat STOP)
+if exist @@BITROCK_INSTALLDIR@@\resin\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\resin\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\tomcat\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\openoffice\scripts\servicerun.bat STOP)
 if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\apache2\scripts\servicerun.bat STOP)

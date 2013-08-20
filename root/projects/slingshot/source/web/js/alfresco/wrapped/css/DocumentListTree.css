@@ -1,0 +1,14 @@
+.alfresco-share .filter h2 {
+    margin-top: 0;
+}
+
+/*
+ * It's unforuntately necessary to have the !important on the height to overrule the
+ * !important setting from presentation.css for sticky-wrapper. Without this the height
+ * over the tree widget is corrupted.
+ */
+.alfresco-wrapped-DocumentListTree.yui-skin-default.alfresco-share.js.sticky-wrapper {
+  height: inherit !important;
+  margin: 0 0 20px;
+  min-height: 0;
+}

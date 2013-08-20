@@ -225,3 +225,105 @@ html>body .node, .reply, .comment
   background: url(../images/unpublish-external-16.png) no-repeat scroll 0 2px;
   padding-left: 20px;
 }
+
+/*
+ * VISUAL APPEARANCE CUSTOMISATIONS
+ *
+ * Improve display of blog page content, since the default Share CSS is not optimised
+ * for large blocks of HTML.
+ */
+
+.alfresco-share .sticky-wrapper .postview .content
+{
+   font-size: 1.2em;
+   /* Comment out the following line to make the page
+    take up the full screen width */
+   max-width: 60em;
+   /* Make the text darker */
+   color: #333333;
+   /* Increase line height to improve readability */
+   line-height: 1.5em;
+}
+
+.postview .content a
+{
+	/* Make links look like links */
+   color: #6CA5CE;
+}
+
+.postview .content h1
+{
+    margin: 0.5em 0;
+    padding: 0 0 0.25em 0;
+    border-bottom: 1px solid #cccccc;
+}
+
+.postview .content h2
+{
+    padding-top: 0.5em 0;
+}
+
+.postview .content h3, .postview .content h4, 
+.postview .content h5, .postview .content h6
+{
+    padding: 0.5em 0;
+}
+
+.alfresco-share .sticky-wrapper .postview .content p
+{
+    margin: 0.8em 0;
+}
+
+.postview .content h1 a, .postview .content h2 a, 
+.postview .content h3 a, .postview .content h4 a, 
+.postview .content h5 a, .postview .content h6 a
+{
+    color: #333333;
+}
+
+.postview .content h1 a:hover, .postview .content h2 a:hover, 
+.postview .content h3 a:hover, .postview .content h4 a:hover, 
+.postview .content h5 a:hover, .postview .content h6 a:hover
+{
+    color: #333333;
+    text-decoration: none;
+}
+
+.alfresco-share .sticky-wrapper .postview .content ul,
+.alfresco-share .sticky-wrapper .postview .content ol
+{
+    padding: 0.5em 0 0.5em 1em;
+}
+
+.postview .content h1 + ul,
+.postview .content h2 + ul,
+.postview .content h3 + ul,
+.postview .content h4 + ul,
+.postview .content h5 + ul,
+.postview .content h6 + ul,
+.postview .content h1 + ol,
+.postview .content h2 + ol,
+.postview .content h3 + ol,
+.postview .content h4 + ol,
+.postview .content h5 + ol,
+.postview .content h6 + ol
+{
+    padding-top: 1em;
+}
+
+.postview .content ul li
+{
+}
+
+.postview .content pre,
+.postview .content code
+{
+    font-size: 0.9em;
+    line-height: 1.5em;
+    border: 1px solid #cccccc;
+    padding: 1em;
+    margin: 0.5em 0;
+    background-color: #f0f0f0;
+    overflow: auto;
+    max-height: 30em;
+}

@@ -66,9 +66,9 @@
     * @return {Alfresco.DocumentListGalleryViewRenderer} The new GalleryViewRenderer instance
     * @constructor
     */
-   Alfresco.DocumentListGalleryViewRenderer = function(name, galleryColumns)
+   Alfresco.DocumentListGalleryViewRenderer = function(name, parentDocumentList, galleryColumns)
    {
-      Alfresco.DocumentListGalleryViewRenderer.superclass.constructor.call(this, name);
+      Alfresco.DocumentListGalleryViewRenderer.superclass.constructor.call(this, name, parentDocumentList);
       this.parentElementIdSuffix = "-gallery";
       this.parentElementEmptytIdSuffix = "-gallery-empty";
       this.rowClassName = "alf-gallery-item";
@@ -380,6 +380,14 @@
          viewRendererInstance.onShowGalleryItemDetail(scope, viewRendererInstance, event, matchedEl, container);
       }, '.alf-show-detail', this);
       
+      // On click of select checkbox
+      Event.delegate(container, 'click', function DL_GVR_selectCheckboxClicked(event, matchedEl, container)
+      {
+         var eventTarget = Event.getTarget(event);
+         scope.selectedFiles[eventTarget.value] = eventTarget.checked;
+         YAHOO.Bubbling.fire("selectedFilesChanged");
+      }, '.alf-select input', this);
+      
       YAHOO.Bubbling.on("selectedFilesChanged", function(layer, args) {
          this.onSelectedFilesChanged(scope);
       }, this);
@@ -412,11 +420,11 @@
                var oRecord = scope.widgets.dataTable.getVisibleRecord(row);
                if (oRecord == null)
                {
-                  if (typeof row == "string")
+                  if (typeof row === "string")
                   {
                      oRecord = scope.widgets.dataTable.getVisibleRecord(row + '-hidden');
                   }
-                  else
+                  else if (row)
                   {
                      oRecord = scope.widgets.dataTable.getVisibleRecord(row.id + '-hidden');
                   }
@@ -670,7 +678,7 @@
       {
          Dom.removeClass(container, 'alf-selected');
       }
-   }
+   };
    
    Alfresco.DocumentListGalleryViewRenderer.prototype.renderCellSelected = function DL_GVR_renderCellSelected(scope, elCell, oRecord, oColumn, oData)
    {
@@ -684,13 +692,6 @@
          
          var checkboxId = this.getRowItemSelectId(oRecord);
          galleryItemSelectDiv.innerHTML = '<input id="' + checkboxId + '" type="checkbox" name="fileChecked" value="'+ nodeRef + '"' + (scope.selectedFiles[nodeRef] ? ' checked="checked">' : '>');
-         
-         Event.addListener(checkboxId, "click", function DL_GVR_checkboxClickEvent(e)
-         {
-            var eventTarget = Event.getTarget(e);
-            scope.selectedFiles[eventTarget.value] = eventTarget.checked;
-            YAHOO.Bubbling.fire("selectedFilesChanged");
-         }, this, true);
       }
    };
    

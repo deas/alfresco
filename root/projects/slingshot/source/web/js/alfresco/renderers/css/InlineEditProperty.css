@@ -1,0 +1,21 @@
+.alfresco_renderers_InlineEditProperty {
+  margin-left: 20px;
+}
+
+.alfresco_renderers_InlineEditProperty .alfresco-renderers-Property {
+  margin-left: 0;
+}
+
+.alfresco_renderers_InlineEditProperty .editIcon {
+   background: url("./images/edit-16.png");
+   background-repeat: no-repeat;
+   height: 16px;
+   width: 16px;
+   display: inline-block;
+   opacity: 0;
+   margin-left: -20px;
+}
+
+.alfresco_renderers_InlineEditProperty .action {
+   cursor: pointer;
+}

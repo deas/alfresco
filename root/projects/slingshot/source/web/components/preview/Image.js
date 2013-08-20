@@ -102,7 +102,37 @@ Alfresco.WebPreview.prototype.Plugins.Image.prototype =
       else
       {
          var src = this.attributes.src ? this.wp.getThumbnailUrl(this.attributes.src) : this.wp.getContentUrl();
-         return '<img src="' + src + '" alt="' + this.wp.options.name + '" title="' + this.wp.options.name + '"/>';
+
+         var image = new Image;
+         image.onload = function()
+         {
+            if ('naturalHeight' in this)
+            {
+               if (this.naturalHeight + this.naturalWidth === 0)
+               {
+                  this.onerror();
+                  return;
+               }
+            } else if (this.width + this.height == 0)
+            {
+               this.onerror();
+               return;
+            }
+            // At this point, there's no error.
+            this.wp.widgets.previewerElement.innerHTML = '';
+            this.wp.widgets.previewerElement.appendChild(image);
+         };
+         image.onerror = function()
+         {
+            //display error
+            this.wp.widgets.previewerElement.innerHTML = '<div class="message">'
+                  + this.wp.msg("label.noPreview", this.wp.getContentUrl(true))
+                  + '</div>';
+         };
+         image.wp = this.wp;
+         image.src = src;
+
+         return null;
       }
    }
 };

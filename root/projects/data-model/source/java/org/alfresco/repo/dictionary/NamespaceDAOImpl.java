@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.dictionary;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -582,8 +583,9 @@ public class NamespaceDAOImpl implements NamespaceDAO
         return tenantService.getCurrentUserDomain();
     }
     
-    public class NamespaceRegistry
+    public static class NamespaceRegistry implements Serializable
     {
+        private static final long serialVersionUID = 1L;
         private List<String> urisCache = new ArrayList<String>(0);
         private Map<String, String> prefixesCache = new HashMap<String, String>(0);
         
@@ -617,6 +619,18 @@ public class NamespaceDAOImpl implements NamespaceDAO
         public void setPrefixesCache(Map<String, String> prefixesCache)
         {
             this.prefixesCache = prefixesCache;
+        }
+    }
+
+    @Override
+    public void clearNamespaceLocal()
+    {
+        String tenantDomain = getTenantDomain();
+        removeNamespaceLocal(tenantDomain);
+
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("NamespaceLocal cleared");
         }
     }
 }

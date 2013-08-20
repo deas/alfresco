@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/AlfCascadingMenu
+ * @extends module:alfresco/menus/AlfCascadingMenu
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/menus/AlfCascadingMenu",
         "dojo/dom-class",
@@ -27,14 +33,13 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {string[]}
        */
       cssRequirements: [{cssFile:"./css/AlfCascadingMenu.css"}],
    
       /**
-       * 
-       * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_header_AlfMenuBarPopup__postCreate() {
          this.inherited(arguments);

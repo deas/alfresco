@@ -26,7 +26,7 @@ public class DictionaryServiceLocator extends org.apache.axis.client.Service imp
     }
 
     // Use to get a proxy class for DictionaryService
-    private java.lang.String DictionaryService_address = "http://localhost:8080/alfresco/api/DictionaryService";
+    private java.lang.String DictionaryService_address = "http://localhost:8080/alfresco/soapapi/DictionaryService";
 
     public java.lang.String getDictionaryServiceAddress() {
         return DictionaryService_address;

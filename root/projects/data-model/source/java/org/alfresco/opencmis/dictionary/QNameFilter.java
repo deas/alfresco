@@ -8,6 +8,7 @@ import org.alfresco.service.namespace.QName;
  * Filters QNames and excludes any
  * that are in a predefined list.
  *
+ * @author steveglover
  * @author Gethin James
  */
 public interface QNameFilter
@@ -20,14 +21,22 @@ public interface QNameFilter
      * @param typesToFilter - original list
      * @return the filtered list
      */
-    public Collection<QName> filterQName(Collection<QName> typesToFilter);
+    Collection<QName> filterQName(Collection<QName> typesToFilter);
     
     /**
      * Indicates that this QName should be excluded.
      * @param typeQName
      * @return boolean true if it is excluded
      */
-    public boolean isExcluded(QName typeQName);
+    boolean isExcluded(QName typeQName);
     
-    public void initFilter();
+    /**
+     * Exclude the type
+     * 
+     * @param typeQName the type to exclude
+     * 
+     */
+    void setExcluded(QName typeQName, boolean excluded);
+    
+    void initFilter();
 }

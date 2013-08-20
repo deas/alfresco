@@ -42,6 +42,7 @@ public class FormField
     private static final String ATTR_DESCRIPTION = "description";
     private static final String ATTR_HELP_TEXT_ID = "help-id";
 	private static final String ATTR_HELP_TEXT = "help";
+    private static final String ATTR_HELP_ENCODE_HTML = "help-encode-html";
 	private static final String ATTR_SET = "set";
     private static final String ATTR_READ_ONLY = "read-only";
     private static final String ATTR_MANDATORY = "mandatory";
@@ -175,6 +176,11 @@ public class FormField
     public String getHelpTextId()
     {
     	return attributes.get(ATTR_HELP_TEXT_ID);
+    }
+    
+    public String getHelpEncodeHtml()
+    {
+        return attributes.get(ATTR_HELP_ENCODE_HTML);
     }
     // End of convenience accessor methods.
         

@@ -57,7 +57,7 @@
          // Execute the request to retrieve the list of documents to display
          Alfresco.util.Ajax.jsonRequest(
          {
-            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/node/alfresco/sites/home?filter=editingMe&max=3",
+            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/node/alfresco/sites/home?filter=editingMe&max=3&sortField=cm:modified&sortAsc=false",
             successCallback:
             {
                fn: function(response)

@@ -18,7 +18,10 @@
  */
 package org.alfresco.repo;
 
+import org.alfresco.repo.solr.EmbeddedSolrTest;
 import org.alfresco.solr.client.SOLRAPIClientTest;
+import org.alfresco.solr.test.CMISDataCreatorTest;
+import org.apache.tools.ant.filters.FixCrLfFilter.AddAsisRemove;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -37,8 +40,9 @@ public class SolrClientTestSuite extends TestSuite
         suite.addTestSuite(RepoJettyStartTest.class);
         
         // the following tests rely on running repo
+        suite.addTestSuite(EmbeddedSolrTest.class);
         suite.addTestSuite(SOLRAPIClientTest.class);
-        
+        suite.addTestSuite(CMISDataCreatorTest.class);
         // stop (embedded) Jetty
         suite.addTestSuite(RepoJettyStopTest.class);
         return suite;

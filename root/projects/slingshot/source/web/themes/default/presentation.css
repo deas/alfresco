@@ -820,12 +820,13 @@ body.yui-skin-default .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabled 
 body.yui-skin-default .doclist .more-actions a:active,
 body.yui-skin-default .doclist .more-actions a:hover
 {
-   background-color: #6CA5CE;
+   background-color: #DCEAF4;
+   color: #333;
 }
 
 body.yui-skin-default .doclist div.more-actions
 {
-   border: 1px solid #6CA5CE;
+   border: 1px solid #DCEAF4;
 }
 
 body.yui-skin-default .doclist .action-set a:active,
@@ -834,7 +835,7 @@ body.yui-skin-default .doclist .action-set .highlighted,
 #divCalendarContent .yui-dt-col-actions a:active,
 #divCalendarContent .yui-dt-col-actions a:hover
 {
-   border: 1px solid #6CA5CE;
+   border: 1px solid #DCEAF4;
 }
 
 body.yui-skin-default .doclist tr.yui-dt-highlighted
@@ -869,6 +870,25 @@ body.yui-skin-default .categoryview .category .ygtvlph, body.yui-skin-default .c
 body.yui-skin-default .categoryview .category .ygtvdepthcell
 {
    background-image: url(images/categoryview-sprite.gif);
+}
+
+body.yui-skin-default .treeview .tree .ygtvtn,
+body.yui-skin-default .treeview .tree .ygtvtm,
+body.yui-skin-default .treeview .tree .ygtvtmh,
+body.yui-skin-default .treeview .tree .ygtvtmhh,
+body.yui-skin-default .treeview .tree .ygtvtp,
+body.yui-skin-default .treeview .tree .ygtvtph,
+body.yui-skin-default .treeview .tree .ygtvtphh,
+body.yui-skin-default .treeview .tree .ygtvln,
+body.yui-skin-default .treeview .tree .ygtvlm,
+body.yui-skin-default .treeview .tree .ygtvlmh,
+body.yui-skin-default .treeview .tree .ygtvlmhh,
+body.yui-skin-default .treeview .tree .ygtvlp,
+body.yui-skin-default .treeview .tree .ygtvlph,
+body.yui-skin-default .treeview .tree .ygtvlphh,
+body.yui-skin-default .treeview .tree .ygtvdepthcell
+{
+   background-image: url(images/treeview-sprite.gif) !important;
 }
 
 /* end doclist */
@@ -957,9 +977,9 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
 .yui-skin-default .node .nodeURL a,
 .yui-skin-default .nodeAttrValue a,
 .yui-skin-default .nodeFooter .tag a,
-.yui-skin-default .yui-dt-highlighted .detail .tag a,
-.yui-skin-default .yui-dt-highlighted .detail .category a,
-.yui-skin-default .yui-dt-highlighted .detail .item-social a,
+.yui-skin-default .yui-dt-highlighted .tag a,
+.yui-skin-default .yui-dt-highlighted .category a,
+.yui-skin-default .yui-dt-highlighted .item-social a,
 .yui-skin-default a.wiki-tag-link,
 .yui-skin-default .node .userLink a,
 .yui-skin-default .site-members h3 a,
@@ -977,15 +997,15 @@ body.yui-skin-default .categoryview .selected div.ygtvchildren table .ygtvlabel:
    color: #4F94C9;
 }
 
-.yui-skin-default .detail .tag a,
-.yui-skin-default .detail .category a,
-.yui-skin-default .detail .item-social a,
+.yui-skin-default .tag a,
+.yui-skin-default .category a,
+.yui-skin-default .item-social a,
 .yui-skin-default .document-tags .tag
 {
    color: #333;
 }
 
-.yui-skin-default .detail .tag a,
+.yui-skin-default .tag a,
 .yui-skin-default .document-tags .tag
 {
    background-color: #e8e8e8;
@@ -1290,23 +1310,23 @@ div.theme-bg-color-8
 
 .alfresco-guest .theme-overlay
 {
-   background-image: url(images/overlay-bg.png);
-   background-repeat: no-repeat;
-   background-position: top right;
+   padding-left: 24px;
+   font-family: Open Sans,Arial,Helvetica,sans-serif;
+   color: #333;
+   border: 1px solid #ccc;
    background-color: #fff;
-   box-shadow: 3px 3px 5px #555;
-   -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#555555')";
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .alfresco-guest .sticky-wrapper
 {
-   background-color: #B4B4B4;
+   background: none;
 }
 
 .theme-company-logo
 {
-   height: 64px;
-   width: 450px;
+   height: 48px;
+   width: 428px;
    background: transparent url(images/logo.png) no-repeat;
 }
 

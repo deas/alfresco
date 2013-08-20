@@ -5,5 +5,5 @@
 .alfresco-share .alf-menu-title-text {
    font-family: Open Sans Condensed,Arial,sans-serif;
    font-size: 230%;
-   color: #333;
+   color: #333 !important;
 }

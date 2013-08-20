@@ -1,0 +1,24 @@
+.alfresco-renderers-EditTag {
+   font-size: 93%;
+   margin-right: 0.5em;
+   padding: 2px 8px;
+   background-color: $theme-bg-color-2;
+   color: $theme-color-1;
+}
+
+.alfresco-renderers-EditTag.highlight {
+   background-color: $theme-bg-color-9;
+   color: $theme-color-8;
+}
+
+.alfresco-renderers-EditTag .tagDelete {
+   background-image: url(./images/delete-item-off.png);
+   background-position: 4px center;
+   background-repeat: no-repeat;
+   display: inline-block;
+   width: 17px;
+}
+
+.alfresco-renderers-EditTag.highlight .tagDelete {
+   background-image: url(./images/delete-item-on.png);
+}

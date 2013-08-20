@@ -366,3 +366,7 @@
 {
    position: relative;
 }
+
+.dnd-file-selection-button-overlay-wrapper input.dnd-file-selection-button {
+  width: 100%;
+}

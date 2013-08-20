@@ -26,7 +26,7 @@ public class AuthoringServiceLocator extends org.apache.axis.client.Service impl
     }
 
     // Use to get a proxy class for AuthoringService
-    private java.lang.String AuthoringService_address = "http://localhost:8080/alfresco/api/AuthoringService";
+    private java.lang.String AuthoringService_address = "http://localhost:8080/alfresco/soapapi/AuthoringService";
 
     public java.lang.String getAuthoringServiceAddress() {
         return AuthoringService_address;

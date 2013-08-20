@@ -20,14 +20,14 @@ package org.alfresco.opencmis.search;
 
 import java.util.Locale;
 
-import org.springframework.extensions.surf.util.I18NUtil;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions;
-import org.alfresco.repo.search.impl.querymodel.QueryOptions.Connective;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.LimitBy;
 import org.alfresco.service.cmr.search.QueryParameterDefinition;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * The options for a CMIS query
@@ -42,6 +42,7 @@ public class CMISQueryOptions extends QueryOptions
     }
 
     private CMISQueryMode queryMode = CMISQueryMode.CMS_STRICT;
+    private CmisVersion cmisVersion;
 
     public static CMISQueryOptions create(SearchParameters searchParameters)
     {
@@ -71,8 +72,8 @@ public class CMISQueryOptions extends QueryOptions
         //options.setQueryMode(); Should set afterwards
         options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
         options.setDefaultFieldName(searchParameters.getDefaultFieldName());
+        options.setBulkFetchEnabled(searchParameters.isBulkFetchEnabled());
         options.setExcludeTenantFilter(searchParameters.getExcludeTenantFilter());
-        
         return options;
     }
     
@@ -105,7 +106,17 @@ public class CMISQueryOptions extends QueryOptions
         super(query, storeRef, locale);
     }
 
-    /**
+    public CmisVersion getCmisVersion()
+    {
+		return cmisVersion;
+	}
+
+	public void setCmisVersion(CmisVersion cmisVersion)
+	{
+		this.cmisVersion = cmisVersion;
+	}
+
+	/**
      * Get the query mode.
      * 
      * @return the queryMode
@@ -166,6 +177,8 @@ public class CMISQueryOptions extends QueryOptions
             searchParameters.addStore(storeRef);
         }
         //searchParameters.addTextAttribute()
+        searchParameters.setBulkFetchEnabled(isBulkFetchEnabled());
+        searchParameters.setQueryConsistency(this.getQueryConsistency());
         return searchParameters;
     }
 }

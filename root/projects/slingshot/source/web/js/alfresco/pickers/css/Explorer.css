@@ -1,0 +1,60 @@
+.alfresco-pickers-Explorer .navigation {
+    margin-bottom: 5px;
+    overflow: hidden;
+    height: 20px;
+}
+
+.alfresco-pickers-Explorer .navigation > div {
+    color: grey;
+    display: inline-block;
+    float: left;
+    /* width: 20px; */
+    transition: width 1.0s ease;
+    overflow: hidden; 
+    margin: 0 10px 0 0;
+}
+
+.alfresco-pickers-Explorer .navigation > div.selected {
+    color: black;
+    width: 200px;
+}
+
+.alfresco-pickers-Explorer .navigation > div.next {
+    width: 200px;
+}
+
+.alfresco-pickers-Explorer .navigation > div > span {
+    float: left;
+}
+
+.alfresco-pickers-Explorer .navigation > div span.index {
+    width: 20px;
+}
+
+.alfresco-pickers-Explorer .navigation > div span.title {
+    /* width: 0px; */
+    /* transition: width 1.0s ease; */
+}
+
+.alfresco-pickers-Explorer .navigation > div.selected span.title,
+.alfresco-pickers-Explorer .navigation > div.next span.title {
+    width: 180px;
+}
+
+.alfresco-pickers-Explorer .content-frame {
+    position: relative;
+    border: 1px solid #eee;
+    overflow-x: hidden;
+}
+
+.alfresco-pickers-Explorer .content-items {
+    position: relative;
+    left: 0;
+    transition: left 1.0s ease;
+    overflow-y: hidden;
+}
+
+.alfresco-pickers-Explorer .content-items > div {
+    float: left;
+    display: inline-block;
+}

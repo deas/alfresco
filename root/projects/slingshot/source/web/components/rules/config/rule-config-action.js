@@ -62,6 +62,37 @@
 
       customisations:
       {
+         // The "SetPropertyValue" key maps directly to the action name returned all the way from the 
+         // repository. It does NOT map directly to the menu config from the rule-config-action.get.config.xml
+         // as that only indicates how to lay out actions that are returned from the repository. This customisations
+         // object will be checked within the "rule-config.js" script to determine if any actions require
+         // custom renderers.
+         SetPropertyValue:
+         {
+            edit: function(configDef, ruleConfig, configEl)
+            {
+               // Hide parameters since we are using a custom ui
+               this._hideParameters(configDef.parameterDefinitions);
+
+               // Add in a custom UI renderer for selecting the property. Some key things to note here:
+               // 1) In the splice operation the original "value" parameter is removed - this is done so
+               //    because the "arca:set-property-value" renderer will create a new parameter with the
+               //    name "value" which will be a different control depending upon the data type (e.g.
+               //    a Calendar widget for dates and an input box for other values, etc. It is important
+               //    that the default input field is not just hidden but NEVER rendered so that it doesn't
+               //    provide erroneous data in the form post.
+               // 2) The "_destinationParam" of the new property does NOT map to anything that the 
+               //    set value action executer will actually use - the renderer will copy across changes
+               //    to the hidden text field.
+               configDef.parameterDefinitions.splice(1,1,
+               {
+                  type: "arca:set-property-value",
+                  _buttonLabel: this.msg("button.select-folder"),
+                  _destinationParam: "_property"
+               });
+               return configDef;
+            }
+         },
          SpecialiseType:
          {
             edit: function(configDef, ruleConfig, configEl)
@@ -398,6 +429,231 @@
 
       renderers:
       {
+         "arca:set-property-value":
+         {
+            manual: { edit: true },
+            currentCtx: {},
+            edit: function (containerEl, configDef, paramDef, ruleConfig, value)
+            {
+               this.renderers["arca:set-property-value"].currentCtx =
+               {
+                  configDef: configDef,
+                  ruleConfig: ruleConfig,
+                  paramDef: paramDef
+               };
+               
+               // Create a new picker for selecting properties, but update the update the options to
+               // override the default tabs to constrain the values loaded to a simple set that can
+               // be assigned from a simple HTML field...
+               var propPicker = new Alfresco.module.PropertyPicker(this.id + "-selectSetPropertyDialog").setOptions({
+                  tabs: [
+                     {
+                        id: "properties",
+                        treeNodes: [
+                           {
+                              id: "all",
+                              listItems:
+                              {
+                                 url: "{url.proxy}api/properties?type=d:text&type=d:mltext&type=d:int&type=d:long&type=d:float&type=d:double&type=d:date&type=d:boolean&type=d:qname",
+                                 dataModifier: function (listItemObjs, descriptorObj)
+                                 {
+                                    return this._addTransientProperties(listItemObjs);
+                                 },
+                                 id: "{item.name}",
+                                 type: "{item.dataType}",
+                                 label: "{item.title}",
+                                 title: "{item.name}"
+                              }
+                           },
+                           {
+                              id: "aspects",
+                              treeNodes:
+                              {
+                                 url: "{url.proxy}api/classes?cf=aspect",
+                                 id: "{node.name}",
+                                 title: "{node.name}",
+                                 label: "{node.title}",
+                                 listItems:
+                                 {
+                                    url: "{url.proxy}api/classes/{node.name}/properties?type=d:text&type=d:mltext&type=d:int&type=d:long&type=d:float&type=d:double&type=d:date&type=d:boolean&type=d:qname",
+                                    dataModifier: function (listItemObjs, descriptorObj)
+                                    {
+                                       return this._addTransientProperties(listItemObjs);
+                                    },
+                                    id: "{item.name}",
+                                    type: "{item.dataType}",
+                                    label: "{item.title}",
+                                    title: "{item.name}"
+                                 }
+                              }
+                           },
+                           {
+                              id: "types",
+                              treeNodes:
+                              {
+                                 url: "{url.proxy}api/classes?cf=type",
+                                 id: "{node.name}",
+                                 title: "{node.name}",
+                                 label: "{node.title}",
+                                 listItems:
+                                 {
+                                    url: "{url.proxy}api/classes/{node.name}/properties?type=d:text&type=d:mltext&type=d:int&type=d:long&type=d:float&type=d:double&type=d:date&type=d:boolean&type=d:qname",
+                                    dataModifier: function (listItemObjs, descriptorObj)
+                                    {
+                                       return this._addTransientProperties(listItemObjs);
+                                    },
+                                    id: "{item.name}",
+                                    type: "{item.dataType}",
+                                    label: "{item.title}",
+                                    title: "{item.name}"
+                                 }
+                              }
+                           }
+                        ],
+                        listItems: []
+                     }
+                  ]
+               });
+               // Set an event group on the picker to ensure that each picker only responds to it's own selections...
+               propPicker.eventGroup = propPicker;
+               
+               // Set the context on the picker object as it is not safe to rely on the context assigned to the renderer
+               // as it will always contain the data for the last rendered action configuration and not the target
+               // action. The dataItemSelected listener will use this context to accurately update the appropriate hidden
+               // values. This is necessary because the _setHiddenParameter function relies on finding a parameter element
+               // within an element identified by a value in the configDef...
+               propPicker.currentCtx = {
+                  configDef: configDef,
+                  ruleConfig: ruleConfig,
+                  paramDef: paramDef
+               };
+               
+               // This connects an event handler to the property picker so that when a new property
+               // is picked the parameters are re-rendered. This is particularly important when 
+               // the property data-type changes as a different control may need to be rendered...
+               YAHOO.Bubbling.on("dataItemSelected", function (layer, args) {
+                  if ($hasEventInterest(propPicker, args))
+                  {
+                     // Clear the old elements (but not the picker button)...
+                     while (containerEl.children.length > 1) {
+                        containerEl.removeChild(containerEl.lastChild);
+                     }
+                     
+                     // Get the property that was selected from the picker and get the renderer
+                     // for it's data type...
+                     var property = args[1].selectedItem.item;
+                     var renderer = this.renderers[property.dataType];
+                     
+                     // Create a label for the selected property...
+                     var selectedPropLabelEl = document.createElement("label");
+                     selectedPropLabelEl.innerHTML = this.msg("label.setProperty.property");
+                     containerEl.appendChild(selectedPropLabelEl);
+                     
+                     // Create an element to display the selected property...
+                     var selectedPropEl = document.createElement("span");
+                     selectedPropEl.innerHTML = property.name;
+                     containerEl.appendChild(selectedPropEl);
+                     
+                     var selectedPropValueLabelEl = document.createElement("label");
+                     selectedPropValueLabelEl.innerHTML = this.msg("label.setProperty.value");
+                     containerEl.appendChild(selectedPropValueLabelEl);
+                     
+                     // Update the hidden control that will provide the property value
+                     // when the form is submitted...
+                     var ctx = this.renderers["arca:set-property-value"].currentCtx;
+                     this._setHiddenParameter(propPicker.currentCtx.configDef, propPicker.currentCtx.ruleConfig, "property", property.name);
+                     this._updateSubmitElements(propPicker.currentCtx.configDef);
+                     
+                     // Create a new renderer for the value (using the appropriate renderer for the
+                     // property type)... note that the "name" of the parameter is set to value as this
+                     // control will be used in the form submit to set the value on the action...
+                     if (renderer && 
+                         typeof this.renderers[property.dataType].edit === "function")
+                     {
+                        var _configDef = {};
+                        var _paramDef = {
+                           displayLabel: this.msg("label.setProperty.value"),
+                           isMandatory: true,
+                           isMultiValued: false,
+                           name: "value",
+                           type: property.dataType
+                        };
+                        this.renderers[property.dataType].edit.call(this, containerEl, _configDef, _paramDef, null, null);
+                     }
+                     
+                     // Create a field to store the type...
+                     // It is important that the property type is stored to ensure that when the folder rule is
+                     // edited it will be possible to select the appropriate renderer for the property. Ad-hoc
+                     // properties have been enabled on the action executer to ensure that this additional information
+                     // can be persisted. Without this data it would not be possible to render the appropriate 
+                     // form control without making an XHR request back to the server...
+                     this._createInputText(containerEl, {}, {
+                        _type: "hidden",
+                        name: "prop_type",
+                        isMandatory: false,
+                        isMultiValued: false,
+                        displayLabel: "prop_type"
+                     }, null, property.dataType);
+                     this._setParameter(propPicker.currentCtx.ruleConfig, "prop_type", property.dataType);
+                     this._updateSubmitElements(propPicker.currentCtx.configDef);
+                  }
+               }, this);
+               
+               // Create a new button to allow the user to select a property...
+               var button = this._createButton(containerEl, configDef, paramDef, ruleConfig, function RCA_setPropertyValueButton_onClick(type, obj) {
+                  propPicker.showDialog();
+               });
+               
+               // Display the currently set property details...
+               // It's important that this information is setup up correctly when previously configured actions
+               // are displayed to ensure that if no changes are made that the original data is reset correctly.
+               // If the form elements are not set up then the original data will be lost. If the user makes
+               // a change to the property to set then the form elements will be replaced...
+               if (ruleConfig.parameterValues && ruleConfig.parameterValues.property != null)
+               {
+                  var selectedPropLabelEl = document.createElement("label");
+                  selectedPropLabelEl.innerHTML = this.msg("label.setProperty.property");
+                  containerEl.appendChild(selectedPropLabelEl);
+                  
+                  var selectedPropEl = document.createElement("span");
+                  selectedPropEl.innerHTML = ruleConfig.parameterValues.property;
+                  containerEl.appendChild(selectedPropEl);
+                  
+                  var selectedPropValueLabelEl = document.createElement("label");
+                  selectedPropValueLabelEl.innerHTML = this.msg("label.setProperty.value");
+                  containerEl.appendChild(selectedPropValueLabelEl);
+                  
+                  var currRenderer = this.renderers[ruleConfig.parameterValues.prop_type];
+                  if (currRenderer && 
+                      typeof this.renderers[ruleConfig.parameterValues.prop_type].edit === "function")
+                  {
+                     var _configDef = {};
+                     var _paramDef = {
+                        displayLabel: "Value",
+                        isMandatory: true,
+                        isMultiValued: false,
+                        name: "value",
+                        type: ruleConfig.parameterValues.prop_type
+                    };
+                    this.renderers[ruleConfig.parameterValues.prop_type].edit.call(this, containerEl, _configDef, _paramDef, null, ruleConfig.parameterValues.value);
+                  }
+                  
+                  this._createInputText(containerEl, {}, {
+                     _type: "hidden",
+                     name: "prop_type",
+                     isMandatory: false,
+                     isMultiValued: false,
+                     displayLabel: "prop_type"
+                  }, null, ruleConfig.parameterValues.prop_type);
+                  
+                  // Ensure the properties are set...
+                  this._setParameter(ruleConfig, "property", ruleConfig.parameterValues.property);
+                  this._setParameter(ruleConfig, "value", ruleConfig.parameterValues.value);
+                  this._setParameter(ruleConfig, "prop_type", ruleConfig.parameterValues.prop_type);
+                  this._updateSubmitElements(configDef);
+               }
+            }
+         },
          "arca:email-dialog-button":
          {
             manual: { edit: true },

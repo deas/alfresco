@@ -1,0 +1,21 @@
+.alfresco-users-UserItem {
+   max-height: 48px;
+   overflow: hidden;
+}
+
+.alfresco-users-UserItem .avatar {
+   display: inline-block;
+   margin-right: 5px;
+   vertical-align: top;
+   width: 48px;
+}
+
+.alfresco-users-UserItem .userDetails {
+   display: inline-block;
+   vertical-align: top;
+}
+
+.alfresco-users-UserItem .email {
+   color: #AAAAAA;
+   font-size: 93%;
+}

@@ -13,8 +13,8 @@ Copyrighted by BitRock
 -->
 <component>
     <name>common</name>
-    <description>Common Component</description>
-    <canBeEdited>0</canBeEdited>
+    <description>//CommonComponent</description>
+    <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>
     <initializationActionList>
@@ -32,12 +32,14 @@ Copyrighted by BitRock
                 <isTrue value="${include_system_ld_library_path}"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="DYLD_LIBRARY_PATH" value="$DYLD_LIBRARY_PATH" persist="1"/>
-        <setInstallerVariable name="DYLD_LIBRARY_PATH" value="${env(DYLD_LIBRARY_PATH)}:$DYLD_LIBRARY_PATH" persist="1">
+        <setInstallerVariable name="DYLD_FALLBACK_LIBRARY_PATH" value="$DYLD_FALLBACK_LIBRARY_PATH" persist="1"/>
+        <setInstallerVariable name="DYLD_FALLBACK_LIBRARY_PATH" value="${env(DYLD_FALLBACK_LIBRARY_PATH)}:$DYLD_FALLBACK_LIBRARY_PATH" persist="1">
             <ruleList>
                 <isTrue value="${include_system_ld_library_path}"/>
             </ruleList>
         </setInstallerVariable>
+	<setInstallerVariable name="LDFLAGS" value="$LDFLAGS" persist="1"/>
+	<setInstallerVariable name="CFLAGS" value="$CFLAGS" persist="1"/>
         <setInstallerVariable name="ENV_VAR" value="" persist="1"/>
         <setInstallerVariable name="ENV_BINARY" value="/bin/env" persist="1">
             <ruleList>
@@ -49,36 +51,47 @@ Copyrighted by BitRock
                 <fileTest path="/usr/bin/env" condition="exists"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="COMMON_FILE_LIST" value=""/>
+        <setInstallerVariable name="COMMON_FILE_LIST" value="*"/>
     </initializationActionList>
     <parameterList>
         <directoryParameter>
             <ask>0</ask>
             <default/>
-            <description>Common installation directory</description>
+            <!--description>Common installation directory</description-->
             <name>common_root_directory</name>
             <value>${installdir}/common</value>
         </directoryParameter>
         <directoryParameter>
             <ask>0</ask>
+            <name>common_distribution_folder</name>
+            <value>common</value>
+        </directoryParameter>
+        <directoryParameter>
+            <ask>0</ask>
             <default/>
-            <description>Stack Scripts Directory</description>
+            <!--description>Stack Scripts Directory</description-->
             <name>base_scripts_root_directory</name>
             <value>${installdir}/scripts</value>
         </directoryParameter>
         <booleanParameter>
             <ask>0</ask>
             <default/>
-            <description>Include system path in environment</description>
+            <!--description>Include system path in environment</description-->
             <name>include_system_path</name>
             <value>0</value>
         </booleanParameter>
         <booleanParameter>
             <ask>0</ask>
             <default/>
-            <description>Include system ld library path in environment</description>
+            <!--description>Include system ld library path in environment</description-->
             <name>include_system_ld_library_path</name>
             <value>0</value>
+        </booleanParameter>
+        <booleanParameter>
+            <ask>0</ask>
+            <default/>
+            <name>include_build_script</name>
+            <value>1</value>
         </booleanParameter>
     </parameterList>
     <readyToInstallActionList>
@@ -97,12 +110,14 @@ Copyrighted by BitRock
         <setInstallerVariable name="COMMON_LD_LIBRARY_PATH" value="${common_root_directory}/lib"/>
         <setInstallerVariable name="LD_LIBRARY_PATH" value="${COMMON_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}"/>
         <setInstallerVariable name="COMMON_DYLD_LIBRARY_PATH" value="${common_root_directory}/lib"/>
-        <setInstallerVariable name="DYLD_LIBRARY_PATH" value="${COMMON_DYLD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}"/>
+        <setInstallerVariable name="DYLD_FALLBACK_LIBRARY_PATH" value="${COMMON_DYLD_LIBRARY_PATH}:${DYLD_FALLBACK_LIBRARY_PATH}"/>
+        <setInstallerVariable name="LDFLAGS" value="-L${common_root_directory}/lib ${LDFLAGS}"/>
+        <setInstallerVariable name="CFLAGS" value="-I${common_root_directory}/include ${CFLAGS}"/>
     </readyToInstallActionList>
     <folderList>
         <folder>
-            <description>Program Files</description>
-            <destination>${installdir}/common</destination>
+            <description>//Common Files</description>
+            <destination>${common_root_directory}</destination>
             <name>common</name>
             <distributionFileList>
                 <distributionFile origin="${common_distribution_folder}/*" allowWildcards="1"/>
@@ -125,6 +140,10 @@ Copyrighted by BitRock
                         <substitution>
                             <pattern>@@BITROCK_PYTHON_ROOTDIR@@</pattern>
                             <value>${python_directory}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@BITROCK_SET_ENVIRONMENT_SCRIPT@@</pattern>
+                            <value>${SET_ENVIRONMENT_SCRIPT}</value>
                         </substitution>
                     </substitutionList>
                 </substitute>
@@ -162,12 +181,12 @@ ${ENV_VAR}
 <writeFile>
             <path>${SET_ENVIRONMENT_SCRIPT}</path>
             <text>#!/bin/sh
-echo $DYLD_LIBRARY_PATH | egrep "${common_root_directory}" > /dev/null
+echo $DYLD_FALLBACK_LIBRARY_PATH | egrep "${common_root_directory}" > /dev/null
 if [ $? -ne 0 ] ; then
 PATH="${PATH}"
 export PATH
-DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}"
-export DYLD_LIBRARY_PATH
+DYLD_FALLBACK_LIBRARY_PATH="${DYLD_FALLBACK_LIBRARY_PATH}"
+export DYLD_FALLBACK_LIBRARY_PATH
 fi
 
 ${ENV_VAR}
@@ -194,6 +213,39 @@ ${ENV_VAR}
                 <platformTest type="aix"/>
             </ruleList>
         </writeFile>
+	<actionGroup>
+	    <actionList>
+		<addTextToFile>
+		    <file>${SET_ENVIRONMENT_SCRIPT}</file>
+		    <text>
+. ${base_scripts_root_directory}/build-setenv.sh
+</text>
+		</addTextToFile>
+		<writeFile>
+		    <path>${base_scripts_root_directory}/build-setenv.sh</path>
+		    <text>#!/bin/sh
+LDFLAGS="${LDFLAGS}"
+export LDFLAGS
+CFLAGS="${CFLAGS}"
+export CFLAGS
+		    </text>
+		</writeFile>
+		<addTextToFile>
+		    <file>${base_scripts_root_directory}/build-setenv.sh</file>
+		    <text>
+PKG_CONFIG_PATH="${common_root_directory}/lib/pkgconfig"
+export PKG_CONFIG_PATH
+</text>
+                    <ruleList>
+			<fileExists path="${common_root_directory}/lib/pkgconfig" />
+		    </ruleList>
+		</addTextToFile>
+	    </actionList>
+	    <ruleList>
+		<isTrue value="${include_build_script}" />
+		<platformTest type="unix" />
+	    </ruleList>
+	</actionGroup>
         <substitute>
             <files>${SET_ENVIRONMENT_SCRIPT}</files>
             <type>regexp</type>

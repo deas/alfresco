@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Dummy Create Content by Templated Node</shortname>
+  <family>Share Tests</family>
+  <url>/template-content-data</url>
+  <format default="json">argument</format>
+</webscript>

@@ -344,7 +344,7 @@
                
                // overlay the account enabled/disabled indicator image
                var enabled = (oRecord.getData("enabled") ? 'enabled' : 'disabled');
-               elCell.innerHTML = '<img class="indicator" alt="' + parent._msg("label." + enabled) + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/account_' + enabled + '.gif" alt="" />';
+               elCell.innerHTML = '<img class="indicator" alt="' + parent._msg("label." + enabled) + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/account_' + enabled + '.png" alt="" />';
             };
             
             /**

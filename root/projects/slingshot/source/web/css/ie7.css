@@ -199,6 +199,7 @@ body .title-button .yui-button
 .aspects .list-left,
 .aspects .list-right
 {
+   overflow-x: auto;
    overflow-y: scroll;
    padding-right: 16px;
 }

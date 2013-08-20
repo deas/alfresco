@@ -47,7 +47,7 @@ function main()
       actions.push(
       {
          cssClass: "edit",
-         eventOnClick: { _alfValue : "editDashletEvent", _alfType: "REFERENCE"}, 
+         eventOnClick: { _alfValue : "editDashletEvent" + args.htmlid.replace(/-/g, "_"), _alfType: "REFERENCE"}, 
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

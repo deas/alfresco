@@ -826,6 +826,15 @@ identifier
            ID
                 ->
                         ID
+        |
+           TO
+                ->      TO
+        |  OR
+                ->      OR
+        |  AND 
+                ->      AND
+        |  NOT
+                ->      NOT
         ; 
 
 ftsWord

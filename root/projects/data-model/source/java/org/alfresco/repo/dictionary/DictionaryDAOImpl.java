@@ -193,7 +193,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
     }
     
     // load dictionary (models and namespaces)
-    private DictionaryRegistry initDictionary(final String tenantDomain)
+    private DictionaryRegistry initDictionary(final String tenantDomain, final boolean keepNamespaceLocal)
     {
         long startTime = System.currentTimeMillis();
         
@@ -229,6 +229,10 @@ public class DictionaryDAOImpl implements DictionaryDAO
                             if (dictionaryRegistryCache.get(tenantDomain) != null)
                             {
                                 removeDataDictionaryLocal(tenantDomain);
+                                if (!keepNamespaceLocal)
+                                {
+                                    namespaceDAO.clearNamespaceLocal();
+                                }
                             }
                         }
                     }
@@ -1021,11 +1025,17 @@ public class DictionaryDAOImpl implements DictionaryDAO
     // re-entrant (eg. via reset)
     private DictionaryRegistry getDictionaryRegistry(String tenantDomain)
     {
-        return getDictionaryRegistry(tenantDomain, false);
+        return getDictionaryRegistry(tenantDomain, false, false);
     }
 
     // re-entrant (eg. via reset)
     private DictionaryRegistry getDictionaryRegistry(String tenantDomain, boolean init)
+    {
+        return getDictionaryRegistry(tenantDomain, init, true);
+    }
+
+    // re-entrant (eg. via reset)
+    private DictionaryRegistry getDictionaryRegistry(String tenantDomain, boolean init, boolean keepNamespaceLocal)
     {
         DictionaryRegistry dictionaryRegistry = null;
         
@@ -1079,7 +1089,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
             }
             
             // reset caches - may have been invalidated (e.g. in a cluster)
-            dictionaryRegistry = initDictionary(tenantDomain);
+            dictionaryRegistry = initDictionary(tenantDomain, keepNamespaceLocal);
         }
         finally
         {

@@ -63,6 +63,8 @@ public abstract class BaseComparison extends BaseFunction
     private StaticArgument staticArgument;
 
     private FunctionArgument functionArgument;
+    
+    private String staticPosition;
 
     static
     {
@@ -98,6 +100,7 @@ public abstract class BaseComparison extends BaseFunction
             {
                 propertyArgument = (PropertyArgument) lhs;
                 staticArgument = (StaticArgument) rhs;
+                staticPosition = ARG_RHS;
             }
             else
             {
@@ -114,6 +117,7 @@ public abstract class BaseComparison extends BaseFunction
             {
                 functionArgument = (FunctionArgument) lhs;
                 staticArgument = (StaticArgument) rhs;
+                staticPosition = ARG_RHS;
             }
             else
             {
@@ -130,6 +134,7 @@ public abstract class BaseComparison extends BaseFunction
             {
                 propertyArgument = (PropertyArgument) rhs;
                 staticArgument = (StaticArgument) lhs;
+                staticPosition = ARG_LHS;
             }
             else
             {
@@ -146,6 +151,7 @@ public abstract class BaseComparison extends BaseFunction
             {
                 functionArgument = (FunctionArgument) rhs;
                 staticArgument = (StaticArgument) lhs;
+                staticPosition = ARG_LHS;
             }
             else
             {
@@ -172,6 +178,14 @@ public abstract class BaseComparison extends BaseFunction
     protected StaticArgument getStaticArgument()
     {
         return staticArgument;
+    }
+
+    /**
+     * @return the staticPosition
+     */
+    public String getStaticPosition()
+    {
+        return staticPosition;
     }
 
     /**

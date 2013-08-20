@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/DojoSelect
+ * @extends module:alfresco/forms/controls/BaseFormControl
+ * @author Dave Draper
+ */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "dijit/form/Select",
@@ -24,7 +30,10 @@ define(["alfresco/forms/controls/BaseFormControl",
    
    return declare([BaseFormControl], {
       
-      getWidgetConfig: function() {
+      /**
+       * @instance
+       */
+      getWidgetConfig: function alfresco_forms_controls_DojoSelect__getWidgetConfig() {
          // Return the configuration for the widget
          return {
             id : this.generateUuid(),
@@ -34,7 +43,10 @@ define(["alfresco/forms/controls/BaseFormControl",
          };
       },
       
-      createFormControl: function(config, domNode) {
+      /**
+       * @instance
+       */
+      createFormControl: function alfresco_forms_controls_DojoSelect__createFormControl(config, domNode) {
          return new Select(config);
       }
    });

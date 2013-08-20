@@ -33,11 +33,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator-1.4.0.jar" sourcepath="src/commons-validator-1.4.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.3-20121218.jar" sourcepath="src/tika-core-1.3-20121218.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.3-20121218.jar" sourcepath="src/tika-parsers-1.3-20121218.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.5-20130720-alfresco-patched.jar" sourcepath="src/tika-core-1.5-20130720-alfresco-patched.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.5-20130720-alfresco-patched.jar" sourcepath="src/tika-parsers-1.5-20130720-alfresco-patched.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.3-20130206.jar" sourcepath="src/vorbis-java-core-0.3-20130206-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.3-20130206.jar" sourcepath="src/vorbis-java-tika-0.3-20130206-source.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xz-1.0.jar" sourcepath="src/xz-1.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xz-1.2.jar" sourcepath="src/xz-1.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/isoparser-1.0-RC-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aspectjrt-1.6.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.8.jar" sourcepath="src/myfaces-api-1.1.8-sources.jar"/>
@@ -95,12 +95,11 @@
 	<classpathentry kind="lib" path="lib/neethi-2.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/stax-utils-20060502.jar"/>
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.9-beta1-20121109-patched.jar" sourcepath="src/poi-3.9-beta1-20121109-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.9-beta1-20121109.jar" sourcepath="src/poi-3.9-beta1-20121109-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.9-beta1-20121109.jar" sourcepath="src/poi-3.9-beta1-20121109-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
@@ -147,25 +146,16 @@
 	<classpathentry exported="true" kind="lib" path="lib/xmpcore-5.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netcdf-4.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/rome-0.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.12.jar" sourcepath="src/wss4j-src-1.5.12.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-api-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-bindings-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.8.0.jar" sourcepath="src/chemistry-opencmis-client-impl-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.8.0.jar" sourcepath="src/chemistry-opencmis-commons-api-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.8.0.jar" sourcepath="src/chemistry-opencmis-commons-impl-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.8.0.jar" sourcepath="src/chemistry-opencmis-server-support-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.8.0.jar" sourcepath="src/chemistry-opencmis-test-browser-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.8.0.jar" sourcepath="src/chemistry-opencmis-test-tck-0.8.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.7.0-patched.jar" sourcepath="src/pdfbox-1.7.0-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.8.2-alfresco-patched.jar" sourcepath="src/pdfbox-1.8.2-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.8.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.8.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-4.0.4.jar" sourcepath="src/urlrewritefilter-4.0.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/activiti/groovy-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-modeler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxb-impl-2.1.11.jar"/>
@@ -185,17 +175,15 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-802.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.2.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.11-06272013.jar" sourcepath="src/activiti-engine-5.11-06272013-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.11-06272013.jar" sourcepath="src/activiti-spring-5.11-06272013-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-youtube-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-client-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-core-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-docs-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/gdata-media-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.45.0/google-collect-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-core-1.0.0.RC1.jar" sourcepath="src/spring-social-core-1.0.0.RC1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.0.RC1.jar" sourcepath="src/spring-social-web-1.0.0.RC1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.0.RC1.jar" sourcepath="src/spring-social-twitter-1.0.0.RC1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-core-1.0.3.RELEASE.jar" sourcepath="src/spring-social-core-1.0.3.RELEASE-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.3.RELEASE.jar" sourcepath="src/spring-social-web-1.0.3.RELEASE-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-twitter-1.0.5.RELEASE.jar" sourcepath="src/spring-social-twitter-1.0.5.RELEASE-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-facebook-1.0.0.RC1.jar" sourcepath="src/spring-social-facebook-1.0.0.RC1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-spring-1.0.1.jar" sourcepath="src/mybatis-spring-1.0.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.aop-3.0.5.RELEASE.jar" sourcepath="C:/Users/Nick/.m2/repository/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE-sources.jar"/>
@@ -209,14 +197,13 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.orm-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.orm-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.transaction-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.transaction-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.web-sources-3.0.5.RELEASE.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.web.servlet-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.test-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JSlideShare-0.6.jar" sourcepath="src/JSlideShare-0.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache-solr-solrj-1.4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.4.jar" sourcepath="src/jackson-core-asl-1.9.4-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.4.jar" sourcepath="src/jackson-mapper-asl-1.9.4-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.9.jar" sourcepath="src/jackson-core-asl-1.9.4-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.9.jar" sourcepath="src/jackson-mapper-asl-1.9.4-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-security-core-3.1.0.RC2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT.jar" sourcepath="src/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar">
 		<attributes>
@@ -225,8 +212,7 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1-patched.jar" sourcepath="src/PDFRenderer-0.9.1-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/hazelcast-1.9.4.6.jar" sourcepath="src/hazelcast-1.9.4.6-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hazelcast-2.4.jar" sourcepath="src/hazelcast-2.4-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-dep-4.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1.3.jar" sourcepath="src/jaxen-1.1.3-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-file-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-file-7.5.5-sources.jar"/>
@@ -266,7 +252,26 @@
 	<classpathentry exported="true" kind="lib" path="lib/opensaml/xmltooling-1.3.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opensaml/esapi-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opensaml/not-yet-commons-ssl-0.3.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.8.0-patched.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.8.0-sources-patched.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-bpmn-converter-5.13-alf-20130709.jar" sourcepath="src/activiti-bpmn-converter-5.13-alf-20130709-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-bpmn-model-5.13-alf-20130709.jar" sourcepath="src/activiti-model-5.13-alf-20130709-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.13-alf-20130709.jar" sourcepath="src/activiti-engine-5.13-alf-20130709-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.13-alf-20130709.jar" sourcepath="src/activiti-spring-5.13-alf-20130709-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/groovy-1.8.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/woodstox-core-asl-4.1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.10.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="lib" path="lib/stax2-api-3.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.6.jar" sourcepath="src/alfresco-opencmis-extension-0.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/devenv/xmlunit-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.10.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-bindings-0.10.0.jar" sourcepath="src/chemistry-opencmis-client-bindings-0.10.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-impl-0.10.0.jar" sourcepath="src/chemistry-opencmis-client-impl-0.10.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-api-0.10.0.jar" sourcepath="src/chemistry-opencmis-commons-api-0.10.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-commons-impl-0.10.0.jar" sourcepath="src/chemistry-opencmis-commons-impl-0.10.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-bindings-0.10.0.jar" sourcepath="src/chemistry-opencmis-server-bindings-0.10.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.10.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.10.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.10.0.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

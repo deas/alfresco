@@ -1,0 +1,8 @@
+.alfresco-documentlibrary-AlfDocumentList {
+  border: 1px solid #F0F0F0;
+  margin: 5px;
+}
+
+.alfresco-documentlibrary-AlfDocumentList .info {
+   padding: 10px;
+}

@@ -24,7 +24,7 @@ System variables provided by this component:
 -->
 <component>
     <name>postgresinitdb</name>
-    <description>PostgreSQL_initdb</description>
+    <description>//PostgreSQL_initdb</description>
     <canBeEdited>1</canBeEdited>
     <selected>1</selected>
     <show>0</show>
@@ -57,9 +57,9 @@ System variables provided by this component:
         </passwordParameter>
         <stringParameter>
             <name>database_encoding</name>
-            <title>Database Configuration</title>
+            <!--title>Database Configuration</title>
             <explanation>Please, select the encoding type.</explanation>
-            <description>Encoding</description>
+            <description>Encoding</description-->
             <ask>0</ask>
             <value/>
             <default>UTF-8</default>
@@ -82,6 +82,7 @@ System variables provided by this component:
                     <programArguments>start</programArguments>
                     <ruleList>
                         <compareText logic="equals" text="${installer_root_install}" value="1"/>
+			<compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
                     </ruleList>
                 </runProgram>
                 <runProgram>
@@ -89,6 +90,7 @@ System variables provided by this component:
                     <programArguments>start</programArguments>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${installer_root_install}" value="1"/>
+			<compareText text="${postgres_installation_type}" logic="equals" value="bundled"/>
                     </ruleList>
                 </runProgram>
                 <wait>

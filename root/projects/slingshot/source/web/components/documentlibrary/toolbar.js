@@ -49,10 +49,11 @@
     * DocListToolbar constructor.
     * 
     * @param {String} htmlId The HTML id of the parent element
+    * @param {boolean} registerListeners Indicates whether or not to register the listeners
     * @return {Alfresco.DocListToolbar} The new DocListToolbar instance
     * @constructor
     */
-   Alfresco.DocListToolbar = function(htmlId)
+   Alfresco.DocListToolbar = function(htmlId, registerListeners)
    {
       Alfresco.DocListToolbar.superclass.constructor.call(this, "Alfresco.DocListToolbar", htmlId, ["button", "menu", "container"]);
       
@@ -63,18 +64,24 @@
       this.doclistMetadata = {};
       this.actionsView = "browse";
 
-      // Decoupled event listeners
-      YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
-      YAHOO.Bubbling.on("deactivateAllControls", this.onDeactivateAllControls, this);
-      YAHOO.Bubbling.on("deactivateDynamicControls", this.onDeactivateDynamicControls, this);
-      YAHOO.Bubbling.on("selectedFilesChanged", this.onSelectedFilesChanged, this);
-      YAHOO.Bubbling.on("userAccess", this.onUserAccess, this);
-      YAHOO.Bubbling.on("doclistMetadata", this.onDoclistMetadata, this);
-      YAHOO.Bubbling.on("showFileUploadDialog", this.onFileUpload, this);
-      YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
-      YAHOO.Bubbling.on("documentDragOver", this.onDocumentDragOver, this);
-      YAHOO.Bubbling.on("documentDragOut", this.onDocumentDragOut, this);
-      YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
+//      // This block allows us to not register listeners if told not to. It has been added
+//      // to support 4.2 Enterprise changes that require an instance of the toolbar that
+//      // does not respond to events (but does allow access to the action handling functions).
+//      if (registerListeners == true || registerListeners === undefined)
+//      {
+         // Decoupled event listeners
+         YAHOO.Bubbling.on("filterChanged", this.onFilterChanged, this);
+         YAHOO.Bubbling.on("deactivateAllControls", this.onDeactivateAllControls, this);
+         YAHOO.Bubbling.on("deactivateDynamicControls", this.onDeactivateDynamicControls, this);
+         YAHOO.Bubbling.on("selectedFilesChanged", this.onSelectedFilesChanged, this);
+         YAHOO.Bubbling.on("userAccess", this.onUserAccess, this);
+         YAHOO.Bubbling.on("doclistMetadata", this.onDoclistMetadata, this);
+         YAHOO.Bubbling.on("showFileUploadDialog", this.onFileUpload, this);
+         YAHOO.Bubbling.on("dropTargetOwnerRequest", this.onDropTargetOwnerRequest, this);
+         YAHOO.Bubbling.on("documentDragOver", this.onDocumentDragOver, this);
+         YAHOO.Bubbling.on("documentDragOut", this.onDocumentDragOut, this);
+         YAHOO.Bubbling.on("registerAction", this.onRegisterAction, this);
+//      }
 
       return this;
    };
@@ -228,128 +235,159 @@
        */
       onReady: function DLTB_onReady()
       {
-         // Create Content menu button
-         if (Dom.get(this.id + "-createContent-button"))
+         if (Dom.get(this.id + "-tb-body") != null)
          {
-            // Create menu button that
-            this.widgets.createContent = Alfresco.util.createYUIButton(this, "createContent-button", this.onCreateContent,
+            // Create Content menu button
+            if (Dom.get(this.id + "-createContent-button"))
             {
-               type: "menu",
-               menu: "createContent-menu",
-               lazyloadmenu: false,
-               disabled: true,
-               value: "CreateChildren"
-            });
-
-            // Make sure we load sub menu lazily with data on each click
-            var createContentMenu = this.widgets.createContent.getMenu(),
-                groupIndex = 0;
-
-            // Create content actions
-            if (this.options.createContentActions.length !== 0)
-            {
-               var menuItems = [], menuItem, content, url, config, html, li;
-               for (var i = 0; i < this.options.createContentActions.length; i++)
+               // Create menu button that
+               this.widgets.createContent = Alfresco.util.createYUIButton(this, "createContent-button", this.onCreateContent,
                {
-                  // Create menu item from config
-                  content = this.options.createContentActions[i];
-                  config = { parent: createContentMenu };
-                  url = null;
+                  type: "menu",
+                  menu: "createContent-menu",
+                  lazyloadmenu: false,
+                  disabled: true,
+                  value: "CreateChildren"
+               });
 
-                  // Check config type
-                  if (content.type == "javascript")
+               // Make sure we load sub menu lazily with data on each click
+               var createContentMenu = this.widgets.createContent.getMenu(),
+                   groupIndex = 0;
+
+               // Create content actions
+               if (this.options.createContentActions.length !== 0)
+               {
+                  var menuItems = [], menuItem, content, url, config, html, li;
+                  for (var i = 0; i < this.options.createContentActions.length; i++)
                   {
-                     config.onclick =
+                     // Create menu item from config
+                     content = this.options.createContentActions[i];
+                     config = { parent: createContentMenu };
+                     url = null;
+
+                     // Check config type
+                     if (content.type == "javascript")
                      {
-                        fn: function(eventName, eventArgs, obj)
+                        config.onclick =
                         {
-                           // Copy node so we can safely pass it to an action
-                           var node = Alfresco.util.deepCopy(this.doclistMetadata.parent);
+                           fn: function(eventName, eventArgs, obj)
+                           {
+                              // Copy node so we can safely pass it to an action
+                              var node = Alfresco.util.deepCopy(this.doclistMetadata.parent);
 
-                           // Make it more similar to a usual doclib action callback object
-                           var currentFolderItem = {
-                              nodeRef: node.nodeRef,
-                              node: node,
-                              jsNode: new Alfresco.util.Node(node)
-                           };
-                           this[obj.params["function"]].call(this, currentFolderItem);
-                        },
-                        obj: content,
-                        scope: this
-                     };
+                              // Make it more similar to a usual doclib action callback object
+                              var currentFolderItem = {
+                                 nodeRef: node.nodeRef,
+                                 node: node,
+                                 jsNode: new Alfresco.util.Node(node)
+                              };
+                              this[obj.params["function"]].call(this, currentFolderItem);
+                           },
+                           obj: content,
+                           scope: this
+                        };
 
-                     url = '#';
+                        url = '#';
+                     }
+                     else if (content.type == "pagelink")
+                     {
+                        url = $siteURL(content.params.page);
+                     }
+                     else if (content.type == "link")
+                     {
+                        url = content.params.href;
+                     }
+
+                     // Create menu item
+                     html = '<a href="' + url + '" rel="' + content.permission + '"><span style="background-image:url(' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + content.icon + '-file-16.png)" class="' + content.icon + '-file">' + this.msg(content.label) + '</span></a>';
+                     li = document.createElement("li");
+                     li.innerHTML = html;
+                     menuItem = new YAHOO.widget.MenuItem(li, config);
+
+                     menuItems.push(menuItem);
                   }
-                  else if (content.type == "pagelink")
-                  {
-                     url = $siteURL(content.params.page);
-                  }
-                  else if (content.type == "link")
-                  {
-                     url = content.params.href;
-                  }
-
-                  // Create menu item
-                  html = '<a href="' + url + '" rel="' + content.permission + '"><span style="background-image:url(' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + content.icon + '-file-16.png)" class="' + content.icon + '-file">' + this.msg(content.label) + '</span></a>';
-                  li = document.createElement("li");
-                  li.innerHTML = html;
-                  menuItem = new YAHOO.widget.MenuItem(li, config);
-
-                  menuItems.push(menuItem);
+                  createContentMenu.addItems(menuItems, groupIndex);
+                  groupIndex++;
                }
-               createContentMenu.addItems(menuItems, groupIndex);
-               groupIndex++;
+
+               // Create content by template menu item
+               if (this.options.createContentByTemplateEnabled)
+               {
+                  // Create menu item elements
+                  var li = document.createElement("li");
+                  li.innerHTML = '<a href="#"><span>' + this.msg("menu.create-content.by-template-node") + '</span></a>';
+
+                  // Make sure to stop clicks on the sub menu link to close the entire menu
+                  YAHOO.util.Event.addListener(Selector.query("a", li, true), "click", function(e)
+                  {
+                     Event.preventDefault(e);
+                     Event.stopEvent(e);
+                  });
+
+                  // Create placeholder menu
+                  var div = document.createElement("div");
+                  div.innerHTML = '<div class="bd"><ul></ul></div>';
+
+                  // 
+                  var li2 = document.createElement("li");
+                  li2.innerHTML = '<a href="#"><span>' + this.msg("menu.create-content.by-template-folder") + '</span></a>';
+
+                  // Make sure to stop clicks on the sub menu link to close the entire menu
+                  YAHOO.util.Event.addListener(Selector.query("a", li2, true), "click", function(e)
+                  {
+                     Event.preventDefault(e);
+                     Event.stopEvent(e);
+                  });
+
+                  // Create placeholder menu
+                  var div2 = document.createElement("div");
+                  div2.innerHTML = '<div class="bd"><ul></ul></div>';
+                  
+                  // Add menu item
+                  var createContentByTemplate = new YAHOO.widget.MenuItem(li, {
+                     parent: createContentMenu,
+                     submenu: div
+                  });
+                  
+                  // Add menu item
+                  var createFolderByTemplate = new YAHOO.widget.MenuItem(li2, {
+                     parent: createContentMenu,
+                     submenu: div2
+                  });
+                  
+                  createContentMenu.addItems([ createContentByTemplate, createFolderByTemplate], groupIndex);
+                  groupIndex++;
+
+                  // Make sure that the available template are lazily loaded
+                  var templateNodesMenus = this.widgets.createContent.getMenu().getSubmenus(),
+                        templateNodesMenu = templateNodesMenus.length > 0 ? templateNodesMenus[0] : null;
+                  if (templateNodesMenu)
+                  {
+                     templateNodesMenu.subscribe("beforeShow", this.onCreateByTemplateNodeBeforeShow, this, true);
+                     templateNodesMenu.subscribe("click", this.onCreateByTemplateNodeClick, this, true);
+                  }
+                  
+                  var templateFoldersMenu = templateNodesMenus.length > 1 ? templateNodesMenus[1] : null;
+                  if (templateFoldersMenu)
+                  {
+                     templateFoldersMenu.subscribe("beforeShow", this.onCreateByTemplateFolderBeforeShow, this, true);
+                     templateFoldersMenu.subscribe("click", this.onCreateByTemplateFolderClick, this, true);
+                  }
+               }
+
+               // Render menu with all new menu items
+               createContentMenu.render();
+               this.dynamicControls.push(this.widgets.createContent);
             }
 
-            // Create content by template menu item
-            if (this.options.createContentByTemplateEnabled)
-            {
-               // Create menu item elements
-               var li = document.createElement("li");
-               li.innerHTML = '<a href="#"><span>' + this.msg("menu.create-content.by-template-node") + '</span></a>';
-
-               // Make sure to stop clicks on the sub menu link to close the entire menu
-               YAHOO.util.Event.addListener(Selector.query("a", li, true), "click", function(e)
-               {
-                  Event.preventDefault(e);
-                  Event.stopEvent(e);
-               });
-
-               // Create placeholder menu
-               var div = document.createElement("div");
-               div.innerHTML = '<div class="bd"><ul></ul></div>';
-
-               // Add menu item
-               var createContentByTemplate = new YAHOO.widget.MenuItem(li, {
-                  parent: createContentMenu,
-                  submenu: div
-               });
-               createContentMenu.addItems([ createContentByTemplate ], groupIndex);
-               groupIndex++;
-
-               // Make sure that the available template are lazily loaded
-               var templateNodesMenus = this.widgets.createContent.getMenu().getSubmenus(),
-                     templateNodesMenu = templateNodesMenus.length > 0 ? templateNodesMenus[0] : null;
-               if (templateNodesMenu)
-               {
-                  templateNodesMenu.subscribe("beforeShow", this.onCreateByTemplateNodeBeforeShow, this, true);
-                  templateNodesMenu.subscribe("click", this.onCreateByTemplateNodeClick, this, true);
-               }
-            }
-
-            // Render menu with all new menu items
-            createContentMenu.render();
-            this.dynamicControls.push(this.widgets.createContent);
-         }
-
-         // New Folder button: user needs "create" access
+            // New Folder button: user needs "create" access
          this.widgets.newFolder = Alfresco.util.createYUIButton(this, "newFolder-button", this.onNewFolder,
          {
             disabled: true,
             value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.newFolder);
-         
+            
          // File Upload button: user needs  "CreateChildren" access
          this.widgets.fileUpload = Alfresco.util.createYUIButton(this, "fileUpload-button", this.onFileUpload,
          {
@@ -365,7 +403,7 @@
             value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.syncToCloud);
-         
+            
          // Unsync from Cloud button
          this.widgets.unsyncFromCloud = Alfresco.util.createYUIButton(this, "unsyncFromCloud-button", this.onUnsyncFromCloud,
          {
@@ -373,7 +411,7 @@
             value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.unsyncFromCloud);
-         
+            
          // Selected Items menu button
          this.widgets.selectedItems = Alfresco.util.createYUIButton(this, "selectedItems-button", this.onSelectedItems,
          {
@@ -384,34 +422,43 @@
          });
          this.dynamicControls.push(this.widgets.selectedItems);
 
-         // Hide/Show NavBar button
-         this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar,
-         {
-            type: "checkbox",
-            checked: !this.options.hideNavBar
-         });
-         if (this.widgets.hideNavBar !== null)
-         {
-            this.widgets.hideNavBar.set("title", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
+            if (Dom.get(this.id + "hideNavBar-button"))
+            {
+               // Hide/Show NavBar button
+               this.widgets.hideNavBar = Alfresco.util.createYUIButton(this, "hideNavBar-button", this.onHideNavBar,
+               {
+                  type: "checkbox",
+                  checked: !this.options.hideNavBar
+               });
+               if (this.widgets.hideNavBar !== null)
+               {
+                  this.widgets.hideNavBar.set("title", this.msg(this.options.hideNavBar ? "button.navbar.show" : "button.navbar.hide"));
+                  this.dynamicControls.push(this.widgets.hideNavBar);
+               }
+            }
+
+            // Hide or show the nav bar depending on the current settings...
             Dom.setStyle(this.id + "-navBar", "display", this.options.hideNavBar ? "none" : "block");
-            this.dynamicControls.push(this.widgets.hideNavBar);
+
+            // RSS Feed link button
+            this.widgets.rssFeed = Alfresco.util.createYUIButton(this, "rssFeed-button", null, 
+            {
+               type: "link"
+            });
+            this.dynamicControls.push(this.widgets.rssFeed);
+
+            // Folder Up Navigation button
+            this.widgets.folderUp =  Alfresco.util.createYUIButton(this, "folderUp-button", this.onFolderUp,
+            {
+               disabled: true,
+               title: this.msg("button.up")
+            });
+            this.dynamicControls.push(this.widgets.folderUp);
+
+            // Finally show the component body here to prevent UI artifacts on YUI button decoration
+            Dom.setStyle(this.id + "-tb-body", "visibility", "visible");
          }
-
-         // RSS Feed link button
-         this.widgets.rssFeed = Alfresco.util.createYUIButton(this, "rssFeed-button", null, 
-         {
-            type: "link"
-         });
-         this.dynamicControls.push(this.widgets.rssFeed);
-
-         // Folder Up Navigation button
-         this.widgets.folderUp =  Alfresco.util.createYUIButton(this, "folderUp-button", this.onFolderUp,
-         {
-            disabled: true,
-            title: this.msg("button.up")
-         });
-         this.dynamicControls.push(this.widgets.folderUp);
-
+         
          // DocLib Actions module
          this.modules.actions = new Alfresco.module.DoclibActions();
          
@@ -420,11 +467,7 @@
 
          // Preferences service
          this.services.preferences = new Alfresco.service.Preferences();
-
-         // Finally show the component body here to prevent UI artifacts on YUI button decoration
-         Dom.setStyle(this.id + "-body", "visibility", "visible");
       },
-      
 
       /**
        * YUI WIDGET EVENT HANDLERS
@@ -513,6 +556,8 @@
             });
          }
       },
+      
+      
 
       /**
        * Create Content Template Node sub menu click handler
@@ -526,7 +571,8 @@
       {
          // Create content based on a template
          var node = aArgs[1].value,
-            destination = this.doclistMetadata.parent.nodeRef;
+            destination = this.doclistMetadata.parent.nodeRef,
+            siteId = this.options.siteId;
 
          // If node is undefined the loading or empty menu items were clicked
          if (node)
@@ -543,6 +589,11 @@
                {
                   fn: function (response)
                   {
+                     Alfresco.Share.postActivity(siteId, "org.alfresco.documentlibrary.file-created", "{cm:name}", "document-details?nodeRef=" + response.json.nodeRef, 
+                     {
+                        appTool: "documentlibrary",
+                        nodeRef: response.json.nodeRef
+                     });
                      // Make sure we get other components to update themselves to show the new content
                      YAHOO.Bubbling.fire("nodeCreated",
                      {
@@ -558,6 +609,125 @@
          }
       },
 
+      /**
+       * Create Content Template Node menu beforeShow handler
+       *
+       * @method onCreateByTemplateFolderBeforeShow
+       */
+      onCreateByTemplateFolderBeforeShow: function DLTB_onCreateByTemplateFolderBeforeShow()
+      {
+         // Display loading message
+         var templateNodesMenu = this.widgets.createContent.getMenu().getSubmenus()[1];
+         if (templateNodesMenu.getItems().length == 0)
+         {
+            templateNodesMenu.clearContent();
+            templateNodesMenu.addItem(this.msg("label.loading"));
+            templateNodesMenu.render();
+
+            // Load template nodes
+            Alfresco.util.Ajax.jsonGet(
+            {
+               url: Alfresco.constants.PROXY_URI + "slingshot/doclib/folder-templates",
+               successCallback:
+               {
+                  fn: function(response, menu)
+                  {
+                     var nodes = response.json.data,
+                        menuItems = [],
+                        name;
+                     for (var i = 0, il = nodes.length; i < il; i++)
+                     {
+                        node = nodes[i];
+                        name = $html(node.name);
+                        if (node.title && node.title !== node.name && this.options.useTitle)
+                        {
+                           name += '<span class="title">(' + $html(node.title) + ')</span>';
+                        }
+                        menuItems.push(
+                        {
+                           text: '<span title="' + $html(node.description) + '">' + name +'</span>',
+                           value: node
+                        });
+                     }
+                     if (menuItems.length == 0)
+                     {
+                        menuItems.push(this.msg("label.empty"));
+                     }
+                     templateNodesMenu.clearContent();
+                     templateNodesMenu.addItems(menuItems);
+                     templateNodesMenu.render();
+                  },
+                  scope: this
+               }
+            });
+         }
+      },
+      
+      /**
+       * Create Content Template Folder sub menu click handler
+       *
+       * @method onCreateContentTemplateNode
+       * @param sType {string} Event type, e.g. "click"
+       * @param aArgs {array} Arguments array, [0] = DomEvent, [1] = EventTarget
+       * @param p_obj {object} Object passed back from subscribe method
+       */
+      onCreateByTemplateFolderClick: function DLTB_onCreateContentTemplateFolder(sType, aArgs, p_obj)
+      {
+         // Generate the standard "New Folder" dialog but update the XHR configuration to redirect
+         // the request to the WebScript for copying space templates. The WebScript will update the
+         // copy with any name, title and description provided.
+         var dialog = this.onNewFolder(null, p_obj);
+         dialog.options.doBeforeDialogShow = {
+            fn: function DLTB_onNewFolderFromTemplate_doBeforeDialogShow(p_form, p_dialog)
+            {
+               Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.title;
+               Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.header;
+               Dom.get(p_dialog.id + "_prop_cm_name").value = this.node.name;
+               Dom.get(p_dialog.id + "_prop_cm_title").value = this.node.title;
+               Dom.get(p_dialog.id + "_prop_cm_description").value = this.node.description;
+            },
+            scope: {
+               node: aArgs[1].value,
+               title: this.msg("label.new-folder-from-template.title"),
+               header: this.msg("label.new-folder-from-template.header")
+            }
+         };
+         dialog.options.successCallback =
+         {
+            fn: function (response)
+            {
+               // Make sure we get other components to update themselves to show the new content
+               YAHOO.Bubbling.fire("nodeCreated",
+               {
+                  name: node.name,
+                  parentNodeRef: destination,
+                  highlightFile: response.json.name
+               });
+            }
+         };
+         dialog.options.successMessage = this.msg("message.create-content-by-template-node.success", node.name);
+         dialog.options.failureMessage = this.msg("message.create-content-by-template-node.failure", node.name);
+         dialog.options.doBeforeFormSubmit = {
+            fn: function DLTB_onNewFolderFromTemplate_doBeforeFormSubmit(form, obj)
+            {
+               form.attributes.action.nodeValue = Alfresco.constants.PROXY_URI + "slingshot/doclib/folder-templates";
+            },
+            scope: this
+         };
+         dialog.options.doBeforeAjaxRequest = {
+            fn: function DLTB_onNewFolderFromTemplate_doBeforeAjaxRequest(p_config, p_obj)
+            {
+               p_config.dataObj.sourceNodeRef = this.node.nodeRef;
+               p_config.dataObj.parentNodeRef = this.destination;
+               return true;
+            },
+            scope: {
+               node: aArgs[1].value,
+               destination: this.doclistMetadata.parent.nodeRef
+            }
+         };
+      },
+      
       /**
        * New Folder button click handler
        *
@@ -650,7 +820,9 @@
                },
                scope: this
             }
-         }).show();
+         });
+         createFolder.show();
+         return createFolder;
       },
       
       /**
@@ -844,6 +1016,11 @@
          var me = this,
             fileNames = [];
          
+         // Handle a single record being provided...
+         if (typeof records.length === "undefined")
+         {
+            records = [records];
+         }
          for (var i = 0, j = records.length; i < j; i++)
          {
             fileNames.push("<span class=\"" + (records[i].jsNode.isContainer ? "folder" : "document") + "\">" + $html(records[i].displayName) + "</span>");
@@ -938,10 +1115,10 @@
             }
             
             // Activities, in Site mode only
+            var successCount = successFolderCount + successFileCount;
             if (Alfresco.util.isValueSet(this.options.siteId))
             {
                var activityData;
-               var successCount = successFolderCount + successFileCount;
                
                if (successCount > 0)
                {
@@ -1355,7 +1532,7 @@
          {
             var files = this.modules.docList.getSelectedFiles(), fileTypes = [], file,
                fileType, userAccess = {}, fileAccess, index,
-               menuItems = this.widgets.selectedItems.getMenu().getItems(), menuItem,
+               menuItems = this.widgets.selectedItems == null ? null : this.widgets.selectedItems.getMenu().getItems(), menuItem,
                actionPermissions, typeGroups, typesSupported, disabled,
                commonAspects = [], allAspects = [],
                i, ii, j, jj;
@@ -1507,7 +1684,10 @@
                   }
                }
             }
-            this.widgets.selectedItems.set("disabled", (files.length === 0));
+            if (this.widgets.selectedItems != null)
+            {
+               this.widgets.selectedItems.set("disabled", (files.length === 0));
+            }
          }
       },
 
@@ -1798,6 +1978,30 @@
       },
       
       /**
+       * @method _getRssFeedUrl
+       * @private
+       */
+      _getRssFeedUrl: function DLTB__getRssFeedUrl()
+      {
+         var params = YAHOO.lang.substitute("{type}/site/{site}/{container}{path}",
+         {
+            type: this.modules.docList.options.showFolders ? "all" : "documents",
+            site: encodeURIComponent(this.options.siteId),
+            container: encodeURIComponent(this.options.containerId),
+            path: Alfresco.util.encodeURIPath(this.currentPath)
+         });
+
+         params += "?filter=" + encodeURIComponent(this.currentFilter.filterId);
+         if (this.currentFilter.filterData)
+         {
+            params += "&filterData=" + encodeURIComponent(this.currentFilter.filterData);
+         }
+         params += "&format=rss";
+         
+         return Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/documentlibrary/feed/" + params;
+      },
+      
+      /**
        * Generates the HTML mark-up for the RSS feed link
        *
        * @method _generateRSSFeedUrl
@@ -1807,22 +2011,8 @@
       {
          if (this.widgets.rssFeed && this.modules.docList)
          {
-            var params = YAHOO.lang.substitute("{type}/site/{site}/{container}{path}",
-            {
-               type: this.modules.docList.options.showFolders ? "all" : "documents",
-               site: encodeURIComponent(this.options.siteId),
-               container: encodeURIComponent(this.options.containerId),
-               path: Alfresco.util.encodeURIPath(this.currentPath)
-            });
-
-            params += "?filter=" + encodeURIComponent(this.currentFilter.filterId);
-            if (this.currentFilter.filterData)
-            {
-               params += "&filterData=" + encodeURIComponent(this.currentFilter.filterData);             
-            }
-            params += "&format=rss";
-            
-            this.widgets.rssFeed.set("href", Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/documentlibrary/feed/" + params);
+            var href = this._getRssFeedUrl();
+            this.widgets.rssFeed.set("href", href);
             Alfresco.util.enableYUIButton(this.widgets.rssFeed);
          }
       }

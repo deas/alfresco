@@ -33,7 +33,7 @@ function main()
    var wikiDashlet = {
       id : "WikiDashlet", 
       name : "Alfresco.dashlet.WikiDashlet",
-      assignTo : "wiki",
+      assignTo : "wiki_" + args.htmlid.replace(/-/g, "_"),
       options : {
          pages: (model.pageList != null) ? model.pageList : [],
          guid : instance.object.id,
@@ -54,7 +54,7 @@ function main()
       actions.push(
       {
          cssClass: "edit",
-         eventOnClick: { _alfValue : "editWikiDashletEvent", _alfType: "REFERENCE"},
+         eventOnClick: { _alfValue : "editWikiDashletEvent_" + args.htmlid.replace(/-/g, "_"), _alfType: "REFERENCE"},
          tooltip: msg.get("dashlet.edit.tooltip")
       });
    }

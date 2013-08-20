@@ -38,14 +38,7 @@
    <#-- Bootstrap Dojo -->
    <@createComponent scope="global" regionId="bootstrap" sourceId="global" uri="/surf/dojo/bootstrap"/>
    <@region scope="global" id="bootstrap" chromeless="true"/>
-   <#-- This is a markup section for any global JavaScript constants that might be required -->
-   <@markup id="constants">
-      <script type="text/javascript">
-         var RESOURCE_URI = window.location.protocol + "//" + window.location.host + "${url.context}/res/"
-         var PROXY_URI = window.location.protocol + "//" + window.location.host + "${url.context}/proxy/alfresco/";
-         var SERVICE_URI = window.location.protocol + "//" + window.location.host + "${url.context}/service/";
-      </script>
-   </@>
+   
    <@outputJavaScript/>
    <@outputCSS/>
    
@@ -72,7 +65,7 @@
 
    <@markup id="ipadStylesheets">
    <!-- iPad CSS overrides -->
-   <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/ipad.css"/>'/>
+   <link media="only screen and (max-device-width: 1024px)" rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/tablet.css"/>'/>
    </@markup>
 <#if !PORTLET>
 </head>

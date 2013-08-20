@@ -5,6 +5,31 @@
     <selected>1</selected>
     <show>0</show>
     <functionDefinitionList>
+        <actionDefinition name="alfrescoSetProperty">
+            <parameterList>
+                <stringParameter name="property" />
+                <stringParameter name="value" />
+                <fileParameter name="configurationFile" value="${tomcat_server_directory}/shared/classes/alfresco-global.properties" />
+            </parameterList>
+            <actionList>
+                <substitute>
+                    <files>${configurationFile}</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>#\s*${property}\s*=</pattern>
+                            <value>${property}=</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <propertiesFileSet>
+                    <file>${configurationFile}</file>
+                    <key>${property}</key>
+                    <value>${value}</value>
+                </propertiesFileSet>
+            </actionList>
+        </actionDefinition>
+
+
         <actionDefinition name="alfrescoConfigure">
             <parameterList>
                 <stringParameter name="alfrescoFiles" />
@@ -18,7 +43,7 @@
                 <ruleList>
                     <platformTest type="windows"/>
                 </ruleList>
-             </setInstallerVariableFromRegEx>		
+             </setInstallerVariableFromRegEx>	
 	        <substitute>
 		    <files>${alfrescoFiles}</files>
 		    <substitutionList>
@@ -69,64 +94,64 @@ img.exe=${'${img.root}'}\\convert.exe</value>
                             </ruleList>
                         </substitution>
 		        <substitution>
-                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
-                            <value>${openoffice_directory.unix}</value>
+                            <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
+                            <value>${libreoffice_directory.unix}</value>
                             <ruleList>
                                 <platformTest type="unix"/>
                             </ruleList>
                         </substitution>
 		        <substitution>
-                            <pattern>@@BITROCK_OO_ROOTDIR@@</pattern>
-                            <value>${openoffice_directory.dos.unix}</value>
+                            <pattern>@@BITROCK_LO_ROOTDIR@@</pattern>
+                            <value>${libreoffice_directory.dos.unix}</value>
                             <ruleList>
                                 <platformTest type="windows"/>
                             </ruleList>
                         </substitution>
 		        <substitution>
-                            <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
-                            <value>${openoffice_directory.dos.unix}/App/libreoffice/program/soffice.exe</value>
+                            <pattern>@@BITROCK_LIBREOFFICE_PROGRAM_DIR@@</pattern>
+                            <value>${libreoffice_directory.dos.unix}/App/libreoffice/program/soffice.exe</value>
                             <ruleList>
                                 <platformTest type="windows"/>
                             </ruleList>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
-                            <value>${openoffice_directory}/program/soffice.bin</value>
+                            <pattern>@@BITROCK_LIBREOFFICE_PROGRAM_DIR@@</pattern>
+                            <value>${libreoffice_directory}/program/soffice.bin</value>
                             <ruleList>
                                 <platformTest type="linux"/>
                             </ruleList>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OPENOFFICE_PROGRAM_DIR@@</pattern>
-                            <value>${openoffice_directory}/Contents/MacOS/soffice.bin</value>
+                            <pattern>@@BITROCK_LIBREOFFICE_PROGRAM_DIR@@</pattern>
+                            <value>${libreoffice_directory}/Contents/MacOS/soffice.bin</value>
                             <ruleList>
                                 <platformTest type="osx"/>
                             </ruleList>
                         </substitution>
 		        <substitution>
-                            <pattern>@@BITROCK_OPENOFFICE_JOD_DIR@@</pattern>
-                            <value>${openoffice_directory.dos.unix}/App/libreoffice</value>
+                            <pattern>@@BITROCK_LIBREOFFICE_JOD_DIR@@</pattern>
+                            <value>${libreoffice_directory.dos.unix}/App/libreoffice</value>
                             <ruleList>
                                 <platformTest type="windows"/>
                             </ruleList>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OPENOFFICE_JOD_DIR@@</pattern>
-                            <value>${openoffice_directory}</value>
+                            <pattern>@@BITROCK_LIBREOFFICE_JOD_DIR@@</pattern>
+                            <value>${libreoffice_directory}</value>
                             <ruleList>
                                 <platformTest type="linux"/>
                             </ruleList>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OPENOFFICE_JOD_DIR@@</pattern>
-                            <value>${openoffice_directory}/Contents</value>
+                            <pattern>@@BITROCK_LIBREOFFICE_JOD_DIR@@</pattern>
+                            <value>${libreoffice_directory}/Contents</value>
                             <ruleList>
                                 <platformTest type="osx"/>
                             </ruleList>
                         </substitution>
                         <substitution>
-                            <pattern>@@BITROCK_OO_PORT@@</pattern>
-                            <value>${openoffice_port}</value>
+                            <pattern>@@BITROCK_LO_PORT@@</pattern>
+                            <value>${libreoffice_port}</value>
                         </substitution>
 			<substitution>
                             <pattern>@@BITROCK_PDF2SWF_PATH@@</pattern>
@@ -142,20 +167,20 @@ img.exe=${'${img.root}'}\\convert.exe</value>
                                 <platformTest type="unix"/>
                             </ruleList>
 			</substitution>
-			<substitution>
+                        <substitution>
                             <pattern>@@BITROCK_PDF2SWF_LANGUAGEDIR@@</pattern>
                             <value>${installdir.dos.unix}/swftools/japanese</value>
                             <ruleList>
                                 <platformTest type="windows"/>
                             </ruleList>
                         </substitution>
-			<substitution>
+                        <substitution>
                             <pattern>@@BITROCK_PDF2SWF_LANGUAGEDIR@@</pattern>
                             <value>${installdir.unix}/common/japanese</value>
                             <ruleList>
                                 <platformTest type="unix"/>
                             </ruleList>
-			</substitution>
+                        </substitution>
                         <substitution>
                             <pattern>@@BITROCK_MYSQL_PORT@@</pattern>
                             <value>${database_port}</value>
@@ -218,7 +243,7 @@ img.exe=${'${img.root}'}\\convert.exe</value>
                         </substitution>
                         <substitution>
                             <pattern>@@BITROCK_TOMCAT_SSL_PORT@@</pattern>
-                            <value>${tomcat_server_ssl_port}</value>
+                            <value>${application_server_ssl_port}</value>
                         </substitution>
                         <substitution>
                             <pattern>@@BITROCK_TOMCAT_SHUTDOWN_PORT@@</pattern>

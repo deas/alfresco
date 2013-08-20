@@ -148,7 +148,7 @@
          <rule>
             <request>
                <method>POST</method>
-               <path>/page/dologin(\?.+)?|/page/site/[^/]+/start-workflow|/page/start-workflow</path>
+               <path>/page/dologin(\?.+)?|/page/site/[^/]+/start-workflow|/page/start-workflow|/page/context/[^/]+/start-workflow</path>
             </request>
             <action name="assertReferer">
                <param name="referer">{referer}</param>

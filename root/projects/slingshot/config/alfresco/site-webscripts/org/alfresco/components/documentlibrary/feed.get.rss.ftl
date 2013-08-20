@@ -1,6 +1,6 @@
 <#function formatDate date><#return xmldate(date)?string(msg("date-format.rfc822"))></#function>
 <#function siteLoc loc><#if (loc.site?length > 0)><#return "/page/site/" + loc.site + "/documentlibrary"><#else><#return "/page/repository"></#if></#function>
-<#function location loc><#return absurl(url.context) + siteLoc(loc) + "?file=" + loc.file + "&amp;path=" + loc.path?url></#function>
+<#function location loc><#return absurl(url.context) + siteLoc(loc) + "?file=" + loc.file?url + "&amp;path=" + loc.path?url></#function>
 <#function displayLocation loc><#return absurl(url.context) + siteLoc(loc) + "?file=" + loc.file + "&amp;path=" + loc.path></#function>
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -25,7 +25,7 @@
          &lt;img src=&quot;${proxyLink + "api/node/" + item.nodeRef?replace("://", "/") + "/content/thumbnails/doclib?c=queue&amp;ph=true"}&quot;&gt;${(item.description)!""?html}&lt;br /&gt;
          ${msg("feed.created", formatDate(item.createdOn), item.createdBy)}&lt;br /&gt;
          ${msg("feed.modified", formatDate(item.modifiedOn), item.modifiedBy)}&lt;br /&gt;
-         ${msg("feed.location")}:&#160;&lt;a href="${location(item.location)}"&gt;${displayLocation(item.location)}&lt;/a&gt;
+         ${msg("feed.location")}:&#160;&lt;a href="${location(item.location)?xml}"&gt;${displayLocation(item.location)?xml}&lt;/a&gt;
       </description>
       <link>${proxyLink + item.contentUrl}</link>
       <guid isPermaLink="false">${item.nodeRef}</guid>

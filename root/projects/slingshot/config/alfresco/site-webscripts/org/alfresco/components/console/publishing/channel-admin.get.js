@@ -22,7 +22,7 @@ function main()
 	      id : "ConsoleChannels", 
 	      name : "Alfresco.ConsoleChannels",
 	      options : {
-	         acceptMessagesFrom: "http://alfresco.com"
+	         acceptMessagesFrom: "http://www.alfresco.com"
 	      }
 	   };
 	   model.widgets = [widget];

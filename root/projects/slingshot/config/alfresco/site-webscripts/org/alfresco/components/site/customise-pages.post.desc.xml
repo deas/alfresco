@@ -3,4 +3,5 @@
    <description>Saves the the user selected pages from the Customize site pages component</description>
    <format default="json"/>
    <url>/components/site/customise-pages</url>
+   <authentication>user</authentication>
 </webscript>

@@ -5,3 +5,18 @@
 .left-and-right .right-widgets {
    float: right;
 }
+
+.horizontal-widgets {
+}
+
+.horizontal-widget {
+   float: left;
+}
+
+.left-widgets {
+   float: left;
+}
+
+.right-widgets {
+   float: right;
+}

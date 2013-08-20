@@ -118,7 +118,12 @@
          <!--
             Optionally limit the number of folders shown in treeview throughout Share.
          -->
-         <maximum-folder-count>-1</maximum-folder-count>
+         <maximum-folder-count>1000</maximum-folder-count>
+         
+         <!--  
+            Default timeout in milliseconds for folder Tree component to recieve response from Repository
+         -->
+         <timeout>7000</timeout>
       </tree>
 
       <!--

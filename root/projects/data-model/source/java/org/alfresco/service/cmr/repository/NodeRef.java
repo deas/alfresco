@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 
 /**

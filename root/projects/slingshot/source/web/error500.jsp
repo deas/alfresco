@@ -71,7 +71,7 @@ div.panel
       <div class="panel">
          <ul>
             <li>You have attempted to access a page that does not exist - check the URL in the address bar.</li>
-            <li>You have attempted to access a page that is not accessable to you, such as a private Site dashboard.</li>
+            <li>You have attempted to access a page that is not accessible to you, such as a private Site dashboard.</li>
             <li>A valid page has been requested but the server was unable to render it due to an internal error - contact your administrator.</li>
          <ul>
       </div>

@@ -6,12 +6,34 @@
    font-size: $theme-font-size-1;
 }
 
+/*
+ * This resets anchors in a dialog. This is required because the dialog appears outside 
+ * of the main body element.
+ */
+.alfresco-dialog-AlfDialog.dijitDialog a {
+    color: $theme-color-1;
+    text-decoration: none;
+}
+
+/*
+ * This resets input elements in a dialog
+ */
+.alfresco-dialog-AlfDialog.dijitDialog input {
+    border: $theme-border-1;
+    font-weight: normal;
+}
+
+.alfresco-dialog-AlfDialog .dialog-body {
+  padding: 10px;
+}
+
 .alfresco-dialog-AlfDialog .dijitDialogPaneContent {
    border-top: $theme-border-1;
+   padding: 0;
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogTitleBar {
-   background-color: $theme-bg-color-2;
+   background-color: $theme-bg-color-1;
    background-image: none;
    border: none;
    text-align: center;
@@ -22,11 +44,11 @@
    font-size: 230%;
    line-height: 1em;
    padding: 0.25em;
-   color: $theme-color-1;
+   color: $theme-color-7;
 }
 
 .alfresco-dialog-AlfDialog .footer {
-   background-color: $theme-bg-color-2;
+   background-color: $theme-bg-color-1;
    background-image: none;
    border: none;
    border-top: $theme-border-1;

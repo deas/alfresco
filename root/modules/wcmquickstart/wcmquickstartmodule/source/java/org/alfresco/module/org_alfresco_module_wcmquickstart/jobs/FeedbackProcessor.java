@@ -19,10 +19,14 @@ package org.alfresco.module.org_alfresco_module_wcmquickstart.jobs;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.feedback.FeedbackProcessorHandler;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.repo.admin.RepositoryState;
+import org.alfresco.repo.lock.JobLockService;
+import org.alfresco.repo.lock.JobLockService.JobLockRefreshCallback;
+import org.alfresco.repo.lock.LockAcquisitionException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -33,6 +37,9 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.service.namespace.QName;
+import org.alfresco.util.VmShutdownListener.VmShutdownException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -63,6 +70,15 @@ public class FeedbackProcessor
     /** Repository State */
     private RepositoryState repositoryState;
 
+    /** Job Lock service **/
+    private JobLockService jobLockService;
+    
+    /** The time this lock will persist in the database (60 sec but refreshed at regular intervals) */
+    private static final long LOCK_TTL = 60000L;
+    
+    /** The name of the lock used to ensure that feedback processor does not run on more than one node at the same time */
+    private static final QName LOCK_QNAME = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.FeedbackProcessor");
+
     /**
      * Register a feedback processor handler
      * @param handler   feedback processor handler
@@ -72,6 +88,27 @@ public class FeedbackProcessor
         handlers.put(handler.getFeedbackType(), handler);
     }
     
+    private class LockCallback implements JobLockRefreshCallback
+    {
+        final AtomicBoolean running = new AtomicBoolean(true);
+        
+        @Override
+        public boolean isActive()
+        {
+            return running.get();
+        }
+        
+        @Override
+        public void lockReleased()
+        {
+            running.set(false);
+            if (log.isDebugEnabled())
+            {
+                log.debug("Lock released : " + LOCK_QNAME);
+            }
+        }
+    }
+
     /**
      * Run job.  Find all feedback node references that require processing and delegate to appropriate
      * handlers.
@@ -86,6 +123,65 @@ public class FeedbackProcessor
             }
             return;
         }
+
+        LockCallback lockCallback = new LockCallback();
+        String lockToken = null;
+        try
+        {
+            lockToken = jobLockService.getLock(LOCK_QNAME, LOCK_TTL);
+            if (lockToken == null)
+            {
+                if (log.isTraceEnabled())
+                {
+                    log.trace("Can't get lock.");
+                }
+                return;
+            }
+
+            if (log.isDebugEnabled())
+            {
+                log.trace("Activities feedback processor started");
+            }
+
+            jobLockService.refreshLock(lockToken, LOCK_QNAME, LOCK_TTL, lockCallback);
+
+            runInternal();
+
+            // Done
+            if (log.isDebugEnabled())
+            {
+                log.trace("Activities feedback processor completed");
+            }
+        }
+        catch (LockAcquisitionException e)
+        {
+            // Job being done by another process
+            if (log.isDebugEnabled())
+            {
+                log.debug("Activities feedback processor already underway");
+            }
+        }
+        catch (VmShutdownException e)
+        {
+            // Aborted
+            if (log.isDebugEnabled())
+            {
+                log.debug("Activities feedback processor aborted");
+            }
+        }
+        finally
+        {
+            // The lock will self-release if answer isActive in the negative
+            lockCallback.running.set(false);
+            if (lockToken != null)
+            {
+                jobLockService.releaseLock(lockToken, LOCK_QNAME);
+            }
+        }
+    }
+
+    private void runInternal()
+    {
         AuthenticationUtil.runAs(new RunAsWork<Object>()
         {
             @Override
@@ -210,5 +306,14 @@ public class FeedbackProcessor
     public void setRepositoryState(RepositoryState repositoryState)
     {
         this.repositoryState = repositoryState;
+    }
+
+    /**
+     * Sets the job lock service
+     * @param jobLockService   service for managing job locks
+     */
+    public void setJobLockService(JobLockService jobLockService)
+    {
+        this.jobLockService = jobLockService;
     }
 }

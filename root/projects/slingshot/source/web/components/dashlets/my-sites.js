@@ -134,7 +134,8 @@
          validFilters:
          {
             "all": true,
-            "favSites": true
+            "favSites": true,
+            "recentSites": true
          },
          
          /**
@@ -326,6 +327,24 @@
          }
          this.imapfavSites = imapfavSites;
 
+         var recentSites = Alfresco.util.findValueByDotNotation(prefs, "org.alfresco.share.sites.recent");
+         if (recentSites === null)
+         {
+            recentSites = {};
+         }
+
+         var recentSitesArray = [];
+
+         for (key in recentSites)
+         {
+            recentSitesArray.push(recentSites[key]);
+         }
+
+         this.recentSites = recentSites;
+         this.recentSitesArray = recentSitesArray;
+
+
+
          // Retrieve the preferred filter for the UI
          var filter = Alfresco.util.findValueByDotNotation(prefs, this.PREFERENCES_SITES_DASHLET_FILTER, "all");
          this.filter = this.options.validFilters.hasOwnProperty(filter) ? filter : "all";
@@ -372,6 +391,7 @@
          {
             p_items[i].isSiteManager = p_items[i].siteRole === "SiteManager";
             p_items[i].isFavourite = !this.favSites[p_items[i].shortName] ? false : this.favSites[p_items[i].shortName];
+            p_items[i].isRecent = Alfresco.util.arrayContains(this.recentSitesArray, p_items[i].shortName);
             if (this.imapfavSites)
             {
                p_items[i].isIMAPFavourite = !this.imapfavSites[p_items[i].shortName] ? false : this.imapfavSites[p_items[i].shortName];
@@ -427,6 +447,9 @@
 
             case "favSites":
                return (site.isFavourite || (this.options.imapEnabled && site.isIMAPFavourite));
+
+            case "recentSites":
+               return (site.isRecent);
          }
          return false;
       },
@@ -616,9 +639,8 @@
          site.isFavourite = !site.isFavourite;
 
          this.widgets.dataTable.updateRow(record, site);
-         
          var fnPref = site.isFavourite ? "favouriteSite" : "unFavouriteSite";
-
+         
          // Assume the call will succeed, but register a failure handler to replace the UI state on failure
          var responseConfig =
          {

@@ -12,6 +12,9 @@
       <theme-color-3>#fff</theme-color-3>
       <theme-color-4>#008000</theme-color-4>
       <theme-color-5>#fff</theme-color-5>
+      <theme-color-6>#999999</theme-color-6> <!-- Used for faded fonts -->
+      <theme-color-7>#ffffff</theme-color-7> <!-- Used for light on dark fonts -->
+      <theme-color-8>#4F94C9</theme-color-8> <!-- Used for highlight colours -->
       <theme-bg-color-1>#bbccff</theme-bg-color-1>
       <theme-bg-color-2>#fff</theme-bg-color-2>
       <theme-bg-color-3>#F9F9F9</theme-bg-color-3>
@@ -20,6 +23,7 @@
       <theme-bg-color-6>#f3f5ff</theme-bg-color-6>
       <theme-bg-color-7>#F5FFF2</theme-bg-color-7>
       <theme-bg-color-8>#FFFFFF</theme-bg-color-8>
+      <theme-bg-color-9>#DCEAF4</theme-bg-color-9> <!--  Used for highlight background (used with theme-color-8) -->
       <theme-bg-1></theme-bg-1>
       <theme-bg-2>background-color: #f9f9f9;</theme-bg-2>
       <theme-bg-3>background-color: #CCCCCC;background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, rgb(204,204,204)),color-stop(1, rgb(232,232,232)));background-image: -moz-linear-gradient(center top,rgb(204,204,204) 0%,rgb(232,232,232) 100%);</theme-bg-3>
@@ -30,5 +34,9 @@
       <theme-border-3>1px solid #ccc</theme-border-3>
       <theme-border-4>1px solid #DDD6A0</theme-border-4>
       <theme-border-5>1px solid #c2c2c2</theme-border-5>
+      
+      <!-- New theme tokens -->
+      <button>background-image: url(themes/gdocs/images/sprite.png);border-color: #808080;border-style: solid;border-width: 0;margin: auto 0.25em;color:#333;</button>
+      
    </css-tokens>
 </theme>

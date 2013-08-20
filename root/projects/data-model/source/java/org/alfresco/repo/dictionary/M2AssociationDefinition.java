@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
@@ -47,6 +48,7 @@ import org.alfresco.util.EqualsHelper;
     private ClassDefinition targetClass;
     private QName sourceRoleName;
     private QName targetRoleName;
+    private transient MessageLookup staticMessageLookup = new StaticMessageLookup();
     
     
     /**
@@ -102,36 +104,39 @@ import org.alfresco.util.EqualsHelper;
     }
     
 
-    /* (non-Javadoc)
-     * @see org.alfresco.service.cmr.dictionary.AssociationDefinition#getModel()
-     */
+    @Override
     public ModelDefinition getModel()
     {
         return classDef.getModel();
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getName()
-     */
+    @Override
     public QName getName()
     {
         return name;
     }
 
     
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#isChild()
-     */
+    @Override
     public boolean isChild()
     {
         return (assoc instanceof M2ChildAssociation);
     }
 
+    @Override
+    public String getTitle()
+    {
+        return getTitle(staticMessageLookup);
+    }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getTitle()
-     */
+    @Override
+    public String getDescription()
+    {
+        return getDescription(staticMessageLookup);
+    }
+
+    @Override
     public String getTitle(MessageLookup messageLookup)
     {
         String value = M2Label.getLabel(classDef.getModel(), messageLookup, "association", name, "title"); 
@@ -143,9 +148,7 @@ import org.alfresco.util.EqualsHelper;
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getDescription()
-     */
+    @Override
     public String getDescription(MessageLookup messageLookup)
     {
         String value = M2Label.getLabel(classDef.getModel(), messageLookup, "association", name, "description"); 
@@ -157,90 +160,70 @@ import org.alfresco.util.EqualsHelper;
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#isProtected()
-     */
+    @Override
     public boolean isProtected()
     {
         return assoc.isProtected();
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getSourceClass()
-     */
+    @Override
     public ClassDefinition getSourceClass()
     {
         return classDef;
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getSourceRoleName()
-     */
+    @Override
     public QName getSourceRoleName()
     {
         return sourceRoleName;
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#isSourceMandatory()
-     */
+    @Override
     public boolean isSourceMandatory()
     {
         return assoc.isSourceMandatory();
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#isSourceMany()
-     */
+    @Override
     public boolean isSourceMany()
     {
         return assoc.isSourceMany();
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getTargetClass()
-     */
+    @Override
     public ClassDefinition getTargetClass()
     {
         return targetClass;
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#getTargetRoleName()
-     */
+    @Override
     public QName getTargetRoleName()
     {
         return targetRoleName;
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#isTargetMandatory()
-     */
+    @Override
     public boolean isTargetMandatory()
     {
         return assoc.isTargetMandatory();
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.service.cmr.dictionary.AssociationDefinition#isTargetMandatoryEnforced()
-     */
+    @Override
     public boolean isTargetMandatoryEnforced()
     {
         return assoc.isTargetMandatoryEnforced();
     }
 
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.AssociationDefinition#isTargetMany()
-     */
+    @Override
     public boolean isTargetMany()
     {
         return assoc.isTargetMany();

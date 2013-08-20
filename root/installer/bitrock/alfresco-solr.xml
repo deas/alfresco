@@ -14,7 +14,7 @@
 	        <createDirectory path="${tomcat_server_directory}/conf/Catalina" />
 		<createDirectory path="${tomcat_server_directory}/conf/Catalina/localhost" />	    
 		<copyFile>
-                    <origin>${alfresco_data_directory}/solr/solr-tomcat-context.xml</origin>
+                    <origin>${alfresco_data_directory}/solr/context.xml</origin>
                     <destination>${tomcat_server_directory}/conf/Catalina/localhost/solr.xml</destination>
 	        </copyFile>
 	    </actionList>

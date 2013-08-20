@@ -609,13 +609,58 @@ public class MimetypeMap implements MimetypeService
     {
         return textMimetypes.contains(mimetype);
     }
-
+    
     /**
      * Use Apache Tika to try to guess the type of the file.
      * 
      * @return The mimetype, or null if we can't tell.
      */
     private MediaType detectType(String filename, ContentReader reader)
+    {
+//        Metadata metadata = new Metadata();
+//        if (filename != null)
+//        {
+//            metadata.add(Metadata.RESOURCE_NAME_KEY, filename);
+//        }
+        TikaInputStream inp = null;
+        if (reader != null)
+        {
+	        if (reader instanceof FileContentReader)
+	        {
+	            try
+	            {
+	                inp = TikaInputStream.get(((FileContentReader) reader).getFile());
+	            }
+	            catch (FileNotFoundException e)
+	            {
+	                logger.warn("No backing file found for ContentReader " + e);
+	                return null;
+	            }
+	        }
+	        else
+	        {
+	        	inp = TikaInputStream.get(reader.getContentInputStream());
+	        }
+        }
+        return detectType(filename, inp);
+    }
+
+    private MediaType detectType(String filename, InputStream input)
+    {
+    	TikaInputStream inp = null;
+        if (input != null)
+        {
+        	inp = TikaInputStream.get(input);
+        }
+        return detectType(filename, inp);
+    }
+
+    /**
+     * Use Apache Tika to try to guess the type of the file.
+     * 
+     * @return The mimetype, or null if we can't tell.
+     */
+    private MediaType detectType(String filename, TikaInputStream input)
     {
         Metadata metadata = new Metadata();
         if (filename != null)
@@ -624,31 +669,16 @@ public class MimetypeMap implements MimetypeService
         }
 
         InputStream inp = null;
-        if (reader != null)
+        if (input != null)
         {
-            if (reader instanceof FileContentReader)
-            {
-                try
-                {
-                    inp = TikaInputStream.get(((FileContentReader) reader).getFile());
-                }
-                catch (FileNotFoundException e)
-                {
-                    logger.warn("No backing file found for ContentReader " + e);
-                    return null;
-                }
-            }
-            else
-            {
-                inp = TikaInputStream.get(reader.getContentInputStream());
-            }
+        	inp = TikaInputStream.get(input);
         }
 
         MediaType type;
         try
         {
             type = detector.detect(inp, metadata);
-            logger.debug(reader + " detected by Tika as being " + type.toString());
+            logger.debug(input + " detected by Tika as being " + type.toString());
         }
         catch (Exception e)
         {
@@ -749,8 +779,18 @@ public class MimetypeMap implements MimetypeService
             // know what their files are.
             return reader.getMimetype();
         }
+        InputStream input = (reader != null ? reader.getContentInputStream() : null);
+        return guessMimetype(filename, input);
+    }
 
-        MediaType type = detectType(filename, reader);
+    /**
+     * Uses Tika to try to identify the mimetype of the file, falling back on
+     * {@link #guessMimetype(String)} for an extension based one if Tika can't
+     * help.
+     */
+    public String guessMimetype(String filename, InputStream input)
+    {
+        MediaType type = detectType(filename, input);
         String filenameGuess = guessMimetype(filename);
 
         // If Tika doesn't know what the type is, go with the filename one

@@ -156,6 +156,29 @@
           <multiple>false</multiple>
           <index enabled="false" />
         </property>
+        <!--  V1.1  -->
+        <property name="cmis:description">
+          <title>Description</title>
+          <description>Description</description>
+          <type>d:text</type>
+          <protected>false</protected>
+          <mandatory>false</mandatory>
+          <multiple>false</multiple>
+          <index enabled="true">
+            <tokenised>true</tokenised>
+          </index>
+        </property>
+        <property name="cmis:secondaryObjectTypeIds">
+          <title>Secondary Object Type Ids</title>
+          <description>Ids of the secondary object types for the object</description>
+          <type>cmis:id</type>
+          <protected>false</protected>
+          <mandatory>false</mandatory>
+          <multiple>true</multiple>
+          <index enabled="true">
+            <tokenised>true</tokenised>
+          </index>
+        </property>
       </properties>
     </type>
 
@@ -296,6 +319,16 @@
           <multiple>false</multiple>
           <index enabled="false" />
         </property>
+        <!--  V1.1 -->
+        <property name="cmis:isPrivateWorkingCopy">
+          <title>Is private working copy</title>
+          <description>Indicates if this instance is a private working copy</description>
+          <type>d:boolean</type>
+          <protected>true</protected>
+          <mandatory>false</mandatory>
+          <multiple>false</multiple>
+          <index enabled="true" />
+        </property>
       </properties>
     </type>
 
@@ -379,11 +412,20 @@
       </properties>
     </type>
 
+    <type name="cmis:secondary">
+      <title>Secondary Type</title>
+      <description>Secondary Type</description>
+      <parent>cmisext:object</parent>
+      <properties>
+      </properties>
+    </type>
+    
     <type name="cmisext:aspects">
       <title>Aspects</title>
       <description>Aspects Type</description>
       <parent>cmis:policy</parent>
     </type>
+    
   </types>
 
 </model>

@@ -255,6 +255,7 @@ Alfresco.util.createImageEditor = function(id, options)
       Alfresco.util.Ajax.request(
       {
          method: Alfresco.util.Ajax.GET,
+         dataObj: { max: "250" },
          url: Alfresco.constants.PROXY_URI + "slingshot/doclib/images/site/" + options.siteId + "/documentLibrary",
          successCallback:
          {

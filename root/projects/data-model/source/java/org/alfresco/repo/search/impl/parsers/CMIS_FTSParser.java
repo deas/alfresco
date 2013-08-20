@@ -1,4 +1,4 @@
-// $ANTLR 3.4 W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g 2012-08-28 10:47:19
+// $ANTLR 3.4 W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g 2013-08-07 19:43:04
 
 package org.alfresco.repo.search.impl.parsers;
 
@@ -57,7 +57,7 @@ public TreeAdaptor getTreeAdaptor() {
     return adaptor;
 }
     public String[] getTokenNames() { return CMIS_FTSParser.tokenNames; }
-    public String getGrammarFileName() { return "W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g"; }
+    public String getGrammarFileName() { return "W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g"; }
 
 
         private Stack<String> paraphrases = new Stack<String>();
@@ -196,7 +196,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "cmisFtsQuery"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:278:1: cmisFtsQuery : ftsCmisDisjunction EOF -> ftsCmisDisjunction ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:278:1: cmisFtsQuery : ftsCmisDisjunction EOF -> ftsCmisDisjunction ;
     public final CMIS_FTSParser.cmisFtsQuery_return cmisFtsQuery() throws RecognitionException {
         CMIS_FTSParser.cmisFtsQuery_return retval = new CMIS_FTSParser.cmisFtsQuery_return();
         retval.start = input.LT(1);
@@ -212,8 +212,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_EOF=new RewriteRuleTokenStream(adaptor,"token EOF");
         RewriteRuleSubtreeStream stream_ftsCmisDisjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsCmisDisjunction");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:279:9: ( ftsCmisDisjunction EOF -> ftsCmisDisjunction )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:280:9: ftsCmisDisjunction EOF
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:279:9: ( ftsCmisDisjunction EOF -> ftsCmisDisjunction )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:280:9: ftsCmisDisjunction EOF
             {
             pushFollow(FOLLOW_ftsCmisDisjunction_in_cmisFtsQuery194);
             ftsCmisDisjunction1=ftsCmisDisjunction();
@@ -276,7 +276,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "ftsCmisDisjunction"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:289:1: ftsCmisDisjunction : ftsCmisConjunction ( or ftsCmisConjunction )* -> ^( DISJUNCTION ( ftsCmisConjunction )+ ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:289:1: ftsCmisDisjunction : ftsCmisConjunction ( or ftsCmisConjunction )* -> ^( DISJUNCTION ( ftsCmisConjunction )+ ) ;
     public final CMIS_FTSParser.ftsCmisDisjunction_return ftsCmisDisjunction() throws RecognitionException {
         CMIS_FTSParser.ftsCmisDisjunction_return retval = new CMIS_FTSParser.ftsCmisDisjunction_return();
         retval.start = input.LT(1);
@@ -294,8 +294,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_ftsCmisConjunction=new RewriteRuleSubtreeStream(adaptor,"rule ftsCmisConjunction");
         RewriteRuleSubtreeStream stream_or=new RewriteRuleSubtreeStream(adaptor,"rule or");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:290:9: ( ftsCmisConjunction ( or ftsCmisConjunction )* -> ^( DISJUNCTION ( ftsCmisConjunction )+ ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:291:9: ftsCmisConjunction ( or ftsCmisConjunction )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:290:9: ( ftsCmisConjunction ( or ftsCmisConjunction )* -> ^( DISJUNCTION ( ftsCmisConjunction )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:291:9: ftsCmisConjunction ( or ftsCmisConjunction )*
             {
             pushFollow(FOLLOW_ftsCmisConjunction_in_ftsCmisDisjunction252);
             ftsCmisConjunction3=ftsCmisConjunction();
@@ -304,7 +304,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             stream_ftsCmisConjunction.add(ftsCmisConjunction3.getTree());
 
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:291:28: ( or ftsCmisConjunction )*
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:291:28: ( or ftsCmisConjunction )*
             loop1:
             do {
                 int alt1=2;
@@ -317,7 +317,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt1) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:291:29: or ftsCmisConjunction
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:291:29: or ftsCmisConjunction
             	    {
             	    pushFollow(FOLLOW_or_in_ftsCmisDisjunction255);
             	    or4=or();
@@ -355,7 +355,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 292:17: -> ^( DISJUNCTION ( ftsCmisConjunction )+ )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:293:25: ^( DISJUNCTION ( ftsCmisConjunction )+ )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:293:25: ^( DISJUNCTION ( ftsCmisConjunction )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -409,7 +409,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "ftsCmisConjunction"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:296:1: ftsCmisConjunction : ( ftsCmisPrefixed )+ -> ^( CONJUNCTION ( ftsCmisPrefixed )+ ) ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:296:1: ftsCmisConjunction : ( ftsCmisPrefixed )+ -> ^( CONJUNCTION ( ftsCmisPrefixed )+ ) ;
     public final CMIS_FTSParser.ftsCmisConjunction_return ftsCmisConjunction() throws RecognitionException {
         CMIS_FTSParser.ftsCmisConjunction_return retval = new CMIS_FTSParser.ftsCmisConjunction_return();
         retval.start = input.LT(1);
@@ -422,10 +422,10 @@ public TreeAdaptor getTreeAdaptor() {
 
         RewriteRuleSubtreeStream stream_ftsCmisPrefixed=new RewriteRuleSubtreeStream(adaptor,"rule ftsCmisPrefixed");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:297:9: ( ( ftsCmisPrefixed )+ -> ^( CONJUNCTION ( ftsCmisPrefixed )+ ) )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:298:9: ( ftsCmisPrefixed )+
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:297:9: ( ( ftsCmisPrefixed )+ -> ^( CONJUNCTION ( ftsCmisPrefixed )+ ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:298:9: ( ftsCmisPrefixed )+
             {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:298:9: ( ftsCmisPrefixed )+
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:298:9: ( ftsCmisPrefixed )+
             int cnt2=0;
             loop2:
             do {
@@ -439,7 +439,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 switch (alt2) {
             	case 1 :
-            	    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:298:9: ftsCmisPrefixed
+            	    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:298:9: ftsCmisPrefixed
             	    {
             	    pushFollow(FOLLOW_ftsCmisPrefixed_in_ftsCmisConjunction341);
             	    ftsCmisPrefixed6=ftsCmisPrefixed();
@@ -474,7 +474,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
             // 299:17: -> ^( CONJUNCTION ( ftsCmisPrefixed )+ )
             {
-                // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:300:25: ^( CONJUNCTION ( ftsCmisPrefixed )+ )
+                // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:300:25: ^( CONJUNCTION ( ftsCmisPrefixed )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot(
@@ -528,7 +528,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "ftsCmisPrefixed"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:303:1: ftsCmisPrefixed : ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:303:1: ftsCmisPrefixed : ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) );
     public final CMIS_FTSParser.ftsCmisPrefixed_return ftsCmisPrefixed() throws RecognitionException {
         CMIS_FTSParser.ftsCmisPrefixed_return retval = new CMIS_FTSParser.ftsCmisPrefixed_return();
         retval.start = input.LT(1);
@@ -546,7 +546,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_MINUS=new RewriteRuleTokenStream(adaptor,"token MINUS");
         RewriteRuleSubtreeStream stream_cmisTest=new RewriteRuleSubtreeStream(adaptor,"rule cmisTest");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:304:9: ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:304:9: ( cmisTest -> ^( DEFAULT cmisTest ) | MINUS cmisTest -> ^( EXCLUDE cmisTest ) )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -565,7 +565,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt3) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:305:9: cmisTest
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:305:9: cmisTest
                     {
                     pushFollow(FOLLOW_cmisTest_in_ftsCmisPrefixed424);
                     cmisTest7=cmisTest();
@@ -587,7 +587,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 306:17: -> ^( DEFAULT cmisTest )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:307:25: ^( DEFAULT cmisTest )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:307:25: ^( DEFAULT cmisTest )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -607,7 +607,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:308:11: MINUS cmisTest
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:308:11: MINUS cmisTest
                     {
                     MINUS8=(Token)match(input,MINUS,FOLLOW_MINUS_in_ftsCmisPrefixed484);  
                     stream_MINUS.add(MINUS8);
@@ -633,7 +633,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 309:17: -> ^( EXCLUDE cmisTest )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:310:25: ^( EXCLUDE cmisTest )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:310:25: ^( EXCLUDE cmisTest )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -682,7 +682,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "cmisTest"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:313:1: cmisTest : ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) );
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:313:1: cmisTest : ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) );
     public final CMIS_FTSParser.cmisTest_return cmisTest() throws RecognitionException {
         CMIS_FTSParser.cmisTest_return retval = new CMIS_FTSParser.cmisTest_return();
         retval.start = input.LT(1);
@@ -698,7 +698,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_cmisPhrase=new RewriteRuleSubtreeStream(adaptor,"rule cmisPhrase");
         RewriteRuleSubtreeStream stream_cmisTerm=new RewriteRuleSubtreeStream(adaptor,"rule cmisTerm");
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:314:9: ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:314:9: ( cmisTerm -> ^( TERM cmisTerm ) | cmisPhrase -> ^( PHRASE cmisPhrase ) )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -717,7 +717,7 @@ public TreeAdaptor getTreeAdaptor() {
             }
             switch (alt4) {
                 case 1 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:315:9: cmisTerm
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:315:9: cmisTerm
                     {
                     pushFollow(FOLLOW_cmisTerm_in_cmisTest567);
                     cmisTerm10=cmisTerm();
@@ -739,7 +739,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 316:17: -> ^( TERM cmisTerm )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:317:25: ^( TERM cmisTerm )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:317:25: ^( TERM cmisTerm )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -759,7 +759,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:318:11: cmisPhrase
+                    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:318:11: cmisPhrase
                     {
                     pushFollow(FOLLOW_cmisPhrase_in_cmisTest627);
                     cmisPhrase11=cmisPhrase();
@@ -781,7 +781,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (Object)adaptor.nil();
                     // 319:17: -> ^( PHRASE cmisPhrase )
                     {
-                        // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:320:25: ^( PHRASE cmisPhrase )
+                        // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:320:25: ^( PHRASE cmisPhrase )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot(
@@ -830,7 +830,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "cmisTerm"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:324:1: cmisTerm : FTSWORD -> FTSWORD ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:324:1: cmisTerm : FTSWORD -> FTSWORD ;
     public final CMIS_FTSParser.cmisTerm_return cmisTerm() throws RecognitionException {
         CMIS_FTSParser.cmisTerm_return retval = new CMIS_FTSParser.cmisTerm_return();
         retval.start = input.LT(1);
@@ -844,8 +844,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_FTSWORD=new RewriteRuleTokenStream(adaptor,"token FTSWORD");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:325:9: ( FTSWORD -> FTSWORD )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:326:9: FTSWORD
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:325:9: ( FTSWORD -> FTSWORD )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:326:9: FTSWORD
             {
             FTSWORD12=(Token)match(input,FTSWORD,FOLLOW_FTSWORD_in_cmisTerm717);  
             stream_FTSWORD.add(FTSWORD12);
@@ -903,7 +903,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "cmisPhrase"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:330:1: cmisPhrase : FTSPHRASE -> FTSPHRASE ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:330:1: cmisPhrase : FTSPHRASE -> FTSPHRASE ;
     public final CMIS_FTSParser.cmisPhrase_return cmisPhrase() throws RecognitionException {
         CMIS_FTSParser.cmisPhrase_return retval = new CMIS_FTSParser.cmisPhrase_return();
         retval.start = input.LT(1);
@@ -917,8 +917,8 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_FTSPHRASE=new RewriteRuleTokenStream(adaptor,"token FTSPHRASE");
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:331:9: ( FTSPHRASE -> FTSPHRASE )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:332:9: FTSPHRASE
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:331:9: ( FTSPHRASE -> FTSPHRASE )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:332:9: FTSPHRASE
             {
             FTSPHRASE13=(Token)match(input,FTSPHRASE,FOLLOW_FTSPHRASE_in_cmisPhrase770);  
             stream_FTSPHRASE.add(FTSPHRASE13);
@@ -976,7 +976,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "or"
-    // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:336:1: or : OR ;
+    // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:336:1: or : OR ;
     public final CMIS_FTSParser.or_return or() throws RecognitionException {
         CMIS_FTSParser.or_return retval = new CMIS_FTSParser.or_return();
         retval.start = input.LT(1);
@@ -989,8 +989,8 @@ public TreeAdaptor getTreeAdaptor() {
         Object OR14_tree=null;
 
         try {
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:337:9: ( OR )
-            // W:\\alfresco\\V4.1-BUG-FIX\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:338:9: OR
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:337:9: ( OR )
+            // W:\\alfresco\\HEAD-QA\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS_FTS.g:338:9: OR
             {
             root_0 = (Object)adaptor.nil();
 

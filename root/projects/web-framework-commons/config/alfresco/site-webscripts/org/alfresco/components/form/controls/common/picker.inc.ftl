@@ -1,6 +1,10 @@
 <#assign compactMode = field.control.params.compactMode!false>
 
 <#macro renderPickerJS field picker="picker">
+    <@renderPickerJS field "picker" false/>
+</#macro>
+
+<#macro renderPickerJS field picker="picker" cloud=false>
    <#if field.control.params.selectedValueContextProperty??>
       <#if context.properties[field.control.params.selectedValueContextProperty]??>
          <#local renderPickerJSSelectedValue = context.properties[field.control.params.selectedValueContextProperty]>
@@ -11,7 +15,11 @@
       </#if>
    </#if>
 
-   var ${picker} = new Alfresco.ObjectFinder("${controlId}", "${fieldHtmlId}").setOptions(
+   <#if cloud>
+      var ${picker} = new Alfresco.CloudObjectFinder("${controlId}", "${fieldHtmlId}").setOptions(
+   <#else>
+      var ${picker} = new Alfresco.ObjectFinder("${controlId}", "${fieldHtmlId}").setOptions(
+   </#if>
    {
       <#if form.mode == "view" || (field.disabled && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true"))>disabled: true,</#if>
       field: "${field.name}",

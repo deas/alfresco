@@ -632,7 +632,14 @@ public class CSRFFilter implements Filter
                 // Expose token as a cookie to the client
                 int TIMEOUT = 60*60*24*7;
                 Cookie userCookie = new Cookie(cookie, URLEncoder.encode(newToken));
-                userCookie.setPath(httpServletRequest.getContextPath());
+                if (httpServletRequest.getContextPath().isEmpty())
+                {
+                    userCookie.setPath("/");
+                }
+                else
+                {
+                    userCookie.setPath(httpServletRequest.getContextPath());
+                }
                 userCookie.setMaxAge(TIMEOUT);
                 httpServletResponse.addCookie(userCookie);
             }
@@ -863,6 +870,8 @@ public class CSRFFilter implements Filter
             }
 
             String currentServer = getServerString(httpServletRequest);
+            String refererServer = params.containsKey(PARAM_REFERER) ? params.get(PARAM_REFERER) : null;
+
             if (logger.isDebugEnabled())
                 logger.debug("Assert referer " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: referer: '" +
                         httpServletRequest.getHeader(HEADER_REFERER) + "' vs server & context: " + currentServer + " (string)" +
@@ -904,6 +913,10 @@ public class CSRFFilter implements Filter
                     if (logger.isInfoEnabled())
                         logger.info(message);
 
+                    message += ", FAILED TEST: Assert referer " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: referer: '" +
+                            httpServletRequest.getHeader(HEADER_REFERER) + "' vs server & context: " + currentServer + " (string)" +
+                    (refererServer != null ? " or " + refererServer + " (regexp)" : "");
+                    
                     throw new ServletException(message);
                 }
             }

@@ -1,0 +1,9 @@
+/* This ensures that the form controls are aligned horizontally and not vertically */
+.alfresco-kickstart-Step.choice .alfresco-forms-controls-BaseFormControl {
+  float: left;
+}
+
+/* Places a marging around the main choice form control */
+.alfresco-kickstart-Step.choice .details > .alfresco-forms-controls-BaseFormControl {
+   margin: 10px;
+}

@@ -6,9 +6,14 @@
          <div class="mode flat-button">
             <h3>${msg("header.destination-type")}</h3>
             <div id="${el}-modeGroup" class="yui-buttongroup">
+               <input type="radio" id="${el}-recentsites" name="3" value="${msg("button.recentsites")}" />
+               <input type="radio" id="${el}-favouritesites" name="4" value="${msg("button.favouritesites")}" />
                <input type="radio" id="${el}-site" name="0" value="${msg("button.site")}" checked="checked" />
-               <input type="radio" id="${el}-repository" name="1" value="${msg("button.repository")}" />
-               <input type="radio" id="${el}-userhome" name="2" value="${msg("button.userhome")}" />
+               <#if isAdmin = true>
+                  <input type="radio" id="${el}-repository" name="1" value="${msg("button.repository")}" />
+               </#if>
+               <input type="radio" id="${el}-shared" name="5" value="${msg("button.shared")}" />
+               <input type="radio" id="${el}-myfiles" name="2" value="${msg("button.myfiles")}" />
             </div>
          </div>
          <div class="site">
@@ -34,6 +39,7 @@
 <#if treeConfig.getChildValue??>
    <#assign evaluateChildFoldersSite = treeConfig.getChildValue("evaluate-child-folders")!"true">
    <#assign maximumFolderCountSite = treeConfig.getChildValue("maximum-folder-count")!"-1">
+   <#assign webscriptTimeout = treeConfig.getChildValue("timeout")!"7000">
 </#if>
 <#assign treeConfig = config.scoped["RepositoryLibrary"]["tree"]!>
 <#if treeConfig.getChildValue??>
@@ -48,6 +54,7 @@
       maximumFolderCountSite: ${(maximumFolderCountSite!"-1")},
       evaluateChildFoldersRepo: ${evaluateChildFoldersRepo!"true"},
       maximumFolderCountRepo: ${(maximumFolderCountRepo!"-1")},
+      webscriptTimeout: ${(webscriptTimeout!"7000")},
       siteTreeContainerTypes: {
          <#assign siteTreeConfig = config.scoped["GlobalFolder"]["siteTree"]!>
          <#if siteTreeConfig.getChildren?? && siteTreeConfig.getChildren("container")??>

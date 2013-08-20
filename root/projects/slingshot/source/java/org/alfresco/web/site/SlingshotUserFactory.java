@@ -59,8 +59,10 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
     // Alfresco 3.4 user status properties
     public static final String CM_USERSTATUS = "{http://www.alfresco.org/model/content/1.0}userStatus";
     public static final String CM_USERSTATUSTIME = "{http://www.alfresco.org/model/content/1.0}userStatusTime";
+    public static final String CM_USERHOME = "{http://www.alfresco.org/model/content/1.0}homeFolder";
     public static final String PROP_USERSTATUS = "userStatus";
-    public static final String PROP_USERSTATUSTIME = "userStatusTime";  
+    public static final String PROP_USERSTATUSTIME = "userStatusTime";
+    public static final String PROP_USERHOME = "userHome";
     
     public static final String ACTIVITI_ADMIN_ENDPOINT_ID = "activiti-admin";
     
@@ -96,6 +98,7 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
         AlfrescoUser user = new SlingshotUser(properties.getString(CM_USERNAME), capabilities, immutability);
         user.setProperty(PROP_USERSTATUS, properties.has(CM_USERSTATUS) ? properties.getString(CM_USERSTATUS) : null);
         user.setProperty(PROP_USERSTATUSTIME, properties.has(CM_USERSTATUSTIME) ? properties.getString(CM_USERSTATUSTIME) : null);
+        user.setProperty(PROP_USERHOME, properties.has(CM_USERHOME) ? properties.getString(CM_USERHOME) : null);
         return user;
     }
     

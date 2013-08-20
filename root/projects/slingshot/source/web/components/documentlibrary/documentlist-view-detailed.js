@@ -44,12 +44,13 @@
     * @return {Alfresco.DocumentListViewRenderer} The new ViewRenderer instance
     * @constructor
     */
-   Alfresco.DocumentListViewRenderer = function(name)
+   Alfresco.DocumentListViewRenderer = function(name, parentDocumentList)
    {
       /*
        * Initialise prototype properties
        */
       this.name = name;
+      this.parentDocumentList = parentDocumentList;
       this.parentElementIdSuffix = "-documents";
       this.rowClassName = "yui-dt-rec";
       this.actionsCssClassName = this.name;
@@ -168,8 +169,8 @@
                if (indicator.action)
                {
                   desc += '</a>';
-                  desc += '</div>';
                }
+               desc += '</div>';
             }
          }
 
@@ -452,6 +453,119 @@
       },
       
       /**
+       * Returns actions custom datacell formatter
+       *
+       * @method fnRenderCellProperty
+       */
+      fnRenderCellProperty: function DL_fnRenderCellProperty()
+      {
+         var scope = this;
+
+         /**
+          * Actions custom datacell formatter
+          *
+          * @method renderCellActions
+          * @param elCell {object}
+          * @param oRecord {object}
+          * @param oColumn {object}
+          * @param oData {object|string}
+          */
+         return function DL_renderCellProperty(elCell, oRecord, oColumn, oData)
+         {
+            scope.renderCellProperty(scope, elCell, oRecord, oColumn, oData);
+         };
+      },
+      
+      /**
+       * Actions custom datacell formatter
+       *
+       * @method renderCellActions
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellProperty: function DL_VR_renderCellProperty(scope, elCell, oRecord, oColumn, oData)
+      {
+         // this.renderers[propertyName] = renderer
+         // this.parentDocumentList.renderers
+         
+         if (typeof this.parentDocumentList.renderers[oColumn.field] === "function")
+         {
+            elCell.innerHTML = this.parentDocumentList.renderers[oColumn.field].call(this.parentDocumentList, oRecord.getData(), "");
+         }
+         else 
+         {
+            // IMPLEMENTATION NOTES:
+            // It is possible to check for renderers mapped to a property without the namespace (e.g. "description" instead of
+            // "cm:description"). However, the renderers were intended to work with metadata line templates which have been registered
+            // with names such as "tags" rather than "cm:taggable". Therefore this function supports either genuine data properties
+            // (such as "cm:name") or template renderers (such as "tags" and "size") but makes no attempt to map between the two.
+            // However, example code is commented out below in case it is decided that this would actually be desirable...
+//            var namespaceLessProp = oColumn.field.substring(oColumn.field.indexOf(":") + 1);
+//            if (typeof this.parentDocumentList.renderers[namespaceLessProp] === "function")
+//            {
+//               elCell.innerHTML = this.parentDocumentList.renderers[namespaceLessProp].call(this.parentDocumentList, oRecord.getData(), "");
+//            }
+            var record = oRecord.getData(),
+                node = record.jsNode,
+                properties = node.properties,
+                propertyValue = properties[oColumn.field];
+            if (propertyValue != null)
+            {
+               elCell.innerHTML = '<span class="alf-generic-property">' + this.parentDocumentList.renderProperty(propertyValue) + '</span>';
+            }
+         }
+      },
+      
+      /**
+       * Returns actions custom datacell formatter
+       *
+       * @method fnRenderCellLinkProperty
+       */
+      fnRenderCellLinkProperty: function DL_fnRenderCellLinkProperty()
+      {
+         var scope = this;
+
+         /**
+          * Actions custom datacell formatter
+          *
+          * @method renderCellLinkProperty
+          * @param elCell {object}
+          * @param oRecord {object}
+          * @param oColumn {object}
+          * @param oData {object|string}
+          */
+         return function DL_renderCellLinkProperty(elCell, oRecord, oColumn, oData)
+         {
+            scope.renderCellLinkProperty(scope, elCell, oRecord, oColumn, oData);
+         };
+      },
+      
+      /**
+       * Actions custom datacell formatter
+       *
+       * @method renderCellLinkProperty
+       * @param scope {object} The DocumentList object
+       * @param elCell {object}
+       * @param oRecord {object}
+       * @param oColumn {object}
+       * @param oData {object|string}
+       */
+      renderCellLinkProperty: function DL_VR_renderCellLinkProperty(scope, elCell, oRecord, oColumn, oData)
+      {
+         var record = oRecord.getData(),
+            node = record.jsNode,
+            properties = node.properties,
+            propertyValue = properties[oColumn.field];
+         if (propertyValue != null)
+         {
+            elCell.innerHTML = '<span class="link">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope.parentDocumentList, record) + this.parentDocumentList.renderProperty(propertyValue) + '</a></span>'
+         }
+      },
+      
+      /**
        * Get the dataTable record identifier, i.e. yui-recXX, from the given row element.
        *
        * @method getDataTableRecordIdFromRowElement
@@ -468,7 +582,7 @@
             {
                element = Dom.getAncestorByClassName(rowElement, this.rowClassName);
             }
-            return element.id;
+            return element !== null ? element.id : null;
          }
       },
       
@@ -535,50 +649,53 @@
          if (elActions && elActions.firstChild === null)
          {
             // Retrieve the actionSet for this record
-            var oRecord = scope.widgets.dataTable.getRecord(this.getDataTableRecordIdFromRowElement(scope, targetElement)),
-               record = oRecord.getData(),
-               jsNode = record.jsNode,
-               actions = record.actions,
-               actionsEl = document.createElement("div"),
-               actionHTML = "",
-               actionsSel;
-
-            record.actionParams = {};
-            for (var i = 0, ii = actions.length; i < ii; i++)
+            var oRecord = scope.widgets.dataTable.getRecord(this.getDataTableRecordIdFromRowElement(scope, targetElement));
+            if (oRecord !== null)
             {
-               actionHTML += scope.renderAction(actions[i], record);
-            }
-
-            // Token replacement - action Urls
-            actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, scope.getActionUrls(record));
-
-            // Simple or detailed view
-            Dom.addClass(actionsEl, "action-set");
-            Dom.addClass(actionsEl, this.actionsCssClassName);
-
-            // Need the "More >" container?
-            actionsSel = YAHOO.util.Selector.query("div", actionsEl);
-            if (actionsSel.length > scope.options.actionsSplitAt + this.actionsSplitAtModifier)
-            {
-               var moreContainer = Dom.get(scope.id + "-moreActions").cloneNode(true),
-                  containerDivs = YAHOO.util.Selector.query("div", moreContainer);
-
-               // Insert the two necessary DIVs before the third action item
-               Dom.insertBefore(containerDivs[0], actionsSel[scope.options.actionsSplitAt]);
-               Dom.insertBefore(containerDivs[1], actionsSel[scope.options.actionsSplitAt]);
-
-               // Now make action items three onwards children of the 2nd DIV
-               var index, moreActions = actionsSel.slice(scope.options.actionsSplitAt);
-               for (index in moreActions)
+               var record = oRecord.getData(),
+                  jsNode = record.jsNode,
+                  actions = record.actions,
+                  actionsEl = document.createElement("div"),
+                  actionHTML = "",
+                  actionsSel;
+   
+               record.actionParams = {};
+               for (var i = 0, ii = actions.length; i < ii; i++)
                {
-                  if (moreActions.hasOwnProperty(index))
+                  actionHTML += scope.renderAction(actions[i], record);
+               }
+   
+               // Token replacement - action Urls
+               actionsEl.innerHTML = YAHOO.lang.substitute(actionHTML, scope.getActionUrls(record));
+   
+               // Simple or detailed view
+               Dom.addClass(actionsEl, "action-set");
+               Dom.addClass(actionsEl, this.actionsCssClassName);
+   
+               // Need the "More >" container?
+               actionsSel = YAHOO.util.Selector.query("div", actionsEl);
+               if (actionsSel.length > scope.options.actionsSplitAt + this.actionsSplitAtModifier)
+               {
+                  var moreContainer = Dom.get(scope.id + "-moreActions").cloneNode(true),
+                     containerDivs = YAHOO.util.Selector.query("div", moreContainer);
+   
+                  // Insert the two necessary DIVs before the third action item
+                  Dom.insertBefore(containerDivs[0], actionsSel[scope.options.actionsSplitAt]);
+                  Dom.insertBefore(containerDivs[1], actionsSel[scope.options.actionsSplitAt]);
+   
+                  // Now make action items three onwards children of the 2nd DIV
+                  var index, moreActions = actionsSel.slice(scope.options.actionsSplitAt);
+                  for (index in moreActions)
                   {
-                     containerDivs[1].appendChild(moreActions[index]);
+                     if (moreActions.hasOwnProperty(index))
+                     {
+                        containerDivs[1].appendChild(moreActions[index]);
+                     }
                   }
                }
+   
+               elActions.appendChild(actionsEl);
             }
-
-            elActions.appendChild(actionsEl);
          }
 
          if (!Dom.hasClass(document.body, "masked"))

@@ -20,12 +20,31 @@ function main()
    }
    var result = remote.call("/api/people/" + encodeURIComponent(userId) + "/sites?size=" + maxItems);
    model.sites = [];
+   model.feedControls = [];
    if (result.status == 200)
    {
       // Create javascript objects from the server response
       model.sites = eval('(' + result + ')');
+      
+      result = remote.call("/api/activities/feed/controls");
+      if (result.status == 200)
+      {
+         var feedControls = eval('(' + result + ')');
+         for(var i = 0; i < feedControls.length; i++)
+         {
+            model.feedControls.push(feedControls[i].siteId);
+         }
+      }
    }
+   
    model.numSites = model.sites.length;
+   // Widget instantiation metadata...
+   
+   var userSite = {
+      id : "UserSites", 
+      name : "Alfresco.UserSites"
+   };
+   model.widgets = [userSite];
 }
 
 main();

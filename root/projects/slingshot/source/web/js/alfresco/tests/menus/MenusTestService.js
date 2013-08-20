@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/tests/menus/MenusTestService
+ * @extends module:alfresco/tests/CommonTestService
+ * @author Dave Draper
+ */
+
 define(["dojo/_base/declare",
         "alfresco/tests/CommonTestService",
         "doh/runner",
@@ -55,7 +62,7 @@ define(["dojo/_base/declare",
    return declare(CommonTestService, {
       
       /**
-       * 
+       * @instance
        */
       constructor: function() {
          
@@ -112,6 +119,7 @@ define(["dojo/_base/declare",
        * by using the Dijit registry to find all the widgets that are expected to be on the
        * page. These are then stored as objects in the service instance for easy reference
        * later on.
+       * @instance
        */
       testSetup: function(doh) {
 
@@ -147,6 +155,8 @@ define(["dojo/_base/declare",
       /**
        * This test checks that the menu bar items, groups and menu items have been correctly
        * localized. Only one of each is checked (it is not necessary to check all the values)
+       * 
+       * @instance
        */
       testLocalization: function(doh) {
          doh.assertEqual("Groups With Labels", this.scope.testObjects.DROP_DOWN_MENU_1.label, "Drop down menu label not localized correctly");
@@ -157,6 +167,8 @@ define(["dojo/_base/declare",
       /**
        * This test ensures that everything is rendered correctly. In particular it looks at the CSS classes
        * and styling applied to menu items and pop-ups that have icons
+       * 
+       * @instance
        */
       testRendering: function(doh) {
          // Test the menu bar popup has an icon...
@@ -168,7 +180,7 @@ define(["dojo/_base/declare",
          // an icon. This is important as its the best we can do for an automated "inspection" of the visual
          // appearance.
          doh.assertTrue(dropDownWithIcons.domNode.children[1].nodeName.toUpperCase() == "SPAN", "Second child of AlfMenuBarPopup is not a span element");
-         doh.assertTrue(domAttr.get(dropDownWithIcons.domNode.children[1], "class") == "alf-menu-bar-popup-label-node", "Second child of AlfMenuBarPopup does not have class 'alf-menu-bar-popup-label-node' as expected");
+         doh.assertTrue(domAttr.get(dropDownWithIcons.domNode.children[1], "class") == "alf-menu-bar-label-node alf-menu-bar-popup-label-node", "Second child of AlfMenuBarPopup does not have class 'alf-menu-bar-popup-label-node' as expected");
          
          // We're expecting that the popup of the menu bar popup has a solitary child that is the only group configured...
          doh.assertEqual(1, dropDownWithIcons.popup.getChildren().length, "The AlfMenuBarPopup popup does not have a single child as expected");
@@ -192,6 +204,8 @@ define(["dojo/_base/declare",
        * This tests the following:
        * - that groups are correctly rendered when no label is provided
        * - that a group is automatically created when not specified in the JSON definition
+       * 
+       * @instance
        */
       testGrouping: function(doh) {
          
@@ -208,6 +222,8 @@ define(["dojo/_base/declare",
       /**
        * This test checks that its possible to navigate between multiple groups in a drop
        * down menu just using the keyboard.
+       * 
+       * @instance
        */
       testGroupNavigation: function(doh) {
          var d = new doh.Deferred();
@@ -271,6 +287,8 @@ define(["dojo/_base/declare",
       
       /**
        * This test drives the cascade menu with the keyboard to check that it works
+       * 
+       * @instance
        */
       testCascadeKeyboardNavigation: function(doh) {
          var d = new doh.Deferred();
@@ -337,6 +355,8 @@ define(["dojo/_base/declare",
       /**
        * This test checks the results of clicking on menu items to ensure that the publish
        * and navigate actions are handled appropriately.
+       * 
+       * @instance
        */
       testActions: function(doh) {
          var d = new doh.Deferred();
@@ -382,7 +402,5 @@ define(["dojo/_base/declare",
          }), 900);
          return d;
       }
-      
-      
    });
 });

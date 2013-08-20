@@ -59,7 +59,8 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
     public static final String ENTERPRISE_EDITION = EditionInfo.ENTERPRISE_EDITION;
     public static final String TEAM_EDITION = EditionInfo.TEAM_EDITION;
     public static final String UNKNOWN_EDITION = EditionInfo.UNKNOWN_EDITION;
-
+    public static final String UNKNOWN_HOLDER = EditionInfo.UNKNOWN_HOLDER;
+    
     private static Log logger = LogFactory.getLog(EditionInterceptor.class);
     
     private static EditionInfo EDITIONINFO = null;
@@ -194,4 +195,5 @@ public class EditionInterceptor extends AbstractWebFrameworkInterceptor
     public void afterCompletion(WebRequest request, Exception ex) throws Exception
     {
     }
+
 }

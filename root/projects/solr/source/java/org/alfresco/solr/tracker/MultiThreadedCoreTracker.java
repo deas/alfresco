@@ -334,43 +334,6 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 }
                 txBatch.clear();
             }
-
-            // reorder and find first last before hole
-
-            if (transactionsOrderedById.size() < 10000)
-            {
-                transactionsOrderedById.addAll(transactions.getTransactions());
-                Collections.sort(transactionsOrderedById, new Comparator<Transaction>()
-                {
-
-                    @Override
-                    public int compare(Transaction o1, Transaction o2)
-                    {
-                        return (int) (o1.getId() - o2.getId());
-                    }
-                });
-
-                ArrayList<Transaction> newTransactionsOrderedById = new ArrayList<Transaction>(10000);
-                for (Transaction info : transactions.getTransactions())
-                {
-                    if (info.getCommitTimeMs() < state.timeBeforeWhichThereCanBeNoHoles)
-                    {
-                        state.lastIndexedTxIdBeforeHoles = info.getId();
-                    }
-                    else
-                    {
-                        if (info.getId() == (state.lastIndexedTxIdBeforeHoles + 1))
-                        {
-                            state.lastIndexedTxIdBeforeHoles = info.getId();
-                        }
-                        else
-                        {
-                            newTransactionsOrderedById.add(info);
-                        }
-                    }
-                }
-                transactionsOrderedById = newTransactionsOrderedById;
-            }
         }
         while ((transactions.getTransactions().size() > 0) && (upToDate == false));
 
@@ -886,7 +849,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
         {
             try
             {
-                wait(5000);
+                wait(1000);
             }
             catch (InterruptedException e)
             {

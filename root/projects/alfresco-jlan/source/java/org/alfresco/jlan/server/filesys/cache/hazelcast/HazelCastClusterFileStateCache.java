@@ -82,6 +82,7 @@ import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
+import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 import com.hazelcast.partition.Partition;
 
@@ -2697,10 +2698,10 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
      * 
      * @param msg ClusterMessage
      */
-	public void onMessage(ClusterMessage msg) {
+	public void onMessage(Message<ClusterMessage> hzMessage) {
 		
 		// Check is the message is addressed to this node, or all nodes
-		
+		ClusterMessage msg = hzMessage.getMessageObject();
 		if ( msg.isAllNodes() || m_localNode.nameMatches( msg.getTargetNode())) {
 			
 			// Process the message

@@ -2,7 +2,7 @@
 <!-- NOT FINISHED -->
 
 <!-- JAVA 1.0a
-Componentname: Java 1.5
+Componentname: Java 
 
 Short Description:
 This component is able to install and configurate the bundled Java binaries it carries, or to find an existing Java installation.
@@ -20,8 +20,8 @@ Copyrighted by BitRock
             <actionList>
                 <autodetectJava>
                     <abortOnError>0</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on Java SE 7. Please install a compatible Java version and try again.</customErrorMessage>
+                    <showMessageOnError>0</showMessageOnError>
+                    <customErrorMessage>This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -32,12 +32,13 @@ Copyrighted by BitRock
                     </validVersionList>
                     <ruleList>
                         <isFalse value="${java_required_or_abort}" />
+			<platformTest type="osx" negate="1" />
                     </ruleList>
                 </autodetectJava>
                 <autodetectJava>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on Java SE 7. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -48,12 +49,13 @@ Copyrighted by BitRock
                     </validVersionList>
                     <ruleList>
                         <isTrue value="${java_required_or_abort}" />
+			<platformTest type="osx" negate="1" />
                     </ruleList>
                 </autodetectJava>
 
 <!-- Compatible java version -->
 <autodetectJava>
-                    <customErrorMessage>This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again.</customErrorMessage>
                     <validVersionList>
                         <validVersion>
                             <maxVersion/>
@@ -184,7 +186,7 @@ Copyrighted by BitRock
         </choiceParameter>
         <stringParameter>
             <name>java_min_version</name>
-            <value/>
+            <value>1.6.0</value>
             <ask>0</ask>
         </stringParameter>
         <stringParameter>
@@ -199,7 +201,7 @@ Copyrighted by BitRock
             <value/>
             <ask>0</ask>
             <title>JDK configuration</title>
-            <explanation>We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later.</explanation>
+            <explanation>We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later.</explanation>
             <description>JDK installation directory:</description>
             <validationActionList>
                 <throwError>
@@ -211,6 +213,10 @@ Copyrighted by BitRock
                     </ruleList>
                 </throwError>
             </validationActionList>
+            <ruleList>
+                <compareText logic="equals" text="${java_installation_type}" value="existing"/> 
+                <isFalse value="${java_autodetected}"/>
+            </ruleList>
         </directoryParameter>
     </parameterList>
 
@@ -290,7 +296,7 @@ set JAVA_HOME=${java_home_directory}
 
     <folderList>
         <folder>
-            <description>Program Files</description>
+            <description>//Program Files</description>
             <destination>${installdir}/java</destination>
             <name>programfiles</name>
             <platforms>all</platforms>

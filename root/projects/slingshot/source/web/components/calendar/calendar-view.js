@@ -117,7 +117,7 @@
          this.options.titleDate = Alfresco.util.fromISO8601(this.options.titleDate);
          return this;
       },
-      
+
       /**
        * Initialises event handling All events are handled through event
        * delegation via the onInteractionEvent handler
@@ -147,9 +147,9 @@
 
       /**
        * Retrieves events from server
-       * 
+       *
        * @method getEvents
-       *  
+       *
        */
       getEvents : function CalendarView_getEvents()
       {
@@ -162,8 +162,8 @@
                to: toISO8601(this.options.endDate).split('T')[0],
                repeating: "all"
             },
-            //filter out non relevant events for current view            
-            successCallback: 
+            //filter out non relevant events for current view
+            successCallback:
             {
                fn: this.onEventsLoaded,
                scope: this
@@ -171,7 +171,7 @@
                failureMessage: Alfresco.util.message("load.fail", "Alfresco.CalendarView")
            });
       },
-      
+
       /**
        * Renders view
        *
@@ -202,10 +202,10 @@
 
       /**
        *Returns the Event Data object associated with the element passed in.
-       * 
+       *
        * @param data {object} either the HTML node of the event or the event data
        */
-      
+
       getEventObj: function CalendarView_getEventObj(data)
       {
          // If we've got the HTML node, we can get the event object using parseRel
@@ -219,42 +219,42 @@
             return data;
          }
       },
-      
+
       /**
        * builds up the relationship string to store the event reference in the DOM.
-       * 
+       *
        * @param {Object} data
        */
-      getRel: function CalendarView_getRel(data) 
+      getRel: function CalendarView_getRel(data)
       {
          //Just stores the ISO yyyy-mm-dd string and will use href from link to identify data
          return data.from.split("T")[0];
       },
-      
+
       /**
-       * 
+       *
        * retrieves the event object based on the data in the rel string.
-       * 
+       *
        * @param {HTML element} element with a relationship to an event.
        */
-      parseRel: function CalendarView_parseRel(element) 
+      parseRel: function CalendarView_parseRel(element)
       {
          var data = "",
             date = "",
             result = false;
-         
+
          // If the passed in is a datatable container, it won't have a rel, so get the first a tag in it.
-         if (Sel.test(element, 'div.yui-dt-liner')) 
+         if (Sel.test(element, 'div.yui-dt-liner'))
          {
             element = Dom.getElementsByClassName("summary", "a", element.parentNode.parentNode)[0]
          }
-         
+
          // check the element has a rel tag supplied.
-         if (element.rel !== "" && element.rel !== undefined) 
+         if (element.rel !== "" && element.rel !== undefined)
          {
             date = element.rel;
             data = this.widgets.Data[date].events;
-            for (var i = 0; i < data.length; i++) 
+            for (var i = 0; i < data.length; i++)
             {
                if (data[i].uri === "/calendar/event/" + element.href.split("/calendar/event/")[1]) // element.href needs hostname and port stripping.
                {
@@ -264,7 +264,7 @@
          }
          return result;
       },
-      
+
       /**
        * Shows/hides the early hours of day (midnight till 7am)
        *
@@ -300,11 +300,11 @@
          var viewStartDate = this.options.startDate;
          var viewEndDate = this.options.endDate;
          var site = this.options.siteId;
-         
+
          // Trigger Mini Calendar's rendering before filtering the events
          YAHOO.Bubbling.fire("eventDataLoad",data);
-         
-         for (var i = 0; i < data.length; i++) 
+
+         for (var i = 0; i < data.length; i++)
          {
             var ev = data[i];
 
@@ -420,65 +420,85 @@
        *       - the middle days are marked as multiday
        *       - the last day's start time is: 00:00
        *    - Adds cloned tag.
-       *       
+       *
        * This is only used by the Agenda view
-       * 
+       *
        * @method filterMultiday
        * @param events {Array} Array of event objects
        */
-      filterMultiday: function CalendarView_filterMultiday(events) 
+      filterMultiday: function CalendarView_filterMultiday(events)
       {
          var DateMath = YAHOO.widget.DateMath;
-         
-         for (var i=0, numEvents=events.length;i<numEvents;i++) 
+
+         for (var i=0, numEvents=events.length;i<numEvents;i++)
          {
             var event = events[i];
             // check if event is multiday
-            if (event.isMultiDay) 
+            if (event.isMultiDay)
             {
                var from = event.from.split("T"),
                   to = event.to.split("T"),
                   startDay = fromISO8601(from[0]),
                   endDay = fromISO8601(to[0]),
                   iterationDay = new Date(startDay + 86400000);
-               
+
                // if not all day event, end time on first day needs to be midnight.
-               if (!event.isAllDay) 
+               if (!event.isAllDay)
                {
                   event.displayEnd = "00:00";
                }
-               
-               for (var j=0, iterationDay=DateMath.add(startDay, DateMath.DAY, 1); iterationDay.getTime() <= endDay.getTime(); iterationDay=DateMath.add(iterationDay, DateMath.DAY, 1)) 
+
+               for (var j=0, iterationDay=DateMath.add(startDay, DateMath.DAY, 1); iterationDay.getTime() <= endDay.getTime(); iterationDay=DateMath.add(iterationDay, DateMath.DAY, 1))
                {
                   var clonedEvent = YAHOO.lang.merge(event);
-                  
+
                   // Mark as cloned and provide a marker to locate the original
                   clonedEvent.isCloned = true;
                   clonedEvent.clonedFromDate=event.from;
-                  
+
                   // Sort out the display time.
-                  if (!event.isAllDay)   
+                  if (!event.isAllDay)
                   {
                      // If event is not the last day of the repeating sequence, it lasts all day.
-                     if (!Alfresco.CalendarHelper.isSameDay(iterationDay, endDay)) 
+                     if (!Alfresco.CalendarHelper.isSameDay(iterationDay, endDay))
                      {
                         clonedEvent.isAllDay = true;
-                     } else 
+                     } else
                      {
                         // if it is the same day, we need to set the finish time, by removing the displayEnd time.
                         clonedEvent.displayStart="00:00";
                         delete clonedEvent.displayEnd;
                      }
-                     
+
                   }
                   // set the DisplayDates for the cloned object to the current day of the loop:
                   clonedEvent.displayFrom = toISO8601(iterationDay);
                   events.push(clonedEvent);
-               } 
+               }
             }
          }
-         
+
          return events
+      },
+
+      /**
+       * Gets date from either query string or URL fragment
+       * (return it from fragment if both exist)
+       *
+       * @method getDateFromUrl
+       *
+       */
+      getDateFromUrl: function CalendarView_getDateFromUrl()
+      {
+         var date = Alfresco.util.getQueryStringParameter('date'),
+            hashSplit = window.location.hash.split("date=")
+         // Check date is in the Hash and retrieve it if it is.
+         if (hashSplit[1])
+         {
+            date = hashSplit[1].split("&")[0]
+         }
+
+         return date;
       },
 
       /**
@@ -494,13 +514,10 @@
          // if from toolbar add event
          if (YAHOO.lang.isUndefined(date))
          {
-            this.currentDate = displayDate = (Alfresco.util.getQueryStringParameter('date')) ? fromISO8601(Alfresco.util.getQueryStringParameter('date')) : new Date();
+            date = Alfresco.util.fromISO8601(this.getDateFromUrl()) || new Date();
          }
-         else
-         {
-            // from cell
-            this.currentDate = displayDate = date;
-         }
+
+         this.currentDate = displayDate = date;
 
          if (this.eventDialog)
          {
@@ -546,11 +563,11 @@
          var event = this.getEventObj(elTarget);
          // Set up the dialog box
          this.setUpDialog(e, elTarget, event);
-         
+
          // if the edit window isn't already showing, show it!
-         if (!this.eventInfoPanel.isShowing) 
+         if (!this.eventInfoPanel.isShowing)
          {
-            this.eventInfoPanel.show(event);            
+            this.eventInfoPanel.show(event);
          }
 
          Event.preventDefault(e);
@@ -558,9 +575,9 @@
 
       /**
        * Uses the EventInfo delete method to delete the event after showing a confirmation dialogue.
-       * 
+       *
        * @method deleteDialog
-       * 
+       *
        * @param {Object} e
        * @param {Object} elTarget
        */
@@ -569,18 +586,18 @@
          var event = this.getEventObj(elTarget);
          // Set up the dialog box
          this.setUpDialog(e, elTarget, event);
-         
+
          //call delete function
          this.eventInfoPanel.onDeleteClick();
-         
+
          Event.preventDefault(e);
       },
-      
+
       /**
        * Uses the EventInfo edit method to jump straight to the event edit screen.
-       * 
+       *
        * @method editDialog
-       * 
+       *
        * @param {Object} e
        * @param {Object} elTarget
        */
@@ -589,32 +606,32 @@
          var event = this.getEventObj(elTarget);
          // Set up the dialog box
          this.setUpDialog(e, elTarget, event);
-         
+
          //call edit function
          this.eventInfoPanel.onEditClick();
-         
+
          Event.preventDefault(e);
       },
-      
+
       /**
        * Does the grunt work of setting up the dialogue box for info, edit and delete methods.
-       * 
+       *
        * @method setUpDialog
-       * 
+       *
        * @param {Object} e
        * @param {Object} elTarget
        * @param {Object} event
        */
-      setUpDialog: function(e, elTarget, event) 
+      setUpDialog: function(e, elTarget, event)
       {
          var div = document.createElement('div');
-         
+
          div.id = 'eventInfoPanel';
          document.body.appendChild(div);
          this.eventInfoPanel = new Alfresco.EventInfo(this.id);
          this.eventInfoPanel.event = event;
-         
-         if (!this.eventInfoPanel.isShowing) 
+
+         if (!this.eventInfoPanel.isShowing)
          {
             this.eventInfoPanel.setOptions(
             {
@@ -624,7 +641,7 @@
                event: event,
                permitToEditEvents: this.options.permitToCreateEvents
             });
-         }         
+         }
       },
 
       /**
@@ -755,10 +772,10 @@
       onInteractionEvent: function CalendarView_onInteractionEvent(o, args)
       {
          // TODO: refactor this if/else list into an event trigger with listeners.
-         
+
          var elTarget, e;
          // if loop added for DataTable event trigger which passes event and target as single object in 1st param
-         if (typeof(o.event) === "object" && typeof(o.target) === "object") 
+         if (typeof(o.event) === "object" && typeof(o.target) === "object")
          {
             e = o.event;
             elTarget = o.target;
@@ -768,10 +785,10 @@
             e = o;
             elTarget = Event.getTarget(e);
          }
-         
+
          // Check for event type.
          // repeated if loops are now a series of else if loops to prevent all selectors being attempted. Matching of multiple selectors is not recommended.
-         if (e.type === 'mouseover') 
+         if (e.type === 'mouseover')
          {
             if (Sel.test(elTarget, 'div.' + this.dragGroup))
             {
@@ -792,27 +809,27 @@
                Dom.addClass(elTarget, 'highlight');
             }
          }
-         else if (e.type === 'click') 
+         else if (e.type === 'click')
          {
             // Show or hide wee hours?
-            if (Sel.test(elTarget, 'a#collapseTriggerLink')) 
+            if (Sel.test(elTarget, 'a#collapseTriggerLink'))
             {
                this.toggleEarlyTableRows();
                Event.preventDefault(e);
             }
             // are we adding a new event?
-            else if (Sel.test(elTarget, 'button#addEventButton') || Sel.test(elTarget.offsetParent, 'button#addEventButton') || Sel.test(elTarget, 'a.addEvent')) 
+            else if (Sel.test(elTarget, 'button#addEventButton') || Sel.test(elTarget.offsetParent, 'button#addEventButton') || Sel.test(elTarget, 'a.addEvent'))
             {
                this.showAddDialog();
                Event.preventDefault(e);
             }
             // a.summary = a click on the event title. Therefore into Event Info mode.
-            else if (Sel.test(elTarget, 'a.summary') || Sel.test(elTarget, 'div.yui-dt-liner') ) 
+            else if (Sel.test(elTarget, 'a.summary') || Sel.test(elTarget, 'div.yui-dt-liner') )
             {
                this.showDialog(e, elTarget);
             }
             // Someone clicked the 'show more events in Month View' link.
-            else if (Sel.test(elTarget, 'li.moreEvents a')) 
+            else if (Sel.test(elTarget, 'li.moreEvents a'))
             {
                this.onShowMore(e, args, elTarget);
             }
@@ -864,16 +881,29 @@
       {
 
          var params = Alfresco.util.getQueryStringParameters(),
-            hash = window.location.hash;
-            dateBookmark = hash.substring(hash.indexOf("date=") + 5).split("&")[0];
+            dateBookmark = this.getDateFromUrl();
          params.view = Alfresco.util.ComponentManager.findFirst("Alfresco.CalendarToolbar").enabledViews[arguments[1][1].activeView];
          if (dateBookmark !== "")
          {
             params.date = dateBookmark;
          }
-         // Remove both current parameters and current bookmarks.
-         window.location = window.location.href.split('?')[0].split('#')[0] + Alfresco.util.toQueryString(params);
+         // Remove both current parameters and current bookmarks
+         var navURL = window.location.href.split('?')[0].split('#')[0],
+            paramsString = Alfresco.util.toQueryString(params);
 
+         if (params.view === "agenda")
+         {
+            // Add params as query string for Agenda
+            navURL += paramsString;
+
+         } else
+         {
+            // Otherwise add as a URL Fragment for CalendarView
+            navURL += paramsString.replace("?", "#");
+         }
+
+         // Send the user there:
+         window.location = navURL;
       },
 
       /**
@@ -901,7 +931,7 @@
       onTagSelected: function CalendarView_onTagSelected(e, args)
       {
          var tagName = arguments[1][1].tagname;
-         
+
          // all tags
          if (tagName == Alfresco.util.message('label.all-tags', 'Alfresco.TagComponent'))
          {
@@ -980,7 +1010,7 @@
       {
          // Refresh the tag component
          this.refreshTags();
-         
+
          // Confirm success to the user
          this.displayMessage('message.created.success', this.name);
       },
@@ -1009,27 +1039,27 @@
       {
          return;
       },
-      
+
       /**
        *
        * takes the event list and removes any items that aren't tagged with the currently selected tag.
-       * 
-       * @method tagFilter 
-       * 
+       *
+       * @method tagFilter
+       *
        * @param {Object} events
        */
-      tagFilter: function CalendarView_tagFilter(events) 
+      tagFilter: function CalendarView_tagFilter(events)
       {
          var filteredEvents = [],
             tagName = this.options.tag;
-         
+
          // early exit if there is no selected tagName
-         if (!tagName) 
+         if (!tagName)
          {
             return events;
-         } else 
+         } else
          {
-            for (var i = 0, l = events.length; i < l; i++) 
+            for (var i = 0, l = events.length; i < l; i++)
             {
                var eventTags = events[i].tags
                // TODO: Remove this check once we have a consistent event object
@@ -1037,9 +1067,9 @@
                {
                   eventTags = eventTags.split(",");
                }
-               if (Alfresco.util.arrayContains(eventTags, tagName)) 
+               if (Alfresco.util.arrayContains(eventTags, tagName))
                {
-                  filteredEvents.push(events[i]); 
+                  filteredEvents.push(events[i]);
                }
             }
             return filteredEvents;
@@ -1089,7 +1119,7 @@ Alfresco.CalendarHelper = (function Alfresco_CalendarHelper()
        * @return d {Date}
        */
       getDateFromField: function Alfresco_CalendarHelper_getDateFromField(field)
-      {  
+      {
          var dateString = Dom.getAttribute(field, "rel");
          var d = (dateString !== "") ? fromISO8601(dateString) : new Date();
          return d;

@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Document actions component.
- * 
+ *
  * @namespace Alfresco
  * @class Alfresco.DocumentActions
  */
@@ -36,10 +36,10 @@
    var $html = Alfresco.util.encodeHTML,
       $combine = Alfresco.util.combinePaths,
       $siteURL = Alfresco.util.siteURL;
-   
+
    /**
     * DocumentActions constructor.
-    * 
+    *
     * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.DocumentActions} The new DocumentActions instance
     * @constructor
@@ -47,7 +47,7 @@
    Alfresco.DocumentActions = function(htmlId)
    {
       Alfresco.DocumentActions.superclass.constructor.call(this, "Alfresco.DocumentActions", htmlId, ["button"]);
-      
+
       // Initialise prototype properties
       this.actionsView = "details";
 
@@ -63,7 +63,7 @@
     * Extend Alfresco.component.Base
     */
    YAHOO.extend(Alfresco.DocumentActions, Alfresco.component.Base);
-   
+
    /**
     * Augment prototype with Actions module
     */
@@ -92,12 +92,12 @@
 
          /**
           * Current siteId, if any.
-          * 
+          *
           * @property siteId
           * @type string
           */
          siteId: null,
-         
+
          /**
           * ContainerId representing root container
           *
@@ -153,15 +153,15 @@
           */
          repositoryBrowsing: true
       },
-      
+
       /**
        * The data for the document
-       * 
+       *
        * @property recordData
        * @type object
        */
       recordData: null,
-      
+
       /**
        * Metadata returned by doclist data webscript
        *
@@ -170,10 +170,10 @@
        * @default null
        */
       doclistMetadata: null,
-      
+
       /**
        * Path of asset being viewed - used to scope some actions (e.g. copy to, move to)
-       * 
+       *
        * @property currentPath
        * @type string
        */
@@ -187,12 +187,12 @@
       onReady: function DocumentActions_onReady()
       {
          var me = this;
-         
-         // Asset data 
+
+         // Asset data
          this.recordData = this.options.documentDetails.item;
          this.doclistMetadata = this.options.documentDetails.metadata;
          this.currentPath = this.recordData.location.path;
-         
+
          // Populate convenience property
          this.recordData.jsNode = new Alfresco.util.Node(this.recordData.node);
 
@@ -219,7 +219,7 @@
 
          var displayName = record.displayName,
             downloadUrl = actionUrls.downloadUrl;
-         
+
          // Hook action events
          var fnActionHandler = function DocumentActions_fnActionHandler(layer, args)
          {
@@ -242,14 +242,23 @@
             return true;
          };
          YAHOO.Bubbling.addDefaultAction("action-link", fnActionHandler);
-         
+
          // DocLib Actions module
          this.modules.actions = new Alfresco.module.DoclibActions();
-         
+
          // Prompt auto-download (after Edit Offline action)?
          if (window.location.hash == "#editOffline")
          {
             window.location.hash = "";
+
+            var isEditingCanceled = false;
+            YAHOO.Bubbling.on("editingCanceled", function(layer, args)
+            {
+               if (record.workingCopy.sourceNodeRef == args[1].record.workingCopy.sourceNodeRef)
+               {
+                  isEditingCanceled = true;
+               }
+            }, this);
 
             if (YAHOO.env.ua.ie > 6)
             {
@@ -286,11 +295,14 @@
                // Kick off the download 3 seconds after the confirmation message
                YAHOO.lang.later(3000, this, function()
                {
-                  window.location = downloadUrl;
+                  if (!isEditingCanceled)
+                  {
+                     window.location = downloadUrl;
+                  }
                });
             }
          }
-         
+
          if (window.location.hash == "#editCancelled")
          {
             window.location.hash = "";
@@ -308,7 +320,7 @@
                text: this.msg("message.checkout-google.success", displayName)
             });
          }
-         
+
          if (window.location.hash == "#checkinFromGoogleDocs")
          {
             window.location.hash = "";
@@ -408,6 +420,11 @@
                }
             }
          });
+
+         YAHOO.Bubbling.fire("editingCanceled",
+         {
+            record: asset
+         });
       },
 
       /**
@@ -437,12 +454,12 @@
             // Only add a filtering extension if filename contains a name and a suffix
             extensions = "*" + displayName.substring(displayName.lastIndexOf("."));
          }
-         
+
          if (asset.workingCopy && asset.workingCopy.workingCopyVersion)
          {
             version = asset.workingCopy.workingCopyVersion;
          }
-         
+
          var singleUpdateConfig =
          {
             updateNodeRef: nodeRef.toString(),
@@ -561,7 +578,7 @@
             }
          });
       },
-      
+
       /**
        * Check in a new version from Google Docs.
        *
@@ -666,7 +683,7 @@
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
             callbackUrl = Alfresco.util.isValueSet(this.options.siteId) ? "documentlibrary" : "repository",
             encodedPath = path.length > 1 ? "?path=" + encodeURIComponent(path) : "";
-         
+
          this.modules.actions.genericAction(
          {
             success:

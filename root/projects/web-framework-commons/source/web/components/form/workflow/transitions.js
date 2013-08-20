@@ -103,6 +103,8 @@
        */
       onClick: function Transitions_onClick(e, p_obj)
       {
+         //MNT-2196 fix, disable transition button to prevent multiple execution
+         p_obj.set("disabled", true);
          // determine what button was pressed by it's id
          var buttonId = p_obj.get("id");
          var transitionId = buttonId.substring(this.id.length+1);

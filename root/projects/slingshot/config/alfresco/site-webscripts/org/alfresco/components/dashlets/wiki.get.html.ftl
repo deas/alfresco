@@ -11,11 +11,11 @@
 
 <@markup id="widgets">
    <@inlineScript group="dashlets">
-      var editWikiDashletEvent = new YAHOO.util.CustomEvent("onDashletConfigure");
+      var editWikiDashletEvent_${args.htmlid?replace("-", "_")} = new YAHOO.util.CustomEvent("onDashletConfigure");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      editWikiDashletEvent.subscribe(wiki.onConfigFeedClick, wiki, true);
+      editWikiDashletEvent_${args.htmlid?replace("-", "_")}.subscribe(wiki_${args.htmlid?replace("-", "_")}.onConfigFeedClick, wiki_${args.htmlid?replace("-", "_")}, true);
    </@>
 </@>
 

@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/layouts/VerticalWidgets
+ * @extends module:alfresco/core/ProcessWidgets
+ * @author Dave Draper
+ */
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
         "dojo/dom-construct",
@@ -24,11 +30,5 @@ define(["alfresco/core/ProcessWidgets",
    
    return declare([ProcessWidgets], {
       
-      /**
-       * The scope to use for i18n messages.
-       * 
-       * @property i18nScope {String}
-       */
-      i18nScope: "org.alfresco.js.VerticalWidgets"
    });
 });

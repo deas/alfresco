@@ -74,6 +74,10 @@ public interface ContentModel
     static final QName ASPECT_SOFT_DELETE  = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "softDelete");
     
     // archived nodes aspect constants
+    static final QName ASPECT_ARCHIVE_ROOT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archiveRoot");
+    static final QName ASSOC_ARCHIVE_USER_LINK = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archiveUserLink");
+    static final QName TYPE_ARCHIVE_USER = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archiveUser");
+    static final QName ASSOC_ARCHIVED_LINK = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archivedLink");
     static final QName ASPECT_ARCHIVED = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archived");
     static final QName PROP_ARCHIVED_ORIGINAL_PARENT_ASSOC = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archivedOriginalParentAssoc");
     static final QName PROP_ARCHIVED_BY = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "archivedBy");
@@ -189,6 +193,8 @@ public interface ContentModel
     
     // ratings
     static final QName ASPECT_RATEABLE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "rateable");
+    static final QName ASPECT_LIKES_RATING_SCHEME_ROLLUPS = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "likesRatingSchemeRollups");
+    static final QName ASPECT_FIVESTAR_RATING_SCHEME_ROLLUPS = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "fiveStarRatingSchemeRollups");
     static final QName ASSOC_RATINGS = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "ratings");
     static final QName TYPE_RATING = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "rating");
     static final QName PROP_RATING_SCORE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "ratingScore");
@@ -256,6 +262,8 @@ public interface ContentModel
     
     static final QName ASPECT_PERSON_DISABLED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "personDisabled");
     
+    static final QName ASPECT_ANULLABLE = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "annullable");
+        
     static final QName ASSOC_AVATAR = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "avatar");
     
     // Authority
@@ -417,4 +425,7 @@ public interface ContentModel
     static final QName PROP_IS_INDEXED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "isIndexed");
     static final QName PROP_IS_CONTENT_INDEXED = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "isContentIndexed");
     
+    // CMIS aspects
+    static final QName ASPECT_CMIS_UPDATE_CONTEXT = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "CMISUpdateContext");
+    static final QName PROP_GOT_FIRST_CHUNK = QName.createQName(NamespaceService.SYSTEM_MODEL_1_0_URI, "gotFirstChunk");
 }

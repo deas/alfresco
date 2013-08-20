@@ -42,9 +42,9 @@
     * @return {Alfresco.DocumentListSimpleViewRenderer} The new SimpleViewRenderer instance
     * @constructor
     */
-   Alfresco.DocumentListSimpleViewRenderer = function(name, galleryColumns)
+   Alfresco.DocumentListSimpleViewRenderer = function(name, parentDocumentList)
    {
-      Alfresco.DocumentListSimpleViewRenderer.superclass.constructor.call(this, name);
+      Alfresco.DocumentListSimpleViewRenderer.superclass.constructor.call(this, name, parentDocumentList);
       this.actionsColumnWidth = 80;
       this.actionsSplitAtModifier = 0;
       return this;

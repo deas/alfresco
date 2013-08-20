@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -42,6 +42,16 @@ public interface PropertyDefinition extends ClassAttributeDefinition
      * @return the qualified name of the property
      */
     public QName getName();
+
+    /**
+     * @deprecated The problem identified in MNT-413 will still exist
+     */
+    public String getTitle();
+
+    /**
+     * @deprecated The problem identified in MNT-413 will still exist
+     */
+    public String getDescription();
 
     /**
      * @return the human-readable class title

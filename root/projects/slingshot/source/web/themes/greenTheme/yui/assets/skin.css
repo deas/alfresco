@@ -303,6 +303,7 @@ padding: 10px 5px 10px 5px;
 margin: 0;
 }
 .yui-skin-greenTheme .yui-calcontainer .title {
+   position: relative;
 background: url(sprite.png) repeat-x 0 0;
 border-bottom: 1px solid #cccccc;
 font: 100% sans-serif;

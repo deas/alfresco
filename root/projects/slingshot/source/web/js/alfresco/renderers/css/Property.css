@@ -1,0 +1,29 @@
+.alfresco-renderers-Property {
+   margin: 0 10px 0 20px;
+   line-height: 20px;
+   color: $theme-color-1;
+}
+
+.alfresco-renderers-Property.faded {
+   color: $theme-color-6;
+}
+
+.alfresco-renderers-Property.small {
+   font-size: 83%
+}
+
+.alfresco-renderers-Property.medium {
+   font-size: 100%%
+}
+
+.alfresco-renderers-Property.large {
+   font-size: 116%;
+}
+
+.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item:hover .alfresco-renderers-Property.share-hidden.hover-only {
+   display: inline;
+}
+
+.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item .alfresco-renderers-Property.share-hidden.hover-only{
+   display: none;
+}

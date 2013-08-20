@@ -23,7 +23,7 @@
 
       <!-- To run the server using a non-root account on linux, Mac OS X, Solaris -->
       <!--
-      <netBIOSSMB sessionPort="1139" namePort="1137" datagramPort="1138" platforms="linux,macosx,solaris"/>
+      <netBIOSSMB sessionPort="1139" namingPort="1137" datagramPort="1138" platforms="linux,macosx,solaris"/>
       <tcpipSMB port="1445" platforms="linux,macosx,solaris"/>
       -->
       
@@ -45,6 +45,20 @@
     <port>21</port>
     <allowAnonymous/>
     <debug flags="File,Search,Error,DataPort,Directory"/>
+	  
+	<!-- Enable FTPS -->
+<!--	  
+    <keyStore>PATH-TO-KEYSTORE-FILE</keyStore>
+	<keyStoreType>JKS</keyStoreType>
+	<keyStorePassphrase>KEYSTORE-PASSWORD</keyStorePassphrase>
+	  
+	<trustStore>PATH-TO-TRUSTSTORE-FILE</trustStore>
+	<trustStoreType>JKS</trustStoreType>
+	<trustStorePassphrase>TRUSTSTORE-PASSWORD</trustStorePassphrase>
+	  
+	<NOrequireSecureSession/>
+	<NOsslEngineDebug/>
+-->
   </FTP>
 	
   <NFS>

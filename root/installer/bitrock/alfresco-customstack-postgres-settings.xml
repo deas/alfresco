@@ -34,13 +34,13 @@
        
         <setInstallerVariable name="component(tomcat).parameter(tomcat_dirname).value" value="tomcat" />
         
-        <setInstallerVariable name="component(baseparamdir).parameter(installdir).title" value="Installation Folder" />
+        <setInstallerVariable name="component(baseparamdir).parameter(installdir).title" value="Installation folder" />
         <setInstallerVariable name="component(baseparamdir).parameter(installdir).explanation" value="${'${tr('Please choose a folder to install ${product_fullname}')}'}" />
     </preBuildActionList>
 
     <initializationActionList>
-        <setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_notstart).value" value="1" />
-        <setInstallerVariable name="component(openofficecomponent).parameter(openoffice_installed_as_service).value" value="0" />
+        <setInstallerVariable name="component(libreofficecomponent).parameter(libreofficeservice_notstart).value" value="1"/>
+        <setInstallerVariable name="component(libreofficecomponent).parameter(libreoffice_installed_as_service).value" value="0"/>
 	<setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_notstart).value" value="1" />
 	<setInstallerVariable name="component(postgresinitdb).parameter(database_name).value" value="alfresco" />
 	<setInstallerVariable name="component(postgresinitdb).parameter(database_user).value" value="alfresco" />
@@ -89,7 +89,7 @@
                 <autodetectJava>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -105,7 +105,7 @@
                 <autodetectJava>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -120,7 +120,7 @@
                 </autodetectJava>
 
                 <autodetectJava>
-                    <customErrorMessage>This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
                     <validVersionList>
                         <validVersion>
                             <maxVersion/>
@@ -220,7 +220,7 @@
                 <autodetectJava>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -236,7 +236,7 @@
                 <autodetectJava>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again.</customErrorMessage>
                     <promptUser>0</promptUser>
                     <validVersionList>
                         <validVersion>
@@ -251,7 +251,7 @@
                 </autodetectJava>
 
                 <autodetectJava>
-                    <customErrorMessage>This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
+                    <customErrorMessage>This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again.</customErrorMessage>
                     <validVersionList>
                         <validVersion>
                             <maxVersion/>
@@ -378,12 +378,12 @@
                 <setInstallerVariable name="component(postgresservice).selected" value="1" />
                 <setInstallerVariable name="component(alfrescopostgresdbcreation).selected" value="1" />
                 <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_waittostart).value" value="1" />
-                <componentSelection select="openofficecomponent,alfrescosharepoint,alfrescowmqs,alfrescogoogledocs"/>
+                <componentSelection select="libreofficecomponent,alfrescosharepoint,alfrescowmqs,alfrescogoogledocs"/>
 
 		<actionGroup>
 		    <actionList>
 			<setInstallerVariable name="component(tomcat).parameter(tomcat_show_ports).value" value="1" />
-			<setInstallerVariable name="component(openofficecomponent).parameter(openoffice_show_ports).value" value="1" />
+			<setInstallerVariable name="component(libreofficecomponent).parameter(libreoffice_show_ports).value" value="1" />
 			<!--<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_server_port_show).value" value="1" />-->
 			<setInstallerVariable name="component(postgres).parameter(postgres_show_ports).value" value="1" />
 			<setInstallerVariable name="alfresco_show_ports" value="yes" />
@@ -398,7 +398,7 @@
 		<actionGroup>
 		    <actionList>
 			<setInstallerVariable name="component(tomcat).parameter(tomcat_show_ports).value" value="0" />
-			<setInstallerVariable name="component(openofficecomponent).parameter(openoffice_show_ports).value" value="0" />
+			<setInstallerVariable name="component(libreofficecomponent).parameter(libreoffice_show_ports).value" value="0" />
 			<!--<setInstallerVariable name="component(mysql).parameter(mysql_information).parameter(mysql_server_port_show).value" value="0" />-->
 			<setInstallerVariable name="component(postgres).parameter(postgres_show_ports).value" value="0" />
 			<setInstallerVariable name="alfresco_show_ports" value="no" />
@@ -426,7 +426,7 @@
 	    <!--validationActionList>
 		<setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />
 		<setInstallerVariable name="component(postgresservice).parameter(postgres_service_startup).value" value="${alfrescocustomstack_services_startup}" />
-		<setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+		<setInstallerVariable name="component(libreofficecomponent).parameter(libreofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
 	    </validationActionList-->
 	    <ruleList>
 		<platformTest type="windows" />
@@ -441,7 +441,7 @@
             <actionList>
                 <setInstallerVariable name="component(tomcatservice).parameter(tomcatservice_startup).value" value="${alfrescocustomstack_services_startup}" />
                 <setInstallerVariable name="component(postgresservice).parameter(postgres_service_startup).value" value="${alfrescocustomstack_services_startup}" />
-                <setInstallerVariable name="component(openofficecomponent).parameter(openofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
+                <setInstallerVariable name="component(libreofficecomponent).parameter(libreofficeservice_startup).value" value="${alfrescocustomstack_services_startup}" />
             </actionList>
             <ruleList>
                 <platformTest type="windows" />

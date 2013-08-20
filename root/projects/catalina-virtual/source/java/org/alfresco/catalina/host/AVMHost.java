@@ -454,6 +454,7 @@ public class AVMHost extends org.apache.catalina.core.StandardHost
                              (cause instanceof java.rmi.NotBoundException )
                            )
                         { 
+                            log.error( "Connection error", cause);
                             retry_op = true; 
                             break;
                         }

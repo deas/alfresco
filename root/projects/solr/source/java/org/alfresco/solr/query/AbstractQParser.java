@@ -28,6 +28,7 @@ import java.util.Locale;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
+import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.Operator;
 import org.alfresco.service.cmr.security.AuthorityType;
@@ -305,6 +306,7 @@ public abstract class AbstractQParser extends QParser
                     String textAttribute = textAttributes.getString(i);
                     searchParameters.addAllAttribute(textAttribute);
                 }
+                searchParameters.setQueryConsistency(QueryConsistency.valueOf(json.getString("queryConsistency")));
 
             }
             catch (JSONException e)

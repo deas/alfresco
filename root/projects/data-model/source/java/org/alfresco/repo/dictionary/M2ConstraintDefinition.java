@@ -27,6 +27,7 @@ import org.alfresco.repo.dictionary.constraint.NumericRangeConstraint;
 import org.alfresco.repo.dictionary.constraint.RegexConstraint;
 import org.alfresco.repo.dictionary.constraint.RegisteredConstraint;
 import org.alfresco.repo.dictionary.constraint.StringLengthConstraint;
+import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.service.cmr.dictionary.Constraint;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
@@ -70,6 +71,7 @@ import org.springframework.beans.PropertyAccessException;
     private QName name;
     private Constraint constraint;
     private boolean resolving;
+    private transient MessageLookup staticMessageLookup = new StaticMessageLookup();
 
     /* package */M2ConstraintDefinition(M2PropertyDefinition m2PropertyDef, M2Constraint m2Constraint,
             NamespacePrefixResolver prefixResolver)
@@ -299,16 +301,31 @@ import org.springframework.beans.PropertyAccessException;
         return getName().toString();
     }
 
+    @Override
     public ModelDefinition getModel()
     {
         return model;
     }
 
+    @Override
     public QName getName()
     {
         return name;
     }
     
+    @Override
+    public String getTitle()
+    {
+        return getTitle(staticMessageLookup);
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return getDescription(staticMessageLookup);
+    }
+
+    @Override
     public String getTitle(MessageLookup messageLookup)
     {
         String value = M2Label.getLabel(model, messageLookup, "constraint", name, "title"); 
@@ -319,6 +336,7 @@ import org.springframework.beans.PropertyAccessException;
         return value;
     }
     
+    @Override
     public String getDescription(MessageLookup messageLookup)
     {
         String value = M2Label.getLabel(model, messageLookup, "constraint", name, "description"); 
@@ -329,11 +347,13 @@ import org.springframework.beans.PropertyAccessException;
         return value;
     }
 
+    @Override
     public Constraint getConstraint()
     {
         return constraint;
     }
     
+    @Override
     public QName getRef()
     {
         QName refQName = null;

@@ -170,8 +170,8 @@
       <!-- If a DB properties override file was supplied, copy it into place -->
       <script language="javascript" classpath="${classpath.bsf_javascript}"> <![CDATA[
          importClass(java.io.File);
-         var repoConfigPath = project.getProperty("dir.project.repository.config");
-         var globalFile = new File(repoConfigPath + "/alfresco/module/test/alfresco-global.properties" );
+         var testResourcesPath = project.getProperty("dir.project.repository.test.resources");
+         var globalFile = new File(testResourcesPath + "/alfresco/module/test/alfresco-global.properties" );
 
          var propfile = project.getProperty("DB_PROPERTIES");
 
@@ -216,7 +216,7 @@
          var propertiesFiles = new Array();
          var count = 0;
 
-         for each (var dirp in ["user.home", "dir.project.repository.config"]) {
+         for each (var dirp in ["user.home", "dir.project.repository.config", "dir.project.repository.test.resources"]) {
             var dir = project.getProperty(dirp) + "/alfresco/extension/";
             for each (var xmlc in ["dev-context","test-context"]) {
                var xmlfile = new File(dir + xmlc + ".xml");
@@ -745,7 +745,7 @@
             <antcall target="linux-64-bit-installer"/>
             <antcall target="linux-64-bit-deployment-installer"/>
    </target>
-   
+
    
    <!-- ***************** -->
    <!-- ** WAR targets ** -->
@@ -900,7 +900,7 @@
                   includes="org/springframework/extensions/surf/util/ISO8601DateFormat.class" />
          <fileset dir="${dir.continuous.assemble.mmt}/tmp-spring-surf" 
                            includes="org/springframework/extensions/surf/exception/PlatformRuntimeException.class" />
-         <fileset dir="${dir.project.repository.classes}" 
+         <fileset dir="${dir.project.repository.config}" 
                   includes="org/alfresco/repo/module/tool/default-file-mapping.properties" />
          <fileset dir="${dir.project.repository.classes}" 
                   includes="org/alfresco/repo/module/**/*.class" />

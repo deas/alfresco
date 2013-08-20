@@ -68,6 +68,9 @@ function main()
          // Add Cloud Sync
          addLink("user-cloud-auth-link", "user-cloud-auth", "link.cloud-auth");
       }
+      
+      // Add Trashcan link
+      addLink("user-trashcan-link", "user-trashcan", "link.trashcan");
    }
    else
    {

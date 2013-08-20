@@ -386,7 +386,25 @@
           * - A NodeRef
           * - An XPath
           */
-         rootNode: null
+         rootNode: null,
+         
+         /**
+          * Specifies the API-URL used to find the items. If null, the default API URL will be used.
+          * Can contain a placeholder, {itemFamily}.
+          * 
+          * @property finderAPI
+          * @type string
+          */
+         finderAPI: null,
+         
+         /**
+          * Specifies the API-URL used to get details on items. If null, the default API URL will be used.
+          * 
+          * @property finderAPI
+          * @type string
+          */
+         itemsAPI: null
+         
       },
 
       /**
@@ -1471,9 +1489,19 @@
 
          if (arrItems !== "")
          {
+            // Determine right URL to use
+            var itemsUrl = null;
+            if(this.options.itemsAPI != null)
+            {
+               itemsUrl = this.options.itemsAPI;
+            }
+            else
+            {
+               itemsUrl = Alfresco.constants.PROXY_URI + "api/forms/picker/items";
+            }
             Alfresco.util.Ajax.jsonRequest(
             {
-               url: Alfresco.constants.PROXY_URI + "api/forms/picker/items",
+               url: itemsUrl,
                method: "POST",
                dataObj:
                {
@@ -1825,6 +1853,10 @@
                else if (this.options.startLocation == "{siteshome}")
                {
                   startingNodeRef = "alfresco://sites/home";
+               }
+               else if (this.options.startLocation == "{shared}")
+               {
+                  startingNodeRef = "alfresco://shared";
                }
                else if (this.options.startLocation == "{self}")
                {
@@ -2658,7 +2690,22 @@
          var me = this;
 
          // DataSource definition  
-         var pickerChildrenUrl = Alfresco.constants.PROXY_URI + "api/forms/picker/" + this.options.itemFamily;
+         var pickerChildrenUrl = null;
+         
+         if(this.options.finderAPI != null) {
+            var substitutionOptions = 
+            {
+                  itemFamily: this.options.itemFamily
+            };
+            
+            pickerChildrenUrl = YAHOO.lang.substitute(this.options.finderAPI, substitutionOptions)
+         }
+         else
+         {
+           // Revert to default
+            pickerChildrenUrl = Alfresco.constants.PROXY_URI + "api/forms/picker/" + this.options.itemFamily;
+         }
+         
          this.widgets.dataSource = new YAHOO.util.DataSource(pickerChildrenUrl,
          {
             responseType: YAHOO.util.DataSource.TYPE_JSON,
@@ -2982,36 +3029,40 @@
          
          // if an XPath start location has been provided and it has not been resolved 
          // yet, pass it to the pickerchildren script as a parameter
-         if (!this.startLocationResolved && this.options.startLocation &&
-              this.options.startLocation.charAt(0) == "/")
+         if (!this.startLocationResolved && this.objectFinder.options.startLocation &&
+              this.objectFinder.options.startLocation.charAt(0) == "/")
          {
-            params += "&xpath=" + encodeURIComponent(this.options.startLocation);
+            params += "&xpath=" + encodeURIComponent(this.objectFinder.options.startLocation);
          }
          
          // has a rootNode been specified?
-         if (this.options.rootNode)
+         if (this.objectFinder.options.rootNode)
          {
             var rootNode = null;
 
-            if (this.options.rootNode.charAt(0) == "{")
+            if (this.objectFinder.options.rootNode.charAt(0) == "{")
             {
-               if (this.options.rootNode == "{companyhome}")
+               if (this.objectFinder.options.rootNode == "{companyhome}")
                {
                   rootNode = "alfresco://company/home";
                }
-               else if (this.options.rootNode == "{userhome}")
+               else if (this.objectFinder.options.rootNode == "{userhome}")
                {
                   rootNode = "alfresco://user/home";
                }
-               else if (this.options.rootNode == "{siteshome}")
+               else if (this.objectFinder.options.rootNode == "{siteshome}")
                {
                   rootNode = "alfresco://sites/home";
+               }
+               else if (this.options.rootNode == "{shared}")
+               {
+                  rootNode = "alfresco://shared";
                }
             }
             else
             {
                // rootNode is either an xPath expression or a nodeRef
-               rootNode = this.options.rootNode;
+               rootNode = this.objectFinder.options.rootNode;
             }
             if (rootNode !== null)
             {
@@ -3019,9 +3070,9 @@
             }
          }
          
-         if (this.options.params)
+         if (this.objectFinder.options.params)
          {
-            params += "&" + encodeURI(this.options.params);
+            params += "&" + encodeURI(this.objectFinder.options.params);
          }
          
          return params;

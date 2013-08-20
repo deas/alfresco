@@ -1013,8 +1013,8 @@ public class CifsOnlyXMLServerConfiguration extends ServerConfiguration {
 				attr = elem.getAttribute("datagramPort");
 				if ( attr != null && attr.length() > 0) {
 					try {
-						cifsConfig.setNameServerPort(Integer.parseInt(attr));
-						if ( cifsConfig.getNameServerPort() <= 0 || cifsConfig.getNameServerPort() >= 65535)
+						cifsConfig.setDatagramPort(Integer.parseInt(attr));
+						if ( cifsConfig.getDatagramPort() <= 0 || cifsConfig.getDatagramPort() >= 65535)
 							throw new InvalidConfigurationException("NetBIOS SMB datagram port out of valid range");
 					}
 					catch (NumberFormatException ex) {

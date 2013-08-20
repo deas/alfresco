@@ -16,20 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/services/UserService
+ * @extends module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreXhr
+ * @mixes module:alfresco/core/NotificationUtils
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
+        "alfresco/core/NotificationUtils",
         "dojo/request/xhr",
         "dojo/json",
         "dojo/_base/lang"],
-        function(declare, AlfCore, AlfXhr, xhr, JSON, lang) {
+        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang) {
    
-   return declare([AlfCore, AlfXhr], {
+   return declare([AlfCore, AlfXhr, NotificationUtils], {
+      
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {{i18nFile: string}[]}
+       * @default [{i18nFile: "./i18n/ActionService.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/UserService.properties"}],
       
       /**
        * Sets up the subscriptions for the UserService
        * 
-       * @constructor 
+       * @instance 
        * @param {array} args The constructor arguments.
        */
       constructor: function alf_services_UserService__constructor(args) {
@@ -39,7 +57,7 @@ define(["dojo/_base/declare",
       /**
        * Handles XHR posting to a new user status mesage to the server. 
        * 
-       * @method updateUserStatus
+       * @instance
        * @param {object} data The payload containing the user status to post.
        */
       updateUserStatus: function alf_services_UserService__updateUserStatus(data) {
@@ -56,7 +74,7 @@ define(["dojo/_base/declare",
       /**
        * This handles successfully completed requests to update the user status.
        * 
-       * @method userStatusUpdateSuccess
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -73,8 +91,12 @@ define(["dojo/_base/declare",
          {
             var response = JSON.parse(this.cleanupJSONResponse(response));
          }
+
+         // Display a success message...
+         this.displayMessage(this.message("message.status.success"));
+
          this.alfPublish("ALF_USER_STATUS_UPDATED", {
-            userStatus: null,
+            userStatus: originalRequestConfig.data.status,
             userStatusTime: response.userStatusTime.iso8601
          });
       },
@@ -82,7 +104,7 @@ define(["dojo/_base/declare",
       /**
        * This handles failed attempts to update the user status.
        * 
-       * @method userStatusUpdateFailure
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -92,6 +114,10 @@ define(["dojo/_base/declare",
          {
             var response = JSON.parse(this.cleanupJSONResponse(response));
          }
+         
+         // Display a success message...
+         this.displayMessage(this.message("message.status.failure"));
+         
          this.alfPublish("ALF_USER_STATUS_UPDATE_FAILURE", response);
       }
    });

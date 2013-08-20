@@ -178,6 +178,127 @@
       },
       
       /**
+       * Setting a new value into textField without cursor position losses
+       * 
+       * @method _setValueAndSavePosition
+       * @param obj
+       * @param val
+       * @private
+       */
+      _setValueAndSavePosition: function DateRange__setValueAndSavePosition(obj, val)
+      {
+         var startPos = obj.selectionStart;
+         var endPos = obj.selectionEnd;
+         var ie8 = false;
+         if (typeof startPos == 'undefined')
+         {
+            ie8 = true;
+            var range = this._getInputSelection(obj);
+            startPos = range.start;
+            endPos = range.end;
+         }
+         obj.value = val;
+         if (startPos == endPos)
+         {
+            if (!ie8)
+            {
+               obj.selectionStart = startPos;
+               obj.selectionEnd = endPos;
+            } else
+            {
+               this._setCaretPosition(obj, startPos);
+            }
+         }
+         else
+         {
+            // do nothing
+         }
+      },
+      
+      /**
+       * Get a cursor (caret) positions (is used for ie8)
+       * 
+       * @method _getInputSelection
+       * @param el
+       * @private
+       */
+      _getInputSelection: function DateRange__getInputSelection(el)
+      {
+         var start = 0, end = 0, normalizedValue, range,
+             textInputRange, len, endRange;
+     
+         range = document.selection.createRange();
+ 
+         if (range && range.parentElement() == el) 
+         {
+             len = el.value.length;
+             normalizedValue = el.value.replace(/\r\n/g, "\n");
+ 
+             // Create a working TextRange that lives only in the input
+             textInputRange = el.createTextRange();
+             textInputRange.moveToBookmark(range.getBookmark());
+ 
+             // Check if the start and end of the selection are at the very end
+             // of the input, since moveStart/moveEnd doesn't return what we want
+             // in those cases
+             endRange = el.createTextRange();
+             endRange.collapse(false);
+ 
+             if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) 
+             {
+                 start = end = len;
+             } else 
+             {
+                 start = -textInputRange.moveStart("character", -len);
+                 start += normalizedValue.slice(0, start).split("\n").length - 1;
+ 
+                 if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) 
+                 {
+                     end = len;
+                 } else 
+                 {
+                     end = -textInputRange.moveEnd("character", -len);
+                     end += normalizedValue.slice(0, end).split("\n").length - 1;
+                 }
+             }
+         }
+		 
+         var res = { start: start, end: end };
+         return res
+      },
+	  
+      /**
+       * Set cursor (caret) position (is used for ie8)
+       * 
+       * @method _setCaretPosition
+       * @param elem
+       * @param caretPos
+       * @private
+       */
+      _setCaretPosition: function DateRange__setCaretPosition(elem, caretPos)
+      {
+         if(elem != null) 
+         {
+             if(elem.createTextRange) 
+             {
+                 var range = elem.createTextRange();
+                 range.move('character', caretPos);
+                 range.select();
+             }
+             else 
+             {
+                 if(elem.selectionStart) 
+                 {
+                     elem.focus();
+                     elem.setSelectionRange(caretPos, caretPos);
+                 }
+                 else
+                     elem.focus();
+             }
+         }
+      },
+      
+      /**
        * Handles the from date being changed in the date picker YUI control.
        * 
        * @method _handlePickerChangeFrom
@@ -192,7 +313,8 @@
          var selected = args[0];
          var selDate = this.widgets.calendarFrom.toDate(selected[0]);
          var dateEntry = selDate.toString(this.msg("form.control.date-picker.entry.date.format"));
-         Dom.get(this.id + "-date-from").value = dateEntry;
+         var obj = Dom.get(this.id + "-date-from");
+         this._setValueAndSavePosition(obj, dateEntry);
          
          // if we have a valid date, convert to ISO format and set value on hidden field
          if (selDate != null)
@@ -226,7 +348,8 @@
          var selected = args[0];
          var selDate = this.widgets.calendarTo.toDate(selected[0]);
          var dateEntry = selDate.toString(this.msg("form.control.date-picker.entry.date.format"));
-         Dom.get(this.id + "-date-to").value = dateEntry;
+         var obj = Dom.get(this.id + "-date-to");
+         this._setValueAndSavePosition(obj, dateEntry);
          
          // if we have a valid date, convert to ISO format and set value on hidden field
          if (selDate != null)

@@ -47,10 +47,16 @@
    padding-left: 49em;
 }*/
 
-.node-browser .search-text input
+.node-browser .search-text textarea
 {
    padding: 3px;
    width: 50em;
+   height: 3em;
+}
+
+.node-browser .search-text .yui-button
+{
+   vertical-align: top;
 }
 
 .node-browser .search-text

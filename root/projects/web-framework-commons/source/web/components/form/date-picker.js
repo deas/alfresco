@@ -165,6 +165,12 @@
       {
          var theDate = null;
          
+         if (this.options.currentValue == null || this.options.currentValue === "")
+         {
+            // MNT-2214 fix, check for prevously entered value
+            this.options.currentValue = Dom.get(this.currentValueHtmlId).value;
+         }
+         
          // calculate current date
          if (this.options.currentValue !== null && this.options.currentValue !== "")
          {
@@ -301,14 +307,7 @@
             var isoValue = "";
             
             // Check if time should be submitted as well 
-            if (this.options.showTime) 
-            {
-            	isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
-            }
-            else
-            {
-            	isoValue = Alfresco.util.toISO8601(selDate, {"selector":"date"});
-            }
+            isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
             
             Dom.get(this.currentValueHtmlId).value = isoValue;
             

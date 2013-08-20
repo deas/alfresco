@@ -26,7 +26,7 @@ public class ActionServiceLocator extends org.apache.axis.client.Service impleme
     }
 
     // Use to get a proxy class for ActionService
-    private java.lang.String ActionService_address = "http://localhost:8080/alfresco/api/ActionService";
+    private java.lang.String ActionService_address = "http://localhost:8080/alfresco/soapapi/ActionService";
 
     public java.lang.String getActionServiceAddress() {
         return ActionService_address;

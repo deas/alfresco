@@ -385,6 +385,10 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
                     }
                 }
             }
+            else
+            {
+                result.append(singleTag("NoChanges"));
+            }
             result.append(endTag("List"));
             
             if (dwsData.getLinksList() != null)

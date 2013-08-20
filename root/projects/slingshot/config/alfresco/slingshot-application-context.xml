@@ -181,9 +181,13 @@
    <bean id="webframework.rendition.processor.nocomponent" class="org.springframework.extensions.surf.site.EmptyRegionRenderer" />
    
    <!-- Override WebScript View Resolver - authenticated for admin webscripts via alfresco-feed connector -->
+   <bean id="slingshot.webscripts.authenticator.basic" class="org.alfresco.web.site.servlet.SlingshotBasicHttpAuthenticatorFactory">
+      <property name="connectorService" ref="connector.service" />
+      <property name="endpointId" value="alfresco-feed" />
+   </bean>
    <bean id="webscriptViewResolver" class="org.springframework.extensions.webscripts.servlet.mvc.WebScriptViewResolver">
       <property name="container" ref="webscripts.container" />
-      <property name="authenticatorFactory" ref="webscripts.authenticator.basic" />
+      <property name="authenticatorFactory" ref="slingshot.webscripts.authenticator.basic" />
    </bean>
    
    <!-- Override Page View Resolver - to provide access to http req for MT auth support during view name resolution -->
@@ -260,6 +264,10 @@
    <bean id="slingshot.templateprocessor.mimetypesQuery" parent="baseTemplateExtension" class="org.alfresco.web.scripts.MimetypesQuery">
       <property name="extensionName" value="mimetypes" />
    </bean>
+   
+     <bean id="slingshot.templateprocessor.multiValueEscapeHelper" parent="baseTemplateExtension" class="org.alfresco.web.scripts.MultiValueEscapeHelper">
+      <property name="extensionName" value="multiValue" />
+   </bean>
 
    <!-- Extension utils -->
    <bean id="slingshot.evaluator.utility" class="org.alfresco.web.extensibility.SlingshotEvaluatorUtil">
@@ -284,6 +292,10 @@
    <bean id="site.component.evaluator" class="org.alfresco.web.extensibility.SlingshotSiteComponentElementEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>
+      <bean id="pagecontext.component.evaluator" class="org.alfresco.web.extensibility.SlingshotPageContextComponentElementEvaluator">
+      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
+   </bean>
+   
    <bean id="preset.component.evaluator" class="org.alfresco.web.extensibility.SlingshotPresetComponentElementEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>

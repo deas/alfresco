@@ -106,38 +106,26 @@
          // Overridden so activity doesn't get posted
       },
 
-
       /**
-       * PRIVATE FUNCTIONS
-       */
-      
-      /**
-       * Generates the HTML mark-up for the RSS feed link
-       *
-       * @method _generateRSSFeedUrl
+       * @method _getRssFeedUrl
        * @private
        */
-      _generateRSSFeedUrl: function RDLTB__generateRSSFeedUrl()
+      _getRssFeedUrl: function DLTB__getRssFeedUrl()
       {
-         if (this.widgets.rssFeed && this.modules.docList)
+         var params = YAHOO.lang.substitute("{type}/node/alfresco/company/home{path}",
          {
-            var params = YAHOO.lang.substitute("{type}/node/alfresco/company/home{path}",
-            {
-               type: this.modules.docList.options.showFolders ? "all" : "documents",
-               path: Alfresco.util.encodeURIPath(this.currentPath)
-            });
+            type: this.modules.docList.options.showFolders ? "all" : "documents",
+            path: Alfresco.util.encodeURIPath(this.currentPath)
+         });
 
-            params += "?filter=" + encodeURIComponent(this.currentFilter.filterId);
-            if (this.currentFilter.filterData)
-            {
-               params += "&filterData=" + encodeURIComponent(this.currentFilter.filterData);             
-            }
-            params += "&libraryRoot=" + this.options.rootNode.toString();
-            params += "&format=rss";
-            
-            this.widgets.rssFeed.set("href", Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/documentlibrary/feed/" + params);
-            Alfresco.util.enableYUIButton(this.widgets.rssFeed);
+         params += "?filter=" + encodeURIComponent(this.currentFilter.filterId);
+         if (this.currentFilter.filterData)
+         {
+            params += "&filterData=" + encodeURIComponent(this.currentFilter.filterData);
          }
+         params += "&format=rss";
+         
+         return Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/documentlibrary/feed/" + params;
       }
    }, true);
 })();

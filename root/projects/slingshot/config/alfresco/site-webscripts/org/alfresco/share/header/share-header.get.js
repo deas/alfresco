@@ -2,11 +2,7 @@
 
 model.jsonModel = {
    rootNodeId: "share-header",
-   services: [
-      "alfresco/services/NavigationService",
-      "alfresco/services/UserService",
-      "alfresco/services/SiteService"
-   ],   
+   services: getHeaderServices(),
    widgets: [
       {
          id: "SHARE_VERTICAL_LAYOUT",

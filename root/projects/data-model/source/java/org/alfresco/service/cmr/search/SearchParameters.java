@@ -160,8 +160,14 @@ public class SearchParameters
     
     private Integer maxRawResultSetSizeForInMemorySort;
     
+    private Map<String, String> extraParameters = new HashMap<String, String>();
+    
     private boolean excludeTenantFilter = false;
 
+    private boolean isBulkFetchEnabled = true;
+
+    private QueryConsistency queryConsistency = QueryConsistency.DEFAULT;
+    
     /**
      * Default constructor
      */
@@ -198,7 +204,9 @@ public class SearchParameters
         sp.textAttributes.addAll(this.textAttributes);
         sp.useInMemorySort = this.useInMemorySort;
         sp.maxRawResultSetSizeForInMemorySort = this.maxRawResultSetSizeForInMemorySort;
+        sp.isBulkFetchEnabled = this.isBulkFetchEnabled;
         sp.excludeTenantFilter = this.excludeTenantFilter;
+        sp.queryConsistency = this.queryConsistency;
         return sp;
     }
     
@@ -212,6 +220,7 @@ public class SearchParameters
         setSkipCount(options.getSkipCount());
         setMaxPermissionChecks(options.getMaxPermissionChecks());
         setMaxPermissionCheckTimeMillis(options.getMaxPermissionCheckTimeMillis());
+        setBulkFetchEnabled(options.isBulkFetchEnabled());
         if (options.getMaxItems() >= 0)
         {
             setLimitBy(LimitBy.FINAL_SIZE);
@@ -255,7 +264,17 @@ public class SearchParameters
         this.language = language;
     }
 
-    /**
+    public void addExtraParameter(String name, String value)
+    {
+    	extraParameters.put(name, value);
+    }
+    
+    public Map<String, String> getExtraParameters()
+    {
+		return extraParameters;
+	}
+
+	/**
      * Set the query string.
      * 
      * @param query -
@@ -717,6 +736,21 @@ public class SearchParameters
         this.maxRawResultSetSizeForInMemorySort = maxRawResultSetSizeForInMemorySort;
     }
 
+    /**
+     * @return true if bulk fetch is enabled
+     */
+    public boolean isBulkFetchEnabled()
+    {
+        return isBulkFetchEnabled;
+    }
+
+    /**
+     * @param isBulkFetchEnabled 
+     */
+    public void setBulkFetchEnabled(boolean isBulkFetchEnabled)
+    {
+        this.isBulkFetchEnabled = isBulkFetchEnabled;
+    }
 
 
     /**
@@ -850,23 +884,17 @@ public class SearchParameters
         return excludeTenantFilter;
     }
     
-
-  
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
+    public void setQueryConsistency(QueryConsistency queryConsistency)
     {
-        return "SearchParameters [language="
-                + language + ", query=" + query + ", stores=" + stores + ", queryParameterDefinitions=" + queryParameterDefinitions + ", excludeDataInTheCurrentTransaction="
-                + excludeDataInTheCurrentTransaction + ", sortDefinitions=" + sortDefinitions + ", locales=" + locales + ", mlAnalaysisMode=" + mlAnalaysisMode + ", limitBy="
-                + limitBy + ", permissionEvaluation=" + permissionEvaluation + ", limit=" + limit + ", allAttributes=" + allAttributes + ", textAttributes=" + textAttributes
-                + ", maxItems=" + maxItems + ", skipCount=" + skipCount + ", defaultFTSOperator=" + defaultFTSOperator + ", defaultFTSFieldOperator=" + defaultFTSFieldOperator
-                + ", queryTemplates=" + queryTemplates + ", namespace=" + namespace + ", maxPermissionChecks=" + maxPermissionChecks + ", maxPermissionCheckTimeMillis="
-                + maxPermissionCheckTimeMillis + ", defaultFieldName=" + defaultFieldName + ", fieldFacets=" + fieldFacets + ", useInMemorySort=" + useInMemorySort
-                + ", maxRawResultSetSizeForInMemorySort=" + maxRawResultSetSizeForInMemorySort + ", excludeTenentFilter=" + excludeTenantFilter + "]";
+        this.queryConsistency = queryConsistency;
+    }
+
+    /**
+     * @return the queryConsistency
+     */
+    public QueryConsistency getQueryConsistency()
+    {
+        return queryConsistency;
     }
 
 
@@ -897,6 +925,7 @@ public class SearchParameters
         result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
         result = prime * result + ((permissionEvaluation == null) ? 0 : permissionEvaluation.hashCode());
         result = prime * result + ((query == null) ? 0 : query.hashCode());
+        result = prime * result + ((queryConsistency == null) ? 0 : queryConsistency.hashCode());
         result = prime * result + ((queryParameterDefinitions == null) ? 0 : queryParameterDefinitions.hashCode());
         result = prime * result + ((queryTemplates == null) ? 0 : queryTemplates.hashCode());
         result = prime * result + skipCount;
@@ -998,6 +1027,8 @@ public class SearchParameters
         }
         else if (!query.equals(other.query))
             return false;
+        if (queryConsistency != other.queryConsistency)
+            return false;
         if (queryParameterDefinitions == null)
         {
             if (other.queryParameterDefinitions != null)
@@ -1047,12 +1078,22 @@ public class SearchParameters
 
 
 
-
-
-
-
-
-
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        return "SearchParameters [language="
+                + language + ", query=" + query + ", stores=" + stores + ", queryParameterDefinitions=" + queryParameterDefinitions + ", excludeDataInTheCurrentTransaction="
+                + excludeDataInTheCurrentTransaction + ", sortDefinitions=" + sortDefinitions + ", locales=" + locales + ", mlAnalaysisMode=" + mlAnalaysisMode + ", limitBy="
+                + limitBy + ", permissionEvaluation=" + permissionEvaluation + ", limit=" + limit + ", allAttributes=" + allAttributes + ", textAttributes=" + textAttributes
+                + ", maxItems=" + maxItems + ", skipCount=" + skipCount + ", defaultFTSOperator=" + defaultFTSOperator + ", defaultFTSFieldOperator=" + defaultFTSFieldOperator
+                + ", queryTemplates=" + queryTemplates + ", namespace=" + namespace + ", maxPermissionChecks=" + maxPermissionChecks + ", maxPermissionCheckTimeMillis="
+                + maxPermissionCheckTimeMillis + ", defaultFieldName=" + defaultFieldName + ", fieldFacets=" + fieldFacets + ", useInMemorySort=" + useInMemorySort
+                + ", maxRawResultSetSizeForInMemorySort=" + maxRawResultSetSizeForInMemorySort + ", excludeTenantFilter=" + excludeTenantFilter + ", queryConsistency="
+                + queryConsistency + "]";
+    }
 
 
     public enum FieldFacetSort

@@ -359,7 +359,7 @@
             {
                if (oResponse.results.length === 0)
                {
-                  me.widgets.dataTable.set("MSG_EMPTY", '<span style="white-space: nowrap;">' + me._msg("message.empty") + '</span>');
+                  me.widgets.dataTable.set("MSG_EMPTY", '<span style="white-space: nowrap;">' + me.msg("message.empty") + '</span>');
                }
                me.renderLoopSize = Alfresco.util.RENDERLOOPSIZE;
             }

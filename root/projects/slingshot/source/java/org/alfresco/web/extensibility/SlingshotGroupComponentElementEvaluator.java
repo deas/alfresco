@@ -18,6 +18,7 @@ public class SlingshotGroupComponentElementEvaluator extends DefaultSubComponent
     public static final String GROUPS = "groups";
     public static final String RELATION = "relation";
     public static final String AND = "AND";
+    public static final String NEGATE = "negate";
 
     /**
      * Checks to see whether or not the current user satisfies the group membership requirements
@@ -28,10 +29,24 @@ public class SlingshotGroupComponentElementEvaluator extends DefaultSubComponent
     {
         boolean memberOfAllGroups = getRelationship(context, params);
         List<String> groups = util.getGroups(params.get(GROUPS));
-        boolean apply = util.isMemberOfGroups(context, groups, memberOfAllGroups);
+        boolean isMember = util.isMemberOfGroups(context, groups, memberOfAllGroups);
+        boolean negate = getNegation(context, params);
+        boolean apply = (isMember && !negate) || (!isMember && negate);
         return apply;
     }
 
+    /**
+     * Checks for a request for to negate the ruling. The default is false.
+     * @param context
+     * @param evaluationProperties
+     * @return
+     */
+    protected boolean getNegation(RequestContext context, Map<String, String> evaluationProperties)
+    {
+        String negateParam = evaluationProperties.get(NEGATE);
+        return (negateParam != null && negateParam.trim().equalsIgnoreCase(Boolean.TRUE.toString()));
+    }
+    
     /**
      * Gets the logical relationship between all the groups to test for membership of. By default
      * this boils down to a straight choice between "AND" (must be a member of ALL groups) and "OR"

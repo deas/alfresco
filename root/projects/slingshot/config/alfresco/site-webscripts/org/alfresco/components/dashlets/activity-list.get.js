@@ -17,8 +17,6 @@ function main()
       {
          activity = activityFeed[i];
 
-         if (activity.activitySummaryFormat == "json")
-         {
             summary = eval("(" + activity.activitySummary + ")");
             fullName = trim(summary.firstName + " " + summary.lastName);
             date = AlfrescoUtil.fromISO8601(activity.postDate);
@@ -55,7 +53,6 @@ function main()
             
             // Run through specialize function for special cases
             activities.push(specialize(item, activity, summary));
-         }
       }
       
       siteTitles = getSiteTitles(sites);

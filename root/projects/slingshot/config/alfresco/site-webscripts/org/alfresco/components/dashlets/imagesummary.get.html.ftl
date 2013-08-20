@@ -1,3 +1,4 @@
+<#assign el=args.htmlid?html>
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/documentlibrary/global-folder.css" group="dashlets"/>
@@ -11,12 +12,13 @@
 </@>
 
 <@markup id="widgets">
+   <#assign id=el?replace("-", "_")>
    <@inlineScript group="dashlets">
-      var imageFolderDashletEvent = new YAHOO.util.CustomEvent("onDashletConfigure");
+      var imageFolderDashletEvent${id} = new YAHOO.util.CustomEvent("onDashletConfigure");
    </@>
    <@createWidgets group="dashlets"/>
    <@inlineScript group="dashlets">
-      imageFolderDashletEvent.subscribe(imageSummary.onConfigImageFolderClick, imageSummary, true);
+      imageFolderDashletEvent${id}.subscribe(imageSummary.onConfigImageFolderClick, imageSummary, true);
    </@>
 </@>
 

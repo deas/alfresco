@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A mixin that provides functions for displaying messages and dialog popups to the user.
+ * 
+ * @module alfresco/core/NotificationUtils
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/dialogs/AlfDialog",
@@ -30,10 +37,10 @@ define(["dojo/_base/declare",
        * completely to the new UI framework. At some point in time this function should be updated to use alternative
        * means of displaying a message. 
        * 
-       * @method displayMessage
+       * @instance
        * @param msg {String} The message to be displayed.
        */
-      displayMessage: function alfresco_core_NotificationUtils__displayMessage(msg) {
+      displayMessage: function alfresco_core_Core__displayMessage(msg) {
          if (Alfresco && Alfresco.util && Alfresco.util.PopupManager)
          {
             Alfresco.util.PopupManager.displayMessage({
@@ -47,13 +54,18 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This function handles displaying popup messages that require some acknowledgement. 
+       * It currently uses the legacy YUI functions that are defined
+       * in alfresco.js and are expected to be available in the JavaScript global namespace until Share is merged
+       * completely to the new UI framework. At some point in time this function should be updated to use alternative
+       * means of displaying a message. 
        * 
-       * @method displayMessage
+       * @instance
        * @param msg {String} The message to be displayed.
        */
-      displayPrompt: function alfresco_core_NotificationUtils__displayPrompt(config) {
+      displayPrompt: function alfresco_core_Core__displayPrompt(config) {
          var dialog = new AlfDialog(config);
          dialog.show();
-      },
+      }
    })
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -81,10 +81,11 @@ public interface NodeService
      * Delete a store and all its contents.
      *
      * @param storeRef                              the store to delete
+     * @return                                      <tt>true</tt> if the store was deleted
      * @throws InvalidStoreRefException             if the store reference is invalid
      */
     @Auditable(parameters = {"storeRef"})
-    public void deleteStore(StoreRef storeRef);
+    public boolean deleteStore(StoreRef storeRef);
     
     /**
      * @param storeRef a reference to the store to look for
@@ -207,13 +208,14 @@ public interface NodeService
      * 
      * @param childAssocRef the child association that must be moved in the order 
      * @param index an arbitrary index that will affect the return order
-     * 
+     * @return <tt>true</tt> if the node was modified
+     *
      * @see #getChildAssocs(NodeRef)
      * @see #getChildAssocs(NodeRef, QNamePattern, QNamePattern)
      * @see ChildAssociationRef#getNthSibling()
      */
     @Auditable(parameters = {"childAssocRef", "index"})
-    public void setChildAssociationIndex(
+    public boolean setChildAssociationIndex(
             ChildAssociationRef childAssocRef,
             int index)
             throws InvalidChildAssociationRefException;
@@ -237,11 +239,12 @@ public interface NodeService
      * 
      * @param nodeRef   the node reference
      * @param typeQName the type QName
-     * 
+     * @return <tt>true</tt> if the node was modified
+     *
      * @since 1.1
      */
     @Auditable(parameters = {"nodeRef", "typeQName"})
-    public void setType(NodeRef nodeRef, QName typeQName) throws InvalidNodeRefException;
+    public boolean setType(NodeRef nodeRef, QName typeQName) throws InvalidNodeRefException;
     
     /**
      * Applies an aspect to the given node.  After this method has been called,
@@ -251,6 +254,7 @@ public interface NodeService
      * @param aspectTypeQName the aspect to apply to the node
      * @param aspectProperties a minimum of the mandatory properties required for
      *      the aspect
+     * @return <tt>true</tt> if the node was modified
      * @throws InvalidNodeRefException
      * @throws InvalidAspectException if the class reference is not to a valid aspect
      *
@@ -258,7 +262,7 @@ public interface NodeService
      * @see org.alfresco.service.cmr.dictionary.ClassDefinition#getProperties()
      */
     @Auditable(parameters = {"nodeRef", "aspectTypeQName", "aspectProperties"})
-    public void addAspect(
+    public boolean addAspect(
             NodeRef nodeRef,
             QName aspectTypeQName,
             Map<QName, Serializable> aspectProperties)
@@ -274,7 +278,7 @@ public interface NodeService
      *      aspect is mandatory for the <b>class</b> of the <b>node</b>
      */
     @Auditable(parameters = {"nodeRef", "aspectTypeQName"})
-    public void removeAspect(NodeRef nodeRef, QName aspectTypeQName)
+    public boolean removeAspect(NodeRef nodeRef, QName aspectTypeQName)
             throws InvalidNodeRefException, InvalidAspectException;
     
     /**
@@ -309,10 +313,11 @@ public interface NodeService
      * the children will also be cascade deleted.
      * 
      * @param nodeRef reference to a node within a store
+     * @return <tt>true</tt> if the node was modified
      * @throws InvalidNodeRefException if the reference given is invalid
      */
     @Auditable(parameters = {"nodeRef"})
-    public void deleteNode(NodeRef nodeRef) throws InvalidNodeRefException;
+    public boolean deleteNode(NodeRef nodeRef) throws InvalidNodeRefException;
     
     /**
      * Makes a parent-child association between the given nodes.  Both nodes must belong to the same store.
@@ -358,10 +363,11 @@ public interface NodeService
      * 
      * @param parentRef the parent end of the association
      * @param childRef the child end of the association
+     * @return <tt>true</tt> if the child was removed
      * @throws InvalidNodeRefException if the parent or child nodes could not be found
      */
     @Auditable(parameters = {"parentRef", "childRef"})
-    public void removeChild(NodeRef parentRef, NodeRef childRef) throws InvalidNodeRefException;
+    public boolean removeChild(NodeRef parentRef, NodeRef childRef) throws InvalidNodeRefException;
 
     /**
      * Remove a specific child association.
@@ -427,10 +433,11 @@ public interface NodeService
      * 
      * @param nodeRef           the node to chance
      * @param properties        all the properties of the node keyed by their qualified names
+     * @return <tt>true</tt> if the node was modified
      * @throws InvalidNodeRefException if the node could not be found
      */
     @Auditable(parameters = {"nodeRef", "properties"})
-    public void setProperties(NodeRef nodeRef, Map<QName, Serializable> properties) throws InvalidNodeRefException;
+    public boolean setProperties(NodeRef nodeRef, Map<QName, Serializable> properties) throws InvalidNodeRefException;
     
     /**
      * Add all given properties to the node.
@@ -439,10 +446,11 @@ public interface NodeService
      * 
      * @param nodeRef           the node to change
      * @param properties        the properties to change, keyed by their qualified names
+     * @return <tt>true</tt> if the node was modified
      * @throws InvalidNodeRefException if the node could not be found
      */
     @Auditable(parameters = {"nodeRef", "properties"})
-    public void addProperties(NodeRef nodeRef, Map<QName, Serializable> properties) throws InvalidNodeRefException;
+    public boolean addProperties(NodeRef nodeRef, Map<QName, Serializable> properties) throws InvalidNodeRefException;
     
     /**
      * Sets the value of a property to be any <code>Serializable</code> instance.
@@ -452,20 +460,22 @@ public interface NodeService
      * @param nodeRef   a reference to an existing node
      * @param qname the fully qualified name of the property
      * @param propertyValue the value of the property - never null
+     * @returns <tt>true</tt> if the node was modified
      * @throws InvalidNodeRefException if the node could not be found
      */
     @Auditable(parameters = {"nodeRef", "qname", "value"})
-    public void setProperty(NodeRef nodeRef, QName qname, Serializable value) throws InvalidNodeRefException;
+    public boolean setProperty(NodeRef nodeRef, QName qname, Serializable value) throws InvalidNodeRefException;
     
     /**
      * Removes a property value completely.
      * 
      * @param nodeRef   a reference to an existing node
      * @param qname     the fully qualified name of the property
+     * @return <tt>true</tt> if the property was deleted
      * @throws InvalidNodeRefException if the node could not be found
      */
     @Auditable(parameters = {"nodeRef", "qname"})
-    public void removeProperty(NodeRef nodeRef, QName qname) throws InvalidNodeRefException;
+    public boolean removeProperty(NodeRef nodeRef, QName qname) throws InvalidNodeRefException;
     
     /**
      * @param nodeRef the child node
@@ -523,6 +533,8 @@ public interface NodeService
      * for the type and a specific {@link QName qualified name} for the association is
      * akin to using the XPath browse expression <b>./{url}localname</b> in the context of the
      * parent node.
+     * <p/>
+     * Note that all child associations are fetched and preloading is done for all results.
      * 
      * @param nodeRef the parent node - usually a <b>container</b>
      * @param typeQNamePattern the pattern that the type qualified name of the association must match
@@ -533,6 +545,7 @@ public interface NodeService
      * 
      * @see QName
      * @see org.alfresco.service.namespace.RegexQNamePattern#MATCH_ALL
+     * @see #getChildAssocs(NodeRef, QNamePattern, QNamePattern, int, boolean)
      */
     @Auditable(parameters = {"nodeRef", "typeQNamePattern", "qnamePattern"})
     public List<ChildAssociationRef> getChildAssocs(
@@ -555,11 +568,11 @@ public interface NodeService
      * 
      * @see QName
      */
-    @Auditable(parameters = {"nodeRef", "typeQName", "qname", "maxResults", "preload"})
+    @Auditable(parameters = {"nodeRef", "typeQNamePattern", "qnamePattern", "maxResults", "preload"})
     public List<ChildAssociationRef> getChildAssocs(
             NodeRef nodeRef,
-            final QName typeQName,
-            final QName qname,
+            final QNamePattern typeQNamePattern,
+            final QNamePattern qnamePattern,
             final int maxResults,
             final boolean preload)
             throws InvalidNodeRefException;
@@ -567,6 +580,8 @@ public interface NodeService
     /**
      * Gets all child associations where the pattern of the association qualified
      * names match the patterns provided.
+     * <p/>
+     * Note that all results are retrieved but preloading is optional.
      * 
      * @param nodeRef           the parent node - usually a <b>container</b>
      * @param typeQNamePattern  the qualified name pattern of the association
@@ -577,6 +592,7 @@ public interface NodeService
      * 
      * @see RegexQNamePattern#MATCH_ALL
      * @see QName
+     * @see #getChildAssocs(NodeRef, QNamePattern, QNamePattern, int, boolean)
      */
     @Auditable(parameters = {"nodeRef", "typeQNamePattern", "qnamePattern"})
     public List<ChildAssociationRef> getChildAssocs(
@@ -692,19 +708,21 @@ public interface NodeService
             final QName assocTypeQName);
 
     /**
-     * Create a peer association between two nodes, optionally specifying the ordering.
+     * Create a peer association between two nodes.
      * <p/>
-     * Note that inserting the association into a specific location is more expensive than
-     * specifying the natural ordering (<tt>null</tt>).
+     * The ordering will be natural.
+     * To change association ordering, use {@link #setAssociations(NodeRef, QName, List) setAssociations}.
      * 
      * @param sourceRef                 a reference to a <b>real</b> node
      * @param targetRef                 a reference to a node
      * @param assocTypeQName            the qualified name of the association type
      * @return                          Returns a reference to the new association
      * @throws InvalidNodeRefException  if either of the nodes could not be found
-     * @throws AssociationExistsException
+     * @throws AssociationExistsException   if an association of the same type exists between the nodes
+     * 
+     * @see #setAssociations(NodeRef, QName, List)
      */
-    @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName", "insertAfter"})
+    @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName"})
     public AssociationRef createAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName)
             throws InvalidNodeRefException, AssociationExistsException;
     
@@ -713,10 +731,11 @@ public interface NodeService
      * @param sourceRef the associaton source node
      * @param targetRef the association target node
      * @param assocTypeQName the qualified name of the association type
+     * @return <tt>true</tt> if the association was removed
      * @throws InvalidNodeRefException if either of the nodes could not be found
      */
     @Auditable(parameters = {"sourceRef", "targetRef", "assocTypeQName"})
-    public void removeAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName)
+    public boolean removeAssociation(NodeRef sourceRef, NodeRef targetRef, QName assocTypeQName)
             throws InvalidNodeRefException;
     
     /**
@@ -725,9 +744,10 @@ public interface NodeService
      * @param sourceRef                 the source node
      * @param assocTypeQName            the specific type of the association
      * @param targetRefs                the target nodes (not <tt>null</tt> but empty list is accepted).
+     * @return <tt>true</tt> if the node was modified
      */
     @Auditable(parameters = {"sourceRef", "assocTypeQName", "targetRefs"})
-    public void setAssociations(NodeRef sourceRef, QName assocTypeQName, List<NodeRef> targetRefs);
+    public boolean setAssociations(NodeRef sourceRef, QName assocTypeQName, List<NodeRef> targetRefs);
     
     /**
      * Gets an association by ID.

@@ -27,6 +27,7 @@
    margin-right: 8px;
    position: relative;
    top: 1px;
+   margin-top: 1px;
 }
 
 .alfresco-share .alf-search-box-text:focus

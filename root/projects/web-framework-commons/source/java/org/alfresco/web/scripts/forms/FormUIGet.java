@@ -134,6 +134,7 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String CONSTRAINT_MINMAX = "MINMAX";
     protected static final String CONSTRAINT_REGEX = "REGEX";
     protected static final String CONSTRAINT_NODE_HANDLER = "Alfresco.forms.validation.nodeName";
+    protected static final String CONSTRAINT_FILE_NAME_HANDLER = "Alfresco.forms.validation.fileName";
     
     protected static final String CONSTRAINT_MSG_LENGTH = "form.field.constraint.length";
     protected static final String CONSTRAINT_MSG_MINMAX = "form.field.constraint.minmax";
@@ -1636,6 +1637,11 @@ public class FormUIGet extends DeclarativeWebScript
            {
               field.setHelp(configHelp);
            }
+           // Only override the default value if explicitly specified in the config
+           if (fieldConfig.getHelpEncodeHtml() != null)
+           {
+               field.setHelpEncodeHtml(fieldConfig.getHelpEncodeHtml().equalsIgnoreCase("true"));
+           }
         }
     }
     
@@ -2051,7 +2057,7 @@ public class FormUIGet extends DeclarativeWebScript
             // to the JavaScript specific nodeName handler.
             if (CM_NAME_PROP.equals(field.getName()))
             {
-                constraint.setValidationHandler(CONSTRAINT_NODE_HANDLER);
+                constraint.setValidationHandler(CONSTRAINT_FILE_NAME_HANDLER);
                 constraint.setJSONParams(new JSONObject());
             }
         }
@@ -2683,6 +2689,7 @@ public class FormUIGet extends DeclarativeWebScript
         protected String label;
         protected String description;
         protected String help;
+        protected boolean helpEncodeHtml = true;
         protected FieldControl control; 
         protected String dataKeyName;
         protected String dataType;
@@ -2854,6 +2861,16 @@ public class FormUIGet extends DeclarativeWebScript
         {
             this.help = help;
         }
+
+        public boolean getHelpEncodeHtml()
+        {
+            return this.helpEncodeHtml;
+        }
+
+        public void setHelpEncodeHtml(boolean encode)
+        {
+            this.helpEncodeHtml = encode;
+        }
         
         public String getEndpointDirection()
         {
@@ -2893,6 +2910,7 @@ public class FormUIGet extends DeclarativeWebScript
             buffer.append(" label=").append(this.label);
             buffer.append(" description=").append(this.description);
             buffer.append(" help=").append(this.help);
+            buffer.append(" helpEncodeHtml=").append(this.helpEncodeHtml);
             buffer.append(" dataKeyName=").append(this.dataKeyName);
             buffer.append(" dataType=").append(this.dataType);
             buffer.append(" endpointDirection=").append(this.endpointDirection);

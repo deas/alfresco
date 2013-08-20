@@ -456,6 +456,11 @@ span.navigation-separator-alt
    padding: 0.2em;
 }
 
+.rich-content
+{
+   color: #000000;
+}
+
 .dnd-draggable
 {
    cursor: move;
@@ -1094,6 +1099,16 @@ form.insitu-edit a
    cursor: pointer;
 }
 
+span.item-social
+{
+   float: left;
+}
+
+span.item-modifier
+{
+   float: left;
+}
+
 .item-social a.like-action
 {
    background-image: url(../components/images/like-16.png);
@@ -1162,12 +1177,11 @@ form.insitu-edit a
 .quickshare-action-menu .bd .section
 {
    display: block;
-   margin-bottom: 0.75em;
+   margin: 0.5em;
 }
 .quickshare-action-menu .bd label
 {
-   min-width: 6em;
-   display: inline-block;
+   float: left;
 }
 .quickshare-action-unshare
 {
@@ -1330,6 +1344,12 @@ span.item-social.item-separator,
 
 .item-social a.comment,
 .simple-doclist .detail-social a.comment
+{
+   background-image: url(../components/images/comment-off-16.png);
+}
+
+.item-social a.comment.hasComments,
+.simple-doclist .detail-social a.comment.hasComments
 {
    background-image: url(../components/images/comment-16.png);
 }
@@ -1724,4 +1744,128 @@ body.brand-bg-1 .sticky-wrapper
 .sticky-wrapper .cloud-sync-status .cloud-sync-details-info a:hover,
 .sticky-wrapper .cloud-sync-status .cloud-sync-details-info a:active {
    color: #2186D9 !important;
+}
+
+.header-bar .alf-fullscreen-enter-button
+{
+    float: right;
+    margin-left: 4px;
+}
+.header-bar .alf-fullscreen-enter-button span.first-child
+{
+    background-image: url(../components/images/fullscreen-enter.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    min-height: 16px;
+    padding: 0 2px;
+}
+.doclist .alf-fullscreen-exit-button span.first-child
+{
+    background-image: url(../components/images/fullscreen-exit.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-color: black;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+.doclist .alf-fullscreen-exit-button span.first-child button
+{
+    line-height: inherit;
+    min-height: inherit;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+}
+.toolbar .options-select .fullWindow
+{
+    background-image: url(../components/images/fullscreen-enter.png);
+}
+.toolbar .options-select .fullScreen
+{
+    background-image: url(../components/images/fullscreen-enter.png);
+}
+
+.alf-fullscreen-exit-button
+{
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2000;
+    padding: 1px;
+}
+.alf-fullwindow .doclist .alf-fullscreen-exit-button
+{
+    visibility: visible !important;
+    color: white;
+}
+.alf-fullscreen-exit-button .yui-button
+{
+    margin: 0;
+    height: 16px;
+    width: 16px;
+    border: none;
+    background: none;
+}
+.alf-fullscreen:-webkit-full-screen
+{
+    width: 100%;
+    height: 100%;
+}
+.alf-fullscreen
+{
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    margin: 0 !important;
+}
+.alf-fullwindow .alf-fullscreen
+{
+    z-index: 1000;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    padding: 0 !important;
+}
+.alf-fullwindow #doc3
+{
+    margin: auto 0;
+}
+.alf-fullwindow .doclist .documents
+{
+    margin: 0 !important;
+}
+.alf-fullwindow .sticky-footer
+{
+    display: none !important;
+}
+.alf-fullwindow #alf-filters
+{
+    display: none !important;
+}
+.alf-fullwindow #alf-hd
+{
+    display: none !important;
+}
+.alf-fullwindow .toolbar,
+.alf-fullscreen .toolbar
+{
+    display: none !important;
+}
+.alf-fullwindow .doclist-bar-bottom,
+.alf-fullscreen .doclist-bar-bottom
+{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border: none !important;
+}
+.alf-fullwindow .doclist-bar-bottom .yui-pg-container span,
+.alf-fullscreen .doclist-bar-bottom .yui-pg-container span,
+.alf-fullwindow .doclist-bar-bottom .yui-pg-container span.yui-pg-page.yui-pg-current-page,
+.alf-fullscreen .doclist-bar-bottom .yui-pg-container span.yui-pg-page.yui-pg-current-page
+{
+    color: #595959;
 }

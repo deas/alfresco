@@ -464,18 +464,38 @@
                   }
                   else if (me.memberOfSites[shortName] == "PENDING")
                   {
-                     // Leave site action
-                     button.set("label", me.msg("site-finder.cancel-request"));
-                     button.set("onclick",
+                     var skip = false;
+                     for (i = 0; i < me.options.inviteData.length; i++)
                      {
-                        fn: me.doCancelRequest,
-                        obj:
+                        if (me.options.inviteData[i].siteId == shortName)
                         {
-                           shortName: shortName,
-                           title: title
-                        },
-                        scope: me
-                     });
+                           if (me.options.inviteData[i].type != "MODERATED")
+                           {
+                              skip = true;
+                           }
+                           break;
+                        }
+                     }
+                     
+                     if (!skip)
+                     {
+                        // Leave site action
+                        button.set("label", me.msg("site-finder.cancel-request"));
+                        button.set("onclick",
+                        {
+                           fn: me.doCancelRequest,
+                           obj:
+                           {
+                              shortName: shortName,
+                              title: title
+                           },
+                           scope: me
+                        });
+                     }
+                     else
+                     {
+                        elCell.innerHTML = '<div></div>';
+                     }
                   }
                   else
                   {

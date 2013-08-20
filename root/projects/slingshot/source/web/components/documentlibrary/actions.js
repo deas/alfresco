@@ -121,17 +121,17 @@
               "pagelink": '<div class="{id}"><a title="{label}" class="simple-link" href="{pageUrl}" ' + iconStyle + '><span>{label}</span></a></div>',
               "javascript": '<div class="{id}" id="{jsfunction}"><a title="{label}" class="action-link" href="#"' + iconStyle + '><span>{label}</span></a></div>'
            };
-         
+
          // Store quick look-up for client-side actions
          p_record.actionParams[p_action.id] = p_action.params;
-         
+
          var markupParams =
          {
             "id": p_action.id,
             "icon": p_action.icon,
             "label": $html(Alfresco.util.substituteDotNotation(this.msg(p_action.label), p_record))
          };
-         
+
          // Parameter substitution for each action type
          if (p_action.type === "link")
          {
@@ -181,7 +181,7 @@
                Alfresco.logger.warn("Action configuration error: Missing 'function' parameter for actionId: ", p_action.id);
             }
          }
-         
+
          return YAHOO.lang.substitute(actionTypeMarkup[p_action.type], markupParams);
       },
 
@@ -225,7 +225,7 @@
                explorerViewUrl: $combine(this.options.repositoryUrl, "/n/showSpaceDetails/", nodeRefUri) + "\" target=\"_blank",
                cloudViewUrl: $combine(Alfresco.constants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" +strNodeRef)
             };
-         
+
          actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
 
          return actionUrls;
@@ -352,7 +352,7 @@
 
          editDetails.setOptions(
          {
-            width: "40em",
+            width: "auto",
             templateUrl: templateUrl,
             actionUrl: null,
             destroyOnHide: true,
@@ -395,9 +395,9 @@
                            {
                               text: this.msg("message.details.success")
                            });
-                           
-                           // Refresh the document list... 
-                           this._updateDocList.call(this); 
+
+                           // Refresh the document list...
+                           this._updateDocList.call(this);
                         },
                         scope: this
                      },
@@ -420,9 +420,14 @@
             {
                fn: function dLA_onActionDetails_failure(response)
                {
+                  var failureMsg = this.msg("message.details.failure");
+                  if (response.json.message.indexOf("Failed to persist field 'prop_cm_name'") !== -1)
+                  {
+                     failureMsg = this.msg("message.details.failure.name");
+                  }
                   Alfresco.util.PopupManager.displayMessage(
                   {
-                     text: this.msg("message.details.failure")
+                     text: failureMsg
                   });
                },
                scope: this
@@ -442,7 +447,7 @@
             path = record.location.path,
             file = jsNode.isLink ? jsNode.linkedNode.properties.name : record.displayName,
             recordSiteName = $isValueSet(record.location.site) ? record.location.site.name : null;
-         
+
          if ($isValueSet(this.options.siteId) && recordSiteName !== this.options.siteId)
          {
             window.location = $siteURL((recordSiteName === null ? "repository" : "documentlibrary") + "?file=" + encodeURIComponent(file) + "&path=" + encodeURIComponent(path),
@@ -453,7 +458,7 @@
          else
          {
             this.options.highlightFile = file;
-            
+
             // Change active filter to path
             YAHOO.Bubbling.fire("changeFilter",
             {
@@ -489,7 +494,7 @@
                displayPromptText += this.msg("actions.synced." + content + ".delete", displayName);
             }
          }
-         
+
          Alfresco.util.PopupManager.displayPrompt(
          {
             title: this.msg("actions." + content + ".delete"),
@@ -605,7 +610,7 @@
          "application/vnd.ms-word.document.macroenabled.12": "Word.Document",
          "application/vnd.openxmlformats-officedocument.wordprocessingml.template": "Word.Document",
          "application/vnd.ms-word.template.macroenabled.12": "Word.Document",
-         
+
          "application/vnd.ms-powerpoint": "PowerPoint.Slide",
          "application/vnd.openxmlformats-officedocument.presentationml.presentation": "PowerPoint.Slide",
          "application/vnd.ms-powerpoint.presentation.macroenabled.12": "PowerPoint.Slide",
@@ -635,7 +640,20 @@
        */
       onActionEditOnline: function dlA_onActionEditOnline(record)
       {
-         if (this._launchOnlineEditor(record))
+         //MNT-8609 Edit online fails for files which URL is too long
+         if (!$isValueSet(record.onlineEditUrl))
+         {
+            record.onlineEditUrl = Alfresco.util.onlineEditUrl(this.doclistMetadata.custom.vtiServer, record.location);
+         }
+
+         if (record.onlineEditUrl.length > 260)
+         {
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: this.msg("message.edit-online.office.path.failure")
+            });
+         }
+         else if (this._launchOnlineEditor(record))
          {
             YAHOO.Bubbling.fire("metadataRefresh");
          }
@@ -644,7 +662,7 @@
             Alfresco.util.PopupManager.displayMessage(
             {
                text: this.msg("message.edit-online.office.failure")
-            });		 
+            });
          }
       },
 
@@ -671,7 +689,7 @@
                docm: "application/vnd.ms-word.document.macroenabled.12",
                dotx: "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
                dotm: "application/vnd.ms-word.template.macroenabled.12",
-               
+
                ppt: "application/vnd.ms-powerpoint",
                pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
                pptm: "application/vnd.ms-powerpoint.presentation.macroenabled.12",
@@ -691,6 +709,15 @@
                xlam: "application/vnd.ms-excel.addin.macroenabled.12",
                xlsb: "application/vnd.ms-excel.sheet.binary.macroenabled.12"
             };
+
+         if (!Alfresco.util.validLocationForOnlineEdit(loc))
+         {
+            Alfresco.util.PopupManager.displayPrompt(
+            {
+               text: this.msg("actions.editOnline.invalid", loc.file)
+            });
+            return true;
+         }
 
          // Try to resolve the record to an application ProgID; by mimetype first, then file extension.
          if (this.onlineEditMimetypes.hasOwnProperty(mimetype))
@@ -726,7 +753,7 @@
             {
                return this._launchOnlineEditorIE(controlProgID, record, appProgID);
             }
-            
+
             if (Alfresco.util.isSharePointPluginInstalled())
             {
                return this._launchOnlineEditorPlugin(record, appProgID);
@@ -812,16 +839,16 @@
             pluginNode.style.setProperty("visibility", "hidden", "");
             document.body.appendChild(pluginNode);
             plugin = document.getElementById("SharePointPlugin");
-            
+
             if (!plugin)
             {
                return false;
             }
          }
-         
+
          try
          {
-            if (appProgID === "Visio.Drawing") 
+            if (appProgID === "Visio.Drawing")
                throw ("Visio should be invoked using activeXControl.EditDocument2.");
             return plugin.EditDocument3(window, record.onlineEditUrl, true, appProgID);
          }
@@ -909,6 +936,10 @@
             }
          }
 
+         //Deactivate action
+         var ownerTitle = owner.title;
+         owner.title = owner.title + "_deactivated";
+
          // Prepare genericAction config
          var config =
          {
@@ -922,7 +953,12 @@
             },
             failure:
             {
-               message: this.msg(params.failureMessage, displayName)
+               message: this.msg(params.failureMessage, displayName),
+               fn: function showAction()
+               {
+                  owner.title = ownerTitle;
+               },
+               scope: this
             },
             webscript:
             {
@@ -1212,6 +1248,11 @@
                }
             }
          });
+
+         YAHOO.Bubbling.fire("editingCanceled",
+         {
+            record: record
+         });
       },
 
       /**
@@ -1261,14 +1302,22 @@
             this.modules.copyMoveTo = new Alfresco.module.DoclibCopyMoveTo(this.id + "-copyMoveTo");
          }
 
+         var DLGF = Alfresco.module.DoclibGlobalFolder;
+
          var allowedViewModes =
          [
-            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE
+            DLGF.VIEW_MODE_RECENT_SITES,
+            DLGF.VIEW_MODE_FAVOURITE_SITES,
+            DLGF.VIEW_MODE_SITE,
+            DLGF.VIEW_MODE_SHARED
          ];
+
          if (this.options.repositoryBrowsing === true)
          {
-            allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME);
+            allowedViewModes.push(DLGF.VIEW_MODE_REPOSITORY);
          }
+
+         allowedViewModes.push(DLGF.VIEW_MODE_USERHOME)
 
          this.modules.copyMoveTo.setOptions(
          {
@@ -1450,7 +1499,7 @@
 
       /**
        * Social Publishing
-       * 
+       *
        * @method onActionPublish
        * @param record {object} Object literal representing the file or folder to be actioned
        */
@@ -1749,7 +1798,7 @@
          }
          return memberNodeRefs;
       },
-      
+
       /**
        * Triggered when the Cloud Sync Failed Icon is clicked
        * Shows the status and location in cloud.
@@ -1762,7 +1811,7 @@
       {
          this.onCloudSyncIndicatorAction(record, target);
       },
-      
+
       /**
        * Triggered when the Cloud Indirect Sync Icon is clicked
        * Shows the status and location in cloud.
@@ -1787,23 +1836,23 @@
        * @param record {object} Object literal representing the folder to be actioned
        */
       onActionFolderDownload: function dlA_onActionFolderDownload(record) {
-         
+
          var downloadDialog = Alfresco.getArchiveAndDownloadInstance(),
              config = { nodesToArchive: [{"nodeRef": record.nodeRef}],
                         archiveName: record.fileName };
          downloadDialog.show(config);
       },
-      
+
       /**
        * Triggers the archiving and download of the currently selected documents/folders.
-       * 
+       *
        * @method onActionDownload
        * @param record {array} The list of selected records.
        */
       onActionDownload: function dla_onActionDownload(record) {
          var downloadDialog = Alfresco.getArchiveAndDownloadInstance(),
              config = { nodesToArchive: [] };
-         
+
          if (record.length == 1)
          {
             config.nodesToArchive.push({"nodeRef": record[0].nodeRef});

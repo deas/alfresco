@@ -18,7 +18,7 @@
  */
 package org.alfresco.util;
 
-import java.util.Arrays;
+import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
@@ -28,13 +28,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 public class WebApplicationContextLoader
 {
 	private static ConfigurableApplicationContext instance;
-	private static String[] usedConfiguration;
 	private static boolean useLazyLoading = false;
 	private static boolean noAutoStart = false;
 
@@ -49,18 +47,6 @@ public class WebApplicationContextLoader
 	 */
 	public synchronized static ConfigurableApplicationContext getApplicationContext(ServletContext servletContext, String[] configLocations)
 	{
-		if (configLocations == null)
-		{
-			throw new IllegalArgumentException("configLocations argument is mandatory.");
-		}
-		if (usedConfiguration != null && Arrays.deepEquals(configLocations, usedConfiguration))
-		{
-			// The configuration was used to create the current context
-			return instance;
-		}
-		// The config has changed so close the current context (if any)
-		closeApplicationContext();
-
 		AbstractApplicationContext ctx = (AbstractApplicationContext)BaseApplicationContextHelper.getApplicationContext(configLocations);
 		
 		CmisServiceFactory factory = (CmisServiceFactory)ctx.getBean("CMISServiceFactory");
@@ -72,29 +58,23 @@ public class WebApplicationContextLoader
 		gwac.setServletContext(servletContext);
 		gwac.refresh();
 
-		usedConfiguration = configLocations;
-
 		return gwac;
-		
-//		instance = new MyWebApplicationContext(servletContext, ctx);
-
-//		return instance;
 	}
 
-	/**
-	 * Closes and releases the application context.  On the next call to
-	 * {@link #getApplicationContext()}, a new context will be given.
-	 */
-	public static synchronized void closeApplicationContext()
+	public synchronized static ConfigurableApplicationContext getApplicationContext(ServletContext servletContext, final String[] configLocations,
+			final String[] classLocations) throws IOException
 	{
-		if (instance == null)
-		{
-			// Nothing to do
-			return;
-		}
-		instance.close();
-		instance = null;
-		usedConfiguration = null;
+		final AbstractApplicationContext ctx = (AbstractApplicationContext)BaseApplicationContextHelper.getApplicationContext(configLocations, classLocations);
+		DefaultListableBeanFactory dlbf = new DefaultListableBeanFactory(ctx.getBeanFactory());
+		GenericWebApplicationContext gwac = new GenericWebApplicationContext(dlbf);
+		CmisServiceFactory factory = (CmisServiceFactory)ctx.getBean("CMISServiceFactory");
+
+		servletContext.setAttribute(GenericWebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, gwac);
+        servletContext.setAttribute(CmisRepositoryContextListener.SERVICES_FACTORY, factory);
+		gwac.setServletContext(servletContext);
+		gwac.refresh();
+
+		return gwac;
 	}
 
 	/**
@@ -146,66 +126,11 @@ public class WebApplicationContextLoader
 		return (instance != null);
 	}
 
-	/**
-	 * A wrapper around {@link ClassPathXmlApplicationContext} which allows us
-	 * to enable lazy loading or prevent Subsystem autostart as requested.
-	 */
-//	protected static class VariableFeatureClassPathXmlApplicationContext extends ClassPathXmlApplicationContext
-//	{
-//		protected VariableFeatureClassPathXmlApplicationContext(String[] configLocations) throws BeansException
-//		{
-//			super(configLocations);
-//		}
-//
-//		protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader)
-//		{
-//			super.initBeanDefinitionReader(reader);
-//
-//			if (useLazyLoading)
-//			{
-//				LazyClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
-//			}
-//			if (noAutoStart)
-//			{
-//				NoAutoStartClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
-//			}
-//		}
-//	}
-
-	// 
-	protected static class WebApplicationContext extends GenericWebApplicationContext //VariableFeatureClassPathXmlApplicationContext implements WebApplicationContext
+	protected static class WebApplicationContext extends GenericWebApplicationContext
 	{
-//		private ServletContext servletContext;
-
-//		protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException
-//		{
-//
-//		}
-
 		protected WebApplicationContext(ServletContext servletContext, AbstractApplicationContext ctx) throws BeansException
 		{
 			super((DefaultListableBeanFactory)ctx.getBeanFactory(), servletContext);
-//			this.servletContext = servletContext;
 		}
-
-//        protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader)
-//        {
-//            super.initBeanDefinitionReader(reader);
-//
-//            if (useLazyLoading)
-//            {
-//                LazyClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
-//            }
-//            if (noAutoStart)
-//            {
-//                NoAutoStartClassPathXmlApplicationContext.postInitBeanDefinitionReader(reader);
-//            }
-//        }
-
-//		@Override
-//		public ServletContext getServletContext()
-//		{
-//			return servletContext;
-//		}
 	}
 }

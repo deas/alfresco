@@ -68,6 +68,18 @@ public interface DataTypeDefinition
     public QName getName();
     
     /**
+     * @deprecated The problem identified in MNT-413 will still exist
+     * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getTitle(org.alfresco.service.cmr.i18n.MessageLookup)
+     */
+    public String getTitle();
+
+    /**
+     * @deprecated The problem identified in MNT-413 will still exist
+     * @see org.alfresco.service.cmr.dictionary.DataTypeDefinition#getDescription(org.alfresco.service.cmr.i18n.MessageLookup)
+     */
+    public String getDescription();
+    
+    /**
      * @return the human-readable class title 
      */
     public String getTitle(MessageLookup messageLookup);

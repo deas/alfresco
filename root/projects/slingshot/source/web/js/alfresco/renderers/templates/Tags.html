@@ -1,0 +1,12 @@
+<span class="alfresco_renderers_InlineEditProperty ${renderedValueClass}" data-dojo-attach-event="onmouseover:showEditIcon,onmouseout:hideEditIcon">
+   <span class="editIcon" data-dojo-attach-point="editIconNode" data-dojo-attach-event="ondijitclick:onEditClick">&nbsp;</span>
+   <span data-dojo-attach-point="renderedValueNode" data-dojo-attach-event="onkeypress:onKeyPress" class="${renderedValueClass}" tabindex="0">${anchorOpen}${renderedValuePrefix}${renderedValue}${renderedValueSuffix}${anchorClose}</span>
+   <span class="hidden" data-dojo-attach-point="editNode">
+      <span class="editNode" data-dojo-attach-event="onkeypress:onValueEntryKeyPress">
+         <span data-dojo-attach-point="editTagsNode"></span>
+         <input data-dojo-attach-point="editInputNode" type="text" value=""></input>
+      </span>
+      <span class="action" data-dojo-attach-event="ondijitclick:onSave" tabindex="0">Save</span>
+      <span class="action" data-dojo-attach-event="ondijitclick:onCancel" tabindex="0">Cancel</span>
+   </span>
+</span>

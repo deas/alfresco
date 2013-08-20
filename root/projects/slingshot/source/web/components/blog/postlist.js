@@ -352,7 +352,13 @@
             var data = oRecord.getData();
             var postViewUrl = Alfresco.util.blog.generateBlogPostViewUrl(me.options.siteId, me.options.containerId, data.name);
             var statusLabel = Alfresco.util.blog.generatePostStatusLabel(me, data);
-            var authorLink = Alfresco.util.people.generateUserLink(data.author);
+            //ALF-18527
+            var authorLink = data.author.username;
+            // firstName is a mandatory field for user
+            if (typeof data.author.firstName != "undefined")
+            {
+               authorLink = Alfresco.util.people.generateUserLink(data.author);
+            }
             
             var html = "";
             // detailed view

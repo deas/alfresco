@@ -33,8 +33,7 @@
 {
    border: 1px solid #c0c0c0;
    height: 24em;
-   overflow-x: hidden;
-   overflow-y: auto;
+   overflow: auto;
    margin: 0 0.5em;
 }
 

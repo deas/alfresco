@@ -1,7 +1,13 @@
 <webscript>
-   <shortname>Vti Server Details</shortname>
+   <shortname>Sharepoint Module (Vti) Server Details</shortname>
    <description>
-      This script returns Vti Server parameters for use elsewhere (e.g. Share DocLib)
+      This script returns Sharepoint Module (Vti) Server parameters for use elsewhere (e.g. Share DocLib)
+      
+      JSON properties returned:
+            port
+            host
+            protocol
+            contextPath   
    </description>
    <url>/api/vti/serverDetails</url>
    <format default="json">extension</format>

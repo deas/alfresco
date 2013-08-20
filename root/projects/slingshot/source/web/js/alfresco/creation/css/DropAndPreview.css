@@ -1,0 +1,11 @@
+.alfresco-creation-DropAndPreview .previewPanel {
+   border: 3px dashed #EEE;
+   border-radius: 5px;
+   min-height: 50px;
+   margin: 5px;
+   padding: 5px;
+}
+
+.alfresco-creation-DropAndPreview .previewPanel.containsItems {
+   border: none;
+}

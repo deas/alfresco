@@ -43,6 +43,15 @@
             <dependencyGroup>documentlibrary</dependencyGroup>
          </properties>
       </component>
+      
+      <component>
+         <region-id>documentlist_v2</region-id>
+         <url>/components/documentlibrary/documentlist_v2</url>
+         <properties>
+            <pagination>true</pagination>
+            <dependencyGroup>documentlibrary</dependencyGroup>
+         </properties>
+      </component>
 
       <!-- Filter -->
       <component>

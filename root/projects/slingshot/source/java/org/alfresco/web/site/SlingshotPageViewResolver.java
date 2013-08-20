@@ -64,6 +64,12 @@ public class SlingshotPageViewResolver extends PageViewResolver
                 }
             }
         }
+        // see if a page has been set-up already - @see UserDashboardInterceptor
+        Page page = ThreadLocalRequestContext.getRequestContext().getPage();
+        if (page != null)
+        {
+            return page;
+        }
         return super.lookupPage(pageId);
     }
     

@@ -5,7 +5,7 @@ main();
 function defineWidgets()
 {
    // Widget instantiation metadata...
-   
+   model.target = args.target || "_self";
    var rssFeed = {
       id : "RssFeed",
       name : "Alfresco.dashlet.RssFeed",
@@ -13,6 +13,7 @@ function defineWidgets()
       options : {
          componentId : instance.object.id,
          feedURL : model.uri,
+         target: model.target,
          limit : (!isNaN(model.limit) && model.limit != 100) ? model.limit : "all",
          titleElSuffix : "-title",
          targetElSuffix : "-scrollableList"
@@ -39,7 +40,14 @@ function defineWidgets()
       },
       tooltip: msg.get("dashlet.help.tooltip")
    });
-   
+
+   var dashletResizer = {
+      id : "DashletResizer",
+      name : "Alfresco.widget.DashletResizer",
+      initArgs : ["\"" + args.htmlid + "\"", "\"" + instance.object.id + "\""],
+      useMessages: false
+   };
+
    var dashletTitleBarActions = {
       id : "DashletTitleBarActions",
       name : "Alfresco.widget.DashletTitleBarActions",
@@ -48,7 +56,7 @@ function defineWidgets()
          actions : actions
       }
    };
-   model.widgets = [rssFeed, dashletTitleBarActions];
+   model.widgets = [rssFeed, dashletResizer, dashletTitleBarActions];
 }
 
 defineWidgets();

@@ -1,4 +1,4 @@
-﻿msgid "${product_fullname} OpenOffice Service"
+﻿msgid "${product_fullname} LibreOffice Service"
 msgstr "Служба ${product_fullname} LibreOffice"
 
 msgid "${product_fullname} Service"
@@ -172,6 +172,9 @@ msgstr "Тип установки"
 msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
 msgstr "Слишком длинный путь к каталогу установки. Максимально допустимое число символов - ${base_installdir_max_characters}."
 
+msgid "Installation folder"
+msgstr "Директория для установки"
+
 msgid "Installation Folder"
 msgstr "Директория для установки"
 
@@ -181,8 +184,8 @@ msgstr "В имени каталога для установки не может
 msgid "Installing Alfresco Module Packages (AMPs)"
 msgstr "Установка пакетов модулей Alfresco (AMP)"
 
-msgid "Installing OpenOffice as a Windows service with name ${OpenOfficeUniqueServiceName}"
-msgstr "Установка LibreOffice в качестве службы Windows с именем ${OpenOfficeUniqueServiceName}"
+msgid "Installing LibreOffice as a Windows service with name ${LibreOfficeUniqueServiceName}"
+msgstr "Установка LibreOffice в качестве службы Windows с именем ${LibreOfficeUniqueServiceName}"
 
 msgid "Installing PostgreSQL as a Windows service with name ${postgres_unique_service_name}"
 msgstr "Установка PostgreSQL в качестве службы Windows с именем ${postgres_unique_service_name}"
@@ -241,19 +244,19 @@ msgstr "Версия установленного PostgreSQL не 8.1.4. Рек�
 msgid "Open SSL Component"
 msgstr "Компонент Open SSL"
 
-msgid "OpenOffice"
+msgid "LibreOffice"
 msgstr "LibreOffice"
 
-msgid "OpenOffice Server Port"
+msgid "LibreOffice Server Port"
 msgstr "Порт сервера LibreOffice"
 
-msgid "OpenOffice Server port"
+msgid "LibreOffice Server port"
 msgstr "Порт сервера LibreOffice"
 
-msgid "OpenOffice installation directory"
+msgid "LibreOffice installation directory"
 msgstr "Каталог установки LibreOffice"
 
-msgid "OpenOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
+msgid "LibreOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
 msgstr "LibreOffice.org - многоплатформенный пакет офисного программного обеспечения с открытым кодом для обработки текстов, электронных таблиц, презентаций, графики и баз данных, требуемых для преобразования документов."
 
 msgid "Parameters"
@@ -292,7 +295,7 @@ msgstr "Введите параметры конфигурации Tomcat, ко�
 msgid "Please enter the port of your database."
 msgstr "Введите порт своей базы данных."
 
-msgid "Please enter the port that the Openoffice Server will listen to by default."
+msgid "Please enter the port that the Libreoffice Server will listen to by default."
 msgstr "Введите порт, который по умолчанию будет прослушиваться сервером LibreOffice."
 
 msgid "Please enter your database 'postgres' user password."
@@ -318,6 +321,9 @@ msgstr "Укажите каталог, в котором находится Tomc
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Укажите каталог, в котором находятся двоичные файлы psql, pg_restore и vacuumdb"
+
+msgid "Please, choose a folder to install ${product_fullname}"
+msgstr "Выберите папку для установки ${product_fullname}"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Выберите папку для установки ${product_fullname}"
@@ -454,7 +460,7 @@ msgstr "Запустить виртуальный сервер"
 msgid "Start tomcat service"
 msgstr "Запустить службу tomcat"
 
-msgid "Starting OpenOffice..."
+msgid "Starting LibreOffice..."
 msgstr "Запуск LibreOffice..."
 
 msgid "Starting servers ..."
@@ -520,17 +526,17 @@ msgstr "Недостаточно свободного пространства �
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
 msgstr "Это установщик для 64-разрядной Windows.  Загрузите версию для 32-разрядной Windows."
 
-msgid "This release was packaged to run on Java SE 7 or later. Please install a compatible Java version and try again."
-msgstr "Этот выпуск был помещен в пакет для выполнения в среде Java SE версии 7 или более поздней. Установите совместимую версию Java и повторите попытку."
+msgid "This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again."
+msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии ${java_min_version} или более поздней. Установите совместимую версию Java и повторите попытку."
 
-msgid "This release was packaged to run on Java SE 7. Please install a compatible Java version and try again."
-msgstr "Этот выпуск был помещен в пакет для выполнения в среде Java SE версии 7. Установите совместимую версию Java и повторите попытку."
+msgid "This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again."
+msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии ${java_min_version}. Установите совместимую версию Java и повторите попытку."
 
-msgid "This release was packaged to run on J2SE 6.0 or later. Please install a compatible Java version and try again."
-msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 6.0 или более поздней. Установите совместимую версию Java и повторите попытку."
+msgid "This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again."
+msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 7.0 или более поздней. Установите совместимую версию Java и повторите попытку."
 
-msgid "This release was packaged to run on J2SE 6.0. Please install a compatible Java version and try again."
-msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 6.0. Установите совместимую версию Java и повторите попытку."
+msgid "This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again."
+msgstr "Этот выпуск был помещен в пакет для выполнения в среде J2SE версии 7.0. Установите совместимую версию Java и повторите попытку."
 
 msgid "Tomcat 5.5 Component"
 msgstr "Компонент Tomcat 5.5"
@@ -640,8 +646,8 @@ msgstr "Файлы War"
 msgid "War files"
 msgstr "Файлы War"
 
-msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK 1.5 or later."
-msgstr "Нам не удалось найти подходящую установку JDK в вашей системе. Для ${product_fullname} требуется JDK 1.5 или более поздняя версия."
+msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
+msgstr "Нам не удалось найти подходящую установку JDK в вашей системе. Для ${product_fullname} требуется JDK ${java_min_version} или более поздняя версия."
 
 msgid "Web Project Management (AVM)"
 msgstr "Управление веб-проектами (AVM)"

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="org/alfresco/jlan/app/|org/alfresco/jlan/server/filesys/db/derby/|org/alfresco/jlan/server/filesys/db/mysql/|org/alfresco/jlan/server/filesys/db/oracle/|org/alfresco/jlan/smb/util/" kind="src" path="source/java"/>
+	<classpathentry kind="src" path="source/test-java"/>
 	<classpathentry kind="lib" path="libs/cryptix-jce-provider.jar"/>
 	<classpathentry kind="lib" path="service/wrapper.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry kind="lib" path="libs/postgresql-9.1-901.jdbc4.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-1.9.4.6.jar" sourcepath="/3rd Party/src/hazelcast-1.9.4.6-src.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-2.4.jar" sourcepath="/3rd Party/src/hazelcast-2.4-src.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -1,6 +1,6 @@
 <component>
     <name>tomcatjava</name>
-    <description>Tomcat modifications due to java</description>
+    <description>//Tomcat modifications due to java</description>
     <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>

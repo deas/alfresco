@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -53,9 +53,19 @@ public class PropertyDefinitionWrapper implements PropertyDefinition
         return delegate.getName();
     }
 
+    public String getTitle()
+    {
+        return delegate.getTitle();
+    }
+
     public String getTitle(MessageLookup messageLookup)
     {
         return delegate.getTitle(messageLookup);
+    }
+
+    public String getDescription()
+    {
+        return delegate.getDescription();
     }
 
     public String getDescription(MessageLookup messageLookup)

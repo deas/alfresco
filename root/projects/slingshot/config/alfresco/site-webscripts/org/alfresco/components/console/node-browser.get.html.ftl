@@ -41,7 +41,7 @@
             <div class="yui-g separator">
                <div class="search-text">
                   <!-- Search field -->
-                  <input type="text" id="${el}-search-text" name="-" value="" />
+                  <textarea id="${el}-search-text" name="-"></textarea>
                   <!-- Query language menu -->
                   <input type="button" id="${el}-lang-menu-button" name="lang-button" />
                   <select id="${el}-lang-menu-select" name="lang-select">
@@ -53,6 +53,8 @@
                       <option>fts-alfresco</option>
                       <option>cmis-strict</option>
                       <option>cmis-alfresco</option>
+                      <option>db-afts</option>
+                      <option>db-cmis</option>
                   </select>
                   <!-- Search button -->
                   <span class="yui-button yui-push-button" id="${el}-search-button">
@@ -73,8 +75,12 @@
                <div class="yui-u first">
                   <div class="title">${msg("label.title-view")}: <span id="${el}-view-title"></span></div>
                </div>
-               <div class="yui-u">
-                  <!-- Edit/Delete buttons go here -->
+               <div class="yui-u align-right">
+                  <div class="goback-button">
+                     <span class="yui-button yui-push-button" id="${el}-goback-button-top">
+                        <span class="first-child"><button>${msg("button.searchback")}</button></span>
+                     </span>
+                  </div>
                </div>
             </div>
             

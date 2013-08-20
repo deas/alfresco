@@ -198,7 +198,21 @@
       {
          var formEl = Dom.get(this.id + "-workflowFormContainer");
          Dom.removeClass(formEl, "hidden");                  
-      }
+      },
+      
+      onFormSubmitFailure: function StartWorkflow_onFormSubmitFailure(response)
+      {
+         var message = (response.json && response.json.message ? response.json.message : this.msg(this.options.failureMessageKey));
+         
+         // Since it's a WorkflowException (expected), no need to show the Exception-type to the user, only
+         // the message and error-number will do.
+         message = message.replace("org.alfresco.service.cmr.workflow.WorkflowException:", "");
+         Alfresco.util.PopupManager.displayPrompt(
+               {
+                  title: this.msg(this.options.failureMessageKey),
+                  text: (message)
+               });
+      },
 
    });
 

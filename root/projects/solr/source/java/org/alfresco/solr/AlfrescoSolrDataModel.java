@@ -39,7 +39,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
-import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.opencmis.dictionary.QNameFilter;
 import org.alfresco.opencmis.search.CMISQueryOptions;
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
@@ -48,7 +48,6 @@ import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
-import org.alfresco.repo.dictionary.DictionaryNamespaceComponent;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
@@ -83,6 +82,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.AlfrescoSolrDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
@@ -90,6 +90,7 @@ import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -106,6 +107,8 @@ import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.Sorting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -134,7 +137,7 @@ public class AlfrescoSolrDataModel
     private DictionaryDAOImpl dictionaryDAO;
 
     private  Map<String,DictionaryComponent> dictionaryServices;
-    private  Map<String,CMISAbstractDictionaryService> cmisDictionaryServices;
+    private  Map<DictionaryKey,CMISAbstractDictionaryService> cmisDictionaryServices;
 
     private boolean storeAll = false;
 
@@ -155,12 +158,12 @@ public class AlfrescoSolrDataModel
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ANCESTOR, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCONTAINER, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISCATEGORY, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_QNAME, Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, Store.YES, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_QNAME, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISROOT, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, Store.YES, Index.ANALYZED, TermVector.NO, false);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ISNODE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false); // Must store
-        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, Store.NO, Index.ANALYZED, TermVector.NO, true);
+        addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_TYPE, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
         addNonDictionaryField(AbstractLuceneQueryParser.FIELD_ASPECT, Store.YES, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
@@ -192,14 +195,14 @@ public class AlfrescoSolrDataModel
         addAdditionalContentField(".__", Store.NO, Index.ANALYZED, TermVector.NO, false);
 
         addAdditionalTextField(".__", Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addAdditionalTextField(".u", Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addAdditionalTextField(".__.u", Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addAdditionalTextField(".sort", Store.NO, Index.ANALYZED, TermVector.NO, false);
+        addAdditionalTextField(".u", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addAdditionalTextField(".__.u", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addAdditionalTextField(".sort", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
 
         addAdditionalMlTextField(".__", Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addAdditionalMlTextField(".u", Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addAdditionalMlTextField(".__.u", Store.NO, Index.ANALYZED, TermVector.NO, true);
-        addAdditionalMlTextField(".sort", Store.NO, Index.ANALYZED, TermVector.NO, false);
+        addAdditionalMlTextField(".u", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addAdditionalMlTextField(".__.u", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, true);
+        addAdditionalMlTextField(".sort", Store.NO, Index.ANALYZED_NO_NORMS, TermVector.NO, false);
     }
 
     private static void addNonDictionaryField(String name, Store store, Index index, TermVector termVector, boolean multiValued)
@@ -278,20 +281,47 @@ public class AlfrescoSolrDataModel
         dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
 
-        dictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaryServices(dictionaryDAO);
+        QNameFilter qnameFilter = getQNameFilter();
+        dictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaryServices(qnameFilter, dictionaryDAO);
         DictionaryComponent dictionaryComponent = getDictionaryService(CMISStrictDictionaryService.DEFAULT);
         dictionaryComponent.setMessageLookup(new StaticMessageLookup());
 
-        // cmis dictionary
-        CMISMapping cmisMapping = new CMISMapping();
-        DictionaryNamespaceComponent namespaceService = new DictionaryNamespaceComponent();
-        namespaceService.setNamespaceDAO(namespaceDAO);
-        cmisMapping.setNamespaceService(namespaceService);
-        cmisMapping.setDictionaryService(dictionaryComponent);
-        cmisMapping.afterPropertiesSet();
+        cmisDictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaries(qnameFilter, namespaceDAO, dictionaryComponent, dictionaryDAO);
 
-        cmisDictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaries(cmisMapping, dictionaryComponent, dictionaryDAO);
+    }
 
+    private QNameFilter getQNameFilter()
+    {
+    	QNameFilter qnameFilter = null;
+    	FileSystemXmlApplicationContext ctx = null;
+
+		File resourceDirectory = getResourceDirectory();
+		File filterContext = new File(resourceDirectory, "alfresco/model/opencmis-qnamefilter-context.xml");
+
+    	try
+    	{
+			ctx = new FileSystemXmlApplicationContext(new String[] { "file:" + filterContext.getAbsolutePath() }, false);
+			ctx.setClassLoader(this.getClass().getClassLoader());
+			ctx.refresh();
+			qnameFilter = (QNameFilter)ctx.getBean("cmisTypeExclusions");
+    		if(qnameFilter == null)
+    		{
+    			log.warn("Unable to find type filter at " + filterContext.getAbsolutePath() + ", no type filtering");
+    		}
+    	}
+		catch(BeansException e)
+		{
+			log.warn("Unable to parse type filter at " + filterContext.getAbsolutePath() + ", no type filtering");
+		}
+		finally
+		{
+			if(ctx != null && ctx.getBeanFactory() != null && ctx.isActive())
+			{
+				ctx.close();
+			}
+		}
+
+		return qnameFilter;
     }
 
     /**
@@ -324,18 +354,20 @@ public class AlfrescoSolrDataModel
      * @param alternativeDictionary - can be null;
      * @return CMISDictionaryService
      */
-    public CMISDictionaryService getCMISDictionary(String alternativeDictionary)
+    public CMISDictionaryService getCMISDictionary(String alternativeDictionary, CmisVersion cmisVersion)
     {
         CMISDictionaryService cmisDictionary = null;
         
         if (alternativeDictionary != null && !alternativeDictionary.trim().isEmpty())
         {
-            cmisDictionary = cmisDictionaryServices.get(alternativeDictionary);
+        	DictionaryKey key = new DictionaryKey(cmisVersion, alternativeDictionary);
+            cmisDictionary = cmisDictionaryServices.get(key);
         }
         
         if (cmisDictionary == null)
         {
-            cmisDictionary = cmisDictionaryServices.get(CMISStrictDictionaryService.DEFAULT);
+        	DictionaryKey key = new DictionaryKey(cmisVersion, CMISStrictDictionaryService.DEFAULT);
+            cmisDictionary = cmisDictionaryServices.get(key);
         }
         return cmisDictionary;
     }
@@ -579,7 +611,22 @@ public class AlfrescoSolrDataModel
         PropertyDefinition propertyDefinition = getPropertyDefinition(field.getName());
         if (propertyDefinition != null)
         {
-            return false;
+          if(propertyDefinition.getDataType().getName().equals(DataTypeDefinition.CONTENT))
+          {
+              return false;
+          }
+          else  if(propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
+          {
+              return false;
+          }
+          else  if(propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+          {
+              return false;
+          }
+          else
+          {
+              return true;
+          }
         }
 
         NonDictionaryField nonDDField = nonDictionaryFields.get(field.getName());
@@ -1142,8 +1189,8 @@ public class AlfrescoSolrDataModel
         return contextAwareQuery;
     }
 
-    public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
-            throws ParseException
+    public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters,
+    		IndexReader indexReader, String alternativeDictionary, CmisVersion cmisVersion) throws ParseException
     {
         // convert search parameters to cmis query options
         // TODO: how to handle store ref
@@ -1159,9 +1206,9 @@ public class AlfrescoSolrDataModel
 
         // parse cmis syntax
         CapabilityJoin joinSupport = (mode == CMISQueryMode.CMS_STRICT) ? CapabilityJoin.NONE : CapabilityJoin.INNERONLY;
-        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, alternativeDictionary);
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, cmisVersion, alternativeDictionary);
         
-        CMISDictionaryService cmisDictionary = getCMISDictionary(alternativeDictionary);
+        CMISDictionaryService cmisDictionary = getCMISDictionary(alternativeDictionary, cmisVersion);
         
         CMISQueryParser parser = new CMISQueryParser(options, cmisDictionary, joinSupport);
         org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = parser.parse(new LuceneQueryModelFactory(), functionContext);
@@ -1184,23 +1231,23 @@ public class AlfrescoSolrDataModel
         return queryModelQuery;
     }
 
-    public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode, String alternativeDictionary)
+    public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode, CmisVersion cmisVersion, String alternativeDictionary)
     {
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
         CmisFunctionEvaluationContext functionContext = new CmisFunctionEvaluationContext();
-        functionContext.setCmisDictionaryService(getCMISDictionary(alternativeDictionary));
+        functionContext.setCmisDictionaryService(getCMISDictionary(alternativeDictionary, cmisVersion));
         functionContext.setValidScopes(validScopes);
         return functionContext;
     }
     
-    public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, String alternativeDictionary)
+    public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, CmisVersion cmisVersion, String alternativeDictionary)
             throws ParseException
     {
         SearchParameters searchParameters = searchParametersAndFilter.getFirst();
         Boolean isFilter = searchParametersAndFilter.getSecond();
         
         BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
-        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, alternativeDictionary);
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, cmisVersion, alternativeDictionary);
 
         Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
 
@@ -1661,5 +1708,9 @@ public class AlfrescoSolrDataModel
         return Collections.unmodifiableMap(modelErrors);
     }
     
-    
+    private File getResourceDirectory()
+    {
+        File f = new File(id, "alfrescoResources");
+        return f;
+    }   
 }

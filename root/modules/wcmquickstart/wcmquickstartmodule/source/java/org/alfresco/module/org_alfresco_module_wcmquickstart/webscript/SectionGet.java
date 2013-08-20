@@ -39,6 +39,7 @@ import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
+import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.Status;
@@ -61,6 +62,7 @@ public class SectionGet extends AbstractWebScript
     private SearchService searchService;
     private AssetSerializerFactory assetSerializerFactory;
     private SiteHelper siteHelper;
+    private NamespaceService namespaceService;
 
     public void setAssetSerializerFactory(AssetSerializerFactory assetSerializerFactory)
     {
@@ -80,6 +82,11 @@ public class SectionGet extends AbstractWebScript
     public void setSiteHelper(SiteHelper siteHelper)
     {
         this.siteHelper = siteHelper;
+    }
+
+    public void setNamespaceService(NamespaceService namespaceService)
+    {
+        this.namespaceService = namespaceService;
     }
 
     @Override
@@ -175,7 +182,7 @@ public class SectionGet extends AbstractWebScript
     private List<NodeRef> findDescendants(NodeRef siteId, NodeRef rootSectionId)
     {
         List<NodeRef> foundNodes = new ArrayList<NodeRef>(200);
-        String query = "+TYPE:\"" + WebSiteModel.TYPE_SECTION + "\" +@ws\\:ancestorSections:\"" + rootSectionId + "\"";
+        String query = "+PATH:\"" + nodeService.getPath(siteId).toPrefixString(namespaceService) + "//*\" +TYPE:\"" + WebSiteModel.TYPE_SECTION + "\" +@ws\\:ancestorSections:\"" + rootSectionId + "\"";
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.addStore(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         searchParameters.setLanguage(SearchService.LANGUAGE_LUCENE);

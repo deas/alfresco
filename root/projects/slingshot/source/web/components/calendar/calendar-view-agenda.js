@@ -81,6 +81,19 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
          html = this.msg("label.all-day")
       } else
       {
+         var startDate = new Date(data.startAt.iso8601.split('T')[0]),
+         endDate = new Date(data.endAt.iso8601.split('T')[0]),
+         displayDate = new Date(data.renderDate);
+         if (Alfresco.CalendarHelper.isSameDay(startDate, displayDate) && (startDate < endDate))
+         {
+            endDate.setHours(23,59,59,999);
+            end = formatDate(endDate.toISOString(), this.msg("date-format.shortTime"));
+         } else
+         if (Alfresco.CalendarHelper.isSameDay(endDate, displayDate) && (startDate < endDate))
+         {
+            startDate.setHours(0,0,1,1);
+            start = formatDate(startDate.toISOString(), this.msg("date-format.shortTime"));
+         }
          html = start + " - " + end
       }
       // write to DOM
@@ -172,28 +185,36 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       rel = this.getRel(data),
       template = '<a href="' + data.uri + '" class="{type}" title="{tooltip}" rel="' + rel + '"><span>{label}</span></a>',
       write = false,
+      isEdit = false,
+      isDelete = false,
       me = this;
       
       // build up cell content
       write = this.options.permitToCreateEvents;
+      isEdit = data.permissions.isEdit;
+      isDelete = data.permissions.isDelete;
 
       // NOTE: DOM order (Delete, Edit, Info) is reverse of display order (Info, Edit, Delete), due to right float.      
       if (write && !data.isoutlook) {
          // Delete
+         if (isDelete) {
          actions.push(YAHOO.lang.substitute(template, 
          {
             type:"deleteAction",
             label: me.msg("agenda.action.delete.label"),
             tooltip: me.msg("agenda.action.delete.tooltip")
          }));
+         }
          
          // Edit
+         if (isEdit) {
          actions.push(YAHOO.lang.substitute(template, 
          {
             type:"editAction",
             label: me.msg("agenda.action.edit.label"),
             tooltip: me.msg("agenda.action.edit.tooltip")
          }));
+      }
       }
 
       // Info
@@ -377,6 +398,11 @@ YAHOO.lang.augmentObject(Alfresco.CalendarView.prototype, {
       if (!data || !this.isValidDateForView(fromISO8601(date))) 
       {
          return false;
+      }
+
+      for (var i=0; i<data.events.length; i++)
+      {
+         data.events[i].renderDate = date;
       }
 
       // instantiate or update DataSource:

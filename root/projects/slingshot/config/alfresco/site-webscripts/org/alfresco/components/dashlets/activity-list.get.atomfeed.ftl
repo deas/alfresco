@@ -26,7 +26,7 @@
    <entry xmlns='http://www.w3.org/2005/Atom'>
       <#assign detail = msg(activity.type, activity.title?xml, activity.fullName?xml, activity.custom0, activity.custom1, siteTitle?xml, (activity.secondFullName!"")?xml)>
       <#if mode="user" && !activity.suppressSite><#assign detail=msg("in.site", detail, siteTitle?xml)></#if>
-      <title><![CDATA[${detail?xml}]]></title>
+      <title type="html"><![CDATA[${detail}]]></title>
       <link rel="alternate" type="text/html" href="${absurl(activity.itemPage)}" />
       <id>${activity.id}</id>
       <updated>${activity.date.isoDate}</updated>

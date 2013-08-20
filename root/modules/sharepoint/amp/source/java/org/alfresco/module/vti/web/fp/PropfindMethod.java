@@ -612,30 +612,21 @@ public class PropfindMethod extends WebDAVMethod
 
         LockInfo lockInfo = getNodeLockInfo(nodeInfo);
 
-        // Output the lock status response
-
-        lockInfo.getRWLock().readLock().lock();
-        try
+        // Output the lock status response    
+        if (lockInfo.isLocked())
         {
-            if (lockInfo.isLocked())
-            {
-                generateLockDiscoveryXML(xml, nodeInfo, lockInfo);
-            }
-            else
-            {
-                xml.startElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY, getDAVHelper().getNullAttributes());
-                xml.endElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY);
-                
-                if (isDir)
-                {
-                    xml.startElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK, getDAVHelper().getNullAttributes());
-                    xml.endElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK);
-                }
-            }            
+            generateLockDiscoveryXML(xml, nodeInfo, lockInfo);
         }
-        finally
-        {            
-            lockInfo.getRWLock().readLock().unlock();
+        else
+        {
+            xml.startElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY, getDAVHelper().getNullAttributes());
+            xml.endElement(WebDAV.DAV_NS, WebDAV.XML_LOCK_DISCOVERY, WebDAV.XML_NS_LOCK_DISCOVERY);
+            
+            if (isDir)
+            {
+                xml.startElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK, getDAVHelper().getNullAttributes());
+                xml.endElement(WebDAV.DAV_NS, WebDAV.XML_SUPPORTED_LOCK, WebDAV.XML_NS_SUPPORTED_LOCK);
+            }
         }
     }
     

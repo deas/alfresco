@@ -26,7 +26,7 @@ public class AccessControlServiceLocator extends org.apache.axis.client.Service 
     }
 
     // Use to get a proxy class for AccessControlService
-    private java.lang.String AccessControlService_address = "http://localhost:8080/alfresco/api/AccessControlService";
+    private java.lang.String AccessControlService_address = "http://localhost:8080/alfresco/soapapi/AccessControlService";
 
     public java.lang.String getAccessControlServiceAddress() {
         return AccessControlService_address;

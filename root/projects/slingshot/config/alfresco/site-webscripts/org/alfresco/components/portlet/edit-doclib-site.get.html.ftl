@@ -11,7 +11,7 @@
    <@createWidgets group="portlet"/>
    <@inlineScript group="portlet">
       YAHOO.lang.later(YAHOO.env.ua.ie > 0 ? 5000 : 2000, this, function() {
-         Alfresco.util.Anim.fadeOut("${id}-updated");
+         Alfresco.util.Anim.fadeOut("${args.htmlid?js_string}-updated");
       });
    </@>
 </@>

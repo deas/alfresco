@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/AlfMenuBar
+ * @extends module:alfresco/menus/AlfMenuBar
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBar"], 
         function(declare, AlfMenuBar) {
@@ -29,14 +35,18 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/AlfMenuBar.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBar.css"}],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance
+       * @type {{i18nFile: string}[]}
+       * @default [{i18nFile: "./i18n/AlfMenuBar.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfMenuBar.properties"}]
    });

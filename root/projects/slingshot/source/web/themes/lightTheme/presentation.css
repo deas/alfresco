@@ -4,19 +4,19 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: url(opensans.woff) format('woff');
+  src: url(../../js/alfresco/css/opensans.woff) format('woff');
 }
 @font-face {
   font-family: 'Open Sans Bold';
   font-style: normal;
   font-weight: 600;
-  src: url(opensansbold.woff) format('woff');
+  src: url(../../js/alfresco/css/opensansbold.woff) format('woff');
 }
 @font-face {
   font-family: 'Open Sans Condensed';
   font-style: normal;
   font-weight: 300;
-  src: url(opensanscondensed.woff) format('woff');
+  src: url(../../js/alfresco/css/opensanscondensed.woff) format('woff');
 }
 
 button::-moz-focus-inner,
@@ -210,14 +210,50 @@ h4 .lighter
    color: #999;
 }
 
+/* Override YUI Button styles for - flat button style */
+
+.yui-skin-lightTheme .yui-button,
+.yui-skin-lightTheme .yui-button .first-child
+{
+   background: none repeat scroll 0 0 #fff;
+}
+
+.yui-skin-lightTheme div.flat-button span.yui-button
+{
+   background: none;
+   border-color: transparent;
+}
+
+.yui-skin-lightTheme div.flat-button span.yui-button span.first-child
+{
+   border-color: transparent;
+}
+
+.yui-skin-lightTheme div.flat-button span.yui-button-hover
+{
+   background: transparent;
+   border-color: #ccc;
+}
+
+.yui-skin-lightTheme div.flat-button span.yui-button-hover span.first-child
+{
+   border-color: #ccc;
+}
+
+.yui-skin-lightTheme div.flat-button span.yui-radio-button-checked,
+.yui-skin-lightTheme div.flat-button span.yui-checkbox-button-checked
+{
+   background: #ccc none;
+}
+
 /* DASHLETS */
 
 .dashlet
 {
    border: 1px solid #ccc;
    background-color: #fff;
-   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
-   border-radius: 6px;
+   border-top-left-radius: 6px;
+   border-top-right-radius: 6px;
 }
 
 .dashlet .title
@@ -243,8 +279,6 @@ h4 .lighter
 .dashlet .body
 {
    background-color: #fff;
-   border-bottom-left-radius: 6px;
-   border-bottom-right-radius: 6px;
 }
 
 .dashlet .welcome-body a,
@@ -263,6 +297,12 @@ h4 .lighter
 {
    background: none repeat scroll 0 0 #eee !important;
    border: 1px solid #ccc !important;
+}
+
+.dashlet div.flat-button span.yui-radio-button-checked,
+.dashlet div.flat-button span.yui-checkbox-button-checked
+{
+   background: none;
 }
 
 .welcome-border-container
@@ -693,43 +733,6 @@ span.mce_alfresco-linklibrary
    background-position: 0px 2px !important;
 }
 
-/* Point the YUI button to the themed sprite */
-
-.yui-skin-lightTheme .yui-button
-{
-   background: none;
-}
-
-/* Override YUI Button styles for - flat button style */
-
-.yui-skin-lightTheme div.flat-button span.yui-button
-{
-   background: none;
-   border-color: transparent;
-}
-
-.yui-skin-lightTheme div.flat-button span.yui-button span.first-child
-{
-   border-color: transparent;
-}
-
-.yui-skin-lightTheme div.flat-button span.yui-button-hover
-{
-   background: transparent;
-   border-color: #ccc;
-}
-
-.yui-skin-lightTheme div.flat-button span.yui-button-hover span.first-child
-{
-   border-color: #ccc;
-}
-
-.yui-skin-lightTheme div.flat-button span.yui-radio-button-checked,
-.yui-skin-lightTheme div.flat-button span.yui-checkbox-button-checked
-{
-   background: #ccc none;
-}
-
 /* Override checked styles for doclist */
 
 .yui-skin-lightTheme .no-check-bg div.flat-button span.yui-radio-button-checked,
@@ -778,7 +781,7 @@ span.mce_alfresco-linklibrary
 .yui-skin-lightTheme .yui-button,
 .yui-skin-lightTheme .yui-button .first-child
 {
-   background: none;
+   background: none repeat scroll 0 0 #fff;
 }
 
 /* Override YUI Button styles for - attention button style */
@@ -944,7 +947,7 @@ body.yui-skin-lightTheme .wikipage .detailsPage a:hover,
 body.yui-skin-lightTheme .nodeEdit .onEditBlogPost a:hover,
 body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
 {
-   
+
 }
 
 .wikipage
@@ -963,7 +966,6 @@ body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
 body.yui-skin-lightTheme .yuimenu .bd
 {
    border: 1px solid #ccc;
-   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    padding: 3px;
    font-size: 109%;
    border-bottom-left-radius: 6px;
@@ -974,6 +976,15 @@ body.yui-skin-lightTheme .yuimenu .bd a:focus
 {
    outline: none;
 }
+
+/*
+ * This ensures that the quick share actions can get displayed focus
+ */
+body.yui-skin-lightTheme .yuimenu.quickshare-action-menu .bd a:focus
+{
+   outline: 1px dotted;
+}
+
 
 .yui-skin-lightTheme .yui-menu-shadow-visible
 {
@@ -1059,7 +1070,6 @@ body.yui-skin-lightTheme .doclist .more-actions a:hover
 body.yui-skin-lightTheme .doclist div.more-actions
 {
    border: 1px solid #ccc;
-   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
    border-bottom-left-radius: 6px;
    border-bottom-right-radius: 6px;
 }
@@ -1109,6 +1119,25 @@ body.yui-skin-lightTheme .categoryview .category .ygtvdepthcell
    background-image: url(images/categoryview-sprite.gif);
 }
 
+body.yui-skin-lightTheme .treeview .tree .ygtvtn,
+body.yui-skin-lightTheme .treeview .tree .ygtvtm,
+body.yui-skin-lightTheme .treeview .tree .ygtvtmh,
+body.yui-skin-lightTheme .treeview .tree .ygtvtmhh,
+body.yui-skin-lightTheme .treeview .tree .ygtvtp,
+body.yui-skin-lightTheme .treeview .tree .ygtvtph,
+body.yui-skin-lightTheme .treeview .tree .ygtvtphh,
+body.yui-skin-lightTheme .treeview .tree .ygtvln,
+body.yui-skin-lightTheme .treeview .tree .ygtvlm,
+body.yui-skin-lightTheme .treeview .tree .ygtvlmh,
+body.yui-skin-lightTheme .treeview .tree .ygtvlmhh,
+body.yui-skin-lightTheme .treeview .tree .ygtvlp,
+body.yui-skin-lightTheme .treeview .tree .ygtvlph,
+body.yui-skin-lightTheme .treeview .tree .ygtvlphh,
+body.yui-skin-lightTheme .treeview .tree .ygtvdepthcell
+{
+   background-image: url(images/treeview-sprite.gif) !important;
+}
+
 /* end doclist */
 
 /* invite page */
@@ -1132,7 +1161,7 @@ body.yui-skin-lightTheme .categoryview .category .ygtvdepthcell
 
 /* filter list link */
 
-.yui-skin-lightTheme li.selected, 
+.yui-skin-lightTheme li.selected,
 body.yui-skin-lightTheme .treeview .selected,
 body.yui-skin-lightTheme .categoryview .selected,
 body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnbrowser-column a.yui-columnbrowser-item-selected
@@ -1172,9 +1201,9 @@ body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
 .yui-skin-lightTheme .node .nodeURL a,
 .yui-skin-lightTheme .nodeAttrValue a,
 .yui-skin-lightTheme .nodeFooter .tag a,
-.yui-skin-lightTheme .yui-dt-highlighted .detail .tag a,
-.yui-skin-lightTheme .yui-dt-highlighted .detail .category a,
-.yui-skin-lightTheme .yui-dt-highlighted .detail .item-social a,
+.yui-skin-lightTheme .yui-dt-highlighted .tag a,
+.yui-skin-lightTheme .yui-dt-highlighted .category a,
+.yui-skin-lightTheme .yui-dt-highlighted .item-social a,
 .yui-skin-lightTheme a.wiki-tag-link,
 .yui-skin-lightTheme .node .userLink a,
 .yui-skin-lightTheme .site-members h3 a,
@@ -1192,15 +1221,15 @@ body.yui-skin-lightTheme .yui-columnbrowser .yui-carousel-content li.yui-columnb
    color: #333;
 }
 
-.yui-skin-lightTheme .detail .tag a,
-.yui-skin-lightTheme .detail .category a,
-.yui-skin-lightTheme .detail .item-social a,
+.yui-skin-lightTheme .tag a,
+.yui-skin-lightTheme .category a,
+.yui-skin-lightTheme .item-social a,
 .yui-skin-lightTheme .document-tags .tag
 {
    color: #333;
 }
 
-.yui-skin-lightTheme .detail .tag a,
+.yui-skin-lightTheme .tag a,
 .yui-skin-lightTheme .document-tags .tag
 {
    background-color: #eee;
@@ -1321,7 +1350,7 @@ a.theme-color-5,
 a.theme-color-5:visited,
 a.theme-color-5:hover
 {
-   color: #ccc;   
+   color: #ccc;
 }
 
 /* Theme background colors */
@@ -1378,7 +1407,7 @@ div.theme-bg-color-8
 
 .theme-bg-1
 {
-   
+
 }
 
 .theme-bg-2
@@ -1456,7 +1485,7 @@ div.theme-bg-color-8
 
 body.alfresco-guest
 {
-   background: transparent url("./images/alfresco-logo-bg.jpg") repeat;
+   background: none;
 }
 
 .alfresco-guest .sticky-wrapper
@@ -1472,7 +1501,7 @@ body.alfresco-guest
    border: 1px solid #ccc;
    background-color: #fff;
    box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
-   border-radius: 16px;
+   border-radius: 6px;
 }
 
 .login form
@@ -1499,9 +1528,9 @@ body.alfresco-guest
 
 .theme-company-logo
 {
-   top: 20px;
-   height: 64px;
-   background: transparent url("./images/logo.png") no-repeat;
+   height: 48px;
+   width: 428px;
+   background: transparent url(images/logo.png) no-repeat;
 }
 
 .theme-flow-arrow
@@ -1529,8 +1558,8 @@ body.alfresco-guest
 
 .docfolder-input
 {
-   width: 203px; 
-   vertical-align: top; 
+   width: 203px;
+   vertical-align: top;
    margin-top: 2px;
 }
 
@@ -1563,11 +1592,6 @@ body.alfresco-guest
 }
 
 /** Share component overrides */
-
-.footer .copyright
-{
-   font-size: 70% !important;
-}
 
 .header .header-left
 {
@@ -1752,6 +1776,16 @@ body.alfresco-guest
    margin: -10px 0 1em 2em !important;
 }
 
+.search .thumbnail > span img
+{
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.images .thumbnail
+{
+   box-shadow: 0.33px 2px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
 .alfresco-datatable td,
 .yui-dt-data td
 {
@@ -1868,7 +1902,7 @@ body.alfresco-guest
 /* saved and site search dashlets */
 table td.thumbnail img
 {
-   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
+   box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35) !important;
 }
 
 /* Tag editor in wiki/discussions/blog */

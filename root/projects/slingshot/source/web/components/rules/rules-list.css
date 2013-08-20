@@ -29,6 +29,7 @@
    margin-left: 0.75em;
    background-position: center center;
    background-image: url(../images/info-16.png);
+   padding-left:7px;
 }
 
 .rules-list .rules-list-container

@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A mixin class that provides utility functions for manipulating objects in the DOM.
+ * 
+ * @module alfresco/core/DomElementUtils
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare"], 
         function(declare) {
    
@@ -30,9 +37,9 @@ define(["dojo/_base/declare"],
        * 
        * The purpose of this function is to return information on selection of text in an element.
        * 
-       * @method getInputSelection
-       * @param {element} el The element to find the text selection for.
-       * @returns {object} An object with the attributes "start" and "end" that indicate the text selection.
+       * @instance
+       * @param {DOM Element} el The element to find the text selection for.
+       * @returns {Object} An object with the attributes "start" and "end" that indicate the text selection.
        */
       getInputSelection: function(el) {
          var start = 0, end = 0, normalizedValue, range,
@@ -96,9 +103,9 @@ define(["dojo/_base/declare"],
        * 
        * The purpose is to set the carat in the supplied element.
        * 
-       * @method setCaretPosition
-       * @param {element} el The element to set the carat position on
-       * @param {integer} position The index at which to set the carat
+       * @instance
+       * @param {DOM Element} el The element to set the carat position on
+       * @param {number} position The index at which to set the carat
        */
       setCaretPosition: function(el, position) {
          if (el.setSelectionRange) 

@@ -33,6 +33,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,6 +83,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.solr.NodeReport;
+import org.alfresco.solr.ResizeableArrayList;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclChangeSets;
@@ -511,7 +513,23 @@ public class CoreTracker implements CloseHook
             {
                 log.error("Failed to roll back pending work on error", t);
             }
-            log.error("Tracking failed", t);
+            if (t instanceof SocketTimeoutException)
+            {
+                if (log.isDebugEnabled())
+                {
+                    // DEBUG, so give the whole stack trace
+                    log.warn("Tracking communication timed out.", t);
+                }
+                else
+                {
+                    // We don't need the stack trace.  It timed out.
+                    log.warn("Tracking communication timed out.");
+                }
+            }
+            else
+            {
+                log.error("Tracking failed", t);
+            }
         }
         finally
         {
@@ -1384,42 +1402,6 @@ public class CoreTracker implements CloseHook
                     }
                 }
                 checkShutdown();
-            }
-            // reorder and find first last before hole
-
-            if (transactionsOrderedById.size() < 10000)
-            {
-                transactionsOrderedById.addAll(transactions.getTransactions());
-                Collections.sort(transactionsOrderedById, new Comparator<Transaction>()
-                        {
-
-                    @Override
-                    public int compare(Transaction o1, Transaction o2)
-                    {
-                        return (int) (o1.getId() - o2.getId());
-                    }
-                        });
-
-                ArrayList<Transaction> newTransactionsOrderedById = new ArrayList<Transaction>(10000);
-                for (Transaction info : transactions.getTransactions())
-                {
-                    if (info.getCommitTimeMs() < state.timeBeforeWhichThereCanBeNoHoles)
-                    {
-                        state.lastIndexedTxIdBeforeHoles = info.getId();
-                    }
-                    else
-                    {
-                        if (info.getId() == (state.lastIndexedTxIdBeforeHoles + 1))
-                        {
-                            state.lastIndexedTxIdBeforeHoles = info.getId();
-                        }
-                        else
-                        {
-                            newTransactionsOrderedById.add(info);
-                        }
-                    }
-                }
-                transactionsOrderedById = newTransactionsOrderedById;
             }
         }
         while ((transactions.getTransactions().size() > 0) && (upToDate == false));
@@ -2693,7 +2675,7 @@ public class CoreTracker implements CloseHook
         BooleanQuery bQuery = new BooleanQuery();
         bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT, parentNodeMetaData.getNodeRef().toString())), Occur.MUST);
         DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
-        CacheEntry[] indexedByDocId = (CacheEntry[]) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
+        ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
         if (docSet instanceof BitDocSet)
         {
             BitDocSet source = (BitDocSet) docSet;
@@ -2701,7 +2683,7 @@ public class CoreTracker implements CloseHook
             int current = -1;
             while ((current = openBitSet.nextSetBit(current + 1)) != -1)
             {
-                CacheEntry entry = indexedByDocId[current];
+                CacheEntry entry = indexedByDocId.get(current);
                 childIds.add(entry.getDbid());
             }
         }
@@ -2709,7 +2691,7 @@ public class CoreTracker implements CloseHook
         {
             for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
             {
-                CacheEntry entry = indexedByDocId[it.nextDoc()];
+                CacheEntry entry = indexedByDocId.get(it.nextDoc());
                 childIds.add(entry.getDbid());
             }
         }

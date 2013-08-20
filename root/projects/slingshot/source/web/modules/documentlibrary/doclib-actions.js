@@ -227,6 +227,10 @@
                }
                else
                {
+                  if (obj.fn)
+                  {
+                     obj.fn.call((typeof obj.scope == "object" ? obj.scope : this));
+                  }
                   postGenericActionHandler();
                }
             }

@@ -6,13 +6,16 @@ function main()
    AlfrescoUtil.param("site", null);
    AlfrescoUtil.param("rootPage", "documentlibrary");
    AlfrescoUtil.param("rootLabelId", "path.documents");
+   AlfrescoUtil.param("showOnlyLocation", "false");
    AlfrescoUtil.param("showFavourite", "true");
    AlfrescoUtil.param("showLikes", "true");
    AlfrescoUtil.param("showComments", "true");
    AlfrescoUtil.param("showQuickShare", "true");
    AlfrescoUtil.param("showDownload", "true");
    AlfrescoUtil.param("showPath", "true");
-   var nodeDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
+   AlfrescoUtil.param("libraryRoot", null);
+   AlfrescoUtil.param("pagecontext", null);
+   var nodeDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site, null, model.libraryRoot);
    if (nodeDetails)
    {
       model.item = nodeDetails.item;
@@ -25,6 +28,7 @@ function main()
       model.showLikes = (model.isWorkingCopy ? false : model.showLikes).toString();
       model.showComments = (model.isWorkingCopy ? false : ((nodeDetails.item.node.permissions.user["CreateChildren"] || false) && model.showComments)).toString();
       model.showDownload = (!model.isContainer && model.showDownload).toString();
+      model.showOnlyLocation = model.showOnlyLocation.toString();
       var count = nodeDetails.item.node.properties["fm:commentCount"];
       model.commentCount = (count != undefined ? count : null);
 
@@ -42,8 +46,10 @@ function main()
          options : {
             nodeRef : model.nodeRef,
             siteId : model.site,
+            actualSiteId: model.item.location.site != null ? model.item.location.site.name : null,
             rootPage : model.rootPage,
             rootLabelId : model.rootLabelId,
+            showOnlyLocation: (model.showOnlyLocation == "true"),
             showFavourite : (model.showFavourite == "true"),
             showLikes : (model.showLikes == "true"),
             showComments : (model.showComments == "true"),
@@ -54,7 +60,9 @@ function main()
             isFavourite : (model.item.isFavourite || false),
             isContainer : model.isContainer,
             sharedId: model.item.node.properties["qshare:sharedId"] || null,
-            sharedBy: model.item.node.properties["qshare:sharedBy"] || null
+            sharedBy: model.item.node.properties["qshare:sharedBy"] || null,
+            pagecontext: model.pagecontext,
+            libraryRoot: model.libraryRoot
          }
       };
       

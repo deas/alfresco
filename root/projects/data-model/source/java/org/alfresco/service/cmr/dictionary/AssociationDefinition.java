@@ -42,6 +42,18 @@ public interface AssociationDefinition extends ClassAttributeDefinition
     public QName getName();
 
     /**
+     * @deprecated The problem identified in MNT-413 will still exist
+     * @see org.alfresco.service.cmr.dictionary.AssociationDefinition#getTitle(org.alfresco.service.cmr.i18n.MessageLookup)
+     */
+    public String getTitle();
+
+    /**
+     * @deprecated The problem identified in MNT-413 will still exist
+     * @see org.alfresco.service.cmr.dictionary.AssociationDefinition#getDescription(org.alfresco.service.cmr.i18n.MessageLookup)
+     */
+    public String getDescription();
+
+    /**
      * @return the human-readable title 
      */
     public String getTitle(MessageLookup messageLookup);

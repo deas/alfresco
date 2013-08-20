@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/AlfMenuBarPopup
+ * @extends module:alfresco/menus/AlfMenuBarPopup
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBarPopup",
         "dojo/dom-class",
@@ -27,7 +33,9 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance 
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/AlfMenuBarPopup.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBarPopup.css"}],
       
@@ -35,7 +43,8 @@ define(["dojo/_base/declare",
        * Used to indicate whether or not to display a down arrow that indicates that this is a drop-down menu.
        * True by default.
        * 
-       * @property {boolean} showArrow
+       * @instance
+       * @type {boolean} showArrow
        * @default true
        */
       showArrow: true,
@@ -44,7 +53,7 @@ define(["dojo/_base/declare",
        * Extends the default implementation to create an additional <span> element with the show arrow CSS class to the 
        * focusNode of the widget.
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_header_AlfMenuBarPopup__postCreate() {
          this.inherited(arguments);

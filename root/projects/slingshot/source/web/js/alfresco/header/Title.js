@@ -16,38 +16,57 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/Title
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/Title.html",
+        "dojo/_base/lang",
         "alfresco/core/Core"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, lang, AlfCore) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/Title.css"}]
        */
       cssRequirements: [{cssFile:"./css/Title.css"}],
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type template {String}
        */
       templateString: template,
       
       /**
-       * @property {string} title The title to be displayed. This should be a localized value.
+       * @instance
+       * @type {string} title The title to be displayed. This should be a localized value.
        */
       label: null,
+      
+      /**
+       * @instance
+       * @type {string} targetUrl The URL for the title link.
+       */
+      targetUrl: null,
       
       /**
        * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
        * to ensure that an unencoded label isn't set and then replaced. 
        * 
-       * @method postMixInProperties
+       * @instance
        */
       postMixInProperties: function alfresco_header_Title__postMixInProperties() {
          if (this.label)
@@ -57,10 +76,29 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_header_Title__postCreate() {
          this.textNode.innerHTML = this.label;
+         if (this.targetUrl)
+         {
+            this.textNode.href = Alfresco.constants.URL_PAGECONTEXT + this.targetUrl;
+         }
+         this.alfSubscribe("ALF_UPDATE_PAGE_TITLE", lang.hitch(this, "updatePageTitle"));
+      },
+      
+      /**
+       * Handles requests to update the page title.
+       * 
+       * @instance
+       * @param {object} payload The payload published on the update title topic
+       */
+      updatePageTitle: function alfresco_header_Title__updatePageTitle(payload) {
+         if (payload && payload.title)
+         {
+            this.textNode.innerHTML = payload.title;
+            document.title = "Alfresco \u00bb " + payload.title; // Set the browser title
+         }
       }
    });
 });

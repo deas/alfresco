@@ -50,25 +50,40 @@
 .about-share .copy
 {
    color: #000;
-   padding-left: 0;
    font-size: 77%;
+   margin-top: 0.5em;
+}
+
+.about-share .licenseHolder
+{
+   margin-top:0.5em;
+   margin-bottom: 0.5em;
+}
+
+.about-share .licenseHolder span
+{
+   font-size: 110%;
 }
 
 .about-share .contributions-bg
 {
-   background: url('../components/images/about-gradient.png') no-repeat scroll 0 0;
    position: absolute;
-   height: 70px;
-   width: 345px;
+   width: 200px;
    z-index: 1;
+   box-shadow: inset 0px 12px 6px -8px #fff, inset 0px -12px 6px -8px #fff;
 }
 
 .about-share .contributions-wrapper
 {
    color: #333;
    font-size: 85%;
-   height: 70px;
    overflow: hidden;
+}
+
+.about-share .contributions-bg,
+.about-share .contributions-wrapper
+{
+   height: 55px;
 }
 
 .about-share .contributions

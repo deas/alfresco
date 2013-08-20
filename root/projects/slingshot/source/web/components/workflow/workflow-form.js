@@ -77,7 +77,6 @@
    {
       /**
        * Object container for initialization options
-       *
        * @property options
        * @type object
        */

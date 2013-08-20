@@ -26,7 +26,7 @@ public class ClassificationServiceLocator extends org.apache.axis.client.Service
     }
 
     // Use to get a proxy class for ClassificationService
-    private java.lang.String ClassificationService_address = "http://localhost:8080/alfresco/api/ClassificationService";
+    private java.lang.String ClassificationService_address = "http://localhost:8080/alfresco/soapapi/ClassificationService";
 
     public java.lang.String getClassificationServiceAddress() {
         return ClassificationService_address;

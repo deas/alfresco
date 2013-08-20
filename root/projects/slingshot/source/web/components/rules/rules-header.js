@@ -52,6 +52,7 @@
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("folderDetailsAvailable", this.onFolderDetailsAvailable, this);
       YAHOO.Bubbling.on("folderRulesetDetailsAvailable", this.onFolderRulesetDetailsAvailable, this);
+      YAHOO.Bubbling.on("inheritChange", this.onInheritChange, this, this.options.inheritRules);
 
       return this;
    };
@@ -80,7 +81,15 @@
           * @property siteId
           * @type string
           */
-         siteId: ""
+         siteId: "",
+
+         /**
+          * Are rules inherited from parent?
+          *
+          * @property inheritRules
+          * @type Boolean
+          */
+         inheritRules: true
       },
 
       /**
@@ -136,9 +145,16 @@
             menu: "runRules-options"
          });
 
+         this.widgets.inheritRulesToggleButton = Alfresco.util.createYUIButton(this, "inheritButton", this.onInheritToggleClick);
+
          // Display folder name & appropriate actions if info has been given
          this.isReady = true;
          this._displayDetails();
+
+         // TODO:
+         // set state correctly for button initially
+         // other UI candy
+
       },
 
       /**
@@ -208,7 +224,6 @@
                nodeRef: Alfresco.util.NodeRef(this.options.nodeRef).toString()
             }
          }).showDialog();
-
       },
 
       /**
@@ -260,7 +275,7 @@
                   "actionDefinitionName": "execute-all-rules",
                   "parameterValues":
                   {
-                     "execute-inherited-rules": true,
+                     "execute-inherited-rules": this.options.inheritRules,
                      "run-all-rules-on-children": (runMode == "run-recursive")
                   }
                },
@@ -299,8 +314,69 @@
          Event.preventDefault(aArgs[0]);
       },
 
+      onInheritToggleClick: function RulesHeader_onInheritToggleClick()
+      {
+         var me = this;
+         // Start/stop inherit rules from parent folder
+         Alfresco.util.Ajax.jsonPost(
+            {
+               url: Alfresco.constants.PROXY_URI_RELATIVE + "/api/node/" + Alfresco.util.NodeRef(this.options.nodeRef).uri + "/ruleset/inheritrules/toggle",
+               successCallback:
+               {
+                  fn: function(response)
+                  {
+                     var data = response.json.data;
+                     if (data)
+                     {
+                        me.options.inheritRules = !!((data.inheritRules === "true"));
+                        var status = (me.options.inheritRules)? "on": "off";
+                        Alfresco.util.PopupManager.displayMessage(
+                           {
+                              text: this.msg("message.inheritToggle-success-" + status)
+                           });
+                        YAHOO.Bubbling.fire("inheritChange");
+                     }
+                  },
+                  scope: this
+               },
+               failureCallback:
+               {
+                  fn: function(response)
+                  {
+                     Alfresco.util.PopupManager.displayPrompt(
+                        {
+                           title: this.msg("message.failure"),
+                           text: this.msg("message.inheritToggle-failure")
+                        });
+                  },
+                  scope: this
+               }
+            });
+      },
+
+      onInheritChange: function()
+      {
+         var elId = this.id + "-inheritButtonContainer",
+            onClass = "inherit-on",
+            offClass = "inherit-off",
+            label = "button.inherit",
+            el = Dom.get(this.id + "-inheritButton-button");
+
+         if (this.options.inheritRules)
+         {
+            Dom.removeClass(elId, offClass);
+            Dom.addClass(elId, onClass);
+            el.innerHTML = this.msg(label + ".on")
+         } else
+         {
+            Dom.removeClass(elId, onClass);
+            Dom.addClass(elId, offClass);
+            el.innerHTML = this.msg(label + ".off")
+         }
+      },
+
       /**
-       * Starts rendering  details has been loaded
+       * Starts rendering when details has been loaded
        *
        * @method _displayDetails
        */
@@ -309,14 +385,12 @@
          if (this.isReady && this.ruleset && this.folderDetails)
          {
             // Display actions container
-            if (!this.ruleset.rules || this.ruleset.linkedToRuleSet)
-            {
-               Dom.addClass(this.widgets.actionsEl, "hidden");
-            }
-            else
+            if (this.ruleset.rules || this.ruleset.linkedToRuleSet)
             {
                Dom.removeClass(this.widgets.actionsEl, "hidden");
             }
+            // More actions always appropriate to display
+            Dom.removeClass(Dom.get(this.id + "-actions-more"), "hidden");
 
             // Display file name
             this.widgets.titleEl.innerHTML = $html(this.folderDetails.fileName);

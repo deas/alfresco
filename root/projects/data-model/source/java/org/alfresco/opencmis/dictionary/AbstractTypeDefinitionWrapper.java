@@ -59,6 +59,7 @@ import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.Cardinality;
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.chemistry.opencmis.commons.enums.PropertyType;
 import org.apache.chemistry.opencmis.commons.enums.Updatability;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AbstractPropertyDefinition;
@@ -211,8 +212,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
             throw new IllegalStateException("propertiesByQueryName is not set");
         if (propertiesByQName == null)
             throw new IllegalStateException("propertiesByQName is not set");
-        if (propertiesById.size() == 0)
-            throw new IllegalStateException("property map empty");
+//        if (propertiesById.size() == 0)
+//            throw new IllegalStateException("property map empty");
         if (propertiesById.size() != propertiesByQueryName.size())
             throw new IllegalStateException("property map mismatch");
         if (propertiesById.size() != propertiesByQName.size())
@@ -241,6 +242,11 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 
             // compile property id
             String propertyId = cmisMapping.buildPrefixEncodedString(alfrescoPropDef.getName());
+
+            if(propertyId.equals("cmis:secondaryObjectTypeIds") && cmisMapping.getCmisVersion() == CmisVersion.CMIS_1_0)
+            {
+            	continue;
+            }
 
             // create property definition
             propertyDefintion = createPropertyDefinition(cmisMapping, propertyId, alfrescoPropDef.getName(),

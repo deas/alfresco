@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.solr.AlfrescoSolrEventListener.OwnerLookUp;
+import org.alfresco.solr.ResizeableArrayList;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -64,11 +65,11 @@ public class SolrCachingOwnerScorer extends AbstractSolrCachingScorer
                 OwnerLookUp lookUp = ownerLookUp.get(current);
                 if (lookUp != null)
                 {
-                    CacheEntry[] indexedOderedByOwnerIdThenDoc = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
+                    ResizeableArrayList<CacheEntry> indexedOderedByOwnerIdThenDoc = (ResizeableArrayList<CacheEntry>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE,
                             AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
                     for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
                     {
-                        authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].getLeaf());
+                        authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc.get(i).getLeaf());
                     }
                 }
             }
@@ -79,11 +80,11 @@ public class SolrCachingOwnerScorer extends AbstractSolrCachingScorer
             OwnerLookUp lookUp = ownerLookUp.get(authority);
             if (lookUp != null)
             {
-                CacheEntry[] indexedOderedByOwnerIdThenDoc = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
+                ResizeableArrayList<CacheEntry> indexedOderedByOwnerIdThenDoc = (ResizeableArrayList<CacheEntry>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE,
                         AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
                 for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
                 {
-                    authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc[i].getLeaf());
+                    authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc.get(i).getLeaf());
                 }
             }
         }

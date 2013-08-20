@@ -325,7 +325,7 @@
                }
             }
          };
-
+         
          this.preferencesService.favouriteSite(siteId, responseConfig);
       },
 

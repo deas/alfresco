@@ -52,11 +52,11 @@
 }
 .datalists li a span.edit
 {
-   background: url("../images/edit-16.png") no-repeat;
+   background: url("../images/edit-16.png") no-repeat; border-left:8px solid transparent;
 }
 .datalists li a span.edit-disabled
 {
-   background: url("../images/edit-disabled-16.png") no-repeat;
+   background: url("../images/edit-disabled-16.png") no-repeat; border-left:8px solid transparent;
 }
 .datalists li a span.delete
 {

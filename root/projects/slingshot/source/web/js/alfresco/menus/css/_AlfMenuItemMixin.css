@@ -1,3 +1,18 @@
+.alfresco-share .dijitMenu .dijitMenuItemHover td,
+.alfresco-share .dijitMenu .dijitMenuItemSelected td,
+.alfresco-share .dijitMenu .dijitMenuItemHover,
+.alfresco-share .dijitComboBoxMenu .dijitMenuItemHover,
+.alfresco-share .dijitMenuItemSelected {
+   background-color: #f0f0f0;
+   background-image: none;
+   background-repeat: no-repeat;
+}
+
+.alfresco-share .dijitMenu .dijitMenuItem td, .alfresco-share .dijitComboBoxMenu .dijitMenuItem {
+  border-style: none;
+  border-width: 0;
+}
+
 .alfresco-share .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
    margin: 0 5px;
    padding: 2px 5px;
@@ -47,6 +62,90 @@
 
 .alfresco-share .dijitIcon.dijitMenuItemIcon.alf-logout-icon {
    background: url("./images/Logout.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-simplelist-icon {
+   background: url("./images/SimpleList.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-detailedlist-icon {
+   background: url("./images/DetailedList.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-gallery-icon {
+   background: url("./images/Gallery.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-showfolders-icon {
+   background: url("./images/ShowFolders.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-showpath-icon {
+   background: url("./images/ShowPath.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-showsidebar-icon {
+   background: url("./images/ShowSidebar.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-textdoc-icon {
+   background: url("./images/TextDocument.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-htmldoc-icon {
+   background: url("./images/HtmlDocument.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-xmldoc-icon {
+   background: url("./images/XmlDocument.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-all-icon {
+   background: url("./images/AllSelected.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-some-icon {
+   background: url("./images/SomeSelected.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-none-icon {
+   background: url("./images/NoneSelected.png");
    background-repeat: no-repeat;
    height: 20px;
    width: 20px;

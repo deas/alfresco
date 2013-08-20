@@ -34,6 +34,7 @@ import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -42,6 +43,8 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
     private static final Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
     
     public static final String ALFRESCO_DEFAULT_BASE_URL = "/alfresco";
+    
+    public static final int DEFAULT_SAVEPOST_BUFFER = 4096;
     
     // Remote Server access
     protected HttpClient httpClient = null;
@@ -155,6 +158,10 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
             PostMethod post = new PostMethod(url.toString());
             httpMethod = post;
     		ByteArrayRequestEntity requestEntity = new ByteArrayRequestEntity(req.getBody(), req.getType());
+            if (req.getBody().length > DEFAULT_SAVEPOST_BUFFER)
+            {
+                post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
+            }
 	        post.setRequestEntity(requestEntity);
             // Note: not able to automatically follow redirects for POST, this is handled by sendRemoteRequest
         }

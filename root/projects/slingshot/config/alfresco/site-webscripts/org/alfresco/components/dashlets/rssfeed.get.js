@@ -42,6 +42,7 @@ function main()
       options : {
          componentId : instance.object.id,
          feedURL : model.uri,
+         target: model.target,
          limit : (!isNaN(model.limit) && model.limit != 100) ? model.limit : "all",
          titleElSuffix : "-title",
          targetElSuffix : "-scrollableList"

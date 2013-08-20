@@ -19,10 +19,22 @@
     <startMenuShortcutList>
         <startMenuShortcut>
             <comment>Manager tool</comment>
-            <name>Manager tool</name>
+            <name>${product_shortname} manager tool</name>
 	    <runAsAdmin>1</runAsAdmin>
             <windowsExec>${installdir}/manager-windows.exe</windowsExec>
             <windowsPath>${installdir}/</windowsPath>
+	    <ruleList>
+		<compareVersions version1="${windows_os_version_number}" logic="greater_or_equal" version2="6.0" />
+	    </ruleList>
+        </startMenuShortcut>
+        <startMenuShortcut>
+            <comment>Manager tool</comment>
+            <name>${product_shortname} manager tool</name>
+            <windowsExec>${installdir}/manager-windows.exe</windowsExec>
+            <windowsPath>${installdir}/</windowsPath>
+	    <ruleList>
+		<compareVersions version1="${windows_os_version_number}" logic="less" version2="6.0" />
+	    </ruleList>
         </startMenuShortcut>
     </startMenuShortcutList>
     <parameterList>
@@ -51,7 +63,7 @@
 		<platformTest type="linux" />
 	    </ruleList>
 	</changePermissions>
-        <changePermissions permissions="700" files="${manager_installation_directory}/manager-osx.app/Contents/MacOS/installbuilder.sh;${manager_installation_directory}/manager-osx.app/Contents/MacOS/osx-intel" >
+        <changePermissions permissions="700" files="${manager_installation_directory}/manager-osx.app/Contents/MacOS/osx-intel" >
 	    <ruleList>
 		<platformTest type="osx" />
 	    </ruleList>

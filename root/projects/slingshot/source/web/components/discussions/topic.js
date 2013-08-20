@@ -231,14 +231,25 @@
          var loadTopicDataSuccess = function DiscussionsTopic__loadTopicData_loadTopicDataSuccess(response)
          {
             // set the loaded data
-            var data = response.json.item
-            this.topicData = data;
-            
-            // render the ui
-            this.renderUI();
-            
-            // inform the comment components about the loaded post
-            this._fireTopicDataChangedEvent();
+            var json = response.json;
+            if (json)
+            {
+               this.topicData = json.item;
+               
+               // render the ui
+               this.renderUI();
+               
+               // inform the comment components about the loaded post
+               this._fireTopicDataChangedEvent();
+            }
+            else
+            {
+               var url = YAHOO.lang.substitute(Alfresco.constants.URL_PAGECONTEXT + "site/{site}/discussions-topiclist",
+               {
+                  site: this.options.siteId
+               });
+               window.location = url;
+            }
          };
          
          // construct url to call

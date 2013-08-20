@@ -44,12 +44,12 @@ public interface ClassDefinition
     public QName getName();
     
     /**
-     * @deprecated The problem identified in MNT-413 will still exist - this method will be removed in 4.2
+     * @deprecated The problem identified in MNT-413 will still exist
      */
     public String getTitle();
 
     /**
-     * @deprecated The problem identified in MNT-413 will still exist - this method will be removed in 4.2
+     * @deprecated The problem identified in MNT-413 will still exist
      */
     public String getDescription();
     

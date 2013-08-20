@@ -859,7 +859,7 @@
                </field>
                <field id="cifs.serverName" label-id="fileservers.field.cifs.serverName" set="cifs">
                  <control>
-                    <control-param name="maxLength">1024</control-param>
+                    <control-param name="maxLength">15</control-param>
                  </control>
                </field>
                <field id="cifs.domain" label-id="fileservers.field.cifs.domain" set="cifs">
@@ -1494,6 +1494,21 @@
             <field-visibility>
                 <hide id="sync:transientErrorCode" />
             </field-visibility>
+         </form>
+      </forms>
+   </config>
+
+   <config evaluator="aspect" condition="dp:restrictable">
+      <forms>
+         <form>
+            <field-visibility>
+                <show id="dp:offlineExpiresAfter" />
+            </field-visibility>
+            <appearance>
+                <field id="dp:offlineExpiresAfter">
+                    <control template="/org/alfresco/components/form/controls/distributionpolicies/offlinetimeout.ftl" />
+                </field>
+            </appearance>
          </form>
       </forms>
    </config>

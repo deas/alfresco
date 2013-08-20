@@ -1,4 +1,3 @@
-
 .profile .photorow
 {
    border-bottom: 1px dashed #E9E9E9;
@@ -32,12 +31,21 @@
    clear: both;
 }
 
+.profile .user-status
+{
+   float: left;
+   min-width: 32%;
+   min-height: 1.5em;
+   margin: 0.5em 0 0.5em 0.5em;
+}
+
 .profile .fieldlabel
 {
    float: left;
    min-width: 32%;
    min-height: 1.5em;
 }
+
 .profile .fieldvalue
 {
    float: left;

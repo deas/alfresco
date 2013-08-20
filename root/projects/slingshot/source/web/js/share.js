@@ -1134,6 +1134,7 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
             this.widgets.unshare = Selector.query("a.quickshare-action-unshare", overlayEl, true);
             Alfresco.util.useAsButton(this.widgets.unshare, function(e)
             {
+               YAHOO.util.Event.stopEvent(e);
                this.services.quickshare.unshare(this._sharedId,
                {
                   successCallback:
@@ -1149,7 +1150,6 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
                   },
                   failureMessage: this.msg("quickshare.document.unshare.failure")
                });
-               YAHOO.util.Event.preventDefault(e);
             }, null, this);
 
             // Save references to overlay elements

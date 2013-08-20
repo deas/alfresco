@@ -582,6 +582,23 @@
          </bean>
       </property>
    </bean>
+   
+   <bean id="evaluator.doclib.action.isPartOfHybridWorklfow" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>hwf:hybridWorkflow</value>
+         </list>
+      </property>
+   </bean>
+   
+   <bean id="evaluator.doclib.action.isNotPartOfHybridWorklfow" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>hwf:hybridWorkflow</value>
+         </list>
+      </property>
+      <property name="negateOutput" value="true" />
+   </bean>
 
    <!-- Sync: Action evaluators -->
 
@@ -600,7 +617,10 @@
          <list>
             <ref bean="evaluator.doclib.action.isNotSyncedAspect" />
             <ref bean="evaluator.doclib.action.isSyncModeOnPremise" />
+            <!-- ALF-18054 Doclib folder should now be sync-able -->
+            <!--
             <ref bean="evaluator.doclib.action.isNotDocumentLibrary" />
+            -->
             <ref bean="evaluator.doclib.action.siteBased" />
             <ref bean="evaluator.doclib.action.isNotWorkingCopy" />
          </list>
@@ -626,6 +646,7 @@
             <ref bean="evaluator.doclib.action.isSyncedFromLocal" />
             <ref bean="evaluator.doclib.action.isSyncedDirectly" />
             <ref bean="evaluator.doclib.action.isNotWorkingCopy" />
+            <ref bean="evaluator.doclib.action.isNotPartOfHybridWorklfow" />
          </list>
       </property>
    </bean>

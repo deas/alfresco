@@ -560,4 +560,22 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         throw new UnsupportedOperationException();
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext#getAlfrescoQName(org.alfresco.service.namespace.QName)
+     */
+    @Override
+    public String getAlfrescoPropertyName(String propertyName)
+    {
+        return propertyName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext#getAlfrescoTypeName(java.lang.String)
+     */
+    @Override
+    public String getAlfrescoTypeName(String typeName)
+    {
+        return typeName;
+    }
+
 }

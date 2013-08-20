@@ -16,7 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This should be mixed into all Alfresco widgets as it provides the essential functions that they will 
+ * undoubtedly required, e.g. logging, publication/subscription handling, i18n message handling, etc. 
+ * 
+ * @module alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
+        "alfresco/core/CoreData",
         "dijit/registry",
         "dojo/topic",
         "dojo/_base/array",
@@ -26,30 +35,17 @@ define(["dojo/_base/declare",
         "dojo/request/xhr",
         "dojo/json",
         "dojo/date/stamp",
-        "dojox/html/entities"], 
-        function(declare, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp, htmlEntities) {
+        "dojox/html/entities",
+        "dojo/sniff"], 
+        function(declare, CoreData, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp, htmlEntities, has) {
    
    return declare(null, {
-      
-      /**
-       * Topics known to this object.
-       * PLEASE NOTE: Use of this property is still at the conceptual phase. The idea being that topics
-       *              could be discovered from available services. This area needs further investigation/work
-       * 
-       * @property {object} topics
-       */
-      topics: {
-         dialog: {
-            open: "OPEN_DIALOG",
-            close: "CLOSE_DIALOG"
-         }
-      },
       
       /**
        * Creates and returns a new UUID (universally unique identifier). The UUID is generated using the
        * dojox/uuid/generateRandomUuid module
        * 
-       * @method generateUuid
+       * @instance
        * @returns {string} A new UUID
        */
       generateUuid: function alfresco_core_Core__generateUuid() {
@@ -60,7 +56,7 @@ define(["dojo/_base/declare",
        * This function is based on the version that can be found in alfresco.js. It searches through all of
        * the available scopes for the widget and for all of the widgets inherited from.
        * 
-       * @method message
+       * @instance
        * @param {string} p_messageId The id of the message to be displayed.
        * @returns {string} A localized form of the supplied message
        */
@@ -162,44 +158,248 @@ define(["dojo/_base/declare",
        * attacks. This wraps the dojox/html/entities encode function. It is intentionally wrapped so that
        * if we need to make a change (e.g. change the encoding handling) we can make it in one place
        * 
-       * @method encodeHTML
+       * @instance
        * @returns The encoded input string
        */
       encodeHTML: function alfresco_core_Core__encodeHTML(textIn) {
          return htmlEntities.encode(textIn);
       },
+
+      /**
+       * This is the scope to use within the data model. If this is not initiated during instantiation then
+       * it will be assigned to the root scope of the data model the first time any of the data API functions
+       * are used. 
+       * 
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      dataScope: null,
+      
+      /**
+       * This will be used to keep track of all the data event callbacks that are registered for the instance.
+       * These will be iterated over and removed when the instance is destroyed.
+       * 
+       * @instance
+       * @type {function[]}
+       * @default null
+       */
+      dataBindingCallbacks: null,
+      
+      alfProcessDataDotNotation: function alfresco_core_Core__alfProcessDataDotNotation(dotNotation) {
+         var re = /(\.|\[)/g;
+         return dotNotation.replace(re, "._alfValue$1")
+      },
+      
+      /**
+       * This both sets data and registers the widget of as the owner of the data. This is done so that 
+       * when the widget is destroyed the data it owned will be removed from the data model
+       * 
+       * @instance
+       * @param {string} dotNotation A dot notation representation of the location within the data model to set.
+       * @param {object} value The value to set
+       * @param {object} scope The scope to set the data at. If null the instance scope will be used.
+       * @returns {object} An object that the widget can use to remove the data when it is destroyed.
+       */
+      alfSetData: function alfresco_core_Core__alfSetData(dotNotation, value, scope) {
+         this.alfLog("log", "Setting data", dotNotation, value, scope, this);
+         var dataOwnerBinding = {};
+         if (this.dataScope == null)
+         {
+            this.dataScope = CoreData.getSingleton().root;
+         }
+         if (scope == null)
+         {
+            scope = this.dataScope;
+         }
+         
+         // Process the dotNotation...
+         // Adds in the additional "_alfValue" objects...
+         dotNotation = this.alfProcessDataDotNotation(dotNotation);
+         
+         var data = lang.getObject(dotNotation, false, scope);
+         if (data == null)
+         {
+            // The data item doesn't exist yet, create it now and register the caller
+            // as the owner. Not sure if this is necessary, we can't tell if the widget is destroyed
+         }
+         // Set the new data...
+         data = lang.getObject(dotNotation, true, scope);
+         var oldValue = data._alfValue;
+         lang.setObject(dotNotation + "._alfValue", value, scope);
+         
+         if (data._alfCallbacks != null)
+         {
+            // Move all the pending callbacks into the callback property
+            for (var callbackId in data._alfCallbacks)
+            {
+               if (typeof data._alfCallbacks[callbackId] === "function")
+               {
+                  data._alfCallbacks[callbackId](dotNotation, oldValue, value);
+               }
+            }
+         }
+         return dataOwnerBinding;
+      },
+      
+      /**
+       * This gets the data from the location in the model defined by the scope. If no explicit scope
+       * is provided then the instance scope will be used.
+       * 
+       * @instance
+       * @param {string} dotNotation A dot notation representation of the location within the data model to get
+       * @param {object} scope The scope to get the data from. If null then then instance scope will be used.
+       * @returns {object} The data at the supplied location
+       */
+      alfGetData: function alfresco_core_Core__alfGetData(dotNotation, scope) {
+         // If a data scope has not been set then get the root data model
+         if (this.dataScope == null)
+         {
+            this.dataScope = CoreData.getSingleton().root;
+         }
+         if (scope == null)
+         {
+            scope = this.dataScope;
+         }
+         dotNotation = this.alfProcessDataDotNotation(dotNotation);
+         var data = lang.getObject(dotNotation + "._alfValue", false, scope);
+         this.alfLog("log", "Getting data", dotNotation, scope, data, this);
+         return data;
+      },
+      
+      /**
+       * Binds a callback function to an entry in the data model so that when the data is changed the callback
+       * will be executed. This allows widgets to respond to data changes dynamically. A reference to the 
+       * call back will be returned and it is important that these callbacks are deleted when the widget
+       * is destroyed to prevent memory leaks.
+       * 
+       * @instance
+       * @param {string} dotNotation A dot notation representation of the location with the data model to bind to
+       * @param {object} scope The scope to look for the dot notated data at
+       * @param {function} callback The function to call when the data is changed
+       * @returns {object} A reference to the callback so that it can be removed when the caller is destroyed 
+       */
+      alfBindDataListener: function alfresco_core_Core__alfBindDataListener(dotNotation, scope, callback) {
+         if (dotNotation)
+         {
+            this.alfLog("log", "Binding data listener", dotNotation, scope, callback, this);
+            if (this.dataScope == null)
+            {
+               this.dataScope = CoreData.getSingleton().root;
+            }
+            if (scope == null)
+            {
+               scope = this.dataScope;
+            }
+            // TODO: Validate the dotNotation??
+            dotNotation = this.alfProcessDataDotNotation(dotNotation);
+            
+            var callbacks = lang.getObject(dotNotation + "._alfCallbacks", true, scope);
+            var callbackId = this.generateUuid(); // Create a uuid for the callback
+            callbacks[callbackId] = callback;     // Set the callback
+            
+            // Create and return the binding (this should provide enough information to delete the callback
+            // from the data model when the owning widget is destroyed)
+            var binding = {
+               scope: this.dataScope,
+               dotNotation: dotNotation,
+               callbackId: callbackId
+            };
+            if (this.dataBindingCallbacks == null)
+            {
+               this.dataBindingCallbacks = [];
+            }
+            this.dataBindingCallbacks.push(binding);
+            return binding;
+         }
+      },
+      
+      /**
+       * @instance
+       * @param {object} The binding object
+       */
+      alfRemoveDataListener: function alfresco_core_Core__alfRemoveDataListener(binding) {
+         // Need to check my logic here (!?)
+         this.alfLog("log", "Removing data binding", binding);
+         try
+         {
+            var data = lang.getObject(binding.dotNotation, false, binding.scope);
+            if (data != null)
+            {
+               delete data._alfCallbacks[binding.callbackId];
+            }
+         }
+         catch(e)
+         {
+            this.alfLog("error", "Could not delete data listener binding", binding);
+         }
+      },
+      
+      /**
+       * A String that is used to prefix all pub/sub communications to ensure that only relevant
+       * publications are handled and issued.
+       * 
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      pubSubScope: "",
+      
+      /**
+       * Used to track of any subscriptions that are made. They will be all be unsubscribed when the 
+       * [destroy]{@link module:alfresco/core/Core#destroy} function is called.
+       * 
+       * @instance
+       * @type {array}
+       * @default null 
+       */
+      alfSubscriptions: null,
       
       /**
        * This function wraps the standard Dojo publish function. It should always be used rather than
        * calling the Dojo implementation directly to allow us to make changes to the implementation or
        * to introduce additional features (such as scoping) or updates to the payload.
        * 
-       * @method alfPublish
+       * @instance
        * @param {string} topic The topic on which to publish
        * @param {object} payload The payload to publish on the supplied topic
+       * @param {boolean} global Indicates that the pub/sub scope should not be applied
        */
-      alfPublish: function alfresco_core_Core__alfPublish(topic, payload) {
-         payload.alfTopic = topic;
-         pubSub.publish(topic, payload);
+      alfPublish: function alfresco_core_Core__alfPublish(topic, payload, global) {
+         var scopedTopic = (global ? "" : this.pubSubScope) + topic;
+         payload.alfTopic = scopedTopic;
+         pubSub.publish(scopedTopic, payload);
       },
       
       /**
        * This function wraps the standard Dojo subscribe function. It should always be used rather than
        * calling the Dojo implementation directly to allow us to make changes to the implementation or
-       * to introduce additional features (such as scoping) or updates to the callback.
+       * to introduce additional features (such as scoping) or updates to the callback. The subscription
+       * handle that gets created is add to [alfSubscriptions]{@link module:alfresco/core/Core#alfSubscriptions}
        * 
-       * @method alfSubscribe
+       * @instance
        * @param {string} topic The topic on which to subscribe
        * @param {function} callback The callback function to call when the topic is published on.
+       * @param {boolean} global Indicates that the pub/sub scope should not be applied
+       * @returns {object} A handle to the subscription
        */
-      alfSubscribe: function alfresco_core_Core__alfSubscribe(topic, callback) {
-         var handle = pubSub.subscribe(topic, callback);
+      alfSubscribe: function alfresco_core_Core__alfSubscribe(topic, callback, global) {
+         var scopedTopic = (global ? "" : this.pubSubScope) + topic;
+         var handle = pubSub.subscribe(scopedTopic, callback);
+         if (this.alfSubscriptions == null)
+         {
+            this.alfSubscriptions = [];
+         }
+         this.alfSubscriptions.push(handle);
          return handle;
       },
       
       /**
        * This function wraps the standard unsubscribe function. It should always be used rather than call
        * the Dojo implementation directly.
+       * 
+       * @instance
+       * @param {object} The subscription handle to unsubscribe
        */
       alfUnsubscribe: function alfresco_core_Core__alfUnsubscribe(handle) {
          if (handle) 
@@ -207,15 +407,47 @@ define(["dojo/_base/declare",
             handle.remove();
          }
       },
-      
+
       /**
-       * This function can be used to instantiate an array of widgets. The create of each widgets DOM node
-       * is delegated to the "createWidgetDomNode" function and the actual instantiation of the widget is
-       * handled by the "createWidget" function.
+       * This function will override a destroy method if available (e.g. if this has been mixed into a
+       * widget instance) so that any subscriptions that have been made can be removed. This is necessary
+       * because subscriptions are not automatically cleaned up when the widget is destroyed.
        * 
-       * @method processWidgets 
-       * @param {array} widgets An array of the widget definitions to instantiate
-       * @param {element} rootNode The DOM node which should be used to add instantiated widgets to
+       * This also removes any data binding listeners that have been registered.
+       * 
+       * @instance
+       * @param {boolean} preserveDom
+       */
+      destroy: function alfresco_core_Core__destroy(preserveDom) {
+         if (typeof this.inherited === "function")
+         {
+            this.inherited(arguments);
+         }
+         if (this.alfSubscriptions != null)
+         {
+            array.forEach(this.alfSubscriptions, function(handle, i) {
+               if (typeof handle.remove === "function")
+               {
+                  handle.remove();
+               }
+            });
+         }
+         if (this.dataBindingCallbacks != null)
+         {
+            array.forEach(this.dataBindingCallbacks, function(binding, i) {
+               this.alfRemoveDataListener(binding);
+            }, this);
+         }
+      },
+
+      /**
+       * This function can be used to instantiate an array of widgets. Each widget configuration in supplied
+       * widgets array is passed to the [processWidget]{@link module:alfresco/core/Core#processWidget} function
+       * to handle it's creation.
+       * 
+       * @instance 
+       * @param {Object[]} widgets An array of the widget definitions to instantiate
+       * @param {DOM Element} rootNode The DOM node which should be used to add instantiated widgets to
        */
       processWidgets: function alfresco_core_Core__processWidgets(widgets, rootNode) {
          // There are two options for providing configuration, either via a JSON object or
@@ -234,35 +466,72 @@ define(["dojo/_base/declare",
             this._processedWidgets = [];
             
             // Iterate over all the widgets in the configuration object and add them...
-            array.forEach(widgets, function(entry, i) {
-               var domNode = _this.createWidgetDomNode(entry, rootNode, entry.className);
-               _this.createWidget(entry.name, entry.config, domNode, _this._registerProcessedWidget, _this);
-            });
+            array.forEach(widgets, lang.hitch(this, "processWidget", rootNode));
          }
       },
       
       /**
-       * This will keep track of all the widgets created as a result of a call to the processWidgets function
+       * Creates a widget from the supplied configuration. The creation of each widgets DOM node
+       * is delegated to the [createWidgetDomNode]{@link module:alfresco/core/Core#createWidgetDomNode} function 
+       * and the actual instantiation of the widget is handled by the [createWidget]{@link module:alfresco/core/Core#createWidget} function.
+       * Before creation of the widget begins the [filterWidget]{@link module:alfresco/core/Core#filterWidget} function is
+       * called to confirm that the widget should be created. This allows extending classes the opportunity filter
+       * out widget creation in specific circumstances.
+       *
+       * @instance
+       * @param {DOM element} rootNode The DOM node where the widget should be created.
+       * @param {object} widgetConfig The configuration for the widget to be created
+       * @param {number} index The index of the widget configuration in the array that it was taken from
+       */
+      processWidget: function alfresco_core_Core__processWidget(rootNode, widgetConfig, index) {
+         if (this.filterWidget(widgetConfig))
+         {
+            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
+            this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this);
+         }
+      },
+      
+      /**
+       * This function is called from the [processWidget]{@link module:alfresco/core/Core#processWidget} function
+       * in order to give a final opportunity for extending classes to prevent the creation of a widget in certain
+       * circumstances. This was added to the core initially to allow the 
+       * [_MultiItemRendererMixin]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin} 
+       * to filter widget creation based on configurable properties of the items being rendered. However it is
+       * expected that this can be used as an extension point in other circumstances. 
+       *
+       * @instance
+       * @param {object} widgetConfig The configuration for the widget to be created
+       * @returns {boolean} This always returns true by default.
+       */
+      filterWidget: function alfresco_core_Core__filterWidget(widgetConfig) {
+         return true;
+      },
+      
+      /**
+       * Used to keep track of all the widgets created as a result of a call to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function
        * 
-       * @property {array} _processedWidgets An array of the widgets being processed or that have been processed.
+       * @instance
+       * @type {Array}
        * @default null
        */
       _processedWidgets: null,
       
       /**
        * This is used to countdown the widgets that are still waiting to be created. It is initialised to the size
-       * of the widgets array supplied to the "processWidgets" function.
+       * of the widgets array supplied to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function.
        * 
-       * @property {integer} _processedWidgetCountdown
+       * @instance 
+       * @type {number}
        * @default null
        */
       _processedWidgetCountdown: null,
       
       /**
-       * This function registers the creation of a widget. It decrements the "_processedWidgetCountdown" attribute
-       * and calls the "allWidgetsProcessed" function when it reaches zero.
+       * This function registers the creation of a widget. It decrements the 
+       * [_processedWidgetCountdown]{@link module:alfresco/core/Core#_processedWidgetCountdown} attribute
+       * and calls the [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed} function when it reaches zero.
        * 
-       * @method _registerProcessedWidget
+       * @instance
        * @param {object} widget The widget that has just been processed.
        * @param {object} _this The current scope of the instantiating widget
        */
@@ -277,20 +546,22 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * This is set from false to true after the allWidgetsProcessed extension point function is called. It can be used
-       * to check whether or not widget processing is complete. This is to allow for checks that widget processing has been
-       * completed BEFORE attaching a listener to the allWidgetsProcessed function.
+       * This is set from false to true after the [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed}
+       * extension point function is called. It can be used to check whether or not widget processing is complete. 
+       * This is to allow for checks that widget processing has been completed BEFORE attaching a listener to the 
+       * [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed} function.
        * 
-       * @property {boolean} widgetProcessingComplete
+       * @instance
+       * @type {boolean}
        * @default false
        */
       widgetProcessingComplete: false,
       
       /**
-       * This is an extension point for handling the completion of calls to "processWidgets"
+       * This is an extension point for handling the completion of calls to [processWidgets]{@link module:alfresco/core/Core#processWidgets}
        * 
-       * @method allWidgetsProcessed
-       * @param {array} widgets An array of all the widgets that have been processed
+       * @instance
+       * @param {Array} widgets An array of all the widgets that have been processed
        */
       allWidgetsProcessed: function alfresco_core_Core__allWidgetsProcessed(widgets) {
          this.alfLog("log", "All widgets processed");
@@ -299,8 +570,8 @@ define(["dojo/_base/declare",
       /**
        * Handles the dependency management and instantiation of services required.
        * 
-       * @method processServices
-       * @param {array} services An array of the services to be instantiated.
+       * @instance
+       * @param {Array} services An array of the services to be instantiated.
        */
       processServices: function alfresco_core_Core__processServices(services) {
          var _this = this;
@@ -308,9 +579,23 @@ define(["dojo/_base/declare",
          {
             // Iterate over all the widgets in the configuration object and add them...
             array.forEach(services, function(entry, i) {
-               var requires = [entry];
+               var dep = null,
+                   config = {};
+               if (typeof entry === "string")
+               {
+                  dep = entry;
+               }
+               else if (typeof entry === "object" && entry.name != null)
+               {
+                  dep = entry.name;
+                  if (typeof entry.config === "object")
+                  {
+                     config = entry.config;
+                  }
+               }
+               var requires = [dep];
                require(requires, function(ServiceType) {
-                  new ServiceType();
+                  new ServiceType(config);
                });
             });
          }
@@ -321,9 +606,9 @@ define(["dojo/_base/declare",
        * that the widget will be attached to and an outer <div> element that additional CSS classes
        * can be applied to.
        * 
-       * @method createWidgetDomNode
+       * @instance
        * @param {object} widget The widget definition to create the DOM node for
-       * @param {element} rootNode The DOM node to create the new DOM node as a child of
+       * @param {DOM Element} rootNode The DOM node to create the new DOM node as a child of
        * @param {string} rootClassName A string containing one or more space separated CSS classes to set on the DOM node
        */
       createWidgetDomNode: function alfresco_core_Core__createWidgetDomNode(widget, rootNode, rootClassName) {
@@ -345,56 +630,89 @@ define(["dojo/_base/declare",
        * be necessary for Dojo to request additional modules. This is why the callback function is required
        * to ensure that successfully instantiated modules can be kept track of.
        * 
-       * @method createWidget
-       * @param {string} type The module to require/instantiate
-       * @param {object} config The configuration to pass as an instantiation argument to the widget
-       * @param {element} domNode The DOM node to attach the widget to
+       * @instance
+       * @param {object} config The configuration for the widget
+       * @param {DOM Element} domNode The DOM node to attach the widget to
        * @param {function} callback A function to call once the widget has been instantiated
-       * @param {array} callbackArgs An array of arguments to pass to the callback function
+       * @param {Array} callbackArgs An array of arguments to pass to the callback function
        */
-      createWidget: function alfresco_core_Core__createWidget(type, config, domNode, callback, callbackArgs) {
+      createWidget: function alfresco_core_Core__createWidget(config, domNode, callback, callbackArgs) {
          
          var _this = this;
-         this.alfLog("log", "Creating widget: " + type, config);
+         this.alfLog("log", "Creating widget: ",config);
          
          // Make sure we have an instantiation args object...
-         var initArgs = (config && (typeof config === 'object')) ? config : {};
+         var initArgs = (config && config.config && (typeof config.config === 'object')) ? config.config : {};
          
          // Ensure that each widget has a unique id. Without this Dojo seems to occasionally
          // run into trouble trying to re-use an existing id...
          if (typeof initArgs.id == "undefined")
          {
-            initArgs.id = type + "___" + this.generateUuid();
+            initArgs.id = config.name + "___" + this.generateUuid();
          }
          
-         // Just to be sure, check that no widget doesn't already exist with that id and
-         // if it does, generate a new one...
-         if (registry.byId(initArgs.id) != null)
+         if (initArgs.generatePubSubScope === true)
          {
-            initArgs.id = type + "___" + this.generateUuid();
+            // Generate a new pubSubScope if requested to...
+            initArgs.pubSubScope = this.generateUuid();
          }
+         else if (initArgs.pubSubScope === undefined)
+         {
+            // ...otherwise inherit the callers pubSubScope if one hasn't been explicitly configured...
+            initArgs.pubSubScope = this.pubSubScope;
+         }
+         if (initArgs.dataScope === undefined)
+         {
+            initArgs.dataScope = this.dataScope;
+         }
+         
+         // Create a reference for the widget to be added to. Technically the require statement
+         // will need to asynchronously request the widget module - however, assuming the widget
+         // has been included in such a way that it will have been included in the generated 
+         // module cache then the require call will actually process synchronously and the widget
+         // variable will be returned with an assigned value...
+         var widget = null;
          
          // Dynamically require the specified widget
          // The use of indirection is done so modules will not rolled into a build (should we do one)
-         var requires = [type];
+         var requires = [config.name];
          require(requires, function(WidgetType) {
-            // Instantiate the new widget
+            // Just to be sure, check that no widget doesn't already exist with that id and
+            // if it does, generate a new one...
+            if (registry.byId(initArgs.id) != null)
+            {
+               initArgs.id = config.name + "___" + _this.generateUuid();
+            }
             
+            // Instantiate the new widget
             // This is an asynchronous response so we need a callback method...
-            var widget = new WidgetType(initArgs, domNode);
+            widget = new WidgetType(initArgs, domNode);
             _this.alfLog("log", "Created widget", widget);
             widget.startup();
+            if (config.assignTo != null)
+            {
+               _this[config.assignTo] = widget;
+            }
             if (callback)
             {
                callback(widget, callbackArgs);
             }
          });
+         
+         if (widget == null)
+         {
+            this.alfLog("warn", "A widget was not declared so that it's modules were included in the loader cache", config, this);
+         }
+         return widget;
       },
       
       /**
-       * Mixes in additional functions defined by a "functionMixins" instance property.
+       * Mixes in additional functions defined by a "functionMixins" instance property. This function 
+       * is no longer commonly used and may not actually be required. It was initially provided
+       * for form processing. It's being marked as deprecated as it may get deleted
        * 
-       * @method processFunctionMixins
+       * @instance
+       * @deprecated
        */
       processFunctionMixins: function alfresco_core_Core__processFunctionMixins() {
          var _this = this;
@@ -417,10 +735,8 @@ define(["dojo/_base/declare",
        * This gets the relative time based on the supplied ISO dates. Currently this uses the original Alfresco
        * capability when available. 
        * 
-       * TODO: Replace with own implementation
-       * TODO: Move out of Core - this should be in a separate mixin
-       * 
-       * @method getRelativeTime
+       * @instance
+       * @deprecated Use the version provided by the [TemporalUtils]{@link module:alfresco/core/TemporalUtils} mixin
        */
       getRelativeTime: function alfresco_core_Core__getRelativeTime(from, to) {
          
@@ -447,51 +763,27 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * @instance
+       * @type {string}
+       * @default "ALF_LOG_REQUEST"
+       */
+      alfLoggingTopic: "ALF_LOG_REQUEST",
+      
+      /**
        * This function is intended to provide the entry point to all client-side logging from the application. By 
        * default it simply delegates to the standard browser console object but could optionally be overridden or
        * extended to provide advanced capabilities like posting client-side logs back to the server, etc.
        * 
-       * @method alfLog
+       * @instance
        * @param {string} severity The severity of the message to be logged
        * @param {string} message The message to be logged
        */
       alfLog: function alfresco_core_Core__alfLog(severity, message) {
-         
-         if (Alfresco && Alfresco.logging)
-         {
-            if (arguments.length < 2)
-            {
-               // Catch developer errors !!
-               console.error("AlfLog was not supplied enough arguments. A severity and message are the minimum required arguments.", arguments);
-            }
-            else if (typeof console[severity] != "function")
-            {
-               // Catch developer errors !!
-               console.error("The supplied severity is not a function of console", severity);
-            }
-            else
-            {
-               // Call the console method passing all the additional arguments)...
-               var callerName = arguments.callee.caller.name;
-               if (callerName && callerName != "")
-               {
-                  var re1 = /([^_])(_){1}/g,
-                      re2 = /(\/_)/g;
-                  callerName = callerName.replace(re1, "$1/").replace(re2, "[") + "] >> ";
-               }
-               else
-               {
-                  callerName = "";
-               }
-               message = callerName + message;
-               var messageArgs = [message];
-               for (var i=2; i<arguments.length; i++)
-               {
-                  messageArgs.push(arguments[i]);
-               }
-               console[severity].apply(console, messageArgs);
-            }
-         }
+         this.alfPublish(this.alfLoggingTopic, {
+            callerName: arguments.callee.caller.name,
+            severity: severity,
+            messageArgs: Array.prototype.slice.call(arguments, 1)
+         }, true);
       }
    });
 });

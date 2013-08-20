@@ -27,7 +27,7 @@ TODO LIST
 -->
 <component>
     <name>tomcat</name>
-    <description>Tomcat 5.5 Component</description>
+    <description>//Tomcat 5.5 Component</description>
     <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>
@@ -408,7 +408,7 @@ Tomcat 5.5 is recommended.</text>
         <folder>
             <name>tomcat</name>
             <destination>${tomcat_server_directory}</destination>
-            <description>Program Files</description>
+            <description>//Program Files</description>
             <platforms>all</platforms>
             <distributionFileList>
                 <distributionDirectory origin="${tomcat_distribution_folder}/*" allowWildcards="1" />

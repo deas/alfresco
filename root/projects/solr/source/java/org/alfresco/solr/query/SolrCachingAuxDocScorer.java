@@ -26,6 +26,7 @@ import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.AclLookUp;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
 import org.alfresco.solr.ContextAwareQuery;
+import org.alfresco.solr.ResizeableArrayList;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Query;
@@ -57,7 +58,7 @@ public class SolrCachingAuxDocScorer extends AbstractSolrCachingScorer
 
         DocSet auxDocSet = searcher.getDocSet(new ContextAwareQuery(query, null));
 
-        CacheEntry[] indexedByDocId = (CacheEntry[]) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
+        ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) searcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
 
         // List<ScoreDoc> auxDocs = pathCollector.getDocs();
         OpenBitSet translated = new OpenBitSet(searcher.getReader().maxDoc());
@@ -69,7 +70,7 @@ public class SolrCachingAuxDocScorer extends AbstractSolrCachingScorer
             int current = -1;
             while ((current = openBitSet.nextSetBit(current + 1)) != -1)
             {
-                CacheEntry entry = indexedByDocId[current];
+                CacheEntry entry = indexedByDocId.get(current);
                 translated.set(entry.getLeaf());
             }
         }
@@ -77,7 +78,7 @@ public class SolrCachingAuxDocScorer extends AbstractSolrCachingScorer
         {
             for (DocIterator it = auxDocSet.iterator(); it.hasNext(); /* */)
             {
-                CacheEntry entry = indexedByDocId[it.nextDoc()];
+                CacheEntry entry = indexedByDocId.get(it.nextDoc());
                 translated.set(entry.getLeaf());
             }
         }

@@ -16,11 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/Header
+ * @extends module:alfresco/layout/LeftAndRight
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
-        "alfresco/layout/LeftAndRight",
-        "dojo/dom-construct",
-        "dojo/_base/array"], 
-        function(declare, LeftAndRight, domConstruct, array) {
+        "alfresco/layout/LeftAndRight"], 
+        function(declare, LeftAndRight) {
    
    /**
     * This extends the alfresco/layout/LeftAndRight image to header specific CSS selectors.
@@ -30,7 +34,9 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/Header.css"}]
        */
       cssRequirements: [{cssFile:"./css/Header.css"}]
    });

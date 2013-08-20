@@ -75,4 +75,9 @@ public interface NamespaceDAO extends NamespacePrefixResolver
      * Register with the Dictionary
      */
     public void registerDictionary(DictionaryDAO dictionaryDAO);
+
+    /**
+     * Clear NamespaceLocal
+     */
+    public void clearNamespaceLocal();
 }

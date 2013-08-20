@@ -1,6 +1,6 @@
 <component>
     <name>alfrescoapplyamps</name>
-    <detailedDescription>SharePoint Protocol Support.</detailedDescription>
+    <description>//Alfresco Appy AMPs</description>
     <canBeEdited>1</canBeEdited>
     <selected>1</selected>
     <show>0</show>
@@ -12,7 +12,7 @@
     </parameterList>
     <folderList>
         <folder>
-            <description>applyamps</description>
+            <description>//applyamps</description>
             <name>alfrescoapplyamps</name>
             <destination>${installdir}</destination>
             <platforms>all</platforms>
@@ -24,7 +24,7 @@
             </actionList>
         </folder>
         <folder>
-            <description>mmtjar</description>
+            <description>//mmtjar</description>
             <name>mmtjar</name>
             <destination>${alfresco_commands_directory}</destination>
             <distributionFileList>

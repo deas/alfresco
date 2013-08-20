@@ -16,12 +16,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfMenuBarItem
+ * @extends dijit/MenuBarItem
+ * @mixes module:alfresco/menus/_AlfMenuItemMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/MenuBarItem",
         "alfresco/menus/_AlfMenuItemMixin",
         "alfresco/core/Core",
-        "dojo/dom-construct"], 
-        function(declare, MenuBarItem, _AlfMenuItemMixin, AlfCore, domConstruct) {
+        "dojo/dom-construct",
+        "dojo/dom-class"], 
+        function(declare, MenuBarItem, _AlfMenuItemMixin, AlfCore, domConstruct, domClass) {
    
    /**
     * Currently this extends the default Dojo implementation of a MenuBarItem without making any changes. Despite
@@ -29,22 +38,37 @@ define(["dojo/_base/declare",
     * without needing to modify page definition files.
     */
    return declare([MenuBarItem, _AlfMenuItemMixin, AlfCore], {
+      
+      /**
+       * A DOM node that can optionally be created to display an icon.
+       * 
+       * @instance
+       * @type {object}
+       * @default null 
+       */
+      iconNode: null,
+      
       /**
        * Sets the label of the menu item that represents the popup and creates a new alfresco/menus/AlfMenuGroups
        * instance containing all of the widgets to be displayed in the popup. Ideally the array of widgets should
        * be instances of alfresco/menus/AlfMenuGroup (where instance has its own list of menu items). However, this
        * widget should be able to accommodate any widget.
        * 
-       * @method postCreate
+       * @instance
        */
-      postCreate: function alf_menus_AlfMenuBarPopup__postCreate() {
+      postCreate: function alfresco_menus_AlfMenuBarPopup__postCreate() {
+         if (this.label)
+         {
+            this.set("label", this.message(this.label));
+         }
+         domClass.add(this.containerNode, "alf-menu-bar-label-node");
          if (this.iconClass && this.iconClass != "dijitNoIcon")
          {
-            domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode);
-         }
-         else if (this.iconImage)
-         {
-            domConstruct.create("span", { style: "background-image: url(" + this.iconImage + ");", innerHTML: "&nbsp;"}, this.focusNode);
+            this.iconNode = domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode, "first");
+            if (this.label)
+            {
+               domClass.add(this.containerNode, this.labelWithIconClass);
+            }
          }
          
          this.inherited(arguments);

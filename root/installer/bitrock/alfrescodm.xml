@@ -93,21 +93,21 @@
 		    <title>Admin Password</title>
             <explanation>Please give a password to use for the Alfresco administrator account.</explanation>
             <validationActionList>
-				<throwError>
-					<text>The length of the password must be greater than 3 characters</text>
-					<ruleList>
-						<compareTextLength text="${alfresco_admin_password}" logic="less" length="3"/>
-					</ruleList>
-				</throwError>
-				<throwError>
-					<text>Password must not contain leading or trailing spaces</text>
-					<ruleList>
-						<regExMatch logic="matches" text="${alfresco_admin_password}">
-							<pattern>^\s|\s$</pattern>
-						</regExMatch>
-					</ruleList>
-				</throwError>
-	    	</validationActionList>
+	        <throwError>
+                    <text>The length of the password must be greater than 3 characters</text>
+		    <ruleList>
+		        <compareTextLength text="${alfresco_admin_password}" logic="less" length="3"/>
+	            </ruleList>
+		</throwError>
+                <throwError>
+                    <text>Password must not contain leading or trailing spaces</text>
+                    <ruleList>
+                        <regExMatch logic="matches" text="${alfresco_admin_password}">
+                            <pattern>^\s|\s$</pattern>
+                        </regExMatch>
+                    </ruleList>
+                </throwError>
+	    </validationActionList>
         </passwordParameter>
 
     </parameterList>
@@ -119,7 +119,7 @@
     </readyToInstallActionList>
     <folderList>
         <folder>
-            <description>//War Files</description>
+            <description>//War files</description>
             <name>warfiles</name>
             <destination>${installdiralfresco}</destination>
             <!-- Hack to remove old lib files before next folder -->
@@ -215,8 +215,8 @@
                                     <value>5432</value>
                                 </substitution>
                                 <substitution>
-                                    <pattern>@@BITROCK_OO_PORT@@</pattern>
-                                    <value>${openoffice_port}</value>
+                                    <pattern>@@BITROCK_LO_PORT@@</pattern>
+                                    <value>${libreoffice_port}</value>
                                 </substitution>
                             </substitutionList>
                         </substitute>
@@ -312,6 +312,7 @@
         </folder>
     </folderList>
     <postInstallationActionList>
+        <alfrescoConfigure alfrescoFiles="${tomcat_server_directory}/bin/service.bat;${tomcat_server_directory}/scripts/ctl.sh" />
         <actionGroup>
             <actionList>
                 <copyFile>
@@ -357,6 +358,11 @@
                 </substitution>
             </substitutionList>
         </substitute>
+        <propertiesFileSet>
+            <file>${application_server_conf_directory}/logging.properties</file>
+            <key>org.apache.catalina.loader.WebappClassLoader.level</key>
+            <value>OFF</value>
+        </propertiesFileSet>
     </postInstallationActionList>
     <postUninstallationActionList> 
         <actionGroup>

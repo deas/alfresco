@@ -4,8 +4,8 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-parent</artifactId>
-        <version>4.2.d-SNAPSHOT</version>
-        <relativePath>../../pom-experimental.xml</relativePath>
+        <version>4.2.0-QA-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>alfresco-share</artifactId>
     <dependencies>

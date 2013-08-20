@@ -16,6 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/core/CoreXhr
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/registry",
         "dojo/topic",
@@ -35,7 +40,7 @@ define(["dojo/_base/declare",
        * remove any trailing commas in arrays/objects. This function is particularly handy since Dojo can be very
        * fussy about JSON.
        * 
-       * @method cleanupJSONResponse
+       * @instance
        * @param {string} input
        * @returns {string} A cleaned up JSON response.
        */
@@ -59,8 +64,9 @@ define(["dojo/_base/declare",
        * 
        * By default this function will issue a POST method
        * 
-       * @method serviceXhr
-       * @param {object} config
+       * @instance
+       * @param {Object} config The configuration for the request
+       * @todo List the available config object attributes
        */
       serviceXhr: function alfresco_core_Core__serviceXhr(config) {
          
@@ -81,9 +87,10 @@ define(["dojo/_base/declare",
                }
                
                xhr(config.url, {
-                  handleAs: "text",
+                  handleAs: (config.handleAs) ? config.handleAs : "text",
                   method: (config.method) ? config.method : "POST",
                   data: (config.data) ? JSON.stringify(config.data) : null,
+                  query: (config.query) ? config.query : null,
                   headers: headers
                }).then(function(response){
                   
@@ -149,7 +156,7 @@ define(["dojo/_base/declare",
       /**
        * This is the default success callback for XHR requests that will be used if no other is provided.
        * 
-       * @method defaultSuccessCallback
+       * @instance
        * @param {object} response The object returned from the successful XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
        */
@@ -167,7 +174,7 @@ define(["dojo/_base/declare",
       /**
        * This is the default failure callback for XHR requests that will be used if no other is provided.
        * 
-       * @method defaultFailureCallback
+       * @instance
        * @param {object} response The object returned from the failed XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
        */
@@ -210,7 +217,7 @@ define(["dojo/_base/declare",
       /**
        * This is the default progress callback for XHR requests that will be used if no other is provided.
        * 
-       * @method defaultProgressCallback
+       * @instance
        * @param {object} response The object returned from the progress update of the XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
        */

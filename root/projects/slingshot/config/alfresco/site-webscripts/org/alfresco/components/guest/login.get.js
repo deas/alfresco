@@ -3,6 +3,10 @@
  */
 function main()
 {
+   // Get the edition information to determine if this is an enterprise license
+   // This allows us to set a class on the login form to control the button colour
+   model.edition = context.properties["editionInfo"].edition;
+   
    model.loginUrl = url.context + "/page/dologin";
    var successUrl = context.properties["alfRedirectUrl"];
    if (successUrl === null)

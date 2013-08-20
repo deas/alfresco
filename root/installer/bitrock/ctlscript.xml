@@ -1,6 +1,6 @@
 <component>
     <name>script</name>
-    <description>Script for start/stop Services</description>
+    <description>//Script for start/stop Services</description>
     <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>
@@ -37,9 +37,16 @@
             <ask>0</ask>
         </stringParameter>
     </parameterList>
+    <readyToInstallActionList>
+        <setInstallerVariable name="component(script).parameter(ctlscript_allow_root).value" value="0">
+            <ruleList>
+                <compareText text="${installer_root_install}" logic="does_not_equal" value="1"/>
+            </ruleList>
+        </setInstallerVariable>
+    </readyToInstallActionList>
     <folderList>
         <folder>
-            <description>Program Files Linux</description>
+            <description>//Program Files Linux</description>
             <destination>${installdir}</destination>
             <name>scriptsunix</name>
             <distributionFileList>
@@ -69,6 +76,20 @@ fi
                                 <compareText text="${ctlscript_allow_root}" logic="does_not_equal" value="1"/>
                             </ruleList>
                         </substitution>
+                        <substitution>
+                            <pattern>#!/bin/sh</pattern>
+                            <value>#!/bin/sh
+
+# Allow only root execution
+if [ `id|sed -e s/uid=//g -e s/\(.*//g` -ne 0 ]; then
+    echo "This script requires root privileges"
+    exit 1
+fi
+</value>
+                            <ruleList>
+                                <compareText text="${ctlscript_allow_root}" logic="equals" value="1"/>
+                            </ruleList>
+                        </substitution>
                     </substitutionList>
                 </substitute>
             </actionList>
@@ -80,7 +101,7 @@ fi
             </shouldPackRuleList>
         </folder>
         <folder>
-            <description>Program Files Windows</description>
+            <description>//Program Files Windows</description>
             <destination>${installdir}</destination>
             <platforms>windows</platforms>
             <name>scriptswindows</name>
@@ -114,7 +135,7 @@ fi
             <actionList>
                 <changePermissions>
                     <files>${installdir}/${ctlscript_unix}</files>
-                    <permissions>744</permissions>
+                    <permissions>755</permissions>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                 </changePermissions>

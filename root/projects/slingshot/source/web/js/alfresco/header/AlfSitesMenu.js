@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/AlfSitesMenu
+ * @extends module:alfresco/menus/AlfMenuBarPopup
+ * @mixes module:alfresco/core/CoreXhr
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/header/AlfMenuBarPopup",
         "alfresco/core/CoreXhr",
@@ -39,7 +46,9 @@ define(["dojo/_base/declare",
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance
+       * @type {{i18nFile: string}[]}
+       * @default [{i18nFile: "./i18n/AlfSitesMenu.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfSitesMenu.properties"}],
       
@@ -47,7 +56,8 @@ define(["dojo/_base/declare",
        * This should be set with the id of the current user. By default it is set to null which indicates
        * and if not overridden will result in the add/remove favourite sites menu items NOT being displayed.
        * 
-       * @property {string} currentUser
+       * @instance
+       * @type {string}
        * @default null
        */
       currentUser: null,
@@ -56,7 +66,8 @@ define(["dojo/_base/declare",
        * This should be set with the short name of the current site. By default it is set to the null which
        * indicates that the Sites Menu is not being displayed on a page related to a specific site. In which case
        * the "Add" and "Remove" favourite options will NOT be added.
-       * @property {string} currentSite
+       * @instance
+       * @type {string}
        * @default null
        */
       currentSite: null,
@@ -64,7 +75,7 @@ define(["dojo/_base/declare",
       /**
        * Extend the default constructor to add subscriptions for handling favourites being added and removed.
        * 
-       * @method constructor
+       * @instance
        */
       constructor: function alfresco_header_AlfSitesMenu__constructor() {
          this.alfSubscribe("ALF_FAVOURITE_SITE_ADDED", lang.hitch(this, "favouriteAdded"));
@@ -77,7 +88,8 @@ define(["dojo/_base/declare",
       /**
        * This defines the default widgets to display in the menu - just a loading image.
        * 
-       * @property {object} widgets
+       * @instance
+       * @type {object}
        */
       widgets: [
          {
@@ -93,7 +105,7 @@ define(["dojo/_base/declare",
        * Extend the default postCreate function to setup handlers for adding the 'Useful' group once all the other
        * menu groups and items have been processed.
        *  
-       * @method postCreate
+       * @instance
        */
       postCreate: function alf_menus_header_AlfSitesMenu__postCreate() {
          if (!this.label)
@@ -115,12 +127,16 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * @property {string} _menuUrl A URL to override the default. Primarily provided for the test harness.
+       * A URL to override the default. Primarily provided for the test harness.
+       * @instance
+       * @type {string} 
        */
       _menuUrl: null,
       
       /**
-       * @property {boolean} _menuLoaded Indicates whether or not the menu has been loaded yet.
+       * Indicates whether or not the menu has been loaded yet.
+       * @instance
+       * @type {boolean} 
        * @default false
        */
       _menuLoaded: false,
@@ -129,7 +145,7 @@ define(["dojo/_base/declare",
        * This function is called when the associated AlfMenuGroups popup is opened. It asynchronously loads the
        * recently visited sites information.
        * 
-       * @method loadMenu
+       * @instance
        */
       loadMenu: function alfresco_header_AlfSitesMenu__loadMenu() {
          if (this._menuLoaded)
@@ -158,7 +174,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method _menuDataLoaded
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -205,7 +221,7 @@ define(["dojo/_base/declare",
       /**
        * Adds the "Recent" group to the AlfMenuGroups popup.
        * 
-       * @method addRecentGroup
+       * @instance
        * @param {array} widgetsRecent An array of the recently visited site menu item widget configurations
        */
       addRecentGroup: function alf_header_AlfSitesMenu__addRecentGroup(widgetsRecent) {
@@ -226,7 +242,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method _menuDataLoadFailed
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -243,7 +259,8 @@ define(["dojo/_base/declare",
        * This is a reference to any favourites message item that gets created (typically when either
        * favourites could not be loaded or there are no favourites to display).
        * 
-       * @property {object} _menuMessageItem
+       * @instance
+       * @type {object}
        * @default null
        */
       _menuMessageItem: null,
@@ -254,7 +271,7 @@ define(["dojo/_base/declare",
        * connectivity has been lost, authentication timed out or the repository has gone down since
        * loading the page.
        * 
-       * @method addMenuFailMessageItem
+       * @instance
        */
       addMenuFailMessageItem: function alf_header_AlfSitesMenu__addMenuFailMessageItem() {
          this._menuMessageItem = new AlfMenuItem({
@@ -264,14 +281,19 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * @property {string} _favouritesUrl A URL to override the default. Primarily provided for the test harness.
+       * A URL to override the default. Primarily provided for the test harness.
+       * @instance
+       * @type {string}
+       * @default null 
        */
       _favouritesUrl: null,
       
       /**
        * Indicates whether the users favourite sites have been loaded yet.
        * 
-       * @property {boolean} _favouritesLoaded
+       * @instance
+       * @type {boolean}
+       * @default false
        */
       _favouritesLoaded: false,
       
@@ -279,7 +301,7 @@ define(["dojo/_base/declare",
        * This function is called when the user clicks on the "Favourites" cascading menu item to asynchronously
        * load their favourite sites.
        * 
-       * @method loadFavourites
+       * @instance
        */
       loadFavourites: function alf_header_AlfSitesMenu__loadFavourites() {
          if (this._favouritesLoaded)
@@ -304,7 +326,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method _favouritesDataLoaded
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -348,7 +370,7 @@ define(["dojo/_base/declare",
       /**
        * This is the the sort function used for ordering favourite site menu items.
        * 
-       * @method sortFavourites
+       * @instance
        * @param {object} item1 The first menu item to compare
        * @param {object} item2 The second menu item to compare
        * @returns 1 if item1 is alphabetically after item2, -1 if item2 is alphabetically after item1
@@ -377,7 +399,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method _favouritesDataLoadFailed
+       * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
@@ -395,7 +417,8 @@ define(["dojo/_base/declare",
        * This is a reference to any favourites message item that gets created (typically when either
        * favourites could not be loaded or there are no favourites to display).
        * 
-       * @property {object} _favouritesMessageItem
+       * @instance
+       * @type {object}
        * @default null
        */
       _favouritesMessageItem: null,
@@ -404,7 +427,7 @@ define(["dojo/_base/declare",
        * Adds a non-functional message menu item to the favourites menu. This is used when needing to 
        * indicate that the favourites didn't load or that there are no favourites.
        * 
-       * @method addNoFavouritesMessageItem
+       * @instance
        */
       addNoFavouritesMessageItem: function alf_header_AlfSitesMenu__addNoFavouritesMessageItem() {
          this._favouritesMessageItem = new AlfMenuItem({
@@ -419,7 +442,7 @@ define(["dojo/_base/declare",
        * connectivity has been lost, authentication timed out or the repository has gone down since
        * loading the page.
        * 
-       * @method addFavouritesFailMessageItem
+       * @instance
        */
       addFavouritesFailMessageItem: function alf_header_AlfSitesMenu__addFavouritesFailMessageItem() {
          this._favouritesMessageItem = new AlfMenuItem({
@@ -431,7 +454,7 @@ define(["dojo/_base/declare",
       /**
        * Adds an individual menu item.
        * 
-       * @method _addMenuItem
+       * @instance
        * @param {object} group The group to add the menu item to
        * @param {object} widget The menu item to add
        * @param {integer} index The index to add the menu item at.
@@ -445,7 +468,7 @@ define(["dojo/_base/declare",
       /**
        * This function add the 'Useful' group and associated menu items into the AlfMenuGroups popup.
        * 
-       * @method addUsefulGroup
+       * @instance
        * @param {boolean} showAddFavourite Indicates whether or not to display the "Add Favourite" menu item
        * @param {boolean} showRemoveFavourite Indicates whether or not to display the "Remove Favourite" menu item
        */
@@ -547,7 +570,7 @@ define(["dojo/_base/declare",
       /**
        * This function adds a new favourite to the favourites list. 
        * 
-       * @method addFavouriteMenuItem
+       * @instance
        * @param {object} data The details of the site to make a favourite
        */
       addFavouriteMenuItem: function alfresco_header_AlfSitesMenu__addFavouriteMenuItem(data) {
@@ -608,7 +631,7 @@ define(["dojo/_base/declare",
        * from two different code paths. It needed to be separated into a new function so that it could be used after retrieving
        * the site title or when the site title was already available.
        * 
-       * @method _addFavouriteMenuItem
+       * @instance
        * @param {string} siteShortName The site shortname to use for the favourite
        * @param {string} siteTitle The title of the site to display as the label of the menu item.
        */
@@ -646,7 +669,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method favouriteAdded
+       * @instance
        * @param {object} data An object that should contain site and user attributes
        */
       favouriteAdded: function alfresco_header_AlfSitesMenu__favouriteAdded(data) {
@@ -673,7 +696,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method favouriteRemove
+       * @instance
        * @param {object} data An object that should contain site and user attributes
        */
       favouriteRemoved: function alfresco_header_AlfSitesMenu__favouriteRemoved(data) {
@@ -714,7 +737,7 @@ define(["dojo/_base/declare",
        * The current design of the header means that the entire page will be reloaded (which will then reflect
        * the change in favourites).
        * 
-       * @method siteJoined
+       * @instance
        * @param {object} data An object that should include details of the user and the joined site
        */
       siteJoined: function alfresco_header_AlfSitesMenu__siteJoined(data) {
@@ -725,7 +748,7 @@ define(["dojo/_base/declare",
        * When a user leaves a site this function is called so that the favourite site is removed from
        * their preferences.
        * 
-       * @method siteLeft
+       * @instance
        * @param {object} data An object that should include details of the user and the joined left
        */
       siteLeft: function alfresco_header_AlfSitesMenu__siteLeft(data) {
@@ -734,7 +757,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method siteDetailsUpdated
+       * @instance
        * @param {object} data 
        */
       siteDetailsUpdated: function alfresco_header_AlfSitesMenu__siteDetailsUpdated(data) {
@@ -745,7 +768,8 @@ define(["dojo/_base/declare",
       /**
        * The label for the "Recently Visited Sites" group.
        * 
-       * @property {string} recentGropLabel
+       * @instance
+       * @type {string} recentGropLabel
        * @default "recent.sites.label"
        */
       recentGroupLabel: "recent.sites.label",
@@ -753,7 +777,8 @@ define(["dojo/_base/declare",
       /**
        * The label for the "Favourite Sites" group.
        * 
-       * @property {string} favouriteGroupLabel
+       * @instance
+       * @type {string} favouriteGroupLabel
        * @default "favourite.sites.label"
        */
       favouriteGroupLabel: "favourite.sites.label",
@@ -762,63 +787,73 @@ define(["dojo/_base/declare",
        * The label for the "Useful" group - this group contains the Site Finder, Create Site and Add/Remove
        * favourite menu items.
        * 
-       * @property {string} usefulGroupLabel
+       * @instance
+       * @type {string} usefulGroupLabel
        * @default "useful.sites.label"
        */
       usefulGroupLabel: "useful.sites.label",
       
       /**
-       * @property {string} favouriteGroupIconClass
+       * @instance
+       * @type {string} favouriteGroupIconClass
        * @default "alf-favourite-site-icon"
        */
       favouriteGroupIconClass: "alf-favourite-site-icon",
       
       /**
-       * @property {string} siteFinderLabel
+       * @instance
+       * @type {string} siteFinderLabel
        * @default "site-finder.label"
        */
       siteFinderLabel: "site-finder.label",
       
       /**
-       * @property {string} siteFinderIconClass
+       * @instance
+       * @type {string} siteFinderIconClass
        * @default "alf-site-finder-icon"
        */
       siteFinderIconClass: "alf-site-finder-icon",
       
       /**
-       * @property {string} createSiteLabel
+       * @instance
+       * @type {string} createSiteLabel
        * @default "create-site.label"
        */
       createSiteLabel: "create-site.label",
       
       /**
-       * @property {string} createSiteIconClass
+       * @instance
+       * @type {string} createSiteIconClass
        * @default "alf-create-site-icon"
        */
       createSiteIconClass: "alf-create-site-icon",
       
       /**
-       * @property {string} addFavouriteLabel
+       * @instance
+       * @type {string} addFavouriteLabel
        * @default "add-favourite-site.label"
        */
       addFavouriteLabel: "add-favourite-site.label",
       
       /**
-       * @property {string} addFavouriteIconClass
+       * @instance
+       * @type {string} addFavouriteIconClass
        * @default "alf-favourite-site-icon"
        */
-      addFavouriteIconClass:  "alf-favourite-site-icon",
+      addFavouriteIconClass:  "alf-add-favourite-site-icon",
       
       /**
-       * @property {string} removeFavouriteLabel
+       * @instance
+       * @type {string} removeFavouriteLabel
        * @default "remove-favourite-site.label"
        */
       removeFavouriteLabel: "remove-favourite-site.label",
       
       /**
-       * @property {string} removeFavouriteIconClass
-       * @default "alf-favourite-site-icon"
+       * @instance
+       * @type {string} removeFavouriteIconClass
+       * @default "alf-remove-favourite-site-icon"
        */
-      removeFavouriteIconClass: "alf-favourite-site-icon"
+      removeFavouriteIconClass: "alf-remove-favourite-site-icon"
    });
 });

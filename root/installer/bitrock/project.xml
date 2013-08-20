@@ -17,7 +17,7 @@
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
     <allowComponentSelection>1</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
-    <allowedLanguages>en fr es it de ja nl ru zh_CN nb_NO</allowedLanguages>
+    <allowedLanguages>en fr es it de ja nl ru zh_CN no</allowedLanguages>
     <enableRollback>0</enableRollback>
 
     <platformOptionsList>
@@ -86,7 +86,7 @@
 	    <file>${build_project_directory}/lang/alf-zh_CN.po</file>
 	</language>
 	<language> 
-	    <code>nb_NO</code> 
+	    <code>no</code> 
 	    <encoding>utf-8</encoding>
 	    <file>${build_project_directory}/lang/alf-nb_NO.po</file>
 	</language>
@@ -94,6 +94,7 @@
 
     <componentList>
         <include file="libreoffice-validations.xml" />
+        <include file="base-functions.xml" />
         <include file="alfresco-componentselection-java.xml" />
         <include file="alfresco-build-settings.xml" />
         <include file="alfresco-customstack-build-settings.xml" />
@@ -139,6 +140,17 @@
 		    </actionList>
 		</folder>
 	    </folderList>
+	    <!--postInstallationActionList>
+		<actionGroup>
+		    <actionList>
+			<deleteFile abortOnError="0" showMessageOnError="0" path="${installdir}/common/lib/libtcnative*" /> 
+		    </actionList>
+		    <ruleList>
+			<platformTest type="linux" />
+			<isFalse value="${component(javaalfresco).selected}" />
+		    </ruleList>
+		</actionGroup>
+	    </postInstallationActionList-->
 	</component>
 	<include file="tomcat-java.xml" />
 	<include file="postgres.xml" />
@@ -169,7 +181,7 @@
 	<include file="alfresco-googledocs.xml" />
 	<include file="base-unix-service.xml" />
 
-	<include file="openoffice.xml"/>
+	<include file="libreoffice.xml"/>
 	<include file="imagemagick.xml"/>
     	<include file="swftools.xml"/>
         <include file="alfresco-customstack-postgres-settings.xml" />
@@ -194,40 +206,40 @@
                 <platformTest type="osx" />
             </ruleList>
         </actionGroup>
-        <actionGroup>
-            <actionList>
-            <runProgram>
-                <abortOnError>0</abortOnError>
-                <showMessageOnError>0</showMessageOnError>
-                <program>sc</program>
-                <programArguments>config ${tomcat_unique_service_name} depend= "${postgres_unique_service_name}"</programArguments>
-                <ruleList>
-                <platformTest type="windows" />
-                </ruleList>
-            </runProgram>
-            <runProgram>
-                <progressText>Stopping PostgreSQL...</progressText>
-                <program>${installdir}/${ctlscript_unix}</program>
-                <programArguments>stop postgresql</programArguments>
-                <ruleList>
-                <platformTest type="unix" />
-                        </ruleList>
-                    </runProgram>
-            <runProgram>
-                <progressText>Stopping PostgreSQL...</progressText>
-                <program>${postgres_root_directory.dos}\scripts\servicerun.bat</program>
-                <programArguments>STOP</programArguments>
-                <ruleList>
-                <platformTest type="windows" />
-                        </ruleList>
-                    </runProgram>
-            <waitForPort port="${database_port}" timeout="10000" state="free" />
-            </actionList>
-            <ruleList>
-                    <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
-                    <isTrue value="${component(postgres).selected}" />
-            </ruleList>
-        </actionGroup>
+	<actionGroup>
+	    <actionList>
+		<runProgram>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <program>sc</program>
+		    <programArguments>config ${tomcat_unique_service_name} depend= "${postgres_unique_service_name}"</programArguments>
+		    <ruleList>
+			<platformTest type="windows" />
+		    </ruleList>
+		</runProgram>
+		<runProgram>
+		    <progressText>Stopping PostgreSQL...</progressText>
+		    <program>${installdir}/${ctlscript_unix}</program>
+		    <programArguments>stop postgresql</programArguments>
+		    <ruleList>
+			<platformTest type="unix" />
+                    </ruleList>
+                </runProgram>
+		<runProgram>
+		    <progressText>Stopping PostgreSQL...</progressText>
+		    <program>${postgres_root_directory.dos}\scripts\servicerun.bat</program>
+		    <programArguments>STOP</programArguments>
+		    <ruleList>
+			<platformTest type="windows" />
+                    </ruleList>
+                </runProgram>
+		<waitForPort port="${database_port}" timeout="10000" state="free" />
+	    </actionList>
+	    <ruleList>
+                <!--isTrue value="${alfrescopostgresquestion_bundled}" /-->
+                <isTrue value="${component(postgres).selected}" />
+	    </ruleList>
+	</actionGroup>
         <!--<actionGroup>
             <actionList>
                 <runProgram>

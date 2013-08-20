@@ -1,19 +1,19 @@
-.multiple-entry-element {
+.alfresco-forms-controls-MultipleEntryElement {
    
 }
 
-.multiple-entry-element-read-display {
+.alfresco-forms-controls-MultipleEntryElement .read-display {
    display: block;
 }
 
-.multiple-entry-element-read-display.hide {
+.alfresco-forms-controls-MultipleEntryElement .read-display.hide {
    display: none;
 }
 
-.multiple-entry-element-edit-display {
+.alfresco-forms-controls-MultipleEntryElement .edit-display {
    display: block;
 }
 
-.multiple-entry-element-edit-display.hide {
+.alfresco-forms-controls-MultipleEntryElement .edit-display.hide {
    display: none;
 }

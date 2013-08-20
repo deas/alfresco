@@ -16,7 +16,7 @@
             <name>wcmqs</name>
             <platforms>all</platforms>
             <distributionFileList>
-              <distributionFile origin="${alfresco_wcmqs_source_file}" />
+              <distributionFile origin="${alfresco_wcmqs_source_file}" allowWildcards="1"/>
             </distributionFileList>
             <actionList>
                 <setInstallerVariable name="alfresco_apply_amps" value="1" />
@@ -28,7 +28,7 @@
             <name>wcmqsshare</name>
             <platforms>all</platforms>
             <distributionFileList>
-              <distributionFile origin="${alfresco_wcmqs_share_source_file}" />
+              <distributionFile origin="${alfresco_wcmqs_share_source_file}" allowWildcards="1"/>
             </distributionFileList>
             <actionList>
                 <setInstallerVariable name="alfresco_apply_amps_share" value="1" />

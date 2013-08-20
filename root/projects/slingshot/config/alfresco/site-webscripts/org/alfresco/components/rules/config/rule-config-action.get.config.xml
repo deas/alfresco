@@ -1,7 +1,11 @@
 <rule-config type="action">
 
+   <!-- This defines the client-side JavaScript widget to instantiate -->
    <component>Alfresco.RuleConfigAction</component>
 
+   <!-- The "webscript" attribute defines a repository WebScript from which to retrieve some
+        data. The remove element will be processed to remove any matching elements from the 
+        return data. -->
    <config-definitions webscript="/api/actiondefinitions">
       <!--
          Public Action Definitions that we don't want displayed in the menu
@@ -63,6 +67,9 @@
 			<action name="counter"/>
 		</group>
       <group>
+         <action name="set-property-value"/>
+      </group>
+      <group>
          <action name="*"/>
       </group>
    </menu>
@@ -83,6 +90,7 @@
       <action name="transform">Transform</action>
       <action name="transform-image">Transform</action>
       <action name="import">Import</action>
+      <action name="set-property-value">SetPropertyValue</action>
    </customise>
 
 </rule-config>

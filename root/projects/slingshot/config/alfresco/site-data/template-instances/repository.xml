@@ -36,6 +36,14 @@
             <pagination>true</pagination>
          </properties>
       </component>
+      
+      <component>
+         <region-id>documentlist_v2</region-id>
+         <url>/components/documentlibrary/repo</url>
+         <properties>
+            <pagination>true</pagination>
+         </properties>
+      </component>
 
       <!-- Filter -->
       <component>

@@ -19,6 +19,13 @@
    font-size: 77%;
 }
 
+.footer-ent .copyright
+{
+   margin: 0 auto;
+   width: 450px;
+   display: block;
+}
+
 .footer-com,
 .footer-ent,
 .footer-team
@@ -41,8 +48,7 @@
    background-color: #fff;
    border-left: 1px solid #dfdfdf;
    border-right: 1px solid #dfdfdf;
-   line-height: 47px;
-   padding: 17px 0.5em;
+   padding: 14px 1.5em;
 }
 
 .footer-team .copyright
@@ -54,6 +60,17 @@
    padding: 17px 25px 17px 0.5em;
 }
 
+.footer-ent .licenseHolder
+{
+   display:block;
+}
+
+.footer-ent .copyright a
+{
+   float: left;
+   margin-top: -2px;
+}
+
 .footer-com .copyright img
 {
    padding-right: 1em;
@@ -63,7 +80,6 @@
 .footer-ent .copyright img
 {
    padding-right: 1em;
-   vertical-align: middle;
 }
 
 .footer-team .copyright img

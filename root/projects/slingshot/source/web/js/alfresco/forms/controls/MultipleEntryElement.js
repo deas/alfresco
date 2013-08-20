@@ -16,38 +16,71 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/forms/controls/MultipleEntryElement
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/MultipleEntryElement.html",
         "alfresco/core/Core",
-        "dijit/form/TextBox",
-        "dojo/dom-construct",
+        "alfresco/forms/PublishForm",
         "dojo/dom-class",
-        "dijit/registry"], 
-        function(declare, _Widget, _Templated, template, AlfCore, TextBox, domConstruct, domClass, registry) {
+        "alfresco/forms/controls/DojoValidationTextBox"], 
+        function(declare, _Widget, _Templated, template, AlfCore, PublishForm, domClass, DojoValidationTextBox) {
    
    return declare([_Widget, _Templated, AlfCore], {
+      
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type cssRequirements {Array}
+       */
       cssRequirements: [{cssFile:"./css/MultipleEntryElement.css"}],
+      
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {Array} i18nRequirements
+       */
       i18nRequirements: [{i18nFile: "./i18n/MultipleEntryElement.properties"}],
+      
+      /**
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {String} template
+       */
       templateString: template,
       
       /**
        * The key should be the identifier of this element.
        * TODO: Could we just rely on the widget provided id attribute?
+       * 
+       * @instance
+       * @default null
        */
-      _alfMultipleElementId: null,
+      id: null,
       
       /**
        * The element configuration should be passed as a construction argument. It should provide a key
        * and a value to use for rendering the element.
+       * 
+       * @instance
+       * @default null
        */
       elementConfig: null,
       
       /**
-       * 
+       * @instance
        */
-      constructor: function(args) {
+      constructor: function alfresco_forms_controls_MultipleEntryElement__constructor(args) {
          declare.safeMixin(this, args);
          this.determineKeyAndValue();
       },
@@ -56,70 +89,144 @@ define(["dojo/_base/declare",
        * This is the default function for determining the unique key to identify the the element amongst its
        * peers. This function will most likely need to be overridden by extending classes that handle more
        * complex data types. 
+       * 
+       * @instance
        */
-      determineKeyAndValue: function() {
-         this.alfLog("log", "DetermineKeyAndValue", this.elementConfig);
-         if (this.elementConfig != null && 
-             this.elementConfig instanceof Object)
+      determineKeyAndValue: function alfresco_forms_controls_MultipleEntryElement__determineKeyAndValue() {
+         this.alfLog("log", "DetermineKeyAndValue", this);
+         
+         if (this.elementConfig != null)
          {
             // We're going to make sure that each element has a unique id. If the supplied configuration
             // does not include an id then we're going to create one now...
-            if (typeof this.elementConfig._alfMultipleElementId == "undefined" ||
-                this.elementConfig._alfMultipleElementId == null ||
-                this.elementConfig._alfMultipleElementId == "") 
+            if (this.elementConfig.fieldId == null || this.elementConfig.fieldId == "") 
             {
-               this.elementConfig._alfMultipleElementId = this.generateUuid();
+               this.elementConfig.fieldId = this.generateUuid();
             }
-            this.alfMultipleElementId = this.elementConfig._alfMultipleElementId;
-            this.value = this.elementConfig;
+            this.fieldId = this.elementConfig.fieldId;
+            this.elementValue = this.elementConfig;
          }
          else
          {
-            this._alfMultipleElementId = this.generateUuid();
-            this.value = {};
-            this.value._alfMultipleElementId = this._alfMultipleElementId;
+            this.fieldId = this.generateUuid();
+            this.elementValue = {};
+            this.elementValue.fieldId = this.fieldId;
          }
       },
 
       /**
        * Calls the createReadDisplay and createEditDisplay functions to setup the edit and read modes for the element.
        * Those functions should be overridden directly to alter the appearance of the element.
+       * 
+       * @instance
        */
-      postCreate: function() {
-         
-         // Some data will be provided and it will be necessary to construct the widgets to render that data in both edit and display mode.
+      postCreate: function alfresco_forms_controls_MultipleEntryElement__postCreate() {
          this.createReadDisplay();
       },
       
       /**
        * The default read display simply shows the value of the element.
+       * 
+       * @instance
        */
-      createReadDisplay: function() {
-         // Set the innerHTML of the read display to be the value...
-         if (typeof this.value.value == "undefined")
-         {
-            this.value.value = "";
-         }
-         this.readDisplay.innerHTML = this.encodeHTML(this.value.value);
+      createReadDisplay: function alfresco_forms_controls_MultipleEntryElement__createReadDisplay() {
+         var currentValue = this.getValue();
+         this.readDisplay.innerHTML = this.encodeHTML(currentValue.value);
       },
       
-      createEditDisplay: function() {
-         domConstruct.empty(this.editDisplay);
-         var _this = this;
-         var textBox = new TextBox({value: this.value.value});
-         textBox.placeAt(this.editDisplay);
-         textBox.watch("value", function(name, oldValue, value) {
-            _this.value.value = value;
-            _this.createReadDisplay();
-         }, this);
+      /**
+       * A reference to the form widget that will be used to hold the controls for configuring
+       * the rule definition.
+       * 
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      form: null,
+      
+      /**
+       * Creates a text box to capture the element value
+       * @instance
+       */
+      createEditDisplay: function alfresco_forms_controls_MultipleEntryElement__createEditDisplay() {
+         if (this.form == null)
+         {
+            // Before we create the form with the widgets, it is necessary to get the currently available
+            // fields that can be used to configure the rules.
+            // This information needs to be requested via a publication
+            // Create scope for form, but set element scope for field updates
+            var formPubSubScope = this.generateUuid();
+            this.form = new PublishForm({
+               pubSubScope: formPubSubScope,
+               dataScope: this.dataScope,
+               widgets: this.getFormWidgets()});
+            
+            // The element is always created from the base widgets which does not actually provide any values
+            // so it is important that the values are set afterwards...
+            this.form.setValue(this.elementValue);
+
+            this.alfLog("log", "Created new form for MEE", this.form);
+            this.form.placeAt(this.editDisplay);
+         }
+         this.form.validate();
+      },
+      
+      /**
+       * Returns the widgets to be used in the form created for edit mode.
+       * 
+       * @instance
+       * @returns {object[]}
+       */
+      getFormWidgets: function alfresco_forms_controls_MultipleEntryElement__getFormWidgets() {
+         return [
+            {
+               // This is the hidden id and needs to be included to ensure that the id is persisted.
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  name: "fieldId",
+                  label: "fieldId",
+                  value: this.elementValue.fieldId,
+                  visibilityConfig: {
+                     initialValue: false
+                  }
+               }
+            },
+            {
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  name: "value",
+                  label: "multi.element.value.label",
+                  description: "multi.element.value.description",
+                  value: this.elementValue.value,
+                  requirementConfig: {
+                     initialValue: true
+                  }
+               }
+            }
+         ];
+      },
+      
+      /**
+       * This is called whenever the text box in the edit view is updated.
+       * 
+       * @instance
+       * @param {string} name The name of the changed element
+       * @param {string} oldValue The value before the change
+       * @param {string} value The value after the change
+       */
+      onElementValueChange: function alfresco_forms_controls_MultipleEntryElement__onElementValueChange(name, oldValue, value) {
+         this.elementValue.value = value;
+         this.createReadDisplay();
       },
 
       /**
        * Switches the visibility of the edit and read displays.
+       * 
+       * @instance
+       * @param {boolean} switchToEdit Indicates whether or not to switch into edit mode
        */
-      editMode: function(isEditMode) {
-         
-         if (isEditMode)
+      editMode: function alfresco_forms_controls_MultipleEntryElement__editMode(switchToEdit) {
+         if (switchToEdit)
          {
             this.createEditDisplay();
             domClass.remove(this.editDisplay, "hide");
@@ -136,16 +243,36 @@ define(["dojo/_base/declare",
          }
       },
       
-      getValue: function() {
-         return this.value;
+      /**
+       * @instance
+       * @returns {object}
+       */
+      getValue: function alfresco_forms_controls_MultipleEntryElement__getValue() {
+         var value = {};
+         if (this.form != null) 
+         {
+            value = this.form.getValue();
+         }
+         else
+         {
+            value = this.elementValue;
+         }
+         return value; 
       },
       
       /**
+       * Calls the "validate" function on form (if it exists) and returns the result.
        * 
+       * @instance
+       * @returns {boolean}
        */
-      validate: function() {
-         // By default there is no validation performed. 
-         return true;
+      validate: function alfresco_forms_controls_MultipleEntryElement__validate() {
+         var valid = true;
+         if (this.form)
+         {
+            valid = this.form.validate();
+         }
+         return valid;
       }
    });
 });

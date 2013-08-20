@@ -48,7 +48,7 @@ function main()
          actions: [
             {
                cssClass: "rss",
-               eventOnClick: { _alfValue : "activitiesFeedDashletEvent", _alfType: "REFERENCE"},
+               eventOnClick: { _alfValue : "activitiesFeedDashletEvent" + args.htmlid.replace(/-/g, "_"), _alfType: "REFERENCE"},
                tooltip: msg.get("dashlet.rss.tooltip")
             },
             {

@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/header/UserStatus
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes dijit/_FocusMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
@@ -29,42 +38,50 @@ define(["dojo/_base/declare",
         "dojo/keys",
         "dijit/focus",
         "dojo/_base/array",
-        "dijit/registry"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _FocusMixin, template,  AlfCore, Textarea, on, event, xhr, keys, focusUtil, array, registry) {
+        "dijit/registry",
+        "dojo/dom-style"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _FocusMixin, template,  AlfCore, Textarea, on, event, xhr, keys, focusUtil, array, registry, domStyle) {
    
    return declare([_WidgetBase, _TemplatedMixin, _FocusMixin, AlfCore], {
       
       /**
        * The scope to use for i18n messages.
        * 
-       * @property i18nScope {String}
+       * @instance
+       * @type {string}
        */
       i18nScope: "org.alfresco.UserStatus",
       
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {{cssFile: string, media: string}[]}
+       * @default [{cssFile:"./css/UserStatus.css"}]
        */
       cssRequirements: [{cssFile:"./css/UserStatus.css"}],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance
+       * @type {{i18nFile: string}[]}
+       * @default [{i18nFile: "./i18n/UserStatus.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/UserStatus.properties"}],
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {string}
        */
       templateString: template,
 
       /**
        * This will be intialised to reference a TextArea widget by the postCreate function.
        * 
-       * @property _userStatusWidget {object}
+       * @instance
+       * @type {object}
        */
       _userStatusWidget: null,
       
@@ -73,13 +90,15 @@ define(["dojo/_base/declare",
        * with a boolean value during the postCreate function to indicate whether or not a status was passed as an
        * argument. This could be useful when making a decision on how the status is displayed.
        * 
-       * @property unknownStatus {boolean}
+       * @instance
+       * @type {boolean}
        */
       unknownStatus: null,
       /**
        * This represents the current user status. It should be provided with a value when the widget is instantiated.
        * 
-       * @property userStatus {String}
+       * @instance
+       * @type {string}
        */
       userStatus: "",
       
@@ -87,7 +106,8 @@ define(["dojo/_base/declare",
        * This represents the time of the last user status update. It should be provided with a value when the widget
        * is instantiated.
        * 
-       * @property userStatusTime {String}
+       * @instance
+       * @type {string}
        */
       userStatusTime: null,
       
@@ -96,7 +116,8 @@ define(["dojo/_base/declare",
        * locked. This array is maintained so that the _onBlur function can iterate through it to unlock all the widgets
        * when the user moves focus away from the UserStatus widget. 
        * 
-       * @property _popupLocks {array}
+       * @instance
+       * @type {array}
        */
       _popupLocks: null,
       
@@ -105,7 +126,7 @@ define(["dojo/_base/declare",
        * gains focus it needs to ensure that the wrapped dijit/form/Textarea widget is given focus (i.e. that the cursor
        * is placed inside the text area read for typing).
        * 
-       * @method focus
+       * @instance
        */
       focus: function alf_header_UserStatus__focus() {
          this.alfLog("log", "User Status focus");
@@ -128,7 +149,7 @@ define(["dojo/_base/declare",
        * implementing a "lockPopupsOpen" function to achieve the desired effect (the corresponding function can be found
        * in alfresco/menus/AlfMenuBar).
        * 
-       * @method _onFocus
+       * @instance
        */
       _onFocus: function alf_header_UserStatus___onFocus(){
          var _this = this;
@@ -151,7 +172,7 @@ define(["dojo/_base/declare",
        * active stack to close any popups that they have open. See the documentation for the _onFocus function for further
        * details.
        * 
-       * @method _onBlur
+       * @instance
        */
       _onBlur: function alf_header_UserStatus___onBlur(){
          var _this = this;
@@ -168,7 +189,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alf_header_UserStatus__postCreate() {
          var _this = this;
@@ -192,6 +213,17 @@ define(["dojo/_base/declare",
             value: this.userStatus
          });
          this._userStatusWidget.placeAt(this.focusNode);
+
+         // Make a guess at a decent size of the text area... although the widget does offer the ability
+         // to resize itself, it relies on it being visible (which when the menu is created it won't be).
+         // Therefore we'll make a decent guess as to a sensible height. There is almost certainly a better
+         // way of doing this - the best way would be to trigger a resize when the status widget is visible
+         var height = 3;
+         if (this.userStatus != null)
+         {
+            height = Math.ceil(this.userStatus.length/30);
+         }
+         domStyle.set(this._userStatusWidget.domNode, "height", (height * 25) +  "px");
          
          // Set the relative time (the time supplied should be in ISO8061 standard)...
          this.setStatusRelativeTime();
@@ -267,7 +299,7 @@ define(["dojo/_base/declare",
        * This function was originally copied from header.js. PLEASE NOTE: That it still uses the Alfresco.util.relativeTime function which 
        * will be available in Share for the considerable future but at some point this function will need to be ported to the Dojo framework.
        * 
-       * @method setStatusRelativeTime
+       * @instance
        */
       setStatusRelativeTime: function alf_header_UserStatus__setStatusRelativeTime()
       {
@@ -278,8 +310,8 @@ define(["dojo/_base/declare",
       /**
        * Called when the user clicks on the post button.
        * 
-       * @method postStatus
-       * @param evt {object} The click event
+       * @instance
+       * @param {object} evt The click event
        */
       postStatus: function alf_header_UserStatus__postStatus(evt) {
          
@@ -295,8 +327,8 @@ define(["dojo/_base/declare",
        * the new status (if available) and status update time (if available) and displays them in 
        * the widget.
        *
-       * @method statusUpdated
-       * @param payload {object}
+       * @instance
+       * @param {object} payload
        */
       statusUpdated: function alf_header_UserStatus__statusUpdated(payload)
       {
@@ -333,7 +365,8 @@ define(["dojo/_base/declare",
        * the first time the user clicks inside the status box and is reset when they move away from it without
        * entering any data or after they post a new status message.
        * 
-       * @property _userStatusClickedOnce {boolean}
+       * @instance
+       * @type _userStatusClickedOnce {boolean}
        */
       _userStatusClickedOnce: false,
       
@@ -341,8 +374,8 @@ define(["dojo/_base/declare",
        * Called when the user clicks inside the text area to set some status. It's important that we ensure that
        * the click event is propagated no further otherwise it will result in a surrounding menu closing.
        * 
-       * @method onUserStatusClick
-       * @param evt {object} The click event.
+       * @instance
+       * @param {object} evt The click event.
        */
       onUserStatusClick: function alf_header_UserStatus__onUserStatusClick(evt) {
          if (this._userStatusClickedOnce)
@@ -364,8 +397,8 @@ define(["dojo/_base/declare",
        * to reset their status message. The deciding factor is whether or not they have made any contributions
        * towards entering a new status. If they haven't then the status is reset as is the click counter.
        * 
-       * @method onUserStatusBlur
-       * @param evt {object} The blur event.
+       * @instance
+       * @param {object} evt The blur event.
        */
       onUserStatusBlur: function alf_header_UserStatus__onUserStatusBlur(evt) {
          this.alfLog("log", "User Status Blur");

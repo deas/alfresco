@@ -35,10 +35,12 @@ public class EditionInfo implements Serializable
     public static final String ENTERPRISE_EDITION = "ENTERPRISE";
     public static final String TEAM_EDITION = "TEAM";
     public static final String UNKNOWN_EDITION = "UNKNOWN";
+    public static final String UNKNOWN_HOLDER = "UNKNOWN";
 
     protected final long users;
     protected final long documents;
     protected final String edition;
+    protected final String holder;
     protected final boolean response;
 
     public EditionInfo()
@@ -46,6 +48,7 @@ public class EditionInfo implements Serializable
         this.users = -1L;
         this.documents = -1L;
         this.edition = UNKNOWN_EDITION;
+        this.holder = UNKNOWN_HOLDER;
         this.response = false;
     }
 
@@ -55,6 +58,7 @@ public class EditionInfo implements Serializable
         this.users = json.optLong("users", -1L);
         this.documents = json.optLong("documents", -1L);
         this.edition = json.getString("licenseMode");
+        this.holder = json.getString("licenseHolder");
         this.response = true;
     }
 
@@ -73,6 +77,11 @@ public class EditionInfo implements Serializable
         return this.edition;
     }
 
+    public String getHolder()
+    {
+        return this.holder;
+    }
+
     /**
      * @return true if the Edition info object was constuctor from a server response,
      *         false if this is a default construction - used until the server responds.
@@ -86,6 +95,6 @@ public class EditionInfo implements Serializable
     public String toString()
     {
         return "Users: " + this.users + "  Documents: " + this.documents +
-                "  Edition: " + this.edition + "  Built from server response: " + this.response;
+            "  Edition: " + this.edition + " Holder: " + this.holder + "  Built from server response: " + this.response;
     }
 }

@@ -32,6 +32,7 @@ import org.springframework.extensions.config.ConfigElement;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.Message;
 import com.hazelcast.core.MessageListener;
 
 /**
@@ -351,7 +352,7 @@ public class ClusterDebug extends DebugInterfaceBase implements MessageListener<
      * 
      * @param msg DebugClusterMessage
      */
-	public void onMessage(DebugClusterMessage msg) {
+	public void onMessage(Message<DebugClusterMessage> msg) {
 
     	// Output the message to the local debug interface
     	
@@ -359,7 +360,7 @@ public class ClusterDebug extends DebugInterfaceBase implements MessageListener<
     		
     		// Output the debug string
     		
-    		m_localInterface.debugPrintln( msg.getDebugString());
+    		m_localInterface.debugPrintln( msg.getMessageObject().getDebugString());
     	}
 	}
 }

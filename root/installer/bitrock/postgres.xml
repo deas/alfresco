@@ -75,9 +75,9 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
     <parameterList>
 <!-- hidden parameter -->
         <booleanParameter name="postgres_execute_abort_action_list" value="0" ask="0" />
-        <stringParameter name="postgres_logminmessage_level" ask="0" default="default" explanation="See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
-        <stringParameter name="postgres_logminerrorstatement_level" ask="0" default="default" explanation="See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
-        <booleanParameter name="postgres_enable_silentmode" ask="0" default="0" explanation="If enabled, the postmaster messages are redirected to the postmaster.log in the data folder.Only valid on Unix." />
+        <stringParameter name="postgres_logminmessage_level" ask="0" default="default" explanation="//See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
+        <stringParameter name="postgres_logminerrorstatement_level" ask="0" default="default" explanation="//See postgresql.conf file for valid values. If leave as default we don't modify the default configuration." />
+        <booleanParameter name="postgres_enable_silentmode" ask="0" default="0" explanation="//If enabled, the postmaster messages are redirected to the postmaster.log in the data folder.Only valid on Unix." />
 <stringParameter>
             <name>postgres_installation_type_options</name>
             <ask>0</ask>
@@ -407,9 +407,9 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="POSTGRES_DYLD_LIBRARY_PATH" value="${postgres_root_directory}/lib"/>
-        <setInstallerVariable name="DYLD_LIBRARY_PATH" value="${POSTGRES_DYLD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}">
+        <setInstallerVariable name="DYLD_FALLBACK_LIBRARY_PATH" value="${POSTGRES_DYLD_LIBRARY_PATH}:${DYLD_FALLBACK_LIBRARY_PATH}">
             <ruleList>
-                <compareText text="${DYLD_LIBRARY_PATH}" value="${POSTGRES_DYLD_LIBRARY_PATH}" nocase="1" logic="does_not_contain"/>
+                <compareText text="${DYLD_FALLBACK_LIBRARY_PATH}" value="${POSTGRES_DYLD_LIBRARY_PATH}" nocase="1" logic="does_not_contain"/>
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="POSTGRES_ENV_VAR">
@@ -650,6 +650,12 @@ When installing bundled postgres on windows, add in <postUninstallationActionLis
                                         <program>dscl</program>
                                         <programArguments>. merge /Groups/postgres users "postgres"</programArguments>
                                     </runProgram>
+				    # OS X 10.8 requies a primary group to be defined
+				    <runProgram>
+				      <workingDirectory>/</workingDirectory>
+				      <program>dscl</program>
+				      <programArguments>. -create /Users/postgres PrimaryGroupID ${usercreation_osx_user_id}</programArguments>
+				    </runProgram>
                                 </actionList>
                                 <ruleList>
                                     <compareValues value1="${postgres_user_exists}" logic="equals" value2="0" />

@@ -62,6 +62,9 @@ import org.alfresco.util.Pair;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.DateUtil;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,6 +97,7 @@ public class SOLRAPIClient
     private AlfrescoHttpClient repositoryHttpClient;
     private SOLRDeserializer deserializer;
     private DictionaryService dictionaryService;
+    private JsonFactory jsonFactory;
     private NamespaceDAO namespaceDAO;
 
     public SOLRAPIClient(AlfrescoHttpClient repositoryHttpClient,
@@ -104,6 +108,7 @@ public class SOLRAPIClient
         this.dictionaryService = dictionaryService;
         this.namespaceDAO = namespaceDAO;
         this.deserializer = new SOLRDeserializer(namespaceDAO);
+        this.jsonFactory = new JsonFactory();
     }
     
     /**
@@ -393,7 +398,9 @@ public class SOLRAPIClient
         
         GetRequest req = new GetRequest(url.toString());
         Response response = null;
-        JSONObject json = null;
+        List<Transaction> transactions = new ArrayList<Transaction>();
+        Long maxTxnCommitTime = null;
+        Long maxTxnIdOnServer = null;
         try
         {
         	response = repositoryHttpClient.sendRequest(req);
@@ -402,8 +409,54 @@ public class SOLRAPIClient
 	            throw new AlfrescoRuntimeException("GetTransactions return status is " + response.getStatus());
 	        }
 
-	        Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
-	        json = new JSONObject(new JSONTokener(reader));
+            Reader reader = new BufferedReader(new InputStreamReader(response.getContentAsStream(), "UTF-8"));
+	        JsonParser parser = jsonFactory.createJsonParser(reader);
+	        
+	        JsonToken token = parser.nextValue();
+	        while (token != null) 
+	        {
+	            if ("transactions".equals(parser.getCurrentName()))
+	            {
+	                token = parser.nextToken(); //START_ARRAY
+	                while (token == JsonToken.START_OBJECT)
+	                {
+	                    token = parser.nextValue();
+	                    long id = parser.getLongValue();  
+	                    
+	                    token = parser.nextValue();
+	                    long commitTime = parser.getLongValue();
+	                    
+	                    token = parser.nextValue();
+	                    long updates = parser.getLongValue();
+	                    
+	                    token = parser.nextValue();
+	                    long deletes = parser.getLongValue();
+
+	                    Transaction txn = new Transaction();
+	                    txn.setCommitTimeMs(commitTime);
+	                    txn.setDeletes(deletes);
+	                    txn.setId(id);
+	                    txn.setUpdates(updates);
+	                    
+	                    transactions.add(txn);
+	                    
+	                    token = parser.nextToken(); //END_OBJECT
+	                    token = parser.nextToken(); // START_OBJECT or END_ARRAY;
+	                }
+	            }
+	            else if ("maxTxnCommitTime".equals(parser.getCurrentName()))
+	            {
+	                maxTxnCommitTime = parser.getLongValue();
+	            }
+	            else if ("maxTxnId".equals(parser.getCurrentName()))
+	            {
+	                maxTxnIdOnServer = parser.getLongValue();
+	            }
+	            token = parser.nextValue();
+	        }
+	        parser.close();
+	        reader.close();
+
         }
         finally
         {
@@ -413,38 +466,6 @@ public class SOLRAPIClient
         	}
         }
 
-        if (log.isDebugEnabled())
-        {
-            log.debug(json.toString(3));
-        }
-        
-        JSONArray jsonTransactions = json.getJSONArray("transactions");
-        int numTxns = jsonTransactions.length();
-        List<Transaction> transactions = new ArrayList<Transaction>(numTxns);
-        for(int i = 0; i < numTxns; i++)
-        {
-            JSONObject solrTxn = jsonTransactions.getJSONObject(i);
-            Transaction txn = new Transaction();
-            txn.setId(solrTxn.getLong("id"));
-            txn.setCommitTimeMs(solrTxn.getLong("commitTimeMs"));
-            txn.setUpdates(solrTxn.getLong("updates"));
-            txn.setDeletes(solrTxn.getLong("deletes"));
-            transactions.add(txn);
-        }
-        
-        Long maxTxnCommitTime = null;
-        if(json.has("maxTxnCommitTime"))
-        {
-            maxTxnCommitTime = json.getLong("maxTxnCommitTime");
-        }
-
-        Long maxTxnIdOnServer = null;
-        if(json.has("maxTxnId"))
-        {
-            maxTxnIdOnServer = json.getLong("maxTxnId");
-        }
-
-        
         return new Transactions(transactions, maxTxnCommitTime, maxTxnIdOnServer);
     }
   

@@ -34,6 +34,11 @@ function main()
          syncMode : model.syncMode != null ? model.syncMode : "",         
       }
    };
+   if (model.repositoryUrl != null)
+   {
+      documentActions.options.repositoryUrl = model.repositoryUrl;
+   }
+   
    model.widgets = [documentActions];
 }
 

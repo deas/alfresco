@@ -10,6 +10,8 @@
    <!-- Document Library config section -->
    <config evaluator="string-compare" condition="DocumentLibrary">
 
+      
+
       <!-- Document List -->
       <doclist>
          <!--
@@ -17,6 +19,444 @@
             shall use when asking the repository for nodes.
           -->
          <data-url-resolver>resolver.doclib.doclistDataUrl</data-url-resolver>
+         
+         <!-- The view renderers that will be available as options in DocumentLibrary, My Files, Shared Files and 
+              Repository pages. This list can be added to or removed to control the views displayed. Use the a module
+              that provides evaluated configuration to have the options change based on criteria (e.g. site name, 
+              site preset, user group, etc)
+              
+              Remember to include all dependencies, even those duplicated by another view - Surf will ensure only 
+              one version of each is loaded - but if a view is removed that depends on a dependency defined in another
+              view then it will cause an error. 
+              -->
+         <view-renderers>
+            <view-renderer id="simple" iconClass="simple" label="button.view.simple" index="10" widget="Alfresco.DocumentListSimpleViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-simple.js" />
+               </dependencies>
+            </view-renderer>
+            <view-renderer id="detailed" iconClass="detailed" label="button.view.detailed" index="20" widget="Alfresco.DocumentListViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+               </dependencies>
+            </view-renderer>
+            <view-renderer id="gallery" iconClass="gallery" label="button.view.gallery" index="30" widget="Alfresco.DocumentListGalleryViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-gallery.js" />
+                  <js src="yui/slider/slider.js" />
+               </dependencies>
+            </view-renderer>
+            <view-renderer id="filmstrip" iconClass="filmstrip" label="button.view.filmstrip" index="40" widget="Alfresco.DocumentListFilmstripViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-gallery.js" />
+                  <js src="components/documentlibrary/documentlist-view-filmstrip.js" />
+                  <js src="yui/carousel/carousel.js" />
+                  <js src="components/preview/web-preview.js" />
+                  <js src="components/preview/WebPreviewer.js" />
+                  <js src="js/flash/extMouseWheel.js" />
+                  <js src="components/preview/StrobeMediaPlayback.js" />
+                  <js src="components/preview/Video.js" />
+                  <js src="components/preview/Audio.js" />
+                  <js src="components/preview/Flash.js" />
+                  <js src="components/preview/Image.js" />
+                  <css src="components/preview/web-preview.css" />
+                  <css src="components/preview/WebPreviewerHTML.css" />
+                  <css src="components/preview/Audio.css" />
+                  <css src="components/preview/Image.css" />
+               </dependencies>
+            </view-renderer>
+            
+            <!-- The following entries are examples of how to create multiple instances of the
+                 same renderer. In this case they are different configurations of the table view
+                 and the differences are controlled by the "json-config" element (although it should 
+                 be noted that not although a view renderer may be supplied with the json-config the
+                 table view is the only renderer that makes use of it.
+                 
+                 There are 4 columns that are always present in the table which need to be manually
+                 hidden if required (they will be displayed if included in the json-config:
+                 - actions (the drop-down menu of actions that can be peformed on the document)
+                 - indicators (the set of icons that visually communicate information about the document)
+                 - selector (the checkbox to use when selecting multiple documents)
+                 - thumbnail (the thumbnail sized preview of the document)
+                 
+                 All other columns must be defined in the "propertyColumns" array. The property attribute
+                 can be set to EITHER a document property (e.g. "cm:name") or a metadata template renderer
+                 such as "size", "tags" or "date". 
+            -->
+            <!--
+            <view-renderer id="email" iconClass="table" label="button.view.email" index="50" widget="Alfresco.DocumentListTableViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-table.js" />
+                  <css src="components/documentlibrary/documentlist-view-table.css" />
+               </dependencies>
+               <json-config>
+                  {
+                     "actions": {
+                        "show": "true"
+                     },
+                     "indicators": {
+                        "show": "true"
+                     },
+                     "selector": {
+                        "show": "true"
+                     },
+                     "thumbnail": {
+                        "show": "false"
+                     },
+                     "propertyColumns": [
+                        {
+                           "property": "cm:originator",
+                           "label": "table.email.label.originator",
+                           "link": "true"
+                        },
+                        {
+                           "property": "cm:subjectline",
+                           "label": "table.email.label.subjectline",
+                           "link": "true"
+                        },
+                        {
+                           "property": "cm:sentdate",
+                           "label": "table.email.label.sentdate"
+                        },
+                        {
+                           "property": "cm:addressee",
+                           "label": "table.email.label.addressee"
+                        },
+                        {
+                           "property": "cm:addressees",
+                           "label": "table.email.label.addressees"
+                        },
+                        {
+                           "property": "cm:attachments",
+                           "label": "table.email.label.attachments"
+                        }
+                     ]
+                  }
+               </json-config>
+            </view-renderer>
+            <view-renderer id="dublin_core" iconClass="table" label="button.view.dublinCore" index="80" widget="Alfresco.DocumentListTableViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-table.js" />
+                  <css src="components/documentlibrary/documentlist-view-table.css" />
+               </dependencies>
+               <json-config>
+                  {
+                     "actions": {
+                        "show": "true"
+                     },
+                     "indicators": {
+                        "show": "true"
+                     },
+                     "selector": {
+                        "show": "true"
+                     },
+                     "thumbnail": {
+                        "show": "true"
+                     },
+                     "propertyColumns": [
+                        {
+                           "property": "name",
+                           "label": "table.dublincore.label.name",
+                           "width": "300"
+                        },
+                        {
+                           "property": "version",
+                           "label": "table.dublincore.label.version"
+                        },
+                        {
+                           "property": "cm:title",
+                           "label": "table.dublincore.label.title"
+                        },
+                        {
+                           "property": "cm:creator",
+                           "label": "table.dublincore.label.creator"
+                        },
+                        {
+                           "property": "cm:subject",
+                           "label": "table.dublincore.label.subject"
+                        },
+                        {
+                           "property": "cm:description",
+                           "label": "table.dublincore.label.description"
+                        },
+                        {
+                           "property": "cm:publisher",
+                           "label": "table.dublincore.label.publisher"
+                        },
+                        {
+                           "property": "cm:contributor",
+                           "label": "table.dublincore.label.contributor"
+                        },
+                        {
+                           "property": "cm:mimetype",
+                           "label": "table.dublincore.label.mimetype"
+                        },
+                        {
+                           "property": "cm:identifier",
+                           "label": "table.dublincore.label.identifier"
+                        },
+                        {
+                           "property": "cm:dcsource",
+                           "label": "table.dublincore.label.dcsource"
+                        },
+                        {
+                           "property": "cm:coverage",
+                           "label": "table.dublincore.label.coverage"
+                        },
+                        {
+                           "property": "cm:rights",
+                           "label": "table.dublincore.label.rights"
+                        }
+                     ]
+                  }
+               </json-config>
+            </view-renderer>
+            <view-renderer id="effectivity" iconClass="table" label="button.view.effectivity" index="90" widget="Alfresco.DocumentListTableViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-table.js" />
+                  <css src="components/documentlibrary/documentlist-view-table.css" />
+               </dependencies>
+               <json-config>
+                  {
+                     "actions": {
+                        "show": "true"
+                     },
+                     "indicators": {
+                        "show": "true"
+                     },
+                     "selector": {
+                        "show": "true"
+                     },
+                     "thumbnail": {
+                        "show": "true"
+                     },
+                     "propertyColumns": [
+                        {
+                           "property": "name",
+                           "label": "table.effectivity.label.name",
+                           "width": "300"
+                        },
+                        {
+                           "property": "cm:description",
+                           "label": "table.effectivity.label.description"
+                        },
+                        {
+                           "property": "version",
+                           "label": "table.effectivity.label.version",
+                           "width": "50"
+                        },
+                        {
+                           "property": "cm:modified",
+                           "label": "table.effectivity.label.modified",
+                           "width": "100"
+                        },
+                        {
+                           "property": "cm:modifier",
+                           "label": "table.effectivity.label.modifier",
+                           "width": "100"
+                        },
+                        {
+                           "property": "cm:from",
+                           "label": "table.effectivity.label.from",
+                           "width": "100"
+                        },
+                        {
+                           "property": "cm:to",
+                           "label": "table.effectivity.label.to",
+                           "width": "100"
+                        }
+                     ]
+                  }
+               </json-config>
+            </view-renderer>
+            -->
+            <view-renderer id="table" iconClass="table" label="button.view.table" index="50" widget="Alfresco.DocumentListTableViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-table.js" />
+                  <css src="components/documentlibrary/documentlist-view-table.css" />
+               </dependencies>
+               <json-config>
+                  {
+                     "actions": {
+                        "show": "true"
+                     },
+                     "indicators": {
+                        "show": "true"
+                     },
+                     "selector": {
+                        "show": "true"
+                     },
+                     "thumbnail": {
+                        "show": "true"
+                     },
+                     "propertyColumns": [
+                        {
+                           "property": "name",
+                           "label": "label.name",
+                           "width": "300"
+                        },
+                        {
+                           "property": "cm:title",
+                           "label": "label.title"
+                        },
+                        {
+                           "property": "cm:description",
+                           "label": "label.description"
+                        },
+                        {
+                           "property": "cm:creator",
+                           "label": "label.creator"
+                        },
+                        {
+                           "property": "cm:created",
+                           "label": "label.created"
+                        },
+                        {
+                           "property": "cm:modifier",
+                           "label": "label.modifier"
+                        },
+                        {
+                           "property": "modified",
+                           "label": "label.modified"
+                        }
+                     ]
+                  }
+               </json-config>
+            </view-renderer>
+            <view-renderer id="audio" iconClass="table" label="button.view.audio" index="60" widget="Alfresco.DocumentListTableViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-table.js" />
+                  <css src="components/documentlibrary/documentlist-view-table.css" />
+               </dependencies>
+               <json-config>
+                  {
+                     "actions": {
+                        "show": "true"
+                     },
+                     "indicators": {
+                        "show": "true"
+                     },
+                     "selector": {
+                        "show": "true"
+                     },
+                     "thumbnail": {
+                        "show": "true"
+                     },
+                     "propertyColumns": [
+                        {
+                           "property": "name",
+                           "label": "table.audio.label.name",
+                           "width": "300"
+                        },
+                        {
+                           "property": "cm:title",
+                           "label": "table.audio.label.title",
+                           "width": "200"
+                        },
+                        {
+                           "property": "audio:album",
+                           "label": "table.audio.label.album",
+                           "width": "200",
+                           "link": "true"
+                        },
+                        {
+                           "property": "audio:artist",
+                           "label": "table.audio.label.artist",
+                           "width": "200"
+                        },
+                        {
+                           "property": "audio:genre",
+                           "label": "table.audio.label.genre",
+                           "width": "100"
+                        },
+                        {
+                           "property": "audio:trackNumber",
+                           "label": "table.audio.label.trackNumber",
+                           "width": "100"
+                        },
+                        {
+                           "property": "audio:sampleRate",
+                           "label": "table.audio.label.sampleRate",
+                           "width": "100"
+                        },
+                        {
+                           "property": "audio:compressor",
+                           "label": "table.audio.label.compressor",
+                           "width": "100"
+                        }
+                     ]
+                  }
+               </json-config>
+            </view-renderer>
+            <view-renderer id="media_table" iconClass="table" label="button.view.media-table" index="100" widget="Alfresco.DocumentListTableViewRenderer">
+               <dependencies>
+                  <js src="components/documentlibrary/documentlist-view-detailed.js" />
+                  <js src="components/documentlibrary/documentlist-view-table.js" />
+                  <css src="components/documentlibrary/documentlist-view-table.css" />
+               </dependencies>
+               <json-config>
+                  {
+                     "actions": {
+                        "show": "true"
+                     },
+                     "indicators": {
+                        "show": "true"
+                     },
+                     "selector": {
+                        "show": "true"
+                     },
+                     "thumbnail": {
+                        "show": "true"
+                     },
+                     "propertyColumns": [
+                        {
+                           "property": "name",
+                           "label": "label.name",
+                           "width": "300"
+                        },
+                        {
+                           "property": "cm:description",
+                           "label": "label.description",
+                           "width": "200"
+                        },
+                        {
+                           "property": "tags",
+                           "label": "label.tags",
+                           "width": "100"
+                        },
+                        {
+                           "property": "exif:pixelXDimension",
+                           "label": "label.exif.width",
+                           "width": "75"
+                        },
+                        {
+                           "property": "exif:pixelYDimension",
+                           "label": "label.exif.height",
+                           "width": "75"
+                        },
+                        {
+                           "property": "size",
+                           "label": "label.size",
+                           "width": "75"
+                        },
+                        {
+                           "property": "version",
+                           "label": "label.version",
+                           "width": "50"
+                        }
+                     ]
+                  }
+               </json-config>
+            </view-renderer>
+         </view-renderers>
       </doclist>
 
       <tree>
@@ -30,6 +470,11 @@
             Optionally limit the number of folders shown in treeview throughout Share.
          -->
          <maximum-folder-count>-1</maximum-folder-count>
+         
+         <!--  
+            Default timeout in milliseconds for folder Tree component to recieve response from Repository
+         -->
+         <timeout>7000</timeout>
       </tree>
 
       <!--
@@ -61,6 +506,7 @@
             <aspect name="exif:exif" />
             <aspect name="audio:audio" />
             <aspect name="cm:indexControl" />
+            <aspect name="dp:restrictable" />
          </visible>
 
          <!--
@@ -127,8 +573,8 @@
             The I18N label is created from the "type" attribute, e.g. google-docs.doc=Google Docs&trade; Document
          -->
          <creatable-types>
-            <creatable type="doc">application/msword</creatable>
-            <creatable type="xls">application/vnd.ms-excel</creatable>
+            <creatable type="doc">application/vnd.openxmlformats-officedocument.wordprocessingml.document</creatable>
+            <creatable type="xls">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</creatable>
             <creatable type="ppt">application/vnd.ms-powerpoint</creatable>
          </creatable-types>
       </google-docs>
@@ -352,6 +798,9 @@
          <content id="xml" label="create-content.xml" type="pagelink" index="30">
             <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/xml</param>
          </content>
+         <content id="folder" label="create-content.folder" icon="folder" index="5" type="javascript">
+            <param name="function">onNewFolder</param>
+         </content>
       </create-content>
 
       <create-content-by-template>true</create-content-by-template>
@@ -672,7 +1121,7 @@
                <permission allow="true">CancelCheckOut</permission>
             </permissions>
             <evaluator>evaluator.doclib.metadata.isLocked</evaluator> 
-            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.hasWorkingCopy</evaluator>
          </action>
 
          <!-- Manage folder rules -->
@@ -871,6 +1320,7 @@
             <action index="200" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="210" id="document-manage-aspects" label="actions.folder.manage-aspects" />
             <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
+            <action index="310" id="document-view-googlemaps" />
             <action index="360" id="document-cloud-sync" />
             <action index="370" id="document-cloud-unsync" />
             <action index="380" id="document-view-in-cloud" />
@@ -892,6 +1342,7 @@
             <action index="200" id="document-change-type" label="actions.folder.change-type" />
             <action index="210" id="view-in-explorer" />
             <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
+            <action index="350" id="document-view-googlemaps" />
             <action index="360" id="document-cloud-sync" />
             <action index="370" id="document-cloud-unsync" />
             <action index="380" id="document-view-in-cloud" />

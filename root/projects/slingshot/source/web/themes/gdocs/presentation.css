@@ -849,12 +849,13 @@ body.yui-skin-gdocs .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabled
 body.yui-skin-gdocs .doclist .more-actions a:active,
 body.yui-skin-gdocs .doclist .more-actions a:hover
 {
-   background-color: #6688EE;
+   background-color: #DEE6FF;
+   color: #333;
 }
 
 body.yui-skin-gdocs .doclist div.more-actions
 {
-   border: 1px solid #3c54d3;
+   border: 1px solid #CBD8FF;
 }
 
 body.yui-skin-gdocs .doclist .action-set a:active,
@@ -863,7 +864,7 @@ body.yui-skin-gdocs .doclist .action-set .highlighted,
 #divCalendarContent .yui-dt-col-actions a:active,
 #divCalendarContent .yui-dt-col-actions a:hover
 {
-   border: 1px solid #6688EE;
+   border: 1px solid #CBD8FF;
 }
 
 body.yui-skin-gdocs .yui-dt-data tr.yui-dt-highlighted,
@@ -900,6 +901,25 @@ body.yui-skin-gdocs .categoryview .category .ygtvlph, body.yui-skin-gdocs .categ
 body.yui-skin-gdocs .categoryview .category .ygtvdepthcell
 {
    background-image: url(images/categoryview-sprite.gif);
+}
+
+body.yui-skin-gdocs .treeview .tree .ygtvtn,
+body.yui-skin-gdocs .treeview .tree .ygtvtm,
+body.yui-skin-gdocs .treeview .tree .ygtvtmh,
+body.yui-skin-gdocs .treeview .tree .ygtvtmhh,
+body.yui-skin-gdocs .treeview .tree .ygtvtp,
+body.yui-skin-gdocs .treeview .tree .ygtvtph,
+body.yui-skin-gdocs .treeview .tree .ygtvtphh,
+body.yui-skin-gdocs .treeview .tree .ygtvln,
+body.yui-skin-gdocs .treeview .tree .ygtvlm,
+body.yui-skin-gdocs .treeview .tree .ygtvlmh,
+body.yui-skin-gdocs .treeview .tree .ygtvlmhh,
+body.yui-skin-gdocs .treeview .tree .ygtvlp,
+body.yui-skin-gdocs .treeview .tree .ygtvlph,
+body.yui-skin-gdocs .treeview .tree .ygtvlphh,
+body.yui-skin-gdocs .treeview .tree .ygtvdepthcell
+{
+   background-image: url(images/treeview-sprite.gif) !important;
 }
 
 /* details page */
@@ -1022,9 +1042,9 @@ body.yui-skin-gdocs .yui-columnbrowser .yui-carousel-content li.yui-columnbrowse
 .yui-skin-gdocs .node .nodeURL a,
 .yui-skin-gdocs .nodeAttrValue a,
 .yui-skin-gdocs .nodeFooter .tag a,
-.yui-skin-gdocs .yui-dt-highlighted .detail .tag a,
-.yui-skin-gdocs .yui-dt-highlighted .detail .category a,
-.yui-skin-gdocs .yui-dt-highlighted .detail .item-social a,
+.yui-skin-gdocs .yui-dt-highlighted .tag a,
+.yui-skin-gdocs .yui-dt-highlighted .category a,
+.yui-skin-gdocs .yui-dt-highlighted .item-social a,
 .yui-skin-gdocs a.wiki-tag-link,
 .yui-skin-gdocs .node .userLink a,
 .yui-skin-gdocs .site-members h3 a,
@@ -1042,15 +1062,15 @@ body.yui-skin-gdocs .yui-columnbrowser .yui-carousel-content li.yui-columnbrowse
    color: #0600cc;
 }
 
-.yui-skin-gdocs .detail .tag a,
-.yui-skin-gdocs .detail .category a,
-.yui-skin-gdocs .detail .item-social a,
+.yui-skin-gdocs .tag a,
+.yui-skin-gdocs .category a,
+.yui-skin-gdocs .item-social a,
 .yui-skin-gdocs .document-tags .tag
 {
    color: #333;
 }
 
-.yui-skin-gdocs .detail .tag a,
+.yui-skin-gdocs .tag a,
 .yui-skin-gdocs .document-tags .tag
 {
    background-color: #e8e8e8;
@@ -1501,22 +1521,23 @@ div.theme-bg-color-8
 
 .alfresco-guest .sticky-wrapper
 {
-   background-color: #B4B4B4;
+   background: none;
 }
 
 .alfresco-guest .theme-overlay
 {
-   background-image: url(images/overlay-bg.png);
-   background-repeat: repeat;
-   background-position: top right;
-   border: 3px solid #fff;
-   outline: 1px solid #c3d9ff;
+   padding-left: 24px;
+   font-family: Open Sans,Arial,Helvetica,sans-serif;
+   color: #333;
+   border: 1px solid #ccc;
+   background-color: #fff;
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .theme-company-logo
 {
-   height: 64px;
-   width: 450px;
+   height: 48px;
+   width: 428px;
    background: transparent url(images/logo.png) no-repeat;
 }
 

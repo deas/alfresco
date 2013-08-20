@@ -18,6 +18,7 @@
  */
 package org.alfresco.solr;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,7 +72,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static final String KEY_ADDED_TX = "KEY_ADDED_TX";
 
     public static final String KEY_ADDED_ACL_TX = "KEY_ADDED_ACL_TX";
-
+    
+    public static final String KEY_CHECK_INDEXED_BY_DOC_ID_LIST = "KEY_CHECK_INDEXED_BY_DOC_ID_LIST";
+    
     public static final String KEY_DELETED_LEAVES = "KEY_DELETED_LEAVES";
 
     public static final String KEY_DELETED_ACL = "KEY_DELETED_ACL";
@@ -94,6 +98,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
     public static final String KEY_DELETE_ALL = "KEY_DELETE_ALL";
 
     public static String ALFRESCO_CACHE = "alfrescoCache";
+    
+    public static String ALFRESCO_ARRAYLIST_CACHE = "alfrescoArrayListCache";
 
     public static String ALFRESCO_AUTHORITY_CACHE = "alfrescoAuthorityCache";
 
@@ -172,7 +178,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         long startTime = System.nanoTime();
 
-        CacheEntry[] indexedByDocId = new CacheEntry[newReader.maxDoc()];
+        ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) newSearcher.cacheLookup(ALFRESCO_ARRAYLIST_CACHE, KEY_DBID_LEAF_PATH_BY_DOC_ID);
+        indexedByDocId.resize(newReader.maxDoc());
         HashSet<String> globalReaders = new HashSet<String>();
         OpenBitSet allLeafDocs = new OpenBitSet(newReader.maxDoc());
         long[] aclIdByDocId = new long[newReader.maxDoc()];
@@ -193,7 +200,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         if ((incrementalCacheRebuild) && currentSearcher != null)
         {
-            CacheEntry[] oldIndexedByDocId = (CacheEntry[]) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_DOC_ID);
+            ResizeableArrayList<CacheEntry> oldIndexedByDocId = (ResizeableArrayList<CacheEntry>) currentSearcher.cacheLookup(ALFRESCO_ARRAYLIST_CACHE, KEY_DBID_LEAF_PATH_BY_DOC_ID);
             long[] oldAclIdByDocId = (long[]) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_ACL_ID_BY_DOC_ID);
             long[] oldTxIdByDocId = (long[]) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_TX_ID_BY_DOC_ID);
             long[] oldAclTxIdByDocId = (long[]) currentSearcher.cacheLookup(ALFRESCO_CACHE, KEY_ACL_TX_ID_BY_DOC_ID);
@@ -270,7 +277,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                     section = cacheSectionsBefore[currentCache];
                                 }
 
-                                CacheEntry entry = oldIndexedByDocId[i];
+                                CacheEntry entry = oldIndexedByDocId.get(i);
                                 if (entry != null)
                                 {
                                     if (entry.getLeaf() == i)
@@ -360,16 +367,16 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                             // Simple position check;
 
                             boolean simpleCheckOk = true;
-                            for(int i = 0; i < indexedByDocId.length; i++)
+                            for(int i = 0; i < indexedByDocId.size(); i++)
                             {
-                                CacheEntry entry = indexedByDocId[i];
+                                CacheEntry entry = indexedByDocId.get(i);
                                 if(entry != null)
                                 {
                                     if((entry.getLeaf() != i ) && (entry.getPath() != i))
                                     {
                                         log.warn("Core "+newSearcher.getIndexDir());
                                         log.warn("Simple cache caheck failed: Incorrect indexedByDocId at " + i);
-                                        log.warn(".. leaf and path doc poistion do not match the doc position     .. " + indexedByDocId[i]);
+                                        log.warn(".. leaf and path doc poistion do not match the doc position     .. " + indexedByDocId.get(i));
                                         simpleCheckOk = false;
                                         break;
                                     }
@@ -378,7 +385,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                             if ((simpleCheckOk == false) || forceCheckCache || checkCache.get())
                             {
-                                CacheEntry[] checkIndexedByDocId = new CacheEntry[newReader.maxDoc()];
+                                ResizeableArrayList<CacheEntry> checkIndexedByDocId = (ResizeableArrayList<CacheEntry>) currentSearcher.cacheLookup(ALFRESCO_ARRAYLIST_CACHE, KEY_CHECK_INDEXED_BY_DOC_ID_LIST);
+                                checkIndexedByDocId.resize(newReader.maxDoc());
                                 OpenBitSet checkAllLeafDocs = new OpenBitSet(newReader.maxDoc());
                                 long[] checkAclIdByDocId = new long[newReader.maxDoc()];
                                 long[] checkTxIdByDocId = new long[newReader.maxDoc()];
@@ -389,16 +397,16 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                                 boolean ok = true;
                                 boolean thisTestOk = true;
-                                for (int i = 0; i < checkIndexedByDocId.length; i++)
+                                for (int i = 0; i < checkIndexedByDocId.size(); i++)
                                 {
-                                    if (!EqualsHelper.nullSafeEquals(checkIndexedByDocId[i], indexedByDocId[i]))
+                                    if (!EqualsHelper.nullSafeEquals(checkIndexedByDocId.get(i), indexedByDocId.get(i)))
                                     {
                                         if(thisTestOk)
                                         {
                                             log.warn("Core "+newSearcher.getIndexDir());
                                             log.warn("Invalid indexedByDocId at " + i);
-                                            log.warn(".. found     .. " + indexedByDocId[i]);
-                                            log.warn(".. expected  .. " + checkIndexedByDocId[i]);
+                                            log.warn(".. found     .. " + indexedByDocId.get(i));
+                                            log.warn(".. expected  .. " + checkIndexedByDocId.get(i));
                                             ok = false;
                                             thisTestOk = false;
                                         }
@@ -508,7 +516,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
                                 if (!ok)
                                 {
-                                    indexedByDocId = checkIndexedByDocId;
+                                    indexedByDocId.copyFrom(checkIndexedByDocId);
                                     allLeafDocs = checkAllLeafDocs;
                                     aclIdByDocId = checkAclIdByDocId;
                                     txByDocId = checkTxIdByDocId;
@@ -542,8 +550,11 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         int size = doPermissionChecks ? (int) allLeafDocs.cardinality() : 0;
 
-        CacheEntry[] indexedOderedByAclIdThenDoc = new CacheEntry[size];
-        CacheEntry[] indexedOderedByOwnerIdThenDoc = new CacheEntry[ size];
+        ResizeableArrayList<CacheEntry> indexedOderedByAclIdThenDoc = (ResizeableArrayList<CacheEntry>) newSearcher.cacheLookup(ALFRESCO_ARRAYLIST_CACHE, KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
+        indexedOderedByAclIdThenDoc.resize(size);
+        ResizeableArrayList<CacheEntry> indexedOderedByOwnerIdThenDoc = (ResizeableArrayList<CacheEntry>) newSearcher.cacheLookup(ALFRESCO_ARRAYLIST_CACHE, KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF); 
+        indexedOderedByOwnerIdThenDoc.resize(size);
+        
 
         if(doPermissionChecks)
         {
@@ -551,62 +562,61 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             int pos = 0;
             while ((doc = allLeafDocs.nextSetBit(doc + 1)) != -1)
             {
-                CacheEntry entry = indexedByDocId[doc];
-                indexedOderedByAclIdThenDoc[pos] = entry;
-                indexedOderedByOwnerIdThenDoc[pos] = entry;
+                CacheEntry entry = indexedByDocId.get(doc);
+                indexedOderedByAclIdThenDoc.set(pos, entry);
+                indexedOderedByOwnerIdThenDoc.set(pos, entry);
                 pos++;
             }
         }
 
-        Arrays.sort(indexedOderedByAclIdThenDoc, new Comparator<CacheEntry>()
-                {
-
-            @Override
-            public int compare(CacheEntry o1, CacheEntry o2)
+        indexedOderedByAclIdThenDoc.sort(new Comparator<CacheEntry>()
             {
-                if (o2 == null)
+                @Override
+                public int compare(CacheEntry o1, CacheEntry o2)
                 {
-                    if (o1 == null)
+                    if (o2 == null)
                     {
-                        return 0;
-                    }
-
-                    else
-                    {
-                        return -1; // nulls at the end
-                    }
-                }
-                else
-                {
-                    if (o1 == null)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        long diff = o1.getAclid() - o2.getAclid();
-                        if (diff == 0L)
+                        if (o1 == null)
                         {
-                            return o1.getLeaf() - o2.getLeaf();
+                            return 0;
+                        }
+    
+                        else
+                        {
+                            return -1; // nulls at the end
+                        }
+                    }
+                    else
+                    {
+                        if (o1 == null)
+                        {
+                            return 1;
                         }
                         else
                         {
-                            return (diff > 0L) ? 1 : -1;
+                            long diff = o1.getAclid() - o2.getAclid();
+                            if (diff == 0L)
+                            {
+                                return o1.getLeaf() - o2.getLeaf();
+                            }
+                            else
+                            {
+                                return (diff > 0L) ? 1 : -1;
+                            }
                         }
                     }
+    
                 }
-
-            }
-                });
+            });
 
         // build lookups
 
         HashMap<AclLookUp, AclLookUp> aclLookUp = new HashMap<AclLookUp, AclLookUp>();
 
         AclLookUp currentAclLookUp = null;
-        for (int i = 0; i < indexedOderedByAclIdThenDoc.length; i++)
+        for (int i = 0; i < indexedOderedByAclIdThenDoc.size(); i++)
         {
-            CacheEntry entry = indexedOderedByAclIdThenDoc[i];
+            CacheEntry entry = indexedOderedByAclIdThenDoc.get(i);
             if (entry != null)
             {
                 if (currentAclLookUp == null)
@@ -642,12 +652,12 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         if (currentAclLookUp != null)
         {
-            currentAclLookUp.setEnd(indexedOderedByAclIdThenDoc.length);
+            currentAclLookUp.setEnd(indexedOderedByAclIdThenDoc.size());
             aclLookUp.put(currentAclLookUp, currentAclLookUp);
         }
 
-        Arrays.sort(indexedOderedByOwnerIdThenDoc, new Comparator<CacheEntry>()
-                {
+        indexedOderedByOwnerIdThenDoc.sort(new Comparator<CacheEntry>()
+        {
 
             @Override
             public int compare(CacheEntry o1, CacheEntry o2)
@@ -685,16 +695,16 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
 
             }
-                });
+        });
 
         // build lookups
 
         HashMap<String, OwnerLookUp> ownerLookUp = new HashMap<String, OwnerLookUp>();
 
         OwnerLookUp currentOwnerLookUp = null;
-        for (int i = 0; i < indexedOderedByOwnerIdThenDoc.length; i++)
+        for (int i = 0; i < indexedOderedByOwnerIdThenDoc.size(); i++)
         {
-            CacheEntry entry = indexedOderedByOwnerIdThenDoc[i];
+            CacheEntry entry = indexedOderedByOwnerIdThenDoc.get(i);
             if (entry != null)
             {
                 if (currentOwnerLookUp == null)
@@ -748,7 +758,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
         if (currentOwnerLookUp != null)
         {
-            currentOwnerLookUp.setEnd(indexedOderedByOwnerIdThenDoc.length);
+            currentOwnerLookUp.setEnd(indexedOderedByOwnerIdThenDoc.size());
             try
             {
                 ownerLookUp.put(ownerIdManager.get(currentOwnerLookUp.owner), currentOwnerLookUp);
@@ -783,7 +793,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     {
                         for(int i = value.getStart(); i < value.getEnd(); i++)
                         {
-                            publicDocSet.add(indexedOderedByAclIdThenDoc[i].getLeaf());
+                            publicDocSet.add(indexedOderedByAclIdThenDoc.get(i).getLeaf());
                         }
                     }
                 }
@@ -801,7 +811,6 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         endTime = System.nanoTime();
         log.info("Derived caches rebuilt in " + ((endTime - startTime) / (1.0e9)));
 
-        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_DOC_ID, indexedByDocId);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_ID_BY_DOC_ID, aclIdByDocId);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_TX_ID_BY_DOC_ID, txByDocId);
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_TX_ID_BY_DOC_ID, aclTxByDocId);
@@ -816,10 +825,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ALL_LEAF_DOCS, allLeafDocs);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_ACL_LOOKUP, aclLookUp);
-        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF, indexedOderedByAclIdThenDoc);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_LOOKUP, ownerLookUp);
-        newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF, indexedOderedByOwnerIdThenDoc);
 
         newSearcher.cacheInsert(ALFRESCO_CACHE, KEY_OWNER_ID_MANAGER, ownerIdManager);
 
@@ -1098,7 +1105,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         return operations;
     }
 
-    void buildCacheForReader(CacheEntry[] cache, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, IndexReader reader, int start, int length,
+    void buildCacheForReader(List<CacheEntry> cache, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, IndexReader reader, int start, int length,
             HashMap<Long, CacheEntry> unmatchedByDBID, OwnerIdManager ownerIdManager)
     {
         // reset leaf range
@@ -1113,7 +1120,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
         for (int i = start; i < start + length; i++)
         {
-            cache[i] = null;
+            cache.set(i, null);
             aclIdByDocId[i] = -1;
             txIdByDocId[i] = -1;
             aclTxIdByDocId[i] = -1;
@@ -1185,7 +1192,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                             entry.setPath(doc);
                         }
                         entry.setAclid(-1);
-                        cache[doc] = entry;
+                        cache.set(doc, entry);
 
                     }
 
@@ -1235,7 +1242,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     while (termDocs.next())
                     {
                         int doc = start + termDocs.doc();
-                        CacheEntry entry = cache[doc];
+                        CacheEntry entry = cache.get(doc);
                         if (entry == null)
                         {
                             aclIdByDocId[doc] = aclid;
@@ -1289,7 +1296,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     while (termDocs.next())
                     {
                         int doc = start + termDocs.doc();
-                        CacheEntry entry = cache[doc];
+                        CacheEntry entry = cache.get(doc);
                         if (entry == null)
                         {
                             txIdByDocId[doc] = txid;
@@ -1343,7 +1350,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     while (termDocs.next())
                     {
                         int doc = start + termDocs.doc();
-                        CacheEntry entry = cache[doc];
+                        CacheEntry entry = cache.get(doc);
                         if (entry == null)
                         {
                             aclTxIdByDocId[doc] = acltxid;
@@ -1400,7 +1407,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     while (termDocs.next())
                     {
                         int doc = start + termDocs.doc();
-                        CacheEntry entry = cache[doc];
+                        CacheEntry entry = cache.get(doc);
                         entry.setOwner(ownerId.intValue());
                     }
 
@@ -1734,8 +1741,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          * @param aclIdByDocId
          * @param unmatchedByDBID
          */
-        public void updateCache(CacheUpdateTracker tracker, CacheEntry[] oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
-                CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
+        public void updateCache(CacheUpdateTracker tracker, ResizeableArrayList<CacheEntry> oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
+                ResizeableArrayList<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager);
 
         public int getFinalDocCount();
@@ -1794,13 +1801,13 @@ public class AlfrescoSolrEventListener implements SolrEventListener
         }
 
 
-        public void checkCachePosition(CacheUpdateTracker tracker, CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, SolrIndexReader reader, OwnerIdManager ownerIdManager) 
+        public void checkCachePosition(CacheUpdateTracker tracker, List<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, SolrIndexReader reader, OwnerIdManager ownerIdManager) 
         {
             if(tracker.inNew ==0)
             {
                 return;
             }
-            if(tracker.inNew > indexedByDocId.length)
+            if(tracker.inNew > indexedByDocId.size())
             {
                 return;
             }
@@ -1809,9 +1816,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 if (reader.isDeleted((tracker.inNew-1)))
                 {
                     boolean failed = false;
-                    if(indexedByDocId[(tracker.inNew-1)] != null)
+                    if(indexedByDocId.get(tracker.inNew-1) != null)
                     {
-                        log.error("Entry found for deleted doc at " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                        log.error("Entry found for deleted doc at " + (tracker.inNew-1) +" "+indexedByDocId.get(tracker.inNew-1));
                         failed = true;
                     }
                     if( aclIdByDocId[(tracker.inNew-1)] != -1)
@@ -1879,7 +1886,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         }
 
                         boolean failed = false;
-                        CacheEntry entry = indexedByDocId[(tracker.inNew-1)];
+                        CacheEntry entry = indexedByDocId.get(tracker.inNew-1);
                         if (entry == null)
                         {
                             log.error("Entry was incorrectly deleted at " + (tracker.inNew-1));
@@ -1963,9 +1970,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                             String string = field.stringValue();
                             long aclId = Long.parseLong(string);
 
-                            if(indexedByDocId[(tracker.inNew-1)] != null)
+                            if(indexedByDocId.get(tracker.inNew-1) != null)
                             {
-                                log.error("Entry found for ACL  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                log.error("Entry found for ACL  " + (tracker.inNew-1) +" "+indexedByDocId.get(tracker.inNew-1));
                                 failed = true;
                             }
                             if(aclIdByDocId[(tracker.inNew-1)] != aclId)
@@ -2000,9 +2007,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 String string = field.stringValue();
                                 long txId = Long.parseLong(string);
 
-                                if(indexedByDocId[(tracker.inNew-1)] != null)
+                                if(indexedByDocId.get(tracker.inNew-1) != null)
                                 {
-                                    log.error("Entry found for TX  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                    log.error("Entry found for TX  " + (tracker.inNew-1) +" "+indexedByDocId.get(tracker.inNew-1));
                                     failed = true;
                                 }
                                 if(aclIdByDocId[(tracker.inNew-1)] != -1)
@@ -2035,9 +2042,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                     String string = field.stringValue();
                                     long aclTxId = Long.parseLong(string);
 
-                                    if(indexedByDocId[(tracker.inNew-1)] != null)
+                                    if(indexedByDocId.get(tracker.inNew-1) != null)
                                     {
-                                        log.error("Entry found for ACL TX  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                        log.error("Entry found for ACL TX  " + (tracker.inNew-1) +" "+indexedByDocId.get(tracker.inNew-1));
                                         failed = true;
                                     }
                                     if(aclIdByDocId[(tracker.inNew-1)] != -1)
@@ -2065,9 +2072,9 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 }
                                 else
                                 {
-                                    if(indexedByDocId[(tracker.inNew-1)] != null)
+                                    if(indexedByDocId.get(tracker.inNew-1) != null)
                                     {
-                                        log.error("Entry found for Unkown  " + (tracker.inNew-1) +" "+indexedByDocId[(tracker.inNew-1)]);
+                                        log.error("Entry found for Unkown  " + (tracker.inNew-1) +" "+indexedByDocId.get(tracker.inNew-1));
                                         failed = true;
                                     }
                                     if(aclIdByDocId[(tracker.inNew-1)] != -1)
@@ -2130,8 +2137,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          * org.apache.lucene.util.OpenBitSet, long[], java.util.HashMap)
          */
         @Override
-        public void updateCache(CacheUpdateTracker tracker, CacheEntry[] oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
-                CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
+        public void updateCache(CacheUpdateTracker tracker, ResizeableArrayList<CacheEntry> oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
+                ResizeableArrayList<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
@@ -2162,7 +2169,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     {
                         if(finalIndexReader.isDeleted(tracker.inNew - firstNew))
                         {
-                            indexedByDocId[tracker.inNew] = null;
+                            indexedByDocId.set(tracker.inNew, null);
                             aclIdByDocId[tracker.inNew] = -1;
                             txIdByDocId[tracker.inNew] = -1;
                             aclTxIdByDocId[tracker.inNew] = -1;
@@ -2185,7 +2192,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         throw new IllegalStateException("Early deletes should have been cleared");
                     }
 
-                    CacheEntry old = oldIndexedByDocId[tracker.inOld];
+                    CacheEntry old = oldIndexedByDocId.get(tracker.inOld);
                     if (old != null)
                     {
                         // leaf docs
@@ -2209,7 +2216,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 unmatchedByDBID.put(newCacheEntry.dbid, newCacheEntry);
                             }
 
-                            indexedByDocId[tracker.inNew] = newCacheEntry;
+                            indexedByDocId.set(tracker.inNew, newCacheEntry);
 
                             allLeafDocs.set(tracker.inNew);
 
@@ -2241,7 +2248,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 unmatchedByDBID.put(newCacheEntry.dbid, newCacheEntry);
                             }
 
-                            indexedByDocId[tracker.inNew] = newCacheEntry;
+                            indexedByDocId.set(tracker.inNew, newCacheEntry);
 
                             if (allLeafDocs.get(tracker.inNew))
                             {
@@ -2258,7 +2265,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldAclIdByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew,null);
                         aclIdByDocId[tracker.inNew] = oldAclIdByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2272,7 +2279,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldTxByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         txIdByDocId[tracker.inNew] = oldTxByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2285,7 +2292,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldAclTxByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclTxIdByDocId[tracker.inNew] = oldAclTxByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2299,7 +2306,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     else
                     {
 
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclIdByDocId[tracker.inNew] = -1;
                         txIdByDocId[tracker.inNew] = -1;
                         aclTxIdByDocId[tracker.inNew] = -1;
@@ -2327,7 +2334,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 {
                     if(finalIndexReader.isDeleted(tracker.inNew - firstNew))
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclIdByDocId[tracker.inNew] = -1;
                         txIdByDocId[tracker.inNew] = -1;
                         aclTxIdByDocId[tracker.inNew] = -1;
@@ -2439,8 +2446,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          * org.apache.lucene.util.OpenBitSet, long[], java.util.HashMap)
          */
         @Override
-        public void updateCache(CacheUpdateTracker tracker, CacheEntry[] oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
-                CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
+        public void updateCache(CacheUpdateTracker tracker, ResizeableArrayList<CacheEntry> oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
+                ResizeableArrayList<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
             checkCachePosition(tracker, indexedByDocId, allLeafDocs, aclIdByDocId, txIdByDocId, aclTxIdByDocId, reader, ownerIdManager);
@@ -2457,7 +2464,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
             {
                 if (deleted.get(tracker.inOld))
                 {
-                    indexedByDocId[tracker.inNew] = null;
+                    indexedByDocId.set(tracker.inNew, null);
                     aclIdByDocId[tracker.inNew] = -1;
                     txIdByDocId[tracker.inNew] = -1;
                     aclTxIdByDocId[tracker.inNew] = -1;
@@ -2471,7 +2478,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                 }
                 else
                 {
-                    CacheEntry old = oldIndexedByDocId[tracker.inOld];
+                    CacheEntry old = oldIndexedByDocId.get(tracker.inOld);
                     if (old != null)
                     {
                         // leaf docs
@@ -2495,7 +2502,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 unmatchedByDBID.put(newCacheEntry.dbid, newCacheEntry);
                             }
 
-                            indexedByDocId[tracker.inNew] = newCacheEntry;
+                            indexedByDocId.set(tracker.inNew, newCacheEntry);
 
                             allLeafDocs.set(tracker.inNew);
 
@@ -2526,7 +2533,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 unmatchedByDBID.put(newCacheEntry.dbid, newCacheEntry);
                             }
 
-                            indexedByDocId[tracker.inNew] = newCacheEntry;
+                            indexedByDocId.set(tracker.inNew, newCacheEntry);
 
                             if (allLeafDocs.get(tracker.inNew))
                             {
@@ -2543,7 +2550,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldAclIdByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclIdByDocId[tracker.inNew] = oldAclIdByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2556,7 +2563,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldTxByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         txIdByDocId[tracker.inNew] = oldTxByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2569,7 +2576,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldAclTxByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclTxIdByDocId[tracker.inNew] = oldAclTxByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2582,7 +2589,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclIdByDocId[tracker.inNew] = -1;
                         txIdByDocId[tracker.inNew] = -1;
                         aclTxIdByDocId[tracker.inNew] = -1;
@@ -2653,8 +2660,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          * org.apache.lucene.util.OpenBitSet, long[], java.util.HashMap)
          */
         @Override
-        public void updateCache(CacheUpdateTracker tracker, CacheEntry[] oldIndexedByDocId, long[] oldAclIdByDocIdx, long[] oldTxByDocId, long[] oldAclTxByDocId,
-                CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
+        public void updateCache(CacheUpdateTracker tracker, ResizeableArrayList<CacheEntry> oldIndexedByDocId, long[] oldAclIdByDocIdx, long[] oldTxByDocId, long[] oldAclTxByDocId,
+                ResizeableArrayList<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
             // delete all existing
@@ -2710,8 +2717,8 @@ public class AlfrescoSolrEventListener implements SolrEventListener
          * org.apache.lucene.util.OpenBitSet, long[], java.util.HashMap)
          */
         @Override
-        public void updateCache(CacheUpdateTracker tracker, CacheEntry[] oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
-                CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
+        public void updateCache(CacheUpdateTracker tracker, ResizeableArrayList<CacheEntry> oldIndexedByDocId, long[] oldAclIdByDocId, long[] oldTxByDocId, long[] oldAclTxByDocId,
+                ResizeableArrayList<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId, long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID,
                 OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager ownerIdManager)
         {
 
@@ -2735,7 +2742,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     {
                         if(finalIndexReader.isDeleted(tracker.inNew - startNew))
                         {
-                            indexedByDocId[tracker.inNew] = null;
+                            indexedByDocId.set(tracker.inNew, null);
                             aclIdByDocId[tracker.inNew] = -1;
                             txIdByDocId[tracker.inNew] = -1;
                             aclTxIdByDocId[tracker.inNew] = -1;
@@ -2756,7 +2763,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     {
                         throw new IllegalStateException("Early deletes should have been cleared");
                     }
-                    CacheEntry old = oldIndexedByDocId[tracker.inOld];
+                    CacheEntry old = oldIndexedByDocId.get(tracker.inOld);
                     if (old != null)
                     {
                         // leaf docs
@@ -2780,7 +2787,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 unmatchedByDBID.put(newCacheEntry.dbid, newCacheEntry);
                             }
 
-                            indexedByDocId[tracker.inNew] = newCacheEntry;
+                            indexedByDocId.set(tracker.inNew, newCacheEntry);
 
                             allLeafDocs.set(tracker.inNew);
 
@@ -2812,7 +2819,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 unmatchedByDBID.put(newCacheEntry.dbid, newCacheEntry);
                             }
 
-                            indexedByDocId[tracker.inNew] = newCacheEntry;
+                            indexedByDocId.set(tracker.inNew, newCacheEntry);
 
                             if (allLeafDocs.get(tracker.inNew))
                             {
@@ -2829,7 +2836,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldAclIdByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew,  null);
                         aclIdByDocId[tracker.inNew] = oldAclIdByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2842,7 +2849,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldTxByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         txIdByDocId[tracker.inNew] = oldTxByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2855,7 +2862,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     }
                     else if (oldAclTxByDocId[tracker.inOld] >= 0)
                     {
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclTxIdByDocId[tracker.inNew] = oldAclTxByDocId[tracker.inOld];
                         if (allLeafDocs.get(tracker.inNew))
                         {
@@ -2869,7 +2876,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                     else
                     {
 
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         if (allLeafDocs.get(tracker.inNew))
                         {
                             allLeafDocs.flip(tracker.inNew);
@@ -3093,7 +3100,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
      * Keep for incremental build
      */
 
-    private void updateCacheByDocId(CacheUpdateTracker tracker, CacheEntry[] indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId,
+    private void updateCacheByDocId(CacheUpdateTracker tracker, List<CacheEntry> indexedByDocId, OpenBitSet allLeafDocs, long[] aclIdByDocId, long[] txIdByDocId,
             long[] aclTxIdByDocId, HashMap<Long, CacheEntry> unmatchedByDBID, OpenBitSet deleted, SolrIndexReader reader, OwnerIdManager osnerIdManager)
     {
         try
@@ -3101,7 +3108,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
 
             if (reader.isDeleted(tracker.inNew))
             {
-                indexedByDocId[tracker.inNew] = null;
+                indexedByDocId.set(tracker.inNew, null);
                 aclIdByDocId[tracker.inNew] = -1;
                 txIdByDocId[tracker.inNew] = -1;
                 aclTxIdByDocId[tracker.inNew] = -1;
@@ -3180,7 +3187,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         }
                     }
 
-                    indexedByDocId[tracker.inNew] = entry;
+                    indexedByDocId.set(tracker.inNew, entry);
                     aclIdByDocId[tracker.inNew] = -1;
                     txIdByDocId[tracker.inNew] = -1;
                     aclTxIdByDocId[tracker.inNew] = -1;
@@ -3195,7 +3202,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         String string = field.stringValue();
                         long aclId = Long.parseLong(string);
 
-                        indexedByDocId[tracker.inNew] = null;
+                        indexedByDocId.set(tracker.inNew, null);
                         aclIdByDocId[tracker.inNew] = aclId;
                         txIdByDocId[tracker.inNew] = -1;
                         aclTxIdByDocId[tracker.inNew] = -1;
@@ -3212,7 +3219,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                             String string = field.stringValue();
                             long txId = Long.parseLong(string);
 
-                            indexedByDocId[tracker.inNew] = null;
+                            indexedByDocId.set(tracker.inNew, null);
                             aclIdByDocId[tracker.inNew] = -1;
                             txIdByDocId[tracker.inNew] = txId;
                             aclTxIdByDocId[tracker.inNew] = -1;
@@ -3229,7 +3236,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                                 String string = field.stringValue();
                                 long aclTxId = Long.parseLong(string);
 
-                                indexedByDocId[tracker.inNew] = null;
+                                indexedByDocId.set(tracker.inNew, null);
                                 aclIdByDocId[tracker.inNew] = -1;
                                 txIdByDocId[tracker.inNew] = -1;
                                 aclTxIdByDocId[tracker.inNew] = aclTxId;
@@ -3240,7 +3247,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                             }
                             else
                             {
-                                indexedByDocId[tracker.inNew] = null;
+                                indexedByDocId.set(tracker.inNew, null);
                                 aclIdByDocId[tracker.inNew] = -1;
                                 txIdByDocId[tracker.inNew] = -1;
                                 aclTxIdByDocId[tracker.inNew] = -1;

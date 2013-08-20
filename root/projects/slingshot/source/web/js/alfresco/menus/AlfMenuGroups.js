@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/menus/AlfMenuGroups
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes dijit/_KeyNavContainer
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
@@ -36,16 +45,17 @@ define(["dojo/_base/declare",
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {string}
        */
       templateString: template,
       
       /**
        * Process any widgets provided.
        * 
-       * @method postCreate
+       * @instance
        */
-      postCreate: function alf_menus_AlfMenuGroups__postCreate() {
+      postCreate: function alfresco_menus_AlfMenuGroups__postCreate() {
          
          // Set up keyboard handling...
          var l = this.isLeftToRight();
@@ -61,7 +71,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method allWidgetsProcessed
+       * @instance
        */
       allWidgetsProcessed: function alfresco_menus_AlfMenuGroups__allWidgetsProcessed(widgets) {
          var _this = this;
@@ -74,7 +84,7 @@ define(["dojo/_base/declare",
        * Extends the default implementation to ensure that all child widgets are an instance
        * of AlfMenuGroup.
        * 
-       * @method addChild
+       * @instance
        * @param {object} widget The widget to be added
        * @param {integer} insertIndex The index to add the widget at
        */
@@ -89,7 +99,7 @@ define(["dojo/_base/declare",
          else
          {
             this.alfLog("log", "Creating group for: ", widget);
-            var newGroup = new AlfMenuGroup();
+            var newGroup = new AlfMenuGroup({pubSubScope: widget.pubSubScope});
             newGroup.addChild(widget);
             this.inherited(arguments, [newGroup, insertIndex]);
          }

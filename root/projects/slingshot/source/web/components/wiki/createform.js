@@ -122,6 +122,9 @@
             theme_advanced_statusbar_location: "bottom",
             theme_advanced_path: false,
             theme_advanced_resizing: true,
+            theme_advanced_default_foreground_color : "#000000",
+            extended_valid_elements : "style[type]",
+            valid_children : "+body[style]",
             siteId: this.options.siteId,
             language: this.options.locale
          });
@@ -195,7 +198,8 @@
                }
                
                var title = Dom.get(this.id + "-title").value;
-               title = title.replace(/\s+/g, "_");
+               //Remove the leading and trailing whitespace
+               title = title.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
                // Set the "action" attribute of the form based on the page title
                form.action =  Alfresco.constants.PROXY_URI + "slingshot/wiki/page/" + this.options.siteId + "/" + encodeURIComponent(title);
                

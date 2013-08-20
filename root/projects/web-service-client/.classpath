@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="source/generated"/>
 	<classpathentry kind="src" path="source/java"/>
+	<classpathentry kind="src" path="source/test-java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
 	<classpathentry kind="src" path="config"/>

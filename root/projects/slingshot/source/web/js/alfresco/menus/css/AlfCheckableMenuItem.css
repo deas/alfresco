@@ -1,0 +1,11 @@
+.alf-checkable-menu-item {
+  height: 20px;
+  width: 20px;
+}
+
+.alfresco-share .dijitMenu .alf-checkable-menu-item.alf-selected-icon {
+   background: url("./images/Selected.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}

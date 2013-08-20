@@ -43,7 +43,7 @@ function main()
       // create the model object to represent the sort field definition
       sortFields.push(
       {
-         type: sort.value,
+         type: (sort.value !== null ? sort.value : ""),
          label: label ? label : sort.value
       });
    }
@@ -55,7 +55,7 @@ function main()
    model.sortFields = sortFields;
    model.searchTerm = (page.url.args["t"] != null) ? page.url.args["t"] : "";
    model.searchTag = (page.url.args["tag"] != null) ? page.url.args["tag"] : "";
-   model.searchSort = (page.url.args["s"] != null) ? page.url.args["s"] : "";
+   model.searchSort = (page.url.args["s"] != null) ? page.url.args["s"] : (sortFields.length !== 0 ? sortFields[0].type : "");
    // config override can force repository search on/off
    model.searchRepo = ((page.url.args["r"] == "true") || repoconfig == "always") && repoconfig != "none";
    model.searchAllSites = (page.url.args["a"] == "true" || siteId.length == 0);

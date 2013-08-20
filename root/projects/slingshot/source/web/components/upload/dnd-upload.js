@@ -1061,8 +1061,17 @@
       _processUploadFailure: function DND__processUploadFailure(fileInfo, status)
       {
          fileInfo.state = this.STATE_FAILURE;
-         var errormsg = JSON.parse(fileInfo.request.responseText).message;
-         errormsg = errormsg.substring(errormsg.indexOf(" ") + 1);
+         var errormsg = fileInfo.request.status+" "+fileInfo.request.statusText; //default
+         
+         try
+         {
+             errormsg = JSON.parse(fileInfo.request.responseText).message;
+             errormsg = errormsg.substring(errormsg.indexOf(" ") + 1);
+         }
+         catch(exception)
+         {
+            Alfresco.logger.error("The following error occurred parsing the upload failure message for "+errormsg+": " + exception);
+         }
 
          // Add the failure label to the filename & and as a title attribute
          var key = "label.failure." + status,

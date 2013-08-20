@@ -268,6 +268,7 @@
                      // Save url for new config dialog openings
                      this.options.feedURL = (rss && rss.feedURL) ? rss.feedURL : this.options.feedURL;
                      this.options.limit = rss.limit;
+                     this.options.target = rss.target;
 
                      // Update title and items are with new rss 
                      this._loadFeed();
@@ -282,6 +283,7 @@
                      form.addValidation(this.configDialog.id + "-url", Alfresco.forms.validation.url, null, "keyup");
 
                      Dom.get(this.configDialog.id + "-url").value = this.options.feedURL;
+                     Dom.get(this.configDialog.id + "-new_window").checked = (this.options.target == "_blank");
                      
                      var select = Dom.get(this.configDialog.id + "-limit"), options = select.options, option, i, j;
                      for (i = 0, j = options.length; i < j; i++)

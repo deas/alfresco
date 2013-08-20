@@ -61,7 +61,7 @@ if (preload)
 model.viewer = viewer;
 model.node = node;
 model.contentData = contentData;
-model.contentUrl = "/alfresco/service" + contentUrl;
+model.contentUrl = page.url.context + "/service" + contentUrl;
 
 // Set the width
 model.width = "100%"; // default value

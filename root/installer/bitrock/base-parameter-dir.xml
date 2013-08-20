@@ -1,6 +1,6 @@
 <component>
     <name>baseparamdir</name>
-    <description>Parameters</description>
+    <description>//Base Installdir Parameter</description>
     <canBeEdited>0</canBeEdited>
     <selected>1</selected>
     <show>0</show>
@@ -33,6 +33,31 @@
             </ruleList>
         </setInstallerVariableFromRegEx>
     </initializationActionList>
+
+    <preInstallationActionList>
+	<actionGroup>
+	    <actionList>
+		<setInstallerVariable name="base_umask" value="0022" />
+		<setInstallerVariableFromScriptOutput>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <name>base_umask</name>
+		    <exec>umask</exec>
+		</setInstallerVariableFromScriptOutput>
+		<throwError>
+		    <text>The installation has detected that the current umask is set to permissions of ${base_umask}, the installation is now exiting. You should modify your umask to at least 0022 before launching the installer. After the installation has completed, reset the umask permissions to your original values.</text>
+		    <ruleList>
+			<compareValues value1="${base_umask}" logic="greater" value2="0022" />
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <ruleList>
+		<platformTest type="unix"/>
+		<compareText text="${installer_root_install}" logic="equals" value="1"/>
+	    </ruleList>
+	</actionGroup>
+    </preInstallationActionList>
+
     <parameterList>
         <stringParameter>
             <name>base_needed_space</name>
@@ -52,10 +77,11 @@
             <default>1</default>
             <ask>0</ask>
         </stringParameter>
+        <booleanParameter name="base_installdir_allow_symlink_on_windows_dir" value="1" ask="0" />
         <stringParameter ask="0" name="base_installdir_max_characters" value="200" />
         <directoryParameter>
             <name>installdir</name>
-            <title>Installation Folder</title>
+            <title>Installation folder</title>
             <description>Select a folder</description>
             <explanation>Please choose a folder to install ${product_fullname}</explanation>
             <default/>
@@ -65,6 +91,9 @@
             <cliOptionName>prefix</cliOptionName>
             <insertAfter>components</insertAfter>
             <width>32</width>
+            <preShowPageActionList>
+                <cd path="${installer_directory}" />
+            </preShowPageActionList>
             <validationActionList>
                 <throwError>
 <!-- Require installdir to be empty. #2489 -->
@@ -127,10 +156,74 @@
 			<compareValues value1="${freeSpace}" logic="equals" value2="-1" />
 		    </ruleList>
 		</showWarning>
+		<actionGroup>
+		    <actionList>
+			<checkDirectoryTraversableRecursively directory="${installdir}" variable="is_not_traversable" />
+			<throwError text="The current installation directory could not be accessed by non-root users. Please select a different installation directory or change the permissions to 755 for this folder." >
+			    <ruleList>
+				<isTrue value="${is_not_traversable}" />
+			    </ruleList>
+			</throwError>
+		    </actionList>
+		    <ruleList>
+			<platformTest type="unix"/>
+			<compareText text="${installer_root_install}" logic="equals" value="1"/>
+		    </ruleList>
+		</actionGroup>
+                <actionGroup>
+                <actionList>
+                <checkForSymlinkRecursively directory="${installdir}" variable="contains_symlink" >
+                    <ruleList>
+                        <platformTest type="windows" />
+                    </ruleList>
+                </checkForSymlinkRecursively>
+                <throwError text="Please select a different installation directory. The installation directory cannot contain symbolic links" >
+                    <ruleList>
+                        <platformTest type="windows" />
+                        <isTrue value="${contains_symlink}" />
+                    </ruleList>
+                </throwError>
+                </actionList>
+                <ruleList>
+                    <isFalse value="${base_installdir_allow_symlink_on_windows_dir}" />
+                </ruleList>
+                </actionGroup>
             </validationActionList>
         </directoryParameter>
     </parameterList>
     <readyToInstallActionList>
+	<actionGroup>
+	    <actionList>
+		<checkDirectoryTraversableRecursively directory="${installdir}" variable="is_not_travesable" />
+		<throwError text="The current installation directory could not be accessed by non-root users. Please select a different installation directory or change the permissions to 755 for this folder." >
+		    <ruleList>
+			<isTrue value="${is_not_travesable}" />
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <ruleList>
+		<platformTest type="unix"/>
+		<compareText text="${installer_root_install}" logic="equals" value="1"/>
+	    </ruleList>
+	</actionGroup>
+        <actionGroup>
+            <actionList>
+                <checkForSymlinkRecursively directory="${installdir}" variable="contains_symlink" >
+                    <ruleList>
+                        <platformTest type="windows" />
+                    </ruleList>
+                </checkForSymlinkRecursively>
+                <throwError text="Please select a different installation directory. The installation directory cannot contain symbolic links" >
+                    <ruleList>
+                        <platformTest type="windows" />
+                        <isTrue value="${contains_symlink}" />
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isFalse value="${base_installdir_allow_symlink_on_windows_dir}" />
+            </ruleList>
+        </actionGroup>
     </readyToInstallActionList>
 </component>
 

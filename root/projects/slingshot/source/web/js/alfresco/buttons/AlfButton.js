@@ -16,7 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-// This class is intended to be mixed into to all menu item instances to ensure that they all share common behaviour 
+
+/**
+ * This extends the default Dojo button to provide Alfresco specific styling. It also overrides
+ * the [onClick]{@link module:alfresco/buttons/AlfButton#onClick} function to publish the 
+ * [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} on the 
+ * [publishTopic]{@link module:alfresco/buttons/AlfButton#publishTopic}
+ * 
+ * @module alfresco/buttons/AlfButton
+ * @extends module:dijit/form/Button
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/form/Button",
         "alfresco/core/Core",
@@ -28,31 +39,44 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/AlfButton.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfButton.css"}],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
-       * @property i18nRequirements {Array}
+       * @instance 
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/AlfButton.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfButton.properties"}],
       
       /**
-       * @property {string} publishTopic The topic to publish when the button is clicked
+       * The topic to publish when the button is clicked
+       *
+       * @instance 
+       * @type {string}
        * @default ""
        */
       publishTopic: "",
       
       /**
-       * @property {object} publishPayload The payload to publish when the button is clicked
+       * The payload to publish when the button is clicked
+       * 
+       * @instance
+       * @type {object}
+       * @default null
        */
       publishPayload: null,
       
       /**
+       * Extends the default implementation to check that the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} attribute has been set
+       * to something other null and if it hasn't initialises it to a new (empty) object.
        * 
-       * @method postMixInProperties
+       * @instance
        */
       postMixInProperties: function alfresco_buttons_AlfButton__postMixInProperties() {
          this.inherited(arguments);
@@ -66,7 +90,7 @@ define(["dojo/_base/declare",
        * Extends the default Dojo button implementation to add a widget DOM node CSS class to ensure that the 
        * CSS selectors are matched.
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_buttons_AlfButton__postCreate() {
          this.inherited(arguments);
@@ -74,18 +98,21 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * @method onClick
+       * Handles click events to publish the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} 
+       * on the [publishTopic]{@link module:alfresco/buttons/AlfButton#publishTopic}
+       * 
+       * @instance 
+       * @param {object} evt The click event
        */
-      onClick: function alfresco_buttons_AlfButton__onClick() {
+      onClick: function alfresco_buttons_AlfButton__onClick(evt) {
          if (this.publishTopic != null && this.publishTopic != "")
          {
             this.alfPublish(this.publishTopic, this.publishPayload);
          }
          else
          {
-            this.alfLog("error", "A widget was clicked but did not provide any information on how to handle the event", this);
+            this.alfLog("warn", "A widget was clicked but did not provide any information on how to handle the event", this);
          }
       }
-      
    });
 });

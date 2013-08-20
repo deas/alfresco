@@ -1,6 +1,6 @@
 <component>
     <name>licenses</name>
-    <description>License Folder Component</description>
+    <description>//License Folder Component</description>
     <canBeEdited>1</canBeEdited>
     <show>0</show>
     <selected>1</selected>
@@ -8,13 +8,12 @@
         <directoryParameter>
             <ask>0</ask>
             <default>${installdir}</default>
-            <description>Licenses destination</description>
             <name>base_licenses_installation_directory</name>
         </directoryParameter>
     </parameterList>
     <folderList>
         <folder>
-            <description>Licenses Files</description>
+            <description>//Licenses Files</description>
             <destination>${base_licenses_installation_directory}</destination>
             <name>licensefiles</name>
             <distributionFileList>

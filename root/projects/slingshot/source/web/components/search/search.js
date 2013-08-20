@@ -647,10 +647,7 @@
          
          // add search data webscript arguments
          url += "search?t=" + encodeURIComponent(searchTerm);
-         if (searchSort.length !== 0)
-         {
-            url += "&s=" + searchSort;
-         }
+         url += "&s=" + searchSort;
          if (searchQuery.length !== 0)
          {
             // if we have a query (already encoded), then apply it

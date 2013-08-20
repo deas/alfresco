@@ -1,0 +1,60 @@
+.alfresco-kickstart-StepPalette.dragTemplate,
+.alfresco-kickstart-StepPalette.dragTemplate.dojoDndItemSelected,
+.alfresco-kickstart-StepPalette.dragTemplate.dojoDndItemAnchor {
+   border: 1px solid #D3D3D3;
+   margin: 5px;
+   padding: 5px;
+   width: 150px;
+   background-color: inherit;
+   background-image: none; 
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate span {
+   vertical-align: middle;
+   display: inline-block;
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon {
+   background-repeat: no-repeat;
+   height: 32px;
+   width: 32px;
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.choice {
+   background-image: url("./images/choice_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.email {
+   background-image: url("./images/email_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.feedback {
+   background-image: url("./images/feedback_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.parallel {
+   background-image: url("./images/parallel_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.system {
+   background-image: url("./images/system_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.users {
+   background-image: url("./images/users_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .icon.review {
+   background-image: url("./images/review_icon.png");
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .title {
+   width: 90px;
+}
+
+.alfresco-kickstart-StepPalette.dragTemplate .dojoDndHandle {
+   background-image: url("./images/drag_handle.png");
+   background-repeat: no-repeat;
+   height: 16px;
+   width: 16px;
+}

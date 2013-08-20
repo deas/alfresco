@@ -16,6 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/wrapped/HeaderJsWrapper
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes dijit/_KeyNavContainer
+ * @mixes dijit/_CssStateMixin
+ * @mixes module:alfresco/core/Core
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
@@ -40,48 +50,61 @@ define(["dojo/_base/declare",
       /**
        * An array of the CSS files to use with this widget.
        * 
-       * @property cssRequirements {Array}
+       * @instance
+       * @type {object[]}
        */
       cssRequirements: [{cssFile:"./css/HeaderJsWrapper.css"}],
       
       /**
        * The HTML template to use for the widget.
-       * @property template {String}
+       * @instance
+       * @type {string}
        */
       templateString: template,
       
       /**
-       * @property 
+       * @instance
+       * @type {string[]}
        */
       templateMessages: null,
       
       /**
-       * 
-       * @property {string} objectToInstantiate A string that can be evaluated into an object to instantiate
+       * A string that can be evaluated into an object to instantiate
+       * @instance
+       * @type {string}
        * @default null
        */
       objectToInstantiate: null,
       
       /**
-       * @property {object} instantiatedObject A reference to the instantiated object.
+       * A reference to the instantiated object.
+       * @instance
+       * @type {object} 
        * @default null
        */
       instantiatedObject: null,
       
       /**
-       * @property {string} itemId The id of the item.
+       * The id of the item.
+       * @instance
+       * @type {string} 
        * @default null
        */
       itemId: null,
       
       /**
-       * @property {string} siteId The id of the current site
+       * The id of the current site
+       * @instance
+       * @type {string} 
        * @default null
        */
       siteId: null,
       
       /**
-       * @property {string} label The label for the header item. 
+       * The label for the header item.
+       * @instance
+       * @type {string}
+       * @default ""
        */
       label: "",
       
@@ -89,7 +112,7 @@ define(["dojo/_base/declare",
       /**
        * Creates the supplied JavaScript object that is to be wrapped in a header menu item.
        * 
-       * @method postCreate
+       * @instance
        */
       postCreate: function alfresco_wrapped_HeaderJsWrapper__postCreate() {
          
@@ -135,7 +158,7 @@ define(["dojo/_base/declare",
        * it to handle those additional events. 
        * 
        * This is really the best option given the unknowns and the expected (un)likelihood of this being required by any 3rd party code.  
-       * @method startup
+       * @instance
        */
       startup: function alfresco_wrapped_HeaderJsWrapper__startup() {
          var _this = this;
@@ -154,7 +177,7 @@ define(["dojo/_base/declare",
       /**
        * Displays the wrapped share menu.
        * 
-       * @method showWrappedMenu
+       * @instance
        */
       showWrappedMenu: function alfresco_wrapped_HeaderJsWrapper__showWrappedMenu() {
          this.alfLog("log", "Opening wrapped menu");
@@ -176,7 +199,7 @@ define(["dojo/_base/declare",
        * This function is implemented to indicate whether or not the wrapped item can be focused. It is focusable if
        * the item has a focus function that can be called.
        * 
-       * @method isFocusable
+       * @instance
        * @returns {boolean} true if there is a wrapped item and it has a focus function.
        */
       isFocusable: function  alfresco_wrapped_HeaderJsWrapper__isFocusable() {
@@ -188,7 +211,7 @@ define(["dojo/_base/declare",
       /**
        * This function is implemented to delegate the handling of focus events to the wrapped item.
        * 
-       * @method focus
+       * @instance
        */
       focus: function alfresco_wrapped_HeaderJsWrapper__focus() {
          this.alfLog("log", "HeaderJsWrapper focus");
@@ -197,7 +220,7 @@ define(["dojo/_base/declare",
       
       /**
        * 
-       * @method _onFocus
+       * @instance
        */
       _onFocus: function alfresco_wrapped_HeaderJsWrapper___onFocus() {
          this.alfLog("log", "Got focus");
@@ -209,7 +232,7 @@ define(["dojo/_base/declare",
       /**
        * This function is implemented to delegate the handling of _setSelected calls to the wrapped item.
        * 
-       * @method _setSelected
+       * @instance
        * @param {boolean} Indicates whether ot not the item is selected
        */
       _setSelected: function alfresco_wrapped_HeaderJsWrapper___setSelected(selected) {
@@ -220,7 +243,7 @@ define(["dojo/_base/declare",
       /**
        * This function is implemented to delegate the handling of onClick calls to the wrapped item.
        * 
-       * @method onClick
+       * @instance
        * @param {object} evt The click event
        */
       onClick: function alfresco_wrapped_HeaderJsWrapper__onClick(evt){

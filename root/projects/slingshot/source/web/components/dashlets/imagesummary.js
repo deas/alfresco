@@ -200,40 +200,43 @@
       resizeThumbnailList: function resizeThumbnailList(e)
       {
          // calculate number of thumbnails we can display across the dashlet width
-         var listDiv = Dom.get(this.id + "-list"),
-             clientWidth = listDiv.clientWidth - 16 - (e ? 0 : 16),
+         var listDiv = Dom.get(this.id + "-list");
+         if (listDiv)
+         {
+             var clientWidth = listDiv.clientWidth - 16 - (e ? 0 : 16),
              count = Math.floor(clientWidth / 110),
              spacing = (((clientWidth % 110) / count / 2) + 3.5).toFixed(1);
-         
-         // handle minimum value - we never want to show less than one thumbnail column
-         if (count === 0) count = 1;
-         
-         // reflow the thumbnail items as required
-         if (count !== this.itemsPerRow || spacing !== this.itemPadding)
-         {
-            var items = Dom.getElementsByClassName("item", null, listDiv);
-            for (var i=0, j=items.length, pad="0 "+spacing+"px 8px"; i<j; i++)
-            {
-               if (spacing !== this.itemPadding)
-               {
-                  Dom.setStyle(items[i], "padding", pad);
-               }
-               if (count !== this.itemsPerRow)
-               {
-                  if (i % count === 0)
-                  {
-                     // initial item for the current row
-                     Dom.addClass(items[i], "initial");
-                  }
-                  else
-                  {
-                     Dom.removeClass(items[i], "initial");
-                  }
-               }
-            }
-            this.itemPadding = spacing;
-            this.itemsPerRow = count;
-         }
+
+             // handle minimum value - we never want to show less than one thumbnail column
+             if (count === 0) count = 1;
+
+             // reflow the thumbnail items as required
+             if (count !== this.itemsPerRow || spacing !== this.itemPadding)
+             {
+                var items = Dom.getElementsByClassName("item", null, listDiv);
+                for (var i=0, j=items.length, pad="0 "+spacing+"px 8px"; i<j; i++)
+                {
+                   if (spacing !== this.itemPadding)
+                   {
+                      Dom.setStyle(items[i], "padding", pad);
+                   }
+                   if (count !== this.itemsPerRow)
+                   {
+                      if (i % count === 0)
+                      {
+                         // initial item for the current row
+                         Dom.addClass(items[i], "initial");
+                      }
+                      else
+                      {
+                         Dom.removeClass(items[i], "initial");
+                      }
+                   }
+                }
+                this.itemPadding = spacing;
+                this.itemsPerRow = count;
+             }
+          }
       },
       
       /**

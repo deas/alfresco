@@ -100,7 +100,7 @@ public class VtiDocumentHelper
             if (workingCopyNodeRef == null)
             {
                 // short-term checkout
-                if (lockInfo.getOwner().equals(AuthenticationUtil.getFullyAuthenticatedUser()))
+                if (lockInfo != null && lockInfo.getOwner().equals(AuthenticationUtil.getFullyAuthenticatedUser()))
                 {
                     status = DocumentStatus.SHORT_CHECKOUT_OWNER;
                 }

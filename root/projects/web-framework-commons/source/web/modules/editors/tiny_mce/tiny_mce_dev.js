@@ -9473,7 +9473,11 @@ window.tinymce.dom.Sizzle = Sizzle;
 						// IE9 might throw errors here don't know why
 					}
 
-					s.addRange(r);
+					try {
+						s.addRange(r);
+					} catch (ex) {
+						// if browser's cache is empty IE9 might throw errors here don't know why
+					}
 
 					// Forward is set to false and we have an extend function
 					if (forward === false && s.extend) {

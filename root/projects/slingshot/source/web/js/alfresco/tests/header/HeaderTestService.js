@@ -16,6 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * @module alfresco/tests/header/HeaderTestService
+ * @extends module:alfresco/tests/CommonTestService
+ * @author Dave Draper
+ */
 define(["dojo/_base/declare",
         "alfresco/tests/CommonTestService",
         "doh/runner",
@@ -51,12 +57,13 @@ define(["dojo/_base/declare",
     *    a) Post status via mouse (DONE)
     *    b) Search via mouse (DONE)
     *    c) Advanced search via mouse (DONE)
-    * 
     */
    return declare(CommonTestService, {
       
       /**
        * Register the tests for the Header widgets
+       * 
+       * @instance
        */
       constructor: function() {
          
@@ -126,18 +133,6 @@ define(["dojo/_base/declare",
                timeout: 20000,
                runTest: this.testUserStatusBlurPartialUpdate,
                scope: this
-            },
-            {
-               name: "Test Search Box Expands",
-               timeout: 20000,
-               runTest: this.testSearchBoxExpands,
-               scope: this
-            },
-            {
-               name: "Test Search Box Contracts",
-               timeout: 20000,
-               runTest: this.testSearchBoxContracts,
-               scope: this
             }
          ]);
          doh.run();
@@ -148,10 +143,12 @@ define(["dojo/_base/declare",
        * by using the Dijit registry to find all the widgets that are expected to be on the
        * page. These are then stored as objects in the service instance for easy reference
        * later on.
+       * @instance
        */
       testSetup: function(doh) {
          this.scope.findTestObjects(["HEADER", 
-                                      "LEFT_MENU", 
+                                      "LEFT_MENU",
+                                      "MENU_1",
                                       "DROP_DOWN_1_GROUP_1", 
                                       "BEFORE_USER_STATUS", 
                                       "USER_STATUS", 
@@ -168,6 +165,7 @@ define(["dojo/_base/declare",
       
       /**
        * This checks rendering of the widgets. At the moment it just checks for the adding drop down arrow in the menu.
+       * @instance
        */
       testRendering: function(doh) {
          
@@ -179,6 +177,7 @@ define(["dojo/_base/declare",
        * This test makes sure that its possible to access the User Status widget (regardless of 
        * it's position within in the menu (e.g. last in a group, with another group). The test
        * placement is intentionally different to the Share implementation for test variation.
+       * @instance
        */
       testUserStatusAccessibility: function(doh) {
          
@@ -236,6 +235,7 @@ define(["dojo/_base/declare",
       /**
        * This test makes sure that it's possible to navigate to the search box and both perform
        * a regular search and request an advanced search simply through key presses.
+       * @instance
        */
       testSearchBoxAccessibility: function(doh) {
          var d = new doh.Deferred();
@@ -271,6 +271,7 @@ define(["dojo/_base/declare",
       /**
        * This test ensures that the User Status can receive updates (these could be posted by the UserService
        * or from other widget) and that the SearchBox grows and shrinks with focus.
+       * @instance
        */
       testEvents: function(doh) {
          
@@ -289,6 +290,7 @@ define(["dojo/_base/declare",
       /**
        * This test checks that the user status can be updated via mouse and that search and advanced search can be 
        * requested by mouse.
+       * @instance
        */
       testMouseCapabilities: function(doh) {
          
@@ -299,10 +301,12 @@ define(["dojo/_base/declare",
          this.scope.statusUpdatesPosted = [];
          
          var searchString = "SearchThat",
-             statusUpdate = "Another Status";
+             statusUpdate = "another Status";
          
-         robot.mouseMoveAt(this.scope.testObjects.DROP_DOWN_1_GROUP_1.domNode, 500); 
+         robot.mouseMoveAt(this.scope.testObjects.MENU_1.domNode, 500); 
          robot.mouseClick({left:true}, 500);                                                    // Open left drop down menu
+         robot.mouseMoveAt(this.scope.testObjects.DROP_DOWN_1_GROUP_1.domNode, 500); 
+         robot.mouseClick({left:true}, 500);                                                    // 
          robot.mouseMoveAt(this.scope.testObjects.USER_STATUS._userStatusWidget.domNode, 500); 
          robot.mouseClick({left:true}, 500);                                                    // Click in user status
          robot.typeKeys(statusUpdate, 500, 2000);                                               // Enter a new user status
@@ -336,6 +340,7 @@ define(["dojo/_base/declare",
       
       /**
        * This test makes sure that the previous user status is cleared when clicked
+       * @instance
        */
       testUserStatusClick: function(doh) {
          var d = new doh.Deferred();
@@ -349,6 +354,8 @@ define(["dojo/_base/declare",
             userStatusTime: stamp.toISOString(new Date())
          });
          
+         robot.mouseMoveAt(this.scope.testObjects.MENU_1.domNode, 500); 
+         robot.mouseClick({left:true}, 500);                                                    // Open left drop down menu
          robot.mouseMoveAt(this.scope.testObjects.DROP_DOWN_1_GROUP_1.domNode, 500); 
          robot.mouseClick({left:true}, 500);                                                    // Open left drop down menu
          robot.mouseMoveAt(this.scope.testObjects.USER_STATUS._userStatusWidget.domNode, 500); 
@@ -366,6 +373,7 @@ define(["dojo/_base/declare",
       /**
        * This test makes sure that when you move the mouse away from the UserStatus message it gets reset if there
        * has been no keypresses.
+       * @instance
        */
       testUserStatusBlurNoUpdate: function(doh) {
          var d = new doh.Deferred();
@@ -398,12 +406,15 @@ define(["dojo/_base/declare",
       /**
        * This test makes sure that when you move the mouse away from the UserStatus message it gets left if some
        * status has been updated but NOT posted
+       * @instance
        */
       testUserStatusBlurPartialUpdate: function(doh) {
          var d = new doh.Deferred();
          
          var statusUpdate = "Partial Stat"; // For setting status that we check is reset
 
+         robot.mouseMoveAt(this.scope.testObjects.MENU_1.domNode, 500); 
+         robot.mouseClick({left:true}, 500);                                                    // Open left drop down menu
          robot.mouseMoveAt(this.scope.testObjects.USER_STATUS._postButtonNode, 500);            // Move to the post button
          robot.mouseClick({left:true}, 500);                                                    // Submit the status
          
@@ -420,46 +431,6 @@ define(["dojo/_base/declare",
          robot.sequence(d.getTestCallback(function(){
             var userStatusTextBoxValue = _this.scope.testObjects.USER_STATUS._userStatusWidget.attr("value");
             doh.assertEqual(statusUpdate, userStatusTextBoxValue, "The previous status was not reset");
-            
-         }), 900);
-         return d;
-      },
-      
-      /**
-       * This test checks that the search box expands when it has focus
-       */
-      testSearchBoxExpands: function(doh) {
-         var d = new doh.Deferred();
-         
-         robot.mouseMoveAt(this.scope.testObjects.SEARCH_BOX._searchTextNode, 500);             // Move to the search box input field
-         robot.mouseClick({left:true}, 500);                                                    // Place the cursor in it
-         
-         // Check search box expands when focused...
-         var _this = this;
-         robot.sequence(d.getTestCallback(function(){
-            var searchBoxWidth = domStyle.getComputedStyle(_this.scope.testObjects.SEARCH_BOX._searchTextNode).width,
-                expectedWidth = _this.scope.testObjects.SEARCH_BOX._focusedWidth;
-            doh.assertEqual(expectedWidth + "px", searchBoxWidth, "The width of the focused SearchBox was not as expected");
-            
-         }), 900);
-         return d;
-      },
-      
-      /**
-       * This test checks that the search box expands when it has focus
-       */
-      testSearchBoxContracts: function(doh) {
-         var d = new doh.Deferred();
-         
-         robot.mouseMoveAt(this.scope.testObjects.DROP_DOWN_1_GROUP_1.domNode, 500);             // Move to the search away from the input field
-         robot.mouseClick({left:true}, 500);                                                     // Place the cursor in it
-         
-         // Check search box expands when focused...
-         var _this = this;
-         robot.sequence(d.getTestCallback(function(){
-            var searchBoxWidth = domStyle.getComputedStyle(_this.scope.testObjects.SEARCH_BOX._searchTextNode).width,
-                expectedWidth = _this.scope.testObjects.SEARCH_BOX._blurredWidth;
-            doh.assertEqual(expectedWidth + "px", searchBoxWidth, "The width of the blurred SearchBox was not as expected");
             
          }), 900);
          return d;

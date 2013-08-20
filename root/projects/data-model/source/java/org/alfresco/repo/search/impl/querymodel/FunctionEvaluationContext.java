@@ -26,6 +26,7 @@ import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.namespace.QName;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
 
@@ -218,5 +219,12 @@ public interface FunctionEvaluationContext
      */
     public boolean isMultiValued(String propertyName);
     
+    public String getAlfrescoPropertyName(String propertyName);
+
+    /**
+     * @param staticValue
+     * @return
+     */
+    public String getAlfrescoTypeName(String staticValue);
 
 }
