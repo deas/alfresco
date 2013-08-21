@@ -24,6 +24,8 @@
       <div id="${el}-body" class="application">
          <!-- Options panel -->
          <div id="${el}-options" class="hidden">
+            <div class="title">${msg("page.adminConsole.description")}</div>
+            <div class="row info">${msg("message.new-admin-console")}</div>
             <form id="${el}-options-form" action="${url.context}/service/components/console/application" method="post">
                <div class="title">${msg("label.options")}</div>
                <!-- Theme -->

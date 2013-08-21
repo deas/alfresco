@@ -50,3 +50,13 @@
    float: none !important;
    padding: 0.5em 0.2em;
 }
+
+.application .info
+{
+   padding-bottom: 0.75em;
+}
+
+.application .info a
+{
+   text-decoration: underline;
+}
