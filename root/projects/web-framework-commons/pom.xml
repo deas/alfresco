@@ -34,6 +34,10 @@
                     <groupId>commons-lang</groupId>
                     <artifactId>commons-lang</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.yahoo.platform.yui</groupId>
+                    <artifactId>yuicompressor</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
