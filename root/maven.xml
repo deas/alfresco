@@ -172,7 +172,7 @@
             pomFile="${dir.continuous.assemble.mmt}/pom-mmt.xml" />
         <!-- MMT classes -->
         <!-- BDE-85: Temporary comment until we make this right, deploying with a useful pom
-        <artifact:mvn>
+        <artifact:mvn mavenVersion="3.0.3">
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy-file"/>
             <arg value="-Dfile=${dir.continuous.assemble.mmt}/main/main.jar"/>
             <arg value="-DgroupId=${maven.group.id}"/>
@@ -183,6 +183,7 @@
             <arg value="-DrepositoryId=${maven.repo.id}"/>
             <arg value="-s"/>
             <arg value="${maven.settings.file}"/>
+            <arg value="-N"/>
         </artifact:mvn>
         -->
     </target>
@@ -408,7 +409,7 @@
                 <mapper type="regexp" from="^.*\.(.*)$$" to="\1"/>
             </pathconvert>
 
-            <artifact:mvn>
+            <artifact:mvn mavenVersion="3.0.3">
                 <arg value="${maven.command}"/>
                 <arg value="-Dfile=${fileabsolute}"/>
                 <arg value="-DgroupId=${maven.group.id}"/>
@@ -420,6 +421,7 @@
                 <arg value="-Dclassifier=@{classifier}"/>
                 <arg value="-s"/>
                 <arg value="${maven.settings.file}"/>
+                <arg value="-N"/>
             </artifact:mvn>
 
         </sequential>
@@ -444,7 +446,7 @@
                 <filename name="@{file}"/>
             </replace>
 
-            <artifact:mvn>
+            <artifact:mvn mavenVersion="3.0.3">
                 <arg value="${maven.command}"/>
                 <arg value="-Dfile=${fileabsolute}"/>
                 <arg value="-DgroupId=${maven.group.id}"/>
@@ -455,6 +457,7 @@
                 <arg value="-DrepositoryId=${maven.repo.id}"/>
                 <arg value="-s"/>
                 <arg value="${maven.settings.file}"/>
+                <arg value="-N"/>
             </artifact:mvn>
 
             <!-- Revert change in pom done above -->
@@ -494,7 +497,7 @@
                 <filename name="@{pomFile}"/>
             </replace>
 
-            <artifact:mvn>
+            <artifact:mvn mavenVersion="3.0.3">
                 <arg value="${maven.command}"/>
                 <arg value="-Dfile=${fileabsolute}"/>
                 <arg value="-DgroupId=${maven.group.id}"/>
@@ -507,6 +510,7 @@
                 <arg value="-s"/>
                 <arg value="${maven.settings.file}"/>
                 <arg line="${sideArtifacts}"/>
+                <arg value="-N"/>
             </artifact:mvn>
 
             <!-- Revert change in pom done above -->
