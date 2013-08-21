@@ -175,9 +175,6 @@ msgstr "インストールディレクトリのパスが長すぎます。パス
 msgid "Installation folder"
 msgstr "インストール先フォルダ"
 
-msgid "Installation Folder"
-msgstr "インストール先フォルダ"
-
 msgid "Installation folder cannot contain spaces."
 msgstr "インストール先フォルダにスペースを含めることはできません。"
 
@@ -321,9 +318,6 @@ msgstr "Tomcatがあるディレクトリを指定してください"
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "psql、pg_restore、およびvacuumdbのバイナリがあるディレクトリを指定してください。"
-
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "${product_fullname}をインストールするフォルダを選択してください。"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "${product_fullname}をインストールするフォルダを選択してください。"
@@ -640,9 +634,6 @@ msgstr "PostgreSQLの開始待ちです"
 msgid "Waiting for Postmaster"
 msgstr "Postmasterの待機中"
 
-msgid "War Files"
-msgstr "WARファイル"
-
 msgid "War files"
 msgstr "WARファイル"
 
@@ -708,3 +699,9 @@ msgstr "Google Docsの統合"
 
 msgid "Include Google Docs Integration Features."
 msgstr "Google Docsの統合機能が含まれています。"
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "LibreOfficeのサポートに必要な次のライブラリが、お使いのシステムに一切見つかりませんでした。 fontconfig libSM libICE libXrender libXext\nこのインストールを中断することやパッケージマネージャーを使用してこれらを最初にインストールすることは必ず避けてください。\n詳細については、http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.htmlを参照してください。\n\nインストールを続けますか?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "パスワードの先頭または末尾には、スペース文字は使えません"

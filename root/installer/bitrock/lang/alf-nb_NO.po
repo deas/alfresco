@@ -1,4 +1,4 @@
-msgid "${product_fullname} LibreOffice Service"
+﻿msgid "${product_fullname} LibreOffice Service"
 msgstr "${product_fullname} LibreOffice-tjeneste"
 
 msgid "${product_fullname} Service"
@@ -80,7 +80,7 @@ msgid "Config Files"
 msgstr "Konfig.filer"
 
 msgid "Couldn't check Apache Tomcat Version.\nTomcat 5.5 is recommended."
-msgstr "Kan ikke kontrollere Apache Tomcat-versjonen. \nTomcat 5.5 anbefales."
+msgstr "Kunne ikke kontrollere Apache Tomcat versjon.\nTomcat 5.5 anbefales"
 
 msgid "Creating user and database"
 msgstr "Opprette bruker og database"
@@ -170,12 +170,9 @@ msgid "Installation Type"
 msgstr "Installasjonstype"
 
 msgid "Installation directory path is too long. The maximum number of characters allowed is ${base_installdir_max_characters}."
-msgstr "Installasjonens katalogbane er for lang. Maksimalt antall tillatte tegn er ${base_installdir_max_characters}."
+msgstr "Installasjonskatalogsti er for lang. Maks. antall tillatte tegn er ${base_installdir_max_characters}."
 
 msgid "Installation folder"
-msgstr "Installasjonsmappe"
-
-msgid "Installation Folder"
 msgstr "Installasjonsmappe"
 
 msgid "Installation folder cannot contain spaces."
@@ -194,7 +191,7 @@ msgid "Installing Tomcat as a Windows service with name ${tomcat_unique_service_
 msgstr "Installerer Tomcat som en Windows-tjeneste med navnet ${tomcat_unique_service_name}"
 
 msgid "It seems you do not have enough permissions to bind to the port or the port is already taken by another application. Please select another one."
-msgstr "Det ser ut til at du ikke har nok tillatelser til å binde til porten, eller porten er allerede i bruk av et annet program. Velg en annen."
+msgstr "Det ser ut til at du ikke har tillatelse til å binde til porten eller porten er allerede tatt av et annet program. Vennligst velg en annen."
 
 msgid "JDBC Driver:"
 msgstr "JDBC-driver:"
@@ -239,7 +236,7 @@ msgid "New Folder"
 msgstr "Ny mappe"
 
 msgid "Not a PostgreSQL version 8.1.4 installation. PostgreSQL 8.1.4 recommended."
-msgstr "Dette er ikke en installasjon med PostgreSQL versjon 8.1.4. PostgreSQL 8.1.4 anbefales."
+msgstr "Ikke en PostgreSQL versjon 8.1.4 installasjon. PostgreSQL 8.1.4 anbefalt."
 
 msgid "Open SSL Component"
 msgstr "Åpne SSL-komponent"
@@ -248,16 +245,16 @@ msgid "LibreOffice"
 msgstr "LibreOffice"
 
 msgid "LibreOffice Server Port"
-msgstr "LibreOffice-serverport"
+msgstr "LibreOffice Server Port"
 
 msgid "LibreOffice Server port"
-msgstr "LibreOffice-serverport"
+msgstr "LibreOffice Server port"
 
 msgid "LibreOffice installation directory"
-msgstr "LibreOffice-installasjonskatalog"
+msgstr "LibreOffice installasjonskatalog"
 
 msgid "LibreOffice.org is a multiplatform, open-source office software suite for word processing, spreadsheets, presentations, graphics, and databases required for document transformations."
-msgstr "LibreOffice.org er en flerplattforms dokumentprogramvareserie med åpen kilde for tekstbehandling, regneark, presentasjoner, grafikk og databaser som kreves for dokumenttransformasjoner."
+msgstr "LibreOffice er en multiplattform, open-source office-programvare for tekstbehandling, regneark, presentasjoner, grafiske fremvisninger og databaser som er nødvendig for å transformere dokumenter."
 
 msgid "Parameters"
 msgstr "Parametre"
@@ -296,10 +293,10 @@ msgid "Please enter the port of your database."
 msgstr "Angi porten til databasen."
 
 msgid "Please enter the port that the Libreoffice Server will listen to by default."
-msgstr "Angi porten som LibreOffice-serveren skal bruke som standard."
+msgstr "Skriv inn porten som LibreOffice-serveren skal lytte til som standard."
 
 msgid "Please enter your database 'postgres' user password."
-msgstr "Skriv inn databasens "postgres"-brukerpassord."
+msgstr "Skriv inn databasens ""postgres""-brukerpassord."
 
 msgid "Please give a password to use for the Alfresco administrator account."
 msgstr "Angi et passord som skal brukes for Alfresco-administratorkontoen."
@@ -321,9 +318,6 @@ msgstr "Angi i hvilken katalog Tomcat er plassert."
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Angi i hvilken katalog binærfilene for psql, pg_restore og vacuumdb er plassert"
-
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Velg en mappe for installasjon av ${product_fullname}"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Velg en mappe for installasjon av ${product_fullname}"
@@ -386,7 +380,7 @@ msgid "Records Management"
 msgstr "Dokumentbehandling"
 
 msgid "Records Management support. This is a separately licensed component and should only be installed if licensed."
-msgstr "Dokumentbehandlingsstøtte. Dette er en komponent som lisensieres separat og skal kun installeres hvis du har en lisens."
+msgstr "Dokumentbehandlingstøtte. Dette er en komponent som lisensieres separat og bare skal installeres hvis den er lisensiert."
 
 msgid "Repeat Password:"
 msgstr "Gjenta passord:"
@@ -428,7 +422,7 @@ msgid "Set the user that will use the database."
 msgstr "Angi brukeren som skal bruke databasen."
 
 msgid "Setup will try to install new databases and will overwrite any existing duplicate. Do you wish you continue?"
-msgstr "Oppsett vil prøve å installere nye databaser og vil overskrive eksisterende duplikater. Vil du fortsette?"
+msgstr "Oppsettet vil forsøke å installere nye databaser og vil skrive over alle eksisterende duplikater. Vil du fortsette?"
 
 msgid "SharePoint"
 msgstr "SharePoint"
@@ -467,10 +461,10 @@ msgid "Starting servers ..."
 msgstr "Starter servere…"
 
 msgid "Starting servers. Please be patient"
-msgstr "Starter servere. Vær tålmodig"
+msgstr "Starter servere. Vennligst vent"
 
 msgid "Starting servers. Please be patient."
-msgstr "Starter servere. Vær tålmodig."
+msgstr "Starter servere. Vennligst vent."
 
 msgid "Stop ${product_fullname} service"
 msgstr "Stopp ${product_fullname}-tjenesten"
@@ -488,19 +482,19 @@ msgid "Stopping services"
 msgstr "Stoppe tjenester"
 
 msgid "The ${product_shortname} service script file exists. Please insert a different name for the service script."
-msgstr "${product_shortname}-tjenesteskriptfilen eksisterer. Sett inn et annet navn for tjenesteskriptet."
+msgstr "${product_shortname}-tjeneste-skriptfilen eksisterer. Vennligst skriv inn et annet navn for tjeneste-skriptet."
 
 msgid "The Alfresco data directory tends to grow in size. Please choose where do you want to store it."
-msgstr "Størrelsen på Alfresco-datakatalogen vil vanligvis øke. Velg stedet du vil lagre den til."
+msgstr "Alfresco datakatalogen har en tendens til å øke i størrelse. Velg hvor du ønsker å lagre den."
 
 msgid "The directory you selected does not seem to be a valid JDK directory. Please try again."
-msgstr "Katalogen du valgte ser ikke ut til å være en gyldig JDK-katalog. Prøv på nytt."
+msgstr "Katalogen du har valgt ser ikke ut til å være en gyldig JDK-katalog. Prøv igjen."
 
 msgid "The directory you selected does not seem to be a valid Tomcat directory. Please try again."
-msgstr "Katalogen du valgte ser ikke ut til å være en gyldig Tomcat-katalog. Prøv på nytt."
+msgstr "Katalogen du har valgt ser ikke ut til å være en gyldig Tomcat-katalog. Prøv igjen."
 
 msgid "The installer could not get the current free space on ${installdir}. Please check that there is free space enough to install ${product_fullname}"
-msgstr "Installatørprogrammet fikk ikke den nåværende ledige plassen på ${installdir}. Kontroller at det er nok ledig plass til å installere ${product_fullname}"
+msgstr "Installasjonsprogrammet kunne ikke finne gjeldende ledig plass på ${installdir}. Kontroller at det er nok ledig plass til å installere ${product_fullname}"
 
 msgid "The length of the password must be greater than 3 characters"
 msgstr "Passordet må inneholde mer enn tre tegn."
@@ -512,34 +506,34 @@ msgid "The path ${postgres_binary_directory} does not seem to contain a pg_vacuu
 msgstr "Banen ${postgres_binary_directory} ser ikke ut til å ha en pg_vacuumdb kjørbar fil."
 
 msgid "The path ${postgres_binary_directory} seems to be invalid. Please check if the directory contains the required binaries."
-msgstr "Banen ${postgres_binary_directory} ser ut til å være ugyldig. Kontroller at katalogen inneholder obligatoriske binærfiler."
+msgstr "Stien ${postgres_binary_directory} ser ut til å være ugyldig. Kontroller at katalogen inneholder de nødvendige binærfilene."
 
 msgid "The selected folder is not empty. Please select a different folder"
-msgstr "Den valgte mappen er ikke tom. Velg en annen mappe."
+msgstr "Den valgte mappen er ikke tom. Vennligst velg en annen mappe"
 
 msgid "The service script file exists. Please insert a different name for the service script."
-msgstr "Tjenesteskriptfilen eksisterer. Sett inn et annet navn for tjenesteskriptet."
+msgstr "Tjeneste-skriptfilen eksisterer. Vennligst skriv inn et annet navn for tjeneste-skriptet."
 
 msgid "There is not enough free space on ${installdir}. You need at least ${base_needed_space} MB in order to install ${product_fullname}"
-msgstr "Det er ikke nok ledig plass på ${installdir}. Du trenger minst ${base_needed_space} MB for å kunne installere ${product_fullname}"
+msgstr "Det er ikke nok ledig plass på ${installdir}. Du trenger minst ${base_needed_space} MB for å installere ${product_fullname}"
 
 msgid "This installer is for Windows 64 bit.  Please download the Windows 32 bit version."
-msgstr "Dette installatørprogrammet er for Windows 64-biters. Last ned Windows 32-biters versjonen."
+msgstr "Dette installasjonsprogrammet er for Windows 64 bit.  Vennligst last ned Windows 32 bit versjonen."
 
-msgid "This release was packaged to run on J2SE 5.0 or later. Please install a compatible Java version and try again."
-msgstr "Denne utgaven ble pakket for å kjøre på J2SE 5.0 eller senere. Installer en kompatibel Java-versjon og prøv igjen."
+msgid "This release was packaged to run on J2SE ${java_min_version} or later. Please install a compatible Java version and try again."
+msgstr "Denne versjonen ble pakket til å kjøre på J2SE ${java_min_version} eller nyere. Vennligst installer en kompatibel Java-versjon og prøv igjen."
 
-msgid "This release was packaged to run on J2SE 5.0. Please install a compatible Java version and try again."
-msgstr "Denne utgaven ble pakket for å kjøre på J2SE 5.0. Installer en kompatibel Java-versjon og prøv igjen."
+msgid "This release was packaged to run on J2SE ${java_min_version}. Please install a compatible Java version and try again."
+msgstr "Denne versjonen ble pakket til å kjøre på J2SE ${java_min_version}. Vennligst installer en kompatibel Java-versjon og prøv igjen."
 
 msgid "This release was packaged to run on J2SE 7.0 or later. Please install a compatible Java version and try again."
-msgstr "Denne utgaven ble pakket for å kjøre på J2SE 7.0 eller senere. Installer en kompatibel Java-versjon og prøv igjen."
+msgstr "Denne versjonen ble pakket til å kjøre på J2SE 7.0 eller nyere. Vennligst installer en kompatibel Java-versjon og prøv igjen."
 
 msgid "This release was packaged to run on J2SE 7.0. Please install a compatible Java version and try again."
-msgstr "Denne utgaven ble pakket for å kjøre på J2SE 7.0. Installer en kompatibel Java-versjon og prøv igjen."
+msgstr "Denne versjonen ble pakket til å kjøre på J2SE 7.0. Vennligst installer en kompatibel Java-versjon og prøv igjen."
 
 msgid "Tomcat 5.5 Component"
-msgstr "Tomcat 5.5-komponent"
+msgstr "Tomcat 5.5 komponent"
 
 msgid "Tomcat AJP Port:"
 msgstr "Tomcat AJP-port:"
@@ -557,7 +551,7 @@ msgid "Tomcat SSL Port"
 msgstr "Tomcat SSL-port"
 
 msgid "Tomcat Server Port and Tomcat Shutdown Port cannot be the same port. Please select another Tomcat Shutdown Port."
-msgstr "Tomcat-serverport og Tomcat-avslutningsport kan ikke være samme porten. Velg en annen Tomcat-avslutningsport."
+msgstr "Tomcat Server Port og Tomcat Shutdown Port kan ikke være samme port. Vennligst velg en annen Tomcat Shutdown Port."
 
 msgid "Tomcat Server Port:"
 msgstr "Tomcat-serverport:"
@@ -575,40 +569,40 @@ msgid "Tomcat modifications due to java"
 msgstr "Tomcat-modifikasjoner på grunn av Java"
 
 msgid "Unable to bind to the given port number. Please select another FTP Port."
-msgstr "Kan ikke binde til det angitte portnummeret. Velg en annen FTP-port."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen FTP-port."
 
 msgid "Unable to bind to the given port number. Please select another RMI Port."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en annen RMI-port."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen RMI-port."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en Tomcat AJP-port."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen Tomcat AJP-port."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat Server Port."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en annen Tomcat-serverport."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen Tomcat Server Port."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat Shutdown Port."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en annen Tomcat-avslutningsport."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen Tomcat Shutdown Port."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en annen Tomcat SSL-port."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen Tomcat SSL Port."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en Tomcat AJP-port."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen Tomcat AJP-port."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
-msgstr "Kan ikke binde til det angitt portnummeret. Velg en annen port for SharePoint-protokollen."
+msgstr "Kunne ikke binde til det gitte portnummeret. Vennligst velg en annen port for SharePoint-protokollen."
 
 msgid "Unable to bind to the server port. Please make sure that Tomcat is not running."
-msgstr "Kan ikke binde til serverporten. Kontroller at Tomcat ikke kjører."
+msgstr "Kunne ikke binde til serverporten. Kontroller at Tomcat ikke kjører."
 
 msgid "Unable to connect to database. Please check your configuration."
-msgstr "Kan ikke koble til databasen. Kontroller konfigurasjonen."
+msgstr "Kunne ikke koble til databasen. Kontroller konfigurasjonen din."
 
 msgid "Unable to find a server running at given port number. Please select another one."
-msgstr "Finner ikke en server som kjører på det angitte portnummeret. Velg et annet portnummer."
+msgstr "Kunne ikke finne en server som kjører på det gitte portnummeret. Vennligst velg en annen."
 
 msgid "Unable to find any server running at port ${postgres_port}. Please start your database server."
-msgstr "Finner ingen servere som kjører på porten ${postgres_port}. Start databaseserveren."
+msgstr "Kunne ikke finne en server som kjører på port ${postgres_port}. Vennlist start databaseserveren din."
 
 msgid "Unable to get free disk space."
 msgstr "Får ingen ledig diskplass."
@@ -640,14 +634,11 @@ msgstr "Venter på at PostgreSQL starter."
 msgid "Waiting for Postmaster"
 msgstr "Venter på postmester"
 
-msgid "War Files"
-msgstr "War-filer"
-
 msgid "War files"
 msgstr "War-filer"
 
 msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
-msgstr "Vi finner ikke en passende JDK-installasjon på systemet ditt. ${product_fullname} krever JDK ${java_min_version} eller senere."
+msgstr "Vi kunne ikke finne en egnet JDK-installasjon på systemet ditt. ${product_fullname} trenger JDK ${java_min_version} eller nyere."
 
 msgid "Web Project Management (AVM)"
 msgstr "Webprosjektadministrasjon (AVM)"
@@ -662,10 +653,10 @@ msgid "Web Server domain:"
 msgstr "Webserverdomene:"
 
 msgid "You can optionally register ${product_fullname} as a service. This way it will automatically be started every time the machine is started."
-msgstr "Du kan velge å registrere ${product_fullname} som en tjeneste. I så fall vil den startes automatisk hver gang maskinen startes."
+msgstr "Du kan frivillig registrere ${product_fullname} som en tjeneste. På denne måten startes det automatisk hver gang datamaskinen startes."
 
 msgid "You have chosen Tomcat as the existing installation. To use new installed applications you must restart Tomcat."
-msgstr "Du har valgt Tomcat som den eksisterende installasjonen. Du må starte Tomcat på nytt for å bruke nyinstallerte programmer."
+msgstr "Du har valgt Tomcat som den eksisterende installasjonen. For å bruke de installerte programmene må du starte Tomcat på nytt."
 
 msgid "applyamps"
 msgstr "applyamps"
@@ -674,34 +665,43 @@ msgid "mmtjar"
 msgstr "mmtjar"
 
 msgid "Please provide a password for the service account (postgres). If this account does not exist, the installer will create it."
-msgstr "Angi et passord for tjenestekontoen (postgres). Hvis denne kontoen ikke eksisterer, vil installatørprogrammet opprette den."
+msgstr "Vennligst angi et passord for tjeneste-kontoen (postgres). Hvis denne kontoen ikke eksisterer vil installasjonsprogrammet opprette den."
 
 msgid "The password specified was incorrect. Please enter the correct password for the postgres Windows user account."
-msgstr "Angitt passord er feil. Skriv inn riktig passord for postgres Windows-brukerkontoen."
+msgstr "Det angitte passordet er feil. Vennligst skriv inn det korrekte passordet for postgres Windows-brukerkonto."
 
 msgid "README"
-msgstr "VIKTIG"
+msgstr "README"
 
-msgid "Windows 2008 requires that the password meets the following requirements:\n\n- It must be at least six characters long.\n- It must contain uppercase and lowercase characters.\n- It must contain numbers.\n- It must contain at least one of these special characters: @#$%!^&+=\n"
-msgstr "Windows 2008 krever at passordet oppfyller følgende krav:\n\n- Det må inneholde minst seks tegn.\n-Det må inneholde både store og små bokstaver.\n-Det må inneholde numre.\n- Det må inneholde minst ett av disse spesialtegnene: @#$%!^&+=\n"
+msgid "Windows 2008 requires that the password meets the following requirements:\n\n- It must be at least six characters long.\n- It must contain uppercase and lowercase characters.\n- It must contain numbers.\n- It must contain at least one of these special characters: @#$%!^&+\n"
+msgstr "Windows 2008 krever at passordet oppfyller følgende forutsetninger:\n\n- Det må være minst seks tegn langt.\n- Det må inneholde store og små bokstaver.\n- Det må inneholde tall.\n- Det må inneholde minst et av følgende spesialtegn: @#$%!^&+\n"
 
 msgid "Postgres service account password"
 msgstr "Passord for postgres-tjenestekonto"
 
 msgid "Deploying Alfresco. Please be patient."
-msgstr "Distribuerer Alfresco. Vær tålmodig."
+msgstr "Distribuere Alfresco. Vennligst vent."
 
 msgid "Java is not installed in your Stack. This module requires to have Java installed."
-msgstr "Java er ikke installert i stakken. Denne modulen krever at Java er installert."
+msgstr "Java er ikke installert på din stakk. Denne modulen forutsetter at du har installert Java."
 
 msgid "The installation directory must be a path containing only letters, numbers and the characters '/', '.', '-' and '_'."
-msgstr "Installasjonskatalogen må være en bane som kun inneholder bokstaver, numre og tegnene "/", ".", "-" og "_"."
+msgstr "Installasjonskatalogen må være en bane som kun inneholder bokstaver, numre og tegnene ""/"", ""."", ""-"" og ""_""."
 
 msgid "Show next steps"
 msgstr "Vis neste trinn"
 
 msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB detected."
-msgstr "Alfresco anbefaler minst 1024 MB med minne. ${machine_total_memory} MB ble registrert."
+msgstr "Alfresco anbefaler minst 1024MB minne. ${machine_total_memory}MB funnet."
+
+msgid "Google Docs Integration"
+msgstr "Google Docs-integrering"
+
+msgid "Include Google Docs Integration Features."
+msgstr "Inkluder Google Docs-integreringsfunksjoner."
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "Noen eller alle bibliotekene som er nødvendig for å støtte LibreOffice ble ikke funnet i systemet ditt: fontconfig libSM libICE libXrender libXext\nDu rådes på det sterkeste til å avbryte denne installasjonen og installere de først ved å bruke pakkeadministratoren din.\nFor mer informasjon, se http://docs.alfresco.com/4,2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nVil du fortsette med installasjonen?"
 
 msgid "Password must not contain leading or trailing spaces"
-msgstr "Passordet kan ikke inneholde blanke foran eller bak"
+msgstr "Passordet kan ikke starte eller slutte med mellomrom"

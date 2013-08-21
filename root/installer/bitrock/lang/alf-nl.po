@@ -175,9 +175,6 @@ msgstr "Het installatiepad is te lang. Het toegestane maximum aantal tekens is $
 msgid "Installation folder"
 msgstr "Installatiemap"
 
-msgid "Installation Folder"
-msgstr "Installatiemap"
-
 msgid "Installation folder cannot contain spaces."
 msgstr "Installatiemap mag geen spaties bevatten."
 
@@ -321,9 +318,6 @@ msgstr "Geef op in welke map Tomcat zich bevindt."
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Geef de map op waarin de programmabestanden psql, pg_restore en vacuumdb zich bevinden"
-
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Selecteer een installatiemap ${product_fullname}"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Selecteer een installatiemap ${product_fullname}"
@@ -640,9 +634,6 @@ msgstr "Wachten tot PostgreSQL start."
 msgid "Waiting for Postmaster"
 msgstr "Wachten op Postmaster"
 
-msgid "War Files"
-msgstr "WAR-bestanden"
-
 msgid "War files"
 msgstr "WAR-bestanden"
 
@@ -708,3 +699,9 @@ msgstr "Google Docs-integratie"
 
 msgid "Include Google Docs Integration Features."
 msgstr "Inclusief functies voor Google Docs-integratie."
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "Sommige of alle bibliotheken die nodig zijn ter ondersteuning van LibreOffice zijn niet in uw systeem aangetroffen: fontconfig libSM libICE libXrender libXext\nU wordt aangeraden om deze installatie af te breken en ze eerst met behulp van uw package manager te installeren.\nGa voor meer informatie naar http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nWilt u doorgaan met de installatie?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "Wachtwoord mag geen spaties vooraf en achteraf bevatten"

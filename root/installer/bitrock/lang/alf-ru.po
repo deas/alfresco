@@ -175,9 +175,6 @@ msgstr "Слишком длинный путь к каталогу устано�
 msgid "Installation folder"
 msgstr "Директория для установки"
 
-msgid "Installation Folder"
-msgstr "Директория для установки"
-
 msgid "Installation folder cannot contain spaces."
 msgstr "В имени каталога для установки не может быть пробелов."
 
@@ -321,9 +318,6 @@ msgstr "Укажите каталог, в котором находится Tomc
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Укажите каталог, в котором находятся двоичные файлы psql, pg_restore и vacuumdb"
-
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Выберите папку для установки ${product_fullname}"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Выберите папку для установки ${product_fullname}"
@@ -640,9 +634,6 @@ msgstr "Ожидается запуск PostgreSQL."
 msgid "Waiting for Postmaster"
 msgstr "Ожидается Postmaster"
 
-msgid "War Files"
-msgstr "Файлы War"
-
 msgid "War files"
 msgstr "Файлы War"
 
@@ -708,3 +699,9 @@ msgstr "Интеграция с Документами Google"
 
 msgid "Include Google Docs Integration Features."
 msgstr "Включить возможность интеграции с Документами Google"
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "Некоторые из библиотек, необходимые для поддержки LibreOffice, отсутствуют в системе: fontconfig libSM libICE libXrender libXext\nМы настоятельно рекомендуем вам прервать данную установку и сначала установить указанные файлы с помощью диспетчера пакетов.\nБолее подробную информацию можно получить по адресу: http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nХотите продолжить установку?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "Пароль не должен содержать пробелов ни в начале, ни в конце"

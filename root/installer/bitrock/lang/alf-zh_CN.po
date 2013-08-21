@@ -175,9 +175,6 @@ msgstr "安装目录路径太长。 允许的最大字符数为 ${base_installdi
 msgid "Installation folder"
 msgstr "安装文件夹"
 
-msgid "Installation Folder"
-msgstr "安装文件夹"
-
 msgid "Installation folder cannot contain spaces."
 msgstr "安装文件夹不得包含空格。"
 
@@ -637,9 +634,6 @@ msgstr "等待 PostgreSQL 启动。"
 msgid "Waiting for Postmaster"
 msgstr "等待 Postmaster"
 
-msgid "War Files"
-msgstr "War 文件"
-
 msgid "War files"
 msgstr "War 文件"
 
@@ -705,3 +699,9 @@ msgstr "Google Docs 集成"
 
 msgid "Include Google Docs Integration Features."
 msgstr "包括 Google Docs 集成功能。"
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "在您的系统中找不到支持 LibreOffice 所需的部分或全部资料库。 fontconfig libSM libICE libXrender libXext\n强烈建议您放弃本次安装，并首先使用您的安装包管理器进行安装。\n有关更多信息，请访问 http://docs.alfresco.com/4,2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "密码开头和结尾不应包含空格"

@@ -77,7 +77,7 @@ msgid "Common installation directory"
 msgstr "Directorio de instalación común"
 
 msgid "Config Files"
-msgstr "Archivos de configuración"
+msgstr "Ficheros de configuración"
 
 msgid "Couldn't check Apache Tomcat Version.\nTomcat 5.5 is recommended."
 msgstr "No se ha podido comprobar la versión de Apache Tomcat. Se recomienda \nTomcat 5.5."
@@ -173,9 +173,6 @@ msgid "Installation directory path is too long. The maximum number of characters
 msgstr "La ruta de instalación del directorio es demasiado larga. El número máximo de caracteres permitido es ${base_installdir_max_characters}."
 
 msgid "Installation folder"
-msgstr "Carpeta de instalación"
-
-msgid "Installation Folder"
 msgstr "Carpeta de instalación"
 
 msgid "Installation folder cannot contain spaces."
@@ -322,9 +319,6 @@ msgstr "Por favor, especifique el directorio donde se encuentra Tomcat."
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Por favor, especifique el directorio donde se encuentran los binarios psql, pg_restore y vacuumdb"
 
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Por favor, elija una carpeta para instalar ${product_fullname}"
-
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Por favor, elija una carpeta para instalar ${product_fullname}"
 
@@ -350,13 +344,13 @@ msgid "PostgreSQL_initdb"
 msgstr "PostgreSQL_initdb"
 
 msgid "Program Files"
-msgstr "Archivos de programa"
+msgstr "Ficheros de programa"
 
 msgid "Program Files Linux"
-msgstr "Archivos de programa Linux"
+msgstr "Ficheros de programa Linux"
 
 msgid "Program Files Windows"
-msgstr "Archivos de programa Windows"
+msgstr "Ficheros de programa Windows"
 
 msgid "Quickr Connector Support"
 msgstr "Soporte del conector de Quickr"
@@ -512,7 +506,7 @@ msgid "The path ${postgres_binary_directory} does not seem to contain a pg_vacuu
 msgstr "La ruta ${postgres_binary_directory} no parece contener un ejecutable pg_vacuumdb."
 
 msgid "The path ${postgres_binary_directory} seems to be invalid. Please check if the directory contains the required binaries."
-msgstr "La ruta ${postgres_binary_directory} parece inválida. Por favor, compruebe si el directorio contiene los archivos binarios necesarios."
+msgstr "La ruta ${postgres_binary_directory} parece inválida. Por favor, compruebe si el directorio contiene los ficheros binarios necesarios."
 
 msgid "The selected folder is not empty. Please select a different folder"
 msgstr "La carpeta seleccionada no está vacía. Por favor, seleccione una carpeta diferente"
@@ -590,10 +584,10 @@ msgid "Unable to bind to the given port number. Please select another Tomcat Shu
 msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto de parada de Tomcat."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat SSL Port."
-msgstr "Unable to bind to the given port number. Por favor, seleccione otro puerto SSL de Tomcat."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto SSL de Tomcat."
 
 msgid "Unable to bind to the given port number. Please select another Tomcat AJP Port."
-msgstr "Unable to bind to the given port number. Por favor, seleccione otro puerto AJP de Tomcat."
+msgstr "No se puede utilizar el número de puerto dado. Por favor, seleccione otro puerto AJP de Tomcat."
 
 msgid "Unable to bind to the given port number. Please select another port for the SharePoint Protocol."
 msgstr "No se puede utilizar el número de puerto dado. Por favor seleccione otro puerto para el protocolo SharePoint."
@@ -641,9 +635,6 @@ msgid "Waiting for Postmaster"
 msgstr "Esperando al Postmaster"
 
 msgid "War Files"
-msgstr "Ficheros WAR"
-
-msgid "War files"
 msgstr "Ficheros WAR"
 
 msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
@@ -704,7 +695,13 @@ msgid "Alfresco recommends at least 1024MB of memory.${machine_total_memory}MB d
 msgstr "Alfresco recomienda por lo menos 1024 MB de memoria. ${machine_total_memory} MB detectados."
 
 msgid "Google Docs Integration"
-msgstr "msgstr Integración de Google Docs"
+msgstr "Integración de Google Docs"
 
 msgid "Include Google Docs Integration Features."
 msgstr "Incluye características de integración de Google Docs."
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "Algunas o todas las bibliotecas necesarias para que funcione LibreOffice no se encontraron en el sistema: fontconfig libSM libICE libXrender libXext\nLe recomendamos encarecidamente que anule esta instalación y que las instale primero utilizando el administrador de paquetes.\nPara obtener más información, consulte http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\n¿Desea continuar con la instalación?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "La contraseña no debe contener espacios iniciales ni finales"

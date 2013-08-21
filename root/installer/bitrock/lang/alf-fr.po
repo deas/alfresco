@@ -175,9 +175,6 @@ msgstr "Le chemin du répertoire d'installation est trop long. Le nombre maximum
 msgid "Installation folder"
 msgstr "Dossier d'installation"
 
-msgid "Installation Folder"
-msgstr "Dossier d'installation"
-
 msgid "Installation folder cannot contain spaces."
 msgstr "Le nom du dossier d'installation ne doit pas comporter d'espace"
 
@@ -323,9 +320,6 @@ msgid "Please specify the directory where the psql, pg_restore and vacuumdb bina
 msgstr "Veuillez spécifier le répertoire dans lequel sont situés les fichiers binaires psql, pg_restore et vacuumdb"
 
 msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Veuillez sélectionner un dossier d'installation de ${product_fullname}"
-
-msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Veuillez sélectionner un dossier d'installation de ${product_fullname}"
 
 msgid "Please, select the encoding type."
@@ -643,9 +637,6 @@ msgstr "En attente de Postmaster"
 msgid "War Files"
 msgstr "Fichiers War"
 
-msgid "War files"
-msgstr "Fichiers War"
-
 msgid "We have not been able to find a suitable JDK installation in your system. ${product_fullname} requires JDK ${java_min_version} or later."
 msgstr "Nous n'avons pas été en mesure de trouver une installation JDK adaptée dans votre système. ${product_fullname} nécessite JDK ${java_min_version} ou version ultérieure."
 
@@ -708,3 +699,9 @@ msgstr "Intégration de Google Docs"
 
 msgid "Include Google Docs Integration Features."
 msgstr "Inclut les fonctions d'intégration de Google Docs."
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "Les bibliothèques nécessaires à la prise en charge de LibreOffice sont introuvables sur votre système : fontconfig libSM libICE libXrender libXext\nNous vous recommandons vivement d'abandonner cette installation et de procéder aux installations d'abord à l'aide de votre gestionnaire de package.\nPour plus d'informations, veuillez consulter l'adresse http://docs.alfresco.com/4,2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nSouhaitez-vous poursuivre l'installation ?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "Le mot de passe ne doit pas contenir d'espaces de début ou de fin"

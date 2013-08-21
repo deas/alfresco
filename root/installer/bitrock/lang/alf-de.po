@@ -175,9 +175,6 @@ msgstr "Der Pfad für das Installationsverzeichnis ist zu lang. Die maximal zul�
 msgid "Installation folder"
 msgstr "Installationsordner"
 
-msgid "Installation Folder"
-msgstr "Installationsordner"
-
 msgid "Installation folder cannot contain spaces."
 msgstr "Der Installationsordner darf keine Leerzeichen enthalten"
 
@@ -321,9 +318,6 @@ msgstr "Bitte geben Sie das Verzeichnis an, in dem sich Tomcat befindet."
 
 msgid "Please specify the directory where the psql, pg_restore and vacuumdb binaries are located"
 msgstr "Bitte geben Sie das Verzeichnis an, in dem die Binärdateien psql, pg_restore und vacuumdb gespeichert sind"
-
-msgid "Please, choose a folder to install ${product_fullname}"
-msgstr "Bitte wählen Sie einen Ordner für die Installation von ${product_fullname} aus"
 
 msgid "Please choose a folder to install ${product_fullname}"
 msgstr "Bitte wählen Sie einen Ordner für die Installation von ${product_fullname} aus"
@@ -640,9 +634,6 @@ msgstr "Warten Sie, bis PostgreSQL gestartet wird."
 msgid "Waiting for Postmaster"
 msgstr "Warten Sie auf den Postmaster"
 
-msgid "War Files"
-msgstr "WAR-Dateien"
-
 msgid "War files"
 msgstr "WAR-Dateien"
 
@@ -708,3 +699,9 @@ msgstr "Integration von Google Docs"
 
 msgid "Include Google Docs Integration Features."
 msgstr "Funktionen zur Integration von Google Docs einschließen."
+
+msgid "Some or all of the libraries necessary to support LibreOffice were not found on your system: fontconfig libSM libICE libXrender libXext\nYou are strongly advised to abort this installation and install them first using your package manager.\nFor more information, please refer to http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nDo you want to continue with the installation?"
+msgstr "Manche oder alle Bibliotheken für die Unterstützung von LibreOffice wurden auf Ihrem System nicht gefunden: fontconfig libSM libICE libXrender libXext\nEs wird ausdrücklich der Abbruch dieser Installation und zunächst eine Installation über den Paketmanager empfohlen.\nWeitere Informationen finden Sie unter http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/concepts/install-lolibfiles.html\n\nMöchten Sie mit der Installation fortfahren?"
+
+msgid "Password must not contain leading or trailing spaces"
+msgstr "Passwort darf weder führende noch nachgestellte Leerzeichen enthalten."
