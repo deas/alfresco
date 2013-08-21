@@ -1147,7 +1147,7 @@ function generateAppItems() {
          config: {
             id: "HEADER_ADMIN_CONSOLE",
             label: "header.menu.admin.label",
-            targetUrl: "console/admin-console/"
+            targetUrl: "console/admin-console/application"
          }
       });
    }
