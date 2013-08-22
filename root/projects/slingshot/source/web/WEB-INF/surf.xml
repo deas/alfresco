@@ -65,6 +65,17 @@
          <calculate-webscript-dependencies>true</calculate-webscript-dependencies>
          <generate-css-data-images>true</generate-css-data-images>
          
+         <!-- Disables extension modules from being processed on guest authenticated pages (such as the 
+              Login page). This is one way to enable dynamic extensions without generating error messages
+              from unauthenticated users logging in. -->
+         <enable-guest-page-extension-modules>true</enable-guest-page-extension-modules>
+         
+         <!-- Disable dynamic extension modules by default (Dynamic Extension Modules are modules that can be
+              added and removed from an Extension created on the Alfresco Repository. When this is enabled then
+              authentication errors will be generated on the Repository when accessing guest authenticated pages (e.g.
+              the Login page) unless "enable-guest-page-extension-modules" is set to false -->
+         <enable-dynamic-extension-modules>false</enable-dynamic-extension-modules>
+         
          <enable-remote-resource-resolving>false</enable-remote-resource-resolving>
          
          <!-- This is the Dojo configuration settings for Surf -->
