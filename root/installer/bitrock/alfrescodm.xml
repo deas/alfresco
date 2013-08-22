@@ -119,7 +119,7 @@
     </readyToInstallActionList>
     <folderList>
         <folder>
-            <description>//War files</description>
+            <description>//War Files</description>
             <name>warfiles</name>
             <destination>${installdiralfresco}</destination>
             <!-- Hack to remove old lib files before next folder -->
@@ -297,6 +297,8 @@
                 </actionGroup>
                 <actionGroup>
                     <actionList>
+			<changePermissions permissions="755" files="${alfresco_commands_directory}/apply_amps.sh" />
+			<changePermissions permissions="755" files="${alfresco_commands_directory}/clean_tomcat.sh" />
                         <deleteFile path="${alfresco_commands_directory}/*.bat"/>
                         <deleteFile path="${alfresco_commands_directory}/*.dll"/>
                         <deleteFile path="${alfresco_commands_directory}/*.exe"/>
