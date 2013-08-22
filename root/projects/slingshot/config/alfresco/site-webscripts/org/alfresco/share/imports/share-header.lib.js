@@ -574,6 +574,28 @@ function getSubNavigationWidgets() {
             }
          });
       }
+      
+      if (page.url.templateArgs.site == null)
+      {
+         // We're on the basic search page
+         // No additional navigation links.
+      }
+      else
+      {
+         // We're on the search page launched from a site
+         // Make sure the site data is loaded so that we can get the title...
+         var siteData = getSiteData();
+         navigationWidgets.push({
+            name: "alfresco/menus/AlfMenuBarItem",
+            config: {
+               id: "HEADER_SEARCH_BACK_TO_SITE_DASHBOARD",
+               label: msg.get("header.backlink", [siteData.profile.title]),
+               iconClass: "alf-back-icon",
+               targetUrl: "site/" + page.url.templateArgs.site + "/dashboard",
+               selected: false
+            }
+         });
+      }
    }
    else
    {
@@ -1428,6 +1450,7 @@ function getTitleBarModel() {
             id: "HEADER_SITE_CONFIGURATION_DROPDOWN",
             label: "",
             iconClass: "alf-configure-icon",
+            iconAltText: msg.get("header.menu.siteConfig.altText"),
             widgets: []
          }
       };
@@ -1465,6 +1488,7 @@ function getTitleBarModel() {
                   id: "HEADER_SITE_INVITE",
                   label: "",
                   iconClass: "alf-user-icon",
+                  iconAltText: msg.get("header.menu.invite.altText"),
                   targetUrl: "site/" + page.url.templateArgs.site + "/invite"
                }
             });

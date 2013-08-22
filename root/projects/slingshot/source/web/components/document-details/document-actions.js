@@ -495,14 +495,18 @@
        */
       onNewVersionUploadCompleteCustom: function DocumentActions_onNewVersionUploadCompleteCustom(complete)
       {
-         // Call the normal callback to post the activity data
-         this.onNewVersionUploadComplete.call(this, complete);
-         this.recordData.jsNode.setNodeRef(complete.successful[0].nodeRef);
-         // Delay page reloading to allow time for async requests to be transmitted
-         YAHOO.lang.later(0, this, function()
-         {
-            window.location = this.getActionUrls(this.recordData).documentDetailsUrl;
-         });
+        this.recordData.jsNode.setNodeRef(complete.successful[0].nodeRef);
+        var mydocumentDetailsUrl = this.getActionUrls(this.recordData).documentDetailsUrl;
+        
+        Alfresco.Share.postActivity(this.options.siteId, "org.alfresco.documentlibrary.file-updated", complete.successful[0].fileName, "document-details?nodeRef="+complete.successful[0].nodeRef, 
+        {
+            fileName: complete.successful[0].fileName,
+            nodeRef: complete.successful[0].nodeRef
+
+        }, function() {
+        	window.location = mydocumentDetailsUrl;
+        }); 
+
       },
 
       /**

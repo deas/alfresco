@@ -66,6 +66,13 @@ define(["dojo/_base/declare",
       showArrow: true,
       
       /**
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      iconAltText: "",
+      
+      /**
        * This CSS class is added to the container node when an icon is to be included with the label. By
        * default it simply makes room for the icon - but this can be overridden.
        * 
@@ -101,7 +108,11 @@ define(["dojo/_base/declare",
          
          if (this.iconClass && this.iconClass != "dijitNoIcon")
          {
-            this.iconNode = domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode, "first");
+            this.iconNode = domConstruct.create("img", { 
+               className: this.iconClass, 
+               src: Alfresco.constants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
+               alt: this.message(this.iconAltText)
+            }, this.focusNode, "first");
             if (this.label)
             {
                domClass.add(this.containerNode, this.labelWithIconClass);

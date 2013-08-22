@@ -644,22 +644,25 @@
          Status Indicators
       -->
       <indicators>
-         <!-- Editing -->
+         <!-- Being edited by current user -->
          <indicator id="editing" index="10">
             <evaluator>evaluator.doclib.indicator.editing</evaluator>
          </indicator>
+         <!-- Locked by current user -->
          <indicator id="lock-owner" index="10">
             <evaluator>evaluator.doclib.indicator.lockOwner</evaluator>
          </indicator>
+         <!-- Locked with owner identified by cm:owner property -->
          <indicator id="locked" index="10" icon="lock-owner-16.png">
-            <evaluator>evaluator.doclib.indicator.locked</evaluator>
+            <evaluator>evaluator.doclib.indicator.lockedOwner</evaluator>
             <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
          </indicator>
+         <!-- Locked with owner identified by cm:lockOwner property -->
          <indicator id="nodeLock" index="10" icon="lock-owner-16.png" label="status.locked">
             <evaluator>evaluator.doclib.indicator.nodeLocked</evaluator>
-            <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
-            <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
+            <labelParam index="0">{jsNode.properties.cm_lockOwner.displayName}</labelParam>
+            <labelParam index="1">{jsNode.properties.cm_lockOwner.userName}</labelParam>
             <override>locked</override>
          </indicator>
          <!-- Google Docs Editing -->
@@ -1104,24 +1107,13 @@
             <evaluator>evaluator.doclib.action.hasWorkingCopy</evaluator>
          </action>
 
-         <!-- Cancel editing (cancel checkout) -->
+         <!-- Cancel editing -->
          <action id="document-cancel-editing" type="javascript" label="actions.document.cancel-editing">
             <param name="function">onActionCancelEditing</param>
             <permissions>
                <permission allow="true">CancelCheckOut</permission>
             </permissions>
-            <evaluator>evaluator.doclib.action.isWorkingCopy</evaluator>
-            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator> 
-         </action>
-
-         <!-- Cancel editing (unlock) -->
-         <action id="document-cancel-editing-unlock" type="javascript" label="actions.document.cancel-editing">
-            <param name="function">onActionCancelEditing</param>
-            <permissions>
-               <permission allow="true">CancelCheckOut</permission>
-            </permissions>
-            <evaluator>evaluator.doclib.metadata.isLocked</evaluator> 
-            <evaluator negate="true">evaluator.doclib.action.hasWorkingCopy</evaluator>
+            <evaluator>evaluator.doclib.action.cancelEditing</evaluator>
          </action>
 
          <!-- Manage folder rules -->
@@ -1260,7 +1252,6 @@
             <action index="270" id="document-delete" />
             <action index="280" id="document-assign-workflow" />
             <action index="290" id="document-cancel-editing" />
-            <action index="295" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="297" id="document-manage-granular-permissions" />
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
@@ -1291,7 +1282,6 @@
             <action index="260" id="document-delete" />
             <action index="270" id="document-assign-workflow" />
             <action index="280" id="document-cancel-editing" />
-            <action index="285" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="290" id="document-manage-granular-permissions" />
             <action index="300" id="document-manage-repo-permissions" />
             <action index="310" id="document-manage-aspects" />

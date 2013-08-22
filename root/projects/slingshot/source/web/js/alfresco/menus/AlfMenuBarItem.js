@@ -64,7 +64,11 @@ define(["dojo/_base/declare",
          domClass.add(this.containerNode, "alf-menu-bar-label-node");
          if (this.iconClass && this.iconClass != "dijitNoIcon")
          {
-            this.iconNode = domConstruct.create("span", { className: this.iconClass, innerHTML: "&nbsp;"}, this.focusNode, "first");
+            this.iconNode = domConstruct.create("img", { 
+               className: this.iconClass, 
+               src: Alfresco.constants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
+               alt: this.message(this.iconAltText)
+            }, this.focusNode, "first");
             if (this.label)
             {
                domClass.add(this.containerNode, this.labelWithIconClass);

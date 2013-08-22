@@ -84,17 +84,14 @@ define(["dojo/_base/declare",
             try
             {
                var pageDefObject = dojoJson.parse(payload.pageDefinition);
-               var query = {
-                  widgets: payload.pageDefinition
-               };
                var data = {
-                  jsonContent: pageDefObject
+                  jsonContent: pageDefObject,
+                  widgets: payload.pageDefinition
                };
                this.serviceXhr({
                   url : Alfresco.constants.URL_SERVICECONTEXT + "surf/dojo/xhr/dependencies",
-                  query: query,
                   data: data,
-                  method: "GET",
+                  method: "POST",
                   successCallback: this.updatePage,
                   failureCallback: this.onDependencyFailure,
                   callbackScope: this

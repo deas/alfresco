@@ -1119,21 +1119,21 @@ body.yui-skin-lightTheme .categoryview .category .ygtvdepthcell
    background-image: url(images/categoryview-sprite.gif);
 }
 
-body.yui-skin-lightTheme .treeview .tree .ygtvtn,
-body.yui-skin-lightTheme .treeview .tree .ygtvtm,
-body.yui-skin-lightTheme .treeview .tree .ygtvtmh,
-body.yui-skin-lightTheme .treeview .tree .ygtvtmhh,
-body.yui-skin-lightTheme .treeview .tree .ygtvtp,
-body.yui-skin-lightTheme .treeview .tree .ygtvtph,
-body.yui-skin-lightTheme .treeview .tree .ygtvtphh,
-body.yui-skin-lightTheme .treeview .tree .ygtvln,
-body.yui-skin-lightTheme .treeview .tree .ygtvlm,
-body.yui-skin-lightTheme .treeview .tree .ygtvlmh,
-body.yui-skin-lightTheme .treeview .tree .ygtvlmhh,
-body.yui-skin-lightTheme .treeview .tree .ygtvlp,
-body.yui-skin-lightTheme .treeview .tree .ygtvlph,
-body.yui-skin-lightTheme .treeview .tree .ygtvlphh,
-body.yui-skin-lightTheme .treeview .tree .ygtvdepthcell
+body.yui-skin-lightTheme .treeview .ygtvtn,
+body.yui-skin-lightTheme .treeview .ygtvtm,
+body.yui-skin-lightTheme .treeview .ygtvtmh,
+body.yui-skin-lightTheme .treeview .ygtvtmhh,
+body.yui-skin-lightTheme .treeview .ygtvtp,
+body.yui-skin-lightTheme .treeview .ygtvtph,
+body.yui-skin-lightTheme .treeview .ygtvtphh,
+body.yui-skin-lightTheme .treeview .ygtvln,
+body.yui-skin-lightTheme .treeview .ygtvlm,
+body.yui-skin-lightTheme .treeview .ygtvlmh,
+body.yui-skin-lightTheme .treeview .ygtvlmhh,
+body.yui-skin-lightTheme .treeview .ygtvlp,
+body.yui-skin-lightTheme .treeview .ygtvlph,
+body.yui-skin-lightTheme .treeview .ygtvlphh,
+body.yui-skin-lightTheme .treeview .ygtvdepthcell
 {
    background-image: url(images/treeview-sprite.gif) !important;
 }

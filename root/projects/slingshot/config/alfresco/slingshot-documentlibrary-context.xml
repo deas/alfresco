@@ -22,17 +22,39 @@
    <!-- Document Library Status Evaluators -->
    <!--                                    -->
 
+   <!-- Being edited by the current user -->
    <bean id="evaluator.doclib.indicator.editing" class="org.alfresco.web.evaluator.doclib.indicator.EditingEvaluator" />
+   <!-- Locked by the current user -->
    <bean id="evaluator.doclib.indicator.lockOwner" class="org.alfresco.web.evaluator.doclib.indicator.LockOwnerEvaluator" />
+   <!-- Locked by another user -->
    <bean id="evaluator.doclib.indicator.locked" class="org.alfresco.web.evaluator.doclib.indicator.LockedEvaluator" />
-   <!-- Node Locked evaluator added due to ALF-15498 - properties needed for tooltip label do not exist if a node is locked directly using a node lock (rather than as a working copy) -->
+   <!-- Locked by another user, indicated by cm:owner property (no cm:lockOwner) -->
+   <bean id="evaluator.doclib.indicator.lockedOwner" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.indicator.locked" />
+            <ref bean="evaluator.doclib.indicator.hasOwner" />
+            <ref bean="evaluator.doclib.indicator.noLockOwner" />
+         </list>
+      </property>
+   </bean>
+   <!-- Locked by another user, indicated by cm:lockOwner property -->
    <bean id="evaluator.doclib.indicator.nodeLocked" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator">
       <property name="evaluators">
          <list>
             <ref bean="evaluator.doclib.indicator.locked" />
-            <ref bean="evaluator.doclib.action.isLocked" />
+            <ref bean="evaluator.doclib.indicator.hasLockOwner" />
          </list>
       </property>
+   </bean>
+   <bean id="evaluator.doclib.indicator.hasLockOwner" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="cm:lockOwner"/>
+   </bean>
+   <bean id="evaluator.doclib.indicator.hasOwner" parent="evaluator.doclib.action.propertyNotNull">
+      <property name="property" value="cm:owner"/>
+   </bean>
+   <bean id="evaluator.doclib.indicator.noLockOwner" parent="evaluator.doclib.indicator.hasLockOwner">
+      <property name="negateOutput" value="true" />
    </bean>
 
    <bean id="evaluator.doclib.indicator.googleDocsEditing" class="org.alfresco.web.evaluator.doclib.indicator.GoogleDocsEditingEvaluator" />
@@ -70,6 +92,7 @@
 
    <bean id="evaluator.doclib.metadata.value" class="org.alfresco.web.evaluator.ValueEvaluator" />
    <bean id="evaluator.doclib.metadata.hasAspect" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
+   <bean id="evaluator.doclib.metadata.hasAnyAspect" class="org.alfresco.web.evaluator.HasAnyAspectEvaluator" />
    <bean id="evaluator.doclib.metadata.nodeType" class="org.alfresco.web.evaluator.NodeTypeEvaluator">
       <property name="dictionary" ref="slingshot.scriptprocessor.dictionaryQuery" />
    </bean>
@@ -157,6 +180,7 @@
    <!--                                    -->
 
    <bean id="evaluator.doclib.action.hasAspect" class="org.alfresco.web.evaluator.HasAspectEvaluator" />
+   <bean id="evaluator.doclib.action.hasAnyAspect" class="org.alfresco.web.evaluator.HasAnyAspectEvaluator" />
    <bean id="evaluator.doclib.action.isMimetype" class="org.alfresco.web.evaluator.IsMimetypeEvaluator" />
    <bean id="evaluator.doclib.action.propertyNotNull" class="org.alfresco.web.evaluator.PropertyNotNullEvaluator" />
    <bean id="evaluator.doclib.action.chainedMatchAll" class="org.alfresco.web.evaluator.ChainedMatchAllEvaluator" />
@@ -303,6 +327,42 @@
    <!-- Edit Offline -->
    <bean id="evaluator.doclib.action.offlineEdit" parent="evaluator.doclib.action.notEditBrowser" />
    
+   <!-- Cancel editing - should work for content being edited online (locked) plus working copies -->
+   <bean id="evaluator.doclib.action.cancelEditing" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.cancelOfflineEdit" />
+            <ref bean="evaluator.doclib.action.cancelOnlineEdit" />
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.cancelOfflineEdit" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.isWorkingCopy" />
+            <ref bean="evaluator.doclib.action.editableByCurrentUser" />
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.cancelOnlineEdit" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.metadata.isLocked" />
+            <ref bean="evaluator.doclib.action.notHasWorkingCopy" />
+            <ref bean="evaluator.doclib.action.cancelLockedBlacklist" />
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.cancelLockedBlacklist" parent="evaluator.doclib.action.hasAnyAspect">
+      <property name="aspects">
+         <list>
+            <value>gd2:editingInGoogle</value>
+            <value>xam:archive</value>
+         </list>
+      </property>
+      <property name="negateOutput" value="true" />
+   </bean>
+   
    <!-- Upload -->
    <bean id="evaluator.doclib.action.upload" parent="evaluator.doclib.action.notUploadBrowser" />
 
@@ -367,6 +427,14 @@
             <property name="value" value="true" />
          </bean>
       </property>
+   </bean>
+   <bean id="evaluator.doclib.action.notHasWorkingCopy" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.hasWorkingCopy" />
+         </list>
+      </property>
+      <property name="negateOutput" value="true" />
    </bean>
 
    <bean id="evaluator.doclib.action.isLocked" parent="evaluator.doclib.action.chainedMatchOne">

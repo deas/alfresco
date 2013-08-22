@@ -170,7 +170,8 @@
 
          this.panel = Alfresco.util.createYUIPanel(div,
          {
-            width: "35em"
+            width: "35em",
+            zIndex: 10
          });
          this.widgets = this.widgets || {};
          // Buttons

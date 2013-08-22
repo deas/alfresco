@@ -29,8 +29,11 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/WidgetDragWrapper.html",
         "alfresco/core/Core",
-        "dojo/on"], 
-        function(declare, _Widget, _Templated, template, AlfCore, on) {
+        "dojo/on",
+        "dijit/registry",
+        "dojo/_base/lang",
+        "dojo/_base/array"], 
+        function(declare, _Widget, _Templated, template, AlfCore, on, registry, lang, array) {
    
    return declare([_Widget, _Templated, AlfCore], {
       
@@ -79,6 +82,38 @@ define(["dojo/_base/declare",
             cancelable: true,
             widgetToDelete: this
          });
+      },
+      
+      /**
+       * @instance
+       * @returns {object[]} An array of widget definitions from the nested widget (and its sub-widgets).
+       */
+      getWidgetDefinitions: function alfresco_creation_WidgetDragWrapper__getWidgetDefinitions() {
+         // Get all the widgets defined with the DropZone to get any widget
+         // definitions that they define...
+         var widgets = registry.findWidgets(this.controlNode);
+         var widgetDefs = [];
+         array.forEach(widgets, lang.hitch(this, "getSubWidgetDefinitions", widgetDefs));
+         return widgetDefs;
+      },
+      
+      /**
+       * @instance
+       * @param {object[]} widgetDefs The array of widget definitions to add to
+       * @param {object} widget The current widget to inspect for widget defintions
+       * @param {number} index The index of the current widget to inspect.
+       */
+      getSubWidgetDefinitions: function alfresco_creation_WidgetDragWrapper__getSubWidgetDefinitions(widgetDefs, widget, index) {
+         if (typeof widget.getWidgetDefinitions === "function")
+         {
+            var defs = widget.getWidgetDefinitions();
+            if (defs != null && defs.length > 0)
+            {
+               array.forEach(defs, function(def, i) {
+                  widgetDefs.push(def);
+               });
+            }
+         }
       }
    });
 });

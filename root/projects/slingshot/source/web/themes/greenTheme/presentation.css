@@ -868,21 +868,21 @@ body.yui-skin-greenTheme .categoryview .category .ygtvdepthcell
    background-image: url(images/categoryview-sprite.gif);
 }
 
-body.yui-skin-greenTheme .treeview .tree .ygtvtn,
-body.yui-skin-greenTheme .treeview .tree .ygtvtm,
-body.yui-skin-greenTheme .treeview .tree .ygtvtmh,
-body.yui-skin-greenTheme .treeview .tree .ygtvtmhh,
-body.yui-skin-greenTheme .treeview .tree .ygtvtp,
-body.yui-skin-greenTheme .treeview .tree .ygtvtph,
-body.yui-skin-greenTheme .treeview .tree .ygtvtphh,
-body.yui-skin-greenTheme .treeview .tree .ygtvln,
-body.yui-skin-greenTheme .treeview .tree .ygtvlm,
-body.yui-skin-greenTheme .treeview .tree .ygtvlmh,
-body.yui-skin-greenTheme .treeview .tree .ygtvlmhh,
-body.yui-skin-greenTheme .treeview .tree .ygtvlp,
-body.yui-skin-greenTheme .treeview .tree .ygtvlph,
-body.yui-skin-greenTheme .treeview .tree .ygtvlphh,
-body.yui-skin-greenTheme .treeview .tree .ygtvdepthcell
+body.yui-skin-greenTheme .treeview .ygtvtn,
+body.yui-skin-greenTheme .treeview .ygtvtm,
+body.yui-skin-greenTheme .treeview .ygtvtmh,
+body.yui-skin-greenTheme .treeview .ygtvtmhh,
+body.yui-skin-greenTheme .treeview .ygtvtp,
+body.yui-skin-greenTheme .treeview .ygtvtph,
+body.yui-skin-greenTheme .treeview .ygtvtphh,
+body.yui-skin-greenTheme .treeview .ygtvln,
+body.yui-skin-greenTheme .treeview .ygtvlm,
+body.yui-skin-greenTheme .treeview .ygtvlmh,
+body.yui-skin-greenTheme .treeview .ygtvlmhh,
+body.yui-skin-greenTheme .treeview .ygtvlp,
+body.yui-skin-greenTheme .treeview .ygtvlph,
+body.yui-skin-greenTheme .treeview .ygtvlphh,
+body.yui-skin-greenTheme .treeview .ygtvdepthcell
 {
    background-image: url(images/treeview-sprite.gif) !important;
 }

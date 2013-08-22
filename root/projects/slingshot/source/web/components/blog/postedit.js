@@ -106,6 +106,13 @@
        * saved/updated.
        */
       performExternalPublish: null,
+        
+      /**
+       * If true, the "message.publishExternal.failure" will be shown
+       * True, if trying to publish externaly, but external blog is not configured
+       */
+      showNotConfiguredMessage: false,
+	  
       
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -426,6 +433,8 @@
                displayTime: 0
             });
              
+            this.showNotConfiguredMessage = !response.json.metadata.externalBlogConfig;
+			 
             //var nodeRef = response.json.item.nodeRef;    
             var postId = response.json.item.name;
             if (response.json.item.isPublished)
@@ -500,6 +509,12 @@
                   
          // get the url to call
          var url = Alfresco.util.blog.generatePublishingRestURL(this.options.siteId, this.options.containerId, postId);
+		 
+         var amsg = this.msg("message.savepost.success");
+         if (this.showNotConfiguredMessage) 
+         { 
+            amsg = this.msg("message.publishExternal.failure"); 
+         }
          
          // execute ajax request
          Alfresco.util.Ajax.request(
@@ -512,7 +527,7 @@
             {
                action : "publish"
             },
-            successMessage: this.msg("message.publishExternal.success"),
+            successMessage: amsg,
             successCallback:
             {
                fn: onPublished,

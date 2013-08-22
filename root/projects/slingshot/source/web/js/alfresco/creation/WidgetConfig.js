@@ -160,6 +160,17 @@ define(["dojo/_base/declare",
             
             domClass.remove(this.saveButton.domNode, "share-hidden");
          }
+         // TODO: THE BLOCK ABOVE NEEDS DELETING ONCE THE OTHER WIDGETS HAVE BEEN UPDATED TO NOT RELY ON THE "DATA" OBJECT
+         if (lang.exists("selectedItem.widgetsForConfig", payload))
+         {
+            // Save the current widget configuration...
+            this.currentWidgetConfig = payload;
+            
+            // Create the controls for configuring the widget...
+            this.processWidgets(payload.selectedItem.widgetsForConfig, this.configNode);
+            
+            domClass.remove(this.saveButton.domNode, "share-hidden");
+         }
       },
       
       allWidgetsProcessed: function alfresco_creation_WidgetConfig__allWidgetsProcessed(widgets) {

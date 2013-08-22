@@ -255,6 +255,10 @@
          var cancelButton = new YAHOO.widget.Button(rowId + "-cancel");
          cancelButton.subscribe("click", function()
          {
+            if (this.widgets.commentForm != null)
+            {
+               this.widgets.commentForm.hideErrorContainer();
+            }
             this.restoreEditForm();
          }, this, true);
          cancelButton.set("label", this.msg('button.cancel'));

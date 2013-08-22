@@ -903,21 +903,21 @@ body.yui-skin-gdocs .categoryview .category .ygtvdepthcell
    background-image: url(images/categoryview-sprite.gif);
 }
 
-body.yui-skin-gdocs .treeview .tree .ygtvtn,
-body.yui-skin-gdocs .treeview .tree .ygtvtm,
-body.yui-skin-gdocs .treeview .tree .ygtvtmh,
-body.yui-skin-gdocs .treeview .tree .ygtvtmhh,
-body.yui-skin-gdocs .treeview .tree .ygtvtp,
-body.yui-skin-gdocs .treeview .tree .ygtvtph,
-body.yui-skin-gdocs .treeview .tree .ygtvtphh,
-body.yui-skin-gdocs .treeview .tree .ygtvln,
-body.yui-skin-gdocs .treeview .tree .ygtvlm,
-body.yui-skin-gdocs .treeview .tree .ygtvlmh,
-body.yui-skin-gdocs .treeview .tree .ygtvlmhh,
-body.yui-skin-gdocs .treeview .tree .ygtvlp,
-body.yui-skin-gdocs .treeview .tree .ygtvlph,
-body.yui-skin-gdocs .treeview .tree .ygtvlphh,
-body.yui-skin-gdocs .treeview .tree .ygtvdepthcell
+body.yui-skin-gdocs .treeview .ygtvtn,
+body.yui-skin-gdocs .treeview .ygtvtm,
+body.yui-skin-gdocs .treeview .ygtvtmh,
+body.yui-skin-gdocs .treeview .ygtvtmhh,
+body.yui-skin-gdocs .treeview .ygtvtp,
+body.yui-skin-gdocs .treeview .ygtvtph,
+body.yui-skin-gdocs .treeview .ygtvtphh,
+body.yui-skin-gdocs .treeview .ygtvln,
+body.yui-skin-gdocs .treeview .ygtvlm,
+body.yui-skin-gdocs .treeview .ygtvlmh,
+body.yui-skin-gdocs .treeview .ygtvlmhh,
+body.yui-skin-gdocs .treeview .ygtvlp,
+body.yui-skin-gdocs .treeview .ygtvlph,
+body.yui-skin-gdocs .treeview .ygtvlphh,
+body.yui-skin-gdocs .treeview .ygtvdepthcell
 {
    background-image: url(images/treeview-sprite.gif) !important;
 }

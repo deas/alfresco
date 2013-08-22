@@ -25,7 +25,9 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Check for the presence of one or more aspects
+ * Check for the presence of one or more aspects.
+ * 
+ * Where more than one aspect is supplied, all aspects must be present.
  *
  * @author: mikeh
  */

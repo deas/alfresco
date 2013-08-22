@@ -29,8 +29,9 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreRwd",
         "alfresco/menus/_AlfPopupCloseMixin",
         "dojo/dom-class", 
-        "dojo/dom-style"],
-        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domClass, domStyle) {
+        "dojo/dom-style",
+        "dojo/dom-construct"],
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domClass, domStyle, domConstruct) {
    
    return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin], {
 
@@ -60,6 +61,13 @@ define(["dojo/_base/declare",
        * @default "16px"
        */
       iconImageHeight: "16px",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      iconAltText: "",
       
       /**
        * If a 'targetUrl' attribute is provided the value will be passed as a publication event to the NavigationService
@@ -121,7 +129,14 @@ define(["dojo/_base/declare",
       setupIconNode: function alfresco_menus__AlfMenuItemMixin__setupIconNode() {
          if (this.iconClass && this.iconClass != "dijitNoIcon" && this.iconNode)
          {
-            domClass.add(this.iconNode, this.iconClass);
+            var iconNodeParent = this.iconNode.parentNode;
+            domConstruct.empty(iconNodeParent);
+            this.iconNode = domConstruct.create("img", {
+               role:"presentation",
+               className: "dijitInline dijitIcon dijitMenuItemIcon " + this.iconClass,
+               src: "/share/res/js/alfresco/menus/css/images/transparent-20.png",
+               alt: this.message(this.iconAltText)
+            }, iconNodeParent);
          }
          else if (this.iconImage && this.iconNode)
          {

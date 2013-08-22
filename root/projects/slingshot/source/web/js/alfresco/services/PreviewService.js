@@ -51,13 +51,15 @@ define(["dojo/_base/declare",
       generateDependencies: function alfresco_services_PreviewService__generateDependencies(payload) {
          if (payload != null && payload.model != null)
          {
-            var query = {
+            var pageDefObject = dojoJson.parse(payload.model);
+            var data = {
+               jsonContent: pageDefObject,
                widgets: payload.model
             };
             
             this.serviceXhr({
                url: Alfresco.constants.URL_SERVICECONTEXT + "/service/surf/dojo/xhr/dependencies",
-               method: "GET",
+               method: "POST",
                query: query,
                successCallback: this.generateDependenciesSuccess,
                failureCallback: this.generateDependenciesFailure,

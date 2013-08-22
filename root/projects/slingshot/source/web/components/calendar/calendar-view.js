@@ -112,9 +112,18 @@
       setOptions: function Base_setOptions(obj)
       {
          this.options = YAHOO.lang.merge(this.options, obj);
-         this.options.startDate = Alfresco.util.fromISO8601(this.options.startDate);
-         this.options.endDate = Alfresco.util.fromISO8601(this.options.endDate);
-         this.options.titleDate = Alfresco.util.fromISO8601(this.options.titleDate);
+         if (typeof this.options.startDate == "string")
+         {
+            this.options.startDate = Alfresco.util.fromISO8601(this.options.startDate);
+         }
+         if (typeof this.options.endDate == "string")
+         {
+            this.options.endDate = Alfresco.util.fromISO8601(this.options.endDate);
+         }
+         if (typeof this.options.titleDate == "string")
+         {
+            this.options.titleDate = Alfresco.util.fromISO8601(this.options.titleDate);
+         }
          return this;
       },
 
