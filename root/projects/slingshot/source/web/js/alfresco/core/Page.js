@@ -61,16 +61,16 @@ define(["alfresco/core/ProcessWidgets",
          // TODO: Need to be able to notify widgets that they can start publications in the knowledge that other widgets are available
          // to respond...
          
-         if (this.publishOnLoad != null)
+         if (this.publishOnReady != null)
          {
-            array.forEach(this.publishOnLoad, lang.hitch(this, "onLoadPublish"));
+            array.forEach(this.publishOnReady, lang.hitch(this, "onReadyPublish"));
          }
       },
       
       /**
        * @instance
        */
-      onLoadPublish: function alfresco_core_Page__onLoadPublish(publicationDetails) {
+      onReadyPublish: function alfresco_core_Page__onReadyPublish(publicationDetails) {
          if (publicationDetails != null && 
              publicationDetails.publishTopic != null &&
              publicationDetails.publishTopic != "")

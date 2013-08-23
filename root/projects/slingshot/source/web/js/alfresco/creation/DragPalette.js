@@ -106,23 +106,88 @@ define(["dojo/_base/declare",
       widgetsForPalette: [
          {
             type: ["widget"],
-            name: "Menu Bar",
-            module: "alfresco/menus/AlfMenuBar",
+            name: "Page Title",
+            module: "alfresco/header/SetTitle",
             // This is the initial configuration that will be provided when the widget
             // is dropped into the drop-zone...
             defaultConfig: {
-               name: "default"
+               title: ""
             },
             // These are the widgets used to configure the dropped widget.
             widgetsForConfig: [
                {
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
-                     name: "name",
-                     label: "Name",
-                     value: "default",
+                     name: "defaultConfig.title",
+                     label: "Page Title",
+                     value: "",
                   }
                }
+            ],
+            // If set to true, then the actual widget will be previewed...
+            previewWidget: false,
+            // This is the widget structure to use to display the widget.
+            widgetsForDisplay: [
+               {
+                  name: "alfresco/creation/DropZone",
+                  config: {
+                     horizontal: true
+                  }
+               }
+            ]
+         },
+         {
+            type: ["widget"],
+            name: "Logo",
+            module: "alfresco/logo/Logo",
+            // This is the initial configuration that will be provided when the widget
+            // is dropped into the drop-zone...
+            defaultConfig: {
+               logoClasses: ""
+            },
+            // These are the widgets used to configure the dropped widget.
+            widgetsForConfig: [
+               {
+                  name: "alfresco/forms/controls/DojoSelect",
+                  config: {
+                     name: "defaultConfig.logoClasses",
+                     label: "Logo Classes",
+                     value: "",
+                     optionsConfig: {
+                        fixed: [
+                           {label:"Standard Alfresco",value:""},
+                           {label:"Large Alfresco",value:"alfresco-logo-large"},
+                           {label:"Alfresco Logo Only",value:"alfresco-logo-only"},
+                           {label:"3D Alfresco",value:"alfresco-logo-3d"},
+                           {label:"Surf Large",value:"surf-logo-large"},
+                           {label:"Surf Small",value:"surf-logo-small"}
+                        ]
+                     }
+                  }
+               }
+            ],
+            // If set to true, then the actual widget will be previewed...
+            previewWidget: false,
+            // This is the widget structure to use to display the widget.
+            widgetsForDisplay: [
+               {
+                  name: "alfresco/creation/DropZone",
+                  config: {
+                     horizontal: true
+                  }
+               }
+            ]
+         },
+         {
+            type: ["widget"],
+            name: "Menu Bar",
+            module: "alfresco/menus/AlfMenuBar",
+            // This is the initial configuration that will be provided when the widget
+            // is dropped into the drop-zone...
+            defaultConfig: {
+            },
+            // These are the widgets used to configure the dropped widget.
+            widgetsForConfig: [
             ],
             // If set to true, then the actual widget will be previewed...
             previewWidget: false,
@@ -143,16 +208,48 @@ define(["dojo/_base/declare",
             // This is the initial configuration that will be provided when the widget
             // is dropped into the drop-zone...
             defaultConfig: {
-               label: "default"
+               label: "default",
+               iconClass: "",
+               altText: ""
             },
             // These are the widgets used to configure the dropped widget.
             widgetsForConfig: [
                {
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
-                     name: "label",
+                     name: "defaultConfig.label",
                      label: "Label",
                      value: "default",
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoSelect",
+                  config: {
+                     name: "defaultConfig.iconClass",
+                     label: "Icon",
+                     value: "",
+                     optionsConfig: {
+                        fixed: [
+                           {label:"None",value:""},
+                           {label:"Configure",value:"alf-configure-icon"},
+                           {label:"Invite User",value:"alf-user-icon"},
+                           {label:"Upload",value:"alf-upload-icon"},
+                           {label:"Create",value:"alf-create-icon"},
+                           {label:"All Selected",value:"alf-allselected-icon"},
+                           {label:"Some Selected",value:"alf-someselected-icon"},
+                           {label:"None Selected",value:"alf-noneselected-icon"},
+                           {label:"Back",value:"alf-back-icon"},
+                           {label:"Forward",value:"alf-forward-icon"}
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoTextarea",
+                  config: {
+                     name: "defaultConfig.altText",
+                     label: "Alt Text",
+                     value: "",
                   }
                }
             ],
@@ -170,21 +267,53 @@ define(["dojo/_base/declare",
          },
          {
             type: ["widget"],
-            name: "Menu Bar Drop-down menu",
+            name: "Drop-down menu",
             module: "alfresco/menus/AlfMenuBarPopup",
             // This is the initial configuration that will be provided when the widget
             // is dropped into the drop-zone...
             defaultConfig: {
-               label: "default"
+               label: "default",
+               iconClass: "",
+               altText: ""
             },
             // These are the widgets used to configure the dropped widget.
             widgetsForConfig: [
                {
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
-                     name: "label",
+                     name: "defaultConfig.label",
                      label: "Label",
                      value: "default",
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoSelect",
+                  config: {
+                     name: "defaultConfig.iconClass",
+                     label: "Icon",
+                     value: "",
+                     optionsConfig: {
+                        fixed: [
+                           {label:"None",value:""},
+                           {label:"Configure",value:"alf-configure-icon"},
+                           {label:"Invite User",value:"alf-user-icon"},
+                           {label:"Upload",value:"alf-upload-icon"},
+                           {label:"Create",value:"alf-create-icon"},
+                           {label:"All Selected",value:"alf-allselected-icon"},
+                           {label:"Some Selected",value:"alf-someselected-icon"},
+                           {label:"None Selected",value:"alf-noneselected-icon"},
+                           {label:"Back",value:"alf-back-icon"},
+                           {label:"Forward",value:"alf-forward-icon"}
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoTextarea",
+                  config: {
+                     name: "defaultConfig.altText",
+                     label: "Alt Text",
+                     value: "",
                   }
                }
             ],
@@ -214,7 +343,7 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
-                     name: "label",
+                     name: "defaultConfig.label",
                      label: "Label",
                      value: "default",
                   }
@@ -239,16 +368,73 @@ define(["dojo/_base/declare",
             // This is the initial configuration that will be provided when the widget
             // is dropped into the drop-zone...
             defaultConfig: {
-               label: "default"
+               label: "default",
+               iconClass: "",
+               altText: "",
+               publishTopic: "",
+               publishPayload: ""
             },
             // These are the widgets used to configure the dropped widget.
             widgetsForConfig: [
                {
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
-                     name: "label",
+                     name: "defaultConfig.label",
                      label: "Label",
                      value: "default",
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoSelect",
+                  config: {
+                     name: "defaultConfig.iconClass",
+                     label: "Icon",
+                     value: "",
+                     optionsConfig: {
+                        fixed: [
+                           {label:"None",value:""},
+                           {label:"Edit",value:"alf-edit-icon"},
+                           {label:"Configure",value:"alf-cog-icon"},
+                           {label:"Leave",value:"alf-leave-icon"},
+                           {label:"User",value:"alf-profile-icon"},
+                           {label:"Password",value:"alf-password-icon"},
+                           {label:"Help",value:"alf-help-icon"},
+                           {label:"Logout",value:"alf-logout-icon"},
+                           {label:"Simple List",value:"alf-simplelist-icon"},
+                           {label:"Detailed List",value:"alf-detailedlist-icon"},
+                           {label:"Gallery",value:"alf-gallery-icon"},
+                           {label:"Show Folders",value:"alf-showfolders-icon"},
+                           {label:"Show Path",value:"alf-showpath-icon"},
+                           {label:"Show Sidebar",value:"alf-showsidebar-icon"},
+                           {label:"Text",value:"alf-textdoc-icon"},
+                           {label:"HTML Selected",value:"alf-htmldoc-icon"},
+                           {label:"XML",value:"alf-xmldoc-icon"}
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoTextarea",
+                  config: {
+                     name: "defaultConfig.altText",
+                     label: "Alt Text",
+                     value: "",
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.publishTopic",
+                     label: "Publish Topic",
+                     value: "",
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
+                  config: {
+                     name: "defaultConfig.publishPayload",
+                     label: "Publish Payload",
+                     value: ""
                   }
                }
             ],
@@ -278,7 +464,7 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
-                     name: "label",
+                     name: "defaultConfig.label",
                      label: "Label",
                      value: "default",
                   }
@@ -295,6 +481,79 @@ define(["dojo/_base/declare",
                   }
                }
             ]
+         },
+         {
+            type: ["widget"],
+            name: "Title, Description And Content",
+            module: "alfresco/layout/TitleDescriptionAndContent",
+            // This is the initial configuration that will be provided when the widget
+            // is dropped into the drop-zone...
+            defaultConfig: {
+               title: "title",
+               description: "description"
+            },
+            // These are the widgets used to configure the dropped widget.
+            widgetsForConfig: [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.title",
+                     label: "Title",
+                     value: "title",
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoTextarea",
+                  config: {
+                     name: "defaultConfig.description",
+                     label: "Description",
+                     value: "description",
+                  }
+               }
+            ],
+            // If set to true, then the actual widget will be previewed...
+            previewWidget: false,
+            // This is the widget structure to use to display the widget.
+            widgetsForDisplay: [
+               {
+                  name: "alfresco/creation/DropZone",
+                  config: {
+                     horizontal: false
+                  }
+               }
+            ]
+         },
+         {
+            type: ["widget"],
+            name: "Sliding Tabs",
+            module: "alfresco/layout/SlidingTabs",
+            // This is the initial configuration that will be provided when the widget
+            // is dropped into the drop-zone...
+            defaultConfig: {},
+            // These are the widgets used to configure the dropped widget.
+            widgetsForConfig: [],
+            // If set to true, then the actual widget will be previewed...
+            previewWidget: false,
+            // This is the widget structure to use to display the widget.
+            widgetsForDisplay: [
+               {
+                  name: "alfresco/creation/DropZone",
+                  config: {
+                     horizontal: false,
+                     widgetsForNestedConfig: [
+                         {
+                            name: "alfresco/forms/controls/DojoValidationTextBox",
+                            config: {
+                               name: "additionalConfig.title",
+                               label: "Tab Title",
+                               value: "title",
+                            }
+                         }
+                      ]
+                  }
+               }
+            ]
+            
          }
       ]
    });

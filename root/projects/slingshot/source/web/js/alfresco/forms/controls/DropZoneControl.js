@@ -25,8 +25,10 @@
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "alfresco/creation/DropZone",
-        "dojo/json"], 
-        function(BaseFormControl, declare, DropZone, dojoJSON) {
+        "dojo/json",
+        "dojo/on",
+        "dojo/_base/lang"], 
+        function(BaseFormControl, declare, DropZone, dojoJSON, on, lang) {
    
    return declare([BaseFormControl], {
       
@@ -57,6 +59,13 @@ define(["alfresco/forms/controls/BaseFormControl",
        */
       createFormControl: function alfresco_forms_controls_DropZoneControl__createFormControl(config, domNode) {
          return new DropZone(config);
+      },
+      
+      /**
+       * 
+       */
+      setupChangeEvents: function alfresco_forms_controls_DropZoneControl__setupChangeEvents() {
+         on(this.domNode, "onWidgetUpdate", lang.hitch(this, "validate"));
       },
       
       /**

@@ -195,11 +195,17 @@ define(["dojo/_base/declare",
                config: currentField.data.defaultConfig,
                widgetsForDisplay: currentField.data.widgetsForDisplay // Save the widgets to use for display??
             };
+            
+            // Mixin any additional configuration...
+            // This is for the benefit of the widget being added to, not the widget being instantiated...
+            lang.mixin(newDef, currentField.data.additionalConfig);
+            
             var widget = registry.byNode(node);
             if (widget != null && typeof widget.getWidgetDefinitions === "function")
             {
                var defs = widget.getWidgetDefinitions();
-               newDef.config.widgets = defs;
+               lang.setObject("config.widgets", defs, newDef);
+//               newDef.config.widgets = defs;
             }
             widgetDefs.push(newDef);
          }, this);
@@ -287,7 +293,7 @@ define(["dojo/_base/declare",
                for (var key in payload.updatedConfig)
                {
                   // Use "setObject" to allow keys to be dot-notation properties.
-                  lang.setObject(key, payload.updatedConfig[key], clonedConfig.defaultConfig);
+                  lang.setObject(key, payload.updatedConfig[key], clonedConfig);
                }
                // Update the configuration values...
                for (var i=0; i<clonedConfig.widgetsForConfig.length; i++)
@@ -296,7 +302,8 @@ define(["dojo/_base/declare",
                }
                
                // Update the previously stored name the field name
-               this.alfSetData(clonedConfig.defaultConfig.fieldId + ".name", payload.updatedConfig.name + "");
+               // Commented out due to missing .config.aname on payload.updatedConfig
+//               this.alfSetData(clonedConfig.defaultConfig.fieldId + ".name", payload.updatedConfig.config.name + "");
                
                // Remove any existing widgets associated with the currently selected node,
                // however preserve the DOM so that it can be used as a reference for adding
@@ -376,6 +383,32 @@ define(["dojo/_base/declare",
             {
                widgets = item.widgetsForDisplay;
             }
+            
+            // Add in any additional configuration...
+            // TODO: Need to make sure that cloning isn't required?
+            if (this.widgetsForNestedConfig != null)
+            {
+               // Check to see if the item passed in has the "originalConfigWidgets" attribute set...
+               // If it doesn't then this is a create triggered by dragging from the palette. If it has
+               // the attribute set then this call has been triggered by an update...
+               if (item.originalConfigWidgets === undefined)
+               {
+                  clonedItem.originalConfigWidgets = lang.clone(item.widgetsForConfig);
+               }
+               
+               // Create the additional configuration widgets...
+               clonedItem.widgetsForConfig = clonedItem.originalConfigWidgets.concat(lang.clone(this.widgetsForNestedConfig));
+               
+               // Make sure that each of the additional widgets is set with an up-to-date value...
+               array.forEach(clonedItem.widgetsForConfig, function(widget, i) {
+                  var updatedValue = lang.getObject(widget.config.name, false, clonedItem);
+                  if (updatedValue != null)
+                  {
+                     widget.config.value = updatedValue;
+                  }
+               }, this);
+            }
+            
             var widgetWrapper = new DropZoneWrapper({
                pubSubScope: this.pubSubScope,
                widgets: widgets,
