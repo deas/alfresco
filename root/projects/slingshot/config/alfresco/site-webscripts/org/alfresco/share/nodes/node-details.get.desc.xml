@@ -1,6 +1,0 @@
-<webscript>
-  <shortname>Renders a node</shortname>
-  <description>This can be used to render a node</description>
-  <family>Share</family>
-  <url>/node-details/{store_type}/{store_id}/{id}</url>
-</webscript>
