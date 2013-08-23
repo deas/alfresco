@@ -2078,10 +2078,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                             {
                                 mpq.add((Term[]) multiTerms.toArray(new Term[0]));
                             }
+                            checkTermCount(field, queryText, mpq);
                             multiTerms.clear();
                         }
                         position += nextToken.getPositionIncrement();
-
                         
                     }
                     if (getEnablePositionIncrements())
@@ -2106,6 +2106,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 //                            mpq.add(new Term[] { new Term(field, "\u0000") });
 //                        }
                     }
+                    checkTermCount(field, queryText, mpq);
                     return mpq;
 
                 }
@@ -2135,6 +2136,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                                 {
                                     mpq.add(new Term[] { term }, position);
                                 }
+                                checkTermCount(field, queryText, mpq);
                                 if(nextToken.getPositionIncrement() > 0)
                                 {
                                     position += nextToken.getPositionIncrement();
@@ -2155,6 +2157,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                                 {
                                     mpq.add(term);
                                 }
+                                checkTermCount(field, queryText, mpq);
                             }
                         }
                         q.add(mpq, BooleanClause.Occur.SHOULD);
@@ -2182,6 +2185,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         {
                             q.add(new Term[] { term }, position);
                         }
+                        checkTermCount(field, queryText, q);
                         if(nextToken.getPositionIncrement() > 0)
                         {
                             position += nextToken.getPositionIncrement();
@@ -2201,11 +2205,34 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         {
                             q.add(term);
                         }
+                        checkTermCount(field, queryText,q);
                     }
                 }
                 return q;
             }
         }
+    }
+
+    /**
+     * @param field
+     * @param queryText
+     * @param mpq
+     * @return
+     */
+    private void checkTermCount(String field, String queryText, MultiPhraseQuery mpq)
+    {
+        int termCount = 0;
+        for (Iterator<?> iter = mpq.getTermArrays().iterator(); iter.hasNext(); /**/) 
+        {
+            Term[] arr = (Term[])iter.next();
+            termCount += arr.length;
+            if(termCount > BooleanQuery.getMaxClauseCount())
+            {
+                throw new LuceneQueryParserException("Wildcard has generated too many clauses: "+field+" "+queryText );
+            }
+        }
+        
+        
     }
 
     /**
