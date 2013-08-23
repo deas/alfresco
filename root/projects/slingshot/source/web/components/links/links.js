@@ -1092,7 +1092,7 @@
                   {
                      menu.getItem(0, 0).index = 1;
                      // Add new menu item
-                     var deleteItem = menu.insertItem("<span class='links-action-delete'>" + this.linksDeleteName + "</span>",0,0);
+                     var deleteItem = menu.insertItem("<span class='links-action-delete'>" + this.msg("links.delete") + "</span>",0,0);
 						
                      //Add 'delete-item' class to the first place (for onMenuItemClick)
                      var tagADelete = Dom.getFirstChild(deleteItem.element);
