@@ -111,13 +111,13 @@
                         <#else>
                            <li><a href="#"><span class="hidePath">${msg("button.navbar.hide")}</span></a></li>
                         </#if>
+                        <li class="drop-down-list-break-below"><a href="#"><span class="rss">${msg("link.rss-feed")}</span></a></li>
                         <li><a href="#"><span class="fullWindow">${msg("button.fullwindow.enter")}</span></a></li>
-                        <li><a href="#"><span class="fullScreen">${msg("button.fullscreen.enter")}</span></a></li>
-                        <li><a href="#"><span class="rss">${msg("link.rss-feed")}</span></a></li>
+                        <li class="drop-down-list-break-below"><a href="#"><span class="fullScreen">${msg("button.fullscreen.enter")}</span></a></li>
                         <@markup id="documentListViewRendererSelect">
                           <#if viewRenderers??>
                              <#list viewRenderers as viewRenderer>
-                                <li class="${viewRenderer.iconClass}"><a href="#"><span class="view ${viewRenderer.id}">${msg(viewRenderer.label)}</span></a></li>
+                                <li class="${viewRenderer.iconClass}<#if !viewRenderer_has_next> drop-down-list-break-below</#if>"><a href="#"><span class="view ${viewRenderer.id}">${msg(viewRenderer.label)}</span></a></li>
                              </#list>
                           </#if>
                         </@>

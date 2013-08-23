@@ -907,6 +907,18 @@ body .doclist tr.yui-dt-highlighted
    color: #515D6B !important;
 }
 
+.yuimenuitem.drop-down-list-break-below {
+  border-bottom: 1px solid #EEEEEE;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+.yuimenuitem.drop-down-list-break-above {
+  border-top: 1px solid #EEEEEE;
+  margin-top: 10px;
+  padding-top: 5px;
+}
+
 
 /* Gallery View */
 
