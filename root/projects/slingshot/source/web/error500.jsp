@@ -87,12 +87,15 @@ div.panel
 out.println("<!--");
 StringWriter sw = new StringWriter();
 PrintWriter pw = new PrintWriter(sw);
-exception.printStackTrace(pw);
-out.print(StringUtils.encode(sw.toString()));
-sw.close();
-pw.close();
-out.println("-->");
-LogFactory.getLog("org.alfresco.web.site").error(exception, exception.getCause());
+if (exception != null)
+{
+	exception.printStackTrace(pw);
+	out.print(StringUtils.encode(sw.toString()));
+	sw.close();
+	pw.close();
+	out.println("-->");
+	LogFactory.getLog("org.alfresco.web.site").error(exception, exception.getCause());
+}
 %>
    </div>
 </div>

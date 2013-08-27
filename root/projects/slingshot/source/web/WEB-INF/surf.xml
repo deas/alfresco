@@ -46,6 +46,11 @@
             <id>region-nocomponent</id>
             <processor-id>nocomponent</processor-id>
          </error-handler>
+         <error-handler>
+             <id>page-error</id>
+             <processor-id>jsp</processor-id>
+             <uri>/error500.jsp</uri>
+         </error-handler>
          
          <!-- Autowire Runtime Settings -->
          <autowire>

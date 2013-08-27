@@ -172,7 +172,7 @@ function getSiteData()
          {
             title: "",
             shortName: "",
-            visibility: "PUBLIC"
+            visibility: "PRIVATE"  // Default to PRIVATE as if the site is PRIVATE and the user doesn't have access, this won't get updated!!
          };
 
          if (json.status == 200)
@@ -597,10 +597,22 @@ function getSubNavigationWidgets() {
          });
       }
    }
-   else
+   else if (page.url.templateArgs.site != null)
    {
       // Get the standard navigation widgets (expected to be site pages)...
-      navigationWidgets = getSiteNavigationWidgets();
+      var siteData = getSiteData();
+      if (siteData.profile.visibility != "PUBLIC" && siteData.userIsMember == false)
+      {
+         navigationWidgets = [];
+      }
+      else
+      {
+         navigationWidgets = getSiteNavigationWidgets();
+      }
+   }
+   else
+   {
+      // No navigation widgets. Leave as default empty array.
    }
    return navigationWidgets;
 }
@@ -1570,7 +1582,7 @@ function getTitleBarModel() {
                }
             });
          }
-         else
+         else if (siteData.profile.visibility != "PRIVATE" || user.isAdmin)
          {
             // If the member is not a member of a site then give them the option to join...
             siteConfig.config.widgets.push({
