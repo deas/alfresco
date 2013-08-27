@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
@@ -224,7 +223,8 @@ public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
     {
         BooleanQuery booleanQuery = new BooleanQuery();
         booleanQuery.add(new MatchAllDocsQuery(), Occur.MUST);
-        booleanQuery.add(buildLuceneEquality(lqp, value, mode, LuceneFunction.FIELD), Occur.MUST_NOT);
+        String stringValue = getValueAsString(lqp, value);
+        booleanQuery.add(buildLuceneEquality(lqp, stringValue, mode, LuceneFunction.FIELD), Occur.MUST_NOT);
         return booleanQuery;
     }
 
