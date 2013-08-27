@@ -1201,13 +1201,12 @@ function generateAppItems() {
 function generateUserItems() {
    return [
       {
-         id: "HEADER_USER_MENU",
          name: "alfresco/header/AlfMenuBarPopup",
          config: {
-            id: "HEADER_USER_MENU",
             label: user.fullName,
             widgets: [
                {
+                  id: "HEADER_USER_MENU",
                   name: "alfresco/menus/AlfMenuGroup",
                   config: {
                      widgets: [
