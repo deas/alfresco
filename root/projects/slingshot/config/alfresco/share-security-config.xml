@@ -134,7 +134,7 @@
          <rule>
             <request>
                <method>POST</method>
-               <path>/page/caches/dependency/clear|/page/index|/page/surfBugStatus|/page/modules/deploy|/page/modules/module|/page/api/javascript/debugger</path>
+               <path>/page/caches/dependency/clear|/page/index|/page/surfBugStatus|/page/modules/deploy|/page/modules/module|/page/api/javascript/debugger|/page/console</path>
             </request>
             <action name="assertReferer">
                <param name="referer">{referer}</param>
