@@ -10,7 +10,7 @@ function main()
    model.serverEdition = "Unknown";
    model.serverVersion = "Unknown (Unknown)";
    model.serverSchema = "Unknown";
-   model.licenseHolder = "Unknown";
+   model.licenseHolder = "UNKNOWN";
    
    // Check if we got a positive result
    if (json.data)

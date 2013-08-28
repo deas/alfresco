@@ -10,7 +10,7 @@
             <#assign split=server.version?index_of(" ")>
             <div class="header">Spring Surf and ${server.edition?html} v${server.version?substring(0, split)?html}</div>
             <div>${server.version?substring(split+1)?html}</div>
-            <div class="licenseHolder"><span>${msg("label.licensedTo")}</span> ${licenseHolder}</div>
+            <div class="licenseHolder"><#if licenseHolder != "" && licenseHolder != "UNKNOWN"><span>${msg("label.licensedTo")}</span> ${licenseHolder}<#else>&nbsp;</#if></div>
             <div class="contributions-bg"></div>
             <div class="contributions-wrapper">
                <div id="${el}-contributions" class="contributions">
