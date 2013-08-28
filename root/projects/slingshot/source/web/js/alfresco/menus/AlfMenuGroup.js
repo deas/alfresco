@@ -37,8 +37,9 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/dom-class",
         "dojo/keys",
-        "dijit/popup"], 
-        function(declare, template, AlfCore, AlfDropDownMenu, CoreRwd, event, domStyle, domClass, keys, popup) {
+        "dijit/popup",
+        "dojo/string"], 
+        function(declare, template, AlfCore, AlfDropDownMenu, CoreRwd, event, domStyle, domClass, keys, popup, string) {
    
    return declare([AlfDropDownMenu, AlfCore, CoreRwd], {
       
@@ -75,7 +76,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       constructor: function alfresco_menus_AlfMenuGroup__constructor(args) {
-         this.ddmTemplateString = AlfDropDownMenu.prototype.templateString;
+         this.templateString = string.substitute(template, { ddmTemplateString: AlfDropDownMenu.prototype.templateString});
       },
       
       
