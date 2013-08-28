@@ -1201,6 +1201,7 @@ function generateAppItems() {
 function generateUserItems() {
    return [
       {
+         id: "HEADER_USER_MENU_POPUP",
          name: "alfresco/header/AlfMenuBarPopup",
          config: {
             label: user.fullName,

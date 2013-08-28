@@ -10,8 +10,6 @@
    <!-- Document Library config section -->
    <config evaluator="string-compare" condition="DocumentLibrary">
 
-      
-
       <!-- Document List -->
       <doclist>
          <!--
