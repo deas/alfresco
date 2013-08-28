@@ -768,9 +768,6 @@
          // Display validation errors
          if (messages)
          {
-            Dom.addClass(this.id + "-filelist-table", "hidden");
-            Dom.addClass(this.id + "-aggregate-data-wrapper", "hidden");
-            Dom.removeClass(this.id + "-file-selection-controls", "hidden");
             Alfresco.util.PopupManager.displayPrompt(
             {
                title: this.msg("header.error"),
@@ -829,104 +826,104 @@
             var file = scope.showConfig.files[i];
             if (!this._getFileValidationErrors(file))
             {
-            var fileId = "file" + i;
-            try
-            {
-               /**
-                * UPLOAD PROGRESS LISTENER
-                */
-               var progressListener = function DNDUpload_progressListener(e)
+               var fileId = "file" + i;
+               try
                {
-                 Alfresco.logger.debug("File upload progress update received", e);
-                 if (e.lengthComputable)
-                 {
-                     try
-                     {
-                        var percentage = Math.round((e.loaded * 100) / e.total),
-                            fileInfo = scope.fileStore[fileId];
-                        fileInfo.progressPercentage.innerHTML = percentage + "%";
-
-                        // Set progress position
-                        var left = (-400 + ((percentage/100) * 400));
-                        Dom.setStyle(fileInfo.progress, "left", left + "px");
-                        scope._updateAggregateProgress(fileInfo, e.loaded);
-
-                        // Save value of how much has been loaded for the next iteration
-                        fileInfo.lastProgress = e.loaded;
-                     }
-                     catch(exception)
-                     {
-                        Alfresco.logger.error("The following error occurred processing an upload progress event: ", exception);
-                     }
-                 }
-                 else
-                 {
-                     Alfresco.logger.debug("File upload progress not computable", e);
-                 }
-              };
-
-              /**
-               * UPLOAD COMPLETION LISTENER
-               */
-              var successListener = function DNDUpload_successListener(e)
-              {
-                 try
-                 {
-                    Alfresco.logger.debug("File upload completion notification received", e);
-
-                    // The individual file has been transfered completely
-                    // Now adjust the gui for the individual file row
-                    var fileInfo = scope.fileStore[fileId];
-                    if (fileInfo.request.readyState != 4)
+                  /**
+                   * UPLOAD PROGRESS LISTENER
+                   */
+                  var progressListener = function DNDUpload_progressListener(e)
+                  {
+                    Alfresco.logger.debug("File upload progress update received", e);
+                    if (e.lengthComputable)
                     {
-                       // There is an occasional timing issue where the upload completion event fires before
-                       // the readyState is correctly updated. This means that we can't check the upload actually
-                       // completed successfully, if this occurs then we'll attach a function to the onreadystatechange
-                       // extension point and things to catch up before we check everything was ok...
-                       fileInfo.request.onreadystatechange = function DNDUpload_onreadystatechange()
-                       {
-                          if (fileInfo.request.readyState == 4)
-                          {
-                             scope._processUploadCompletion(fileInfo);
-                          }
-                       }
+                        try
+                        {
+                           var percentage = Math.round((e.loaded * 100) / e.total),
+                               fileInfo = scope.fileStore[fileId];
+                           fileInfo.progressPercentage.innerHTML = percentage + "%";
+   
+                           // Set progress position
+                           var left = (-400 + ((percentage/100) * 400));
+                           Dom.setStyle(fileInfo.progress, "left", left + "px");
+                           scope._updateAggregateProgress(fileInfo, e.loaded);
+   
+                           // Save value of how much has been loaded for the next iteration
+                           fileInfo.lastProgress = e.loaded;
+                        }
+                        catch(exception)
+                        {
+                           Alfresco.logger.error("The following error occurred processing an upload progress event: ", exception);
+                        }
                     }
                     else
                     {
-                       // If the request correctly indicates that the response has returned then we can process
-                       // it to ensure that files have been uploaded correctly.
-                       scope._processUploadCompletion(fileInfo);
+                        Alfresco.logger.debug("File upload progress not computable", e);
                     }
-                 }
-                 catch(exception)
+                 };
+   
+                 /**
+                  * UPLOAD COMPLETION LISTENER
+                  */
+                 var successListener = function DNDUpload_successListener(e)
                  {
-                    Alfresco.logger.error("The following error occurred processing an upload completion event: ", exception);
-                 }
-               };
-
-               /**
-                * UPLOAD FAILURE LISTENER
-                */
-               var failureListener = function DNDUpload_failureListener(e)
-               {
-                  try
+                    try
+                    {
+                       Alfresco.logger.debug("File upload completion notification received", e);
+   
+                       // The individual file has been transfered completely
+                       // Now adjust the gui for the individual file row
+                       var fileInfo = scope.fileStore[fileId];
+                       if (fileInfo.request.readyState != 4)
+                       {
+                          // There is an occasional timing issue where the upload completion event fires before
+                          // the readyState is correctly updated. This means that we can't check the upload actually
+                          // completed successfully, if this occurs then we'll attach a function to the onreadystatechange
+                          // extension point and things to catch up before we check everything was ok...
+                          fileInfo.request.onreadystatechange = function DNDUpload_onreadystatechange()
+                          {
+                             if (fileInfo.request.readyState == 4)
+                             {
+                                scope._processUploadCompletion(fileInfo);
+                             }
+                          }
+                       }
+                       else
+                       {
+                          // If the request correctly indicates that the response has returned then we can process
+                          // it to ensure that files have been uploaded correctly.
+                          scope._processUploadCompletion(fileInfo);
+                       }
+                    }
+                    catch(exception)
+                    {
+                       Alfresco.logger.error("The following error occurred processing an upload completion event: ", exception);
+                    }
+                  };
+   
+                  /**
+                   * UPLOAD FAILURE LISTENER
+                   */
+                  var failureListener = function DNDUpload_failureListener(e)
                   {
-                     var fileInfo = scope.fileStore[fileId];
-
-                        // This sometimes gets called twice, make sure we only adjust the gui once
-                        if (fileInfo.state !== scope.STATE_FAILURE)
-                        {
-                           scope._processUploadFailure(fileInfo, e.status);
+                     try
+                     {
+                        var fileInfo = scope.fileStore[fileId];
+   
+                           // This sometimes gets called twice, make sure we only adjust the gui once
+                           if (fileInfo.state !== scope.STATE_FAILURE)
+                           {
+                              scope._processUploadFailure(fileInfo, e.status);
+                           }
                         }
+                        catch(exception)
+                     {
+                        Alfresco.logger.error("The following error occurred processing an upload failure event: ", exception);
                      }
-                     catch(exception)
-                  {
-                     Alfresco.logger.error("The following error occurred processing an upload failure event: ", exception);
-                  }
-               };
-
-               // Get the name of the file (note that we use ".name" and NOT ".fileName" which is non-standard and it's use 
-               // will break FireFox 7)...
+                  };
+   
+                  // Get the name of the file (note that we use ".name" and NOT ".fileName" which is non-standard and it's use 
+                  // will break FireFox 7)...
                   var fileName = file.name;
                
                   // Add the event listener functions to the upload properties of the XMLHttpRequest object...
@@ -993,10 +990,10 @@
                   scope.panel.setFirstLastFocusable();
                   scope.panel.show();
                }
-            catch(exception)
-            {
-               Alfresco.logger.error("DNDUpload_show: The following exception occurred processing a file to upload: ", exception);
-            }
+               catch(exception)
+               {
+                  Alfresco.logger.error("DNDUpload_show: The following exception occurred processing a file to upload: ", exception);
+               }
             }
             
             // If we've not hit the max, recurse info the function...
