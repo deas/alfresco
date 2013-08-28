@@ -2198,7 +2198,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                field.value = field.value.substr(start, (end -start));
             }
          }
-         args.pattern = /^[^\(^\)^\{^\}^'^"^,^:^;^<^>^\\^\[^\]^\s^\@]+@[^\(^\)^\{^\}^'^"^,^:^;^<^>^\\^\[^\]^\s^\@]+\.[A-Za-z]{2,7}$/;
+         args.pattern = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@([\.a-z0-9_-])*[a-z0-9_-]$/;
          args.match = true;
 
          valid = Alfresco.forms.validation.regexMatch(field, args, event, form);
