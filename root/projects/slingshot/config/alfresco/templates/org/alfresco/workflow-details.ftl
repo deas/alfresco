@@ -6,7 +6,6 @@
    <div id="alf-hd">
       <@region scope="global" id="share-header" chromeless="true"/>
       <@region id="title" scope="template"/>
-      <@region id="navigation" scope="template"/>
       <#if page.url.args.nodeRef??>
          <@region id="path" scope="template"/>
       </#if>
