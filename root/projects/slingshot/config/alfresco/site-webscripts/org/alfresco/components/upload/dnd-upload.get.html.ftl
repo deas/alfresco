@@ -88,8 +88,9 @@
                   <span class="fileupload-filesize-span"></span>
                </div>
                <div id="${el}-right-div" class="fileupload-right-div">
-                  <img src="${url.context}/res/components/images/delete-16.png" class="fileupload-status-img" alt="status" />
+                  <img src="${url.context}/res/components/images/job-running-16.png" class="fileupload-status-img" alt="status" />
                   <img src="${url.context}/res/components/images/complete-16.png" class="fileupload-status-img hidden" alt="status" />
+                  <img src="${url.context}/res/components/images/job-failed-16.png" class="fileupload-status-img hidden" alt="status" />
                </div>
             </div>
                <div class="bdft">

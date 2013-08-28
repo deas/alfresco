@@ -1083,6 +1083,10 @@
          fileInfo.progressInfo.setAttribute("title", msg);
          fileInfo.progressInfo.parentElement.setAttribute("title", msg);
 
+         // Hide the incomplete image and show the failed image...
+         Dom.addClass(fileInfo.progressStatusIncomplete, "hidden");
+         Dom.removeClass(fileInfo.progressStatusFailed, "hidden");
+         
          // Change the style of the progress bar
          Dom.removeClass(fileInfo.progress, "fileupload-progressSuccess-span");
          Dom.addClass(fileInfo.progress, "fileupload-progressFailure-span");
@@ -1660,10 +1664,11 @@
             }
 
             var progressStatus = Dom.getElementsByClassName("fileupload-status-img", "img", templateInstance);
-            if (progressStatus.length == 2)
+            if (progressStatus.length == 3)
             {
                this.fileStore[fileId].progressStatusIncomplete = progressStatus[0];
                this.fileStore[fileId].progressStatusComplete = progressStatus[1];
+               this.fileStore[fileId].progressStatusFailed = progressStatus[2];
             }
 
             // Insert the templateInstance to the column.
