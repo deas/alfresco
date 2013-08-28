@@ -205,6 +205,11 @@
                this.widgets.cancelButton.set("disabled", false);
             };
 
+            var doAfterDialogHide = function cloudFolder_doAfterDialogHide(args)
+            {
+               delete this.widgets.createFolderInTheCloudDialog;
+            };
+            
             // Intercept before making ajax request
             var doBeforeAjaxRequest = function cloudFolder_doBeforeAjaxRequest(args)
             {
@@ -306,6 +311,7 @@
                templateUrl: templateUrl,
                actionUrl: null,
                clearForm: true,
+               destroyOnHide: true,
                doBeforeFormSubmit:
                {
                   fn: doBeforeFormSubmit,
@@ -319,6 +325,11 @@
                doBeforeAjaxRequest:
                {
                   fn: doBeforeAjaxRequest,
+                  scope: this
+               },
+               doAfterDialogHide: 
+               {
+                  fn: doAfterDialogHide,
                   scope: this
                }
             });

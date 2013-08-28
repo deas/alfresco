@@ -418,6 +418,12 @@
          {
             this.dialog.hide();
          }
+         var doAfterDialogHide = this.options.doAfterDialogHide;
+         if (doAfterDialogHide && typeof doAfterDialogHide.fn == "function")
+         {
+            doAfterDialogHide.fn.call(doAfterDialogHide.scope || this, this.form, this, doAfterDialogHide.obj);
+         }
+
       },
 
       /**
