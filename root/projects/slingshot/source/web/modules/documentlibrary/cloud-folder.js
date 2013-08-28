@@ -180,7 +180,7 @@
       createFolderInTheCloud: function cloudFolder_createFolderInTheCloud()
       {
          // If an instance of the dialog (for creating a folder in the cloud) does not exist create one
-         if (!this.options.createFolderInTheCloudDialog)
+         if (!this.widgets.createFolderInTheCloudDialog)
          {
             // Build template url
             var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
@@ -246,6 +246,8 @@
                   {
                      fn: function cloudFolder_createFolderRequest_success(response)
                      {
+                        this.widgets.createFolderInTheCloudDialog.hide();
+                        
                         Alfresco.util.PopupManager.displayMessage(
                         {
                            text: this.msg("sync.new-folder.creation.success"),
@@ -295,10 +297,10 @@
             };
             
             // Create an instance
-            this.options.createFolderInTheCloudDialog = new Alfresco.module.SimpleDialog(this.id + "-createFolderInTheCloud");
+            this.widgets.createFolderInTheCloudDialog = new Alfresco.module.SimpleDialog(this.id + "-createFolderInTheCloud");
    
             // Set the options
-            this.options.createFolderInTheCloudDialog.setOptions(
+            this.widgets.createFolderInTheCloudDialog.setOptions(
             {
                width: "33em",
                templateUrl: templateUrl,
@@ -323,7 +325,7 @@
          }
 
          // Show the dialog for creating a folder in the cloud
-         this.options.createFolderInTheCloudDialog.show();
+         this.widgets.createFolderInTheCloudDialog.show();
       },
 
       /**
