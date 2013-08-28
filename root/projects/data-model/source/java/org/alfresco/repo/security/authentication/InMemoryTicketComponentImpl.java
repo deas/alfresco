@@ -49,14 +49,16 @@ public class InMemoryTicketComponentImpl implements TicketComponent
     private boolean ticketsExpire;
 
     private Duration validDuration;
-
+   
     private boolean oneOff;
 
     private String guid;
 
     private SimpleCache<String, Ticket> ticketsCache; // Can't use Ticket as it's private
 
-    private ExpiryMode expiryMode = ExpiryMode.AFTER_FIXED_TIME;
+    private ExpiryMode expiryMode = ExpiryMode.AFTER_INACTIVITY;
+    
+    private boolean useSingleTicketPerUser = true;
 
     /**
      * IOC constructor
@@ -76,21 +78,71 @@ public class InMemoryTicketComponentImpl implements TicketComponent
     {
         this.ticketsCache = ticketsCache;
     }
+    
+    /**
+     * @param singleTicketPerUser the singleTicketPerUser to set
+     */
+    public void setUseSingleTicketPerUser(boolean useSingleTicketPerUser)
+    {
+        this.useSingleTicketPerUser = useSingleTicketPerUser;
+    }
+
+    /**
+     * @return the useSingleTicketPerUser
+     */
+    public boolean getUseSingleTicketPerUser()
+    {
+        return useSingleTicketPerUser;
+    }
 
     public String getNewTicket(String userName) throws AuthenticationException
     {
-        Date expiryDate = null;
-        if (ticketsExpire)
+        Ticket ticket = null;
+        if(useSingleTicketPerUser)
         {
-            expiryDate = Duration.add(new Date(), validDuration);
+             ticket = findNonExpiredUserTicket(userName);
         }
-        Ticket ticket = new Ticket(ticketsExpire ? expiryMode : ExpiryMode.DO_NOT_EXPIRE, expiryDate, userName, validDuration);
-        ticketsCache.put(ticket.getTicketId(), ticket);
+        
+        if(ticket == null)
+        {
+            Date expiryDate = null;
+            if (ticketsExpire)
+            {
+                expiryDate = Duration.add(new Date(), validDuration);
+            }
+            ticket = new Ticket(ticketsExpire ? expiryMode : ExpiryMode.DO_NOT_EXPIRE, expiryDate, userName, validDuration);
+            ticketsCache.put(ticket.getTicketId(), ticket);
+        }
+      
         String ticketString = GRANTED_AUTHORITY_TICKET_PREFIX + ticket.getTicketId();
         currentTicket.set(ticketString);
         return ticketString;
     }
 
+    public Ticket findNonExpiredUserTicket(String userName)
+    {
+        for (String key : ticketsCache.getKeys())
+        {
+            Ticket ticket = ticketsCache.get(key);
+            if (ticket != null)
+            {
+                if(ticket.getUserName().equals(userName))
+                {
+                    Ticket newTicket = ticket.getNewEntry();
+                    if(newTicket != null)
+                    {
+                        if (newTicket != ticket)
+                        {
+                            ticketsCache.put(key, newTicket);
+                        }
+                        return ticket;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
     public String validateTicket(String ticketString) throws AuthenticationException
     {
         String ticketKey = getTicketKey(ticketString);
@@ -104,8 +156,6 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         {
             throw new TicketExpiredException("Ticket expired for " + ticketString);
         }
-        // TODO: Recheck the user details here
-        // TODO: Strengthen ticket as GUID is predicatble
         if (oneOff)
         {
             ticketsCache.remove(ticketKey);
@@ -163,13 +213,14 @@ public class InMemoryTicketComponentImpl implements TicketComponent
      */
     public Set<String> getUsersWithTickets(boolean nonExpiredOnly)
     {
+        Date now = new Date();
         Set<String> users = new HashSet<String>();
         for (String key : ticketsCache.getKeys())
         {
             Ticket ticket = ticketsCache.get(key);
             if (ticket != null)
             {
-                if ((nonExpiredOnly == false) || (ticket.getNewEntry() != null))
+                if ((nonExpiredOnly == false) || !ticket.hasExpired(now))
                 {
                     users.add(ticket.getUserName());
                 }
@@ -184,13 +235,14 @@ public class InMemoryTicketComponentImpl implements TicketComponent
      */
     public int countTickets(boolean nonExpiredOnly)
     {
+        Date now = new Date();
         if (nonExpiredOnly)
         {
             int count = 0;
             for (String key : ticketsCache.getKeys())
             {
                 Ticket ticket = ticketsCache.get(key);
-                if (ticket != null && ticket.getNewEntry() != null)
+                if (ticket != null && !ticket.hasExpired(now))
                 {
                     count++;
                 }
@@ -209,6 +261,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
      */
     public int invalidateTickets(boolean expiredOnly)
     {
+        Date now = new Date();
         int count = 0;
         if (!expiredOnly)
         {
@@ -221,7 +274,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             for (String key : ticketsCache.getKeys())
             {
                 Ticket ticket = ticketsCache.get(key);
-                if (ticket == null || ticket.getNewEntry() == null)
+                if (ticket == null || ticket.hasExpired(now))
                 {
                     count++;
                     toRemove.add(key);
@@ -306,6 +359,9 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         private final String ticketId;
 
         private final Duration validDuration;
+        
+        private final Duration testDuration;
+
 
         Ticket(ExpiryMode expires, Date expiryDate, String userName, Duration validDuration)
         {
@@ -313,6 +369,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             this.expiryDate = expiryDate;
             this.userName = userName;
             this.validDuration = validDuration;
+            this.testDuration = validDuration.divide(2);
             final String guid = UUIDGenerator.getInstance().generateRandomBasedUUID().toString();
 
             String encode = (expires.toString()) + ((expiryDate == null) ? new Date().toString() : expiryDate.toString()) + userName + guid;
@@ -355,7 +412,14 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             this.expiryDate = expiryDate;
             this.userName = userName;
             this.validDuration = validDuration;
+            Duration tenPercent = validDuration.divide(10);
+            this.testDuration = validDuration.subtract(tenPercent);
             this.ticketId = ticketId;
+        }
+        
+        boolean hasExpired(Date now)
+        {
+            return ((expiryDate != null) && (expiryDate.compareTo(now) < 0));
         }
 
         Ticket getNewEntry()
@@ -363,7 +427,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
             switch (expires)
             {
             case AFTER_FIXED_TIME:
-                if ((expiryDate != null) && (expiryDate.compareTo(new Date()) < 0))
+                if (hasExpired(new Date()))
                 {
                     return null;
                 }
@@ -374,13 +438,21 @@ public class InMemoryTicketComponentImpl implements TicketComponent
 
             case AFTER_INACTIVITY:
                 Date now = new Date();
-                if ((expiryDate != null) && (expiryDate.compareTo(now) < 0))
+                if (hasExpired(now))
                 {
                     return null;
                 }
                 else
                 {
-                    return new Ticket(expires, Duration.add(now, validDuration), userName, validDuration, ticketId);
+                    Duration remaining = new Duration(now, expiryDate);
+                    if(remaining.compareTo(testDuration) < 0)
+                    {
+                        return new Ticket(expires, Duration.add(now, validDuration), userName, validDuration, ticketId);
+                    }
+                    else
+                    {
+                        return this;
+                    }
                 }
 
             case DO_NOT_EXPIRE:

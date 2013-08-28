@@ -133,4 +133,10 @@ public interface TicketComponent
      *
      */
     public void clearCurrentTicket();
+    
+    /**
+     * Does this ticket component support a single ticket per user or one ticket for each time they login? 
+     * @return
+     */
+    public boolean getUseSingleTicketPerUser();
 }
