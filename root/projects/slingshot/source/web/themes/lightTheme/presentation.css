@@ -955,12 +955,6 @@ body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
    border-bottom: 1px solid #ccc !important;
 }
 
-.webview .title a,
-.wiki .title a
-{
-   color: #fff;
-}
-
 /* YUI Menu */
 
 body.yui-skin-lightTheme .yuimenu .bd
