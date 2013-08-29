@@ -1080,18 +1080,35 @@
           basedir="${dir.project.slingshot.src.java}" />
 
       <!-- -->
-      <!-- Test resources jars -->
+      <!-- Test resources + test classes jars -->
       <!-- -->
-      <zip destfile="${dir.continuous.assemble.config}/alfresco-core-test-resources.zip"
-          basedir="${dir.project.core.src}/${dir.name.test.resources}" />
-      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-test-resources.zip"
-          basedir="${dir.project.repository.src}/${dir.name.test.resources}" />
-      <zip destfile="${dir.continuous.assemble.config}/alfresco-remote-api-test-resources.zip"
-          basedir="${dir.project.remoteapi.src}/${dir.name.test.resources}" />
-      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip"
-          basedir="${dir.project.webframeworkcommons.src}/${dir.name.test.resources}" />
-      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-client-test-resources.zip"
-          basedir="${dir.project.webclient.src}/${dir.name.test.resources}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-core-test-resources.zip">
+          <fileset dir="${dir.project.core.src}/${dir.name.test.resources}" />
+          <fileset dir="${dir.project.core.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-test-resources.zip">
+          <fileset dir="${dir.project.datamodel.src}/${dir.name.test.resources}" />
+          <fileset dir="${dir.project.datamodel.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-deployment-test-resources.zip">
+          <fileset dir="${dir.project.deployment.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-repository-test-resources.zip">
+          <fileset dir="${dir.project.repository.src}/${dir.name.test.resources}" />
+          <fileset dir="${dir.project.repository.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-remote-api-test-resources.zip">
+          <fileset dir="${dir.project.remoteapi.src}/${dir.name.test.resources}" />
+          <fileset dir="${dir.project.remoteapi.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip">
+          <fileset dir="${dir.project.webframeworkcommons.src}/${dir.name.test.resources}" />
+          <fileset dir="${dir.project.webframeworkcommons.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-web-client-test-resources.zip">
+          <fileset dir="${dir.project.webclient.src}/${dir.name.test.resources}" />
+          <fileset dir="${dir.project.webclient.classes.test}" />
+      </zip>
 
       <!-- Taglib -->
       <mkdir dir="${dir.continuous.assemble.sdk}/doc/taglib" />

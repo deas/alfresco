@@ -196,7 +196,7 @@
         <!-- Core -->
         <mvndeploypom file="${dir.project.core.dist}/${file.name.jar.core}"
             artifactId="alfresco-core"
-            classifiers="sources,javadoc,config,test-resources"
+            classifiers="sources,javadoc,config,tests"
             types="jar,jar,jar,jar"
             files="${dir.continuous.assemble.config}/alfresco-core-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-core-doc.zip,${dir.continuous.assemble.config}/alfresco-core-config.zip,${dir.continuous.assemble.config}/alfresco-core-test-resources.zip"
             pomFile="${dir.project.core}/pom.xml" />
@@ -204,17 +204,17 @@
         <!-- Datamodel -->
         <mvndeploypom file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"
             artifactId="alfresco-data-model"
-            classifiers="sources,javadoc,config"
-            types="jar,jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-datamodel-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip,${dir.continuous.assemble.config}/alfresco-datamodel-config.zip"
+            classifiers="sources,javadoc,config,tests"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-datamodel-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip,${dir.continuous.assemble.config}/alfresco-datamodel-config.zip,${dir.continuous.assemble.config}/alfresco-datamodel-test-resources.jar"
             pomFile="${dir.project.datamodel}/pom.xml" />
 
         <!-- Deployment -->
         <mvndeploypom file="${dir.project.deployment.dist}/${file.name.jar.deployment}"
             artifactId="alfresco-deployment"
-            classifiers="sources,javadoc"
-            types="jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-deployment-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-deployment-doc.zip"
+            classifiers="sources,javadoc,tests"
+            types="jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-deployment-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-deployment-doc.zip,${dir.continuous.assemble.config}/alfresco-deployment-test-resources.zip"
             pomFile="${dir.project.deployment}/pom.xml" />
 
         <!-- JLAN Embed -->
@@ -233,15 +233,15 @@
         <!-- Remote API -->
         <mvndeploypom file="${dir.project.remoteapi.dist}/${file.name.jar.remoteapi}"
             artifactId="alfresco-remote-api"
-            classifiers="sources,javadoc,config,test-resources,tests"
-            types="jar,jar,jar,jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-remote-api-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-remote-api-doc.zip,${dir.continuous.assemble.config}/alfresco-remote-api-config.zip,${dir.continuous.assemble.config}/alfresco-remote-api-test-resources.zip,${dir.project.remoteapi.dist}/${file.name.jar.remoteapi.test}"
+            classifiers="sources,javadoc,config,tests"
+            types="jar,jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-remote-api-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-remote-api-doc.zip,${dir.continuous.assemble.config}/alfresco-remote-api-config.zip,${dir.continuous.assemble.config}/alfresco-remote-api-test-resources.zip"
             pomFile="${dir.project.remoteapi}/pom.xml" />
 
         <!-- Repository -->
         <mvndeploypom file="${dir.project.repository.dist}/${file.name.jar.repository}"
             artifactId="alfresco-repository"
-            classifiers="sources,javadoc,config,test-resources"
+            classifiers="sources,javadoc,config,tests"
             types="jar,jar,jar,jar"
             files="${dir.continuous.assemble.config}/alfresco-repository-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-repository-doc.zip,${dir.continuous.assemble.config}/alfresco-repository-config.zip,${dir.continuous.assemble.config}/alfresco-repository-test-resources.zip"
             pomFile="${dir.project.repository}/pom.xml" />
@@ -254,15 +254,15 @@
         <!-- Web Client -->
         <mvndeploypom file="${dir.project.webclient.dist}/${file.name.jar.webclient}"
             artifactId="alfresco-web-client"
-            classifiers="sources,javadoc"
-            types="jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-web-client-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip"
+            classifiers="sources,javadoc,tests"
+            types="jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-web-client-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip,${dir.continuous.assemble.config}/alfresco-web-client-test-resources.zip"
             pomFile="${dir.project.webclient}/pom.xml" />
 
         <!-- Web Framework Commons -->
         <mvndeploypom file="${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"
             artifactId="alfresco-web-framework-commons"
-            classifiers="sources,javadoc,config,test-resources"
+            classifiers="sources,javadoc,config,tests"
             types="jar,jar,jar,jar"
             files="${dir.continuous.assemble.config}/alfresco-web-framework-commons-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip"
             pomFile="${dir.project.webframeworkcommons}/pom.xml" />
@@ -270,7 +270,7 @@
             
     <target name="maven-deploy-webclient-webapp" description="Deploys Alfresco Explorer related WAR to a Maven repository">
         <mvndeploypom file="${dir.project.webclient.dist}/${file.name.war.webclient}"
-            classifiers="sources,javadoc,classes,config,test-resources"
+            classifiers="sources,javadoc,classes,config,tests"
             types="jar,jar,jar,jar,jar"
             files="${dir.continuous.assemble.config}/alfresco-web-client-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-client-doc.zip,${dir.project.webclient.dist}/${file.name.jar.webclient},${dir.continuous.assemble.config}/alfresco-web-client-config.zip,${dir.continuous.assemble.config}/alfresco-web-client-test-resources.zip"
             artifactId="alfresco"
