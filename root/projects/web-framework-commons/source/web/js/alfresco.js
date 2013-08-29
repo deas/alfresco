@@ -5045,7 +5045,8 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                      eAutoComplete = document.createElement("div"),
                      eSave = new Element(document.createElement("a"),
                            {
-                              href: "#",
+                              // ALF-19091 fixing.
+                              href: window.location.hash,
                               innerHTML: Alfresco.util.message("button.save")
                            }),
                      eCancel = new Element(document.createElement("a"),
