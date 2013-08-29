@@ -209,7 +209,20 @@
                text: this.msg("message.success", successCount)
             });
 
-            YAHOO.Bubbling.fire("metadataRefresh");
+            // ALF-18501 - Redirect on successful moves of documents within the details view.
+            if (this.options.mode == "move" &&
+                window.location.pathname.endsWith("document-details"))
+            {
+               // By reloading the page, the node-header will detect that the node is located in a different
+               // site and cause a redirect. The down-side to this is that it causes two page loads but this
+               // is most likely quite an edge case and it does ensure that we're re-using a consistent code path
+               window.location.reload();
+            }
+            else
+            {
+               YAHOO.Bubbling.fire("metadataRefresh");
+            }
+            
          };
 
          // Failure callback function
