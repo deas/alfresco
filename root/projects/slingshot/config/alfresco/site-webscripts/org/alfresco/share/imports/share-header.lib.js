@@ -1204,12 +1204,14 @@ function generateUserItems() {
          id: "HEADER_USER_MENU_POPUP",
          name: "alfresco/header/AlfMenuBarPopup",
          config: {
+            id: "HEADER_USER_MENU_POPUP",
             label: user.fullName,
             widgets: [
                {
                   id: "HEADER_USER_MENU",
                   name: "alfresco/menus/AlfMenuGroup",
                   config: {
+                     id: "HEADER_USER_MENU",
                      widgets: [
                          getUserStatusWidget(),
                          {
