@@ -296,6 +296,9 @@
           authDetails: response.json
          });
          this.callAuthCallback();
+
+         //ALF-19795 fix. If login is valid then hide the Cloud login form.
+         this.widgets.panel.destroy();
       } else if (response.json.loginValid === false && response.json.remoteSystemAvailable === true)
       {
          // If the server was available and the log in is false - the credentials are wrong:
