@@ -78,7 +78,7 @@
 					<configuration>
 						<!-- This allows this to an empty overlay -->
 						<failOnMissingWebXml>false</failOnMissingWebXml>
-						<archiveClasses>true</archiveClasses>
+						<archiveClasses>false</archiveClasses>
 						<attachClasses>true</attachClasses>
 					</configuration>            
                 </plugin>
