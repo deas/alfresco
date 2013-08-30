@@ -27,6 +27,8 @@
         <solr.nossl.war.target.folder>${solr.war.target.folder}-nossl</solr.nossl.war.target.folder>
         <!-- By default we selected the SSL enabled default Solr packaging  -->
         <solr.war.exploded.folder>${solr.war.target.folder}</solr.war.exploded.folder>
+        <!-- By default we selected the SSL enabled default Solr config  -->
+        <solr.config.folder>${solr.instance.target.folder}</solr.config.folder>
     </properties>
 
     <dependencies>
@@ -179,6 +181,8 @@
             <properties>
                 <!-- We configure the WAR exploded to point to the customized no-ssl folder -->
                 <solr.war.exploded.folder>${solr.nossl.war.target.folder}</solr.war.exploded.folder>
+                <!-- We configure the solr config to point to the customized no-ssl folder -->
+                <solr.config.folder>${solr.nossl.instance.target.folder}</solr.config.folder>
             </properties>
             <build>
                 <plugins>
@@ -213,10 +217,6 @@
                                             <directory>${solr.war.target.folder}</directory>
                                         </resource>
                                     </resources>
-                                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                                    <delimiters>
-                                        <delimiter>@@</delimiter>
-                                    </delimiters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -234,7 +234,7 @@
 								</goals>
 								<configuration>
 									<ignoreErrors>true</ignoreErrors>
-									<file>${solr.nossl.instance.target.folder}/archive-SpacesStore/conf/solrcore.properties</file>
+									<file>${solr.config.folder}/archive-SpacesStore/conf/solrcore.properties</file>
 									<replacements>
 										<replacement>
 											<token><![CDATA[alfresco.secureComms=https]]></token>
@@ -251,7 +251,7 @@
 								</goals>
 								<configuration>
 									<ignoreErrors>true</ignoreErrors>
-									<file>${solr.nossl.instance.target.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
+									<file>${solr.config.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
 									<replacements>
 										<replacement>
 											<token><![CDATA[alfresco.secureComms=https]]></token>
@@ -263,33 +263,18 @@
 						</executions>
 					</plugin>
                     <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package-config-nossl-jar</id>
-                                <configuration>
-                                    <classesDirectory>${solr.nossl.instance.target.folder}</classesDirectory>
-                                    <classifier>config-nossl</classifier>
-                                </configuration>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-	                <plugin>
 	                    <artifactId>maven-war-plugin</artifactId>
 	                    <executions>
+                            <!-- This allows overlays to be prepared on the FS for minification and 
+                                faster run -->
                             <execution>
-                                <id>package-nossl-war</id>
+                                <id>prepare-exploded-nossl-war</id>
                                 <goals>
-                                    <goal>war</goal>
+                                    <goal>exploded</goal>
                                 </goals>
-                                <phase>package</phase>
+                                <phase>prepare-package</phase>
                                 <configuration>
                                     <webappDirectory>${solr.nossl.war.target.folder}</webappDirectory>
-                                    <classifier>nossl</classifier>
                                     <webResources>
                                         <!-- To include customized web.xml to disable comms -->
                                         <resource>
@@ -300,8 +285,35 @@
                                     </webResources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>package-nossl-war</id>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <webappDirectory>${solr.nossl.war.target.folder}</webappDirectory>
+                                    <classifier>nossl</classifier>
+                                </configuration>
+                            </execution>
                         </executions>
-	                </plugin>                
+	                </plugin> 
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package-config-nossl-jar</id>
+                                <configuration>
+                                    <classesDirectory>${solr.config.folder}</classesDirectory>
+                                    <classifier>config-nossl</classifier>
+                                </configuration>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>               
                 </plugins>
             </build>
         </profile>
@@ -309,7 +321,7 @@
 		<profile>
 			<id>run</id>
             <properties>
-                <ALFRESCO_SOLR_DIR>${solr.instance.target.folder}</ALFRESCO_SOLR_DIR>
+                <ALFRESCO_SOLR_DIR>${solr.config.folder}</ALFRESCO_SOLR_DIR>
             </properties>
 			<build>
 				<plugins>
@@ -365,6 +377,7 @@
                                     <goal>run-war-only</goal>
                                 </goals>
                                 <configuration>
+                                    <contextFile>${solr.war.exploded.folder}/META-INF/context.xml</contextFile>
                                     <warDirectory>${solr.war.exploded.folder}</warDirectory>
                                 </configuration>
                             </execution>
