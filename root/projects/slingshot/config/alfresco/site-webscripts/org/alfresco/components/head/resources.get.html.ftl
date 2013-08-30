@@ -108,6 +108,12 @@
             "${c.value?js_string}"<#if c_has_next>,</#if>
          </#list>]
       };
+      
+      Alfresco.constants.HIDDEN_PICKER_VIEW_MODES = [
+         <#list config.scoped["DocumentLibrary"]["hidden-picker-view-modes"].children as viewMode>
+            <#if viewMode.name?js_string == "mode">"${viewMode.value?js_string}"<#if viewMode_has_next>,</#if></#if>
+         </#list>
+      ];
       <#if PORTLET>
       document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=";
       </#if>

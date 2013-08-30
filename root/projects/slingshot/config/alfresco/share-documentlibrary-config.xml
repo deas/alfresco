@@ -457,6 +457,13 @@
          </view-renderers>
       </doclist>
 
+      <!-- This defines a set of modes for pickers (e.g. the copy/move to picker, etc) that should be hidden. 
+           The mode names correlate to values in the Alfresco.module.DoclibGlobalFolder JavaScript widget.
+           By default no view modes will be hidden, each view mode should be added as the value of it's own
+           <mode> element.
+        -->
+      <hidden-picker-view-modes></hidden-picker-view-modes>
+       
       <tree>
          <!--
             Whether the folder Tree component should enumerate child folders or not.

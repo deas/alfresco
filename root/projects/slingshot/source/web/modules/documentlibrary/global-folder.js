@@ -713,9 +713,16 @@
          }
 
          // Dialog view mode
-         var allowedViewModes = Alfresco.util.arrayToObject(this.options.allowedViewModes),
-            modeButtons = this.widgets.modeButtons.getButtons(),
-            modeButton, viewMode;
+         var allowedViewModes = Alfresco.util.arrayToObject(this.options.allowedViewModes);
+         
+         // Remove any views that should be hidden...
+         for (var i = 0; i < Alfresco.constants.HIDDEN_PICKER_VIEW_MODES.length; i++)
+         {
+            delete allowedViewModes[DLGF[Alfresco.constants.HIDDEN_PICKER_VIEW_MODES[i]]];
+         }
+         
+         var modeButtons = this.widgets.modeButtons.getButtons(),
+             modeButton, viewMode;
 
          if (!(this.options.viewMode in allowedViewModes))
          {
