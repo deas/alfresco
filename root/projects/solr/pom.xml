@@ -160,7 +160,7 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <phase>prepare-package</phase>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
