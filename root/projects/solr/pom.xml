@@ -20,9 +20,8 @@
         <m2eclipse.wtp.contextRoot>${maven.tomcat.path}</m2eclipse.wtp.contextRoot>
         <maven.tomcat.port>${tomcat.default.solr.port}</maven.tomcat.port>
         <solr.instance.source.folder>source/solr/instance</solr.instance.source.folder>
+        <!-- This gets filtered in the solr-tomcat-context.xml and in solrcore.properties when running embedded -->
         <solr.instance.target.folder>${project.build.directory}/solr-instance</solr.instance.target.folder>
-        <!-- This gets filtered in the solr-tomcat-context.xml and in solrcore.properties -->
-        <ALFRESCO_SOLR_DIR>${solr.instance.target.folder}</ALFRESCO_SOLR_DIR>
     </properties>
 
     <dependencies>
@@ -101,15 +100,6 @@
 				<configuration>
 					<attachClasses>true</attachClasses>
 					<archiveClasses>true</archiveClasses>
-					<webResources>
-						<resource>
-							<directory>${solr.instance.target.folder}</directory>
-							<includes>
-								<include>context.xml</include>
-							</includes>
-							<targetPath>META-INF</targetPath>
-						</resource>
-					</webResources>
 				</configuration>
                 <!-- This allows overlays to be prepared on the FS for minification and faster run -->
                 <executions>
@@ -158,6 +148,22 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-config-jar</id>
+                        <configuration>
+                            <classesDirectory>${solr.instance.target.folder}</classesDirectory>
+                            <classifier>config</classifier>
+                        </configuration>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
@@ -210,10 +216,26 @@
 					</plugin>
 	                <plugin>
 	                    <artifactId>maven-war-plugin</artifactId>
-	                    <configuration>
-	                    	<!-- To add customized web.xml -->
-	                        <warSourceDirectory>source/test-web</warSourceDirectory>
-	                    </configuration>
+	                    <executions>
+                            <execution>
+                                <id>package-nossl-war</id>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <classifier>nossl</classifier>
+                                    <webResources>
+                                        <!-- To include customized web.xml to disable comms -->
+                                        <resource>
+                                            <directory>source/test-web/WEB-INF</directory>
+                                            <filtering>true</filtering>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
+                        </executions>
 	                </plugin>                
                 </plugins>
             </build>
@@ -221,8 +243,39 @@
 	    <!-- Profile to run the webapp on HTTP -->
 		<profile>
 			<id>run</id>
+            <properties>
+                <ALFRESCO_SOLR_DIR>${solr.instance.target.folder}</ALFRESCO_SOLR_DIR>
+            </properties>
 			<build>
 				<plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-context-config</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/${project.build.finalName}/META-INF</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>source/test-web/META-INF</directory>
+                                            <includes>
+                                                <include>context.xml</include>
+                                            </includes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                                    <delimiters>
+                                        <delimiter>@@</delimiter>
+                                    </delimiters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<configuration>
