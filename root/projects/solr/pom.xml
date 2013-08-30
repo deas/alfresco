@@ -22,6 +22,11 @@
         <solr.instance.source.folder>source/solr/instance</solr.instance.source.folder>
         <!-- This gets filtered in the solr-tomcat-context.xml and in solrcore.properties when running embedded -->
         <solr.instance.target.folder>${project.build.directory}/solr-instance</solr.instance.target.folder>
+        <solr.nossl.instance.target.folder>${solr.instance.target.folder}-nossl</solr.nossl.instance.target.folder>
+        <solr.war.target.folder>${project.build.directory}/${project.build.finalName}</solr.war.target.folder>
+        <solr.nossl.war.target.folder>${solr.war.target.folder}-nossl</solr.nossl.war.target.folder>
+        <!-- By default we selected the SSL enabled default Solr packaging  -->
+        <solr.war.exploded.folder>${solr.war.target.folder}</solr.war.exploded.folder>
     </properties>
 
     <dependencies>
@@ -171,9 +176,52 @@
         <!-- Profile to disablesecurecomms  -->
         <profile>
             <id>solr-http</id>
+            <properties>
+                <!-- We configure the WAR exploded to point to the customized no-ssl folder -->
+                <solr.war.exploded.folder>${solr.nossl.war.target.folder}</solr.war.exploded.folder>
+            </properties>
             <build>
                 <plugins>
-                	<!-- Replaces web.xml where applicable, commenting out the security-constraints -->
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-instance-nossl</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.nossl.instance.target.folder}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${solr.instance.target.folder}</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-war-nossl</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.nossl.war.target.folder}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${solr.war.target.folder}</directory>
+                                        </resource>
+                                    </resources>
+                                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                                    <delimiters>
+                                        <delimiter>@@</delimiter>
+                                    </delimiters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>               	
+                    <!-- Replaces web.xml where applicable, commenting out the security-constraints -->
 					<plugin>
 						<groupId>com.google.code.maven-replacer-plugin</groupId>
 						<artifactId>replacer</artifactId>
@@ -186,7 +234,7 @@
 								</goals>
 								<configuration>
 									<ignoreErrors>true</ignoreErrors>
-									<file>${solr.instance.target.folder}/archive-SpacesStore/conf/solrcore.properties</file>
+									<file>${solr.nossl.instance.target.folder}/archive-SpacesStore/conf/solrcore.properties</file>
 									<replacements>
 										<replacement>
 											<token><![CDATA[alfresco.secureComms=https]]></token>
@@ -203,7 +251,7 @@
 								</goals>
 								<configuration>
 									<ignoreErrors>true</ignoreErrors>
-									<file>${solr.instance.target.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
+									<file>${solr.nossl.instance.target.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
 									<replacements>
 										<replacement>
 											<token><![CDATA[alfresco.secureComms=https]]></token>
@@ -214,6 +262,22 @@
 							</execution>
 						</executions>
 					</plugin>
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package-config-nossl-jar</id>
+                                <configuration>
+                                    <classesDirectory>${solr.nossl.instance.target.folder}</classesDirectory>
+                                    <classifier>config-nossl</classifier>
+                                </configuration>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
 	                <plugin>
 	                    <artifactId>maven-war-plugin</artifactId>
 	                    <executions>
@@ -224,6 +288,7 @@
                                 </goals>
                                 <phase>package</phase>
                                 <configuration>
+                                    <webappDirectory>${solr.nossl.war.target.folder}</webappDirectory>
                                     <classifier>nossl</classifier>
                                     <webResources>
                                         <!-- To include customized web.xml to disable comms -->
@@ -256,9 +321,9 @@
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
-                                <phase>generate-resources</phase>
+                                <phase>prepare-package</phase>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/${project.build.finalName}/META-INF</outputDirectory>
+                                    <outputDirectory>${solr.war.exploded.folder}/META-INF</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>source/test-web/META-INF</directory>
@@ -299,6 +364,9 @@
                                 <goals>
                                     <goal>run-war-only</goal>
                                 </goals>
+                                <configuration>
+                                    <warDirectory>${solr.war.exploded.folder}</warDirectory>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
