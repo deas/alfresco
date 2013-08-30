@@ -72,7 +72,7 @@ Separate Tomcat Instances Configuration
       <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
                maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
                secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
-               clientAuth="false" sslProtocol="TLS" />  
+               clientAuth="want" allowUnsafeLegacyRenegotiation="true" maxHttpHeaderSize="32768" sslProtocol="TLS" />  
 
    Add dir.keystore=${dir.root}/keystore to your alfresco-global.properties file.
 
@@ -88,7 +88,7 @@ Separate Tomcat Instances Configuration
       <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
                maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
                secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
-               clientAuth="false" sslProtocol="TLS" /> 
+               clientAuth="want" allowUnsafeLegacyRenegotiation="true" maxHttpHeaderSize="32768" sslProtocol="TLS" /> 
 
 Single Tomcat Instance Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,8 +102,8 @@ Configure an SSL connector by adding this to the Tomcat server.xml file where th
   
     <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
                maxThreads="150" scheme="https" keystoreFile="../../data/keystore/ssl.keystore" keystorePass="kT9X6oe68t" keystoreType="JCEKS"
- secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
-               clientAuth="false" sslProtocol="TLS" />  
+ 	       secure="true" connectionTimeout="240000" truststoreFile="../../data/keystore/ssl.truststore" truststorePass="kT9X6oe68t" truststoreType="JCEKS"
+               clientAuth="want" allowUnsafeLegacyRenegotiation="true" maxHttpHeaderSize="32768" sslProtocol="TLS" />  
 
 Add dir.keystore=${dir.root}/keystore to your alfresco-global.properties file.
 
