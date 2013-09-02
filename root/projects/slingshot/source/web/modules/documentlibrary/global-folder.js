@@ -51,6 +51,12 @@
       if (htmlId != "null")
       {
          this.eventGroup = htmlId;
+         try
+         {
+            YAHOO.Bubbling.unsubscribe("siteChanged", null, this);
+            YAHOO.Bubbling.unsubscribe("containerChanged", null, this);
+         }
+         catch(err){/*ignore, because error is thrown when event isn't registred*/};
          YAHOO.Bubbling.on("siteChanged", this.onSiteChanged, this);
          YAHOO.Bubbling.on("containerChanged", this.onContainerChanged, this);
       }
