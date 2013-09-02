@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -259,6 +259,11 @@
          {
             text: this.msg("message.revertComplete")
          });
+
+         // MNT-9235: Firing this event, because 'Alfresco.WebPreview' module
+         // is isolated and this action modifies content of current node
+         // without reloading of the page (ALF-6621)...
+         YAHOO.Bubbling.fire("previewChangedEvent");
 
          // Fire metadatarefresh so components may refresh themselves
          YAHOO.Bubbling.fire("metadataRefresh", {});

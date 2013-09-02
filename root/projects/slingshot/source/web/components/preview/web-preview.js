@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -57,6 +57,12 @@
       // Note "uploader" is required so we get the YAHOO.deconcept.SWFObject
       Alfresco.WebPreview.superclass.constructor.call(this, "Alfresco.WebPreview", containerId, ["button", "container", "uploader"]);
       this.plugin = null;
+
+      // MNT-9235: Listening on 'previewChangedEvent', because some actions
+      // (those are updating current document) don't reload the page.
+      // Modification dates of the thumbnails are never updated in this case... 
+      // (ALF-6621)
+      YAHOO.Bubbling.on("previewChangedEvent", this.onPreviewChanged, this);
 
       /* Decoupled event listeners are added in setOptions */
       return this;
@@ -141,7 +147,17 @@
           * @type string
           * @default "alfresco"
           */
-         proxy: "alfresco"
+         proxy: "alfresco",
+
+         /**
+          * MNT-9235: This flag identifies whether content of current node modified.
+          * That means that the cached thumbnail is no more valid and it should be updated
+          *
+          * @property avoidCachedThumbnail
+          * @type boolean
+          * @default false
+          */
+         avoidCachedThumbnail: false
       },
 
       /**
@@ -327,6 +343,20 @@
       },
 
       /**
+       * MNT-9235: Handles all the 'onPreviewChangedEvent' events
+       * 
+       * @method onPreviewChanged
+       * @private
+       */
+      onPreviewChanged: function WebPreview_onPreviewChanged(event)
+      {
+         this.options.avoidCachedThumbnail = true;
+
+         YAHOO.util.Event.preventDefault(event);
+         YAHOO.util.Event.stopPropagation(event)
+      },
+
+      /**
        * Checks if the conditions are fulfilled.
        *
        * @method conditionsMatch
@@ -386,7 +416,20 @@
          {
             if (this.options.thumbnailModification[i].indexOf(thumbnail) != -1)
             {
-               noCache = "lastModified=" + encodeURIComponent(this.options.thumbnailModification[i]) + "&" + noCache;
+               var timestampPostfix = noCache;
+
+               noCache = "lastModified=" + encodeURIComponent(this.options.thumbnailModification[i]);
+
+               // MNT-9235: Avoiding loading content of thumbnail from the cache
+               // if current node is updated without reloading of the page
+               if (this.options.avoidCachedThumbnail)
+               {
+                  noCache += "&" + timestampPostfix;
+
+                  // Resetting to 'false' since thumbnail will be eventually updated...
+                  this.options.avoidCachedThumbnail = false;
+               }
+
                break;
             }
          }
