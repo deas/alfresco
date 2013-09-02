@@ -206,7 +206,7 @@
             artifactId="alfresco-data-model"
             classifiers="sources,javadoc,config,tests"
             types="jar,jar,jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-datamodel-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip,${dir.continuous.assemble.config}/alfresco-datamodel-config.zip,${dir.continuous.assemble.config}/alfresco-datamodel-test-resources.jar"
+            files="${dir.continuous.assemble.config}/alfresco-datamodel-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip,${dir.continuous.assemble.config}/alfresco-datamodel-config.zip,${dir.continuous.assemble.config}/alfresco-datamodel-test-resources.zip"
             pomFile="${dir.project.datamodel}/pom.xml" />
 
         <!-- Deployment -->
