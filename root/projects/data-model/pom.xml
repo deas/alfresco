@@ -235,6 +235,12 @@
             <artifactId>antlr</artifactId>
             <version>${dependency.antlr.version}</version>
         </dependency>
+        <!-- Old version of AntLR is still required as a dependency of Hibernate -->
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.chemistry.opencmis</groupId>
             <artifactId>chemistry-opencmis-client-impl</artifactId>
