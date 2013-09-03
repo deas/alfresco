@@ -1448,6 +1448,7 @@ function getTitleBarModel() {
             id: "HEADER_CUSTOMIZE_USER_DASHBOARD",
             label: "",
             title: msg.get("customize_dashboard.label"),
+            iconAltText: msg.get("customize_dashboard.label"),
             iconClass: "alf-configure-icon",
             targetUrl: "customise-user-dashboard"
          }
@@ -1465,6 +1466,7 @@ function getTitleBarModel() {
             label: "",
             iconClass: "alf-configure-icon",
             iconAltText: msg.get("header.menu.siteConfig.altText"),
+            title: msg.get("header.menu.siteConfig.altText"),
             widgets: []
          }
       };
@@ -1503,6 +1505,7 @@ function getTitleBarModel() {
                   label: "",
                   iconClass: "alf-user-icon",
                   iconAltText: msg.get("header.menu.invite.altText"),
+                  title: msg.get("header.menu.invite.altText"),
                   targetUrl: "site/" + page.url.templateArgs.site + "/invite"
                }
             });
