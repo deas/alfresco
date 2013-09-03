@@ -832,6 +832,9 @@
       -->
       <root-node>alfresco://company/home</root-node>
 
+      <!-- Hide the Repository header link for non-Admin users -->
+      <visible>false</visible>
+      
       <tree>
          <!--
             Whether the folder Tree component should enumerate child folders or not.
