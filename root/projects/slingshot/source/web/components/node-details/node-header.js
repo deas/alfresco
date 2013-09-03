@@ -300,7 +300,9 @@
 
          var url = 'components/node-details/node-header?nodeRef={nodeRef}&rootPage={rootPage}' +
             '&rootLabelId={rootLabelId}&showFavourite={showFavourite}&showLikes={showLikes}' +
-            '&showComments={showComments}&showQuickShare={showQuickShare}&showDownload={showDownload}&showPath={showPath}&pagecontext={pagecontext}&libraryRoot={libraryRoot}' +
+            '&showComments={showComments}&showQuickShare={showQuickShare}&showDownload={showDownload}&showPath={showPath}' +
+            (this.options.pagecontext ? '&pagecontext={pagecontext}' :  '') + 
+            (this.options.libraryRoot ? '&libraryRoot={libraryRoot}' :  '') +
             (this.options.siteId ? '&site={siteId}' :  '');
 
          this.refresh(url);
