@@ -17,7 +17,7 @@
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
     <allowComponentSelection>1</allowComponentSelection>
     <leftImage>images/alfresco_left.png</leftImage>
-    <allowedLanguages>en fr es it de ja nl ru zh_CN no</allowedLanguages>
+    <allowedLanguages>en fr es it de ja nl ru zh_CN no pt_BR</allowedLanguages>
     <enableRollback>0</enableRollback>
 
     <platformOptionsList>
@@ -89,6 +89,11 @@
 	    <code>no</code> 
 	    <encoding>utf-8</encoding>
 	    <file>${build_project_directory}/lang/alf-nb_NO.po</file>
+	</language>
+	<language> 
+	    <code>pt_BR</code> 
+	    <encoding>utf-8</encoding>
+	    <file>${build_project_directory}/lang/alf-pt_BR.po</file>
 	</language>
     </customLanguageFileList>
 
