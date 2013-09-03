@@ -159,6 +159,7 @@
                 <junit showoutput="yes" printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="yes" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java">
                     <jvmarg value="-server"/>
                     <jvmarg value="-XX:MaxPermSize=256M"/>
+                    <jvmarg value="-D:alfresco.cluster.enabled=false"/>
                     <jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
                     <jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
                     <jvmarg value="-Dcom.sun.management.jmxremote"/>
@@ -190,6 +191,7 @@
                 <junit printsummary="yes" fork="yes" maxmemory="${mem.size.max}" haltonfailure="no" dir="@{projectdir}" jvm="${env.JAVA_HOME}/bin/java" failureproperty="tests.failed">
                     <jvmarg value="-server"/>
                     <jvmarg value="-XX:MaxPermSize=256M"/>
+                    <jvmarg value="-D:alfresco.cluster.enabled=false"/>
                     <jvmarg value="-Dcom.sun.management.jmxremote"/>
                     <jvmarg value="-Dsun.net.client.defaultConnectTimeout=2000"/>
                     <jvmarg value="-Dsun.net.client.defaultReadTimeout=2000"/>
