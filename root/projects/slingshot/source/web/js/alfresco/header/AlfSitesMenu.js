@@ -86,6 +86,49 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Indicates whether or not the "Recent Sites" group should be displayed or not.
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showRecentSites: true,
+      
+      /**
+       * Indicate whether or not to show the "Useful" group.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showUsefulGroup: true,
+      
+      /**
+       * Indicates whether or not to show the "Site Finder" menu item.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showSiteFinder: true,
+      
+      /**
+       * Indicates whether or not the "Create Site" menu item should be displayed or not.
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showCreateSite: true,
+      
+      /**
+       * Indicates whether or not to show the "Favourites" cascading menu item.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showFavourites: true,
+      
+      /**
        * This defines the default widgets to display in the menu - just a loading image.
        * 
        * @instance
@@ -225,7 +268,7 @@ define(["dojo/_base/declare",
        * @param {array} widgetsRecent An array of the recently visited site menu item widget configurations
        */
       addRecentGroup: function alf_header_AlfSitesMenu__addRecentGroup(widgetsRecent) {
-         if (this.popup)
+         if (this.popup && this.showRecentSites)
          {
             // Create the 'Recent' group widget...
             this.recentGroup = new AlfMenuGroup({
@@ -474,7 +517,7 @@ define(["dojo/_base/declare",
        */
       addUsefulGroup: function alf_header_AlfSitesMenu__addUsefulGroup(showAddFavourite, showRemoveFavourite) {
          this.alfLog("log", "Creating 'Useful' group");
-         if (this.popup)
+         if (this.popup && this.showUsefulGroup)
          {
             // Create the 'Useful' group widget...
             this.usefulGroup = new AlfMenuGroup({
@@ -482,83 +525,92 @@ define(["dojo/_base/declare",
             });
             
             // Create and add the 'Site Finder' and 'Create Site' menu items to it...
-            this.siteFinder = new AlfMenuItem({
-               id: this.id + "_SITE_FINDER",
-               label: this.siteFinderLabel,
-               iconClass: this.siteFinderIconClass,
-               targetUrl: "site-finder"
-            });
-            this.createSite = new AlfMenuItem({
-               id: this.id + "_CREATE_SITE",
-               label: this.createSiteLabel,
-               iconClass: this.createSiteIconClass,
-               publishTopic: "ALF_CREATE_SITE"
-            });
-
-            // Create a basic group for holding the favourites...
-            this.favouritesList = new AlfMenuGroup({
-               widgets: [{
-                  name: "alfresco/header/AlfMenuItem",
-                  config: {
-                     iconClass: "alf-loading-icon",
-                     label: this.message("loading.label")
-                  }
-               }]
-            });
-            
-            // Create the cascading menu item to popout the favourites list...
-            this.favoritesCascade = new AlfCascadingMenu({
-               id: this.id + "_FAVOURITES",
-               label: this.favouriteGroupLabel,
-               iconClass: this.favouriteGroupIconClass
-            });
-            
-            // Add the list into the cascading menu...
-            this.favoritesCascade.popup.addChild(this.favouritesList);
-
-            // Add the default menu items...
-            this.usefulGroup.addChild(this.siteFinder);
-            this.usefulGroup.addChild(this.createSite);
-            this.usefulGroup.addChild(this.favoritesCascade);
-            
-            // If the current page is associated with a site then add the add and remove favourite site options...
-            if (this.currentSite && this.currentSite != "" && this.currentUser && this.currentUser != "")
+            if (this.showSiteFinder)
             {
-               // Always create the Add and Remove favourite menu items, but only add them if requested
-               // This is done so that we can add and remove the menu items easily upon request...
-               this.addFavourite = new AlfMenuItem({
-                  id: this.id + "_ADD_FAVOURITE",
-                  label: this.addFavouriteLabel,
-                  iconClass: this.addFavouriteIconClass,
-                  publishTopic: "ALF_ADD_FAVOURITE_SITE",
-                  publishPayload: {
-                     site: this.currentSite,
-                     user: this.currentUser
-                  }
+               this.siteFinder = new AlfMenuItem({
+                  id: this.id + "_SITE_FINDER",
+                  label: this.siteFinderLabel,
+                  iconClass: this.siteFinderIconClass,
+                  targetUrl: "site-finder"
                });
-               this.removeFavourite = new AlfMenuItem({
-                  id: this.id + "_REMOVE_FAVOURITE",
-                  label: this.removeFavouriteLabel,
-                  iconClass: this.removeFavouriteIconClass,
-                  publishTopic: "ALF_REMOVE_FAVOURITE_SITE",
-                  publishPayload: {
-                     site: this.currentSite,
-                     user: this.currentUser
-                  }
+               this.usefulGroup.addChild(this.siteFinder);
+            }
+            if (this.showCreateSite)
+            {
+               this.createSite = new AlfMenuItem({
+                  id: this.id + "_CREATE_SITE",
+                  label: this.createSiteLabel,
+                  iconClass: this.createSiteIconClass,
+                  publishTopic: "ALF_CREATE_SITE"
                });
+               this.usefulGroup.addChild(this.createSite);
+            }
 
-               if (showAddFavourite)
-               {
-                  // Update the site and user information for the add favourite site config, create the menu
-                  // item and add it to the group...
-                 this.usefulGroup.addChild(this.addFavourite);
-               }
+            if (this.showFavourites)
+            {
+               // Create a basic group for holding the favourites...
+               this.favouritesList = new AlfMenuGroup({
+                  widgets: [{
+                     name: "alfresco/header/AlfMenuItem",
+                     config: {
+                        iconClass: "alf-loading-icon",
+                        label: this.message("loading.label")
+                     }
+                  }]
+               });
                
-               if (showRemoveFavourite)
+               // Create the cascading menu item to popout the favourites list...
+               this.favoritesCascade = new AlfCascadingMenu({
+                  id: this.id + "_FAVOURITES",
+                  label: this.favouriteGroupLabel,
+                  iconClass: this.favouriteGroupIconClass
+               });
+               
+               // Add the list into the cascading menu...
+               this.favoritesCascade.popup.addChild(this.favouritesList);
+
+               // Add the default menu items...
+               this.usefulGroup.addChild(this.favoritesCascade);
+               
+               // If the current page is associated with a site then add the add and remove favourite site options...
+               if (this.currentSite && this.currentSite != "" && this.currentUser && this.currentUser != "")
                {
-                  // Update the site and user information for the remove favourite site config, create the menu
-                  // item and add it to the group...
-                  this.usefulGroup.addChild(this.removeFavourite);
+                  // Always create the Add and Remove favourite menu items, but only add them if requested
+                  // This is done so that we can add and remove the menu items easily upon request...
+                  this.addFavourite = new AlfMenuItem({
+                     id: this.id + "_ADD_FAVOURITE",
+                     label: this.addFavouriteLabel,
+                     iconClass: this.addFavouriteIconClass,
+                     publishTopic: "ALF_ADD_FAVOURITE_SITE",
+                     publishPayload: {
+                        site: this.currentSite,
+                        user: this.currentUser
+                     }
+                  });
+                  this.removeFavourite = new AlfMenuItem({
+                     id: this.id + "_REMOVE_FAVOURITE",
+                     label: this.removeFavouriteLabel,
+                     iconClass: this.removeFavouriteIconClass,
+                     publishTopic: "ALF_REMOVE_FAVOURITE_SITE",
+                     publishPayload: {
+                        site: this.currentSite,
+                        user: this.currentUser
+                     }
+                  });
+
+                  if (showAddFavourite)
+                  {
+                     // Update the site and user information for the add favourite site config, create the menu
+                     // item and add it to the group...
+                    this.usefulGroup.addChild(this.addFavourite);
+                  }
+                  
+                  if (showRemoveFavourite)
+                  {
+                     // Update the site and user information for the remove favourite site config, create the menu
+                     // item and add it to the group...
+                     this.usefulGroup.addChild(this.removeFavourite);
+                  }
                }
             }
 
