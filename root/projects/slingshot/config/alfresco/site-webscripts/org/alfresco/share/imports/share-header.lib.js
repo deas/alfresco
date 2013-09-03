@@ -408,6 +408,7 @@ function getSiteNavigationWidgets() {
 
       // Construct an array of all the pages in the site...
       navigationWidgets.push({
+         id: "HEADER_SITE_DASHBOARD",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
             id: "HEADER_SITE_DASHBOARD",
@@ -420,6 +421,7 @@ function getSiteNavigationWidgets() {
       {
          var targetUrl = "site/" + page.url.templateArgs.site + "/" + pages[i].pageUrl;
          navigationWidgets.push({
+            id: "HEADER_SITE_" + pages[i].pageId.toUpperCase(),
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
                id: "HEADER_SITE_" + pages[i].pageId.toUpperCase(),
@@ -435,6 +437,7 @@ function getSiteNavigationWidgets() {
          });
       }
       navigationWidgets.push({
+         id: "HEADER_SITE_MEMBERS",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
             id: "HEADER_SITE_MEMBERS",
@@ -467,8 +470,10 @@ function getSiteNavigationWidgets() {
          // Move the appropriate number of items into the More menu...
          var forMoreMenu = navigationWidgets.splice(maxDisplayedSitePages -1, navigationWidgets.length - maxDisplayedSitePages + 1);
          navigationWidgets.push({
+            id: "HEADER_SITE_MORE_PAGES",
             name: "alfresco/menus/AlfMenuBarPopup",
             config: {
+               id: "HEADER_SITE_MORE_PAGES",
                label: "page.navigation.more.label",
                widgets: [
                   {
@@ -514,6 +519,7 @@ function getSubNavigationWidgets() {
          // Make sure the site data is loaded so that we can get the title...
          var siteData = getSiteData();
          navigationWidgets.push({
+            id: "HEADER_SEARCH_BACK_TO_SITE_DASHBOARD",
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
                id: "HEADER_SEARCH_BACK_TO_SITE_DASHBOARD",
@@ -529,9 +535,10 @@ function getSubNavigationWidgets() {
       
       // Add the advanced search link...
       navigationWidgets.push({
+         id: "HEADER_ADVANCED_SEARCH",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
-            id: "HEADER_SITE_DASHBOARD",
+            id: "HEADER_ADVANCED_SEARCH",
             label: msg.get("header.advanced"),
             iconClass: "alf-forward-icon",
             targetUrl: advancedSearchUrl,
@@ -564,9 +571,10 @@ function getSubNavigationWidgets() {
          }
          
          navigationWidgets.push({
+            id: "HEADER_SEARCH_BACK_TO_RESULTS",
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
-               id: "HEADER_SITE_DASHBOARD",
+               id: "HEADER_SEARCH_BACK_TO_RESULTS",
                label: msg.get("header.results"),
                iconClass: "alf-back-icon",
                targetUrl: searchUrl,
@@ -586,6 +594,7 @@ function getSubNavigationWidgets() {
          // Make sure the site data is loaded so that we can get the title...
          var siteData = getSiteData();
          navigationWidgets.push({
+            id: "HEADER_SEARCH_BACK_TO_SITE_DASHBOARD",
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
                id: "HEADER_SEARCH_BACK_TO_SITE_DASHBOARD",
@@ -638,7 +647,7 @@ function getUserStatusWidget()
    }
 
    return {
-      id: "UserStatus",
+      id: "HEADER_USER_STATUS",
       name: "alfresco/header/CurrentUserStatus",
       config: {
          id: "HEADER_USER_STATUS",
@@ -1442,7 +1451,7 @@ function getTitleBarModel() {
       // NOTE: At the moment this is just a single menu item and not the child of a popup?
       // NOTE: Should this still be shown if the user is not the dashboard owner?
       var userDashboardConfiguration = {
-         id: "UserDashBoardCustomization",
+         id: "HEADER_CUSTOMIZE_USER_DASHBOARD",
          name: "alfresco/menus/AlfMenuBarItem",
          config: {
             id: "HEADER_CUSTOMIZE_USER_DASHBOARD",
@@ -1459,7 +1468,7 @@ function getTitleBarModel() {
    {
       // Create the basic site configuration menu...
       var siteConfig = {
-         id: "SiteConfigurationPopup",
+         id: "HEADER_SITE_CONFIGURATION_DROPDOWN",
          name: "alfresco/menus/AlfMenuBarPopup",
          config: {
             id: "HEADER_SITE_CONFIGURATION_DROPDOWN",
@@ -1479,6 +1488,7 @@ function getTitleBarModel() {
             // If the user is an admin, and a site member, but NOT the site manager then
             // add the menu item to let them become a site manager...
             siteConfig.config.widgets.push({
+               id: "HEADER_BECOME_SITE_MANAGER",
                name: "alfresco/menus/AlfMenuItem",
                config: {
                   id: "HEADER_BECOME_SITE_MANAGER",
@@ -1499,6 +1509,7 @@ function getTitleBarModel() {
             // If the user is a site manager then let them make custmomizations...
             // Add the invite option...
             titleConfig.push({
+               id: "HEADER_SITE_INVITE",
                name: "alfresco/menus/AlfMenuBarItem",
                config: {
                   id: "HEADER_SITE_INVITE",
@@ -1515,6 +1526,7 @@ function getTitleBarModel() {
             {
                // Add Customize Dashboard
                siteConfig.config.widgets.push({
+                  id: "HEADER_CUSTOMIZE_SITE_DASHBOARD",
                   name: "alfresco/menus/AlfMenuItem",
                   config: {
                      id: "HEADER_CUSTOMIZE_SITE_DASHBOARD",
@@ -1528,6 +1540,7 @@ function getTitleBarModel() {
             // Add the regular site manager options (edit site, customize site, leave site)
             siteConfig.config.widgets.push(
                {
+                  id: "HEADER_EDIT_SITE_DETAILS",
                   name: "alfresco/menus/AlfMenuItem",
                   config: {
                      id: "HEADER_EDIT_SITE_DETAILS",
@@ -1543,6 +1556,7 @@ function getTitleBarModel() {
                   }
                },
                {
+                  id: "HEADER_CUSTOMIZE_SITE",
                   name: "alfresco/menus/AlfMenuItem",
                   config: {
                      id: "HEADER_CUSTOMIZE_SITE",
@@ -1552,6 +1566,7 @@ function getTitleBarModel() {
                   }
                },
                {
+                  id: "HEADER_LEAVE_SITE",
                   name: "alfresco/menus/AlfMenuItem",
                   config: {
                      id: "HEADER_LEAVE_SITE",
@@ -1572,6 +1587,7 @@ function getTitleBarModel() {
          {
             // If the user is a member of a site then give them the option to leave...
             siteConfig.config.widgets.push({
+               id: "HEADER_LEAVE_SITE",
                name: "alfresco/menus/AlfMenuItem",
                config: {
                   id: "HEADER_LEAVE_SITE",
@@ -1591,6 +1607,7 @@ function getTitleBarModel() {
          {
             // If the member is not a member of a site then give them the option to join...
             siteConfig.config.widgets.push({
+               id: "HEADER_JOIN_SITE",
                name: "alfresco/menus/AlfMenuItem",
                config: {
                   id: "HEADER_JOIN_SITE",
