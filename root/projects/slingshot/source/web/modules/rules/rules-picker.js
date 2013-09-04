@@ -60,7 +60,8 @@
          [
             Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SITE,
             Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY,
-            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME, 
+            Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SHARED
          ]
       });
 

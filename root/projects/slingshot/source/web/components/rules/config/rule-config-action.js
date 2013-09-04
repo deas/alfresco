@@ -788,7 +788,9 @@
 
                   if (this.options.repositoryBrowsing === true)
                   {
-                     allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME);
+                     allowedViewModes.push(Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY, 
+                                           Alfresco.module.DoclibGlobalFolder.VIEW_MODE_USERHOME, 
+                                           Alfresco.module.DoclibGlobalFolder.VIEW_MODE_SHARED);
                   }
                   this.widgets.destinationDialog.setOptions(
                   {
