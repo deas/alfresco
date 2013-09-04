@@ -1337,7 +1337,7 @@
          }
          else if (this.options.viewMode == DLGF.VIEW_MODE_USERHOME)
          {
-            rootLabel = "location.path.userHome";
+            rootLabel = "location.path.myfiles";
          }
          else if (this.options.viewMode == DLGF.VIEW_MODE_SHARED)
          {
