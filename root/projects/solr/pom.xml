@@ -134,6 +134,7 @@
 								<resource>
 									<directory>${solr.instance.source.folder}</directory>
 									<excludes>
+										<exclude>**/*.jar</exclude>
 										<exclude>**/*.war*</exclude>
 										<exclude>**/ssl.repo*</exclude>
 									</excludes>
