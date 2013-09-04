@@ -750,6 +750,12 @@ body.yui-skin-hcBlack .nodeEdit .onDeleteBlogPost a:hover
    text-decoration: underline;
 }
 
+.webview .title a,
+.wiki .title a
+{
+   color: #fff;
+}
+
 /* YUI Menu */
 
 body.yui-skin-hcBlack .yuimenu .bd
