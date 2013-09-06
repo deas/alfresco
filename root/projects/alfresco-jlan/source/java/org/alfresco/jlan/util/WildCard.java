@@ -491,7 +491,7 @@ public final class WildCard {
   			//	Check if the current character is followed by a '.', if so then translate to the DOS multi character
   			//	wildcard
   			
-  			if ( i < ( str.length() - 1) && str.charAt(i+1) == '.')
+  			if ( i < ( str.length() - 1) && ((str.charAt(i+1) == '.') || (str.charAt(i+1) == DOT_UNICODE_WILDCARD)))
   				ch = MULTICHAR_WILDCARD;
   		}
   		else if ( ch == DOT_UNICODE_WILDCARD) {
@@ -500,7 +500,7 @@ public final class WildCard {
 
   			if ( i < ( str.length() - 1)) {
   				char nextCh = str.charAt(i+1);
-  				if ( nextCh == MULTICHAR_WILDCARD || nextCh == SINGLECHAR_UNICODE_WILDCARD)
+  				if ( nextCh == MULTICHAR_WILDCARD || nextCh == SINGLECHAR_UNICODE_WILDCARD || nextCh == MULTICHAR_UNICODE_WILDCARD)
   					ch = '.';
   			}
   		}
