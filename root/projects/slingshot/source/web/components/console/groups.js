@@ -970,7 +970,7 @@
                   };
 
                   // Make sure the dialog is displayed correctly
-                  if (!groups || groups.length == 0 || groups.length == 1)
+                  if (!groups || groups.length == 0)
                   {
                      // Group is root group or has only 1 parent
                      Dom.addClass(parent.id + "-multiparent", "hidden");
@@ -983,7 +983,7 @@
                      // Group has multiple parents
                      Dom.addClass(parent.id + "-singleparent", "hidden");
                      Dom.removeClass(parent.id + "-multiparent", "hidden");
-                     Dom.get(parent.id + "-multiparent-message").innerHTML = parent._msg("panel.deletegroup.multiparentmessage", $html(displayName));
+                     Dom.get(parent.id + "-multiparent-message").innerHTML = parent._msg("panel.deletegroup.oneormultiparentmessage", $html(displayName));
                      Dom.get(parent.id + "-remove-message").innerHTML = parent._msg("panel.deletegroup.removemessage", $html(displayName), $html(parentDisplayName));
                      Dom.get(parent.id + "-delete-message").innerHTML = parent._msg("panel.deletegroup.deletemessage", $html(displayName));
                      Dom.get(parent.id + "-searchdelete-message").innerHTML = parent._msg("panel.deletegroup.searchdeletemessage", $html(displayName));
