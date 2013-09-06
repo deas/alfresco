@@ -413,6 +413,36 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
             }
         }
 
+        // MNT-9089 fix, set min/max values for numeric properties
+        if (result instanceof PropertyIntegerDefinitionImpl)
+        {
+            if (propDef.getDataType().getName().equals(DataTypeDefinition.INT))
+            {
+                ((PropertyIntegerDefinitionImpl) result).setMinValue(BigInteger.valueOf(Integer.MIN_VALUE));
+                ((PropertyIntegerDefinitionImpl) result).setMaxValue(BigInteger.valueOf(Integer.MAX_VALUE));
+            }
+            if (propDef.getDataType().getName().equals(DataTypeDefinition.LONG))
+            {
+                ((PropertyIntegerDefinitionImpl) result).setMinValue(BigInteger.valueOf(Long.MIN_VALUE));
+                ((PropertyIntegerDefinitionImpl) result).setMaxValue(BigInteger.valueOf(Long.MAX_VALUE));
+            }
+        }
+        
+        if (result instanceof PropertyDecimalDefinitionImpl)
+        {
+            if (propDef.getDataType().getName().equals(DataTypeDefinition.FLOAT))
+            {
+                ((PropertyDecimalDefinitionImpl) result).setMinValue(BigDecimal.valueOf(Float.MIN_VALUE));
+                ((PropertyDecimalDefinitionImpl) result).setMaxValue(BigDecimal.valueOf(Float.MAX_VALUE));
+            }
+            if (propDef.getDataType().getName().equals(DataTypeDefinition.DOUBLE))
+            {
+                ((PropertyDecimalDefinitionImpl) result).setMinValue(BigDecimal.valueOf(Double.MIN_VALUE));
+                ((PropertyDecimalDefinitionImpl) result).setMaxValue(BigDecimal.valueOf(Double.MAX_VALUE));
+            }
+        }
+        // end MNT-9089
+        
         // constraints and choices
         for (ConstraintDefinition constraintDef : propDef.getConstraints())
         {
