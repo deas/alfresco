@@ -56,21 +56,6 @@
       <id>alfresco-public</id>
       <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
     </repository>
-    <repository>
-      <id>chemistry-opencmis</id>
-      <url>https://repository.apache.org/content/repositories/orgapachechemistry-089</url>
-    </repository>
-    <!-- Snapshot repository for Spring Surf -->
-    <repository>
-        <id>surf-snapshots</id>
-        <url>http://extensions.springframework.org/snapshot/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-    </repository>
   </repositories>
 
   <distributionManagement>
