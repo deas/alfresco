@@ -30,9 +30,11 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.util.GUID;
 import org.alfresco.util.ISO8601DateFormat;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
+import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -42,6 +44,7 @@ import org.apache.chemistry.opencmis.commons.BasicPermissions;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.Ace;
+import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
@@ -56,12 +59,8 @@ import org.apache.tools.ant.filters.StringInputStream;
  */
 public class CMISDataCreatorTest extends TestCase
 {
-    private Session getSession()
+    private static Session getSession(String user, String pwd)
     {
- 
-        
-        String user ="admin";
-        String pwd = "admin";
         String url = "http://localhost:8080/alfresco/cmisatom";
         
         SessionFactory factory = SessionFactoryImpl.newInstance();
@@ -89,7 +88,7 @@ public class CMISDataCreatorTest extends TestCase
     
     public void testCreate()
     {
-        Session session = getSession();
+        Session session = getSession("admin", "admin");
         
         String folderName = getRootFolderName();
         Folder root = session.getRootFolder();
@@ -127,9 +126,129 @@ public class CMISDataCreatorTest extends TestCase
         
     }
     
+    public void testCreateLots() throws Exception
+    {
+        Session session = getSession("admin", "admin");
+        
+        Folder root = session.getRootFolder();
+        String folderNameBase = getRootFolderName();
+
+        
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
+        properties.put(PropertyIds.NAME, folderNameBase);
+        
+        Folder base = root.createFolder(properties);
+        for(int i = 0; i < 10; i++)
+        {
+           AccessControlPrincipalDataImpl principal = new AccessControlPrincipalDataImpl(""+i+i+i);
+           List<String> permissions = new ArrayList<String>(1);
+           permissions.add(BasicPermissions.ALL);
+           List<Ace> addAces = new ArrayList<Ace>(1);
+           addAces.add(new AccessControlEntryImpl(principal, permissions));
+           base.addAcl(addAces, AclPropagation.PROPAGATE);
+        }
+        
+        
+        Thread last = null;
+        
+        for(int i = 0; i < 10; i++)
+        {
+            Creator creator = new Creator(base.getPath(), i);
+            Thread thread = new Thread(creator);
+            thread.start();
+            last = thread;
+        }
+        
+        if(last != null)
+        {
+            last.join();
+        }
+      
+        ItemIterable<QueryResult> result = session.query("select * from cmis:folder", false);
+        assertTrue(result.getTotalNumItems() > 0);
+        
+        //result = session.query("select * from cmis:folder where cmis:name = '"+folderName+"'", false);
+        //assertTrue(result.getTotalNumItems() > 0);
+        
+    }
+    
+    private static class Creator implements Runnable
+    {
+        int id;
+        
+        String path;
+        
+        Creator(String path, int id)
+        {
+            this.path = path;
+            this.id = id;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Runnable#run()
+         */
+        @Override
+        public void run()
+        {
+            Session session = getSession(""+id+id+id, ""+id+id+id);
+            
+            CmisObject object = session.getObjectByPath(path);
+            
+            Map<String, Object> baseProps = new HashMap<String, Object>();
+            baseProps.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
+            baseProps.put(PropertyIds.NAME, "Thread"+id);
+            
+            
+            ObjectId base = session.createFolder(baseProps, object);
+
+            for(int i = 0; i < 100; i++)
+            {
+                    
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
+                properties.put(PropertyIds.NAME, "Folder-"+i);
+                
+                ObjectId folder = session.createFolder(properties, base);
+               
+                System.out.println("Thread "+id +"   @Folder "+i);
+                
+                for(int j = 0; j < 1000; j++)
+                {
+                    Map<String, Object> folderProps = new HashMap<String, Object>();
+                    folderProps.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
+                    folderProps.put(PropertyIds.NAME, "Folder-"+i);
+                    
+                    ObjectId child = session.createFolder(folderProps, folder);
+                    
+                    
+//                    Map<String, Object> docProps = new HashMap<String, Object>();
+//                    docProps.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+//                    docProps.put(PropertyIds.NAME, "Doc-"+j);
+//                    
+//                    ContentStreamImpl contentSream = new ContentStreamImpl();
+//                    contentSream.setFileName(GUID.generate());
+//                    contentSream.setLength(BigInteger.valueOf(10));
+//                    contentSream.setMimeType("text/plain");
+//                    contentSream.setStream(new StringInputStream("abcdefghij"));
+//                    
+//                     ObjectId document = session.createDocument(docProps, folder, contentSream, VersioningState.MAJOR);
+                    
+                    if(j % 20 == 0)
+                    {
+                        System.out.println(id+"    @ "+j);
+                    }
+                }
+            }
+            
+        }
+        
+    }
+    
+    
     public void testQueryFolderProperties()
     {
-        Session session = getSession();
+        Session session = getSession("admin", "admin");
         
         String folderName = getRootFolderName();
         Folder root = session.getRootFolder();
@@ -189,7 +308,7 @@ public class CMISDataCreatorTest extends TestCase
     
     public void testQueryDocumentProperties()
     {
-        Session session = getSession();
+        Session session = getSession("admin", "admin");
         
         String folderName = getRootFolderName();
         Folder root = session.getRootFolder();
