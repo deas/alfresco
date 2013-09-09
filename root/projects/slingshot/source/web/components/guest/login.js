@@ -142,9 +142,13 @@
          }, this, true);
          overlay.show();
          
-         Event.addListener(window, 'resize', function resize() {
-            overlay.center();
-         }, this, true);
+         // only add the resize event for desktop OS
+         if (!YAHOO.env.ua.ios && !YAHOO.env.ua.android)
+         {
+            Event.addListener(window, 'resize', function resize() {
+               overlay.center();
+            }, this, true);
+         }
          
          // Make sure to add the hash part to the url
          Dom.get(this.id + "-success").value += location.href.indexOf("#") > -1 ? location.href.substr(location.href.indexOf("#")) : "";
