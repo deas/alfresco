@@ -22,9 +22,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.alfresco.module.vti.handler.ListServiceHandler;
-import org.alfresco.module.vti.handler.alfresco.VtiUtils;
 import org.alfresco.module.vti.metadata.model.ListInfoBean;
-import org.alfresco.module.vti.web.VtiFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -49,7 +47,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
     protected ListServiceHandler handler;
 
     // xml namespace prefix
-    protected static final String prefix = "listsws";
+    protected String prefix = "listsws";
     
     private static final SimpleDateFormat xmlDateFormat = 
        new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.ENGLISH);
@@ -211,7 +209,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        listE.addAttribute("EnableModeration", "False");
 
        // General Info
-       Element regional = listE.addElement("RegionalSettings");
+       /*Element regional = listE.addElement("RegionalSettings");
        regional.addElement("Language").addText(DEFAULT_LOCALE);
        regional.addElement("Locale").addText(DEFAULT_LOCALE);
        regional.addElement("AdvanceHijri").addText("0");
@@ -224,7 +222,7 @@ public abstract class AbstractListEndpoint extends AbstractEndpoint
        Element server = listE.addElement("ServerSettings");
        server.addElement("ServerVersion").addText(VtiFilter.EMULATED_SHAREPOINT_VERSION);
        server.addElement("RecycleBinEnabled").addText("False");
-       server.addElement("ServerRelativeUrl").addText("/" + siteName);
+       server.addElement("ServerRelativeUrl").addText("/" + siteName);*/
     }
     
     protected void renderFields(String siteName, ListInfoBean list, Element fieldsElement) throws Exception

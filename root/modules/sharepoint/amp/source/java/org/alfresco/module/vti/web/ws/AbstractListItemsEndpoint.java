@@ -53,9 +53,6 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
     protected MethodHandler methodHandler;
     // helper class to manipulate with paths
     private VtiPathHelper pathHelper;
-
-    // xml namespace prefix
-    private static String prefix = "lists";
     
     /**
      * constructor
@@ -66,6 +63,7 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
     {
         super(listHander);
         this.methodHandler = handler;
+        this.prefix = "lists";
     }
     
     /**
@@ -87,7 +85,7 @@ public abstract class AbstractListItemsEndpoint extends AbstractListEndpoint
         ListInfoBean list = null;
         try
         {
-           list = handler.getList(listName, listName);
+           list = handler.getList(listName, siteName);
         }
         catch(SiteDoesNotExistException se)
         {

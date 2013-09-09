@@ -350,7 +350,7 @@ public class VtiPathHelper extends AbstractLifecycleBean
                 final QName spaceType)
     {
         // Office 2008/2011 for Mac fix
-       if (uri.equals(""))
+       if (uri.equals("") || uri.equals("/"))
        {
            return new String[] {"", ""};
        }

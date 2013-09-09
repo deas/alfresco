@@ -274,6 +274,9 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
             throw new FileNotFoundException("ID is not a guid");
         }
         
+        // Ensure UUID is lower case.
+        guidID = guidID.toLowerCase();
+        
         // Build the NodeRef
         NodeRef listNodeRef = new NodeRef(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE, guidID.substring(1, 37));
         if (logger.isDebugEnabled())
@@ -328,10 +331,20 @@ public class AlfrescoListServiceHandler extends AbstractAlfrescoListServiceHandl
         }
         else
         {
-            // Look up the NodeRef based on the name
-            listNodeRef = locateList(listName, site);
+            // ALF-19833: Check if it's a GUID without the '{' and '}' delimiters
+            //            (Mac Office sending <listName>GUID</listName> without them.)
+            final String listNameWithBraces = "{" + listName + "}";
+            try
+            {
+                listNodeRef = locateForGUID(listNameWithBraces, site.getNodeRef());
+            }
+            catch (FileNotFoundException e)
+            {
+                // Look up the NodeRef based on the name
+                listNodeRef = locateList(listName, site);                
+            }
         }
-        
+
         // Wrap and return
         return buildListInfo(listName, listNodeRef);
     }

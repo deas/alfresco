@@ -81,7 +81,7 @@ public class GetListCollectionEndpoint extends AbstractListEndpoint
         {
             try
             {
-                lists = handler.getListCollection(siteName.substring(1));
+                lists = handler.getListCollection(siteName);
             }
             catch (SiteDoesNotExistException e)
             {
@@ -96,7 +96,7 @@ public class GetListCollectionEndpoint extends AbstractListEndpoint
         
         for (ListInfoBean list : lists)
         {
-            String siteUrl = getContext(soapRequest) + siteName;
+            String siteUrl = getContext(soapRequest) + "/" + siteName;
             
             Element listElement = listsElement.addElement("List");
             renderListDefinition(list, siteName, siteUrl, listElement);

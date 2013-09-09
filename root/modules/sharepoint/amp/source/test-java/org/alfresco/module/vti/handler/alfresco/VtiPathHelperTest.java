@@ -75,6 +75,10 @@ public class VtiPathHelperTest extends AbstractVtiPathHelperTestBase<VtiPathHelp
         parts = pathHelper.doDecomposeURLWork(ALFRESCO_CONTEXT, "", SiteModel.TYPE_SITE);
         assertDecomposedURL("", "", parts);
         
+        // Decompose the slash URI path.
+        parts = pathHelper.doDecomposeURLWork(ALFRESCO_CONTEXT, "/", SiteModel.TYPE_SITE);
+        assertDecomposedURL("", "", parts);
+        
         // Detect bad URLs that have the incorrect prefix.
         try
         {
