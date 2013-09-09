@@ -560,7 +560,7 @@ function getSubNavigationWidgets() {
                      "&q=" + (args["sq"] != null ? encodeURIComponent(args["sq"]) : "");
          model.backlink = query;
          
-         var searchUrl = "search? " + query;
+         var searchUrl = "search?" + query;
          if (page.url.templateArgs.site == null)
          {
             // No update if not a site...
