@@ -68,7 +68,7 @@
          <use-checksum-dependencies>true</use-checksum-dependencies>
          <aggregate-dependencies>false</aggregate-dependencies>
          <calculate-webscript-dependencies>true</calculate-webscript-dependencies>
-         <generate-css-data-images>true</generate-css-data-images>
+         <generate-css-data-images>false</generate-css-data-images>
          
          <!-- Disables extension modules from being processed on guest authenticated pages (such as the 
               Login page). This is one way to enable dynamic extensions without generating error messages
