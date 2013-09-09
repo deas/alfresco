@@ -72,15 +72,15 @@ function main()
    var permissions = {}
    if (model.result && model.result.permissions != null)
    {
-      permissions.create = (model.result.permissions.create != null) ? model.result.permissions.create : "false";
-      permissions.edit = (model.result.permissions.edit != null) ? model.result.permissions.edit : "false";
-      permissions["delete"] = (model.result.permissions["delete"] != null) ? model.result.permissions["delete"] : "false";
+      permissions.create = (model.result.permissions.create != null) ? model.result.permissions.create : false;
+      permissions.edit = (model.result.permissions.edit != null) ? model.result.permissions.edit : false;
+      permissions["delete"] = (model.result.permissions["delete"] != null) ? model.result.permissions["delete"] : false;
    }
    else
    {
-      permissions.create = "false";
-      permissions.edit = "false";
-      permissions["delete"] = "false";
+      permissions.create = false;
+      permissions.edit = false;
+      permissions["delete"] = false;
    }
 
    var wikiPage = {
