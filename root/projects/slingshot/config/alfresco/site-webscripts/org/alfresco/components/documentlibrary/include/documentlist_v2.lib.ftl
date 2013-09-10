@@ -14,169 +14,200 @@
    <#nested>
    <#assign id=args.htmlid?html>
    <div id="${id}-tb-body" class="toolbar no-check-bg">
-      <div id="${id}-headerBar" class="header-bar flat-button theme-bg-2">
-         <div class="left">
-            <div class="hideable toolbar-hidden DocListTree">
-               <div class="file-select">
-                  <button id="${id}-fileSelect-button" name="doclist-fileSelect-button">${msg("menu.select")}</button>
-                  <div id="${id}-fileSelect-menu" class="yuimenu">
-                     <div class="bd">
-                        <ul>
-                           <li><a href="#"><span class="selectDocuments">${msg("menu.select.documents")}</span></a></li>
-                           <li><a href="#"><span class="selectFolders">${msg("menu.select.folders")}</span></a></li>
-                           <li><a href="#"><span class="selectAll">${msg("menu.select.all")}</span></a></li>
-                           <li><a href="#"><span class="selectInvert">${msg("menu.select.invert")}</span></a></li>
-                           <li><a href="#"><span class="selectNone">${msg("menu.select.none")}</span></a></li>
-                        </ul>
+      <@markup id="documentListToolbar">
+         <div id="${id}-headerBar" class="header-bar flat-button theme-bg-2">
+            <@markup id="toolbarLeft">
+               <div class="left">
+                  <div class="hideable toolbar-hidden DocListTree">
+                     <#-- FILE SELECT -->
+                     <@markup id="fileSelect">
+                        <div class="file-select">
+                           <button id="${id}-fileSelect-button" name="doclist-fileSelect-button">${msg("menu.select")}</button>
+                           <div id="${id}-fileSelect-menu" class="yuimenu">
+                              <div class="bd">
+                                 <ul>
+                                    <li><a href="#"><span class="selectDocuments">${msg("menu.select.documents")}</span></a></li>
+                                    <li><a href="#"><span class="selectFolders">${msg("menu.select.folders")}</span></a></li>
+                                    <li><a href="#"><span class="selectAll">${msg("menu.select.all")}</span></a></li>
+                                    <li><a href="#"><span class="selectInvert">${msg("menu.select.invert")}</span></a></li>
+                                    <li><a href="#"><span class="selectNone">${msg("menu.select.none")}</span></a></li>
+                                 </ul>
+                              </div>
+                           </div>
+                        </div>
+                     </@>
+                     <#-- CREATE CONTENT -->
+                     <@markup id="createContent">
+                     <div class="create-content">
+                        <#if createContent?size != 0 || createContentByTemplateEnabled>
+                           <span id="${id}-createContent-button" class="yui-button yui-push-button">
+                              <span class="first-child">
+                                 <button name="createContent">${msg("button.create-content")}</button>
+                              </span>
+                           </span>
+                           <div id="${id}-createContent-menu" class="yuimenu">
+                              <div class="bd"></div>
+                           </div>
+                        </#if>
+                     </div>
+                     </@markup>
+         
+                  </div>
+                  
+                  <#-- UPLOAD BUTTON -->
+                  <@markup id="uploadButton">
+                     <#if uploadable>
+                        <div class="hideable toolbar-hidden DocListTree">
+                           <div class="file-upload">
+                              <span id="${id}-fileUpload-button" class="yui-button yui-push-button">
+                                 <span class="first-child">
+                                    <button name="fileUpload">${msg("button.upload")}</button>
+                                 </span>
+                              </span>
+                           </div>
+                        </div>
+                     </#if>
+                  </@>
+                  
+                  <#-- CLOUD SYNC BUTTONS -->
+                  <@markup id="cloudSyncButtons">
+                     <div class="hideable toolbar-hidden DocListTree">
+                        <div class="sync-to-cloud">
+                           <span id="${id}-syncToCloud-button" class="yui-button yui-push-button hidden">
+                              <span class="first-child">
+                                 <button name="syncToCloud">${msg("button.sync-to-cloud")}</button>
+                              </span>
+                           </span>
+                        </div>
+                     </div>
+                     <div class="hideable toolbar-hidden DocListTree">
+                        <div class="unsync-from-cloud">
+                           <span id="${id}-unsyncFromCloud-button" class="yui-button yui-push-button hidden">
+                              <span class="first-child">
+                                 <button name="unsyncFromCloud">${msg("button.unsync-from-cloud")}</button>
+                              </span>
+                           </span>
+                        </div>
+                     </div>
+                  </@>
+                  
+                  <#-- SELECTED ITEMS MENU -->
+                  <@markup id="selectedItems">
+                     <div class="selected-items hideable toolbar-hidden DocListTree DocListFilter TagFilter DocListCategories">
+                        <button class="no-access-check" id="${id}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}</button>
+                        <div id="${id}-selectedItems-menu" class="yuimenu">
+                           <div class="bd">
+                              <ul>
+                              <#list actionSet as action>
+                                 <li><a type="${action.asset!""}" rel="${action.permission!""}" href="${action.href}" data-has-aspects="${action.hasAspect}" data-not-aspects="${action.notAspect}"><span class="${action.id}">${msg(action.label)}</span></a></li>
+                              </#list>
+                                 <li><a href="#"><hr /></a></li>
+                                 <li><a href="#"><span class="onActionDeselectAll">${msg("menu.selected-items.deselect-all")}</span></a></li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </@>
+                  <!-- <div id="${id}-paginator" class="paginator"></div> -->
+               </div>
+            </@>
+            <@markup id="toolbarRight">
+               <div class="right">
+                  <div class="options-select">
+                     <button id="${id}-options-button" name="doclist-options-button">${msg("button.options")}</button>
+                     <div id="${id}-options-menu" class="yuimenu">
+                        <div class="bd">
+                           <ul>
+                              <@markup id="documentListViewFolderAction">
+                                 <#if preferences.showFolders!true>
+                                    <li><a href="#"><span class="hideFolders">${msg("button.folders.hide")}</span></a></li>
+                                  <#else>
+                                    <li><a href="#"><span class="showFolders">${msg("button.folders.show")}</span></a></li>
+                                 </#if>
+                              </@>
+                              <@markup id="documentListViewNavBarAction">
+                                 <#if preferences.hideNavBar!false>
+                                    <li><a href="#"><span class="showPath">${msg("button.navbar.show")}</span></a></li>
+                                 <#else>
+                                    <li><a href="#"><span class="hidePath">${msg("button.navbar.hide")}</span></a></li>
+                                 </#if>
+                              </@>
+                              <@markup id="documentListViewRssAction">
+                                 <li class="drop-down-list-break-below"><a href="#"><span class="rss">${msg("link.rss-feed")}</span></a></li>
+                              </@>
+                              <@markup id="documentListViewFullWindowAction">
+                                 <li><a href="#"><span class="fullWindow">${msg("button.fullwindow.enter")}</span></a></li>
+                              </@>
+                              <@markup id="documentListViewFullScreenAction">
+                                 <li class="drop-down-list-break-below"><a href="#"><span class="fullScreen">${msg("button.fullscreen.enter")}</span></a></li>
+                              </@>
+                              <@markup id="documentListViewRendererSelect">
+                                <#if viewRenderers??>
+                                   <#list viewRenderers as viewRenderer>
+                                      <li class="${viewRenderer.iconClass}<#if !viewRenderer_has_next> drop-down-list-break-below</#if>"><a href="#"><span class="view ${viewRenderer.id}">${msg(viewRenderer.label)}</span></a></li>
+                                   </#list>
+                                </#if>
+                              </@>
+                              <@markup id="documentListViewDefaultViewActions">
+                                 <li><a href="#"><span class="removeDefaultView">${msg("button.removeDefaultView")}</span></a></li>
+                                 <li><a href="#"><span class="setDefaultView">${msg("button.setDefaultView")}</span></a></li>
+                              </@>
+                           </ul>
+                        </div>
                      </div>
                   </div>
+                  <@markup id="documentListSortSelect">
+                    <div class="sort-field">
+                       <span id="${id}-sortField-button" class="yui-button yui-push-button">
+                          <span class="first-child">
+                             <button name="doclist-sortField-button"></button>
+                          </span>
+                       </span>
+                       <!-- <span class="separator">&nbsp;</span> -->
+                       <select id="${id}-sortField-menu">
+                       <#list sortOptions as sort>
+                          <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
+                       </#list>
+                       </select>
+                    </div>
+                    <div class="sort-direction">
+                       <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
+                          <span class="first-child">
+                             <button name="doclist-sortAscending-button"></button>
+                          </span>
+                       </span>
+                    </div>
+                  </@>
+                  <@markup id="galleryViewSlider">
+                    <div id="${id}-gallery-slider" class="alf-gallery-slider hidden">
+                       <div class="alf-gallery-slider-small"><img src="${url.context}/res/components/documentlibrary/images/gallery-size-small-16.png"></div>
+                       <div id="${id}-gallery-slider-bg" class="yui-h-slider alf-gallery-slider-bg"> 
+                       <div id="${id}-gallery-slider-thumb" class="yui-slider-thumb alf-gallery-slider-thumb"><img src="${url.context}/res/components/documentlibrary/images/thumb-n.png"></div> 
+                    </div>
+                    <div class="alf-gallery-slider-large"><img src="${url.context}/res/components/documentlibrary/images/gallery-size-large-16.png"></div>
+                    </div>
+                  </@>
                </div>
-               
-               <#-- CREATE CONTENT -->
-               <@markup id="createContent">
-               <div class="create-content">
-                  <#if createContent?size != 0 || createContentByTemplateEnabled>
-                     <span id="${id}-createContent-button" class="yui-button yui-push-button">
-                        <span class="first-child">
-                           <button name="createContent">${msg("button.create-content")}</button>
-                        </span>
-                     </span>
-                     <div id="${id}-createContent-menu" class="yuimenu">
-                        <div class="bd"></div>
-                     </div>
-                  </#if>
-               </div>
-               </@markup>
-   
-            </div>
-            
-            <#if uploadable>
-            <div class="hideable toolbar-hidden DocListTree">
-               <div class="file-upload">
-                  <span id="${id}-fileUpload-button" class="yui-button yui-push-button">
-                     <span class="first-child">
-                        <button name="fileUpload">${msg("button.upload")}</button>
-                     </span>
-                  </span>
-               </div>
-            </div>
-            </#if>
-            <div class="hideable toolbar-hidden DocListTree">
-               <div class="sync-to-cloud">
-                  <span id="${id}-syncToCloud-button" class="yui-button yui-push-button hidden">
-                     <span class="first-child">
-                        <button name="syncToCloud">${msg("button.sync-to-cloud")}</button>
-                     </span>
-                  </span>
-               </div>
-            </div>
-            <div class="hideable toolbar-hidden DocListTree">
-               <div class="unsync-from-cloud">
-                  <span id="${id}-unsyncFromCloud-button" class="yui-button yui-push-button hidden">
-                     <span class="first-child">
-                        <button name="unsyncFromCloud">${msg("button.unsync-from-cloud")}</button>
-                     </span>
-                  </span>
-               </div>
-            </div>
-            <div class="selected-items hideable toolbar-hidden DocListTree DocListFilter TagFilter DocListCategories">
-               <button class="no-access-check" id="${id}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}</button>
-               <div id="${id}-selectedItems-menu" class="yuimenu">
-                  <div class="bd">
-                     <ul>
-                     <#list actionSet as action>
-                        <li><a type="${action.asset!""}" rel="${action.permission!""}" href="${action.href}" data-has-aspects="${action.hasAspect}" data-not-aspects="${action.notAspect}"><span class="${action.id}">${msg(action.label)}</span></a></li>
-                     </#list>
-                        <li><a href="#"><hr /></a></li>
-                        <li><a href="#"><span class="onActionDeselectAll">${msg("menu.selected-items.deselect-all")}</span></a></li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-            <!-- <div id="${id}-paginator" class="paginator"></div> -->
-         </div>
-         <div class="right">
-            <div class="options-select">
-               <button id="${id}-options-button" name="doclist-options-button">${msg("button.options")}</button>
-               <div id="${id}-options-menu" class="yuimenu">
-                  <div class="bd">
-                     <ul>
-                        <#if preferences.showFolders!true>
-                           <li><a href="#"><span class="hideFolders">${msg("button.folders.hide")}</span></a></li>
-                        <#else>
-                           <li><a href="#"><span class="showFolders">${msg("button.folders.show")}</span></a></li>
-                        </#if>
-                        <#if preferences.hideNavBar!false>
-                           <li><a href="#"><span class="showPath">${msg("button.navbar.show")}</span></a></li>
-                        <#else>
-                           <li><a href="#"><span class="hidePath">${msg("button.navbar.hide")}</span></a></li>
-                        </#if>
-                        <@markup id="documentListViewRssAction">
-                        <li class="drop-down-list-break-below"><a href="#"><span class="rss">${msg("link.rss-feed")}</span></a></li>
-                        </@>
-                        <li><a href="#"><span class="fullWindow">${msg("button.fullwindow.enter")}</span></a></li>
-                        <li class="drop-down-list-break-below"><a href="#"><span class="fullScreen">${msg("button.fullscreen.enter")}</span></a></li>
-                        <@markup id="documentListViewRendererSelect">
-                          <#if viewRenderers??>
-                             <#list viewRenderers as viewRenderer>
-                                <li class="${viewRenderer.iconClass}<#if !viewRenderer_has_next> drop-down-list-break-below</#if>"><a href="#"><span class="view ${viewRenderer.id}">${msg(viewRenderer.label)}</span></a></li>
-                             </#list>
-                          </#if>
-                        </@>
-                        <li><a href="#"><span class="removeDefaultView">${msg("button.removeDefaultView")}</span></a></li>
-                        <li><a href="#"><span class="setDefaultView">${msg("button.setDefaultView")}</span></a></li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-            <@markup id="documentListSortSelect">
-              <div class="sort-field">
-                 <span id="${id}-sortField-button" class="yui-button yui-push-button">
-                    <span class="first-child">
-                       <button name="doclist-sortField-button"></button>
-                    </span>
-                 </span>
-                 <!-- <span class="separator">&nbsp;</span> -->
-                 <select id="${id}-sortField-menu">
-                 <#list sortOptions as sort>
-                    <option value="${(sort.value!"")?html}" <#if sort.direction??>title="${sort.direction?string}"</#if>>${msg(sort.label)}</option>
-                 </#list>
-                 </select>
-              </div>
-              <div class="sort-direction">
-                 <span id="${id}-sortAscending-button" class="yui-button yui-push-button">
-                    <span class="first-child">
-                       <button name="doclist-sortAscending-button"></button>
-                    </span>
-                 </span>
-              </div>
-            </@>
-            <@markup id="galleryViewSlider">
-              <div id="${id}-gallery-slider" class="alf-gallery-slider hidden">
-                 <div class="alf-gallery-slider-small"><img src="${url.context}/res/components/documentlibrary/images/gallery-size-small-16.png"></div>
-                 <div id="${id}-gallery-slider-bg" class="yui-h-slider alf-gallery-slider-bg"> 
-                 <div id="${id}-gallery-slider-thumb" class="yui-slider-thumb alf-gallery-slider-thumb"><img src="${url.context}/res/components/documentlibrary/images/thumb-n.png"></div> 
-              </div>
-              <div class="alf-gallery-slider-large"><img src="${url.context}/res/components/documentlibrary/images/gallery-size-large-16.png"></div>
-              </div>
             </@>
          </div>
-      </div>
-   
-      <div id="${id}-navBar" class="nav-bar flat-button theme-bg-2">
-         <div class="hideable toolbar-hidden DocListTree DocListCategories">
-            <div class="folder-up">
-               <span id="${id}-folderUp-button" class="yui-button yui-push-button">
-                  <span class="first-child">
-                     <button class="no-access-check" name="folderUp"></button>
+      </@>
+      
+      <@markup id="navigationBar">
+         <div id="${id}-navBar" class="nav-bar flat-button theme-bg-2">
+            <div class="hideable toolbar-hidden DocListTree DocListCategories">
+               <div class="folder-up">
+                  <span id="${id}-folderUp-button" class="yui-button yui-push-button">
+                     <span class="first-child">
+                        <button class="no-access-check" name="folderUp"></button>
+                     </span>
                   </span>
-               </span>
+               </div>
+               <div class="separator">&nbsp;</div>
             </div>
-            <div class="separator">&nbsp;</div>
+            <div id="${id}-breadcrumb" class="breadcrumb hideable toolbar-hidden DocListTree DocListCategories"></div>
+            <div id="${id}-description" class="description hideable toolbar-hidden DocListFilter TagFilter"></div>
          </div>
-         <div id="${id}-breadcrumb" class="breadcrumb hideable toolbar-hidden DocListTree DocListCategories"></div>
-         <div id="${id}-description" class="description hideable toolbar-hidden DocListFilter TagFilter"></div>
-      </div>
+      </@>
    
    </div>
    <!--[if IE]>
