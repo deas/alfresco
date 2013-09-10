@@ -131,6 +131,9 @@
 
          <pathelement location="${dir.project.remoteapi}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.webclient}/${dir.name.source}/${dir.name.test.resources}" />
+
+         <pathelement location="${dir.module.spp.classes}" />
+         <pathelement location="${dir.module.spp.classes.test}" />
       </path>
 
       <!-- Add on all the 3rd party libs based on the eclipse project -->
@@ -357,6 +360,7 @@
    <target name="distribute-amps" 
            description="Creates the distribution AMP file for core extensions"
            depends="package-spp-extension,
+                    test-spp,
                     package-wcmquickstart-extension,
                     package-wcmquickstart-share-extension, 
                     build-wcmquickstartwebapp-war">
