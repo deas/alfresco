@@ -28,12 +28,19 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreRwd",
         "alfresco/menus/_AlfPopupCloseMixin",
+        "alfresco/services/_NavigationServiceTopicMixin",
         "dojo/dom-class", 
         "dojo/dom-style",
-        "dojo/dom-construct"],
-        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domClass, domStyle, domConstruct) {
+        "dojo/dom-construct",
+        "dojo/on",
+        "dojo/_base/lang",
+        "dojo/_base/event",
+        "dojo/query",
+        "dojo/NodeList",
+        "dojo/NodeList-manipulate"],
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, domClass, domStyle, domConstruct, on, lang, event, query, NodeList) {
    
-   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin], {
+   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
@@ -111,6 +118,7 @@ define(["dojo/_base/declare",
          {
             this.label = this.encodeHTML(this.message(this.label));
          }
+         
          this.inherited(arguments);
       },
       
@@ -121,8 +129,62 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_menus__AlfMenuItemMixin__postCreate() {
          this.set("label", this.label);
          this.inherited(arguments);
+         
+         // Set up a handler for onContextMenu actions (e.g. right-clicks), although by default this will perform no action...
+         on(this.domNode, "contextmenu", lang.hitch(this, "onContextMenu"));
+         
+         // When a targetUrl is specified we want to wrap menu item labels in <a> elements to allow the browsers context menu
+         // to access the URL (most commonly used for opening a page in a new tab). However, we aren't going to allow the browser
+         // to process the link as we still want it to go via the NavigationService...
+         if (this.targetUrl != null)
+         {
+            // The following code is based on the NavigationService, it should possibly be abstracted to a mixin
+            // to prevent future maintenance issues, but given this is "non-functional" code it's not important at the moment.
+            // We want to build a URL to set as the "href" attribute of the <a> element.
+            var url;
+            if (typeof this.targetUrlType == "undefined" ||
+                this.targetUrlType == null ||
+                this.targetUrlType == "" ||
+                this.targetUrlType == this.sharePageRelativePath)
+            {
+               url = Alfresco.constants.URL_PAGECONTEXT + this.targetUrl;
+            }
+            else if (this.targetUrlType == this.contextRelativePath)
+            {
+               url = Alfresco.contants.URL_CONTEXT + this.targetUrl;
+            }
+            else if (this.targetUrlType == this.fullPath)
+            {
+               url = this.targetUrl;
+            }
+            // Add the anchor elements...
+            this._addAnchors(url);
+         }
       },
 
+      /**
+       * This function is called for any menu item with a targetUrl. By default it addresses the known menu items DOM structures
+       * of the AlfMenuItem and AlfMenuBarItem. However, it can be extended or updated to handle the DOM structure of additional
+       * menu widgets.
+       * 
+       * @instance
+       * @param {string} url The URL to use for the anchor
+       */
+      _addAnchors: function alfresco_menus__AlfMenuItemMixin___addAnchors(url) {
+         dojo.query("td.dijitMenuItemLabel", this.domNode).wrapInner("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
+         dojo.query("span.alf-menu-bar-label-node", this.domNode).wrapInner("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
+      },
+      
+      /**
+       * Extension point for handling context click events. By default this performs no action.
+       * 
+       * @instance
+       * @param {evt} evt The context menu event
+       */
+      onContextMenu: function(evt) {
+         // No action by default.
+      },
+      
       /**
        * @instance
        */
@@ -173,11 +235,15 @@ define(["dojo/_base/declare",
       onClick: function alfresco_menus__AlfMenuItemMixin__onClick(evt) {
          this.alfLog("log", "AlfMenuBarItem clicked");
 
+         
          // Emit the event to close popups in the stack...
          this.emitClosePopupEvent();
          
          if (this.targetUrl != null)
          {
+            // Stop the event (to prevent the browser processing <a> elements 
+            event.stop(evt);
+
             // Handle URLs...
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: this.targetUrl,
                                                       type: this.targetUrlType,
