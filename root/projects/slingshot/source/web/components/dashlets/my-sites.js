@@ -357,10 +357,22 @@
        */
       loadSites: function MySites_loadSites()
       {
+         var filter;
+         switch (this.filter)
+         {
+            case "favSites":
+               filter = "/favourites";
+               break;
+            case "recentSites":
+               filter = "/recent";
+               break;
+            default:
+               filter = "";
+         }
          // Load sites
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites?roles=user&size=" + this.options.listSize,
+            url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/sites" + filter + "?roles=user&size=" + this.options.listSize,
             successCallback:
             {
                fn: this.onSitesLoaded,
