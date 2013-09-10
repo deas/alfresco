@@ -111,7 +111,9 @@
                         <#else>
                            <li><a href="#"><span class="hidePath">${msg("button.navbar.hide")}</span></a></li>
                         </#if>
+                        <@markup id="documentListViewRssAction">
                         <li class="drop-down-list-break-below"><a href="#"><span class="rss">${msg("link.rss-feed")}</span></a></li>
+                        </@>
                         <li><a href="#"><span class="fullWindow">${msg("button.fullwindow.enter")}</span></a></li>
                         <li class="drop-down-list-break-below"><a href="#"><span class="fullScreen">${msg("button.fullscreen.enter")}</span></a></li>
                         <@markup id="documentListViewRendererSelect">
