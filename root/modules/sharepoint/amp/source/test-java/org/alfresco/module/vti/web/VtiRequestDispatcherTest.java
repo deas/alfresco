@@ -89,7 +89,7 @@ public class VtiRequestDispatcherTest
         // VtiIfHeaderAction PUT handler expects the file to have already been created (in most cases)
         FileInfo createdFile = fileFolderService.create(docLib, fileName, ContentModel.TYPE_CONTENT);
         
-        request = new MockHttpServletRequest("PUT", "/"+shortSiteId+"/documentLibrary/"+fileName);
+        request = new MockHttpServletRequest("PUT", "/alfresco/"+shortSiteId+"/documentLibrary/"+fileName);
         String fileContent = "This is the test file's content."; 
         request.setContent(fileContent.getBytes());
         request.addHeader("If", "(<rt:792589C1-2E8F-410E-BC91-4EF42DA88D3C@00862604462>)");
