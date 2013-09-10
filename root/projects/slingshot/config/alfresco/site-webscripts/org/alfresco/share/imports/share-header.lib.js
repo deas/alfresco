@@ -1498,7 +1498,7 @@ function getTitleBarModel() {
                   publishPayload: {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
-                     user: encodeURIComponent(user.name),
+                     user: user.name,
                      userFullName: user.fullName
                   }
                }
@@ -1550,7 +1550,7 @@ function getTitleBarModel() {
                      publishPayload: {
                         site: page.url.templateArgs.site,
                         siteTitle: siteData.profile.title,
-                        user: encodeURIComponent(user.name),
+                        user: user.name,
                         userFullName: user.fullName
                      }
                   }
@@ -1576,7 +1576,7 @@ function getTitleBarModel() {
                      publishPayload: {
                         site: page.url.templateArgs.site,
                         siteTitle: siteData.profile.title,
-                        user: encodeURIComponent(user.name),
+                        user: user.name,
                         userFullName: user.fullName
                      }
                   }
@@ -1597,7 +1597,7 @@ function getTitleBarModel() {
                   publishPayload: {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
-                     user: encodeURIComponent(user.name),
+                     user: user.name,
                      userFullName: user.fullName
                   }
                }
@@ -1617,7 +1617,7 @@ function getTitleBarModel() {
                   publishPayload: {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
-                     user: encodeURIComponent(user.name),
+                     user: user.name,
                      userFullName: user.fullName
                   }
                }
