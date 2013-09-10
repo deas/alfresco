@@ -50,7 +50,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * @author Matt Ward
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractListItemsEndpointTest
+public class TestAbstractListItemsEndpointTest
 {
     // Class under test
     private AbstractListItemsEndpoint listItemsEndpoint;

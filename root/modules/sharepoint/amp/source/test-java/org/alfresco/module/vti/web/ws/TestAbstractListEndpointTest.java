@@ -42,7 +42,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author Matt Ward
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractListEndpointTest
+public class TestAbstractListEndpointTest
 {
     private AbstractListEndpoint listEndpoint;
     private @Mock VtiSoapRequest soapRequest;
