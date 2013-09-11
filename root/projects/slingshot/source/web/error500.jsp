@@ -62,7 +62,7 @@ div.panel
 <body>
    <div>
       <br/>
-      <img src="${pageContext.request.contextPath}/themes/default/images/app-logo.png">
+      <img src="${pageContext.request.contextPath}/res/themes/default/images/app-logo.png">
       <br/>
       <br/>
       <p style="font-size:150%">A server error has occured.</p>
