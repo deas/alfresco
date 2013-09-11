@@ -24,11 +24,16 @@
       <div id="${el}-body" class="application">
          <!-- Options panel -->
          <div id="${el}-options" class="hidden">
+            <@markup id="msgTitle">
             <div class="title">${msg("page.adminConsole.description")}</div>
+            </@>
+            <@markup id="msgNewAdminConsole">
             <div class="row info">${msg("message.new-admin-console")}</div>
+            </@>
             <form id="${el}-options-form" action="${url.context}/service/components/console/application" method="post">
                <div class="title">${msg("label.options")}</div>
                <!-- Theme -->
+               <@markup id="theme">
                <div class="row">
                   <div class="label">${msg("label.theme")}:</div>
                   <div class="flat-button">
@@ -39,7 +44,9 @@
                      </select>
                   </div>
                </div>
+               </@>
                <!-- Logo -->
+               <@markup id="logo">
                <div class="row">
                   <div class="label">${msg("label.logo")}:</div>
                   <div class="logo"><img id="${el}-logoimg" src="${url.context}<#if logo?? && logo?length!=0>/proxy/alfresco/api/node/${logo?replace('://','/')}/content<#else>/res/themes/${theme}/images/${defaultlogo}</#if>" /></div>
@@ -50,6 +57,7 @@
                      <input type="hidden" id="console-options-logo" value="" />
                   </div>
                </div>
+               </@>
                <!-- Apply changes -->
                <div class="apply">
                   <button id="${el}-apply-button" name="apply">${msg("button.apply")}</button>
