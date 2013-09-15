@@ -234,7 +234,7 @@
 
          var prefs = this.services.preferences.get();
          var sortByPreference = Alfresco.util.findValueByDotNotation(prefs, PREF_SORTBY, null);
-         if (sortByPreference !== null && this.widgets.sortBy !== null)
+         if (sortByPreference != null && this.widgets.sortBy != null)
          {
             this.widgets.sortBy.value = sortByPreference;
             // set the correct menu label
@@ -267,7 +267,7 @@
             url: Alfresco.constants.PROXY_URI + "api/replication-definitions",
             dataObj:
             {
-               sort: this.widgets.sortBy !== null ? this.widgets.sortBy.value : null
+               sort: this.widgets.sortBy != null ? this.widgets.sortBy.value : null
             },
             successCallback:
             {

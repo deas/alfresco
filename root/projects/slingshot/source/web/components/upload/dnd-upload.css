@@ -367,6 +367,11 @@
    position: relative;
 }
 
+.ie10-dnd-file-selection-button {
+   width: 400px;
+}
+
+
 .dnd-file-selection-button-overlay-wrapper input.dnd-file-selection-button {
   width: 100%;
 }

@@ -687,25 +687,56 @@
             Dom.addClass(this.id + "-filelist-table", "hidden");
             Dom.addClass(this.aggregateDataWrapper, "hidden");
 
-            // Create a new file selection input element (to ensure old data is retained we will remove any old instance...
-            if (this.fileSelectionInput && this.fileSelectionInput.parentNode)
+            if (YAHOO.env.ua.ie > 9)
             {
-               this.fileSelectionInput.parentNode.removeChild(this.fileSelectionInput); // Remove the old node...
+               // Create a new file selection input element (to ensure old data is retained we will remove any old instance...
+               if (this.fileSelectionInput && this.fileSelectionInput.parentNode)
+               {
+                  this.fileSelectionInputParent = this.fileSelectionInput.parentNode;
+                  this.fileSelectionInput.parentNode.removeChild(this.fileSelectionInput); // Remove the old node...
+               }
+               else
+               {
+                  this.fileSelectionInputParent = this.widgets.fileSelectionOverlayButton._button.parentNode;
+                  this.fileSelectionInputParent.removeChild(this.widgets.fileSelectionOverlayButton._button);
+               }
+               
+               this.fileSelectionInput = document.createElement("input");
+               Dom.setAttribute(this.fileSelectionInput, "type", "file");
+               
+               // Only set the multiple attribute on the input element if running in multi-file upload
+               // (i.e. we don't want to allow multiple file selection when updating a file)
+               if (this.suppliedConfig.mode !== this.MODE_SINGLE_UPLOAD && this.suppliedConfig.mode !== this.MODE_SINGLE_UPDATE)
+               {
+                  Dom.setAttribute(this.fileSelectionInput, "multiple", "");
+               }
+               Dom.setAttribute(this.fileSelectionInput, "name", "files[]");
+               Dom.addClass(this.fileSelectionInput, "ie10-dnd-file-selection-button");
+               Event.addListener(this.fileSelectionInput, "change", this.onFileSelection, this, true);
+               this.fileSelectionInputParent.appendChild(this.fileSelectionInput);
             }
-            
-            this.fileSelectionInput = document.createElement("input");
-            Dom.setAttribute(this.fileSelectionInput, "type", "file");
+            else
+            {
+               // Create a new file selection input element (to ensure old data is retained we will remove any old instance...
+               if (this.fileSelectionInput && this.fileSelectionInput.parentNode)
+               {
+                  this.fileSelectionInput.parentNode.removeChild(this.fileSelectionInput); // Remove the old node...
+               }
+               
+               this.fileSelectionInput = document.createElement("input");
+               Dom.setAttribute(this.fileSelectionInput, "type", "file");
 
-            // Only set the multiple attribute on the input element if running in multi-file upload
-            // (i.e. we don't want to allow multiple file selection when updating a file)
-            if (this.suppliedConfig.mode !== this.MODE_SINGLE_UPLOAD && this.suppliedConfig.mode !== this.MODE_SINGLE_UPDATE)
-            {
-               Dom.setAttribute(this.fileSelectionInput, "multiple", "");
+               // Only set the multiple attribute on the input element if running in multi-file upload
+               // (i.e. we don't want to allow multiple file selection when updating a file)
+               if (this.suppliedConfig.mode !== this.MODE_SINGLE_UPLOAD && this.suppliedConfig.mode !== this.MODE_SINGLE_UPDATE)
+               {
+                  Dom.setAttribute(this.fileSelectionInput, "multiple", "");
+               }
+               Dom.setAttribute(this.fileSelectionInput, "name", "files[]");
+               Dom.addClass(this.fileSelectionInput, "dnd-file-selection-button");
+               Event.addListener(this.fileSelectionInput, "change", this.onFileSelection, this, true);
+               this.widgets.fileSelectionOverlayButton._button.parentNode.appendChild(this.fileSelectionInput);
             }
-            Dom.setAttribute(this.fileSelectionInput, "name", "files[]");
-            Dom.addClass(this.fileSelectionInput, "dnd-file-selection-button");
-            Event.addListener(this.fileSelectionInput, "change", this.onFileSelection, this, true);
-            this.widgets.fileSelectionOverlayButton._button.parentNode.appendChild(this.fileSelectionInput);
             
             // Enable the Esc key listener
             this.widgets.escapeListener.enable();

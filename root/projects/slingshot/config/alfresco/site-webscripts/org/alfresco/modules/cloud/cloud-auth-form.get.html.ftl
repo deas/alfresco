@@ -2,15 +2,14 @@
    <div class="hd">${msg("label.cloud-auth")}</div>
    <div class="bd">
       <form id="${el}-form" action="${url.context}/proxy/alfresco/cloud/person/credentials" method="post" class="cloud-auth-form">
-
          <div class="header-bar"><span class="error">${msg("label.cloud-auth.error")}</span></div>
          <div class="row">
             <span class="label"><label for="username">${msg("label.cloud-email")}</label></span>
-            <span class="input"><input type="text" id="username" value="${email}" /></span>
+            <span><input type="text" id="username" value="${email}" /></span>
          </div>
          <div class="row">
             <span class="label"><label for="password">${msg("label.cloud-password")}</label></span>
-            <span class="input"><input type="password" id="password" /></span>
+            <span><input type="password" id="password" /></span>
          </div>
 
          <div class="row saved">
@@ -24,7 +23,7 @@
          <div class="extra-links">
             <a target="_blank" href="http://www.alfresco.com/cloud?utm_source=AlfEnt4&utm_medium=anchor&utm_campaign=claimnetwork" class="theme-color-1">No Account? Sign up for free</a>
             <span class="cloud-core-login-separator">|</span>
-            <a target="_blank" href="http://my.alfresco.com/share/page/forgot-password" class="theme-color-1">Forgot password?</a>
+            <a target="_blank" href="https://my.alfresco.com/share/page/forgot-password" class="theme-color-1">Forgot password?</a>
          </div>
       </form>
    </div>

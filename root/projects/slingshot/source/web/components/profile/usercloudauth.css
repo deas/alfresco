@@ -25,7 +25,12 @@
 }
 
 .cloudAuth div.not-connected,
-.cloudAuth div.connected
+.cloudAuth div.existing-connection
 {
    padding-left:20px;
+}
+
+.cloudAuth div.signin
+{
+   margin-left:1.5em;
 }

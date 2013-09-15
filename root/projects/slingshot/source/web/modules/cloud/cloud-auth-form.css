@@ -10,7 +10,7 @@ form.cloud-auth-form
 form.cloud-auth-form div.header-bar
 {
     background: url(../../themes/default/images/logo.png) no-repeat 5px 12px;
-    padding:84px 0 5px;
+    padding:62px 0 5px;
 }
 
 form.cloud-auth-form label
@@ -50,4 +50,9 @@ form.cloud-auth-form div.buttons
    padding-bottom:7px;
    padding-top: 2px;
    margin-left: -2px;
+}
+
+form.cloud-auth-form div.extra-links
+{
+   padding-bottom:5px;
 }

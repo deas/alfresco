@@ -35,6 +35,12 @@ function main()
             model.email = person.email;
          }
       }
+      
+      var cloudAuth = {
+         id : "UserCloudAuth", 
+         name : "Alfresco.UserCloudAuth"
+      };
+      model.widgets = [cloudAuth];
    }
 }
 
