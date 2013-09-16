@@ -272,6 +272,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-server-support-0.10.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-browser-0.10.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-test-tck-0.10.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/groovy-all-2.1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/groovy-all-2.1.7-indy.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
