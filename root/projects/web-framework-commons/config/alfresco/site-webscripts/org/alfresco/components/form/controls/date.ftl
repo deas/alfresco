@@ -1,5 +1,5 @@
 <#if field.control.params.submitTime?? && field.control.params.submitTime == "false"><#assign submitTime=false><#else><#assign submitTime=true></#if>
-<#if field.control.params.showTime?? && field.control.params.showTime == "true"><#assign showTime=true><#assign submitTime=true><#else><#assign showTime=false></#if>
+<#if field.control.params.showTime?? && field.control.params.showTime == "true"><#assign showTime=true><#else><#assign showTime=false></#if>
 
 <#if showTime><#assign viewFormat>${msg("form.control.date-picker.view.time.format")}</#assign><#else><#assign viewFormat>${msg("form.control.date-picker.view.date.format")}</#assign></#if>
 
@@ -26,7 +26,7 @@
             <span class="viewmode-value">
             ${msg("form.control.novalue")}
          <#elseif !multiValued>
-            <span class="viewmode-value" data-date-iso8601="${field.value}">
+            <span class="viewmode-value viewmode-value-date" data-date-iso8601="${field.value}">
             ${xmldate(field.value)?string(viewFormat)}
          <#else>
             <span class="viewmode-value">
