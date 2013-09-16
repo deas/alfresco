@@ -30,7 +30,7 @@
                   ${msg("document-info.permissions")}
                   <#if allowPermissionsUpdate>
                      <span class="alfresco-twister-actions">
-                        <a href="#" name=".onManagePermissionsClick" class="${el} edit" title="${msg("label.edit")}">&nbsp;</a>
+                        <a href="${siteURL("manage-permissions?nodeRef="+nodeRef?html)}" class="edit" title="${msg("label.edit")}">&nbsp;</a>
                      </span>
                   </#if>
                </h2>
