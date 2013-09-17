@@ -235,13 +235,48 @@
        */
       _onActionDeleteConfirm: function FolderActions__onActionDeleteConfirm(asset)
       {
-         var path = asset.location.path,
-            fileName = asset.fileName,
+         var path = asset.location.path;
+         
+         // Update the path for My Files and Shared Files...
+         if (Alfresco.constants.PAGECONTEXT == "mine" || Alfresco.constants.PAGECONTEXT == "shared")
+         {
+            // Get rid of the first "/"
+            var tmpPath = path.substring(1); 
+            if (Alfresco.constants.PAGECONTEXT == "mine")
+            {
+               tmpPath = tmpPath.substring(tmpPath.indexOf("/") + 1);
+            }
+            var slashIndex = tmpPath.indexOf("/");
+            if (slashIndex != -1)
+            {
+               path = tmpPath.substring(slashIndex);
+            }
+            else
+            {
+               path = "";
+            }
+         }
+         
+         var fileName = asset.fileName,
             displayName = asset.displayName,
             nodeRef = new Alfresco.util.NodeRef(asset.nodeRef),
             parentNodeRef = new Alfresco.util.NodeRef(asset.parent.nodeRef),
-            callbackUrl = Alfresco.util.isValueSet(this.options.siteId) ? "documentlibrary" : "repository",
+            callbackUrl = "",
             encodedPath = path.length > 1 ? "?path=" + encodeURIComponent(path) : "";
+         
+         // Work out the correct Document Library to return to...
+         if (Alfresco.constants.PAGECONTEXT == "mine")
+         {
+            callbackUrl = "myfiles";
+         }
+         else if (Alfresco.constants.PAGECONTEXT == "shared")
+         {
+            callbackUrl = "sharedfiles";
+         }
+         else
+         {
+            callbackUrl = Alfresco.util.isValueSet(this.options.siteId) ? "documentlibrary" : "repository";
+         }
          
          this.modules.actions.genericAction(
          {
