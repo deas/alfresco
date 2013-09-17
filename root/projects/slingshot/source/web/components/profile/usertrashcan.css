@@ -8,6 +8,11 @@
 {
 }
 
+.trashcan .paginator
+{
+   padding: 0.5em 0 1em 1.5em;
+}
+
 .trashcan .name
 {
    font-size: 116%;

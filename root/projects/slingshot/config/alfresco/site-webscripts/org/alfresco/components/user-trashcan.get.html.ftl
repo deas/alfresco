@@ -64,7 +64,15 @@
          <div class="content">
             <div id="${el}-datalist" class="datalist"></div>
             <div>
-               <div id="${el}-paginator" class="paginator">&nbsp;</div>
+               <div id="${el}-paginator" class="paginator">
+                  <span class="yui-button yui-push-button" id="${el}-paginator-less-button">
+                     <span class="first-child"><button>${msg("pagination.previousPageLinkLabel")}</button></span>
+                  </span>
+                  &nbsp;
+                  <span class="yui-button yui-push-button" id="${el}-paginator-more-button">
+                     <span class="first-child"><button>${msg("pagination.nextPageLinkLabel")}</button></span>
+                  </span>
+               </div>
             </div>
          </div>
       </div>

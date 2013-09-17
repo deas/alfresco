@@ -53,6 +53,8 @@
    YAHOO.extend(Alfresco.UserTrashcan, Alfresco.component.Base,
    {
       searchText: null,
+      pageSize: 50,
+      skipCount: 0,
       
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -69,6 +71,8 @@
          this.widgets.empty = Alfresco.util.createYUIButton(this, "empty-button", this.onEmpty);
          this.widgets.search = Alfresco.util.createYUIButton(this, "search-button", this.onSearch);
          this.widgets.clear = Alfresco.util.createYUIButton(this, "clear-button", this.onClear);
+         this.widgets.pageLess = Alfresco.util.createYUIButton(this, "paginator-less-button", this.onPageLess);
+         this.widgets.pageMore = Alfresco.util.createYUIButton(this, "paginator-more-button", this.onPageMore);
          this.widgets.actionMenu = Alfresco.util.createYUIButton(this, "selected", this.onActionItemClick,
          {
             disabled: true,
@@ -109,20 +113,35 @@
             dataSource:
             {
                url: url,
+               initialParameters: "maxItems=" + (this.pageSize + this.skipCount + 1),
                config:
                {
                   responseSchema:
                   {
                      resultsList: "data.deletedNodes"
+                  },
+                  doBeforeParseData: function _doBeforeParseData(oRequest, oResponse)
+                  {
+                     if ((me.skipCount = oResponse.paging.skipCount) != 0)
+                     {
+                        Dom.removeClass(Dom.get(me.id + "-paginator-less-button"), "hidden");
+                     }
+                     else
+                     {
+                        Dom.addClass(Dom.get(me.id + "-paginator-less-button"), "hidden");
+                     }
+                     if (oResponse.data.deletedNodes.length > me.pageSize)
+                     {
+                        // remove the last item as it's only for us to evaluate the "more" button state
+                        oResponse.data.deletedNodes.pop();
+                        Dom.removeClass(Dom.get(me.id + "-paginator-more-button"), "hidden");
+                     }
+                     else
+                     {
+                        Dom.addClass(Dom.get(me.id + "-paginator-more-button"), "hidden");
+                     }
+                     return oResponse;
                   }
-               }
-            },
-            paginator:
-            {
-               config:
-               {
-                  containers: [this.id + "-paginator"],
-                  rowsPerPage: 50
                }
             }
          });
@@ -626,6 +645,35 @@
       },
       
       /**
+       * onPageLess button click handler
+       * 
+       * @method onPageLess
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onPageLess: function UT_onPageLess(e, p_obj)
+      {
+         if (this.skipCount > 0)
+         {
+            this.skipCount -= this.pageSize;
+         }
+         this.refreshDataTable();
+      },
+      
+      /**
+       * onPageMore button click handler
+       * 
+       * @method onPageMore
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onPageMore: function UT_onPageMore(e, p_obj)
+      {
+         this.skipCount += this.pageSize;
+         this.refreshDataTable();
+      },
+      
+      /**
        * Create a generic YUI action button hooked into the appropriate parent element
        * 
        * @method createActionButton
@@ -677,15 +725,16 @@
        */
       refreshDataTable: function UT_refreshDataTable()
       {
-         var params = "";
+         // we alway ask for an extra item to see if there are more for the next page
+         var params = "maxItems=" + (this.pageSize + this.skipCount + 1) + "&skipCount=" + this.skipCount;
          if (this.searchText.length !== 0)
          {
             var search = this.searchText;
-            if (search.match("\\*$") !== "*")
+            if (search.match("\\*") != "*")
             {
                search += "*";
             }
-            params = "nf=" + encodeURIComponent(search);
+            params += "&nf=" + encodeURIComponent(search);
          }
          this.widgets.dataTable.loadDataTable(params);
       }
