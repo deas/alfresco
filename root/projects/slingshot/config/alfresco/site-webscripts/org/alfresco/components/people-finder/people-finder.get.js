@@ -16,7 +16,7 @@ function main()
          setFocus: (args.setFocus == "true"),
          addButtonSuffix: (args.addButtonSuffix != null) ? args.addButtonSuffix : "",
          dataWebScript: ((args.dataWebScript != null) ? args.dataWebScript : "api/people").replace("[", "{").replace("]", "}"),
-         viewMode: { _alfValue : args.viewMode != null ? args.viewMode : "Alfresco.PeopleFinder.VIEW_MODE_DEFAULT", _alfType: "REFERENCE"}
+         viewMode: { _alfValue : args.viewMode != null ? args.viewMode : "VIEW_MODE_DEFAULT", _alfType: "REFERENCE"}
       }
    };
    model.widgets = [peopleFinder];

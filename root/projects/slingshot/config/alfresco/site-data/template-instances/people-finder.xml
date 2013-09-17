@@ -18,7 +18,7 @@
          <url>/components/people-finder/people-finder</url>
          <properties>
             <setFocus>true</setFocus>
-            <viewMode>Alfresco.PeopleFinder.VIEW_MODE_FULLPAGE</viewMode>
+            <viewMode>FULLPAGE</viewMode>
          </properties>
       </component>
 
