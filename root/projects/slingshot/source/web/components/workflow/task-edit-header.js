@@ -85,6 +85,14 @@
       taskId: null,
 
       /**
+       * The referrer value query string parameter 
+       *
+       * @property referrerValue
+       * @type String
+       */
+      referrerValue: null,
+
+      /**
        * Fired by YUI when parent element is available for scripting.
        * Template initialisation, including instantiation of YUI widgets and event listener binding.
        *
@@ -173,6 +181,9 @@
          // Save task id so we can use it when invoking actions later
          this.taskId = task.id;
 
+         // Save the referrer value
+         this.referrerValue = Alfresco.util.getQueryStringParameter('referrer');
+
          // Display actions and create yui buttons
          Selector.query("h1 span", this.id, true).innerHTML = $html(task.title);
 
@@ -187,18 +198,16 @@
 
             YAHOO.lang.later(2000, this, function()
             {
-            	var referrerValue = Alfresco.util.getQueryStringParameter('referrer');
-            	
-            	// Check referrer and fall back to user dashboard if unavailable.
-            	if(referrerValue) {
-            		if(referrerValue == 'tasks') {
-            			document.location.href = $siteURL("my-tasks");
-            		} else if(referrerValue='workflows') {
-            			document.location.href = $siteURL("my-workflows");
-            		}
-            	} else {
-            		document.location.href = this.getSiteDefaultUrl() || Alfresco.constants.URL_CONTEXT;
-            	}
+               // Check referrer and fall back to user dashboard if unavailable.
+               if(this.referrerValue) {
+                   if(referrerValue == 'tasks') {
+                      document.location.href = $siteURL("my-tasks");
+                   } else if(referrerValue='workflows') {
+                      document.location.href = $siteURL("my-workflows");
+                   }
+                } else {
+                   document.location.href = this.getSiteDefaultUrl() || Alfresco.constants.URL_CONTEXT;
+               }
             }, []);
          }
 
@@ -323,8 +332,17 @@
                            }
                            else
                            {
-                              // Take the user to the most suitable place
-                              this.navigateForward(true);
+                              // Check referrer and fall back to user dashboard if unavailable.
+                              if(this.referrerValue) 
+                              {
+                                 // Take the user to the most suitable place
+                                 this.navigateForward(true);
+                              } else {
+                                 // ALF-20001. If referrer isn't available, either because there was no previous page 
+                                 // (because the user navigated directly to the page via an emailed link)
+                                 // or because the referrer header has been blocked, fall back to user dashboard.
+                                 document.location.href = this.getSiteDefaultUrl() || Alfresco.constants.URL_CONTEXT;
+                              }
                            }
                         }, data);
 
