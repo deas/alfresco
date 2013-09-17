@@ -47,7 +47,7 @@ function getNodeMetadata(proxy, api, nodeRef)
    {
       var nodeMetadata = eval('(' + result + ')');
       node = {};
-      node.name = nodeMetadata.title || nodeMetadata.name;
+      node.name = nodeMetadata.name || nodeMetadata.title;
       node.mimeType = nodeMetadata.mimetype;
       node.size = nodeMetadata.size || "0";
       node.thumbnailModifications = nodeMetadata.lastThumbnailModificationData;
