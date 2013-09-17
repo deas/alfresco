@@ -2742,18 +2742,36 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
          this.params = YAHOO.lang.merge(Alfresco.util.deepCopy(this.params), p_params);
       }
       var fullScreenInstance = this;
-      document.addEventListener("fullscreenchange", function()
+      if(document.addEventListener)
       {
-         fullScreenInstance.onFullScreenChange();
-      }, false);
-      document.addEventListener("mozfullscreenchange", function()
+         document.addEventListener("fullscreenchange", function()
+         {
+            fullScreenInstance.onFullScreenChange();
+         }, false);
+         document.addEventListener("mozfullscreenchange", function()
+         {
+            fullScreenInstance.onFullScreenChange();
+         }, false);
+         document.addEventListener("webkitfullscreenchange", function()
+         {
+            fullScreenInstance.onFullScreenChange();
+         }, false);
+      }
+      else
       {
-         fullScreenInstance.onFullScreenChange();
-      }, false);
-      document.addEventListener("webkitfullscreenchange", function()
-      {
-         fullScreenInstance.onFullScreenChange();
-      }, false);
+         document.attachEvent("onfullscreenchange", function()
+         {
+            fullScreenInstance.onFullScreenChange();
+         });
+         document.attachEvent("onmozfullscreenchange", function()
+         {
+            fullScreenInstance.onFullScreenChange();
+         });
+         document.attachEvent("onwebkitfullscreenchange", function()
+         {
+            fullScreenInstance.onFullScreenChange();
+         });
+      }	  
       
       return this;
    };
@@ -2965,14 +2983,28 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
                      fullscreen.toggleFullWindow();
                   }
                }
-               document.addEventListener("keydown", this.context.escKeyListener, false);
+               if (document.addEventListener)
+               {
+                  document.addEventListener("keydown", this.context.escKeyListener, false);
+               }
+               else
+               {
+                  document.attachEvent("onkeydown", this.context.escKeyListener);
+               }
             }
             else
             {
                Dom.removeClass(pageContainer, 'alf-fullwindow');
                if (this.context.escKeyListener)
                {
-                  document.removeEventListener("keydown", this.context.escKeyListener, false);
+                  if(document.removeEventListener)
+                  {
+                     document.removeEventListener("keydown", this.context.escKeyListener, false);
+                  }
+                  else
+                  {
+                     document.detachEvent("onkeydown", this.context.escKeyListener);
+                  }
                }
             }
             this.onFullScreenChange();
