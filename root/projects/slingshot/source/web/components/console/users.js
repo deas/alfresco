@@ -40,7 +40,7 @@
    /**
     * ConsoleUsers constructor.
     * 
-    * @param {String} htmlId The HTML id �of the parent element
+    * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.ConsoleUsers} The new ConsoleUsers instance
     * @constructor
     */
