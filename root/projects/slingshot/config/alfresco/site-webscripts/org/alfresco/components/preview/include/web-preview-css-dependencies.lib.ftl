@@ -4,3 +4,4 @@
    <@link href="${url.context}/res/components/preview/WebPreviewerHTML.css" group="${dependencyGroup}" />
    <@link href="${url.context}/res/components/preview/Audio.css" group="${dependencyGroup}" />
    <@link href="${url.context}/res/components/preview/Image.css" group="${dependencyGroup}" />
+   <@link href="${url.context}/res/components/preview/StrobeMediaPlayback.css" group="${dependencyGroup}" />
