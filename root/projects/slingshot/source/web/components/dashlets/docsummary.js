@@ -100,17 +100,6 @@
       },
 
       /**
-       * Generate base webscript url.
-       *
-       * @method getWebscriptUrl
-       * @override
-       */
-      getWebscriptUrl: function SimpleDocList_getWebscriptUrl()
-      {
-         return Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/site/" + Alfresco.constants.SITE + "/documentLibrary?max=50";
-      },
-
-      /**
        * Calculate webscript parameters
        *
        * @method getParameters

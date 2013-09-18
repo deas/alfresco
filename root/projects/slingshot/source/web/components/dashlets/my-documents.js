@@ -54,7 +54,6 @@
        */
       onReady: function MyDocuments_onReady()
       {
-
          /**
           * Preferences
           */
@@ -89,6 +88,17 @@
 
          // DataTable can now be rendered
          Alfresco.dashlet.MyDocuments.superclass.onReady.apply(this, arguments);
+      },
+      
+      /**
+       * Generate base webscript url.
+       * Can be overridden.
+       *
+       * @method getWebscriptUrl
+       */
+      getWebscriptUrl: function SimpleDocList_getWebscriptUrl()
+      {
+         return Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/node/alfresco/company/home?max=50";
       },
 
       /**

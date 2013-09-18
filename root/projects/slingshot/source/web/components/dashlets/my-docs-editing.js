@@ -34,7 +34,8 @@
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML
-       $siteURL = Alfresco.util.siteURL;
+       $siteURL = Alfresco.util.siteURL,
+       $profileURL = Alfresco.util.profileURL;
    
    /**
     * Dashboard MyDocsEditing constructor.
@@ -57,7 +58,7 @@
          // Execute the request to retrieve the list of documents to display
          Alfresco.util.Ajax.jsonRequest(
          {
-            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/node/alfresco/sites/home?filter=editingMe&max=3&sortField=cm:modified&sortAsc=false",
+            url: Alfresco.constants.PROXY_URI + "slingshot/doclib/doclist/documents/node/alfresco/company/home?filter=editingMe&max=3&sortField=cm:modified&sortAsc=false",
             successCallback:
             {
                fn: function(response)
@@ -76,16 +77,18 @@
                      {
                         item = items[i];
                         
-                        var siteURL = $siteURL("dashboard", { site: item.location.site }),
+                        var linkURL = item.location.site ? $siteURL("dashboard", { site: item.location.site }) : $profileURL(item.lockedByUser, item.lockedBy),
                             fileExtIndex = item.fileName.lastIndexOf("."),
                             fileExt = fileExtIndex !== -1 ? item.fileName.substring(fileExtIndex + 1) : "generic",
-                            editMsg = this.msg("details.editing-started-in-site", '<span class="relativeTime">' + Alfresco.util.relativeTime(item.modifiedOn) + '</span>', '<a class="theme-color-1 site-link" href="' + siteURL + '">' + $html(item.location.siteTitle) + '</a>');
+                            editMsg = item.location.site ?
+                              this.msg("details.editing-started-in-site", '<span class="relativeTime">' + Alfresco.util.relativeTime(item.modifiedOn) + '</span>', '<a class="theme-color-1 site-link" href="' + linkURL + '">' + $html(item.location.siteTitle) + '</a>') : 
+                              this.msg("details.editing-started-by", '<span class="relativeTime">' + Alfresco.util.relativeTime(item.modifiedOn) + '</span>', '<a class="theme-color-1" href="' + linkURL + '">' + $html(item.lockedBy) + '</a>');
                         
                         var params = {
                            name: $html(item.displayName),
                            filename: encodeURIComponent(item.fileName),
                            fileExt: fileExt,
-                           site: item.location.site,
+                           site: item.location.site ? ("/site/" + item.location.site) : "",
                            editingMessage: editMsg,
                            onerror: imgerror
                         };

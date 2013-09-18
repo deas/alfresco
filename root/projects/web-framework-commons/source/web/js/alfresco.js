@@ -5857,6 +5857,22 @@ Alfresco.util.siteURL = function(pageURI, obj, absolute)
 };
 
 /**
+ * Returns a URL to a user profile page.
+ *
+ * @method Alfresco.util.profileURL
+ * @param userName {string} User ID
+ * @return {string} The populated URL
+ * @static
+ */
+Alfresco.util.profileURL = function(userName)
+{
+   return Alfresco.util.uriTemplate("userprofilepage",
+         {
+            userid: userName
+         });
+};
+
+/**
  * Parses a URL string into an object
  *
  * @param URL {string} The URL to convert

@@ -2713,7 +2713,7 @@ Alfresco.Share.userAvatar = function(userName, size)
                extn = name.substring(name.lastIndexOf(".")),
                locn = record.location,
                nodeRef = new Alfresco.util.NodeRef(record.nodeRef),
-               docDetailsUrl = Alfresco.constants.URL_PAGECONTEXT + "site/" + locn.site + "/document-details?nodeRef=" + nodeRef.toString();
+               docDetailsUrl = Alfresco.constants.URL_PAGECONTEXT + (locn.site ? "site/" + locn.site + '/' : "") + "document-details?nodeRef=" + nodeRef.toString();
 
             if (this.options.simpleView)
             {
@@ -2777,7 +2777,7 @@ Alfresco.Share.userAvatar = function(userName, size)
                canComment = record.permissions.userAccess.create,
                locn = record.location,
                nodeRef = new Alfresco.util.NodeRef(record.nodeRef),
-               docDetailsUrl = Alfresco.constants.URL_PAGECONTEXT + "site/" + locn.site + "/document-details?nodeRef=" + nodeRef.toString();
+               docDetailsUrl = Alfresco.constants.URL_PAGECONTEXT + (locn.site ? "site/" + locn.site + '/' : "") + "document-details?nodeRef=" + nodeRef.toString();
 
             // Description non-blank?
             if (record.description && record.description !== "")
@@ -2802,7 +2802,7 @@ Alfresco.Share.userAvatar = function(userName, size)
                dateI18N = "created";
                dateProperty = record.createdOn;
             }
-            if (Alfresco.constants.SITE === "")
+            if (locn.site)
             {
                dateLine = this.msg("details." + dateI18N + "-in-site", $relTime(dateProperty), $siteDashboard(locn.site, locn.siteTitle, 'class="site-link theme-color-1" id="' + id + '"'));
             }

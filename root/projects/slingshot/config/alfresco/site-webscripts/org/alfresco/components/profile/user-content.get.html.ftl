@@ -16,12 +16,13 @@
 <@markup id="html">
    <@uniqueIdDiv>
       <#include "../../include/alfresco-macros.lib.ftl" />
+      <#macro contentPath content><#if content.site??>site/${content.site.shortName}/</#if>${content.browseUrl}</#macro>
       <#macro formatContent content date type index>
          <#if content.browseUrl??>
          <li<#if (index == 0)> class="first"</#if>>
-            <span class="icon32"><a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="thmb"><img src="${url.context}/res/components/images/filetypes/${fileIcon(content.name)}" alt="${content.name?html}" title="${content.name?html}" /></a></span>
+            <span class="icon32"><a href="${url.context}/page/<@contentPath content />" class="thmb"><img src="${url.context}/res/components/images/filetypes/${fileIcon(content.name)}" alt="${content.name?html}" title="${content.name?html}" /></a></span>
             <p>
-               <a href="${url.context}/page/site/${content.site.shortName}/${content.browseUrl}" class="theme-color-1">${(content.displayName!"")?html}</a>
+               <a href="${url.context}/page/<@contentPath content />" class="theme-color-1">${(content.displayName!"")?html}</a>
                ${(content.description!"")?html}
                <span>${msg("label." + type)} <span class="relativeTime">${date}</span></span></p>
          </li>

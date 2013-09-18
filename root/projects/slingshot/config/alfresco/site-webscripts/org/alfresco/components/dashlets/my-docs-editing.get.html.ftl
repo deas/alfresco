@@ -56,7 +56,7 @@
                <img title="{name}" width="32" src="${url.context}/res/components/images/filetypes/{fileExt}-file-32.png" {onerror} />
             </div>
             <div class="details">
-               <h4><a href="${url.context}/page/site/{site}/documentlibrary?file={filename}&amp;filter=editingMe" class="theme-color-1">{name}</a></h4>
+               <h4><a href="${url.context}/page{site}/documentlibrary?file={filename}&amp;filter=editingMe" class="theme-color-1">{name}</a></h4>
                <div>{editingMessage}</div>
             </div>
          </div>
