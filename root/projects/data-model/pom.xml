@@ -36,84 +36,8 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/java/</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-             </plugin>
-
-            <!-- Copy ANTLR grammar files in dedicated location -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-grammar-resources</id>
-                        <phase>validate</phase>
-                        <goals><goal>copy-resources</goal></goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/antlr</outputDirectory>
-                            <resources>          
-                                <resource>
-                                    <directory>${project.build.sourceDirectory}</directory>
-                                    <includes>
-                                        <include>**/*.g</include>
-                                    </includes>
-                                </resource>
-                            </resources>          
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Generate code through ANTLR
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr3-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-parsers</id>
-                        <goals>
-                            <goal>antlr</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${project.build.directory}/antlr</sourceDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> -->
-            
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>org/alfresco/repo/search/impl/parsers/CMISParser.java</exclude>
-                        <exclude>org/alfresco/repo/search/impl/parsers/CMISLexer.java</exclude>
-                        <exclude>org/alfresco/repo/search/impl/parsers/FTSParser.java</exclude>
-                        <exclude>org/alfresco/repo/search/impl/parsers/FTSLexer.java</exclude>
-                        <exclude>org/alfresco/repo/search/impl/parsers/CMIS_FTSParser.java</exclude>
-                        <exclude>org/alfresco/repo/search/impl/parsers/CMIS_FTSLexer.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            
-            
-            
         </plugins>
+
         <pluginManagement>
         	<plugins>
         		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
