@@ -113,7 +113,7 @@
             dataSource:
             {
                url: url,
-               initialParameters: "maxItems=" + (this.pageSize + this.skipCount + 1),
+               initialParameters: "maxItems=" + (this.pageSize + 1),
                config:
                {
                   responseSchema:
@@ -122,23 +122,17 @@
                   },
                   doBeforeParseData: function _doBeforeParseData(oRequest, oResponse)
                   {
-                     if ((me.skipCount = oResponse.paging.skipCount) != 0)
-                     {
-                        Dom.removeClass(Dom.get(me.id + "-paginator-less-button"), "hidden");
-                     }
-                     else
-                     {
-                        Dom.addClass(Dom.get(me.id + "-paginator-less-button"), "hidden");
-                     }
-                     if (oResponse.data.deletedNodes.length > me.pageSize)
+                     // process the paging meta data to correctly set paginator button enabled state
+                     me.widgets.pageLess.set("disabled", ((me.skipCount = oResponse.paging.skipCount) === 0));
+                     if (oResponse.paging.totalItems > me.pageSize)
                      {
                         // remove the last item as it's only for us to evaluate the "more" button state
                         oResponse.data.deletedNodes.pop();
-                        Dom.removeClass(Dom.get(me.id + "-paginator-more-button"), "hidden");
+                        me.widgets.pageMore.set("disabled", false);
                      }
                      else
                      {
-                        Dom.addClass(Dom.get(me.id + "-paginator-more-button"), "hidden");
+                        me.widgets.pageMore.set("disabled", true);
                      }
                      return oResponse;
                   }
@@ -726,7 +720,7 @@
       refreshDataTable: function UT_refreshDataTable()
       {
          // we alway ask for an extra item to see if there are more for the next page
-         var params = "maxItems=" + (this.pageSize + this.skipCount + 1) + "&skipCount=" + this.skipCount;
+         var params = "maxItems=" + (this.pageSize + 1) + "&skipCount=" + this.skipCount;
          if (this.searchText.length !== 0)
          {
             var search = this.searchText;
