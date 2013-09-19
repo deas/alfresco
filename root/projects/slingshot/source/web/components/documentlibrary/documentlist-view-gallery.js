@@ -285,7 +285,7 @@
     * Gets the row item's actions element from the given row item
     *
     * @method getRowItemActionsElement
-    * @param rowItem {HTMLElement} The row item object
+    * @param rowItemscope.services.preferences.get(); {HTMLElement} The row item object
     * @return {HTMLElement} the row item actions element
     */
    Alfresco.DocumentListGalleryViewRenderer.prototype.getRowItemActionsElement = function DL_GVR_getRowItemActionsElement(rowItem)
@@ -392,6 +392,8 @@
          this.onSelectedFilesChanged(scope);
       }, this);
       
+      
+      this.galleryColumns = Alfresco.util.findValueByDotNotation(scope.services.preferences.get(), PREF_GALLERY_COLUMNS);
       if (!this.galleryColumns) 
       {
          this.galleryColumns = DEFAULT_GALLERY_COLUMNS;
