@@ -226,7 +226,7 @@ public class CMISMapping implements InitializingBean
     /*
      * Is the type excluded from the CMIS dictionary and therefore not visible to clients?
      */
-    private boolean isExcluded(QName typeQName)
+    public boolean isExcluded(QName typeQName)
     {
     	boolean isExcluded = false;
 
@@ -293,7 +293,7 @@ public class CMISMapping implements InitializingBean
                 p = "R";
                 break;
             case CMIS_SECONDARY:
-                p = "S";
+                p = "P";
                 break;
             case CMIS_POLICY:
                 p = "P";
@@ -327,7 +327,7 @@ public class CMISMapping implements InitializingBean
         {
             return getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
         }
-        if (/*cmisVersion.equals(CmisVersion.CMIS_1_0) && */classQName.equals(CMISMapping.ASPECTS_QNAME))
+        if (classQName.equals(CMISMapping.ASPECTS_QNAME))
         {
             return getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
         }

@@ -260,6 +260,11 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     {
         return getRegistry().typeDefsByTypeId.get(typeId);
     }
+    
+    public boolean isExcluded(QName qname)
+    {
+        return cmisMapping.isExcluded(qname);
+    }
 
     public TypeDefinitionWrapper findTypeForClass(QName clazz, BaseTypeId... matchingScopes)
     {
@@ -529,6 +534,11 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      */
     protected void onShutdown(ApplicationEvent event)
     {
+    }
+    
+    public String getCmisTypeId(QName classQName)
+    {
+        return cmisMapping.getCmisTypeId(classQName);
     }
 
 }

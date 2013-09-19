@@ -266,6 +266,7 @@
          <!-- REST API tests -->
          <exclude name="**/org/alfresco/repo/cmis/ws/**/*Test.java"/>
          <include name="**/org/alfresco/rest/api/tests/ApiTest.java"/>
+         <include name="**/org/alfresco/rest/api/tests/TestCMISAPI.java"/>
 
          <!-- Excluding long tests -->
          <exclude name="**/org/alfresco/deployment/impl/asr/AVMDeploymentTargetTest.java" if="minimal.testing" />

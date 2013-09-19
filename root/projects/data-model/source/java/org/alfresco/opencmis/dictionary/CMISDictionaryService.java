@@ -86,4 +86,6 @@ public interface CMISDictionaryService
     PropertyType findDataType(QName dataType);
 
     QName findAlfrescoDataType(PropertyType propertyType);
+    
+    boolean isExcluded(QName qname);
 }

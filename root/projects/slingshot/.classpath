@@ -32,8 +32,8 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.8.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.18-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.18-patched.zip"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/htmlparser-2.1.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-opencmis-extension-0.6.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.10.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-opencmis-extension-0.7.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
