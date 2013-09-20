@@ -47,6 +47,7 @@ import org.alfresco.service.cmr.dictionary.NamespaceDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.LockHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -201,10 +202,11 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             logger.debug("Init Dictionary: ["+Thread.currentThread()+"] "+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
         }
+        boolean requireUnlock = true;
         try
         {
-            writeLock.lock();
-            
+            LockHelper.tryLock(writeLock, 100);
+
             try
             {
                 return AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
@@ -246,9 +248,18 @@ public class DictionaryDAOImpl implements DictionaryDAO
                 }
             }
         }
+        catch (LockHelper.LockTryException lte)
+        {
+            requireUnlock = false;
+            // rethrow
+            throw lte;
+        }
         finally
         {
-            writeLock.unlock();
+            if (requireUnlock)
+            {
+                writeLock.unlock();
+            }
         }
     }
     
@@ -1045,11 +1056,11 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             return dictionaryRegistry; // return local dictionaryRegistry
         }
-        
+        boolean requireUnlock = true;
         try
         {
             // check cache second - return if set
-            readLock.lock();
+            LockHelper.tryLock(readLock, 100);
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
             
             if (dictionaryRegistry != null)
@@ -1062,15 +1073,24 @@ public class DictionaryDAOImpl implements DictionaryDAO
                 return dictionaryRegistry; // return cached config
             }
         }
+        catch (LockHelper.LockTryException lte)
+        {
+            requireUnlock = false;
+            // rethrow
+            throw lte;
+        }
         finally
         {
-            readLock.unlock();
+            if (requireUnlock)
+            {
+                readLock.unlock();
+            }
         }
         
         try
         {
             // Double check cache with write lock
-            writeLock.lock();
+            LockHelper.tryLock(writeLock, 100);
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
             
             if (dictionaryRegistry != null)
@@ -1091,9 +1111,18 @@ public class DictionaryDAOImpl implements DictionaryDAO
             // reset caches - may have been invalidated (e.g. in a cluster)
             dictionaryRegistry = initDictionary(tenantDomain, keepNamespaceLocal);
         }
+        catch (LockHelper.LockTryException lte)
+        {
+            requireUnlock = false;
+            // rethrow
+            throw lte;
+        }
         finally
         {
-            writeLock.unlock();
+            if (requireUnlock)
+            {
+                writeLock.unlock();
+            }
         }
 
         
@@ -1166,9 +1195,10 @@ public class DictionaryDAOImpl implements DictionaryDAO
     
     private void removeDictionaryRegistry(String tenantDomain)
     {
+        boolean requireUnlock = true;
         try
         {
-            writeLock.lock();
+            LockHelper.tryLock(writeLock, 100);
             if (dictionaryRegistryCache.get(tenantDomain) != null)
             {
                 dictionaryRegistryCache.remove(tenantDomain);
@@ -1176,9 +1206,18 @@ public class DictionaryDAOImpl implements DictionaryDAO
             
             removeDataDictionaryLocal(tenantDomain);
         }
+        catch (LockHelper.LockTryException lte)
+        {
+            requireUnlock = false;
+            // rethrow
+            throw lte;
+        }
         finally
         {
-            writeLock.unlock();
+            if (requireUnlock)
+            {
+                writeLock.unlock();
+            }
         }
     }
     
