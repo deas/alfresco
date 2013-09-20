@@ -384,18 +384,8 @@
          this.on('loggedInStatusChange', this.onLoginStatusChangeEvent);
       },
       
-      removeButton: function AWE_removeButton(toolbar, buttonId)
-      {
-         var b = toolbar.getButtonById(buttonId);
-         if(b != null)
-         {
-            b.destroy();
-         }
-      },
-
       /*
-       * Renders the editor. Note that this needs to deal with being called more than once
-       * e.g. for logouts and logins. Hence, the checks for existence of elements in the
+       * Renders the editor. Hence, the checks for existence of elements in the
        * DOM and creation of these elements if they don't exist.
        *
        */
@@ -422,10 +412,11 @@
          // get the current context path
          var contextPath = WEF.get("contextPath");
 
-         var tb = WebEditor.module.Ribbon.getToolbar('WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root');
-         if(tb == null)
+         var primaryToolBar = WebEditor.module.Ribbon.getToolbar('WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root');
+
+         if(primaryToolBar == null)
          {
-            tb = WebEditor.module.Ribbon.addToolbar('WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root',
+            primaryToolBar = WebEditor.module.Ribbon.addToolbar('WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root',
             {
                id: 'WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root',
                name: 'WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root',
@@ -443,65 +434,76 @@
             editables = [];
          }
 
-         // need to remove existing menus and re-create because there doesn't seem to be a way
-         // of updating existing menus with new menu items
-
-         // remove existing toolbar buttons, if necessary
-         this.removeButton(tb, this.config.name + WebEditor.SEPARATOR + 'quickcreate');
-         this.removeButton(tb, this.config.name + WebEditor.SEPARATOR + 'quickedit');
-         this.removeButton(tb, this.config.name + WebEditor.SEPARATOR + 'show-hide-edit-markers');
-
          var loggedIn = this.isLoggedIn();
 
-         tb.addButtons(
-         [
-            {
-               type: 'menu',
-               label: '<img src="' + contextPath + '/res/awe/images/quick-new.png" alt="'+ this.getMessage('awe.toolbar-quick-new-icon-label') +'" />',
-               title: this.getMessage('awe.toolbar-quick-new-icon-label'),
-               value: this.config.name + WebEditor.SEPARATOR + 'quickcreate',
-               id: this.config.name + WebEditor.SEPARATOR + 'quickcreate',
-               icon: true,
-               disabled: !loggedIn,
-               menu: this.renderCreateContentMenu(editables)
-            },
-            {
-               type: 'menu',
-               label: '<img src="' + contextPath + '/res/awe/images/quick-edit.png" alt="'+ this.getMessage('awe.toolbar-quick-edit-icon-label') +'" />',
-               title: this.getMessage('awe.toolbar-quick-edit-icon-label'),
-               value: this.config.name + WebEditor.SEPARATOR + 'quickedit',
-               id: this.config.name + WebEditor.SEPARATOR + 'quickedit',
-               icon: true,
-               disabled: !loggedIn,
-               menu: this.renderEditableContentMenu(editables)
-            },
-            {
-               type: 'push',
-               label: '<img src="' + contextPath + '/res/awe/images/toggle-edit-off.png" alt="'+ this.getMessage('awe.toolbar-toggle-markers-icon-label') +'" />',
-               title: this.getMessage('awe.toolbar-toggle-markers-icon-label'),
-               value: this.config.name + WebEditor.SEPARATOR + 'show-hide-edit-markers',
-               disabled: !loggedIn,
-               id: this.config.name + WebEditor.SEPARATOR + 'show-hide-edit-markers',
-               icon: true
-            }
-         ]);
+         if (loggedIn)
+         {
 
-         tb.getButtonById(this.config.name + WebEditor.SEPARATOR + 'quickedit').getMenu().subscribe('mouseover', this.onQuickEditMouseOver, this, true);
+            // If primary toolbar doesn't have buttons then create required buttons
+            // otherwise make buttons enabled.
+            if (!this.hasToolbarButtons(primaryToolBar) && editables.length != 0)
+            {
+               primaryToolBar.addButtons(
+               [
+                  {
+                     type: 'menu',
+                     label: '<img src="' + contextPath + '/res/awe/images/quick-new.png" alt="'+ this.getMessage('awe.toolbar-quick-new-icon-label') +'" />',
+                     title: this.getMessage('awe.toolbar-quick-new-icon-label'),
+                     value: this.config.name + WebEditor.SEPARATOR + 'quickcreate',
+                     id: this.config.name + WebEditor.SEPARATOR + 'quickcreate',
+                     icon: true,
+                     disabled: !loggedIn,
+                     menu: this.renderCreateContentMenu(editables)
+                  },
+                  {
+                     type: 'menu',
+                     label: '<img src="' + contextPath + '/res/awe/images/quick-edit.png" alt="'+ this.getMessage('awe.toolbar-quick-edit-icon-label') +'" />',
+                     title: this.getMessage('awe.toolbar-quick-edit-icon-label'),
+                     value: this.config.name + WebEditor.SEPARATOR + 'quickedit',
+                     id: this.config.name + WebEditor.SEPARATOR + 'quickedit',
+                     icon: true,
+                     disabled: !loggedIn,
+                     menu: this.renderEditableContentMenu(editables)
+                  },
+                  {
+                     type: 'push',
+                     label: '<img src="' + contextPath + '/res/awe/images/toggle-edit-off.png" alt="'+ this.getMessage('awe.toolbar-toggle-markers-icon-label') +'" />',
+                     title: this.getMessage('awe.toolbar-toggle-markers-icon-label'),
+                     value: this.config.name + WebEditor.SEPARATOR + 'show-hide-edit-markers',
+                     disabled: !loggedIn,
+                     id: this.config.name + WebEditor.SEPARATOR + 'show-hide-edit-markers',
+                     icon: true
+                  }
+               ]);
+            } 
+            else 
+            {
+               this.toggleToolbar(true);
+            }
+         }
+
+         var quickeditMenuButton = primaryToolBar.getButtonById(this.config.name + WebEditor.SEPARATOR + 'quickedit').getMenu();
+
+         if (quickeditMenuButton != null)
+         {
+           quickeditMenuButton.subscribe('mouseover', this.onQuickEditMouseOver, this, true); 
+         }
 
          // set up toolbar as a managed attribute so it can be exposed to other plugins
          if(this.setAttributeConfig('toolbar') == null)
          {
             this.setAttributeConfig('toolbar',
             {
-               value: tb
+               value: primaryToolBar
             });
          }
 
-         tb = WebEditor.module.Ribbon.getToolbar(WebEditor.ui.Ribbon.SECONDARY_TOOLBAR);
-         // assume tb exists, it is created by WEF
-         if(tb.getButtonById(this.config.name + WebEditor.SEPARATOR + 'loginToggle') == null)
+         var secondaryToolBar = WebEditor.module.Ribbon.getToolbar(WebEditor.ui.Ribbon.SECONDARY_TOOLBAR);
+
+         // assume secondary toolbar exists, it is created by WEF
+         if(secondaryToolBar.getButtonById(this.config.name + WebEditor.SEPARATOR + 'loginToggle') == null)
          {
-            tb.addButtons(
+            secondaryToolBar.addButtons(
             [ 
                {
                   type: 'push',
@@ -513,6 +515,20 @@
                }
             ]);
          }
+      },
+
+      /**
+       * Checks has toolbar any buttons or not
+       *
+       * @method hasToolbarButtons
+       *
+       * @param toolBar to check for buttons
+       * @return {Boolean} true if ttoolBar has butons, otherwise - false.
+       *
+       */
+      hasToolbarButtons: function AWE_hasToolbarButtons(toolBar)
+      {
+         return toolBar.widgets.buttons.length > 0;
       },
 
       renderCreateContentMenu: function AWE_renderCreateContentMenu(editables)
@@ -845,19 +861,21 @@
          this.setLoggedIn(false);
       },
 
+      /**
+       * Event handler that enables or disables button on primary toolbar.
+       *
+       * @param e {Boolean} 'true' for enabling buttons,
+       *                   'false' for disabling buttons
+       *
+       */
       toggleToolbar: function AWE_toggleToolbar(enabled)
       {
-         var quickCreate = WebEditor.module.Ribbon.getToolbar(
-            'WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root').getButtonById(this.config.name + WebEditor.SEPARATOR + 'quickcreate');
-         quickCreate.set('disabled', !enabled);
+         var primaryToolBarButtons = this.getAttributeConfig('toolbar').value.widgets.buttons;
 
-         var quickEdit = WebEditor.module.Ribbon.getToolbar(
-            'WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root').getButtonById(this.config.name + WebEditor.SEPARATOR + 'quickedit');
-         quickEdit.set('disabled', !enabled);
-
-         var showHideEditMarkers = WebEditor.module.Ribbon.getToolbar(
-            'WEF-'+WebEditor.ui.Ribbon.PRIMARY_TOOLBAR+'-root').getButtonById(this.config.name + WebEditor.SEPARATOR + 'show-hide-edit-markers');
-         showHideEditMarkers.set('disabled', !enabled);
+         for (var button = 0; button < primaryToolBarButtons.length; button++ )
+         {
+            primaryToolBarButtons[button].set('disabled', !enabled);
+         }
       },
       
       loginCancelled: function AWE_loginCancelled()
@@ -986,6 +1004,10 @@
                               Event.removeListener(newElem, 'click');
                               var deleteElem = Selector.query('a.alfresco-content-delete', markerSpan, true);
                               Event.removeListener(deleteElem, 'click');
+                              
+                              // Disabling primary toolbar buttons.
+                              ribbonObj.toggleToolbar(false);
+
                               this.hide();
                               this.destroy();
                            },
