@@ -733,23 +733,26 @@
                      {
                         appTool: "datalists",
                         nodeRef: nodeRef.toString()
-                     });
+                     }, 
 
-                     // If we deleted the current list, then redirect to "data-lists"
-                     if (p_obj.name == this.options.listId)
+                     this.bind(function()
                      {
-                        window.location = "data-lists";
-                        return;
-                     }
+                        // If we deleted the current list, then redirect to "data-lists"
+                        if (p_obj.name == this.options.listId)
+                        {
+                           window.location = "data-lists";
+                           return;
+                        }
 
-                     Alfresco.util.PopupManager.displayMessage(
-                     {
-                        text: this.msg("message.delete-list.success")
-                     });
+                        Alfresco.util.PopupManager.displayMessage(
+                        {
+                           text: this.msg("message.delete-list.success")
+                        });
                      
-                     delete this.dataLists[p_datalist.name];
-                     this.dataListsLength--;
-                     this.renderDataLists();
+                        delete this.dataLists[p_datalist.name];
+                        this.dataListsLength--;
+                        this.renderDataLists();
+                     }));
                   },
                   obj: p_datalist,
                   scope: this
