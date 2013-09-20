@@ -674,7 +674,6 @@
 
             // Make sure we listen for events when the user selects a group
             YAHOO.Bubbling.on("itemSelected", this.onGroupSelected, this);
-
          },
 
          /**
@@ -1429,7 +1428,6 @@
             form.addValidation(parent.id + "-create-shortname", Alfresco.forms.validation.nodeName, null, "keyup");
             form.addValidation(parent.id + "-create-shortname", Alfresco.forms.validation.length,
             {
-               min: 3,
                max: 100,
                crop: true,
                includeWhitespace: false
@@ -1437,7 +1435,6 @@
             form.addValidation(parent.id + "-create-displayname", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-create-displayname", Alfresco.forms.validation.length,
             {
-               min: 3,
                max: 255,
                crop: true,
                includeWhitespace: false
@@ -1446,7 +1443,6 @@
             // Initialize form
             form.init();
             this.forms.createForm = form;
-
          },
 
          /**
@@ -1469,11 +1465,19 @@
           */
          clear: function clear()
          {
-            Dom.get(parent.id + "-create-shortname").value = "";
-            Dom.get(parent.id + "-create-displayname").value = "";
+            var elName = Dom.get(parent.id + "-create-shortname");
+            if (elName.value.length !== 0)
+            {
+               elName.value = "";
+            }
+            var elDisplay = Dom.get(parent.id + "-create-displayname");
+            if (elDisplay.value.length !== 0)
+            {
+               elDisplay.value = "";
+            }
             if (this.forms.createForm !== null)
             {
-               this.forms.createForm.init();
+               this.forms.createForm.validate(Alfresco.forms.Form.NOTIFICATION_LEVEL_NONE);
             }
          },
 
@@ -1591,6 +1595,14 @@
          _createGroup: function ConsoleGroups_CreatePanelHandler__createGroup(successHandler)
          {
             var me = this;
+            
+            var form = this.forms.createForm;
+            if (!form.validate())
+            {
+               form._setAllFieldsAsVisited();
+               return;
+            }
+            
             var shortName = YAHOO.lang.trim(Dom.get(parent.id + "-create-shortname").value);
             parent.getParentGroups(shortName,
             {
@@ -1786,7 +1798,6 @@
             form.addValidation(parent.id + "-update-displayname", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-update-displayname", Alfresco.forms.validation.length,
             {
-               min: 3,
                max: 255,
                crop: true,
                includeWhitespace: false
@@ -1965,6 +1976,12 @@
           */
          _updateGroup: function ConsoleGroups_UpdatePanelHandler__updateGroup(successHandler)
          {
+            var form = this.forms.updateForm;
+            if (!form.validate())
+            {
+               form._setAllFieldsAsVisited();
+               return;
+            }
             this.updateGroupRequest(parent.group,
             {
                displayName: YAHOO.lang.trim(Dom.get(parent.id + "-update-displayname").value)
