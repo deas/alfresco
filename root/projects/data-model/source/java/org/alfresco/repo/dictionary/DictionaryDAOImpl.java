@@ -202,64 +202,49 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             logger.debug("Init Dictionary: ["+Thread.currentThread()+"] "+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
         }
-        boolean requireUnlock = true;
+        LockHelper.tryLock(writeLock, 100);
         try
         {
-            LockHelper.tryLock(writeLock, 100);
-
-            try
+            DictionaryRegistry result = AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
             {
-                return AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
+                public DictionaryRegistry doWork()
                 {
-                    public DictionaryRegistry doWork()
+                    try
                     {
-                        try
+                        DictionaryRegistry dictionaryRegistry = initDictionaryRegistry(tenantDomain);
+                        
+                        if (dictionaryRegistry == null)
                         {
-                            DictionaryRegistry dictionaryRegistry = initDictionaryRegistry(tenantDomain);
-                            
-                            if (dictionaryRegistry == null)
-                            {
-                                // unexpected
-                                throw new AlfrescoRuntimeException("Failed to init dictionaryRegistry " + tenantDomain);
-                            }
-                            
-                            dictionaryRegistryCache.put(tenantDomain, dictionaryRegistry);
-                            return dictionaryRegistry;
+                            // unexpected
+                            throw new AlfrescoRuntimeException("Failed to init dictionaryRegistry " + tenantDomain);
                         }
-                        finally
+                        
+                        dictionaryRegistryCache.put(tenantDomain, dictionaryRegistry);
+                        return dictionaryRegistry;
+                    }
+                    finally
+                    {
+                        if (dictionaryRegistryCache.get(tenantDomain) != null)
                         {
-                            if (dictionaryRegistryCache.get(tenantDomain) != null)
+                            removeDataDictionaryLocal(tenantDomain);
+                            if (!keepNamespaceLocal)
                             {
-                                removeDataDictionaryLocal(tenantDomain);
-                                if (!keepNamespaceLocal)
-                                {
-                                    namespaceDAO.clearNamespaceLocal();
-                                }
+                                namespaceDAO.clearNamespaceLocal();
                             }
                         }
                     }
-                }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
-            }
-            finally
-            {
-                if (logger.isInfoEnabled())
-                {
-                    logger.info("Init Dictionary: model count = "+(getModels() != null ? getModels().size() : 0) +" in "+(System.currentTimeMillis()-startTime)+" msecs ["+Thread.currentThread()+"] "+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
                 }
+            }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
+            // Done
+            if (logger.isInfoEnabled())
+            {
+                logger.info("Init Dictionary: model count = "+(getModels() != null ? getModels().size() : 0) +" in "+(System.currentTimeMillis()-startTime)+" msecs ["+Thread.currentThread()+"] "+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
             }
-        }
-        catch (LockHelper.LockTryException lte)
-        {
-            requireUnlock = false;
-            // rethrow
-            throw lte;
+            return result;
         }
         finally
         {
-            if (requireUnlock)
-            {
-                writeLock.unlock();
-            }
+            writeLock.unlock();
         }
     }
     
@@ -1056,11 +1041,10 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             return dictionaryRegistry; // return local dictionaryRegistry
         }
-        boolean requireUnlock = true;
+        LockHelper.tryLock(readLock, 100);
         try
         {
             // check cache second - return if set
-            LockHelper.tryLock(readLock, 100);
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
             
             if (dictionaryRegistry != null)
@@ -1073,24 +1057,15 @@ public class DictionaryDAOImpl implements DictionaryDAO
                 return dictionaryRegistry; // return cached config
             }
         }
-        catch (LockHelper.LockTryException lte)
-        {
-            requireUnlock = false;
-            // rethrow
-            throw lte;
-        }
         finally
         {
-            if (requireUnlock)
-            {
-                readLock.unlock();
-            }
+            readLock.unlock();
         }
         
+        // Double check cache with write lock
+        LockHelper.tryLock(writeLock, 100);
         try
         {
-            // Double check cache with write lock
-            LockHelper.tryLock(writeLock, 100);
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
             
             if (dictionaryRegistry != null)
@@ -1111,18 +1086,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
             // reset caches - may have been invalidated (e.g. in a cluster)
             dictionaryRegistry = initDictionary(tenantDomain, keepNamespaceLocal);
         }
-        catch (LockHelper.LockTryException lte)
-        {
-            requireUnlock = false;
-            // rethrow
-            throw lte;
-        }
         finally
         {
-            if (requireUnlock)
-            {
-                writeLock.unlock();
-            }
+            writeLock.unlock();
         }
 
         
@@ -1195,10 +1161,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
     
     private void removeDictionaryRegistry(String tenantDomain)
     {
-        boolean requireUnlock = true;
+        LockHelper.tryLock(writeLock, 100);
         try
         {
-            LockHelper.tryLock(writeLock, 100);
             if (dictionaryRegistryCache.get(tenantDomain) != null)
             {
                 dictionaryRegistryCache.remove(tenantDomain);
@@ -1206,18 +1171,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
             
             removeDataDictionaryLocal(tenantDomain);
         }
-        catch (LockHelper.LockTryException lte)
-        {
-            requireUnlock = false;
-            // rethrow
-            throw lte;
-        }
         finally
         {
-            if (requireUnlock)
-            {
-                writeLock.unlock();
-            }
+            writeLock.unlock();
         }
     }
     
