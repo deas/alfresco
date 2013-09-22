@@ -20,6 +20,7 @@ package org.alfresco.util;
 
 import java.io.Serializable;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 
 /**
@@ -30,6 +31,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
  * 
  * @author Roy Wetherall
  */
+@AlfrescoPublicApi
 public final class VersionNumber implements Comparable<VersionNumber>, Serializable
 {
     private static final long serialVersionUID = -1570247769786810251L;
