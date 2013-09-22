@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.security.AccessStatus;
@@ -55,6 +56,7 @@ import org.alfresco.util.ISO9075;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public final class Path implements Iterable<Path.Element>, Serializable
 {
     private static final long serialVersionUID = 3905520514524328247L;

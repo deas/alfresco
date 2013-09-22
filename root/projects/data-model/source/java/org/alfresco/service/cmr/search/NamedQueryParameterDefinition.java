@@ -18,8 +18,10 @@
  */
 package org.alfresco.service.cmr.search;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.QName;
 
+@AlfrescoPublicApi
 public interface NamedQueryParameterDefinition 
 {
 

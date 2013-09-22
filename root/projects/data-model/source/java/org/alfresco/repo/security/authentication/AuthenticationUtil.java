@@ -29,6 +29,7 @@ import net.sf.acegisecurity.context.ContextHolder;
 import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import net.sf.acegisecurity.providers.dao.User;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.tenant.TenantContextHolder;
 import org.alfresco.repo.tenant.TenantService;
@@ -43,10 +44,11 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * Utility helper methods to change the authenticated context for threads.
  */
+@AlfrescoPublicApi
 public class AuthenticationUtil implements InitializingBean
 {
     static Log s_logger = LogFactory.getLog(AuthenticationUtil.class);
-
+    @AlfrescoPublicApi
     public interface RunAsWork<Result>
     {
         /**

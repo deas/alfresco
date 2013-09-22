@@ -21,6 +21,7 @@ package org.alfresco.service.cmr.search;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Path;
@@ -34,6 +35,7 @@ import org.alfresco.service.namespace.QName;
  * @author andyh
  * 
  */
+@AlfrescoPublicApi
 public interface ResultSetRow
 {
     /**

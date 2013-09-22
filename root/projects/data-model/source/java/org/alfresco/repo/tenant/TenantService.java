@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.tenant;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -34,6 +35,7 @@ import org.alfresco.service.namespace.QName;
  * This interface provides methods to support either ST or MT implementations.
  *
  */
+@AlfrescoPublicApi
 public interface TenantService extends TenantUserService
 {
     public static final String SEPARATOR = "@";

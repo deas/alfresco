@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.repo.content.encoding.ContentCharsetFinder;
 import org.alfresco.service.NotAuditable;
 
@@ -32,6 +33,7 @@ import org.alfresco.service.NotAuditable;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface MimetypeService
 {
     /**

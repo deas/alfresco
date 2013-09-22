@@ -20,6 +20,7 @@ package org.alfresco.service.cmr.search;
 
 import java.util.List;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.util.Pair;
@@ -37,6 +38,7 @@ import org.alfresco.util.Pair;
  * @param <ROW> 
  * @param <MD> 
  */
+@AlfrescoPublicApi
 public interface ResultSetSPI<ROW extends ResultSetRow, MD extends ResultSetMetaData> extends Iterable<ROW> // Specific iterator over ResultSetRows
 {
     /**

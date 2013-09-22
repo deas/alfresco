@@ -20,6 +20,7 @@ package org.alfresco.repo.security.authentication;
 
 import java.util.Set;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.Auditable;
 
 
@@ -29,6 +30,7 @@ import org.alfresco.service.Auditable;
  * @author andyh
  * 
  */
+@AlfrescoPublicApi
 public interface TicketComponent
 {
     /**

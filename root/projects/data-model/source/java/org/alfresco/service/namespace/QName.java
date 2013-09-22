@@ -21,6 +21,8 @@ package org.alfresco.service.namespace;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * <code>QName</code> represents the qualified name of a Repository item. Each
  * QName consists of a local name qualified by a namespace.
@@ -31,6 +33,7 @@ import java.util.Collection;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public final class QName implements QNamePattern, Serializable, Cloneable, Comparable<QName>
 {
     public static final String EMPTY_URI_SUBSTITUTE = ".empty";

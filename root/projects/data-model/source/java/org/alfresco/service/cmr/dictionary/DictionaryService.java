@@ -21,6 +21,7 @@ package org.alfresco.service.cmr.dictionary;
 import java.util.Collection;
 import java.util.Map;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.NotAuditable;
 import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
@@ -42,6 +43,7 @@ import com.sun.tools.xjc.outline.Aspect;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public interface DictionaryService extends MessageLookup
 {
 

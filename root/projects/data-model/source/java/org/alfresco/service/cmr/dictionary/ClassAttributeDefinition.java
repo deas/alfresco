@@ -19,6 +19,7 @@
 
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 
@@ -26,6 +27,7 @@ import org.alfresco.service.namespace.QName;
  *
  * @author Nick Smith
  */
+@AlfrescoPublicApi
 public interface ClassAttributeDefinition
 {
     /**

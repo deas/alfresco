@@ -25,11 +25,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Utility class providing helper methods for various types of <code>equals</code> functionality
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class EqualsHelper
 {
     /**

@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.namespace;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Provides pattern matching against {@link org.alfresco.service.namespace.QName qnames}.
@@ -30,6 +31,7 @@ package org.alfresco.service.namespace;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface QNamePattern
 {
     /**

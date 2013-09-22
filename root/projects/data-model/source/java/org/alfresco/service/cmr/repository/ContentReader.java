@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Represents a handle to read specific content.  Content may only be accessed
  * once per instance.
@@ -41,6 +43,7 @@ import java.nio.channels.ReadableByteChannel;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface ContentReader extends ContentAccessor
 {
     /**

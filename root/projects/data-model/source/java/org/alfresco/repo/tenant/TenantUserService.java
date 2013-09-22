@@ -18,6 +18,8 @@
  */
 package org.alfresco.repo.tenant;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Interface for Tenant User-Domain functionality.
  * 
@@ -25,6 +27,7 @@ package org.alfresco.repo.tenant;
  * @author Derek Hulley
  * @since 3.0
  */
+@AlfrescoPublicApi
 public interface TenantUserService
 {
     /**

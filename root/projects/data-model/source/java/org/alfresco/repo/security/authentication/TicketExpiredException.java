@@ -18,6 +18,9 @@
  */
 package org.alfresco.repo.security.authentication;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
+@AlfrescoPublicApi
 public class TicketExpiredException extends AuthenticationException
 {
 

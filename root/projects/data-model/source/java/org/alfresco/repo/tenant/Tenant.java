@@ -18,10 +18,13 @@
  */
 package org.alfresco.repo.tenant;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Tenant
  *
  */
+@AlfrescoPublicApi
 public class Tenant
 {
     private String tenantDomain;

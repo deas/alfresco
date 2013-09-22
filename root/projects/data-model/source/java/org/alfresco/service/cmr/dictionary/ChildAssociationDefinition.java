@@ -18,12 +18,15 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Read-only definition of a Child Association.
  * 
  * @author David Caruana
  *
  */
+@AlfrescoPublicApi
 public interface ChildAssociationDefinition extends AssociationDefinition
 {
 

@@ -20,6 +20,7 @@ package org.alfresco.query;
 
 import java.util.List;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.util.Pair;
 
 /**
@@ -28,6 +29,7 @@ import org.alfresco.util.Pair;
  * @author janv
  * @since 4.0
  */
+@AlfrescoPublicApi
 public interface PagingResults<R>
 {
     /**

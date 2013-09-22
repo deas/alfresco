@@ -18,6 +18,7 @@
  */
 package org.alfresco.model;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 
@@ -25,6 +26,7 @@ import org.alfresco.service.namespace.QName;
 /**
  * Content Model Constants
  */
+@AlfrescoPublicApi
 public interface ContentModel
 {
     //

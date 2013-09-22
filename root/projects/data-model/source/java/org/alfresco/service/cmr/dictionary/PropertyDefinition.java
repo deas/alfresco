@@ -22,6 +22,7 @@ package org.alfresco.service.cmr.dictionary;
 import java.util.List;
 import java.util.Locale;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
@@ -31,6 +32,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public interface PropertyDefinition extends ClassAttributeDefinition
 {
     /**

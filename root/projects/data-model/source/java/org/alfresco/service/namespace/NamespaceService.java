@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.namespace;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.Auditable;
 
 /**
@@ -28,6 +29,7 @@ import org.alfresco.service.Auditable;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public interface NamespaceService extends NamespacePrefixResolver
 {
     /** Default Namespace URI */

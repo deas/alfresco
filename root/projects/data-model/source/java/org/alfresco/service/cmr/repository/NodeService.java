@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.Auditable;
 import org.alfresco.service.cmr.dictionary.InvalidAspectException;
 import org.alfresco.service.cmr.dictionary.InvalidTypeException;
@@ -54,6 +55,7 @@ import org.alfresco.service.namespace.RegexQNamePattern;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface NodeService
 {
     /**

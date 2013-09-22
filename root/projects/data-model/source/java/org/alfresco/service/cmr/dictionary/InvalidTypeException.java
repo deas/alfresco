@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -26,6 +27,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class InvalidTypeException extends InvalidClassException
 {
     private static final long serialVersionUID = 3256722870754293558L;

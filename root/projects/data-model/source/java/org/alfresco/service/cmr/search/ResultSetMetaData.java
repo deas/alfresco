@@ -18,12 +18,14 @@
  */
 package org.alfresco.service.cmr.search;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Meta Data associated with a result set.
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public interface ResultSetMetaData
 {
     

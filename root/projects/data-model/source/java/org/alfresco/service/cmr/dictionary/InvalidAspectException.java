@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -25,6 +26,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class InvalidAspectException extends InvalidClassException
 {
     private static final long serialVersionUID = 3257290240330051893L;

@@ -20,6 +20,7 @@ package org.alfresco.service.cmr.repository;
 
 import java.io.Serializable;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 
 /**
@@ -27,6 +28,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public final class StoreRef implements EntityRef, Serializable
 {
     private static final long serialVersionUID = 3905808565129394486L;

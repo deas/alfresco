@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Thrown when an operation cannot be performed because the <b>node</b> reference
@@ -25,6 +26,7 @@ package org.alfresco.service.cmr.repository;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class InvalidNodeRefException extends RuntimeException
 {
     private static final long serialVersionUID = 3689345520586273336L;

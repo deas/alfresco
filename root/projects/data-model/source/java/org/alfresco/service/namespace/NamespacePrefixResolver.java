@@ -21,6 +21,7 @@ package org.alfresco.service.namespace;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.Auditable;
 import org.alfresco.service.PublicService;
 
@@ -30,6 +31,7 @@ import org.alfresco.service.PublicService;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public interface NamespacePrefixResolver 
 {
     /**

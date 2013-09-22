@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Thrown when an operation cannot be performed because the <b>store</b> reference
@@ -25,6 +26,7 @@ package org.alfresco.service.cmr.repository;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class InvalidStoreRefException extends AbstractStoreException
 {
     private static final long serialVersionUID = 3258126938479409463L;

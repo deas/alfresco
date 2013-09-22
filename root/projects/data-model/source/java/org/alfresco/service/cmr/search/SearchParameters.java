@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions;
@@ -41,6 +42,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public class SearchParameters
 {
     /*

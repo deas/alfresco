@@ -20,6 +20,7 @@ package org.alfresco.service.cmr.search;
 
 import java.io.Serializable;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -28,6 +29,7 @@ import org.alfresco.service.namespace.QName;
  * @author andyh
  * 
  */
+@AlfrescoPublicApi
 public class QueryParameter
 {
     private QName qName;

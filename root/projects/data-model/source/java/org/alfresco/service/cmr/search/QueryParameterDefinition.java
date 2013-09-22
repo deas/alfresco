@@ -18,9 +18,11 @@
  */
 package org.alfresco.service.cmr.search;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 
+@AlfrescoPublicApi
 public interface QueryParameterDefinition extends NamedQueryParameterDefinition
 {   
     /**

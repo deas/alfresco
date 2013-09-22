@@ -20,11 +20,13 @@ package org.alfresco.service.cmr.i18n;
 
 import java.util.Locale;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.NotAuditable;
 
 /**
  * An object providing basic message lookup facilities. May (or may not) be directly conntect to resource bundles.
  */
+@AlfrescoPublicApi
 public interface MessageLookup
 {
     /**

@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.springframework.extensions.surf.util.I18NUtil;
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.util.EqualsHelper;
@@ -32,6 +33,7 @@ import org.alfresco.util.EqualsHelper;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class ContentData implements Serializable
 {
     private static final long serialVersionUID = 8979634213050121462L;

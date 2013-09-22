@@ -29,6 +29,7 @@ import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.util.CachingDateFormat;
 
 /**
@@ -59,6 +60,7 @@ import org.alfresco.util.CachingDateFormat;
  *
  * @author andyh
  */
+@AlfrescoPublicApi
 public class Duration implements Comparable, Serializable
 {
 

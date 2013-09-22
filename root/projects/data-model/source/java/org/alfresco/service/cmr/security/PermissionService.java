@@ -20,6 +20,7 @@ package org.alfresco.service.cmr.security;
 
 import java.util.Set;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.Auditable;
 import org.alfresco.service.PublicService;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -31,6 +32,7 @@ import org.alfresco.service.namespace.QName;
  *
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public interface PermissionService
 {
     /**

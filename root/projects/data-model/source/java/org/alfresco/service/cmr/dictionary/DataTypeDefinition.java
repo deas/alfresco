@@ -20,6 +20,7 @@ package org.alfresco.service.cmr.dictionary;
 
 import java.util.Locale;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
@@ -30,6 +31,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public interface DataTypeDefinition
 {
     //

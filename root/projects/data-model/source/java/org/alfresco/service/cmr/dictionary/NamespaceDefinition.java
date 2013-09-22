@@ -18,11 +18,13 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Read-only definition of a Namespace.
  *
  */
+@AlfrescoPublicApi
 public interface NamespaceDefinition
 {
     /**

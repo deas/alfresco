@@ -20,11 +20,14 @@ package org.alfresco.util;
 
 import org.safehaus.uuid.UUIDGenerator;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * A wrapper class to serve up GUIDs
  *
  * @author kevinr
  */
+@AlfrescoPublicApi
 public final class GUID
 {
    /**

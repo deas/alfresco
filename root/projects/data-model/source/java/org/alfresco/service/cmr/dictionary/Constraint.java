@@ -20,6 +20,7 @@ package org.alfresco.service.cmr.dictionary;
 
 import java.util.Map;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * The interface for classes that implement constraints on property values.
@@ -37,6 +38,7 @@ import java.util.Map;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface Constraint
 {
     /**

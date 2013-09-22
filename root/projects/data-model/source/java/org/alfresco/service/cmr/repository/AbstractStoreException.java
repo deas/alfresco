@@ -18,12 +18,14 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Store-related exception that keeps a handle to the store reference
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public abstract class AbstractStoreException extends RuntimeException
 {
     private static final long serialVersionUID = 1315634811903555316L;

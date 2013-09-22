@@ -21,6 +21,7 @@ package org.alfresco.service.cmr.repository;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.EqualsHelper;
@@ -39,6 +40,7 @@ import org.alfresco.util.EqualsHelper;
  * @author andyh
  * 
  */
+@AlfrescoPublicApi
 public class ChildAssociationRef
         implements EntityRef, Comparable<ChildAssociationRef>, Serializable
 {

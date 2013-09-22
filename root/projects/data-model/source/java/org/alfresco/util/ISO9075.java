@@ -20,6 +20,7 @@ package org.alfresco.util;
 
 import java.util.Collection;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.NamespaceService;
@@ -32,6 +33,7 @@ import org.apache.xerces.util.XMLChar;
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public class ISO9075
 {
     /*

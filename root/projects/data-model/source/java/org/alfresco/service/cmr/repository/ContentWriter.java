@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * Represents a handle to write specific content.  Content may only be accessed
@@ -42,6 +43,7 @@ import java.nio.channels.WritableByteChannel;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface ContentWriter extends ContentAccessor
 {
     /**

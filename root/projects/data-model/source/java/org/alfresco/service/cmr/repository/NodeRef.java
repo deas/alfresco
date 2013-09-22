@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 
@@ -35,6 +36,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public final class NodeRef implements EntityRef, Serializable
 {
     // Let's force introspection of this class straight away so that we don't get contention when multiple threads try

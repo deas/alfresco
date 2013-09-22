@@ -20,6 +20,8 @@ package org.alfresco.service.cmr.repository;
 
 import java.io.Serializable;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * A marker interface for entity reference classes.
  * <p>
@@ -30,6 +32,7 @@ import java.io.Serializable;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface EntityRef extends Serializable
 {
 }

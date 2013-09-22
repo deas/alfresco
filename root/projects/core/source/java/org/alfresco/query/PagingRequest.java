@@ -18,12 +18,15 @@
  */
 package org.alfresco.query;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Simple wrapper for single page request (with optional request for total count up to a given max)
  * 
  * @author janv
  * @since 4.0
  */
+@AlfrescoPublicApi
 public class PagingRequest
 {
     private int skipCount = CannedQueryPageDetails.DEFAULT_SKIP_RESULTS;

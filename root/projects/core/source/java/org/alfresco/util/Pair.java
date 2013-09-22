@@ -23,9 +23,12 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.ObjectInputStream.GetField;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Utility class for containing two things that aren't like each other
  */
+@AlfrescoPublicApi
 public final class Pair<F, S> implements Serializable
 {
     @SuppressWarnings({ "unchecked", "rawtypes" })

@@ -21,6 +21,8 @@ package org.alfresco.repo.cache;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Basic caching interface.
  * <p>
@@ -41,6 +43,7 @@ import java.util.Collection;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface SimpleCache<K extends Serializable, V extends Object>
 {
     /**

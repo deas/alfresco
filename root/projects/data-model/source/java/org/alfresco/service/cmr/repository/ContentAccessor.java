@@ -20,11 +20,14 @@ package org.alfresco.service.cmr.repository;
 
 import java.util.Locale;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Interface for instances that provide read and write access to content.
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public interface ContentAccessor
 {    
     /**

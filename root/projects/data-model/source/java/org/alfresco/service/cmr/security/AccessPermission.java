@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.security;
 
+import org.alfresco.api.AlfrescoPublicApi;
 
 /**
  * The interface used to support reporting back if permissions are allowed or
@@ -25,6 +26,7 @@ package org.alfresco.service.cmr.security;
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public interface AccessPermission
 {   
     /**

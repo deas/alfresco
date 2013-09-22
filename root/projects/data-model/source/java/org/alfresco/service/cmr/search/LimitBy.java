@@ -18,11 +18,14 @@
  */
 package org.alfresco.service.cmr.search;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * Enum to describe how the maximum size of the returned result set should be determined.
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public enum LimitBy
 {
     /**

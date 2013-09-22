@@ -23,11 +23,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.extensions.surf.util.I18NUtil;
 
+import org.alfresco.api.AlfrescoPublicApi;
+
 /**
  * I18n'ed runtime exception thrown by Alfresco code.
  * 
  * @author gavinc
  */
+@AlfrescoPublicApi
 public class AlfrescoRuntimeException extends RuntimeException
 {
     /**

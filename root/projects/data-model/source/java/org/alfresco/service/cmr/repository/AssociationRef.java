@@ -21,6 +21,7 @@ package org.alfresco.service.cmr.repository;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.EqualsHelper;
@@ -32,6 +33,7 @@ import org.alfresco.util.EqualsHelper;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class AssociationRef implements EntityRef, Serializable
 {
     private static final long serialVersionUID = 3977867284482439475L;

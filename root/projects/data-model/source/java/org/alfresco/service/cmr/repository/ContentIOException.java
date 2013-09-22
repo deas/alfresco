@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 
 
@@ -29,6 +30,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class ContentIOException extends AlfrescoRuntimeException
 {
     private static final long serialVersionUID = 3258130249983276087L;

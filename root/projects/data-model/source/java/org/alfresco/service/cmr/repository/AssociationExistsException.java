@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.namespace.QName;
 
 /**
@@ -26,6 +27,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class AssociationExistsException extends RuntimeException
 {
     private static final long serialVersionUID = 3256440317824874800L;

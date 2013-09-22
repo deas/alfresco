@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.security.authentication;
 
+import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.error.AlfrescoRuntimeException;
 
 /**
@@ -26,6 +27,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
  * @author andyh
  *
  */
+@AlfrescoPublicApi
 public class AuthenticationException extends AlfrescoRuntimeException
 {
     /**
