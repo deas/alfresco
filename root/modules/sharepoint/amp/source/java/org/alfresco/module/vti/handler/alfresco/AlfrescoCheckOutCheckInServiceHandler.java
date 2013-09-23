@@ -134,9 +134,6 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
                     }
 
                     NodeRef originalNode = checkOutCheckInService.cancelCheckout(workingCopy);
-                    // ALF-13028, cancel checkout doesn't remove in-memory lock from node
-                    // do it separately
-                    webDAVlockService.unlock(originalNode);
 
                     if (lockAfterSucess)
                     {
@@ -203,9 +200,6 @@ public class AlfrescoCheckOutCheckInServiceHandler implements CheckOutCheckInSer
 
                     // Checkin the new version
                     NodeRef originalNode = checkOutCheckInService.checkin(workingCopy, versionProperties);
-                    // ALF-13028, checkin doesn't remove in-memory lock from node
-                    // do it separately
-                    webDAVlockService.unlock(workingCopy);
 
                     if (originalNode != null)
                     {

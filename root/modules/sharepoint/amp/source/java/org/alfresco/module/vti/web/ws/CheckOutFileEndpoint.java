@@ -118,8 +118,9 @@ public class CheckOutFileEndpoint extends AbstractEndpoint
         NodeRef workingCopy;
         boolean lockAfterSucess = true;
 
-        // Do not lock working copy node if we work with Office 2008/2011 for Mac
-        if (VtiUtils.isMacClientRequest(soapRequest))
+        // Do not lock working copy node if we work with Office 2008/2011 for Mac or Office 2010 for windows
+        // this clients don't send UNLOCK method after SOAP CheckOutFile request, so no need to lock working copy
+        if (VtiUtils.isMacClientRequest(soapRequest) || VtiUtils.isOffice2010ClientRequest(soapRequest))
         {
             lockAfterSucess = false;
         }

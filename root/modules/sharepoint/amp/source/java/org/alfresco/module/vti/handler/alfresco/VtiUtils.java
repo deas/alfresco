@@ -44,6 +44,7 @@ public class VtiUtils
     
     private static Pattern macClientPattern = Pattern.compile(".*Microsoft Document Connection.*");
     private static Pattern office2010ClientPattern = Pattern.compile(".*Microsoft Office Core Storage Infrastructure.*");
+    private static Pattern office2010Pattern = Pattern.compile("Microsoft Office/14\\..*");
     private static Pattern validNamePattern = Pattern.compile("[^#]+");
     
     static
@@ -244,6 +245,7 @@ public class VtiUtils
         String userAgent = request.getHeader(HEADER_USER_AGENT);
         
         // TODO Should we do this check only once, and cache it?
-        return (userAgent != null && office2010ClientPattern.matcher(userAgent).matches());
+        return (userAgent != null && (office2010ClientPattern.matcher(userAgent).matches()
+                || office2010Pattern.matcher(userAgent).matches()));
     }
 }
