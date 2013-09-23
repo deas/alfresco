@@ -4241,13 +4241,13 @@
 
       /**
        * Helper to resize the container elements for each row to ensure the wrapping
-       * of long filenames is correctly maintained when the window or filters panel is resized.s
-       *
+       * of long filenames is correctly maintained when the window or filters panel is resized.
+       * 
        * @method _resizeRowContainers
        */
       _resizeRowContainers: function DL__resizeRowContainers(width)
       {
-         if (width == null)
+         if (!YAHOO.lang.isNumber(width))
          {
             var fpanel = Dom.get("alf-filters"),
                 offset = (fpanel ? parseInt(fpanel.style.width, 10) : 160) + 390,
