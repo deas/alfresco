@@ -935,8 +935,8 @@ function generateWidgetDef(item, nestingIndex)
 {
    // Get the localized form of the label...
    var labelTokens = labelTokens = [ user.name || "", user.firstName || "", user.lastName || "", user.fullName || ""],
-       label = encodeURIComponent(msg.get(item.label, labelTokens)),
-       description = encodeURIComponent(msg.get(item.description, labelTokens));
+       label = msg.get(item.label, labelTokens),
+       description = msg.get(item.description, labelTokens);
 
    var widgetDef = null;
    if (!satisfiesPermissions(item))

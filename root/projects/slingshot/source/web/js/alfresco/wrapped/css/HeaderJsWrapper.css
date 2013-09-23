@@ -25,17 +25,13 @@
 /* This gets the inner button vertically aligned correctly with the other items */
 .dijitMenuBar .yui-button.alf-header-js-wrapper-outer {
     padding-top: 6px;
+    background-color: #1A1A1A;
 }
 
 /* This matches the hover selection with the rest of the menu bar - see header.css for default colours */
 .dijitReset.dijitInline.dijitMenuItem.dijitMenuItemLabel.yui-button.yui-menu-button.yui-menu-button-hover {
   background-color: #717171;
   color: #fff;
-}
-
-.dijitReset.dijitInline.dijitMenuItem.dijitMenuItemLabel.yui-button.yui-menu-button.Focused.dijitFocused.dijitMenuItemSelected {
-   background-color: #4D4D4D;
-   color: #fff;
 }
 
 /* This ensures that the wrapped menu item is aligned correctly with the regular buttons */
@@ -45,5 +41,26 @@
 
 /* This aligns the text in the button with the rest of the buttons */
 .alfresco-share .alf-header-js-wrapper-inner .alf-header-js-wrapper-button {
-  padding-top: 7px;
+  background-color: #1A1A1A;
+}
+
+.dijitReset.dijitInline.dijitMenuItem.dijitMenuItemLabel.yui-button.yui-menu-button.dijitMenuItemSelected.yui-button-focus.yui-menu-button-focus {
+  background-color: #1A1A1A;
+}
+.dijitReset.dijitInline.dijitMenuItem.dijitMenuItemLabel.yui-button.yui-menu-button.dijitMenuItemSelected {
+  background-color: #1A1A1A;
+}
+
+.alfresco-wrapped-HeaderJsWrapper.dijitReset.dijitInline.dijitMenuItem.dijitMenuItemLabel.yui-button.yui-menu-button {
+  background-color: #1A1A1A;
+}
+
+.alfresco-wrapped-HeaderJsWrapper.dijitReset.dijitInline.dijitMenuItem.dijitMenuItemLabel.yui-button.yui-menu-button.dijitMenuItemSelected {
+  background-color: #1A1A1A;
+}
+
+.alfresco-share .alf-header-js-wrapper-inner .alf-header-js-wrapper-button {
+  background-color: #1A1A1A;
+  color: #CCCCCC !important;
+  font-weight: 400 !important;
 }
