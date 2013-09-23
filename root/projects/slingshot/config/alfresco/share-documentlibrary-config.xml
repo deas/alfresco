@@ -1058,6 +1058,7 @@
                <permission allow="true">Delete</permission>
             </permissions>
             <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
+            <evaluator>evaluator.doclib.action.isNotPartOfHybridWorklfow</evaluator>
          </action>
 
          <!-- Assign workflow -->
