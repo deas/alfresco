@@ -221,25 +221,52 @@
           // MNT-9081 fix, redirect user to the correct location, if requested site is not the actual site where document is located
           if (this.options.siteId != this.options.actualSiteId)
           {
-            var correctUrl = window.location.href.replace(this.options.siteId, this.options.actualSiteId);
-            Alfresco.util.PopupManager.displayPrompt(
-            {
-               text: this.msg("message.document.moved", this.options.actualSiteId),
-               buttons: [
-               {
-                  text: this.msg("button.ok"),
-                  handler: function()
-                  {
-                     window.location = correctUrl;
-                  },
-                  isDefault: true
-               }]
-            });
-            YAHOO.lang.later(10000, this, function()
-            {
-               window.location = correctUrl;
-            });
-            return;
+             // Moved to a site...
+             if (this.options.actualSiteId != null)
+             {
+                var correctUrl = window.location.href.replace(this.options.siteId, this.options.actualSiteId);
+                Alfresco.util.PopupManager.displayPrompt(
+                {
+                   text: this.msg("message.document.moved", this.options.actualSiteId),
+                   buttons: [
+                   {
+                      text: this.msg("button.ok"),
+                      handler: function()
+                      {
+                         window.location = correctUrl;
+                      },
+                      isDefault: true
+                   }]
+                });
+                YAHOO.lang.later(10000, this, function()
+                {
+                   window.location = correctUrl;
+                });
+                return;
+             }
+             else
+             {
+                // Moved elsewhere in repository...
+                var correctUrl = "/share/page/document-details?nodeRef=" + this.options.nodeRef;
+                Alfresco.util.PopupManager.displayPrompt(
+                {
+                   text: this.msg("message.document.movedToRepo"),
+                   buttons: [
+                   {
+                      text: this.msg("button.ok"),
+                      handler: function()
+                      {
+                         window.location = correctUrl;
+                      },
+                      isDefault: true
+                   }]
+                });
+                YAHOO.lang.later(10000, this, function()
+                {
+                   window.location = correctUrl;
+                });
+                return;
+             }
          }
 
          this.nodeType = this.options.isContainer ? "folder" : "document";
