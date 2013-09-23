@@ -82,6 +82,7 @@ import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.AlfrescoSolrEventListener;
 import org.alfresco.solr.AlfrescoSolrEventListener.CacheEntry;
+import org.alfresco.solr.AlfrescoSolrEventListener.OwnerIdManager;
 import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.ResizeableArrayList;
 import org.alfresco.solr.client.Acl;
@@ -111,12 +112,15 @@ import org.alfresco.util.TempFileProvider;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexCommit;
+import org.apache.lucene.index.SegmentInfos;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.OpenBitSet;
@@ -126,9 +130,11 @@ import org.apache.solr.common.SolrInputField;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CloseHook;
+import org.apache.solr.core.IndexDeletionPolicyWrapper;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
 import org.apache.solr.core.SolrResourceLoader;
+import org.apache.solr.handler.SnapShooter;
 import org.apache.solr.schema.BinaryField;
 import org.apache.solr.schema.CopyField;
 import org.apache.solr.schema.DateField;
@@ -137,6 +143,8 @@ import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
+import org.apache.solr.search.FastLRUCache;
+import org.apache.solr.search.LRUCache;
 import org.apache.solr.search.SolrIndexReader;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
@@ -293,6 +301,12 @@ public class CoreTracker implements CloseHook
 
     private volatile boolean shutdown = false;
 
+    private int filterCacheSize;
+
+    private int authorityCacheSize;
+
+    private int pathCacheSize;
+
 
     public long getLastIndexedTxCommitTime()
     {
@@ -398,6 +412,11 @@ public class CoreTracker implements CloseHook
         socketTimeout = Integer.parseInt(p.getProperty("alfresco.socketTimeout", "0"));
         maxLiveSearchers =  Integer.parseInt(p.getProperty("alfresco.maxLiveSearchers", "2"));
 
+        filterCacheSize =  Integer.parseInt(p.getProperty("solr.filterCache.size", "64"));
+        authorityCacheSize =  Integer.parseInt(p.getProperty("solr.authorityCache.size", "64"));
+        pathCacheSize =  Integer.parseInt(p.getProperty("solr.pathCache.size", "64"));
+        
+        
         client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT), dataModel.getNamespaceDAO());
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
@@ -3940,6 +3959,28 @@ public class CoreTracker implements CloseHook
         log.info(".... registered Searchers for "+core.getName()+" = "+keys.size());
         return keys.size();
     }
+    
+    protected List<SolrIndexSearcher> getRegisteredSearchers()
+    {
+        List<SolrIndexSearcher> searchers = new ArrayList<SolrIndexSearcher>();
+        for(String  key : core.getInfoRegistry().keySet())
+        {
+            SolrInfoMBean mBean = core.getInfoRegistry().get(key);
+            if(mBean != null)
+            {
+                if(mBean.getName().equals(SolrIndexSearcher.class.getName()))
+                {
+                    if(!key.equals("searcher"))
+                    {
+                        searchers.add((SolrIndexSearcher)mBean);
+                    }
+                   
+                }
+            }
+        }
+
+        return searchers; 
+    }
 
     public NodeReport checkNodeCommon(NodeReport nodeReport)
     {
@@ -4400,7 +4441,8 @@ public class CoreTracker implements CloseHook
             refCounted = core.getSearcher(false, true, null);
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
             OpenBitSet allLeafDocs = (OpenBitSet) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
-            coreSummary.add("Alfresco Nodes in Index",allLeafDocs.cardinality());
+            long count = allLeafDocs.cardinality();
+            coreSummary.add("Alfresco Nodes in Index", count);
             coreSummary.add("Searcher", solrIndexSearcher.getStatistics());
             Map<String, SolrInfoMBean> infoRegistry = core.getInfoRegistry();
             for(String key : infoRegistry.keySet())
@@ -4434,7 +4476,47 @@ public class CoreTracker implements CloseHook
                 {
                     coreSummary.add("/alfrescoPathCache", infoMBean.getStatistics());
                 }
-
+            }
+            
+            // Find searchers and do memory use for each .. and add them all up7
+            
+            long memory = 0L;
+            int searcherCount = 0;
+            List<SolrIndexSearcher> searchers = getRegisteredSearchers();
+            for(SolrIndexSearcher searcher : searchers)
+            {
+                memory +=  addSearcherStats(coreSummary, searcher, searcherCount);
+                searcherCount++;
+            }
+            
+            coreSummary.add("Number of Searchers", searchers.size());
+            coreSummary.add("Total Searcher Cache (GB)", memory/1024/1024/1024f);
+            
+            
+            IndexDeletionPolicyWrapper delPolicy = core.getDeletionPolicy();
+            IndexCommit indexCommit = delPolicy.getLatestCommit();
+            // race?
+            if(indexCommit == null) {
+                indexCommit = solrIndexSearcher.getReader().getIndexCommit();
+            }
+            if (indexCommit != null)  
+            {    
+                delPolicy.setReserveDuration(indexCommit.getVersion(), 20000);
+                Long fileSize = 0L;
+                
+                File dir = new File(solrIndexSearcher.getIndexDir());
+                for(Iterator it = indexCommit.getFileNames().iterator(); it.hasNext(); /**/)
+                {
+                    String name = (String)it.next();
+                    File file = new File(dir, name);
+                    if(file.exists())
+                    {
+                        fileSize += file.length();
+                    }
+                }
+                
+                coreSummary.add("On disk (GB)",fileSize/1024/1024/1024f);
+                coreSummary.add("Per node B",fileSize/count);
             }
         }
         finally
@@ -4448,6 +4530,31 @@ public class CoreTracker implements CloseHook
 
 
         return coreSummary;
+    }
+
+    /**
+     * @param coreSummary
+     * @param solrIndexSearcher
+     * @param count
+     * @return
+     */
+    private  long addSearcherStats(NamedList<Object> coreSummary, SolrIndexSearcher solrIndexSearcher, int index)
+    {
+        OpenBitSet allLeafDocs = (OpenBitSet) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
+        long count = allLeafDocs.cardinality();
+        
+        ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
+        ResizeableArrayList<CacheEntry> indexedOderedByAclIdThenDoc = (ResizeableArrayList<CacheEntry>)solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
+        
+        long memory = (count * 40) + (indexedByDocId.size() * 8 * 4) + (indexedOderedByAclIdThenDoc.size() * 8 * 2);
+        memory += (filterCacheSize + pathCacheSize + authorityCacheSize) * indexedByDocId.size() / 8;
+        NamedList<Object> details = new SimpleOrderedMap<Object>();
+        details.add("Searcher", solrIndexSearcher.getStatistics());
+        details.add("Size", indexedByDocId.size());
+        details.add("Node Count", count);
+        details.add("Memory (GB)", memory/1024/1024/1024.0f);
+        coreSummary.add("Searcher-"+index, details);     
+        return memory;
     }
 
     /**
