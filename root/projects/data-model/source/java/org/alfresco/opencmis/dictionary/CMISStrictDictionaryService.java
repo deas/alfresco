@@ -83,7 +83,7 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_SECONDARY, classQName);
                 objectTypeDef = new SecondaryTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
             }
-            else if (cmisMapping.getCmisVersion().equals(CmisVersion.CMIS_1_0) && cmisMapping.isValidCmisPolicy(classQName))
+            else if (cmisMapping.isValidCmisPolicy(classQName))
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
                 objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
