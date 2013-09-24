@@ -19,7 +19,9 @@
    <#include "../form/form.js.ftl"/>
    <@script src="${url.context}/res/components/workflow/start-workflow.js" group="workflow"/>
    <@script src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="workflow" />
+   <@script src="${url.context}/res/modules/simple-dialog.js" group="workflow"/>
    <@script src="${url.context}/res/modules/documentlibrary/global-folder.js" group="workflow" />
+   <@script src="${url.context}/res/modules/documentlibrary/cloud-folder.js" group="workflow" />
    <@script src="${url.context}/res/modules/documentlibrary/cloud-folder.js" group="workflow" />
    <@script src="${url.context}/res/modules/cloud-auth.js" group="workflow" />
 </@>
