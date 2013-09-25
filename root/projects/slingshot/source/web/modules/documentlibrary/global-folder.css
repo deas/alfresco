@@ -18,6 +18,11 @@
    clear: both;
 }
 
+.global-folder .bdft .yui-button-disabled button
+{
+   color:#aaa;
+}
+
 /* Columns */
 
 .global-folder .mode,

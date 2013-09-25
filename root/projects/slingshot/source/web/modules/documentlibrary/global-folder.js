@@ -541,6 +541,14 @@
                            label: node.label,
                            style: results.parent.userAccess.create ? "" : "no-permission"
                         });
+                        if (results.parent.userAccess.create == false)
+                        {
+                           node.parent.refresh();
+                           if (this.selectedNode == node)
+                           {
+                              this.widgets.okButton.set("disabled", true);
+                           }
+                        }
                      }
                   }
 
@@ -1396,6 +1404,16 @@
          this._showHighlight(false);
          this.selectedNode = node;
          this._showHighlight(true);
+
+         // ALF-20094 fix, don't allow user to press ok button if he has no create access in selected target
+         if (node.data.userAccess && !node.data.userAccess.create)
+         {
+            this.widgets.okButton.set("disabled", true);
+         }
+         else
+         {
+            this.widgets.okButton.set("disabled", false);
+         }
       },
 
       /**
