@@ -685,10 +685,7 @@
          <list>
             <ref bean="evaluator.doclib.action.isNotSyncedAspect" />
             <ref bean="evaluator.doclib.action.isSyncModeOnPremise" />
-            <!-- ALF-18054 Doclib folder should now be sync-able -->
-            <!--
             <ref bean="evaluator.doclib.action.isNotDocumentLibrary" />
-            -->
             <ref bean="evaluator.doclib.action.siteBased" />
             <ref bean="evaluator.doclib.action.isNotWorkingCopy" />
          </list>
