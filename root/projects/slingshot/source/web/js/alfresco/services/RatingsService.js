@@ -40,6 +40,7 @@ define(["dojo/_base/declare",
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_RatingsService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe(this.addRatingTopic, lang.hitch(this, "onAddRating"));
          this.alfSubscribe(this.removeRatingTopic, lang.hitch(this, "onRemoveRating"));
       },

@@ -41,6 +41,7 @@ define(["dojo/_base/declare",
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_DocumentService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST", lang.hitch(this, "onRetrieveDocumentsRequest"));
       },
       

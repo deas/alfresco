@@ -53,6 +53,7 @@ define(["dojo/_base/declare",
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_ContentService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe("ALF_CURRENT_NODEREF_CHANGED", lang.hitch(this, "handleCurrentNodeChange"));
          this.alfSubscribe("ALF_SHOW_UPLOADER", lang.hitch(this, "showUploader"));
          this.alfSubscribe("ALF_CREATE_NEW_FOLDER", lang.hitch(this, "createNewFolder"));

@@ -51,6 +51,7 @@ define(["dojo/_base/declare",
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_PageService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe(this.availablePagesRequestTopic, lang.hitch(this, "loadPages"));
          this.alfSubscribe(this.createPageTopic, lang.hitch(this, "createPage"));
          this.alfSubscribe(this.updatePageTopic, lang.hitch(this, "updatePage"));

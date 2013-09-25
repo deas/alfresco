@@ -42,6 +42,7 @@ define(["dojo/_base/declare",
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_PreviewService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe(this.requestDependenciesTopic, lang.hitch(this, "generateDependencies"));
       },
       

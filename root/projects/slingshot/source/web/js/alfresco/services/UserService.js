@@ -51,6 +51,7 @@ define(["dojo/_base/declare",
        * @param {array} args The constructor arguments.
        */
       constructor: function alf_services_UserService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe("ALF_UPDATE_USER_STATUS", lang.hitch(this, "updateUserStatus"));
       },
       

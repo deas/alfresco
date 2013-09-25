@@ -51,6 +51,7 @@ define(["dojo/_base/declare",
        * @param {array} args The constructor arguments.
        */
       constructor: function alf_services_SiteService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
          this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
          this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, "joinSite"));
