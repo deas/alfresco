@@ -1221,72 +1221,89 @@ function generateUserItems() {
                   name: "alfresco/menus/AlfMenuGroup",
                   config: {
                      id: "HEADER_USER_MENU",
-                     widgets: [
-                         getUserStatusWidget(),
-                         {
-                            id: "HEADER_USER_MENU_SET_STATUS",
-                            name: "alfresco/header/AlfMenuItem",
-                            config:
-                            {
-                               id: "HEADER_USER_MENU_SET_STATUS",
-                               label: "set_status.label",
-                               iconClass: "alf-user-status-icon",
-                               publishTopic: "ALF_SET_USER_STATUS"
-                            }
-                         },
-                         {
-                            id: "HEADER_USER_MENU_PROFILE",
-                            name: "alfresco/header/AlfMenuItem",
-                            config:
-                            {
-                               id: "HEADER_USER_MENU_PROFILE",
-                               label: "my_profile.label",
-                               iconClass: "alf-user-profile-icon",
-                               targetUrl: "user/" + encodeURIComponent(user.name) + "/profile"
-                            }
-                         },
-                         {
-                            id: "HEADER_USER_MENU_PASSWORD",
-                            name: "alfresco/header/AlfMenuItem",
-                            config:
-                            {
-                               id: "HEADER_USER_MENU_CHANGE_PASSWORD",
-                               label: "change_password.label",
-                               iconClass: "alf-user-password-icon",
-                               targetUrl: "user/" + encodeURIComponent(user.name) + "/change-password"
-                            }
-                         },
-                         {
-                            id: "HEADER_USER_MENU_HELP",
-                            name: "alfresco/header/AlfMenuItem",
-                            config:
-                            {
-                               id: "HEADER_USER_MENU_HELP",
-                               label: "help.label",
-                               iconClass: "alf-user-help-icon",
-                               targetUrl: getHelpLink(),
-                               targetUrlType: "FULL_PATH",
-                               targetUrlLocation: "NEW"
-                            }
-                         },
-                         {
-                            id: "HEADER_USER_MENU_LOGOUT",
-                            name: "alfresco/header/AlfMenuItem",
-                            config:
-                            {
-                               id: "HEADER_USER_MENU_LOGOUT",
-                               label: "logout.label",
-                               iconClass: "alf-user-logout-icon",
-                               targetUrl: "dologout"
-                            }
-                         }
-                      ]
+                     widgets: getUserMenuWidgets()
                   }
                }
             ]
          }
       }
    ];
+}
+
+/* *********************************************************************************
+ *                                                                                 *
+ * USER MENU WIDGETS                                                               *
+ *                                                                                 *
+ ***********************************************************************************/
+function getUserMenuWidgets()
+{
+   var userMenuWidgets = [
+      getUserStatusWidget(),
+      {
+         id: "HEADER_USER_MENU_SET_STATUS",
+         name: "alfresco/header/AlfMenuItem",
+         config:
+         {
+            id: "HEADER_USER_MENU_SET_STATUS",
+            label: "set_status.label",
+            iconClass: "alf-user-status-icon",
+            publishTopic: "ALF_SET_USER_STATUS"
+         }
+      },
+      {
+         id: "HEADER_USER_MENU_PROFILE",
+         name: "alfresco/header/AlfMenuItem",
+         config:
+         {
+            id: "HEADER_USER_MENU_PROFILE",
+            label: "my_profile.label",
+            iconClass: "alf-user-profile-icon",
+            targetUrl: "user/" + encodeURIComponent(user.name) + "/profile"
+         }
+      }
+   ];
+   if (user.capabilities.isMutable)
+   {
+      userMenuWidgets.push({
+         id: "HEADER_USER_MENU_PASSWORD",
+         name: "alfresco/header/AlfMenuItem",
+         config:
+         {
+            id: "HEADER_USER_MENU_CHANGE_PASSWORD",
+            label: "change_password.label",
+            iconClass: "alf-user-password-icon",
+            targetUrl: "user/" + encodeURIComponent(user.name) + "/change-password"
+         }
+      });
+   }
+   userMenuWidgets.push({
+         id: "HEADER_USER_MENU_HELP",
+         name: "alfresco/header/AlfMenuItem",
+         config:
+         {
+            id: "HEADER_USER_MENU_HELP",
+            label: "help.label",
+            iconClass: "alf-user-help-icon",
+            targetUrl: getHelpLink(),
+            targetUrlType: "FULL_PATH",
+            targetUrlLocation: "NEW"
+         }
+      });
+   if (!context.externalAuthentication)
+   {
+      userMenuWidgets.push({
+         id: "HEADER_USER_MENU_LOGOUT",
+         name: "alfresco/header/AlfMenuItem",
+         config:
+         {
+            id: "HEADER_USER_MENU_LOGOUT",
+            label: "logout.label",
+            iconClass: "alf-user-logout-icon",
+            targetUrl: "dologout"
+         }
+      });
+   }
+   return userMenuWidgets;
 }
 
 /* *********************************************************************************
