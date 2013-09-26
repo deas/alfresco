@@ -232,6 +232,14 @@ function getSitesMenuData() {
    
    if (getRecentSites)
    {
+      // clean up the recent sites menu by removing gaps
+      for (var i=0; i<recentSiteMenuItems.length; i++)
+      {
+         if (recentSiteMenuItems[i] === undefined)
+         {
+            recentSiteMenuItems.splice(i--,1);
+         }
+      }
       sitesMenu.widgetsRecent = recentSiteMenuItems;
    }  
    if (getFavouriteSites)
