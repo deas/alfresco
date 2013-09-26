@@ -34,6 +34,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -4434,6 +4436,8 @@ public class CoreTracker implements CloseHook
      */
     public NamedList<Object> getCoreStats() throws IOException
     {
+        DecimalFormat df = new DecimalFormat("###,###.######");
+        
         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
@@ -4490,7 +4494,7 @@ public class CoreTracker implements CloseHook
             }
             
             coreSummary.add("Number of Searchers", searchers.size());
-            coreSummary.add("Total Searcher Cache (GB)", memory/1024/1024/1024f);
+            coreSummary.add("Total Searcher Cache (GB)", df.format(memory/1024.0f/1024.0f/1024.0f));
             
             
             IndexDeletionPolicyWrapper delPolicy = core.getDeletionPolicy();
@@ -4515,8 +4519,8 @@ public class CoreTracker implements CloseHook
                     }
                 }
                 
-                coreSummary.add("On disk (GB)",fileSize/1024/1024/1024f);
-                coreSummary.add("Per node B",fileSize/count);
+                coreSummary.add("On disk (GB)", df.format(fileSize/1024.0f/1024.0f/1024.0f));
+                coreSummary.add("Per node B", count > 0 ? fileSize/count : 0);
             }
         }
         finally
@@ -4540,6 +4544,8 @@ public class CoreTracker implements CloseHook
      */
     private  long addSearcherStats(NamedList<Object> coreSummary, SolrIndexSearcher solrIndexSearcher, int index)
     {
+        DecimalFormat df = new DecimalFormat("###,###.######");
+        
         OpenBitSet allLeafDocs = (OpenBitSet) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
         long count = allLeafDocs.cardinality();
         
@@ -4552,7 +4558,7 @@ public class CoreTracker implements CloseHook
         details.add("Searcher", solrIndexSearcher.getStatistics());
         details.add("Size", indexedByDocId.size());
         details.add("Node Count", count);
-        details.add("Memory (GB)", memory/1024/1024/1024.0f);
+        details.add("Memory (GB)", df.format(memory/1024.0f/1024.0f/1024.0f));
         coreSummary.add("Searcher-"+index, details);     
         return memory;
     }
