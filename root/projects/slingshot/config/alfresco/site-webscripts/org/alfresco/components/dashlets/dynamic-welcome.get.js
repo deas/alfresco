@@ -159,7 +159,7 @@ function main()
    // since each is handled differently we need to determine which type is being rendered.
    // This should be defined in a component property called "dashboardType" which should be
    // either "user" or "site"...
-   var dashboardId, dashboardUrl, columns = new Array(3);
+   var dashboardId, dashboardUrl, columns = [];
    if (args.dashboardType == "user")
    {
       dashboardId = "user/" + user.name + "/dashboard";
@@ -303,7 +303,7 @@ function main()
       }
    }
 
-   columns[3] = getCloudSignUpColumn();
+   columns.push(getCloudSignUpColumn());
 
    model.columns = columns;
    model.dashboardUrl = dashboardUrl;
