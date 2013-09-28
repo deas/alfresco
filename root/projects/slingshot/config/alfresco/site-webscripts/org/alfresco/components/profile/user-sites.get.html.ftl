@@ -25,6 +25,7 @@
                   <a href="${url.context}/page/site/${site.shortName}/dashboard" class="thmb"><img src="${url.context}/res/components/site-finder/images/site-64.png"/></a>
                   <p><a href="${url.context}/page/site/${site.shortName}/dashboard" class="theme-color-1">${site.title?html!""}</a></p>
                   <div style="float: right;margin-right:10px;">
+                  <#if user.name == userid>
                   <#if feedControls?seq_contains(site.shortName)><#-- Emails disabled -->
                   <span class="yui-button yui-push-button" id="${el}-button-${site.shortName}">
                      <span class="first-child"><button id="${el}_notification_${site.shortName}" name="enable" title="${msg("button.enable.tooltip", site.title!"")?html}">${msg("button.enable")?html}</button></span>
@@ -33,6 +34,7 @@
                   <span class="yui-button yui-push-button yui-button-checked" id="${el}-button-${site.shortName}">
                      <span class="first-child"><button id="${el}_notification_${site.shortName}" name="disable" title="${msg("button.disable.tooltip", site.title!"")?html}">${msg("button.disable")?html}</button></span>
                   </span>
+                  </#if>
                   </#if>
                   </div>
                   <input id="${el}_title_${site.shortName}" type="hidden" value="${site.title?html!""}" />

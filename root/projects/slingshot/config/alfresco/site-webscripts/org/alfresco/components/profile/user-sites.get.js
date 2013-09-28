@@ -18,6 +18,7 @@ function main()
    {
       userId = user.name;
    }
+   model.userid = userId;
    var result = remote.call("/api/people/" + encodeURIComponent(userId) + "/sites?size=" + maxItems);
    model.sites = [];
    model.feedControls = [];
