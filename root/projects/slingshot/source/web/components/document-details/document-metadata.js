@@ -128,7 +128,10 @@
          formEl.innerHTML = response.serverResponse.responseText;
          Dom.getElementsByClassName("viewmode-value-date", "span", formEl, function()
          {
-            this.innerHTML = formatDate(fromISO8601(Dom.getAttribute(this, "data-date-iso8601")), me.msg("date-format.default"))
+
+			var showTime = Dom.getAttribute(this, "data-show-time")
+			var dateFormat = (showTime=='false') ? me.msg("date-format.defaultDateOnly") : me.msg("date-format.default")
+            this.innerHTML = formatDate(fromISO8601(Dom.getAttribute(this, "data-date-iso8601")), dateFormat )
          });
       }
    });
