@@ -75,6 +75,7 @@
                   <h3 class="padded">${msg("header.column", column_index + 1)}</h3>
                   <ul id="${args.htmlid}-column-ul-${column_index + 1}" class="usedList">
                   <#list column as dashlet>
+                     <#if dashlet??>
                      <li class="usedDashlet">
                         <input type="hidden" name="dashleturl" value="${dashlet.url}"/>
                         <input type="hidden" name="originalregionid" value="${dashlet.originalRegionId}"/>
@@ -82,6 +83,7 @@
                         <span><#if dashlet.shortName?length < 26>${dashlet.shortName}<#else>${dashlet.shortName?substring(0, 24)}...</#if></span>
                         <div class="dnd-draggable" title="${dashlet.shortName} - ${dashlet.description}"></div>
                      </li>
+                     </#if>
                   </#list>
                   </ul>
                   </div>
