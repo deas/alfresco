@@ -27,7 +27,6 @@ import org.alfresco.repo.webdav.LockInfo;
 import org.alfresco.repo.webdav.WebDAVLockService;
 import org.alfresco.service.cmr.coci.CheckOutCheckInService;
 import org.alfresco.service.cmr.lock.LockService;
-import org.alfresco.service.cmr.lock.LockStatus;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 
@@ -92,40 +91,26 @@ public class VtiDocumentHelper
         DocumentStatus status = DocumentStatus.NORMAL;
 
         LockInfo lockInfo = webDAVLockService.getLockInfo(nodeRef);
-        LockStatus lockStatus = lockService.getLockStatus(nodeRef);
         NodeRef workingCopyNodeRef = checkOutCheckInService.getWorkingCopy(nodeRef);
+
+        if (workingCopyNodeRef != null)
+        {
+            status = isWorkingCopyOwner(workingCopyNodeRef) ? DocumentStatus.LONG_CHECKOUT_OWNER : DocumentStatus.LONG_CHECKOUT;
+            return status;
+        }
 
         if (isShortCheckedout(nodeRef))
         {
-            if (workingCopyNodeRef == null)
+            // short-term checkout
+            if (lockInfo != null && lockInfo.getOwner().equals(AuthenticationUtil.getFullyAuthenticatedUser()))
             {
-                // short-term checkout
-                if (lockInfo != null && lockInfo.getOwner().equals(AuthenticationUtil.getFullyAuthenticatedUser()))
-                {
-                    status = DocumentStatus.SHORT_CHECKOUT_OWNER;
-                }
-                else
-                {
-                    status = DocumentStatus.SHORT_CHECKOUT;
-                }
+                status = DocumentStatus.SHORT_CHECKOUT_OWNER;
             }
             else
             {
-                // long-term checkout
-                status = isWorkingCopyOwner(workingCopyNodeRef) ? DocumentStatus.LONG_CHECKOUT_OWNER : DocumentStatus.LONG_CHECKOUT;
+                status = DocumentStatus.SHORT_CHECKOUT;
             }
-        }
-        else if(lockStatus.equals(LockStatus.LOCKED) || lockStatus.equals(LockStatus.LOCK_OWNER))
-        {
-            if (workingCopyNodeRef != null)            
-            {
-                // long-term checkout
-                status = isWorkingCopyOwner(workingCopyNodeRef) ? DocumentStatus.LONG_CHECKOUT_OWNER : DocumentStatus.LONG_CHECKOUT;
-            }
-            else
-            {
-                status = DocumentStatus.READONLY;
-            }
+            return status;
         }
 
         return status;
