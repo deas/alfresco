@@ -90,6 +90,11 @@ public class GetDocsMetaInfoMethod extends AbstractMethod
                 {
                     path = path.substring(serviceName.length());
                 }
+                if (path.length() > 1 && path.startsWith("/"))
+                {
+                    // ALF-19851 fix, remove preceding slash if one exists after removing serviceName.
+                    path = path.substring(1);
+                }
                 urlList.set(i, path);
             }
         }
