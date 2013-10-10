@@ -77,12 +77,12 @@
 
         <!-- War dependency on the Alfresco patched WAR.
              Deployed at artifacts.alfresco.com because SOLR-1218 was closed in later versions  -->
-		<dependency>
-		  <groupId>org.apache.solr</groupId>
-		  <artifactId>apache-solr</artifactId>
-		  <version>1.4.1-alfresco-patched</version>
-		  <type>war</type>
-		</dependency>
+        <dependency>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>apache-solr</artifactId>
+          <version>1.4.1-alfresco-patched</version>
+          <type>war</type>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -92,22 +92,23 @@
         </dependency>
     </dependencies>
 
-    <!-- Only run a few test methods. All other tests fail, and are never run in the Ant build -->
     <build>
-    	<finalName>solr</finalName>
+        <finalName>solr</finalName>
         <plugins>
             <plugin>
+                <!-- Only run a few test methods. All other tests fail, and are never run in the Ant build -->
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                         <test>AlfrescoSolrEventListenerTest#testAllMatch*</test>
                 </configuration>
             </plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<attachClasses>true</attachClasses>
-					<archiveClasses>true</archiveClasses>
-				</configuration>
+
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <archiveClasses>true</archiveClasses>
+                </configuration>
                 <!-- This allows overlays to be prepared on the FS for minification and faster run -->
                 <executions>
                     <execution>
@@ -118,44 +119,46 @@
                         <phase>prepare-package</phase>
                     </execution>
                 </executions> 
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-instance-resources</id>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<outputDirectory>${solr.instance.target.folder}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${solr.instance.source.folder}</directory>
-									<excludes>
-										<exclude>**/*.jar</exclude>
-										<exclude>**/*.war*</exclude>
-										<exclude>**/ssl.repo*</exclude>
-									</excludes>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
-									<directory>${solr.instance.source.folder}</directory>
-									<includes>
-										<include>**/ssl.repo*</include>
-									</includes>
-									<filtering>false</filtering>
-								</resource>
-							</resources>
-							<useDefaultDelimiters>false</useDefaultDelimiters>
-							<delimiters>
-								<delimiter>@@</delimiter>
-							</delimiters>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-instance-resources</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${solr.instance.target.folder}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${solr.instance.source.folder}</directory>
+                                    <excludes>
+                                        <exclude>**/*.jar</exclude>
+                                        <exclude>**/*.war*</exclude>
+                                        <exclude>**/ssl.repo*</exclude>
+                                    </excludes>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>${solr.instance.source.folder}</directory>
+                                    <includes>
+                                        <include>**/ssl.repo*</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                            <useDefaultDelimiters>false</useDefaultDelimiters>
+                            <delimiters>
+                                <delimiter>@@</delimiter>
+                            </delimiters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
@@ -195,7 +198,7 @@
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
-                                <phase>prepare-package</phase>
+                                <phase>generate-resources</phase>
                                 <configuration>
                                     <outputDirectory>${solr.nossl.instance.target.folder}</outputDirectory>
                                     <resources>
@@ -210,7 +213,7 @@
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
-                                <phase>prepare-package</phase>
+                                <phase>generate-resources</phase>
                                 <configuration>
                                     <outputDirectory>${solr.nossl.war.target.folder}</outputDirectory>
                                     <resources>
@@ -221,51 +224,53 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>               	
+                    </plugin>
+
                     <!-- Replaces web.xml where applicable, commenting out the security-constraints -->
-					<plugin>
-						<groupId>com.google.code.maven-replacer-plugin</groupId>
-						<artifactId>replacer</artifactId>
-						<executions>
-							<execution>
-								<id>replace-archive-SpacesStore</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>replace</goal>
-								</goals>
-								<configuration>
-									<ignoreErrors>true</ignoreErrors>
-									<file>${solr.config.folder}/archive-SpacesStore/conf/solrcore.properties</file>
-									<replacements>
-										<replacement>
-											<token><![CDATA[alfresco.secureComms=https]]></token>
-											<value><![CDATA[alfresco.secureComms=none]]></value>
-										</replacement>
-									</replacements>
-								</configuration>
-							</execution>
-							<execution>
-								<id>replace-workspace-SpacesStore</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>replace</goal>
-								</goals>
-								<configuration>
-									<ignoreErrors>true</ignoreErrors>
-									<file>${solr.config.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
-									<replacements>
-										<replacement>
-											<token><![CDATA[alfresco.secureComms=https]]></token>
-											<value><![CDATA[alfresco.secureComms=none]]></value>
-										</replacement>
-									</replacements>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
                     <plugin>
-	                    <artifactId>maven-war-plugin</artifactId>
-	                    <executions>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>replacer</artifactId>
+                        <executions>
+                            <execution>
+                                <id>replace-archive-SpacesStore</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                                <configuration>
+                                    <ignoreErrors>true</ignoreErrors>
+                                    <file>${solr.config.folder}/archive-SpacesStore/conf/solrcore.properties</file>
+                                    <replacements>
+                                        <replacement>
+                                            <token><![CDATA[alfresco.secureComms=https]]></token>
+                                            <value><![CDATA[alfresco.secureComms=none]]></value>
+                                        </replacement>
+                                    </replacements>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>replace-workspace-SpacesStore</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                                <configuration>
+                                    <ignoreErrors>true</ignoreErrors>
+                                    <file>${solr.config.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
+                                    <replacements>
+                                        <replacement>
+                                            <token><![CDATA[alfresco.secureComms=https]]></token>
+                                            <value><![CDATA[alfresco.secureComms=none]]></value>
+                                        </replacement>
+                                    </replacements>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <executions>
                             <!-- This allows overlays to be prepared on the FS for minification and 
                                 faster run -->
                             <execution>
@@ -298,7 +303,7 @@
                                 </configuration>
                             </execution>
                         </executions>
-	                </plugin> 
+                    </plugin> 
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>
                         <executions>
@@ -318,14 +323,15 @@
                 </plugins>
             </build>
         </profile>
-	    <!-- Profile to run the webapp on HTTP -->
-		<profile>
-			<id>run</id>
+
+        <!-- Profile to run the webapp on HTTP -->
+        <profile>
+            <id>run</id>
             <properties>
                 <ALFRESCO_SOLR_DIR>${solr.config.folder}</ALFRESCO_SOLR_DIR>
             </properties>
-			<build>
-				<plugins>
+            <build>
+                <plugins>
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
                         <executions>
@@ -354,23 +360,23 @@
                             </execution>
                         </executions>
                     </plugin>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<!-- To add log4j.properties and other test run resources -->
-								<resource>
-									<directory>source/test-resources</directory>
-									<filtering>true</filtering>
-									<targetPath>WEB-INF/classes</targetPath>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<executions>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <!-- To add log4j.properties and other test run resources -->
+                                <resource>
+                                    <directory>source/test-resources</directory>
+                                    <filtering>true</filtering>
+                                    <targetPath>WEB-INF/classes</targetPath>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <executions>
                             <execution>
                                 <id>run-exploded-webapp</id>
                                 <phase>prepare-package</phase>
@@ -384,8 +390,8 @@
                             </execution>
                         </executions>
                     </plugin>
-				</plugins>
-			</build>
-		</profile>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
