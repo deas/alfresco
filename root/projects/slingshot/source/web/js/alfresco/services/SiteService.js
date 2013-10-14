@@ -55,6 +55,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
          this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
          this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, "joinSite"));
+         this.alfSubscribe("ALF_REQUEST_SITE_MEMBERSHIP", lang.hitch(this, "requestSiteMembership"));
          this.alfSubscribe("ALF_LEAVE_SITE", lang.hitch(this, "leaveSiteRequest"));
          this.alfSubscribe("ALF_LEAVE_SITE_CONFIRMATION", lang.hitch(this, "leaveSite"));
          this.alfSubscribe("ALF_CREATE_SITE", lang.hitch(this, "createSite"));
@@ -228,6 +229,79 @@ define(["dojo/_base/declare",
          }
       },
       
+      /**
+       * Handles requests to request membership of a moderated site
+       *
+       * @instance
+       * @param {object} config The configuration for the join request. 
+       */
+      requestSiteMembership: function alfresco_services_SiteService__requestSiteMembership(config) {
+         if (config.site && config.user)
+         {
+            // PLEASE NOTE: The default role for joining a site is "SiteConsumer", however this can be overridden
+            // if a role is included in the supplied configuration...
+            this.alfLog("log", "A request has been made for a user to join a site: ", config);
+            var url = Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/invitations";
+            var data = {
+               invitationType: "MODERATED",
+               inviteeRoleName: (config.role) ? config.role : "SiteConsumer",
+               inviteeUserName: config.user,
+               inviteeComments: (config.comments) ? config.comments : ""
+            };
+            
+            // Make the XHR request...
+            this.serviceXhr({url : url,
+                             method: "POST",
+                             site: config.site,
+                             user: config.user,
+                             data: data,
+                             successCallback: this.siteMembershipRequestComplete,
+                             callbackScope: this});
+         }
+         else
+         {
+            // Handle error conditions...
+            if (!config.site)
+            {
+               this.alfLog("error", "A request was made to join a site but no site was specified", config);
+            }
+            if (!config.user)
+            {
+               this.alfLog("error", "A request was made to join a site but no user was specified", config);
+            }
+         }
+      },
+
+      /**
+       * Callback that occurs after a request to join a moderated site is complete.
+       *
+       * @instance
+       * @param {object} response The response from the XHR request to join the site.
+       * @param {object} originalRequestConfig The original configuration passed when the request was made.
+       */
+      siteMembershipRequestComplete: function alfresco_services_SiteService__siteMembershipRequestComplete(response, originalRequestConfig) {
+         this.alfLog("log", "User has successfully requested to join a moderated site", response, originalRequestConfig);
+
+         this.displayPrompt({
+            title: "",
+            textContent: this.message("message.request-join-success", { "0": originalRequestConfig.user, "1": originalRequestConfig.site}),
+            widgetsButtons: [
+               {
+                  name: "alfresco/buttons/AlfButton",
+                  config: {
+                     label: this.message("label.ok"),
+                     publishTopic: "ALF_NAVIGATE_TO_PAGE",
+                     publishPayload: {
+                        url: "user/" + originalRequestConfig.user + "/dashboard",
+                        type: "SHARE_PAGE_RELATIVE",
+                        target: "CURRENT"
+                     }
+                  }
+               }
+            ]
+         });
+      },
+
       /**
        * Performs and XHR put request to make the user a member of the site. The argument supplied must include
        * the attributes "site" and "user" and can optionally include an attribute "role".

@@ -1630,7 +1630,7 @@ function getTitleBarModel() {
                   id: "HEADER_JOIN_SITE",
                   label: "join_site.label",
                   iconClass: "alf-leave-icon",
-                  publishTopic: "ALF_JOIN_SITE",
+                  publishTopic: (siteData.profile.visibility == "MODERATED" ? "ALF_REQUEST_SITE_MEMBERSHIP" : "ALF_JOIN_SITE"),
                   publishPayload: {
                      site: page.url.templateArgs.site,
                      siteTitle: siteData.profile.title,
