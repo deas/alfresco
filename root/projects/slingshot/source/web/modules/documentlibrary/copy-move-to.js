@@ -203,15 +203,9 @@
                   });
                }
             }
-
-            Alfresco.util.PopupManager.displayMessage(
-            {
-               text: this.msg("message.success", successCount)
-            });
-
             // ALF-18501 - Redirect on successful moves of documents within the details view.
             if (this.options.mode == "move" &&
-                window.location.pathname.endsWith("document-details"))
+                window.location.pathname.lastIndexOf("document-details") === (window.location.pathname.length - "document-details".length))
             {
                // By reloading the page, the node-header will detect that the node is located in a different
                // site and cause a redirect. The down-side to this is that it causes two page loads but this
@@ -220,9 +214,12 @@
             }
             else
             {
+               Alfresco.util.PopupManager.displayMessage(
+               {
+                  text: this.msg("message.success", successCount)
+               });
                YAHOO.Bubbling.fire("metadataRefresh");
             }
-            
          };
 
          // Failure callback function
