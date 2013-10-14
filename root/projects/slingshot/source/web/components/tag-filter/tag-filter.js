@@ -110,9 +110,6 @@
       onReady: function TagFilter_onReady()
       {
          Alfresco.TagFilter.superclass.onReady.call(this);
-
-         // Kick-off tag population
-         YAHOO.Bubbling.fire("tagRefresh");
       },
       
       /**

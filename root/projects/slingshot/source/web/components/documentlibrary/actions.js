@@ -421,7 +421,7 @@
                fn: function dLA_onActionDetails_failure(response)
                {
                   var failureMsg = this.msg("message.details.failure");
-                  if (response.json.message.indexOf("Failed to persist field 'prop_cm_name'") !== -1)
+                  if (response.json && response.json.message.indexOf("Failed to persist field 'prop_cm_name'") !== -1)
                   {
                      failureMsg = this.msg("message.details.failure.name");
                   }

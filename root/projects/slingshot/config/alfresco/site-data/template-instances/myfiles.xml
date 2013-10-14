@@ -51,7 +51,7 @@
       <!-- Tags -->
       <component>
          <region-id>tags</region-id>
-         <url>/components/tag-filter</url>
+         <url>/components/myfiles/tag-filter</url>
       </component>
 
       <!-- Uploaders -->
