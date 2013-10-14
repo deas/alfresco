@@ -217,8 +217,7 @@
             {
                var pageTitle = config.dataObj.name;
                config.failureCallback.obj = pageTitle;
-               // Remove the leading and trailing whitespace
-               config.dataObj.name = pageTitle.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+               config.dataObj.name = pageTitle.replace(/\s+/g, "_");
                return true;
             },
             scope: this
@@ -419,7 +418,7 @@
 
          // Clear the text field any previously entered values
          var newNameField = Dom.get(this.id + "-renameTo");
-         newNameField.value = this.options.title;
+         newNameField.value = this.options.title.replace(/_/g, " ");
          
          // Fix Firefox caret issue
          var formElement = Dom.get(this.id + "-renamePageForm");

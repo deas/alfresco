@@ -198,8 +198,7 @@
                }
                
                var title = Dom.get(this.id + "-title").value;
-               //Remove the leading and trailing whitespace
-               title = title.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+               title = title.replace(/\s+/g, "_");
                // Set the "action" attribute of the form based on the page title
                form.action =  Alfresco.constants.PROXY_URI + "slingshot/wiki/page/" + this.options.siteId + "/" + encodeURIComponent(title);
                
