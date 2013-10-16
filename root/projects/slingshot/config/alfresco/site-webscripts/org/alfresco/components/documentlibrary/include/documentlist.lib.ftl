@@ -173,10 +173,10 @@
         <div id="${args.htmlid}-filmstrip-main-content" class="alf-filmstrip-main-content">
             <div id="${args.htmlid}-filmstrip-carousel"></div>
             <div id="${args.htmlid}-filmstrip-nav-main-previous" class="alf-filmstrip-nav-button alf-filmstrip-main-nav-button alf-filmstrip-nav-prev">
-                <img src="${page.url.context}/components/documentlibrary/images/filmstrip-main-nav-prev.png" />
+                <img src="${page.url.context}/res/components/documentlibrary/images/filmstrip-main-nav-prev.png" />
             </div>
             <div id="${args.htmlid}-filmstrip-nav-main-next" class="alf-filmstrip-nav-button alf-filmstrip-main-nav-button alf-filmstrip-nav-next">
-                <img src="${page.url.context}/components/documentlibrary/images/filmstrip-main-nav-next.png" />
+                <img src="${page.url.context}/res/components/documentlibrary/images/filmstrip-main-nav-next.png" />
             </div>
         </div>
         <div id="${args.htmlid}-filmstrip-nav" class="alf-filmstrip-nav">
@@ -184,10 +184,10 @@
             <div id="${args.htmlid}-filmstrip-nav-carousel"></div>
             <div id="${args.htmlid}-filmstrip-nav-buttons" class="alf-filmstrip-nav-buttons">
                 <div id="${args.htmlid}-filmstrip-nav-previous" class="alf-filmstrip-nav-button alf-filmstrip-nav-prev">
-                    <img src="${page.url.context}/components/documentlibrary/images/filmstrip-content-nav-prev.png" />
+                    <img src="${page.url.context}/res/components/documentlibrary/images/filmstrip-content-nav-prev.png" />
                 </div>
                 <div id="${args.htmlid}-filmstrip-nav-next" class="alf-filmstrip-nav-button alf-filmstrip-nav-next">
-                    <img src="${page.url.context}/components/documentlibrary/images/filmstrip-content-nav-next.png" />
+                    <img src="${page.url.context}/res/components/documentlibrary/images/filmstrip-content-nav-next.png" />
                 </div>
             </div>
         </div>
