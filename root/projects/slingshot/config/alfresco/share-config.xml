@@ -29,7 +29,7 @@
          <!--  The number of sites page links (e.g. "Dashboard", "Document Library", "Calendar", etc
                that will be displayed on any site page for navigation. All other site pages will be
                displayed under a "More" drop down menu. The current site page will always be displayed -->
-         <max-displayed-site-pages>3</max-displayed-site-pages>
+         <max-displayed-site-pages>5</max-displayed-site-pages>
          
          <!-- This indicates whether or not to use the configuration defined in this "header" element for rendering
               the header menu bar. If this is set to "false" or it not defined then the header bar will be rendered
