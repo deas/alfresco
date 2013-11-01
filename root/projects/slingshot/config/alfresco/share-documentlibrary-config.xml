@@ -818,7 +818,7 @@
          <action type="action-link" id="onActionCopyTo" label="menu.selected-items.copy" />
          <action type="action-link" id="onActionMoveTo" permission="Delete" label="menu.selected-items.move"/>
          <action type="action-link" id="onActionAssignWorkflow" asset="document" label="menu.selected-items.assign-workflow"/>
-         <action type="action-link" id="onActionDelete" permission="Delete" label="menu.selected-items.delete"/>
+         <action type="action-link" id="onActionDelete" permission="Delete" label="menu.selected-items.delete" notAspect="hwf:hybridWorkflow" />
          <action type="action-link" id="onActionCloudSync" asset="document"  permission="CreateChildren" label="menu.selected-items.cloudSync" notAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
          <action type="action-link" id="onActionCloudSyncRequest" label="menu.selected-items.cloudRequestSync" hasAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
       </multi-select>
