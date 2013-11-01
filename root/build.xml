@@ -703,9 +703,6 @@
       </copy>
       
       <!-- copy webservices files -->
-      <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.remoteapi.src.webinf}"/>
-      </copy>
       <copy todir="${dir.deploy.tomcat.webclient}/wsdl" verbose="${copy.verbose}">
          <fileset dir="${dir.project.remoteapi.src.wsdl}" />
       </copy>

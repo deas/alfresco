@@ -1908,7 +1908,6 @@
                   excludes="web.xml,alfresco-object.xml" />
          <fileset dir="${dir.project.installer}" 
                   includes="licenses/**" />
-         <fileset dir="${dir.project.remoteapi.src.webinf}"/>
       </copy>
       
       <!-- for Share activity feed (email) notifier - overwrite dummy files -->
@@ -1940,8 +1939,11 @@
          <fileset dir="${dir.project.webclient.config}"
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.repository.src}/test-resources/"
+
                   includes="quick/quick.*"
+
                   excludes="quick/quick.*.*" />
+
          <!-- 
          Add dev-context.xml (if present) to WEB-INF/classes.
          This allows developers doing private builds to override
