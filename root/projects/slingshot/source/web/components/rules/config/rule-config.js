@@ -1648,7 +1648,7 @@
             var options = {
                showTime: showTime,
                mandatory: paramDef.isMandatory,
-               currentValue: (value && value != "") ? value : null 
+               currentValue: (value && value != "") ? value : Alfresco.util.toISO8601(new Date()) 
             };
             var datePicker = new Alfresco.DatePicker(datePickerId, valueId).setOptions(options).setMessages(
             {
