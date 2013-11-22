@@ -142,6 +142,9 @@
         <property name="documentHelper" ref="vtiDocumentHelper" />
         <property name="pathHelper" ref="vtiPathHelper" />
         <property name="shareUtils" ref="shareUtils" />
+        <property name="activityPoster" ref="vtiActivityPoster"/>
+        <property name="davHelper" ref="sppDAVHelper"/>
+        <property name="davService" ref="webdavService"/>
     </bean>
 
     <bean id="vtiDocumentHelper" class="org.alfresco.module.vti.handler.alfresco.VtiDocumentHelper">

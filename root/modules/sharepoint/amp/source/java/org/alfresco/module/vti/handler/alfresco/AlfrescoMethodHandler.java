@@ -45,9 +45,14 @@ import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
+import org.alfresco.repo.webdav.ActivityPostProducer;
+import org.alfresco.repo.webdav.ActivityPoster;
 import org.alfresco.repo.webdav.WebDAV;
+import org.alfresco.repo.webdav.WebDAVHelper;
+import org.alfresco.repo.webdav.WebDAVServerException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.model.FileNotFoundException;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
@@ -57,6 +62,7 @@ import org.alfresco.service.cmr.site.SiteService;
 import org.alfresco.service.cmr.version.Version;
 import org.alfresco.service.cmr.version.VersionHistory;
 import org.alfresco.service.cmr.version.VersionType;
+import org.alfresco.service.cmr.webdav.WebDavService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
@@ -69,7 +75,7 @@ import org.springframework.util.FileCopyUtils;
  * 
  * @author PavelYur
  */
-public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
+public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler implements ActivityPostProducer
 {
     private final static Log logger = LogFactory.getLog(AlfrescoMethodHandler.class);
     private static final String DAV_EXT_LOCK_TIMEOUT = "X-MSDAVEXTLockTimeout";
@@ -77,7 +83,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
     private SiteService siteService;
     private AuthenticationComponent authenticationComponent;
     private ShareUtils shareUtils;
-
+    private ActivityPoster activityPoster;
+    private WebDavService davService;
+    private WebDAVHelper davHelper;
+    
     /**
      * Set authentication component
      * 
@@ -272,6 +281,9 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
             resourceNodeRef = resourceFileInfo.getNodeRef();
         }
         
+        // Does the file already exist (false), or has it been created by this request? 
+        boolean newlyCreated = false;
+        
         // Office 2008/2011 for Mac
         if (resourceNodeRef == null && lockTimeOut != null)
         {
@@ -296,7 +308,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                 };
 
                 resourceNodeRef = getTransactionService().getRetryingTransactionHelper().doInTransaction(cb);
-
+                newlyCreated = true;
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setHeader(WebDAV.HEADER_LOCK_TOKEN, WebDAV.makeLockToken(resourceNodeRef, getUserName()));
                 response.setHeader(DAV_EXT_LOCK_TIMEOUT, lockTimeOut);
@@ -386,6 +398,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
                 getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
             }
 
+            String siteId = davHelper.determineSiteId(getPathHelper().getRootNodeRef(), decodedUrl);
+            String tenantDomain = davHelper.determineTenantDomain();
+            postActivity(decodedUrl, siteId, tenantDomain, newlyCreated);
+            
             tx.commit();
         }
         catch (Exception e)
@@ -786,5 +802,67 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler
         }
 
         return docMetaInfo;
+    }
+    
+    /**
+     * Create an activity post.
+     * 
+     * @throws WebDAVServerException 
+     */
+    protected void postActivity(String path, String siteId, String tenantDomain, boolean newlyCreated)
+                throws WebDAVServerException
+    {
+        if (!davService.activitiesEnabled())
+        {
+            // Don't post activities if this behaviour is disabled.
+            return;
+        }
+        
+        if (siteId.equals(WebDAVHelper.EMPTY_SITE_ID))
+        {
+            // There is not enough information to publish site activity.
+            return;
+        }
+        
+        FileInfo contentNodeInfo = null;
+        try
+        {
+            contentNodeInfo = davHelper.getNodeForPath(getPathHelper().getRootNodeRef(), path);
+            NodeRef nodeRef = contentNodeInfo.getNodeRef();
+            // Don't post activity data for hidden files, resource forks etc.
+            if (!getNodeService().hasAspect(nodeRef, ContentModel.ASPECT_HIDDEN))
+            {
+                if (newlyCreated)
+                {
+                    // file added
+                    activityPoster.postFileFolderAdded(siteId, tenantDomain, null, contentNodeInfo);
+                }
+                else
+                {
+                    // file updated
+                    activityPoster.postFileFolderUpdated(siteId, tenantDomain, contentNodeInfo);
+                }
+            }
+        }
+        catch (FileNotFoundException error)
+        {
+            throw new WebDAVServerException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }        
+    }
+
+    @Override
+    public void setActivityPoster(ActivityPoster activityPoster)
+    {
+        this.activityPoster = activityPoster;
+    }
+
+    public void setDavService(WebDavService davService)
+    {
+        this.davService = davService;
+    }
+
+    public void setDavHelper(WebDAVHelper davHelper)
+    {
+        this.davHelper = davHelper;
     }
 }
