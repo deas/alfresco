@@ -1477,6 +1477,10 @@
             }
          }, this);
 
+         // Remove the display:none style set in the documentlist_v2.lib.ftl that ensure the options menu DIV
+         // isn't shown before styles are applied to it...
+         Dom.setStyle(this.id + "-options-menu", "display", "inherit");
+
          YAHOO.Bubbling.fire("postDocumentListOnReady",
          {
              scope: this,

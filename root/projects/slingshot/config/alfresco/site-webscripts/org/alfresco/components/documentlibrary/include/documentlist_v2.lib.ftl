@@ -115,7 +115,7 @@
                <div class="right">
                   <div class="options-select">
                      <button id="${id}-options-button" name="doclist-options-button">${msg("button.options")}</button>
-                     <div id="${id}-options-menu" class="yuimenu">
+                     <div id="${id}-options-menu" class="yuimenu" style="display:none;">
                         <div class="bd">
                            <ul>
                               <@markup id="documentListViewFolderAction">
