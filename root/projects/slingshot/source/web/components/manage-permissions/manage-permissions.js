@@ -310,14 +310,13 @@
                viewMode: Alfresco.AuthorityFinder.VIEW_MODE_COMPACT,
                singleSelectMode: true,
                minSearchTermLength: 3,
-               authorityType: (this.options.showGroups)? Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL : Alfresco.AuthorityFinder.AUTHORITY_TYPE_USERS
+               authorityType: (this.options.showGroups) ? Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL : Alfresco.AuthorityFinder.AUTHORITY_TYPE_USERS
             });
 
             // Add User/Group button
             this.widgets.addUserGroup = Alfresco.util.createYUIButton(this, "addUserGroupButton", this.onAddUserGroupButton,
             {
-               type: "checkbox",
-               checked: false
+               label: (this.options.showGroups) ? this.msg("button.addUserGroup") : this.msg("button.addUser")
             });
             
             var btnRegion = Dom.getRegion(this.id + "-addUserGroupButton");
