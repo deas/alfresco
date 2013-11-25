@@ -98,6 +98,26 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This override is required purely to address an IE8 issue. As soon as IE8 support is dropped we
+       * can remove this override. It was added to address ALF-20544 and ALF-20547.
+       *
+       * @instance
+       * @param {evt} evt The click event.
+       * @returns {boolean} 
+       */
+      _onClick: function alfresco_buttons_AlfButton___onClick(evt) {
+         try
+         {
+            return this.inherited(arguments);
+         }
+         catch(e)
+         {
+            this.onClick(evt);
+            return false;
+         }
+      },
+
+      /**
        * Handles click events to publish the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} 
        * on the [publishTopic]{@link module:alfresco/buttons/AlfButton#publishTopic}
        * 
@@ -113,6 +133,7 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "A widget was clicked but did not provide any information on how to handle the event", this);
          }
+         return false;
       }
    });
 });
