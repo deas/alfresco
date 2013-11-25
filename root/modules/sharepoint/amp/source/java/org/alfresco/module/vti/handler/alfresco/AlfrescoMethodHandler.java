@@ -397,10 +397,14 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
             {
                 getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
             }
-
-            String siteId = davHelper.determineSiteId(getPathHelper().getRootNodeRef(), decodedUrl);
-            String tenantDomain = davHelper.determineTenantDomain();
-            postActivity(decodedUrl, siteId, tenantDomain, newlyCreated);
+            
+            if (ContentData.hasContent(contentData))
+            {
+                String siteId = davHelper.determineSiteId(getPathHelper().getRootNodeRef(), decodedUrl);
+                String tenantDomain = davHelper.determineTenantDomain();
+                long fileSize = contentData.getSize();
+                reportUploadEvent(decodedUrl, siteId, tenantDomain, newlyCreated, mimetype, fileSize);
+            }
             
             tx.commit();
         }
@@ -805,6 +809,16 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
     }
     
     /**
+     * TODO: may be expanded to a proper event handler with listener registration.
+     */
+    protected void reportUploadEvent(String path, String siteId, String tenantDomain,
+                                     boolean newlyCreated, String mimeType, long fileSize)
+                throws WebDAVServerException
+    {
+        postActivity(path, siteId, tenantDomain, newlyCreated);
+    }
+    
+    /**
      * Create an activity post.
      * 
      * @throws WebDAVServerException 
@@ -864,5 +878,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
     public void setDavHelper(WebDAVHelper davHelper)
     {
         this.davHelper = davHelper;
+    }
+
+    public WebDAVHelper getDavHelper()
+    {
+        return this.davHelper;
     }
 }

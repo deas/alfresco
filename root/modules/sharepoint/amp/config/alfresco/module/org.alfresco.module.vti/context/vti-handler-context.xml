@@ -124,8 +124,8 @@
         <property name="versionService" ref="VersionService"/>
         <property name="authenticationService" ref="AuthenticationService" />
     </bean>    
-
-    <bean id="vtiHandlerTarget" class="org.alfresco.module.vti.handler.alfresco.AlfrescoMethodHandler">
+ 
+    <bean id="abstractVtiHandlerTarget" class="org.alfresco.module.vti.handler.alfresco.AlfrescoMethodHandler">
         <property name="nodeService" ref="NodeService" />
         <property name="fileFolderService" ref="FileFolderService" />
         <property name="permissionService" ref="PermissionService" />
@@ -146,6 +146,8 @@
         <property name="davHelper" ref="sppDAVHelper"/>
         <property name="davService" ref="webdavService"/>
     </bean>
+    
+    <bean id="vtiHandlerTarget" parent="abstractVtiHandlerTarget"/>
 
     <bean id="vtiDocumentHelper" class="org.alfresco.module.vti.handler.alfresco.VtiDocumentHelper">
         <property name="nodeService" ref="NodeService" />
