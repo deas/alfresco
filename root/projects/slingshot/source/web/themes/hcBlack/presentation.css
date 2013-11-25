@@ -9,6 +9,11 @@
    color: #000000;
 }
 
+.sticky-footer
+{
+   font-size: 81%;
+}
+
 .sticky-wrapper a,
 .sticky-wrapper a:visited,
 .sticky-wrapper a:hover,

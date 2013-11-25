@@ -58,8 +58,12 @@ button:focus {outline:none;}
 .sticky-footer
 {
    font-family: Open Sans, Arial, sans-serif;
-   font-size: 81%;
    color: #333;
+}
+
+.sticky-footer
+{
+   font-size: 81%;
 }
 
 .sticky-wrapper a,
