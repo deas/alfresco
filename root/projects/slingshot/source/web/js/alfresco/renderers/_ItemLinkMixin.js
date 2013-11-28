@@ -134,6 +134,6 @@ define(["dojo/_base/declare",
             filterId: "path",
             filterData: this.combinePaths(locn.path, locn.file)
          });
-      },
+      }
    });
 });

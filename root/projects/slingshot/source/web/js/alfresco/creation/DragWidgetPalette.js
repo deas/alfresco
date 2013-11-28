@@ -126,7 +126,7 @@ define(["dojo/_base/declare",
                         config: {
                            name: "name",
                            label: "Post parameter",
-                           value: "default",
+                           value: "default"
                         }
                      },
                      {

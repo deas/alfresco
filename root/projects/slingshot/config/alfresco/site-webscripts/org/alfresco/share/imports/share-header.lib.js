@@ -1793,8 +1793,7 @@ function getHeaderModel() {
                               publishTopic: "ALF_LOGGING_STATUS_CHANGE",
                               checked: errorEnabled
                            }
-                        },
-
+                        }
                      ]
                   }
                },

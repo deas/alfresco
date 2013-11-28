@@ -287,7 +287,7 @@ define(["dojo/_base/declare",
                         name: "alfresco/menus/AlfMenuGroup"
                      }
                   ]
-               },
+               }
             },
             {
                name: "alfresco/menus/AlfMenuBarItem",

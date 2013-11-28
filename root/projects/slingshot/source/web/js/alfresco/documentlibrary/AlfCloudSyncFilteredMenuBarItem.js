@@ -77,6 +77,6 @@ define(["dojo/_base/declare",
          {
             this.show();
          }
-      },
+      }
    });
 });

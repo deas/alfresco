@@ -60,7 +60,6 @@
 
    YAHOO.extend(Alfresco.component.StartWorkflow, Alfresco.component.ShareFormManager,
    {
-
       /**
        * Object container for initialization options
        *
@@ -208,11 +207,11 @@
          // the message and error-number will do.
          message = message.replace("org.alfresco.service.cmr.workflow.WorkflowException:", "");
          Alfresco.util.PopupManager.displayPrompt(
-               {
-                  title: this.msg(this.options.failureMessageKey),
-                  text: (message)
-               });
-      },
+            {
+               title: this.msg(this.options.failureMessageKey),
+               text: (message)
+            });
+      }
 
    });
 

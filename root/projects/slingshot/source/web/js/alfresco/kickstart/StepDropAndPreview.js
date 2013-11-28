@@ -100,6 +100,6 @@ define(["dojo/_base/declare",
          payload.options = this.getAvailableFields();
          this.alfLog("log", "Publishing available fields:", payload, this);
          this.alfPublish(pubSubScope + "ALF_FORM_FIELDS_UPDATE", payload, true);
-      },
+      }
    });
 });

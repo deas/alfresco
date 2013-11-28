@@ -217,6 +217,6 @@ define(["dojo/_base/declare",
       removeDndHighlight: function alfresco_node_NodeDropTargetMixin__addDragEnterHighlight() {
          // No action by default
          domClass.remove(this.domNode, "dndHighlight");
-      },
+      }
    });
 });

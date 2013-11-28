@@ -412,7 +412,7 @@ define(["dojo/_base/declare",
             var widgetWrapper = new DropZoneWrapper({
                pubSubScope: this.pubSubScope,
                widgets: widgets,
-               moduleName: item.name,
+               moduleName: item.name
             }, node);
             
             // Store the field name

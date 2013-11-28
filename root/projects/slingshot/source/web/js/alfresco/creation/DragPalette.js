@@ -120,7 +120,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.title",
                      label: "Page Title",
-                     value: "",
+                     value: ""
                   }
                }
             ],
@@ -249,7 +249,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.altText",
                      label: "Alt Text",
-                     value: "",
+                     value: ""
                   }
                }
             ],
@@ -313,7 +313,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.altText",
                      label: "Alt Text",
-                     value: "",
+                     value: ""
                   }
                }
             ],
@@ -345,7 +345,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.label",
                      label: "Label",
-                     value: "default",
+                     value: "default"
                   }
                }
             ],
@@ -381,7 +381,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.label",
                      label: "Label",
-                     value: "default",
+                     value: "default"
                   }
                },
                {
@@ -418,7 +418,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.altText",
                      label: "Alt Text",
-                     value: "",
+                     value: ""
                   }
                },
                {
@@ -426,7 +426,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.publishTopic",
                      label: "Publish Topic",
-                     value: "",
+                     value: ""
                   }
                },
                {
@@ -466,7 +466,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.label",
                      label: "Label",
-                     value: "default",
+                     value: "default"
                   }
                }
             ],
@@ -499,7 +499,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.title",
                      label: "Title",
-                     value: "title",
+                     value: "title"
                   }
                },
                {
@@ -507,7 +507,7 @@ define(["dojo/_base/declare",
                   config: {
                      name: "defaultConfig.description",
                      label: "Description",
-                     value: "description",
+                     value: "description"
                   }
                }
             ],
@@ -546,7 +546,7 @@ define(["dojo/_base/declare",
                             config: {
                                name: "additionalConfig.title",
                                label: "Tab Title",
-                               value: "title",
+                               value: "title"
                             }
                          }
                       ]
