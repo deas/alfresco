@@ -487,7 +487,7 @@ define(["dojo/_base/declare",
          if (this.filterWidget(widgetConfig))
          {
             var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
-            this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this);
+            this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
          }
       },
       
@@ -533,15 +533,23 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @param {object} widget The widget that has just been processed.
-       * @param {object} _this The current scope of the instantiating widget
+       * @param {number} index The target index of the widget
        */
-      _registerProcessedWidget: function alfresco_core_Core___registerProcessedWidget(widget, _this) {
-         _this._processedWidgetCountdown--;
-         _this._processedWidgets.push(widget);
-         if (_this._processedWidgetCountdown == 0)
+      _registerProcessedWidget: function alfresco_core_Core___registerProcessedWidget(widget, index) {
+         this._processedWidgetCountdown--;
+         if (index == null || isNaN(index))
          {
-            _this.allWidgetsProcessed(_this._processedWidgets);
-            _this.widgetProcessingComplete = true;
+            this._processedWidgets.push(widget);
+         }
+         else
+         {
+            this._processedWidgets[index] = widget;
+         }
+         
+         if (this._processedWidgetCountdown == 0)
+         {
+            this.allWidgetsProcessed(this._processedWidgets);
+            this.widgetProcessingComplete = true;
          }
       },
       
@@ -634,9 +642,11 @@ define(["dojo/_base/declare",
        * @param {object} config The configuration for the widget
        * @param {DOM Element} domNode The DOM node to attach the widget to
        * @param {function} callback A function to call once the widget has been instantiated
-       * @param {Array} callbackArgs An array of arguments to pass to the callback function
+       * @param {object} callbackScope The scope with which to call the callback
+       * @param {number} index The index of the widget to create (this will effect it's location in the 
+       * [_processedWidgets]{@link module:alfresco/core/Core#_processedWidgets} array)
        */
-      createWidget: function alfresco_core_Core__createWidget(config, domNode, callback, callbackArgs) {
+      createWidget: function alfresco_core_Core__createWidget(config, domNode, callback, callbackScope, index) {
          
          var _this = this;
          this.alfLog("log", "Creating widget: ",config);
@@ -695,7 +705,9 @@ define(["dojo/_base/declare",
             }
             if (callback)
             {
-               callback(widget, callbackArgs);
+               // If there is a callback then call it with any provided scope (but default to the
+               // "this" as the scope if one isn't provided).
+               callback.call((callbackScope != null ? callbackScope : this), widget, index);
             }
          });
          

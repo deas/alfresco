@@ -39,9 +39,7 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "dojo/html",
         "dojo/aspect",
-        "dijit/registry",
-        "dijit/nls/loading",
-        "dijit/nls/common"], 
+        "dijit/registry"], 
         function(declare, Dialog, AlfCore, lang, array, domConstruct, domClass, html, aspect, registry) {
    
    return declare([Dialog, AlfCore], {
