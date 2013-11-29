@@ -388,6 +388,8 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
             // If needed, mark the node as having now had its content supplied
             if (getNodeService().hasAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT))
             {
+                // CLOUD-2209: newly created documents not shown in activity feed.
+                newlyCreated = true;
                 getNodeService().removeAspect(resourceNodeRef, ContentModel.ASPECT_WEBDAV_NO_CONTENT);
             }
             
@@ -398,13 +400,10 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
                 getVersionService().createVersion(resourceNodeRef, Collections.<String,Serializable>singletonMap(VersionModel.PROP_VERSION_TYPE, VersionType.MAJOR));
             }
             
-            if (ContentData.hasContent(contentData))
-            {
-                String siteId = davHelper.determineSiteId(getPathHelper().getRootNodeRef(), decodedUrl);
-                String tenantDomain = davHelper.determineTenantDomain();
-                long fileSize = contentData.getSize();
-                reportUploadEvent(decodedUrl, siteId, tenantDomain, newlyCreated, mimetype, fileSize);
-            }
+            String siteId = davHelper.determineSiteId(getPathHelper().getRootNodeRef(), decodedUrl);
+            String tenantDomain = davHelper.determineTenantDomain();
+            long fileSize = contentData.getSize();
+            reportUploadEvent(decodedUrl, siteId, tenantDomain, newlyCreated, mimetype, fileSize);
             
             tx.commit();
         }
