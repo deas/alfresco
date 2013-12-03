@@ -304,7 +304,7 @@
             var taskId = data.id,
                message = data.properties["bpm_description"],
                dueDateStr = data.properties["bpm_dueDate"],
-               dueDate = dueDateStr ? Alfresco.util.fromISO8601(dueDateStr) : null,
+               dueDate = dueDateStr ? Alfresco.util.dateWithoutTZFromISO8601(dueDateStr) : null;
                today = new Date(),
                type = data.title,
                status = data.properties["bpm_status"],
