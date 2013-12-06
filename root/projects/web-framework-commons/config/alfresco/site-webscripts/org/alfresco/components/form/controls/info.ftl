@@ -10,19 +10,13 @@
    <#if field.value == "">
       <#assign displayValue=msg("form.control.novalue") />
    <#else>   
-      <#if field.dataType == "date">
-         <#assign displayValue=field.value?datetime("yyyy-MM-dd'T'HH:mm:ss")?string(msg("form.control.date-picker.view.date.format")) />
-      <#elseif field.dataType == "datetime">
-         <#assign displayValue=field.value?datetime("yyyy-MM-dd'T'HH:mm:ss")?string(msg("form.control.date-picker.view.time.format")) />
-      <#else>
-         <#assign displayValue=field.value?html />
-      </#if>
+      <#assign displayValue=field.value?html />
    </#if>
 </#if>
 
 <div class="form-field">
    <div class="viewmode-field">
       <span class="viewmode-label">${field.label?html}:</span>
-      <span class="viewmode-value">${displayValue}</span>
+      <span class="viewmode-value" data-dataType="${field.dataType}">${displayValue}</span>
    </div>
 </div>
