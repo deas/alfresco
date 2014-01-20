@@ -207,7 +207,7 @@ function main()
 
          // Request the current user's preferences to determine whether or not
          // the dashlet should be displayed...
-         var prefs = eval('(' + preferences.value + ')');
+         var prefs = jsonUtils.toObject(preferences.value);
          // Populate the preferences object literal for easy look-up later
          var dashletprefs = eval('try{(prefs.org.alfresco.share.siteWelcome)}catch(e){}');
          if (typeof dashletprefs != "object")

@@ -44,14 +44,8 @@ function updateRecentSites() {
    if (page.url.templateArgs.site)
    {
       // Get the preferences for the current user...
-      var result = remote.call("/api/people/" + encodeURIComponent(user.name) + "/preferences"),
-          prefs,
-          recentSites;
-      if (result.status == 200 && result != "{}")
-      {
-         prefs = eval('(' + result + ')');
-         recentSites = eval('try{(prefs.org.alfresco.share.sites.recent)}catch(e){}');
-      }
+      var prefs = jsonUtils.toObject(preferences.value);
+      var recentSites = eval('try{(prefs.org.alfresco.share.sites.recent)}catch(e){}');
       // Check that recentSites and favourites have been initialised by the successful
       // response of requesting preferences. If not then just make them a new object and
       // this will be reflected in the UI as there being no recent sites or favourites.
@@ -1695,7 +1689,7 @@ function getHeaderLogoUrl() {
 
 function getUserPreferences() {
    var userPreferences = {};
-   var prefs = eval('(' + preferences.value + ')');
+   var prefs = jsonUtils.toObject(preferences.value);
    return prefs
 }
 var userPreferences = getUserPreferences();

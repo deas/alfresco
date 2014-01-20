@@ -10,7 +10,7 @@ function getPreferences()
    var doclistPrefs = {};
    
    // Populate the preferences object literal for easy look-up later
-   var prefs = eval('(' + preferences.value + ')');
+   var prefs = jsonUtils.toObject(preferences.value);
    doclistPrefs = eval('try{(prefs.' + PREFERENCES_ROOT + ')}catch(e){}');
    if (typeof doclistPrefs != "object")
    {

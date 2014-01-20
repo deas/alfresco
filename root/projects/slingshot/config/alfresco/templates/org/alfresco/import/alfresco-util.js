@@ -290,7 +290,7 @@ var AlfrescoUtil =
       var userprefs = {};
 
       // Retrieve the current user's preferences
-      var prefs = eval('(' + preferences.value + ')');
+      var prefs = jsonUtils.toObject(preferences.value);
 
       // If filter isn't set, then return all the preferences.
       if (typeof p_filter == "undefined" || p_filter.length == 0)

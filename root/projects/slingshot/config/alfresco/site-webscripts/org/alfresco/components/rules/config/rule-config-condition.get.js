@@ -66,7 +66,7 @@ function main()
    model.constraintsFilter = jsonUtils.toJSONString(constraintsFilter);
 
    // Load user preferences for which proeprties to show in menu as default
-   var prefs = eval('(' + preferences.value + ')'),
+   var prefs = jsonUtils.toObject(preferences.value),
       ruleProperties = {};
    // Get all default properties
    if (c.defaults)

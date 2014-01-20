@@ -27,7 +27,7 @@ function main(siteType)
       if (sites.length > 0)
       {
          // Call the repo for the user's favourite sites
-         var prefs = eval('(' + preferences.value + ')');
+         var prefs = jsonUtils.toObject(preferences.value);
          
          // Populate the favourites object literal for easy look-up later
          favourites = eval('try{(prefs.' + PREF_FAVOURITE_SITES + ')}catch(e){}');

@@ -13,7 +13,7 @@ function getTwisterPrefs()
       result,
       prefs;
 
-   prefs = eval('(' + preferences.value + ')');
+   prefs = jsonUtils.toObject(preferences.value);
    collapsedTwisters = eval('try{(prefs.' + PREF_COLLAPSED_TWISTERS + ')}catch(e){}');
    if (typeof collapsedTwisters != "string")
    {

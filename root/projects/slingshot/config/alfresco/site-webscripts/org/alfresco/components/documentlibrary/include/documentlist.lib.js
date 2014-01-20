@@ -15,7 +15,7 @@ var DocumentList =
    {
       var userprefs = {};
 
-      var prefs = eval('(' + preferences.value + ')');
+      var prefs = jsonUtils.toObject(preferences.value);
       // Populate the preferences object literal for easy look-up later
       userprefs = eval('try{(prefs.' + DocumentList.PREFERENCES_ROOT + ')}catch(e){}');
       if (typeof userprefs != "object")
