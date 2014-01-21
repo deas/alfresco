@@ -24,18 +24,13 @@ function main()
    {
       try
       {
-         // Parse json using Java to a org.json.simple.JSONObject
+         // Parse JSON using Java to a native JavaScript object
          favourites = jsonUtils.toObject(args.favsites);
-
-         // Print object as json and use eval so we get a Rhino javascript object to execute as usual
-         favourites = eval("(" + favourites.toString() + ")");
       }
       catch(e)
       {
          favourites = {};
       }
-
-      favourites = eval('(' + args.favsites + ')');
    }
    else
    {

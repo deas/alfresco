@@ -439,11 +439,8 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a org.json.simple.JSONArray (wrap in an object to keep toObject happy)
-                  sitePages = jsonUtils.toObject('{"tmp":' + dashboardPageData.properties.sitePages + '}').tmp;
-
-                  // Print array as json and use eval so we get a Rhino javascript array to execute as usual
-                  sitePages = eval("(" + sitePages.toString() + ")");
+                  // Parse json using Java to a native Array (wrap in an object to keep toObject happy)
+                  sitePages = jsonUtils.toObject('{"tmp":' + sitePages + '}').tmp;
                }
                catch(e)
                {
@@ -458,13 +455,11 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a org.json.simple.JSONObject with an Arra
-                  pageMetadata = jsonUtils.toObject('{"tmp":[' + pageMetadata + ']}').tmp;
-
-                  // Print object as json and use eval so we get a Rhino javascript object to execute as usual
-                  pageMetadata = eval("(" + pageMetadata.toString() + ")")[0];
+                  // Parse json using Java to a native Object
+                  pageMetadata = jsonUtils.toObject(pageMetadata);
                }
-               catch(e){
+               catch(e)
+               {
                   pageMetadata = {};
                }
             }
@@ -472,7 +467,6 @@ var AlfrescoUtil =
             {
                pageMetadata = {};
             }
-
 
             // Get the page urls from config
             for (var i = 0; i < configPages.size(); i++)

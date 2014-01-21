@@ -248,11 +248,8 @@ function getPages(includeUnusedPages)
          {
             try
             {
-               // Parse json using Java to a org.json.simple.JSONArray (wrap in an object to keep toObject happy)
-               sitePages = jsonUtils.toObject('{"tmp":' + dashboardPageData.properties.sitePages + '}').tmp;
-
-               // Print array as json and use eval so we get a Rhino javascript array to execute as usual
-               sitePages = eval("(" + sitePages.toString() + ")");
+               // Parse json using Java to a native Array (wrap in an object to keep toObject happy)
+               sitePages = jsonUtils.toObject('{"tmp":' + sitePages + '}').tmp;
             }
             catch(e)
             {
@@ -267,13 +264,11 @@ function getPages(includeUnusedPages)
          {
             try
             {
-               // Parse json using Java to a org.json.simple.JSONObject with an Array
-               pageMetadata = jsonUtils.toObject('{"tmp":[' + pageMetadata + ']}').tmp;
-
-               // Print object as json and use eval so we get a Rhino javascript object to execute as usual
-               pageMetadata = eval("(" + pageMetadata.toString() + ")")[0];
+               // Parse json using Java to a native Object
+               pageMetadata = jsonUtils.toObject(pageMetadata);
             }
-            catch(e){
+            catch(e)
+            {
                pageMetadata = {};
             }
          }
