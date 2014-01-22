@@ -439,8 +439,11 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a native Array (wrap in an object to keep toObject happy)
+                  // Parse json using Java to a org.json.simple.JSONArray (wrap in an object to keep toObject happy)
                   sitePages = jsonUtils.toObject('{"tmp":' + sitePages + '}').tmp;
+                  
+                  // Print array as json and use eval so we get a Rhino javascript array to execute as usual
+                  sitePages = eval("(" + sitePages.toString() + ")");
                }
                catch(e)
                {
@@ -455,8 +458,11 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a native Object
+                  // Parse json using Java to a org.json.simple.JSONObject
                   pageMetadata = jsonUtils.toObject(pageMetadata);
+                  
+                  // Print object as json and use eval so we get a Rhino javascript object to execute as usual
+                  pageMetadata = eval("(" + pageMetadata.toString() + ")")[0];
                }
                catch(e)
                {
