@@ -135,7 +135,7 @@
          // Remove any commas from the number to prevent NaN errors
          var done = json.done.replace(/,/g, "");
          var total = json.total.replace(/,/g, "");
-         var overallProgress = (done / total);
+         var overallProgress = total != 0 ? (done / total) : 0;
          var overallLeft = (-300 + (overallProgress * 300));
          Dom.setStyle(this.id + "-aggregate-progress-span", "left", overallLeft + "px"); 
          Dom.get(this.id + "-file-count-span").innerHTML = this.msg("file.status", json.filesAdded, json.totalFiles);
