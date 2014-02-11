@@ -154,13 +154,13 @@
             <div class="header-bar">${msg("label.about")}</div>
             <div class="drow">
                <div class="reqcolumn">&nbsp;</div>
-               <div class="rightcolumn">
-                  <span class="label"><label for="${el}-input-lastName">${msg("label.lastname")}:</label></span>
-                  <span><input type="text" maxlength="256" size="30" id="${el}-input-lastName" value="" <@immutablefield field="lastName" /> /></span>
-               </div>
                <div class="leftcolumn">
                   <span class="label"><label for="${el}-input-firstName">${msg("label.firstname")}:</label></span>
                   <span><input type="text" maxlength="256" size="30" id="${el}-input-firstName" value="" <@immutablefield field="firstName" /> />&nbsp;*</span>
+               </div>
+               <div class="rightcolumn">
+                  <span class="label"><label for="${el}-input-lastName">${msg("label.lastname")}:</label></span>
+                  <span><input type="text" maxlength="256" size="30" id="${el}-input-lastName" value="" <@immutablefield field="lastName" /> /></span>
                </div>
             </div>
             <div class="drow">
