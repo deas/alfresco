@@ -58,6 +58,8 @@ public class DictionaryDAOTest extends TestCase
     private static final String TEST2_URL = "http://www.alfresco.org/test/dictionarydaotest2/1.0";
     private static final String TEST_MODEL = "org/alfresco/repo/dictionary/dictionarydaotest_model.xml";
     private static final String TEST_BUNDLE = "org/alfresco/repo/dictionary/dictionarydaotest_model";
+    private static final String TEST_COMMON_NS_PARENT_MODEL = "org/alfresco/repo/dictionary/commonpropertynsparent_model.xml";
+    private static final String TEST_COMMON_NS_CHILD_MODEL = "org/alfresco/repo/dictionary/commonpropertynschild_model.xml";
     private DictionaryService service;
     
     
@@ -129,6 +131,29 @@ public class DictionaryDAOTest extends TestCase
         bootstrap.bootstrap();
     }
 
+    public void testUseImportedNamespaces()
+    {
+        TenantService tenantService = new SingleTServiceImpl();
+        NamespaceDAOImpl namespaceDAO = new NamespaceDAOImpl();
+        namespaceDAO.setTenantService(tenantService);
+        initNamespaceCaches(namespaceDAO);
+        
+        DictionaryDAOImpl dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
+        dictionaryDAO.setTenantService(tenantService);
+        initDictionaryCaches(dictionaryDAO);
+        
+        DictionaryBootstrap bootstrap = new DictionaryBootstrap();
+        List<String> bootstrapModels = new ArrayList<String>();
+        
+        bootstrapModels.add("alfresco/model/dictionaryModel.xml");
+        bootstrapModels.add(TEST_COMMON_NS_PARENT_MODEL);
+        bootstrapModels.add(TEST_COMMON_NS_CHILD_MODEL);
+        
+        bootstrap.setModels(bootstrapModels);
+        bootstrap.setDictionaryDAO(dictionaryDAO);
+        bootstrap.setTenantService(tenantService);
+        bootstrap.bootstrap();
+    }
 
     public void testLabels()
     {

@@ -103,7 +103,8 @@ import org.alfresco.util.EqualsHelper;
         for (M2Property property : m2Class.getProperties())
         {
             PropertyDefinition def = new M2PropertyDefinition(this, property, resolver);
-            if (!model.isNamespaceDefined(def.getName().getNamespaceURI()))
+            if (!model.isNamespaceDefined(def.getName().getNamespaceURI()) &&
+                    !model.isNamespaceImported(def.getName().getNamespaceURI()))
             {
                 throw new DictionaryException("Cannot define property " + def.getName().toPrefixString() + " as namespace " + def.getName().getNamespaceURI() + " is not defined by model " + model.getName().toPrefixString());
             }
