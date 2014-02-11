@@ -431,7 +431,9 @@ public class AlfrescoSolrDataModel
      */
     public Index getFieldIndex(SchemaField field)
     {
-        PropertyDefinition propertyDefinition = getPropertyDefinition(field.getName());
+        // MNT-8557 fix, manually replace '%20' with ' '
+        String fieldNameToUse = field.getName().replaceAll("%20", " ");
+        PropertyDefinition propertyDefinition = getPropertyDefinition(fieldNameToUse);
         if (propertyDefinition != null)
         {
             if (propertyDefinition.isIndexed())
@@ -1272,11 +1274,11 @@ public class AlfrescoSolrDataModel
             {
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    return Sorting.getStringSortField(expandFieldName(field.getName()) + ".sort", reverse, field.sortMissingLast(), field.sortMissingFirst());
+                    return Sorting.getStringSortField(expandFieldName(fieldNameToUse) + ".sort", reverse, field.sortMissingLast(), field.sortMissingFirst());
                 }
                 else
                 {
-                    throw new UnsupportedOperationException("Ordering not supported for " + field.getName());
+                    throw new UnsupportedOperationException("Ordering not supported for " + fieldNameToUse);
                 }
             }
             else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
@@ -1285,72 +1287,72 @@ public class AlfrescoSolrDataModel
 
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    return new SortField(expandFieldName(field.getName()) + ".sort", new TextSortFieldComparatorSource(), reverse);
+                    return new SortField(expandFieldName(fieldNameToUse) + ".sort", new TextSortFieldComparatorSource(), reverse);
                 }
                 else
                 {
-                    throw new UnsupportedOperationException("Ordering not supported for " + field.getName());
+                    throw new UnsupportedOperationException("Ordering not supported for " + fieldNameToUse);
                 }
             }
             else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
             {
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    return new SortField(expandFieldName(field.getName()) + ".sort", new MLTextSortFieldComparatorSource(), reverse);
+                    return new SortField(expandFieldName(fieldNameToUse) + ".sort", new MLTextSortFieldComparatorSource(), reverse);
                 }
                 else
                 {
-                    throw new UnsupportedOperationException("Ordering not supported for " + field.getName());
+                    throw new UnsupportedOperationException("Ordering not supported for " + fieldNameToUse);
                 }
             }
             else
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName()), reverse, field.sortMissingLast(), field.sortMissingFirst());
+                return Sorting.getStringSortField(expandFieldName(fieldNameToUse), reverse, field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 
-        if (field.getName().equals("ID"))
+        if (fieldNameToUse.equals("ID"))
         {
             return Sorting.getStringSortField("LID", reverse, field.sortMissingLast(), field.sortMissingFirst());
         }
 
-        NonDictionaryField nonDDField = nonDictionaryFields.get(field.getName());
+        NonDictionaryField nonDDField = nonDictionaryFields.get(fieldNameToUse);
         if (nonDDField != null)
         {
-            return Sorting.getStringSortField(field.getName(), reverse, field.sortMissingLast(), field.sortMissingFirst());
+            return Sorting.getStringSortField(fieldNameToUse, reverse, field.sortMissingLast(), field.sortMissingFirst());
         }
 
         for (String additionalContentFieldEnding : additionalContentFields.keySet())
         {
-            if (field.getName().endsWith(additionalContentFieldEnding)
-                    && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length()))) != null))
+            if (fieldNameToUse.endsWith(additionalContentFieldEnding)
+                    && (getPropertyDefinition(fieldNameToUse.substring(0, (fieldNameToUse.length() - additionalContentFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalContentFieldEnding.length())))+additionalContentFieldEnding, reverse,
+                return Sorting.getStringSortField(expandFieldName(fieldNameToUse.substring(0, (fieldNameToUse.length() - additionalContentFieldEnding.length())))+additionalContentFieldEnding, reverse,
                         field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 
         for (String additionalTextFieldEnding : additionalTextFields.keySet())
         {
-            if (field.getName().endsWith(additionalTextFieldEnding)
-                    && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length()))) != null))
+            if (fieldNameToUse.endsWith(additionalTextFieldEnding)
+                    && (getPropertyDefinition(fieldNameToUse.substring(0, (fieldNameToUse.length() - additionalTextFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalTextFieldEnding.length())))+additionalTextFieldEnding, reverse,
+                return Sorting.getStringSortField(expandFieldName(fieldNameToUse.substring(0, (fieldNameToUse.length() - additionalTextFieldEnding.length())))+additionalTextFieldEnding, reverse,
                         field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 
         for (String additionalMlTextFieldEnding : additionalMlTextFields.keySet())
         {
-            if (field.getName().endsWith(additionalMlTextFieldEnding)
-                    && (getPropertyDefinition(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length()))) != null))
+            if (fieldNameToUse.endsWith(additionalMlTextFieldEnding)
+                    && (getPropertyDefinition(fieldNameToUse.substring(0, (fieldNameToUse.length() - additionalMlTextFieldEnding.length()))) != null))
             {
-                return Sorting.getStringSortField(expandFieldName(field.getName().substring(0, (field.getName().length() - additionalMlTextFieldEnding.length())))+additionalMlTextFieldEnding, reverse,
+                return Sorting.getStringSortField(expandFieldName(fieldNameToUse.substring(0, (fieldNameToUse.length() - additionalMlTextFieldEnding.length())))+additionalMlTextFieldEnding, reverse,
                         field.sortMissingLast(), field.sortMissingFirst());
             }
         }
 
-        return Sorting.getStringSortField(field.getName(), reverse, field.sortMissingLast(), field.sortMissingFirst());
+        return Sorting.getStringSortField(fieldNameToUse, reverse, field.sortMissingLast(), field.sortMissingFirst());
 
     }
 
