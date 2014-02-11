@@ -122,7 +122,7 @@ if (Alfresco.constants.PORTLET)
    YUIDom.addClass(document.body, "yui-skin-${theme} alfresco-share");
 }
 <#-- Security - ensure user has a currently authenticated Session when viewing a user auth page e.g. when Back button is used -->
-<#if page?? && page.authentication="user">
+<#if page?? && (page.authentication="user" || page.authentication="admin")>
 Alfresco.util.Ajax.jsonGet({
    url: Alfresco.constants.URL_CONTEXT + "service/modules/authenticated?noCache=" + new Date().getTime()
 });
