@@ -80,6 +80,7 @@
 .document-versions .version-details-right
 {
    margin-left: 40px;
+   word-wrap: break-word;
 }
 
 .document-versions  .alfresco-datatable td
