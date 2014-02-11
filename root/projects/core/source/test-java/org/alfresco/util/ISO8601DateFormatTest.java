@@ -136,11 +136,11 @@ public class ISO8601DateFormatTest extends TestCase
        String testCms6 = "2005-09-16T17:01:03.123456+01:00";
        String testCms7 = "2005-09-16T17:01:03.1234567+01:00";
        
-       Date testC = ISO8601DateFormat.parse(testCms3);
-       assertEquals(testC, ISO8601DateFormat.parse(testCms4));
-       assertEquals(testC, ISO8601DateFormat.parse(testCms5));
-       assertEquals(testC, ISO8601DateFormat.parse(testCms6));
-       assertEquals(testC, ISO8601DateFormat.parse(testCms7));
+       Date testCDate = ISO8601DateFormat.parse(testCms3);
+       assertEquals(testCDate, ISO8601DateFormat.parse(testCms4));
+       assertEquals(testCDate, ISO8601DateFormat.parse(testCms5));
+       assertEquals(testCDate, ISO8601DateFormat.parse(testCms6));
+       assertEquals(testCDate, ISO8601DateFormat.parse(testCms7));
     }
     
     public void testTimezones()
