@@ -116,11 +116,17 @@
    
    <#-- In portlet mode, Share doesn't own the <body> tag -->
    <script type="text/javascript">//<![CDATA[
-      Alfresco.util.YUILoaderHelper.loadComponents(true);
-      if (Alfresco.constants.PORTLET)
-      {
-         YUIDom.addClass(document.body, "yui-skin-${theme} alfresco-share");
-      }
+Alfresco.util.YUILoaderHelper.loadComponents(true);
+if (Alfresco.constants.PORTLET)
+{
+   YUIDom.addClass(document.body, "yui-skin-${theme} alfresco-share");
+}
+<#-- Security - ensure user has a currently authenticated Session when viewing a user auth page e.g. when Back button is used -->
+<#if page?? && page.authentication="user">
+Alfresco.util.Ajax.jsonGet({
+   url: Alfresco.constants.URL_CONTEXT + "service/modules/authenticated?noCache=" + new Date().getTime()
+});
+</#if>
    //]]></script>
 <#if !PORTLET>
 </body>

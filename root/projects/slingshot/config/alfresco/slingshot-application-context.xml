@@ -327,6 +327,9 @@
       <property name="ScriptParameterFactory" ref="cmis.script" />
    </bean>
    
+   <!-- XHR Authentication -->
+   <bean id="webscript.org.alfresco.modules.authenticated.get" class="org.alfresco.web.scripts.bean.Authenticated" parent="webscript" />
+
    <!--  Overrides the default Surf remote resources handler to use a Share specific bean that sets a custom filter
          to only access the content within the Data Dictionary. The custom bean will manipulate each resource to
          handle Share specific requirements (namely processing AMD module requests) -->
