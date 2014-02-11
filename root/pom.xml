@@ -291,6 +291,8 @@
                         <alfresco.test.resources.dir>${basedir}/source/test-resources</alfresco.test.resources.dir>
                         <alfresco.web.resources.dir>${basedir}/source/web</alfresco.web.resources.dir>
                         <alfresco.java.sources.dir>${basedir}/source/test-java</alfresco.java.sources.dir>
+                        <!-- Allow FTP server unit test to run unprivileged -->
+                        <ftp.port>50521</ftp.port>
                         <!-- Database related properties -->
                         <db.url>${db.url}</db.url>
                         <db.driver>${db.driver}</db.driver>
