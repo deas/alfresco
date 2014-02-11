@@ -125,9 +125,9 @@ import org.slf4j.LoggerFactory;
  * @since solr 0.9
  */
 
-public class AlfrescoUpdateHandler extends UpdateHandler
+public class AlfrescoUpdateHandler2 extends DirectUpdateHandler2
 {
-    protected final static Logger log = LoggerFactory.getLogger(AlfrescoUpdateHandler.class);
+    protected final static Logger log = LoggerFactory.getLogger(AlfrescoUpdateHandler2.class);
     // stats
     AtomicLong addCommands = new AtomicLong();
 
@@ -202,7 +202,7 @@ public class AlfrescoUpdateHandler extends UpdateHandler
 
     protected IndexWriter writer;
 
-    public AlfrescoUpdateHandler(SolrCore core) throws IOException
+    public AlfrescoUpdateHandler2(SolrCore core) throws IOException
     {
         super(core);
 
