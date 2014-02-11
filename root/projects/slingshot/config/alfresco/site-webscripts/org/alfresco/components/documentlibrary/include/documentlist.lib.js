@@ -68,7 +68,7 @@ var DocumentList =
       {
       }
 
-      return jsonUtils.toJSONString(mapping);
+      return mapping;
    },
 
    /* Sort Options */

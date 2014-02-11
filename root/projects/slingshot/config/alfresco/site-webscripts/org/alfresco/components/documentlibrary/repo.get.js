@@ -55,7 +55,7 @@ function widgets()
          viewRendererName : model.preferences.viewRendererName != null ? model.preferences.viewRendererName : "detailed",
          viewRendererNames : model.viewRendererNames != null ? model.viewRendererNames : ["simple", "detailed", "gallery", "filmstrip"],
          highlightFile : page.url.args["file"] != null ? page.url.args["file"] : "",
-         replicationUrlMapping : model.replicationUrlMapping != null ? model.replicationUrlMapping : "{}",
+         replicationUrlMapping : model.replicationUrlMappingJSON != null ? model.replicationUrlMappingJSON : "{}",
          repositoryBrowsing : model.rootNode != null, 
          useTitle : (model.useTitle != null ? model.useTitle == "true" : true),
          userIsSiteManager : model.userIsSiteManager,
