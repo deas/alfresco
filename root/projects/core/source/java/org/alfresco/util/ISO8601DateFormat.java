@@ -58,12 +58,7 @@ public class ISO8601DateFormat
      */
     public static String format(Date isoDate)
     {      	
-    	//Time-zone selection as per previous impl
-        Calendar calendar = new GregorianCalendar();
-        TimeZone tz = calendar.getTimeZone();
-        DateTimeZone dtz = DateTimeZone.forTimeZone(tz);
-        //Ideally this method should normalize to UTC
-        DateTime dt = new DateTime(isoDate, dtz);
+    	DateTime dt = new DateTime(isoDate, DateTimeZone.UTC);
     	return dt.toString();
     }
     
