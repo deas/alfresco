@@ -970,7 +970,7 @@
                      Alfresco.util.PopupManager.displayPrompt(
                      {
                         title: this.msg("message.failure"),
-                        text: this.msg("message.failure.text", json.message)
+                        text: this.msg("message.permissionsSaveFail", json.message)
                      });
                      this.widgets.saveButton.set("disabled", false);
                   },
