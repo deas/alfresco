@@ -459,6 +459,12 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 else if(source instanceof Float) 
                 {
+                	Float val = (Float)source;
+                	if(val.isInfinite())
+            		{
+                		// What else can we do here?  this is 3.4 E 38 so is fairly big
+            			return new BigDecimal(Float.MAX_VALUE);   			
+            		}
                     return BigDecimal.valueOf((Float) source);
                 }
                 else 
