@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
-      <version>3.2.6-alfresco-patched</version>
+      <version>3.2.6-alf-20131023</version>
     </dependency>
     <dependency>
       <groupId>org.safehaus.jug</groupId>
