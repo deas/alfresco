@@ -21,8 +21,10 @@ package org.alfresco.repo.dictionary.constraint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.service.cmr.dictionary.ConstraintException;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
@@ -56,6 +58,8 @@ public class ListOfValuesConstraint extends AbstractConstraint
 
     private List<String> allowedValues;
     private List<String> allowedValuesUpper;
+    private Set<String> allowedValuesSet;
+    private Set<String> allowedValuesUpperSet;
     protected boolean caseSensitive;
     protected boolean sorted;
     
@@ -63,6 +67,10 @@ public class ListOfValuesConstraint extends AbstractConstraint
     {
         caseSensitive = true;
         sorted = false;
+        allowedValues = Collections.emptyList();
+        allowedValuesUpper = Collections.emptyList();
+        allowedValuesSet = Collections.emptySet();
+        allowedValuesUpperSet = Collections.emptySet();
     }
     
     /**
@@ -96,17 +104,17 @@ public class ListOfValuesConstraint extends AbstractConstraint
      */
     public List<String> getAllowedValues()
     {
-    	List<String> rawValues = getRawAllowedValues(); 
-    	if (sorted == true)
-    	{
-    		List<String> values = new ArrayList<String>(rawValues);
-    		Collections.sort(values);
-    		return values;
-    	}
-    	else
-    	{
-    		return rawValues;
-    	}
+        List<String> rawValues = getRawAllowedValues(); 
+        if (sorted == true)
+        {
+            List<String> values = new ArrayList<String>(rawValues);
+            Collections.sort(values);
+            return values;
+        }
+        else
+        {
+            return rawValues;
+        }
     }
     
     /**
@@ -117,7 +125,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
      */
     protected List<String> getRawAllowedValues()
     {
-    	return allowedValues;
+        return allowedValues;
     }
     
     /**
@@ -142,7 +150,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
      */
     public String getDisplayLabel(String constraintAllowableValue, MessageLookup messageLookup)
     {
-        if (!getAllowedValues().contains(constraintAllowableValue))
+        if (!allowedValues.contains(constraintAllowableValue))
         {
             return null;
         }
@@ -162,8 +170,7 @@ public class ListOfValuesConstraint extends AbstractConstraint
      *  
      * @param values a list of allowed values
      */
-    @SuppressWarnings("unchecked")
-    public void setAllowedValues(List allowedValues)
+    public void setAllowedValues(List<String> allowedValues)
     {
         if (allowedValues == null)
         {
@@ -175,11 +182,15 @@ public class ListOfValuesConstraint extends AbstractConstraint
             throw new DictionaryException(ERR_NO_VALUES);
         }
         this.allowedValues = Collections.unmodifiableList(allowedValues);
+        this.allowedValuesSet = new HashSet<String>(allowedValues);
         // make the upper case versions
         this.allowedValuesUpper = new ArrayList<String>(valueCount);
+        this.allowedValuesUpperSet = new HashSet<String>(valueCount);
         for (String allowedValue : this.allowedValues)
         {
-            allowedValuesUpper.add(allowedValue.toUpperCase());
+            String allowedValueUpper = allowedValue.toUpperCase();
+            allowedValuesUpper.add(allowedValueUpper);
+            allowedValuesUpperSet.add(allowedValueUpper);
         }
     }
 
@@ -205,22 +216,22 @@ public class ListOfValuesConstraint extends AbstractConstraint
     /**
      * Indicates whether the list of values are sorted or not.
      * 
-     * @return	<tt>true</tt> if sorted, <tt>false</tt> otherwise
+     * @return    <tt>true</tt> if sorted, <tt>false</tt> otherwise
      */
     public boolean isSorted() 
     {
-		return sorted;
-	}
+        return sorted;
+    }
     
     /**
      * Set whether the values are ordered or not.
      * 
-     * @param sorted	<tt>true</tt> if sorted, <tt>false</tt> otherwise
+     * @param sorted    <tt>true</tt> if sorted, <tt>false</tt> otherwise
      */
     public void setSorted(boolean sorted) 
     {
-		this.sorted = sorted;
-	}
+        this.sorted = sorted;
+    }
 
     /**
      * @see org.alfresco.repo.dictionary.constraint.AbstractConstraint#initialize()
@@ -266,14 +277,14 @@ public class ListOfValuesConstraint extends AbstractConstraint
         // check that the value is in the set of allowed values
         if (caseSensitive)
         {
-            if (!allowedValues.contains(valueStr))
+            if (!allowedValuesSet.contains(valueStr))
             {
                 throw new ConstraintException(ERR_INVALID_VALUE, value);
             }
         }
         else
         {
-            if (!allowedValuesUpper.contains(valueStr.toUpperCase()))
+            if (!allowedValuesUpperSet.contains(valueStr.toUpperCase()))
             {
                 throw new ConstraintException(ERR_INVALID_VALUE, value);
             }
