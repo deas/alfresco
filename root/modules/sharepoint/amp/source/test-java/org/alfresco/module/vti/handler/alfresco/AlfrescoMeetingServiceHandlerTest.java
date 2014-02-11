@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMeetingServiceHandler;
+import org.alfresco.module.vti.handler.alfresco.AlfrescoMeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -99,8 +99,6 @@ public class AlfrescoMeetingServiceHandlerTest
     	meetingServiceHandler.setNodeService(nodeService);
     	meetingServiceHandler.setSiteService(siteService);
     	meetingServiceHandler.setTransactionService((TransactionService) appContext.getBean("transactionService"));
-    	meetingServiceHandler.setNamespaceService((NamespaceService) appContext.getBean("namespaceService"));
-    	meetingServiceHandler.setSearchService((SearchService) appContext.getBean("searchService"));
     	meetingServiceHandler.setPersonService((PersonService) appContext.getBean("personService"));
 
         // Do the setup as admin
