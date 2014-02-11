@@ -8,14 +8,13 @@
  */
 (function()
 {
-    
    /**
-   * YUI Library aliases
-   */
+    * YUI Library aliases
+    */
    var Dom = YAHOO.util.Dom,
       Selector = YAHOO.util.Selector;
 
-    /**
+   /**
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML,
@@ -35,8 +34,8 @@
 
       YAHOO.Bubbling.on("editorInitialized", this.onEditorInitialized, this);
       YAHOO.Bubbling.on("commentNode", this.onCommentNode, this);
-	  YAHOO.Bubbling.on("versionReverted", function(){ this.widgets.alfrescoDataTable.reloadDataTable(); }, this);
-	  
+      YAHOO.Bubbling.on("versionReverted", function(){ this.widgets.alfrescoDataTable.reloadDataTable(); }, this);
+     
       this.busy = false;
       this.hashChecked = false;
       return this;
@@ -115,17 +114,33 @@
          Dom.addClass(editFormWrapper, "hidden");
          Dom.get(this.id + "-body").appendChild(editFormWrapper);
          this.widgets.editFormWrapper = editFormWrapper;
-
+         
          YAHOO.util.Event.addListener(window, "resize", function ()
          {
             if (this.currentEditedRowId)
             {
                this.synchronizeElements(this.widgets.editFormWrapper, this.currentEditedRowId + "-form-container");
             }
+            this.resizeCommentDetails();
          }, this, true);
-
+         
          this.setupCommentList();
          this.setupAddCommentForm();
+      },
+      
+      /**
+       * Resize Event handler to resize the comment area dynamically
+       * See MNT-9780 - to handle long comments without breaks in words.
+       */
+      resizeCommentDetails: function CommentsList_resizeCommentDetails()
+      {
+         var width = Dom.get(this.id + "-body").offsetWidth + "px",
+             comments = YAHOO.util.Selector.query('div.comment-details', this.id + "-body");
+         console.log("will resize " + comments.length + " comments");
+         for (var i=0; i<comments.length; i++)
+         {
+            comments[i].style.width = width;
+         }
       },
 
       /**
@@ -188,7 +203,13 @@
          // Display the hr lines once the data has been loaded
          this.widgets.alfrescoDataTable.getDataTable().subscribe("beforeRenderEvent", function()
          {
+            console.log("beforeRenderEvent");
             Dom.removeClass(Selector.query("hr.hidden"), "hidden");
+         }, this, this);         // Display the hr lines once the data has been loaded
+         this.widgets.alfrescoDataTable.getDataTable().subscribe("renderEvent", function()
+         {
+            console.log("renderEvent");
+            this.resizeCommentDetails();
          }, this, this);
       },
 

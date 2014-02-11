@@ -84,6 +84,11 @@
    list-style-type: decimal;
 }
 
+div.comment-content
+{
+   word-wrap: break-word;
+}
+
 .comments-list tr.yui-dt-highlighted .details .comment-actions a
 {
    visibility: visible;
