@@ -223,6 +223,10 @@ public class CoreTracker implements CloseHook
 
     private String sslTrustStorePasswordFileLocation;
 
+    private boolean isSlave = false;
+    
+    private boolean isMaster = true;
+    
     // index contrl
 
     // http client
@@ -413,6 +417,8 @@ public class CoreTracker implements CloseHook
         transformContent = Boolean.parseBoolean(p.getProperty("alfresco.index.transformContent", "true"));
         socketTimeout = Integer.parseInt(p.getProperty("alfresco.socketTimeout", "0"));
         maxLiveSearchers =  Integer.parseInt(p.getProperty("alfresco.maxLiveSearchers", "2"));
+        isSlave =  Boolean.parseBoolean(p.getProperty("enable.slave", "false"));
+        isMaster =  Boolean.parseBoolean(p.getProperty("enable.master", "true"));
 
         filterCacheSize =  Integer.parseInt(p.getProperty("solr.filterCache.size", "64"));
         authorityCacheSize =  Integer.parseInt(p.getProperty("solr.authorityCache.size", "64"));
@@ -1225,6 +1231,11 @@ public class CoreTracker implements CloseHook
 
         checkShutdown();
         trackModels();
+        
+        if(!isMaster && isSlave)
+        {
+            return;
+        }
 
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
