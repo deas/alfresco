@@ -78,19 +78,19 @@
 
 <div class="form-field">
    <div class="viewmode-field">
-      <span class="viewmode-label">Network:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></span>
+      <span class="viewmode-label">${msg("hybridworkflow.destination.network")}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></span>
       <span class="viewmode-value" id="${fieldHtmlId}-tenant">${displayValue}</span>
       <br />
-      <span class="viewmode-label">Site:</span>
+      <span class="viewmode-label">${msg("hybridworkflow.destination.site")}:</span>
       <span class="viewmode-value" id="${fieldHtmlId}-site">${displayValue}</span>
       <br />
-      <span class="viewmode-label">Folder:</span>
+      <span class="viewmode-label">${msg("hybridworkflow.destination.folder")}:</span>
       <span class="viewmode-value" id="${fieldHtmlId}-folder">${displayValue}</span>
       
       <br />
       <br />
       
-      <button id="${fieldHtmlId}-select-button">Select</button>
+      <button id="${fieldHtmlId}-select-button">${msg("hybridworkflow.destination.button")}</button>
 	  <input id="${fieldHtmlId}" type="hidden" name="${field.name}" value="${field.value?html}" />
    </div>
 </div>
