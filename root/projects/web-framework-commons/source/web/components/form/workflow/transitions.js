@@ -46,7 +46,6 @@
    Alfresco.Transitions = function(htmlId)
    {
       Alfresco.Transitions.superclass.constructor.call(this, "Alfresco.Transitions", htmlId, ["button", "container"]);
-      YAHOO.Bubbling.on("taskDetailedData", this.onTaskDetailedData, this);
       
       return this;
    };
@@ -193,11 +192,6 @@
          // create the YUI button and register the event handler
          var button = Alfresco.util.createYUIButton(this, transition.id, this.onClick);
          
-         if (transition.id == "accept")
-         {
-            this.widgets.accept = button;
-         }
-         
          // register the button as a submitElement with the forms runtime instance
          YAHOO.Bubbling.fire("addSubmitElement", button);
       },
@@ -225,53 +219,6 @@
          }
          
          return hiddenField;
-      },
-      
-       /**
-       * Event handler called when the "taskDetailedData" event is received
-       *
-       * @method: onTaskDetailedData
-       */
-      onTaskDetailedData: function ActivitiTransitions__gonTaskDetailedData(layer, args)
-      {
-         var task = args[1];
-         
-         if (task.name && task.name == "inwf:invitePendingTask" && task.properties.inwf_resourceName)
-         {
-            this.siteName = task.properties.inwf_resourceName;
-            var url = Alfresco.constants.PROXY_URI + "api/sites/" + this.siteName;
-            
-            Alfresco.util.Ajax.request(
-            {
-               method: Alfresco.util.Ajax.GET,
-               url: url,
-               failureCallback:
-               {
-                  fn: this.onFailure,
-                  scope: this
-               }
-            });
-         }
-      },
-      
-       /**
-       * Failure handler
-       *
-       * @method onFailure
-       * @param response {object} The response from the ajax request
-       */
-      onFailure: function ReplicationJob_onFailure()
-      {
-         if (this.widgets.accept)
-         {
-            this.widgets.accept.set("disabled", true);
-         }
-         
-         Alfresco.util.PopupManager.displayMessage(
-         {
-            text: this.msg("form.popup.site.absent", this.siteName),
-            displayTime: 2
-         });
       }
    });
 })();
