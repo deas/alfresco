@@ -144,6 +144,24 @@
        * @type object
        */
       pendingInvites: null,
+      
+      /**
+       * Is Search Finished. SearchButton becomes enabled if True
+       * 
+       * @property isSearchFinished
+       * @type boolean
+       * @default true
+       */
+      isSearchFinished: true,
+      
+      /**
+       * Is search enable 
+       * 
+       * @property isSearchEnable
+       * @type boolean
+       * @default true
+       */
+      isSearchEnable : true,
 
       /**
        * Fired by YUI when parent element is available for scripting.
@@ -243,7 +261,7 @@
          {
             fn: function() 
             {
-               me.doSearch();
+               if(me.isSearchEnable) me.doSearch();
             },
             scope:this,
             correctScope:true
@@ -548,6 +566,7 @@
             MSG_EMPTY: this.msg("message.instructions")
          });
          this.widgets.dataTable.subscribe("rowDeleteEvent", this.onRowDeleteEvent, this, true);
+         this.widgets.dataTable.subscribe("postRenderEvent",this.onPostRenderEvent, this, true);
          
          // Override abstract function within DataTable to set custom error message
          this.widgets.dataTable.doBeforeLoadData = function SiteFinder_doBeforeLoadData(sRequest, oResponse, oPayload)
@@ -951,7 +970,6 @@
          
          var successHandler = function SiteFinder__pS_successHandler(sRequest, oResponse, oPayload)
          {
-            this.widgets.searchButton.set("disabled", false);
             if (timerShowLoadingMessage)
             {
                timerShowLoadingMessage.cancel();
@@ -961,6 +979,7 @@
                loadingMessage.destroy();
             }
             
+            this.isSearchFinished = true;
             this.searchTerm = searchTerm;
             this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
          };
@@ -968,6 +987,9 @@
          var failureHandler = function SiteFinder__pS_failureHandler(sRequest, oResponse)
          {
             this.widgets.searchButton.set("disabled", false);
+            this.isSearchEnable = true;
+            this.isSearchFinished = true;
+            
             if (timerShowLoadingMessage)
             {
                timerShowLoadingMessage.cancel();
@@ -1004,6 +1026,8 @@
                scope: this
          });
 
+         this.isSearchFinished = false;
+         this.isSearchEnable = false;
          this.widgets.searchButton.set("disabled", true);
       },
 
@@ -1049,6 +1073,19 @@
          if (rs.getLength() == 0)
          {
             this.widgets.dataTable.set("MSG_EMPTY", Alfresco.util.message("message.empty", "Alfresco.SiteFinder"));
+         }
+      },
+      
+      /**
+      * Event, fires on dataTable rendition end
+      * @method onPostRenderEvent
+       */
+      onPostRenderEvent: function SiteFinder__onPostRenderEvent()
+      {
+         if (this.isSearchFinished)
+         {
+            this.widgets.searchButton.set("disabled", false);
+            this.isSearchEnable = true;
          }
       },
 
