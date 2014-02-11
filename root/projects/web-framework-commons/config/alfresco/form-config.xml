@@ -47,7 +47,7 @@
             <type name="locale" template="/org/alfresco/components/form/controls/readonly.ftl" />
          </default-controls>
          <constraint-handlers>
-            <constraint type="MANDATORY" validation-handler="Alfresco.forms.validation.mandatory" event="keyup,propertychange" />
+            <constraint type="MANDATORY" validation-handler="Alfresco.forms.validation.mandatory" event="keyup,change" />
             <constraint type="NUMBER" validation-handler="Alfresco.forms.validation.number" event="keyup" />
             <constraint type="MINMAX" validation-handler="Alfresco.forms.validation.numberRange" event="keyup" />
             <constraint type="LIST" validation-handler="Alfresco.forms.validation.inList" event="blur" />
