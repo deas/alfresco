@@ -12427,6 +12427,11 @@ tinymce.create('tinymce.ui.Toolbar:tinymce.ui.Container', {
 
 	// Must be on window or IE will leak if the editor is placed in frame or iframe
 	Event.add(window, 'beforeunload', function(e) {
+		if (isIE) {
+			for (var eNum=0; eNum < tinymce.editors.length - 1; eNum++){
+				tinymce.remove(tinymce.editors[eNum]);
+			}
+		}
 		tinymce.onBeforeUnload.dispatch(tinymce, e);
 	});
 
