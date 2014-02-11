@@ -2,8 +2,8 @@
 
    <config evaluator="string-compare" condition="HelpPages">
       <help-pages>
-         <share-help>http://docs.alfresco.com/community/topic/com.alfresco.community.doc/concepts/sh-uh-welcome.html</share-help>
-         <share-tutorial>http://docs.alfresco.com/community/topic/com.alfresco.community.doc/topics/alfresco-video-tutorials.html</share-tutorial>
+         <share-help>http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/topics/sh-uh-welcome.html</share-help>
+         <share-tutorial>http://docs.alfresco.com/4.2/topic/com.alfresco.enterprise.doc/topics/alfresco-video-tutorials.html</share-tutorial>
       </help-pages>
    </config>
 

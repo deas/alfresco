@@ -27,6 +27,14 @@ blockquote {
 	background:#f5f5f5;
 	color:#a1a1a1;	/* text colour in the blockqoutes */
 }
+ol { 
+    margin-left: 40px;
+    list-style-type: decimal; 
+}
+ul { 
+    margin-left: 40px;
+    list-style-type: disc;
+} 
 .logo-desc, .header-desc { /* this is the italic text used an additional description for headers and detail pages */
 	color:#cacaca; 
 }
