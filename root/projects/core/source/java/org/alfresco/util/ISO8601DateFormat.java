@@ -90,11 +90,7 @@ public class ISO8601DateFormat
         // on the Greenwich meridian (it was in Great Britain, year 1848).
         if (calendar.get(Calendar.YEAR) > 1847)
         {
-            // Time-zone selection as per previous impl
-            TimeZone tz = calendar.getTimeZone();
-            DateTimeZone dtz = DateTimeZone.forTimeZone(tz);
-            // Ideally this method should normalize to UTC
-            DateTime dt = new DateTime(isoDate, dtz);
+            DateTime dt = new DateTime(isoDate, DateTimeZone.UTC);
             return dt.toString();
         }
         else
