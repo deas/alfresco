@@ -73,7 +73,19 @@
                 </excludes>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Tests are not run in this module. Skip most of them -->
+                    <includes>
+                        <include>**/AlfrescoDwsServiceHandlerTest.java</include>
+                        <include>**/AlfrescoListServiceHandlerTest.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-        
 
 </project>
