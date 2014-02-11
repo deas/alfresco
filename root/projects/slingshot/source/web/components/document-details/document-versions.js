@@ -161,16 +161,38 @@
             }
          });
          
-         // Resize event handler - adjusts the filename container DIV to a size relative to the container width
+         this.widgets.alfrescoDataTable.getDataTable().subscribe("renderEvent", function()
+         {
+            this.resizeHistoryDetails();
+         }, this, this);
+         
          Event.addListener(window, "resize", function() 
          { 
-            var width = (Dom.getViewportWidth() * 0.25) + "px",
-                nodes = YAHOO.util.Selector.query('h3.thin', this.id + "-body");
-            for (var i=0; i<nodes.length; i++)
-            {
-               nodes[i].style.width = width;
-            }
+            this.resizeHistoryDetails();
          }, this, true);
+      },
+      
+      /**
+       * Resize Event handler to resize the version history comment area dynamically
+       * See MNT-9909 - to handle long comments without breaks in words.
+       */
+      resizeHistoryDetails: function DocumentVersions_resizeHistoryDetails()
+      {
+         // adjusts the filename container DIV to a size relative to the container width
+         var width = (Dom.getViewportWidth() * 0.25) + "px",
+             nodes = YAHOO.util.Selector.query('h3.thin', this.id + "-body");
+         for (var i=0; i<nodes.length; i++)
+         {
+            nodes[i].style.width = width;
+         }
+         
+         // adjusts the version comment container DIV to a size relative to the container width
+         width = (Dom.getViewportWidth() * 0.25 - 40) + "px",
+         nodes = YAHOO.util.Selector.query('div.version-details-right', this.id + "-body");
+         for (var i=0; i<nodes.length; i++)
+         {
+            nodes[i].style.width = width;
+         }
       },
 
       /**
