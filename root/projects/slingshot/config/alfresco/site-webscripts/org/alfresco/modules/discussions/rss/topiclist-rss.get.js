@@ -2,13 +2,20 @@
 function convertTopicJSONData(topic)
 {
     // created
-    var created = new Date(topic["createdOn"])
-    topic["createdOn"] = created;
+    var created = new Date(topic["createdOn"]);
+    if (isNaN(created) == false)
+    {
+        topic["createdOn"] = created;
+    }
     
     // last reply
     if (topic["lastReplyOn"] != undefined)
     {
-        topic["lastReplyOn"] = new Date(topic["lastReplyOn"])
+        var last = new Date(topic["lastReplyOn"]);
+        if (isNaN(last) == false)
+        {
+	    topic["lastReplyOn"] = last;
+        }
     }
 }
 
