@@ -8,10 +8,7 @@
 
       <div id="${formId}-container" class="form-container">
 
-         <div class="yui-u first edit-metadata flat-button">
-            <button id="${args.htmlid}-editMetadata" tabindex="0"></button>
-         </div>
-   
+  
          <#if form.showCaption?exists && form.showCaption>
             <div id="${formId}-caption" class="caption"><span class="mandatory-indicator">*</span>${msg("form.required.fields")}</div>
          </#if>
