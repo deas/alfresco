@@ -81,7 +81,7 @@ public class ISO8601DateFormat
      */
      public static String format(Date isoDate)
      {
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = getCalendar();
         calendar.setTime(isoDate);
 
         // MNT-9790
@@ -90,7 +90,6 @@ public class ISO8601DateFormat
         // on the Greenwich meridian (it was in Great Britain, year 1848).
         if (calendar.get(Calendar.YEAR) > 1847)
         {
-            calendar = new GregorianCalendar();
             // Time-zone selection as per previous impl
             TimeZone tz = calendar.getTimeZone();
             DateTimeZone dtz = DateTimeZone.forTimeZone(tz);
