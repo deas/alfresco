@@ -31,6 +31,8 @@ public class ISO8601DateFormatTest extends TestCase
 {
     public void testConversion()
     {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+
         String test = "2005-09-16T17:01:03.456+01:00";
         String test2 = "1801-09-16T17:01:03.456+01:00";
         // convert to a date
@@ -51,6 +53,8 @@ public class ISO8601DateFormatTest extends TestCase
 
     public void testDateParser()
     {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+
         String test = "2005-09-16T17:01:03.456+01:00";
         String test2 = "1801-09-16T17:01:03.456+01:00";
 
