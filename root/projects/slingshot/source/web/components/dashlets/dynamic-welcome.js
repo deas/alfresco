@@ -214,7 +214,7 @@
             // Do the request and send the user to the dashboard after wards
             Alfresco.util.Ajax.jsonPost(
             {
-               url: Alfresco.constants.URL_SERVICECONTEXT + "/components/dashlets/dynamic-welcome",
+               url: Alfresco.constants.URL_SERVICECONTEXT + "components/dashlets/dynamic-welcome",
                dataObj:
                {
                   dashboardUrl: this.dashboardUrl

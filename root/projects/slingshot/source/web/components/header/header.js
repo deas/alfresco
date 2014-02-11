@@ -468,7 +468,7 @@
          this._clickedStatusOnce = false;
          Alfresco.util.Ajax.jsonPost(
          {
-            url: Alfresco.constants.URL_SERVICECONTEXT + "/components/profile/userstatus",
+            url: Alfresco.constants.URL_SERVICECONTEXT + "components/profile/userstatus",
             dataObj:
             {
                status: this.getStatusText()

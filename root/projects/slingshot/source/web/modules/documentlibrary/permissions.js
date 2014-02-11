@@ -153,7 +153,7 @@
             // Load the latest permissions for the document
             Alfresco.util.Ajax.jsonRequest(
             {
-               url: Alfresco.constants.URL_SERVICECONTEXT + "/components/document-details/document-permissions",
+               url: Alfresco.constants.URL_SERVICECONTEXT + "components/document-details/document-permissions",
                dataObj:
                {
                   nodeRef: this.options.files.node.nodeRef,
