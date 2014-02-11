@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source/java"/>
-	<classpathentry exported="true" kind="src" path="/3rd Party">
-		<attributes>
-			<attribute value="/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/lib" name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/devenv/ant-1.7.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar" sourcepath="C:/Users/nsmith/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -273,6 +273,5 @@
 	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.13-bin.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-client-3.1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-common-3.1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/devenv/ant-1.7.1.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
