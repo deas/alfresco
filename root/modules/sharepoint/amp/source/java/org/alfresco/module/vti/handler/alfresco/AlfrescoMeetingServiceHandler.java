@@ -72,6 +72,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.GUID;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -348,15 +349,33 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
                 else
                 {
                     HashMap<QName, Serializable> properties = new HashMap<QName, Serializable>();
+                    SimpleDateFormat fdt = new SimpleDateFormat("yyyyMMdd");                    
+                    Date date;
                     try
                     {
-                        properties.put(CalendarModel.PROP_IGNORE_EVENT_DATE, new SimpleDateFormat("yyyyMMdd").parse(String.valueOf(recurrenceId)));
+                        date = fdt.parse(String.valueOf(recurrenceId));
+                        properties.put(CalendarModel.PROP_IGNORE_EVENT_DATE, date);
                     }
                     catch (ParseException e)
                     {
                         throw new RuntimeException(e);
                     }
                     
+                    // if occurrence has been updated before, then delete it
+                    Set<QName> childNodeTypeQNames = new HashSet<QName>();
+                    childNodeTypeQNames.add(CalendarModel.TYPE_UPDATED_EVENT);
+                    List<ChildAssociationRef> updatedEventList = nodeService.getChildAssocs(entry.getNodeRef(), childNodeTypeQNames);
+                    for (ChildAssociationRef updatedEvent : updatedEventList)
+                    {
+                        NodeRef updatedEventRef = updatedEvent.getChildRef();
+                        Date updatedDate = (Date) nodeService.getProperty(updatedEventRef, CalendarModel.PROP_UPDATED_EVENT_DATE);
+                        if (fdt.format(updatedDate).equals(fdt.format(date)))
+                        {
+                            nodeService.deleteNode(updatedEventRef);
+                            break;
+                        }
+                    }
+
                     NodeRef meetingNodeRef = entry.getNodeRef();
                     nodeService.createNode(meetingNodeRef, CalendarModel.ASSOC_IGNORE_EVENT_LIST, 
                           QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, "ignoreEvent_" + recurrenceId + "_"
@@ -541,6 +560,22 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
         entry.setTitle(meeting.getTitle());
         entry.setDescription(meeting.getDescription());
         entry.setLocation(meeting.getLocation());
+        
+        // Cancel all updated occurrences, when recurrence is going to change  
+        if ((entry.getRecurrenceRule() != null && 
+                (!StringUtils.equals(entry.getRecurrenceRule(), meeting.getRecurrenceRule()) || !entry.getStart().equals(meeting.getStart())) || !entry.getEnd().equals(meeting.getEnd())) ||
+                (entry.getLastRecurrence() != null && !ObjectUtils.equals(entry.getLastRecurrence(), meeting.getLastRecurrence())))
+        {
+            Set<QName> childNodeTypeQNames = new HashSet<QName>();
+            childNodeTypeQNames.add(CalendarModel.TYPE_UPDATED_EVENT);
+            childNodeTypeQNames.add(CalendarModel.TYPE_IGNORE_EVENT);
+            List<ChildAssociationRef> updatedEventList = nodeService.getChildAssocs(entry.getNodeRef(), childNodeTypeQNames);
+            for (ChildAssociationRef updatedEvent : updatedEventList)
+            {
+                nodeService.deleteNode(updatedEvent.getChildRef());                
+            }
+        }
+        
         entry.setStart(meeting.getStart());
         entry.setEnd(meeting.getEnd());
         entry.setRecurrenceRule(meeting.getRecurrenceRule());

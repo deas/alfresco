@@ -71,7 +71,7 @@
           * loading. If for some reason the data fails to load, the calendar
           * will still display.
           */
-         YAHOO.util.Connect.asyncRequest("GET", Alfresco.constants.PROXY_URI + "calendar/eventList?site=" + this.options.siteId,
+         YAHOO.util.Connect.asyncRequest("GET", Alfresco.constants.PROXY_URI + "calendar/eventList?site=" + this.options.siteId + "&from=now",
          {
             success: this.onSuccess,
             failure: this.onFailure,

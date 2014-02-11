@@ -21,12 +21,14 @@ package org.alfresco.module.vti.handler.alfresco;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
+import org.alfresco.module.vti.handler.alfresco.v3.AlfrescoMeetingServiceHandler;
 import org.alfresco.module.vti.metadata.model.MeetingBean;
 import org.alfresco.repo.calendar.CalendarModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -76,6 +78,14 @@ public class AlfrescoMeetingServiceHandlerTest
     private static SiteInfo CALENDAR_SITE;
     private static CalendarEntry RECURRENCE;
 
+    // the new end and start of occurrence
+    private static final Date NEW_START = new Date(1380261600000L); // 09/27/2013 09:00:00
+    private static final Date NEW_END = new Date(1380279600000L); // 09/27/2013 14:00:00
+
+    // the new location and subject of occurrence
+    private static final String NEW_LOC = "new location";
+    private static final String NEW_SUB = "new subject";
+
     @BeforeClass
     public static void initTestsContext() throws Exception
     {
@@ -89,6 +99,8 @@ public class AlfrescoMeetingServiceHandlerTest
     	meetingServiceHandler.setNodeService(nodeService);
     	meetingServiceHandler.setSiteService(siteService);
     	meetingServiceHandler.setTransactionService((TransactionService) appContext.getBean("transactionService"));
+    	meetingServiceHandler.setNamespaceService((NamespaceService) appContext.getBean("namespaceService"));
+    	meetingServiceHandler.setSearchService((SearchService) appContext.getBean("searchService"));
     	meetingServiceHandler.setPersonService((PersonService) appContext.getBean("personService"));
 
         // Do the setup as admin
@@ -101,31 +113,7 @@ public class AlfrescoMeetingServiceHandlerTest
     @Test
     public void testUpdateMeeting()
     {
-        // change the end and start of occurrence
-        final Date newStart = new Date(1380261600000L); // 09/27/2013 09:00:00
-        final Date newEnd = new Date(1380279600000L); // 09/27/2013 14:00:00
-
-        // change location and subject
-        final String newLoc = "new location";
-        final String newSub = "new subject";
-
-        MeetingBean updateMeeting = new MeetingBean();
-        List<String> attendees = new ArrayList<String>(1);
-        attendees.add("admin@alfresco.com");
-        updateMeeting.setAttendees(attendees);
-        updateMeeting.setOrganizer("admin@alfresco.com");
-        updateMeeting.setOutlookUID("OutLookUID!");
-        updateMeeting.setOutlook(true);
-        updateMeeting.setReccurenceIdDate(new Date(1380258000000L)); // 09/27/2013 08:00:00
-
-        // we will check these properties later
-        updateMeeting.setStart(newStart);
-        updateMeeting.setEnd(newEnd);
-        updateMeeting.setLocation(newLoc);
-        updateMeeting.setTitle(newSub);
-
-        // update occurrence
-        meetingServiceHandler.updateMeetingFromICal(CALENDAR_SITE.getShortName(), updateMeeting, false);
+        updateOccurrence();
 
         // check that occurrence has been updated successfully
         Set<QName> childNodeTypeQNames = new HashSet<QName>();
@@ -149,17 +137,84 @@ public class AlfrescoMeetingServiceHandlerTest
         }
 
         // check properties
-        assertTrue(newStart.equals(start));
-        assertTrue(newEnd.equals(end));
-        assertTrue(newLoc.equals(loc));
-        assertTrue(newSub.equals(sub));
+        assertTrue(NEW_START.equals(start));
+        assertTrue(NEW_END.equals(end));
+        assertTrue(NEW_LOC.equals(loc));
+        assertTrue(NEW_SUB.equals(sub));
     }
 
     @Test
-    public void testRemooveMeeting()
+    public void testUpdateSeries()
     {
-        // remove occurrence 10/11/2013
-    	meetingServiceHandler.removeMeeting(CALENDAR_SITE.getShortName(), 20131011, "OutLookUID!", 0, null, true);
+        updateOccurrence();
+
+        MeetingBean updateSeries = new MeetingBean();
+        List<String> attendees = new ArrayList<String>(1);
+        attendees.add("admin@alfresco.com");
+        updateSeries.setAttendees(attendees);
+        updateSeries.setRecurrenceRule("FREQ=WEEKLY;COUNT=10;BYDAY=FR;INTERVAL=1");
+        updateSeries.setStart(new Date(1378709100000L)); // 09/09/2013 9:45
+        updateSeries.setEnd(new Date(1378716300000L)); // 09/09/2013 11:45
+        updateSeries.setLastRecurrence(new Date(1384497900000L)); // 11/15/2013 9:45
+        updateSeries.setOutlook(true);
+        updateSeries.setOrganizer("admin@alfresco.com");
+        updateSeries.setOutlookUID("OutLookUID!");
+
+        // change location and subject
+        updateSeries.setLocation("new series location");
+        updateSeries.setTitle("new series subject");
+
+        // update event
+        updateMeeting(CALENDAR_SITE.getShortName(), updateSeries);
+
+        // updated occurrence should remain
+        Set<QName> childNodeTypeQNames = new HashSet<QName>();
+        childNodeTypeQNames = new HashSet<QName>();
+        childNodeTypeQNames.add(CalendarModel.TYPE_UPDATED_EVENT);
+        childNodeTypeQNames.add(CalendarModel.TYPE_IGNORE_EVENT);
+        List<ChildAssociationRef> updatedOccurrencesList = nodeService.getChildAssocs(RECURRENCE.getNodeRef(), childNodeTypeQNames);
+        assertTrue(updatedOccurrencesList.size() > 0);
+
+        // remove occurrence 09/16/2013
+        removeMeeting(20130916);
+
+        // change the end date of the event
+        updateSeries.setEnd(new Date(1378728000000L));
+        updateMeeting(CALENDAR_SITE.getShortName(), updateSeries);
+
+        // updated removed occurrences should disappear
+        updatedOccurrencesList = nodeService.getChildAssocs(RECURRENCE.getNodeRef(), childNodeTypeQNames);
+        assertTrue(updatedOccurrencesList.size() == 0);
+
+        // check updated properties of the event
+        Map<QName, Serializable> eventProperties = nodeService.getProperties(RECURRENCE.getNodeRef());
+
+        assertTrue(eventProperties.get(CalendarModel.PROP_WHERE).toString().equals("new series location"));
+        assertTrue(eventProperties.get(CalendarModel.PROP_WHAT).toString().equals("new series subject"));
+    }
+
+    @Test
+    public void testRemoveMeeting()
+    {
+        // remove occurrence 09/09/2013
+        removeMeeting(20130909);
+
+        // remove updated occurrence 27/09/2013
+        updateOccurrence();
+        removeMeeting(20130927);
+
+        Set<QName> childNodeTypeQNames = new HashSet<QName>();
+        childNodeTypeQNames = new HashSet<QName>();
+        childNodeTypeQNames.add(CalendarModel.TYPE_UPDATED_EVENT);
+        List<ChildAssociationRef> updatedOccurrencesList = nodeService.getChildAssocs(RECURRENCE.getNodeRef(), childNodeTypeQNames);
+
+        // updated occurrence should be removed
+        assertTrue(updatedOccurrencesList.size() == 0);
+    }
+
+    private void removeMeeting(int day)
+    {
+        meetingServiceHandler.removeMeeting(CALENDAR_SITE.getShortName(), day, "OutLookUID!", 0, null, true);
 
         Set<QName> childNodeTypeQNames = new HashSet<QName>();
         childNodeTypeQNames.add(CalendarModel.TYPE_IGNORE_EVENT);
@@ -174,7 +229,7 @@ public class AlfrescoMeetingServiceHandlerTest
 
         // check a date of removed occurrence
         assertNotNull(ignoredDate);
-        assertTrue(sdt.format(ignoredDate).equals("20131011"));
+        assertTrue(sdt.format(ignoredDate).equals(String.valueOf(day)));
     }
 
     private static void createTestSite() throws Exception
@@ -213,5 +268,37 @@ public class AlfrescoMeetingServiceHandlerTest
         // Ensure it got a noderef
         assertNotNull(RECURRENCE.getNodeRef());
         assertNotNull(RECURRENCE.getSystemName());
+    }
+
+    private void updateOccurrence()
+    {
+        MeetingBean updateMeeting = new MeetingBean();
+        List<String> attendees = new ArrayList<String>(1);
+        attendees.add("admin@alfresco.com");
+        updateMeeting.setAttendees(attendees);
+        updateMeeting.setOrganizer("admin@alfresco.com");
+        updateMeeting.setOutlookUID("OutLookUID!");
+        updateMeeting.setOutlook(true);
+        updateMeeting.setReccurenceIdDate(new Date(1380258000000L)); // 09/27/2013 08:00:00
+        updateMeeting.setStart(NEW_START);
+        updateMeeting.setEnd(NEW_END);
+        updateMeeting.setLocation(NEW_LOC);
+        updateMeeting.setTitle(NEW_SUB);
+
+        // update occurrence
+        updateMeeting(CALENDAR_SITE.getShortName(), updateMeeting);
+    }
+
+    private void updateMeeting(final String siteName, final MeetingBean updateProperties)
+    {
+        transactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>()
+        {
+            @Override
+            public Void execute() throws Throwable
+            {
+                meetingServiceHandler.updateMeetingFromICal(siteName, updateProperties, false);
+                return null;
+            }
+        });
     }
 }
