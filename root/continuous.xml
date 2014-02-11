@@ -605,7 +605,7 @@
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes"
          file="${dir.project.repository.config}/alfresco-global.properties.sample" />
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/web-extension">
-         <fileset dir="${dir.project.slingshot.config}/alfresco/web-extension" />
+         <fileset dir="${dir.installer.bitrock}/bitrock/alfresco/shared/web-extension" />
       </copy>
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/messages">
          <fileset dir="${dir.project.installer.messages}" />
