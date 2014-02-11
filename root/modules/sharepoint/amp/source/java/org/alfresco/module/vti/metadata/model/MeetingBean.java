@@ -32,9 +32,10 @@ import org.alfresco.service.cmr.calendar.CalendarEntryDTO;
  */
 public class MeetingBean extends CalendarEntryDTO
 {
-    private static final long serialVersionUID = -367359427553658900L;
+    private static final long serialVersionUID = -367359427553658901L;
     private String organizer;
     private List<String> attendees;
+    private Date ReccurenceIdDate;
     
     public MeetingBean()
     {
@@ -97,5 +98,15 @@ public class MeetingBean extends CalendarEntryDTO
     public void setId(String id)
     {
         setOutlookUID(id);
+    }
+
+    public Date getReccurenceIdDate()
+    {
+        return ReccurenceIdDate;
+    }
+
+    public void setReccurenceIdDate(Date reccurenceIdDate)
+    {
+        ReccurenceIdDate = reccurenceIdDate;
     }
 }

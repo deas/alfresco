@@ -204,6 +204,10 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
                 logger.debug("Last meeting: " + meeting.getLastRecurrence());
             }
         }
+        else if (params.containsKey("RECURRENCE-ID"))
+        {
+            meeting.setReccurenceIdDate(parseDate("RECURRENCE-ID", params));
+        }
         List<String> attendees = new ArrayList<String>();
         String currentAttendee = null;
         for (int i = 0; (currentAttendee = params.get("ATTENDEE" + i)) != null; i++)
@@ -211,10 +215,10 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
             attendees.add(currentAttendee);
         }
         meeting.setAttendees(attendees);
-        
         if (logger.isDebugEnabled())
+		{
             logger.debug("Attendees are: " + meeting.getAttendees());
-        
+        }
         return meeting;
     }
 

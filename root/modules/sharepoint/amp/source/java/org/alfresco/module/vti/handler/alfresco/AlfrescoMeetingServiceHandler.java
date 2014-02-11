@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -75,6 +76,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.extensions.surf.util.ISO8601DateFormat;
 
 /**
  * Alfresco implementation of MeetingServiceHandler.
@@ -484,6 +486,55 @@ public class AlfrescoMeetingServiceHandler implements MeetingServiceHandler
             throw new VtiHandlerException(getMessage("vti.meeting.error.no_meeting_update"));
         }
         
+        if (meeting.getReccurenceIdDate() != null)
+        {
+            // it is occurrence instance update, not series
+            final Date updateDate = meeting.getReccurenceIdDate();
+            final Date newStart = meeting.getStart();
+            final Date newEnd = meeting.getEnd();
+            final String newWhat = meeting.getTitle();
+            final String newWhere = meeting.getLocation();
+
+            transactionService.getRetryingTransactionHelper().doInTransaction(new RetryingTransactionCallback<Object>()
+            {
+                public Object execute()
+                {
+                    HashMap<QName, Serializable> properties = new HashMap<QName, Serializable>();
+                    properties.put(CalendarModel.PROP_UPDATED_EVENT_DATE, updateDate);
+                    properties.put(CalendarModel.PROP_UPDATED_START, newStart);
+                    properties.put(CalendarModel.PROP_UPDATED_END, newEnd);
+                    properties.put(CalendarModel.PROP_UPDATED_WHAT, newWhat);
+                    properties.put(CalendarModel.PROP_UPDATED_WHERE, newWhere);
+                    
+                    QName childName = QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX,
+                            "updatedEvent_" + ISO8601DateFormat.format(updateDate).replaceAll("[:\\.]", "_") + "_" + GUID.generate());
+                    NodeRef meetingNodeRef = entry.getNodeRef();
+
+                    // find if occurrence has already been updated before
+                    Set<QName> childNodeTypeQNames = new HashSet<QName>();
+                    childNodeTypeQNames.add(CalendarModel.TYPE_UPDATED_EVENT);
+                    List<ChildAssociationRef> updatedEventList = nodeService.getChildAssocs(entry.getNodeRef(), childNodeTypeQNames);
+                    for (ChildAssociationRef updatedEvent : updatedEventList)
+                    {
+                        NodeRef updatedEventRef = updatedEvent.getChildRef();
+                        Date updatedDateProp = (Date) nodeService.getProperty(updatedEventRef, CalendarModel.PROP_UPDATED_EVENT_DATE);
+                        if (updateDate.equals(updatedDateProp))
+                        {
+                            nodeService.setProperties(updatedEventRef, properties);
+                            return null;
+                        }
+                    }
+
+                    // create node for edited separate event
+                    nodeService.createNode(meetingNodeRef, CalendarModel.ASSOC_UPDATED_EVENT_LIST,
+                            childName, CalendarModel.TYPE_UPDATED_EVENT, properties);
+                    return null;
+                }
+            });
+
+            return;
+        }
+
         // Copy everything onto it
         // TODO It would be better if the caller asked us for the
         //  MeetingBean rather than creating a new one...
