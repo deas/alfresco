@@ -136,7 +136,7 @@
                   // Versions are returned in an array but must be placed in an object to be able to be parse by yui
                   // Also skip the first version since that is the current version
                   this.latestVersion = oFullResponse.splice(0, 1)[0];
-                  Dom.get(this.id + "-latestVersion").innerHTML = this.getDocumentVersionMarkup(this.latestVersion, "latest");
+                  Dom.get(this.id + "-latestVersion").innerHTML = this.getDocumentVersionMarkup(this.latestVersion);
 
                   // Cache the version data for other components (e.g. HistoricPropertiesViewer)
                   this.versionCache = oFullResponse;
@@ -170,23 +170,7 @@
             {
                nodes[i].style.width = width;
             }
-
-            this.resizeOldVersionComment();
          }, this, true);
-         Event.addListener(window, "load", function() 
-         { 
-            this.resizeOldVersionComment();
-         }, this, true);
-      },
-
-      resizeOldVersionComment: DocumentVersions_resizeOldVersionComment = function()
-      {
-         var width = YAHOO.util.Selector.query('div.latest-version-comment', this.id + "-body")[0].offsetWidth + "px",
-             comments = YAHOO.util.Selector.query('div.old-version-comment', this.id + "-body");
-         for (var j=0; j<comments.length; j++)
-         {
-            comments[j].style.width = width;
-         }
       },
 
       /**
@@ -196,7 +180,7 @@
        */
       renderCellVersion: function DocumentVersions_renderCellVersions(elCell, oRecord, oColumn, oData)
       {
-         elCell.innerHTML = this.getDocumentVersionMarkup(oRecord.getData(), "old");
+         elCell.innerHTML = this.getDocumentVersionMarkup(oRecord.getData());
       },
 
       /**
@@ -205,7 +189,7 @@
        * @method getDocumentVersionMarkup
        * @param doc {Object} The details for the document
        */
-      getDocumentVersionMarkup: function DocumentVersions_getDocumentVersionMarkup(doc, prefix)
+      getDocumentVersionMarkup: function DocumentVersions_getDocumentVersionMarkup(doc)
       {
          var downloadURL = Alfresco.constants.PROXY_URI + '/api/node/content/' + doc.nodeRef.replace(":/", "") + '/' + doc.name + '?a=true',
             html = '';
@@ -231,7 +215,7 @@
          html += '      <div class="version-details-right">';
          html += $userProfileLink(doc.creator.userName, doc.creator.firstName + ' ' + doc.creator.lastName, 'class="theme-color-1"') + ' ';
          html += Alfresco.util.relativeTime(Alfresco.util.fromISO8601(doc.createdDateISO)) + '<br />';
-         html += ((doc.description || "").length > 0) ? '<div class="' + prefix + '-version-comment">' + $html(doc.description, true) + '</div>' : '<span class="faded">(' + this.msg("label.noComment") + ')</span>';
+         html += ((doc.description || "").length > 0) ? $html(doc.description, true) : '<span class="faded">(' + this.msg("label.noComment") + ')</span>';
          html += '      </div>';
          html += '   </div>';
          html += '</div>';
