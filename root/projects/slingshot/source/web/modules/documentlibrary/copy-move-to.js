@@ -175,10 +175,30 @@
             // Did the operation succeed?
             if (!p_data.json.overallSuccess)
             {
+               //MNT-7514 Uninformational error message on move when file name conflicts
+               message = "message.failure";
+               for (var i = 0, j = p_data.json.totalResults; i < j; i++)
+               {
+                  result = p_data.json.results[i];
+               
+                  if (!result.success && result.fileExist)
+                  {
+                     if ("folder" == result.type)
+                     {
+                        message = "message.exists.failure.folder";
+                     }
+                     else
+                     {
+                        message = "message.exists.failure.file";
+                     }
+                  }
+               }
+				
                Alfresco.util.PopupManager.displayMessage(
                {
-                  text: this.msg("message.failure")
+                  text: this.msg(message)
                });
+			   
                return;
             }
 
