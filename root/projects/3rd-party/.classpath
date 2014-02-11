@@ -70,7 +70,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/axis-1.4.jar" sourcepath="src/axis-1.4-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/shale-test-1.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/facebook_070716.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xmlrpc.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bliki-3.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-httpclient-3.1.jar" sourcepath="src/commons-httpclient-3.1-src.zip">
 		<attributes>
@@ -273,5 +272,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/activiti/groovy-all-2.1.7-indy.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-opencmis-extension-0.7.jar" sourcepath="src/alfresco-opencmis-extension-0.7-sources.jar"/>
 	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-client-3.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-common-3.1.3.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
