@@ -39,7 +39,7 @@
     * @return {DynamicWelcome} The new component instance
     * @constructor
     */
-   Alfresco.dashlet.DynamicWelcome = function DynamicWelcome_constructor(htmlId, dashboardUrl, dashboardType, site)
+   Alfresco.dashlet.DynamicWelcome = function DynamicWelcome_constructor(htmlId, dashboardUrl, dashboardType, site, siteTitle)
    {
       Alfresco.dashlet.DynamicWelcome.superclass.constructor.call(this, "Alfresco.dashlet.DynamicWelcome", htmlId);
 
@@ -48,6 +48,7 @@
       this.createSite = null;
       this.dashboardType = dashboardType;
       this.site = site;
+      this.siteTitle = siteTitle;
 
       this.services.preferences = new Alfresco.service.Preferences();
       return this;
@@ -99,20 +100,101 @@
          Event.stopEvent(p_event);
       },
 
-      /**
+            /**
        * Fired by YUI Link when the "Request join" label is clicked
        * @method onRequestJoinLinkClick
        * @param p_event {domEvent} DOM event
        */
       onRequestJoinLinkClick: function DynamicWelcome_onRequestJoinLinkClick(p_event)
       {
-         // Find the CollaborationTitle instance and get it to process the request
-         var collabTitle = Alfresco.util.ComponentManager.findFirst("Alfresco.CollaborationTitle");
-         if (collabTitle)
+         Alfresco.util.Ajax.jsonPost(
          {
-            collabTitle.requestJoinSite();
-         }
+            url: Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(Alfresco.constants.SITE) + "/invitations",
+            dataObj:
+            {
+               invitationType: "MODERATED",
+               inviteeUserName: Alfresco.constants.USERNAME,
+               inviteeComments: "",
+               inviteeRoleName: "SiteConsumer"
+            },
+            successCallback:
+            {
+               fn: this._requestJoinSuccess,
+               scope: this
+            },
+            failureCallback:
+            {
+               fn: this._failureCallback,
+               obj: this.msg("message.request-join-failure", Alfresco.constants.USERNAME, this.siteTitle),
+               scope: this
+            }
+         });
+
+         // Let the user know something is happening
+         this.widgets.feedbackMessage = Alfresco.util.PopupManager.displayMessage(
+         {
+            text: this.msg("message.request-joining", Alfresco.constants.USERNAME, this.siteTitle),
+            spanClass: "wait",
+            displayTime: 0
+         });
          Event.stopEvent(p_event);
+      },
+
+      /**
+       * Callback handler used when the current user successfully has requested to join the current site
+       *
+       * @method _requestJoinSuccess
+       * @param response {object}
+       */
+      _requestJoinSuccess: function DynamicWelcome_requestJoinSuccess(response)
+      {
+         if (this.widgets.feedbackMessage)
+         {
+            this.widgets.feedbackMessage.destroy();
+            this.widgets.feedbackMessage = null;
+         }
+
+         Alfresco.util.PopupManager.displayPrompt(
+         {
+            title: this.msg("message.success"),
+            text: this.msg("message.request-join-success", Alfresco.constants.USERNAME, this.siteTitle),
+            buttons: [
+            {
+               text: this.msg("button.ok"),
+               handler: function error_onOk()
+               {
+                  this.destroy();
+                  // Redirect the user back to their dashboard
+                  window.location = Alfresco.constants.URL_CONTEXT;
+               },
+               isDefault: true
+            }]
+         });
+      },
+
+      /**
+       * Generic failure callback handler
+       *
+       * @method _failureCallback
+       * @private
+       * @param message {string} Display message
+       */
+      _failureCallback: function DynamicWelcome__failureCallback(obj, message)
+      {
+         if (this.widgets.feedbackMessage)
+         {
+            this.widgets.feedbackMessage.destroy();
+            this.widgets.feedbackMessage = null;
+         }
+
+         if (message)
+         {
+            Alfresco.util.PopupManager.displayPrompt(
+            {
+               title: this.msg("message.failure"),
+               text: message
+            });
+         }
       },
 
       /**
