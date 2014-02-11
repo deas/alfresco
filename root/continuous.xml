@@ -606,6 +606,9 @@
          file="${dir.project.repository.config}/alfresco-global.properties.sample" />
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/web-extension">
          <fileset dir="${dir.installer.bitrock}/bitrock/alfresco/shared/web-extension" />
+         <filterset begintoken="@@" endtoken="@@">
+             <filter token="BITROCK_TOMCAT_PORT" value="8080"/>
+         </filterset>
       </copy>
       <copy todir="${dir.continuous.assemble.tomcat}/shared/classes/alfresco/messages">
          <fileset dir="${dir.project.installer.messages}" />
