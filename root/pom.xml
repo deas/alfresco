@@ -118,6 +118,9 @@
     <db.master.url>jdbc:postgresql:template1</db.master.url>
     <db.username>alfresco</db.username>
     <db.password>alfresco</db.password>
+    <dir.root>${basedir}/target/alf_test_data</dir.root>
+    <img.exe>convert</img.exe>
+    <swf.exe>pdf2swf</swf.exe>
 
     <!-- Maven specific build properties -->
     <maven.build.sourceVersion>1.7</maven.build.sourceVersion>
@@ -294,7 +297,9 @@
                         <db.name>${db.name}</db.name>
                         <db.username>${db.username}</db.username>
                         <db.password>${db.password}</db.password>
-                        <dir.root>${basedir}/target/alf_test_data</dir.root>
+                        <dir.root>${dir.root}</dir.root>
+                        <img.exe>${img.exe}</img.exe>
+                        <swf.exe>${swf.exe}</swf.exe>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -344,6 +349,16 @@
                         <version>2.3</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <systemProperties>
+                        <db.url>${db.url}</db.url>
+                        <db.driver>${db.driver}</db.driver>
+                        <db.name>${db.name}</db.name>
+                        <db.username>${db.username}</db.username>
+                        <db.password>${db.password}</db.password>
+                        <dir.root>${dir.root}</dir.root>
+                    </systemProperties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.antlr</groupId>
@@ -562,7 +577,6 @@
 			<db.master.url>jdbc:mysql://localhost/${db.name}</db.master.url>
 			<!-- Database properties - default values to be overridden in settings.xml -->
 		    <db.driver>com.mysql.jdbc.Driver</db.driver>
-    		<db.name>alfresco</db.name>
     		<db.url>jdbc:mysql://localhost/${db.name}</db.url>
     	</properties>
 		<build>
