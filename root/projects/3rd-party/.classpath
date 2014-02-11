@@ -42,7 +42,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/aspectjrt-1.6.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.8.jar" sourcepath="src/myfaces-api-1.1.8-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-impl-1.1.8.jar" sourcepath="src/myfaces-impl-1.1.8-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/joda-time-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/joda-time-2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/rhino-js-1.6R7.jar" sourcepath="src/rhino-js-1.6R7-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm/bsh-1.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jbpm/springmodules-jbpm31.jar" sourcepath="src/springmodules-jbpm31-src.zip"/>
