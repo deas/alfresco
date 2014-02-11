@@ -69,6 +69,8 @@
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("tagSelected", this.onTagSelected, this);
            
+      YAHOO.Bubbling.on("addedNewReply", this.onAddedNewReply, this);
+           
       return this;
    };
    
@@ -510,6 +512,14 @@
          }
       },
 
+      onAddedNewReply: function DiscussionsTopic_onAddedNewReply(layer, args)
+      {
+           this.topicData.totalReplyCount = args[1];
+            
+           // render the ui
+           this.renderUI();
+      },
+
       /**
        * Loads the edit form.
        */
@@ -762,7 +772,8 @@
          {
             topicRef: this.topicData.nodeRef,
             topicTitle: this.topicData.title,
-            topicId: this.topicData.name
+            topicId: this.topicData.name,
+            topicTotalReplyCount: this.topicData.totalReplyCount
          };
          YAHOO.Bubbling.fire("topicDataChanged", eventData);
       },

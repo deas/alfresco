@@ -258,6 +258,7 @@
             this.options.topicRef = obj.topicRef;
             this.options.topicId = obj.topicId;
             this.options.topicTitle = obj.topicTitle;
+            this.options.topicTotalReplyCount = obj.topicTotalReplyCount;
 
             // load the data if not done so or if the topic has changed
             if (this.repliesData === null || (oldRef != this.repliesData.topicRef))
@@ -766,6 +767,9 @@
             // make sure the rolover listener gets attached to the new element
             Alfresco.util.rollover.registerListenersByClassName(this.id, 'reply', 'div');  
          }
+         
+        this.options.topicTotalReplyCount += 1;
+        YAHOO.Bubbling.fire("addedNewReply", this.options.topicTotalReplyCount);
          
          // finally hide the form / show the updated view in case of an edit
          this._hideOpenForms();
