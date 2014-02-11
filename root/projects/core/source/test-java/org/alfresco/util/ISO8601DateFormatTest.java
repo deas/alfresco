@@ -50,6 +50,21 @@ public class ISO8601DateFormatTest extends TestCase
         assertEquals(date, dateAfter);
         assertEquals(date2, dateAfter2);
     }
+    
+    public void testGetCalendarMethod()
+    {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        Calendar calendarGMT = ISO8601DateFormat.getCalendar();
+        
+        TimeZone.setDefault(TimeZone.getTimeZone("BST"));
+        Calendar calendarBST = ISO8601DateFormat.getCalendar();
+        
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        Calendar calendarGMT1 = ISO8601DateFormat.getCalendar();
+        
+        assertNotSame(calendarGMT, calendarBST);
+        assertSame(calendarGMT, calendarGMT1);
+    }
 
     public void testDateParser()
     {

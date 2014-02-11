@@ -21,6 +21,8 @@ package org.alfresco.util;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -49,7 +51,28 @@ import org.joda.time.DateTimeZone;
  */
 public class ISO8601DateFormat
 {
-   
+    private static ThreadLocal<Map<TimeZone, Calendar>> calendarThreadLocal = new ThreadLocal<Map<TimeZone, Calendar>>();
+    /**
+     * Get a calendar object from cache.
+     * @return calendar object from cache or newly created (if cache is empty)
+     */
+    public static Calendar getCalendar()
+    {
+        if (calendarThreadLocal.get() == null)
+        {
+            calendarThreadLocal.set(new HashMap<TimeZone, Calendar>());
+        }
+        
+        Calendar calendar = calendarThreadLocal.get().get(TimeZone.getDefault());
+        if (calendar == null)
+        {
+            calendar = new GregorianCalendar();
+            calendarThreadLocal.get().put(TimeZone.getDefault(), calendar);
+        }
+        
+        return calendar;
+    }
+    
     /**
      * Format date into ISO format (UCT0 / Zulu)
      * 
