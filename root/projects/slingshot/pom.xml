@@ -28,6 +28,7 @@
             <artifactId>alfresco-web-framework-commons</artifactId>
             <version>${project.version}</version>
             <classifier>classes</classifier>
+            <scope>provided</scope> <!-- ALF-16947 -->
             <exclusions>
                 <exclusion>
                    <groupId>javax.servlet</groupId>
@@ -263,6 +264,7 @@
             <artifactId>alfresco-web-framework-commons</artifactId>
             <version>${project.version}</version>
             <type>war</type>
+            <scope>provided</scope> <!-- ALF-16947 -->
         </dependency>
         <dependency>
             <artifactId>stax-api</artifactId>
