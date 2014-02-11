@@ -284,7 +284,7 @@
                     <workingDirectory>${project.build.directory}</workingDirectory>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <runOrder>alphabetical</runOrder>
-                    <argLine>-Xmx1280m -XX:MaxPermSize=256m -Duser.language=en -Dcom.sun.management.jmxremote</argLine>
+                    <argLine>-Xmx2G -XX:MaxPermSize=256m -Duser.language=en -Dcom.sun.management.jmxremote</argLine>
                     <systemPropertyVariables>
                         <!-- Modified BaseTest and AVMServiceTestBase to accept these properties
                          Otherwise test were looking in hardcoded relative locations -->
