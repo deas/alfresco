@@ -248,7 +248,21 @@ function userProfileUrl(userId)
  */
 function itemPageUrl(activity, summary)
 {
-   return url.context + "/page/site/" + encodeURI(activity.siteNetwork) + (summary.page !== undefined ? "/" + summary.page : "/dashboard");
+   if (summary.page !== undefined)
+   {
+      localPage = "/" + summary.page;
+      var splitter = "?path=";
+      var splitted = localPage.split(splitter, 2);
+      if (splitted.length == 2)
+      {
+         localPage = splitted[0] + splitter + encodeURIComponent(splitted[1]);
+      }
+   }
+   else
+   {
+      localPage = "/dashboard";
+   }
+   return url.context + "/page/site/" + encodeURI(activity.siteNetwork) + localPage;
 }
 
 /**
