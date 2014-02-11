@@ -136,7 +136,6 @@
       {
          var width = Dom.get(this.id + "-body").offsetWidth + "px",
              comments = YAHOO.util.Selector.query('div.comment-details', this.id + "-body");
-         console.log("will resize " + comments.length + " comments");
          for (var i=0; i<comments.length; i++)
          {
             comments[i].style.width = width;
@@ -203,12 +202,10 @@
          // Display the hr lines once the data has been loaded
          this.widgets.alfrescoDataTable.getDataTable().subscribe("beforeRenderEvent", function()
          {
-            console.log("beforeRenderEvent");
             Dom.removeClass(Selector.query("hr.hidden"), "hidden");
          }, this, this);         // Display the hr lines once the data has been loaded
          this.widgets.alfrescoDataTable.getDataTable().subscribe("renderEvent", function()
          {
-            console.log("renderEvent");
             this.resizeCommentDetails();
          }, this, this);
       },
