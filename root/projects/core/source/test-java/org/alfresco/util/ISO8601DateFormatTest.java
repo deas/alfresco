@@ -32,18 +32,75 @@ public class ISO8601DateFormatTest extends TestCase
     public void testConversion()
     {
         String test = "2005-09-16T17:01:03.456+01:00";
+        String test2 = "1801-09-16T17:01:03.456+01:00";
         // convert to a date
         Date date = ISO8601DateFormat.parse(test);
+        Date date2 = ISO8601DateFormat.parse(test2);
         // get the string form
         String strDate = ISO8601DateFormat.format(date);
+        String strDate2 = ISO8601DateFormat.format(date2);
         // convert back to a date from the converted string
         Date dateAfter = ISO8601DateFormat.parse(strDate);
+        Date dateAfter2 = ISO8601DateFormat.parse(strDate2);
         // make sure the date objects match, test this instead of the
         // string as the string form will be different in different
         // locales
         assertEquals(date, dateAfter);
+        assertEquals(date2, dateAfter2);
     }
-    
+
+    public void testDateParser()
+    {
+        String test = "2005-09-16T17:01:03.456+01:00";
+        String test2 = "1801-09-16T17:01:03.456+01:00";
+
+        String isoFormattedDate = "2005-09-16T16:01:03.456Z";
+        String isoFormattedDate2 = "1801-09-16T16:01:03.456Z";
+
+        Date testDate = getDateValue(2005, 9, 16, 17, 1, 3, 456, 60);
+        Date testDate2 = getDateValue(1801, 9, 16, 17, 1, 3, 456, 60);
+
+        // convert to a date
+        Date date = ISO8601DateFormat.parse(test);
+        Date date2 = ISO8601DateFormat.parse(test2);
+        // check converted to date value
+        assertEquals(testDate, date);
+        assertEquals(testDate2, date2);
+
+        // get the string form
+        String strDate = ISO8601DateFormat.format(date);
+        String strDate2 = ISO8601DateFormat.format(date2);
+        // check the date converted to sting
+        assertEquals(isoFormattedDate, strDate);
+        assertEquals(isoFormattedDate2, strDate2);
+    }
+
+    private Date getDateValue(int year, int month, int day, int hours, int minutes, int sec, int msec, int offsetInMinutes)
+    {
+        // minute in millis
+        int millisInMinute = 1000 * 60;
+
+        GregorianCalendar gc = new GregorianCalendar();
+
+        // set correct offset
+        String[] tzArray = TimeZone.getAvailableIDs(millisInMinute * offsetInMinutes);
+        if (tzArray.length > 0)
+        {
+            gc.setTimeZone(TimeZone.getTimeZone(tzArray[0]));
+        }
+
+        // set date
+        gc.set(GregorianCalendar.YEAR, year);
+        gc.set(GregorianCalendar.MONTH, month - 1);
+        gc.set(GregorianCalendar.DAY_OF_MONTH, day);
+        gc.set(GregorianCalendar.HOUR_OF_DAY, hours);
+        gc.set(GregorianCalendar.MINUTE, minutes);
+        gc.set(GregorianCalendar.SECOND, sec);
+        gc.set(GregorianCalendar.MILLISECOND, msec);
+
+        return gc.getTime();
+    }
+
     public void testMiliseconds()
     {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
@@ -52,13 +109,18 @@ public class ISO8601DateFormatTest extends TestCase
        String testA   = "2005-09-16T17:01:03.456Z";
        String testB   = "2005-09-16T17:01:03Z";
        String testBms = "2005-09-16T17:01:03.000Z";
+       String testC   = "1801-09-16T17:01:03Z";
+       String testCms = "1801-09-16T17:01:03.000Z";
        
        Date dateA = ISO8601DateFormat.parse(testA);
        Date dateB = ISO8601DateFormat.parse(testB);
+       Date dateC = ISO8601DateFormat.parse(testC);
        
        assertEquals(testA, ISO8601DateFormat.format(dateA));
       
        assertEquals(testBms, ISO8601DateFormat.format(dateB));
+       
+       assertEquals(testCms, ISO8601DateFormat.format(dateC));
        
        // The official ISO 8601.2004 spec doesn't say much helpful about milliseconds
        // The W3C version <http://www.w3.org/TR/NOTE-datetime> says it's up to different

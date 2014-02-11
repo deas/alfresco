@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.ContentData;
@@ -45,10 +46,10 @@ import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.repository.Period;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.VersionNumber;
 import org.springframework.extensions.surf.exception.PlatformRuntimeException;
 import org.springframework.extensions.surf.util.I18NUtil;
-import org.springframework.extensions.surf.util.ISO8601DateFormat;
 
 /**
  * Support for generic conversion between types.
@@ -194,6 +195,10 @@ public class DefaultTypeConverter extends TypeConverter
                     return date;
                 }
                 catch (PlatformRuntimeException e)
+                {
+                    throw new TypeConversionException("Failed to convert date " + source + " to string", e);
+                }
+                catch (AlfrescoRuntimeException e)
                 {
                     throw new TypeConversionException("Failed to convert date " + source + " to string", e);
                 }

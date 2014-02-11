@@ -56,19 +56,87 @@ public class ISO8601DateFormat
      * @param isoDate  the date to format
      * @return  the ISO Zulu timezone formatted string
      */
-    public static String format(Date isoDate)
-    {      	
-    	DateTime dt = new DateTime(isoDate, DateTimeZone.UTC);
-    	return dt.toString();
+     public static String format(Date isoDate)
+     {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(isoDate);
+
+        // MNT-9790
+        // org.joda.time.DateTime.DateTime take away some minutes from date before 1848 year at formatting.
+        // This behavior connected with acceptance of time zones based
+        // on the Greenwich meridian (it was in Great Britain, year 1848).
+        if (calendar.get(Calendar.YEAR) > 1847)
+        {
+            // Time-zone selection as per previous impl
+            TimeZone tz = calendar.getTimeZone();
+            DateTimeZone dtz = DateTimeZone.forTimeZone(tz);
+            // Ideally this method should normalize to UTC
+            DateTime dt = new DateTime(isoDate, dtz);
+            return dt.toString();
+        }
+        else
+        {
+            int val = 0;
+            StringBuilder formatted = new StringBuilder(28);
+            formatted.append(calendar.get(Calendar.YEAR));
+            formatted.append('-');
+            val = calendar.get(Calendar.MONTH) + 1;
+            formatted.append(val < 10 ? ("0" + val) : val);
+            formatted.append('-');
+            val = calendar.get(Calendar.DAY_OF_MONTH);
+            formatted.append(val < 10 ? ("0" + val) : val);
+            formatted.append('T');
+            val = calendar.get(Calendar.HOUR_OF_DAY);
+            formatted.append(val < 10 ? ("0" + val) : val);
+            formatted.append(':');
+            val = calendar.get(Calendar.MINUTE);
+            formatted.append(val < 10 ? ("0" + val) : val);
+            formatted.append(':');
+            val = calendar.get(Calendar.SECOND);
+            formatted.append(val < 10 ? ("0" + val) : val);
+            formatted.append('.');
+            val = calendar.get(Calendar.MILLISECOND);
+            if (val < 10)
+            {
+                formatted.append(val < 10 ? ("00" + val) : val);
+            }
+            else if (val >= 10 && val < 100)
+            {
+                formatted.append(val < 10 ? ("0" + val) : val);
+            }
+            else
+            {
+                formatted.append(val);
+            }
+
+            TimeZone tz = calendar.getTimeZone();
+            int offset = tz.getOffset(calendar.getTimeInMillis());
+            if (offset != 0)
+            {
+                int hours = Math.abs((offset / (60 * 1000)) / 60);
+                int minutes = Math.abs((offset / (60 * 1000)) % 60);
+                formatted.append(offset < 0 ? '-' : '+');
+                formatted.append(hours < 10 ? ("0" + hours) : hours);
+                formatted.append(':');
+                formatted.append(minutes < 10 ? ("0" + minutes) : minutes);
+            }
+            else
+            {
+                formatted.append('Z');
+            }
+
+            return formatted.toString();
+        }
     }
-    
+   
     /**
      * Normalise isoDate time to Zulu(UTC0) time-zone, removing any UTC offset.
      * @param isoDate
      * @return the ISO Zulu timezone formatted string 
      * 			e.g 2011-02-04T17:13:14.000+01:00 -> 2011-02-04T16:13:14.000Z
      */
-    public static String formatToZulu(String isoDate){
+    public static String formatToZulu(String isoDate)
+    {
 		try 
 		{
 			DateTime dt = new DateTime(isoDate, DateTimeZone.UTC);
@@ -77,8 +145,6 @@ public class ISO8601DateFormat
 		{
 			throw new AlfrescoRuntimeException("Failed to parse date " + isoDate, e);
 		}
-    }
-    
     
     /**
      * Parse date from ISO formatted string. 
