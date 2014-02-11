@@ -41,8 +41,8 @@
       <@markup id="form">
          <form id="${el}-form" accept-charset="UTF-8" method="post" action="${loginUrl}" class="form-fields login ${edition}">
             <@markup id="fields">
-            <input type="hidden" id="${el}-success" name="success" value="${successUrl?html}"/>
-            <input type="hidden" name="failure" value="${failureUrl?html}"/>
+            <input type="hidden" id="${el}-success" name="success" value="${successUrl?url?html}"/>
+            <input type="hidden" name="failure" value="${failureUrl?url?html}"/>
             <div class="form-field">
                <label for="${el}-username">${msg("label.username")}</label><br/>
                <input type="text" id="${el}-username" name="username" maxlength="255" value="<#if lastUsername??>${lastUsername?html}</#if>" />
