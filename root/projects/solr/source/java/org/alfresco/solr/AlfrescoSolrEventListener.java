@@ -533,7 +533,7 @@ public class AlfrescoSolrEventListener implements SolrEventListener
                         }
                         catch (IllegalStateException ise)
                         {
-                            log.warn("Cache state error -> rebuilding", ise);
+                            log.info("Cache state error -> rebuilding", ise);
                             buildCacheForReader(indexedByDocId, allLeafDocs, aclIdByDocId, txByDocId, aclTxByDocId, newReader, 0, newReader.maxDoc(), new HashMap<Long, CacheEntry>(), ownerIdManager);
                         }
                     }

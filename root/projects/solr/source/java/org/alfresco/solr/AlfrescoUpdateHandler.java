@@ -125,7 +125,7 @@ import org.slf4j.LoggerFactory;
  * @since solr 0.9
  */
 
-public class AlfrescoUpdateHandler extends UpdateHandler
+public class AlfrescoUpdateHandler extends DirectUpdateHandler2
 {
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoUpdateHandler.class);
     // stats
