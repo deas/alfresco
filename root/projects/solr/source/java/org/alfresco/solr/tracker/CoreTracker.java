@@ -3344,7 +3344,7 @@ public class CoreTracker implements CloseHook
                         indexHealthReport.setDuplicatedLeafInIndex(txid);
                     }
 
-                    leafCount++;
+                    leafCount += docCount;
                 }
                 else
                 {
@@ -3379,8 +3379,8 @@ public class CoreTracker implements CloseHook
                         long txid = Long.parseLong(term.text().substring(4));
                         indexHealthReport.setDuplicatedAuxInIndex(txid);
                     }
-
-                    auxCount++;
+    
+                    auxCount += docCount;
                 }
                 else
                 {
@@ -3416,7 +3416,7 @@ public class CoreTracker implements CloseHook
                         indexHealthReport.setDuplicatedErrorInIndex(txid);
                     }
 
-                    errorCount++;
+                    errorCount += docCount;         
                 }
                 else
                 {
@@ -3452,7 +3452,7 @@ public class CoreTracker implements CloseHook
                         indexHealthReport.setDuplicatedUnindexedInIndex(txid);
                     }
 
-                    unindexedCount++;
+                    unindexedCount += docCount;
                 }
                 else
                 {
