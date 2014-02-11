@@ -600,7 +600,7 @@
 
       <!-- enable WCM functionality -->
       <copy todir="${home.tomcat}/shared/classes/alfresco/extension" 
-            file="${dir.project.installer}/wcm-bootstrap-context.xml" />
+            file="${file.name.wcm.bootstrap}" />
    </target>
    
    <target name="deploy-webclient-tomcat" 

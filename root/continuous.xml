@@ -27,15 +27,9 @@
       </path>
       <echo>classpath.unit.test.extension = ${toString:classpath.unit.test.extension}</echo>
    </target>
-	
-   <target name="bootstrap-wcm-test" depends="continuous-init" >
-   	  <!-- enable wcm for unit tests -->
-   	  <echo message="enable wcm for tests" />
-      <copy file="${file.name.wcm.bootstrap}" todir="${dir.project.repository}/${dir.name.source}/${dir.name.test.resources}/alfresco/extension" />
-   </target>
 
    <target name="init-test" 
-           depends="continuous-init,bootstrap-wcm-test">
+           depends="continuous-init">
       <mkdir dir="${dir.continuous.dist}" />
    </target>
 
@@ -529,8 +523,7 @@
                      prefix="virtual-tomcat/bin"
                      includes="*.sh" 
                      mode="755" />
-         <tarfileset dir="${dir.project.installer}"
-                     includes="wcm-bootstrap-context.xml" />
+         <tarfileset file="${file.name.wcm.bootstrap}"/>
          <tarfileset dir="${dir.project.installer}/wcm-commands"
                      prefix="bin" 
                      mode="755"/>
