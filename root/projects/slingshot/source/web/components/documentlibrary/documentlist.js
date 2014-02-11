@@ -4410,6 +4410,9 @@
                page: successPage
             };
 
+         delete successFilter.doclistFirstTimeNav;
+         YAHOO.Bubbling.fire("filterChanged", successFilter);
+
          // Clear the current document list if the data webscript is taking too long
          var fnShowLoadingMessage = function DL_fnShowLoadingMessage()
          {
@@ -4509,8 +4512,6 @@
                pathChanged = (this.currentPath != successFilter.filterData);
                this.currentPath = successFilter.filterData;
             }
-            delete successFilter.doclistFirstTimeNav;
-            YAHOO.Bubbling.fire("filterChanged", successFilter);
 
             // Ensure that the correct view is selected for the current folder/user preference...
             this._updateDefaultViewOptions(pathChanged);
