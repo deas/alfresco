@@ -2134,6 +2134,7 @@
       <compile-java-javac srcdir="${dir.module.spp.src.test}" classesdir="${dir.module.spp.classes.test}">
         <addPath2>
             <pathelement location="${dir.module.spp.classes}" />
+            <pathelement location="${dir.project.repository.classes.test}" />
         </addPath2>
       </compile-java-javac>
    </target>
