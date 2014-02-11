@@ -250,6 +250,9 @@
          // Hide the current message display
          this.widgets.feedbackMessage.destroy();
 
+         // Make sure the ok button is enabled for next time
+         this.widgets.okButton.set("disabled", false);
+
          // Tell the document list to refresh itself if present
          YAHOO.Bubbling.fire("versionReverted",
          {
