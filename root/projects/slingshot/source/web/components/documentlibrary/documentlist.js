@@ -2053,7 +2053,7 @@
                for (var i = 0, j = tags.length; i < j; i++)
                {
                   tag = $html(tags[i]);
-                  html += '<span class="tag"><a href="#" class="tag-link" rel="' + tag + '">' + tag + '</a></span>';
+                  html += '<span class="tag" style="display: inline-block"><a href="#" class="tag-link" rel="' + tag + '">' + tag + '</a></span>';
                }
             }
             else
