@@ -114,7 +114,7 @@
                      var title = Dom.get(this.configDialog.id + "-title").value,
                         text = Dom.get(this.configDialog.id + "-text").value;
                      // Write the title and text into the dashlet
-                     Dom.get(this.id + "-title").innerHTML = $encodeHTML(title != "" ? title : this.msg("notice.defaultTitle"));
+                     Dom.get(this.id + "-title").innerHTML = $encodeHTML(title.trim() != "" ? title : this.msg("notice.defaultTitle"));
                      Dom.get(this.id + "-text").innerHTML = text != "" ? text : "<p>" + this.msg("notice.defaultText") + "</p>";
                   },
                   scope: this
