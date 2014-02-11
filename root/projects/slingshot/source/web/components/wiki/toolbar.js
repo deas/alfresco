@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -183,6 +183,11 @@
          {
             type: "link"
          });
+         var url = YAHOO.lang.substitute(Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/wiki/rss?site={site}",
+             {
+                 site: this.options.siteId
+             });
+         this.widgets.rssFeedButton.set("href", url);
          
          // Create the rename panel
          var renamePanel = Dom.get(this.id + "-renamepanel"),
