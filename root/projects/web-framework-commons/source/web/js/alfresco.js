@@ -5304,6 +5304,7 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
              */
             _createTag: function InsituEditor_tagEditor__createTag(value, submitOnSuccess, eventToStop)
             {
+               Event.stopEvent(eventToStop);
                var dataObj = { name : value },
                      successCallback =
                      {

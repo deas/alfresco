@@ -989,7 +989,10 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
             if (this.ajaxSubmit)
             {
                // stop the browser from submitting the form
-               Event.stopEvent(event);
+               if (typeof event.cancelBubble !== 'unknown' && typeof event.returnValue !== 'unknown')
+               {
+                  Event.stopEvent(event);
+               }
 
                // get the form's action URL
                var submitUrl = form.attributes.action.nodeValue;
