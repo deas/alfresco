@@ -21,6 +21,7 @@ package org.alfresco.solr;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.alfresco.solr.tracker.CoreTracker;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.handler.component.ResponseBuilder;
@@ -82,13 +83,17 @@ public class SetLocaleSearchComponent extends SearchComponent
      */
     @Override
     public void prepare(ResponseBuilder rb) throws IOException
-    {
+    {   
         SolrQueryRequest req = rb.req;
         SolrParams params = req.getParams();
         String localeStr = params.get("locale");
-
         Locale locale = I18NUtil.parseLocale(localeStr);
         I18NUtil.setLocale(locale);
+
+        AlfrescoCoreAdminHandler adminHandler = (AlfrescoCoreAdminHandler)req.getCore().getCoreDescriptor().getCoreContainer().getMultiCoreHandler();
+        CoreTracker tracker = adminHandler.getTrackers().get(req.getCore().getName());
+        tracker.ensureFirstModelSync();
+        
     }
 
     /* (non-Javadoc)

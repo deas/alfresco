@@ -52,6 +52,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.encryption.KeyStoreParameters;
 import org.alfresco.encryption.ssl.SSLEncryptionParameters;
@@ -301,6 +302,11 @@ public class CoreTracker implements CloseHook
 
     //
 
+    private ReentrantReadWriteLock modelLock = new ReentrantReadWriteLock();
+    
+    boolean hasModels = false;
+    
+    //
     private volatile boolean shutdown = false;
 
     private int filterCacheSize;
@@ -1224,7 +1230,7 @@ public class CoreTracker implements CloseHook
         }
 
         checkShutdown();
-        trackModels();
+        trackModels(false);
 
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
@@ -1887,7 +1893,7 @@ public class CoreTracker implements CloseHook
     }
 
 
-    private void trackModels() throws AuthenticationException, IOException, JSONException
+    private void trackModelsImpl() throws AuthenticationException, IOException, JSONException
     {
         // track models
         // reflect changes changes and update on disk copy
@@ -4597,4 +4603,78 @@ public class CoreTracker implements CloseHook
         private static final long serialVersionUID = -1294455847013444397L;
         
     }
+
+    /**
+     * 
+     */
+    public void trackModels(boolean onlyFirstTime)  throws AuthenticationException, IOException, JSONException
+    {
+        boolean requiresWriteLock = false;
+        modelLock.readLock().lock();
+        try
+        {
+            if(hasModels)
+            {
+                if(onlyFirstTime)
+                {
+                    return;
+                }
+                else
+                {
+                    requiresWriteLock = false;
+                }
+            }
+            else
+            {
+                requiresWriteLock = true;
+            }
+        }
+        finally
+        {
+            modelLock.readLock().unlock();
+        }
+
+        if(requiresWriteLock)
+        {
+            modelLock.writeLock().lock();
+            try
+            {
+                if(hasModels)
+                {
+                    if(onlyFirstTime)
+                    {
+                        return;
+                    }
+                }
+                trackModelsImpl();
+                hasModels = true;
+            }
+            finally
+            {
+                modelLock.writeLock().unlock();
+            }
+        }
+        else
+        {
+            trackModelsImpl();
+        }
+    }
+
+    /**
+     * 
+     */
+    public void ensureFirstModelSync()
+    {
+        try
+        {
+            trackModels(true);
+        }
+        catch(Throwable t)
+        {
+            log.error("Model tracking failed", t);
+        }
+        
+    }
+    
+    
 }
