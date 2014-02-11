@@ -26,9 +26,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Vector;
 
 import org.alfresco.jlan.debug.Debug;
@@ -1333,72 +1336,95 @@ public final class NetBIOSSession extends NetworkSession {
 		//  Get the local TCP/IP address, if a null string has been specified
 
 		if ( localIP == null)
-		  localIP = InetAddress.getLocalHost ().getHostAddress ();
+			localIP = InetAddress.getLocalHost ().getHostAddress ();
 
-		//  Find the location of the first dot in the TCP/IP address
-
-		int dotPos = localIP.indexOf ( '.');
-		if ( dotPos != -1) {
-
-		  //  Extract the leading IP address value
-
-		  String ipStr = localIP.substring ( 0, dotPos);
-		  int ipVal = Integer.valueOf ( ipStr).intValue ();
-
-		  //  Determine the subnet mask to use
-
-		  if ( ipVal <= 127) {
-
-	      //  Class A address
-
-	      _subnetMask = "" + ipVal + ".255.255.255";
-		  }
-		  else if ( ipVal <= 191) {
-
-	      //  Class B adddress
-
-	      dotPos++;
-	      while ( localIP.charAt ( dotPos) != '.' && dotPos < localIP.length ())
-	        dotPos++;
-
-	      if ( dotPos < localIP.length ())
-	        _subnetMask = localIP.substring ( 0, dotPos) + ".255.255";
-		  }
-		  else if ( ipVal <= 223) {
-
-	      //  Class C address
-
-	      dotPos++;
-	      int dotCnt = 1;
-
-	      while ( dotCnt < 3 && dotPos < localIP.length ()) {
-
-	        //  Check if the current character is a dot
-
-	        if ( localIP.charAt ( dotPos++) == '.')
-	        dotCnt++;
+		// Get the network interface for the address
+		
+		boolean fromNI = false;
+		
+		try {
+			NetworkInterface ni = NetworkInterface.getByInetAddress( InetAddress.getByName( localIP));
+			
+			for ( InterfaceAddress iAddr : ni.getInterfaceAddresses()) {
+				InetAddress broadcast = iAddr.getBroadcast();
+				if ( broadcast != null) {
+					_subnetMask = broadcast.getHostAddress();
+					fromNI = true;
+				}
 			}
-
-			if ( dotPos < localIP.length ())
-			  _subnetMask = localIP.substring ( 0, dotPos - 1) + ".255";
-		  }
 		}
-
+		catch ( SocketException ex) {
+		}
+		
+		// Try to generate the subnet mask from the address
+		
+		if ( _subnetMask == null) {
+			
+			//  Find the location of the first dot in the TCP/IP address
+	
+			int dotPos = localIP.indexOf ( '.');
+			if ( dotPos != -1) {
+	
+				//  Extract the leading IP address value
+	
+				String ipStr = localIP.substring ( 0, dotPos);
+				int ipVal = Integer.valueOf ( ipStr).intValue ();
+	
+				//  Determine the subnet mask to use
+	
+				if ( ipVal <= 127) {
+	
+					//  Class A address
+	
+					_subnetMask = "" + ipVal + ".255.255.255";
+				}
+				else if ( ipVal <= 191) {
+	
+					//  Class B adddress
+	
+					dotPos++;
+					while ( localIP.charAt ( dotPos) != '.' && dotPos < localIP.length ())
+						dotPos++;
+	
+					if ( dotPos < localIP.length ())
+						_subnetMask = localIP.substring ( 0, dotPos) + ".255.255";
+				}
+				else if ( ipVal <= 223) {
+	
+					//  Class C address
+	
+					dotPos++;
+					int dotCnt = 1;
+	
+					while ( dotCnt < 3 && dotPos < localIP.length ()) {
+	
+						//  Check if the current character is a dot
+	
+						if ( localIP.charAt ( dotPos++) == '.')
+							dotCnt++;
+					}
+	
+					if ( dotPos < localIP.length ())
+						_subnetMask = localIP.substring ( 0, dotPos - 1) + ".255";
+				}
+			}
+		}
+		
 		//  Check if the subnet mask has been set, if not then use a general
 		//  broadcast mask
 
 		if ( _subnetMask == null) {
 
-		  //  Invalid TCP/IP address string format, use a general broadcast mask
-		  //  for now.
+			//  Invalid TCP/IP address string format, use a general broadcast mask
+			//  for now.
 
-		  _subnetMask = "255.255.255.255";
+			_subnetMask = "255.255.255.255";
 		}
 
 		//  DEBUG
 
 		if ( Debug.EnableInfo && m_debug)
-		  Debug.println ( "NetBIOS: Set subnet mask to " + _subnetMask);
+			Debug.println ( "NetBIOS: Set subnet mask to " + _subnetMask + ( fromNI ? " (Network Interface)" : " (Generated)"));
 
 		//  Return the subnet mask string
 
