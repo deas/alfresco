@@ -63,7 +63,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xalan-2.7.0/xalan.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/j2ee/jsp.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/j2ee/servlet.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/ant-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guessencoding-1.0.jar" sourcepath="src/guessencoding-1.0-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j_3_6_1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/subethasmtp-3.1.6.jar" sourcepath="src/subethasmtp-3.1.6.zip"/>
@@ -274,5 +273,6 @@
 	<classpathentry kind="lib" path="lib/devenv/mysql-connector-java-5.1.13-bin.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-client-3.1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-common-3.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/devenv/ant-1.7.1.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

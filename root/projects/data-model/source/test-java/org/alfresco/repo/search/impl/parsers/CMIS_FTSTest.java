@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.search.impl.parsers;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -32,7 +33,6 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.apache.tools.ant.filters.StringInputStream;
 
 public class CMIS_FTSTest extends TestCase
 {
@@ -72,7 +72,8 @@ public class CMIS_FTSTest extends TestCase
 
     public void testLexerOutput() throws IOException
     {
-        CharStream input = new ANTLRInputStream(new StringInputStream("~woof^2"));
+        String str = "~woof^2";
+        CharStream input = new ANTLRInputStream(new ByteArrayInputStream(str.getBytes("UTF-8")));
         FTSLexer lexer = new FTSLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         for(CommonToken token : (List<CommonToken>)tokenStream.getTokens())

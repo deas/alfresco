@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -21,7 +21,6 @@ package org.alfresco.repo;
 import org.alfresco.repo.solr.EmbeddedSolrTest;
 import org.alfresco.solr.client.SOLRAPIClientTest;
 import org.alfresco.solr.test.CMISDataCreatorTest;
-import org.apache.tools.ant.filters.FixCrLfFilter.AddAsisRemove;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

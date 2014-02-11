@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,7 @@
  */
 package org.alfresco.solr.test;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +27,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.util.GUID;
 import org.alfresco.util.ISO8601DateFormat;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -44,14 +43,12 @@ import org.apache.chemistry.opencmis.commons.BasicPermissions;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.Ace;
-import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AccessControlEntryImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AccessControlPrincipalDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
-import org.apache.tools.ant.filters.StringInputStream;
 
 /**
  * @author Andy
@@ -306,7 +303,7 @@ public class CMISDataCreatorTest extends TestCase
         assertEquals(1, result.getTotalNumItems());
     }
     
-    public void testQueryDocumentProperties()
+    public void testQueryDocumentProperties() throws Exception
     {
         Session session = getSession("admin", "admin");
         
@@ -330,7 +327,8 @@ public class CMISDataCreatorTest extends TestCase
         uProperties.put(PropertyIds.NAME, uniqueName);
         ContentStreamImpl contentStream = new ContentStreamImpl();
         contentStream.setFileName("bob");
-        contentStream.setStream(new StringInputStream("short"));
+        String shortString = "short";
+        contentStream.setStream(new ByteArrayInputStream(shortString.getBytes("UTF-8")));
         contentStream.setLength(new BigInteger("5"));
         contentStream.setMimeType("text/plain");
         
