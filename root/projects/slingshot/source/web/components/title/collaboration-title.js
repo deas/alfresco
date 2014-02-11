@@ -77,7 +77,21 @@
           * @property siteTitle
           * @type string
           */
-         siteTitle: null
+         siteTitle: null,
+
+         /**
+          * Is user a member of the current site
+          * @property userIsMember
+          * @type string
+          */
+          userIsMember: null,
+
+         /**
+         * Is current site PRIVATE, PUBLIC or MODERATED
+         * @property currentSiteVisibility
+         * @type string
+         */
+         currentSiteVisibility: null
       },
 
       /**
@@ -88,6 +102,36 @@
        */
       onReady: function CollaborationTitle_onReady()
       {
+          // MNT-9185 fix. Report a user if he doesn't have access rights to the site, except PUBLIC site.
+          if (this.options.userIsMember == "false" && this.options.currentSiteVisibility !=="PUBLIC")
+          {
+              var errorMessage;
+              switch (this.options.currentSiteVisibility)
+              {
+                  case "MODERATED":
+                      errorMessage = this.msg("message.moderated-site");
+                      break;
+                  // By default setting up error message for private site.
+                  default:
+                      errorMessage = this.msg("message.private-site");
+                      break;
+              }
+              Alfresco.util.PopupManager.displayPrompt(
+                  {
+                      title: this.msg("message.title-site-permission", this.options.site),
+                      text: this.msg(errorMessage),
+                      buttons: [
+                          {
+                              text: this.msg("button.ok"),
+                              handler: function ()
+                              {
+                                  this.destroy();
+                              },
+                              isDefault: true
+                          }
+                      ]
+                  });
+          }
          // Add event listeners. We use Dom.get() so that Event doesn't add an onAvailable() listener for non-existent elements.
          Event.on(Dom.get(this.id + "-join-link"), "click", function(e)
          {

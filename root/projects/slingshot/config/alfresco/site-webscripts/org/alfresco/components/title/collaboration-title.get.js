@@ -10,7 +10,7 @@ function main()
    {
       title: "",
       shortName: "",
-      visibility: "PUBLIC"
+      visibility: "PRIVATE"
    };
    
    if (json.status == 200)
@@ -68,7 +68,7 @@ function main()
             label: "link.join"
          });
       }
-      else
+      else if (profile.visibility != "PRIVATE")
       {
          links.push(
          {
@@ -143,7 +143,9 @@ function main()
       options : {
          site : (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          siteTitle : model.siteTitle,
-         user : (user.name != null) ? user.name : ""
+         user : (user.name != null) ? user.name : "",
+         userIsMember: userIsMember,
+         currentSiteVisibility: profile.visibility
       }
    };
    model.widgets = [collaborationTitle];
