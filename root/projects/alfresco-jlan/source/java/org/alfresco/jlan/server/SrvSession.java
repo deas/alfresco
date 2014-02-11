@@ -117,10 +117,6 @@ public abstract class SrvSession {
 
 		setProtocolName(proto);
 		setRemoteName(remoteName);
-		
-		// Allocate the client information thread local
-		
-		m_clientInfo = new ThreadLocal<ClientInfo>();
 	}
 
 	/**
