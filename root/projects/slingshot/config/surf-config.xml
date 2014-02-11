@@ -33,6 +33,14 @@
       <property name="defaultHandler">
          <bean class="org.springframework.extensions.surf.mvc.UrlViewController">
             <property name="urlPathHelper" ref="urlPathHelper" />
+            <property name="supportedMethods">
+               <list>
+                  <value>GET</value>
+                  <value>HEAD</value>				  
+                  <value>POST</value>				  				  
+                  <value>OPTIONS</value>
+               </list>
+            </property>			
          </bean>
       </property>
    </bean>
