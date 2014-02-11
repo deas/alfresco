@@ -127,7 +127,7 @@
                      <!-- Download Button -->
                      <span class="yui-button yui-link-button onDownloadDocumentClick">
                         <span class="first-child">
-                           <a href="${url.context}/proxy/alfresco/${node.contentURL?html}?a=true" tabindex="0">${msg("button.download")}</a>
+                           <a href="${url.context}/proxy/alfresco${node.contentURL?html}?a=true" tabindex="0">${msg("button.download")}</a>
                         </span>
                      </span>
                   </#if>
