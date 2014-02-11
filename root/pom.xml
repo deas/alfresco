@@ -285,9 +285,9 @@
                     <systemPropertyVariables>
                         <!-- Modified BaseTest and AVMServiceTestBase to accept these properties
                          Otherwise test were looking in hardcoded relative locations -->
-                        <alfresco.test.resources.dir>source/test-resources</alfresco.test.resources.dir>
-                        <alfresco.web.resources.dir>source/web</alfresco.web.resources.dir>
-                        <alfresco.java.sources.dir>source/test-java</alfresco.java.sources.dir>
+                        <alfresco.test.resources.dir>${basedir}/source/test-resources</alfresco.test.resources.dir>
+                        <alfresco.web.resources.dir>${basedir}/source/web</alfresco.web.resources.dir>
+                        <alfresco.java.sources.dir>${basedir}/source/test-java</alfresco.java.sources.dir>
                         <!-- Database related properties -->
                         <db.url>${db.url}</db.url>
                         <db.driver>${db.driver}</db.driver>
@@ -336,7 +336,7 @@
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.plexus</groupId>
