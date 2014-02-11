@@ -70,6 +70,9 @@ public class AVMDeploymentTargetTest extends TestCase
     private String TEST_TARGET = "avm";
     
     private String TEST_DEST_PATH = "/www/avm_webapps";
+
+    private String AVM_SOURCE_DIR = System.getProperty("alfresco.java.sources.dir","source/java") +
+        "/../../../repository/source/java/org/alfresco/repo/avm";
     
     private static Log logger = LogFactory.getLog(AVMDeploymentTargetTest.class);
     
@@ -702,7 +705,7 @@ public class AVMDeploymentTargetTest extends TestCase
         
     	BulkLoader loader = new BulkLoader();
     	loader.setAvmService(avmService);
-    	loader.recursiveLoad("../repository/source/java/org/alfresco/repo/avm", storeName + ":/");
+    	loader.recursiveLoad(AVM_SOURCE_DIR, storeName + ":/");
     	report = new DeploymentReport();
     	callbacks = new ArrayList<DeploymentCallback>();
     	callbacks.add(new DeploymentReportCallback(report));

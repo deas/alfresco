@@ -80,6 +80,9 @@ public class DMDeploymentTargetTest extends TestCase
     private String TEST_TARGET = "alfresco";
     private int    TEST_PORT = 50500;
     
+    private String AVM_SOURCE_DIR = System.getProperty("alfresco.java.sources.dir","source/java") +
+        "/../../../repository/source/java/org/alfresco/repo/avm";
+
     /**
      * Which store to use for our deployed content
      */
@@ -739,7 +742,7 @@ public class DMDeploymentTargetTest extends TestCase
         
         BulkLoader loader = new BulkLoader();
         loader.setAvmService(avmService);
-        loader.recursiveLoad("../repository/source/java/org/alfresco/repo/avm", storeName + ":/");
+        loader.recursiveLoad(AVM_SOURCE_DIR, storeName + ":/");
         report = new DeploymentReport();
         callbacks = new ArrayList<DeploymentCallback>();
         callbacks.add(new DeploymentReportCallback(report));
