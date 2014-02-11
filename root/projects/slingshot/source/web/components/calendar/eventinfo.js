@@ -436,6 +436,10 @@
                   Dom.get(EditDialog.id+'-title').disabled = false;
                   Dom.get(EditDialog.id+'-location').disabled = false;
 
+                  // Disable buttons before submit to avoid double submits
+                  EditDialog.widgets.okButton.set("disabled", true);
+                  EditDialog.widgets.cancelButton.set("disabled", true);
+
                   // Update time in submission fields
                   // NOTE: this uses the user's current timezone and stores it as a UTC offset.
                   var startTimeEl = document.getElementsByName("start")[0],
