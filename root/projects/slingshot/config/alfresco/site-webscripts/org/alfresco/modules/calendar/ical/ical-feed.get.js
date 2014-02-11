@@ -8,7 +8,7 @@ function main()
 
    theUrl = '/calendar/eventList-' + site + '.ics?site=' + site + '&format=calendar';
 
-   cname = "alfresco";
+   cname = (args.loopback != null && args.loopback == "1") ? "alfresco" : "alfresco-feed";
    connector = remote.connect(cname);
    result = connector.get(theUrl);
 

@@ -26,7 +26,7 @@ function main()
 
    theUrl = '/slingshot/wiki/pages/' + site + '?format=json';
 
-   cname = "alfresco";
+   cname = (args.loopback != null && args.loopback == "1") ? "alfresco" : "alfresco-feed";
    connector = remote.connect(cname);
    result = connector.get(theUrl);
    if (result.status != status.STATUS_OK)
