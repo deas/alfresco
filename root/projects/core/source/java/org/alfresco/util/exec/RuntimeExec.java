@@ -371,7 +371,58 @@ public class RuntimeExec
         }
         this.processProperties = processPropList.toArray(new String[processPropList.size()]);
     }
-
+    
+    /**
+     * Adds a property to existed processProperties. 
+     * Property should not be null or empty.
+     * If property with the same value already exists then no change is made.
+     * If property exists with a different value then old value is replaced with the new one. 
+     * @param name - property name
+     * @param value - property value 
+     */
+    public void setProcessProperty(String name, String value)
+    {
+        boolean set = false;
+        
+        if (name == null || value == null) 
+            return;
+        
+        name = name.trim();
+        value = value.trim();
+        
+        if (name.isEmpty() || value.isEmpty()) 
+            return; 
+        
+        String property = name + "=" + value;
+             
+        for (String prop : this.processProperties)
+        {
+            if (prop.equals(property))
+            {    
+                set = true;
+                break;
+            }    
+            
+            if (prop.startsWith(name))
+            {
+                String oldValue = prop.split("=")[1];  
+                prop.replace(oldValue, value);
+                set = true;
+            }
+        }
+        
+        if (!set)
+        {
+          String[] existedProperties = this.processProperties;
+          int epl = existedProperties.length; 
+          String[] newProperties = Arrays.copyOf(existedProperties, epl + 1);
+          newProperties[epl] = property;
+          this.processProperties = newProperties;      
+          set = true;
+        }           
+    }
+    
+    
     /**
      * Set the runtime location from which the command is executed.
      * <p>
