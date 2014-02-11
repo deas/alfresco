@@ -414,6 +414,11 @@
             </field-visibility>
             <create-form template="../documentlibrary/forms/doclib-common.ftl" />
             <appearance>
+               <field id="cm:name">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" >
+                     <control-param name="maxLength">255</control-param>
+                  </control>
+               </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
