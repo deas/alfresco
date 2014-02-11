@@ -89,8 +89,6 @@ public class AlfrescoMeetingServiceHandlerTest
     	meetingServiceHandler.setNodeService(nodeService);
     	meetingServiceHandler.setSiteService(siteService);
     	meetingServiceHandler.setTransactionService((TransactionService) appContext.getBean("transactionService"));
-//    	meetingServiceHandler.setNamespaceService((NamespaceService) appContext.getBean("namespaceService"));
-//    	meetingServiceHandler.setSearchService((SearchService) appContext.getBean("searchService"));
     	meetingServiceHandler.setPersonService((PersonService) appContext.getBean("personService"));
 
         // Do the setup as admin
