@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.config.JNDIConstants;
-import org.alfresco.jlan.smb.dcerpc.UUID;
 import org.alfresco.repo.action.ActionImpl;
 import org.alfresco.repo.avm.AVMNodeConverter;
 import org.alfresco.repo.avm.AVMNodeType;
