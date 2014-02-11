@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -117,6 +117,13 @@
          });
 
          var wikiDiv = Dom.get(this.id + "-scrollableList");
+         // get all anchors and add them a style "theme-color-1"
+         // see MNT-9901
+         var anchors = wikiDiv.getElementsByTagName('a');
+         for (i = 0; i < anchors.length; i++)
+         {
+            YAHOO.util.Dom.addClass(anchors[i], "theme-color-1");
+         }
          wikiDiv.innerHTML = this.parser.parse(wikiDiv.innerHTML, this.options.pages);
       },
       
