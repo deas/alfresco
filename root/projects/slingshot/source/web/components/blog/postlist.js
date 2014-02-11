@@ -327,7 +327,8 @@
                {
                   recordOffset: "startIndex",
                   totalRecords: "total",
-                  metadata: "metadata"
+                  metadata: "metadata",
+                  totalRecordsUpper: 'totalRecordsUpper'
                }
             }
          });
@@ -496,6 +497,7 @@
             // Save totalRecords for Paginator update later
             me.recordOffset = oResponse.meta.recordOffset;
             me.totalRecords = oResponse.meta.totalRecords;
+            me.totalRecordsUpper = oResponse.meta.totalRecordsUpper;
 
             oPayload = oPayload || {};
             oPayload.recordOffset = oResponse.meta.recordOffset;
@@ -518,6 +520,14 @@
                recordOffset: this.recordOffset,
                totalRecords: this.totalRecords
             });
+            if (this.totalRecordsUpper && this.totalRecordsUpper == true)
+            {
+               this.widgets.paginator.set("pageReportTemplate", this._msg("pagination.template.page-report.more"));
+            }
+            else
+            {
+               this.widgets.paginator.set("pageReportTemplate", this._msg("pagination.template.page-report"));
+            }
             this.widgets.paginator.render();
          }, this, true);
 
