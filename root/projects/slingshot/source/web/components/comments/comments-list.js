@@ -395,6 +395,14 @@
          }
          Dom.addClass(this.id + "-add-form-container", "hidden");
          Dom.removeClass(this.widgets.onAddCommentClick.get("element"), "hidden");
+         
+         // ALF-19935 - Enable pagination controls on restore edit form
+         var paginatorContainers = this.widgets.alfrescoDataTable.widgets.paginator._containers, index = 0;
+         
+         for (index = 0; index < paginatorContainers.length; ++index)
+         {
+            Dom.removeClass(paginatorContainers[index], "hidden");
+         }
       },
 
       /**
@@ -567,6 +575,14 @@
 
          // Display the form
          Dom.removeClass(this.widgets.editFormWrapper, "hidden");
+         
+         // ALF-19935 - Disable pagination controls on edit comment
+         var paginatorContainers = this.widgets.alfrescoDataTable.widgets.paginator._containers, index = 0;
+         
+         for (index = 0; index < paginatorContainers.length; ++index)
+         {
+            Dom.addClass(paginatorContainers[index], "hidden");
+         }
       },
 
       /**
