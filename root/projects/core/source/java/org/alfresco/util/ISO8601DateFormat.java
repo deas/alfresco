@@ -146,6 +146,7 @@ public class ISO8601DateFormat
 		{
 			throw new AlfrescoRuntimeException("Failed to parse date " + isoDate, e);
 		}
+    }
     
     /**
      * Parse date from ISO formatted string. 
