@@ -23,6 +23,7 @@ import org.alfresco.jlan.debug.Debug;
 import org.alfresco.jlan.server.filesys.DiskDeviceContext;
 import org.alfresco.jlan.server.filesys.DiskSharedDevice;
 import org.alfresco.jlan.server.filesys.cache.FileStateCache;
+import org.alfresco.jlan.server.filesys.cache.StateCacheException;
 import org.alfresco.jlan.server.locking.OpLockManager;
 
 /**
@@ -168,11 +169,7 @@ public abstract class ClusterFileStateCache extends FileStateCache {
 				m_cluster.startCluster();
 			}
 			catch ( Exception ex) {
-				
-				// DEBUG
-				
-				if ( Debug.EnableDbg && hasDebug())
-					Debug.println(ex);
+                throw new StateCacheException("Failed to start cluster", ex);
 			}
 		}
 	}
