@@ -784,7 +784,7 @@
        */
       onSearch: function ObjectFinder_onSearch()
       {
-         var searchTerm = Dom.get(this.pickerId + "-searchText").value;
+         var searchTerm = YAHOO.lang.trim(Dom.get(this.pickerId + "-searchText").value);
          if (searchTerm.length < this.options.minSearchTermLength)
          {
             // show error message
