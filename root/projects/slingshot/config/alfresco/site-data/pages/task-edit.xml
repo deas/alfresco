@@ -26,6 +26,7 @@
             <submitType>json</submitType>
             <showCaption>true</showCaption>
             <showCancelButton>true</showCancelButton>
+            <err>workflow.task.error</err>
          </properties>
       </component>
 
@@ -37,6 +38,7 @@
             <url>api/task-instances/{taskId}?detailed=true</url>
             <eventName>taskDetailedData</eventName>
             <eventData>data</eventData>
+            <failureMessageKey>message.task-data.failure</failureMessageKey>
          </properties>
       </component>
 
