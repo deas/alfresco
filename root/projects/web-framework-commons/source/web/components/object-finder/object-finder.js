@@ -980,7 +980,7 @@
                            }
                            else
                            {
-                              displayValue += this.options.objectRenderer.renderItem(item, 16, "<div class='itemtype-" + $html(item.type) + "'>{icon} {name}</div>");
+                              displayValue += this.options.objectRenderer.renderItem(item, 16, "<div class='itemtype-" + $html(item.type) + "' style='word-wrap: break-word;'>{icon} {name}</div>");
                            }
                         }
                         else if (this.options.displayMode == "list")
