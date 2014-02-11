@@ -273,6 +273,7 @@
           <compile-java-javac srcdir="${dir.project.wdrdeployment.src.test}" classesdir="${dir.project.wdrdeployment.classes.test}">
             <addPath2>
                 <pathelement location="${dir.project.wdrdeployment.classes}" />
+                <pathelement location="${dir.project.repository.classes.test}" />
             </addPath2>
           </compile-java-javac>
 	   </target>
