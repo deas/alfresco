@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -152,6 +152,9 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     // Server login context
     private LoginContext jaasLoginContext;
     
+    // A Boolean which when true strips the @domain sufix from Kerberos authenticated usernames. Default is <tt>true</tt>.
+    private boolean stripUserNameSuffix;
+
     /**
      * Initialize the filter
      */
@@ -276,6 +279,15 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                     throw new ServletException("Invalid login entry specified");
             }
             
+            // Get the login stripUserNameSuffix property
+
+            boolean stripUserNameSuffix = krbConfig.getStripUserNameSuffix();
+
+            // Set the login configuration entry name to use
+            if (logger.isDebugEnabled())
+                logger.debug("The stripUserNameSuffix property is set to: " + stripUserNameSuffix);
+            this.stripUserNameSuffix = stripUserNameSuffix;
+
             // Create a login context for the HTTP server service
             
             try
@@ -1185,7 +1197,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                 
                 if ( negTokenTarg != null)
                 {
-                    String userName = krbDetails.getUserName();
+                    String userName = stripUserNameSuffix ? krbDetails.getUserName() : krbDetails.getSourceName();
 
                     // Debug
                     if ( logger.isDebugEnabled())

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -43,6 +43,9 @@ public class KerberosConfigElement extends ConfigElementAdapter
     /** JAAS login configuration entry name. */
     private String loginEntryName;
 
+    /** A Boolean which when true strips the @domain sufix from Kerberos authenticated usernames. Default is <tt>true</tt>. */
+    private boolean stripUserNameSuffix = true;
+
     /**
      * Constructs a new Kerberos Config Element.
      */
@@ -69,6 +72,7 @@ public class KerberosConfigElement extends ConfigElementAdapter
         combinedElement.endpointSPN = configElement.endpointSPN == null ? this.endpointSPN : configElement.endpointSPN;
         combinedElement.loginEntryName = configElement.loginEntryName == null ? this.loginEntryName
                 : configElement.loginEntryName;
+        combinedElement.stripUserNameSuffix = configElement.stripUserNameSuffix;
 
         // return the combined element
         return combinedElement;
@@ -115,6 +119,16 @@ public class KerberosConfigElement extends ConfigElementAdapter
     }
 
     /**
+     * Gets the stripUserNameSuffix boolean property.
+     * 
+     * @return the stripUserNameSuffix boolean
+     */
+    public boolean getStripUserNameSuffix()
+    {
+        return stripUserNameSuffix;
+    }
+
+    /**
      * Constructs a new instance from an XML Element.
      * 
      * @param elem
@@ -147,6 +161,12 @@ public class KerberosConfigElement extends ConfigElementAdapter
         if (loginEntryName != null && loginEntryName.length() > 0)
         {
             configElement.loginEntryName = loginEntryName;
+        }
+
+        String stripUserNameSuffix = elem.elementTextTrim("stripUserNameSuffix");
+        if (stripUserNameSuffix != null && stripUserNameSuffix.length() > 0)
+        {
+            configElement.stripUserNameSuffix = Boolean.parseBoolean(stripUserNameSuffix);
         }
 
         return configElement;
