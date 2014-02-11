@@ -43,7 +43,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.alfresco.enterprise</groupId>
+            <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
