@@ -22,7 +22,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jmagick/JMagick.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/addressing-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jcr-1.0.jar" sourcepath="src/jcr_src.zip"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/freemarker-2.3.20-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.20-patched.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/freemarker-2.3.20-patched.jar" sourcepath="src/freemarker-2.3.20-patched.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/jid3lib-0.5.4.jar" sourcepath="src/jid3lib-0.5.4-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/htmllexer-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/htmlparser-2.1.jar"/>
