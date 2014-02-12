@@ -131,6 +131,7 @@
 
          <pathelement location="${dir.project.remoteapi}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.webclient}/${dir.name.source}/${dir.name.test.resources}" />
+         <pathelement location="${dir.project.webserviceclient}/${dir.name.source}/${dir.name.test.resources}" />
       </path>
 
       <!-- Add on all the 3rd party libs based on the eclipse project -->
