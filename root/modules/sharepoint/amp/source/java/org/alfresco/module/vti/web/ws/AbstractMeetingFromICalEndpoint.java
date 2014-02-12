@@ -368,6 +368,9 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
             String recRule = meeting.getRecurrenceRule().replace("YEARLY", "MONTHLY");
             recRule = recRule.replace("INTERVAL=" + interval, "INTERVAL=" + interval*12);
 
+            // MNT-10321
+            interval = interval * 12;
+
             meeting.setRecurrenceRule(recRule);
             reloadEventParam = true;
         }
