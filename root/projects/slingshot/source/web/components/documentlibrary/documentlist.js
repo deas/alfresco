@@ -2236,6 +2236,14 @@
          YAHOO.util.History.register("filter", bookmarkedFilter, function DL_onHistoryManagerFilterChanged(newFilter)
          {
             Alfresco.logger.debug("HistoryManager: filter changed:" + newFilter);
+            // MNT-9702 Browser back button doesn't work properly in Document Library (possible regression)
+            var bookmarkedPage = YAHOO.util.History.getBookmarkedState("page") || "1";
+            while (bookmarkedPage !== (bookmarkedPage = decodeURIComponent(bookmarkedPage))){}
+            var page = parseInt(bookmarkedPage || this.options.initialPage, 10);
+            if (this.currentPage != page) 
+            {
+               this.currentPage = page;
+            }
 
             this._updateDocList.call(this,
             {
