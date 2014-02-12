@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -2450,7 +2450,14 @@
                {
                   var showFoldersFunc = function fnShowFolders()
                   {
-                     this.widgets.showFolders.set("checked", true);
+                     // Find new menu item, see MNT-10195
+                     var menuItemElement = Dom.getElementsByClassName("showFolders");
+
+                     me.options.showFolders = true;
+                     menuItemElement.innerHTML = this.msg("button.folders.hide");
+                     Dom.replaceClass(menuItemElement, "showFolders", "hideFolders");
+                     me.services.preferences.set(PREF_SHOW_FOLDERS, me.options.showFolders);
+                     YAHOO.Bubbling.fire("metadataRefresh");
                   };
                   var showFoldersChildren = Dom.getChildren(showFolders);
                   Event.addListener(showFoldersChildren[0], "click", showFoldersFunc, me, true);
