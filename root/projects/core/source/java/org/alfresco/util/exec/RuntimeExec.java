@@ -632,6 +632,15 @@ public class RuntimeExec
         {
             logger.debug(result);
         }
+        
+        // close output stream (connected to input stream of native subprocess) 
+        try 
+        {
+            process.getOutputStream().close();
+        } 
+        catch(Exception ignore)
+        {}        
+        
         return result;
     }
 
