@@ -581,6 +581,8 @@
          <exclude name="**/org/alfresco/util/test/junitrules/*.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/repo/**/*.java" if="minimal.testing" />
 
+         <!-- Suites of unit tests -->
+         <include name="**/AllUnitTestsSuite.java" />
          <!-- All other tests -->
          <include name="**/*Test.java" />
 
