@@ -876,7 +876,8 @@
 
          o.oCalendarMenu = new YAHOO.widget.Overlay("calendarmenu",
          {
-            context: [targetEl, 'tr', 'br']
+            context: [targetEl, 'tr', 'br'],
+            fixedcenter: true
          });
          o.oCalendarMenu.setBody("&#32;");
          o.oCalendarMenu.body.id = "calendarcontainer";
