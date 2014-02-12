@@ -1,14 +1,12 @@
 <#include "include/alfresco-template.ftl" />
-<@templateHeader>
-   <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js"></@script>
-</@>
+<@templateHeader />
 
 <@templateBody>
+   <@markup id="alf-hd">
    <div id="alf-hd">
-      <@region id="header" scope="global" />
-      <@region id="title" scope="template" />
-      <@region id="navigation" scope="template" />
+      <@region scope="global" id="share-header" chromeless="true"/>
    </div>
+   </@>
    <div id="bd">
       <@region id="node-header" scope="template" />
       <@region id="manage-translations" scope="template" />
