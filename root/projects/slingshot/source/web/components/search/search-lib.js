@@ -285,6 +285,7 @@
 
       buildThumbnailHtml: function(record, height, width)
       {
+         var moddate = record.getData("lastThumbnailModification") ? "doclib:" + record.getData("lastThumbnailModification") : record.getData("modifiedOn");
          var config = {
             displayName: record.getData("displayName"),
             type: record.getData("type"),
@@ -293,7 +294,7 @@
             site: record.getData("site"),
             path: record.getData("path"),
             container: record.getData("container"),
-            modifiedOn: record.getData("modifiedOn"),
+            modifiedOn: moddate,
             mimetype: record.getData("mimetype"),
             width: width,
             height: height
