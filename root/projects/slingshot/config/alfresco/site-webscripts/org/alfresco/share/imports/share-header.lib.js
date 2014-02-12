@@ -1841,7 +1841,8 @@ function getHeaderModel() {
                align: "right",
                config: {
                   id: "HEADER_SEARCH_BOX",
-                  site: page.url.templateArgs.site
+                  site: page.url.templateArgs.site,
+                  repository: (page.id == "repository" || page.id == "myfiles" || page.id == "sharedfiles")
                }
             }
          ]

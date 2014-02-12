@@ -168,6 +168,10 @@ define(["dojo/_base/declare",
                {
                   url = "site/" + this.site + "/" + url;
                }
+               else if (this.repository)
+               {
+                  url += "&r=true";
+               }
                
                this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
                   url: url,
