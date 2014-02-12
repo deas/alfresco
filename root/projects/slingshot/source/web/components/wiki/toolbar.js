@@ -221,7 +221,6 @@
             fn: function WikiToolbar_doBeforeAjaxRequest(config, obj)
             {
                var pageTitle = config.dataObj.name;
-               config.failureCallback.obj = pageTitle;
                config.dataObj.name = pageTitle.replace(/\s+/g, "_");
                return true;
             },
