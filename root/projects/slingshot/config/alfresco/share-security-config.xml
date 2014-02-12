@@ -63,7 +63,7 @@
          Properties that may be used inside the rest of the CSRFPolicy config to avoid repetition but
          also making it possible to provide different values in different environments.
          I.e. Different "Referer" & "Origin" properties for test & production etc.
-         Reference a property using "{propoertyName}".
+         Reference a property using "{propertyName}".
       -->
       <properties>
 

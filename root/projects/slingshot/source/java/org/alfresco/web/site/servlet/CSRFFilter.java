@@ -337,7 +337,7 @@ public class CSRFFilter implements Filter
     }
 
     /**
-     * Compare the requets against the configured rules.
+     * Compare the request against the configured rules.
      *
      * @param rule The rule to match against the request and session
      * @param request The http request
@@ -385,13 +385,22 @@ public class CSRFFilter implements Filter
             {
                 for (final String name: sessionAttributes.keySet())
                 {
-                    final Object value = session.getAttribute(name);
+                    Object value = session.getAttribute(name);
+
+                    // If the session attribute is a list of strings (i.e. tokens) lets make sure to check against the last position
+                    if (value instanceof List)
+                    {
+                        List list = (List) value;
+                        value = list.get(list.size() - 1);
+                    }
+
                     if (value != null && !(value instanceof String))
                     {
                         // We can't match a non string and non null value with a string, so return false
                         matched = false;
                         break;
                     }
+
                     if (!matchString((String) value, sessionAttributes.get(name)))
                     {
                         matched = false;
@@ -434,6 +443,20 @@ public class CSRFFilter implements Filter
     private ApplicationContext getApplicationContext()
     {
         return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+    }
+
+    private String listToString(List<String> list)
+    {
+        String str = "";
+        for (int i = 0, il = list.size(); i < il; i++)
+        {
+            if (i != 0)
+            {
+                str += ", ";
+            }
+            str += list.get(i);
+        }
+        return str;
     }
 
     /**
@@ -573,10 +596,17 @@ public class CSRFFilter implements Filter
     {
         public static final String PARAM_SESSION = "session";
         public static final String PARAM_COOKIE = "cookie";
+        public static final String PARAM_SIZE = "size";
+        public static final String PARAM_DELAY = "delay";
+
+        private final String SESSION_ATTRIBUTE_TOKEN_REFRESHED = this.getClass().getName() + ".SESSION_ATTRIBUTE_TOKEN_REFRESHED";
+
         private final SecureRandom random = new SecureRandom();
 
         private String session = null;
         private String cookie = null;
+        private int size = 5;
+        private long delay = 3000;
 
         /**
          * Requires the following params; the name of the cookie to set the token in and the name of the session
@@ -599,6 +629,43 @@ public class CSRFFilter implements Filter
                 {
                     cookie = params.get(PARAM_COOKIE);
                 }
+                if (params.containsKey(PARAM_SIZE))
+                {
+                    String sizeParam = params.get(PARAM_SIZE);
+                    try
+                    {
+                        size = Integer.parseInt(sizeParam);
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        String message = "Parameter '" + PARAM_SIZE + "' must be an integer with a value greater or equals to 1.";
+                        if (logger.isErrorEnabled())
+                            logger.error(message);
+                        throw new ServletException(message);
+                    }
+                    if (size < 1)
+                    {
+                        String message = "Parameter '" + PARAM_SIZE + "' must be an integer with a value greater than or equal to 1.";
+                        if (logger.isErrorEnabled())
+                            logger.error(message);
+                        throw new ServletException(message);
+                    }
+                }
+                if (params.containsKey(PARAM_DELAY))
+                {
+                    String delayParam = params.get(PARAM_DELAY);
+                    try
+                    {
+                        delay = Integer.parseInt(delayParam);
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        String message = "Parameter '" + PARAM_DELAY + "' must be an integer or long.";
+                        if (logger.isErrorEnabled())
+                            logger.error(message);
+                        throw new ServletException(message);
+                    }
+                }
             }
             
             // Check for mandatory parameters
@@ -617,32 +684,60 @@ public class CSRFFilter implements Filter
             random.nextBytes(bytes);
             final String newToken = Base64.encodeBytes(bytes);
             
-            if (logger.isDebugEnabled())
-                logger.debug("Generate token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: '" + newToken + "'");
-            
             // Set in session
-            if (session != null && httpSession != null)
+            if (httpSession != null)
             {
-                httpSession.setAttribute(session, newToken);
-            }
-            
-            // Set in cookie
-            if (cookie != null)
-            {
-                // Expose token as a cookie to the client
-                int TIMEOUT = 60*60*24*7;
-                Cookie userCookie = new Cookie(cookie, URLEncoder.encode(newToken));
-                if (httpServletRequest.getContextPath().isEmpty())
+                List<String> sessionTokens = (List<String>) httpSession.getAttribute(session);
+                if (sessionTokens == null)
                 {
-                    userCookie.setPath("/");
+                    // There was no previous token, lets add it inside the array
+                    sessionTokens = Collections.synchronizedList(new LinkedList<String>());
+                    sessionTokens.add(newToken);
+                    httpSession.setAttribute(session, sessionTokens);
+                    httpSession.setAttribute(SESSION_ATTRIBUTE_TOKEN_REFRESHED, new Date().getTime());
                 }
                 else
                 {
-                    userCookie.setPath(httpServletRequest.getContextPath());
+                    Long now = new Date().getTime();
+                    Long tokenRefreshed = (Long) httpSession.getAttribute(SESSION_ATTRIBUTE_TOKEN_REFRESHED);
+                    if (now > (tokenRefreshed + delay))
+                    {
+                        // Its been long enough since we set the old token, lets add a new token
+                        sessionTokens.add(newToken);
+                        httpSession.setAttribute(SESSION_ATTRIBUTE_TOKEN_REFRESHED, new Date().getTime());
+
+                        if (logger.isDebugEnabled())
+                            logger.debug("Generate token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: '" + newToken + "'");
+                    }
+                    else
+                    {
+                        // Return since we don't need to trim the queue and do NOT want to set the cookie
+                        return;
+                    }
+
+                    // Check if the queue has become to big, if so lets trim it
+                    if (sessionTokens.size() > size)
+                    {
+                        // The submitted token was at the last position of allowed tokens, that means the client now have
+                        // received the newest token and that the previous tokens can be removed.
+                        sessionTokens.subList(0, sessionTokens.size() - size).clear();
+                    }
                 }
-                userCookie.setMaxAge(TIMEOUT);
-                httpServletResponse.addCookie(userCookie);
             }
+
+            // Expose the new token as a cookie to the client
+            int TIMEOUT = 60*60*24*7;
+            Cookie userCookie = new Cookie(cookie, URLEncoder.encode(newToken));
+            if (httpServletRequest.getContextPath().isEmpty())
+            {
+                userCookie.setPath("/");
+            }
+            else
+            {
+                userCookie.setPath(httpServletRequest.getContextPath());
+            }
+            userCookie.setMaxAge(TIMEOUT);
+            httpServletResponse.addCookie(userCookie);
         }
     }
 
@@ -707,10 +802,10 @@ public class CSRFFilter implements Filter
         
         public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpSession httpSession) throws ServletException
         {
-            String sessionToken = null;
+            List<String> sessionTokens = null;
             if (httpSession != null)
             {
-                sessionToken = (String) httpSession.getAttribute(session);
+                sessionTokens = (List<String>) httpSession.getAttribute(session);
             }
             if (header != null)
             {
@@ -718,9 +813,9 @@ public class CSRFFilter implements Filter
                 
                 if (logger.isDebugEnabled())
                     logger.debug("Assert token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: session: '"
-                            + sessionToken + "' vs header: '" + headerToken + "'");
+                            + listToString(sessionTokens) + "' vs header: '" + headerToken + "'");
                 
-                if (headerToken == null || sessionToken == null || !headerToken.equals(sessionToken))
+                if (headerToken == null || sessionTokens == null || !sessionTokens.contains(headerToken))
                 {
                     String message = "Possible CSRF attack noted when comparing token in session and request header. Request: "
                             + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI();
@@ -736,9 +831,9 @@ public class CSRFFilter implements Filter
                 
                 if (logger.isDebugEnabled())
                     logger.debug("Assert token " + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI() + " :: session: '"
-                            + sessionToken + "' vs parameter: '" + parameterToken + "'");
+                            + listToString(sessionTokens) + "' vs parameter: '" + parameterToken + "'");
                 
-                if (parameterToken == null || sessionToken == null || !parameterToken.equals(sessionToken))
+                if (parameterToken == null || sessionTokens == null || !sessionTokens.contains(parameterToken))
                 {
                     String message = "Possible CSRF attack noted when comparing token in session and request parameter. Request: "
                             + httpServletRequest.getMethod() + " " + httpServletRequest.getRequestURI();
@@ -806,7 +901,7 @@ public class CSRFFilter implements Filter
                 httpSession.setAttribute(session, null);
             }
             
-            // Expose token as a cookie to the client
+            // Clear token cookie from the client
             Cookie userCookie = new Cookie(cookie, "");
             userCookie.setPath(httpServletRequest.getContextPath());
             userCookie.setMaxAge(0);
