@@ -44,7 +44,7 @@ public class VtiUtils
     
     private static Pattern macClientPattern = Pattern.compile(".*Microsoft Document Connection.*");
     private static Pattern office2010ClientPattern = Pattern.compile(".*Microsoft Office Core Storage Infrastructure.*");
-    private static Pattern office2010Pattern = Pattern.compile("Microsoft Office/14\\..*");
+    private static Pattern office2010Pattern = Pattern.compile("Microsoft Office/1[45]\\..*");
     private static Pattern validNamePattern = Pattern.compile("[^#]+");
     
     static

@@ -40,12 +40,14 @@ public class TestCheckOutFileEndpointTest
     private @Mock VtiSoapRequest office2007Request;
     private @Mock VtiSoapRequest office2010Request;
     private @Mock VtiSoapRequest office2011Request;
+    private @Mock VtiSoapRequest office2013Request;
     
     @Before
     public void setUp()
     {
         when(office2007Request.getHeader(VtiUtils.HEADER_USER_AGENT)).thenReturn("Microsoft Office/12.0 (Windows NT 6.1; Microsoft Office Word 12.0.4518; Pro)");
         when(office2010Request.getHeader(VtiUtils.HEADER_USER_AGENT)).thenReturn("Microsoft Office/14.0 (Windows NT 6.1; Microsoft Word 14.0.6129; Pro)");
+        when(office2013Request.getHeader(VtiUtils.HEADER_USER_AGENT)).thenReturn("Microsoft Office/15.0 (Windows NT 6.1; Microsoft Word 15.0.4420; Pro)");
         when(office2011Request.getHeader(VtiUtils.HEADER_USER_AGENT)).thenReturn("Microsoft Office/14.3.6 (Macintosh 10.8.2, Microsoft Document Connection 14.3.6; Pro)");
     }
     
@@ -60,5 +62,8 @@ public class TestCheckOutFileEndpointTest
         
         // Office 2011 for Mac (version 14.x.xxxx could also be assumed as Office 2010 as it have same major version)
         assertTrue(VtiUtils.isMacClientRequest(office2011Request) || VtiUtils.isOffice2010ClientRequest(office2011Request));
+        
+        // Office 2013 (version 15.x.xxxx should not be determined as request from Mac client)
+        assertTrue(VtiUtils.isMacClientRequest(office2013Request) || VtiUtils.isOffice2010ClientRequest(office2013Request));
     }
 }
