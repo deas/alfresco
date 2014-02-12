@@ -132,10 +132,14 @@
          formEl.innerHTML = response.serverResponse.responseText;
          Dom.getElementsByClassName("viewmode-value-date", "span", formEl, function()
          {
-
-			var showTime = Dom.getAttribute(this, "data-show-time")
-			var dateFormat = (showTime=='false') ? me.msg("date-format.defaultDateOnly") : me.msg("date-format.default")
-            this.innerHTML = formatDate(fromISO8601(Dom.getAttribute(this, "data-date-iso8601")), dateFormat )
+            var showTime = Dom.getAttribute(this, "data-show-time"),
+                fieldValue = Dom.getAttribute(this, "data-date-iso8601"),
+                dateFormat = (showTime=='false') ? me.msg("date-format.defaultDateOnly") : me.msg("date-format.default"),
+                // MNT-9693 - Pass the ignoreTime flag
+                ignoreTime = showTime == 'false',
+                theDate = fromISO8601(fieldValue, ignoreTime);
+            
+            this.innerHTML = formatDate(theDate, dateFormat);
          });
       },
 

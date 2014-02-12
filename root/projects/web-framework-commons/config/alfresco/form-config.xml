@@ -22,7 +22,9 @@
             <type name="double" template="/org/alfresco/components/form/controls/number.ftl" />
             <type name="long" template="/org/alfresco/components/form/controls/number.ftl" />
             <type name="boolean" template="/org/alfresco/components/form/controls/checkbox.ftl" />
-            <type name="date" template="/org/alfresco/components/form/controls/date.ftl" />
+            <type name="date" template="/org/alfresco/components/form/controls/date.ftl">
+               <control-param name="submitTime">false</control-param>
+            </type>
             <type name="datetime" template="/org/alfresco/components/form/controls/date.ftl">
                <control-param name="showTime">true</control-param>
             </type>

@@ -174,7 +174,8 @@
          // calculate current date
          if (this.options.currentValue !== null && this.options.currentValue !== "")
          {
-            theDate = Alfresco.util.fromISO8601(this.options.currentValue);
+            // MNT-9693 - use the showTime option to trigger the ignoreTime flag (note the boolean reversing)
+            theDate = Alfresco.util.fromISO8601(this.options.currentValue, !this.options.showTime);
          }
          else
          {

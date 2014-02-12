@@ -1220,11 +1220,16 @@ Alfresco.util.formatDate = function(date)
  *
  * @method Alfresco.util.fromISO8601
  * @param date {string} ISO8601 formatted date string
+ * @param ignoreTime {Bool} Optional. Ignores any time (and therefore timezone) components.
  * @return {Date|null} JavaScript native Date object
  * @static
  */
-Alfresco.util.fromISO8601 = function(date)
+Alfresco.util.fromISO8601 = function(date, ignoreTime)
 {
+   // Added for MNT-9693 - just passes on the date component
+   if (ignoreTime) {
+      date = date.split('T')[0]
+   };
    try
    {
       return Alfresco.thirdparty.fromISO8601.apply(this, arguments);
