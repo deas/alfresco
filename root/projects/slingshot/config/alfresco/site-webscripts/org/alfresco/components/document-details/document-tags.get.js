@@ -27,7 +27,7 @@ function main()
    {
       model.nodeRef = documentDetails.item.nodeRef;
       model.tags = DocumentTags.getTags(documentDetails.item);
-      model.allowMetaDataUpdate = documentDetails.item.node.permissions.user["Write"] || false;
+      model.allowMetaDataUpdate = (!documentDetails.item.node.isLocked && documentDetails.item.node.permissions.user["Write"]) || false;
    }
 }
 
