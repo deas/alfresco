@@ -29,8 +29,17 @@ function main()
       model.tags = DocumentTags.getTags(documentDetails.item);
       model.allowMetaDataUpdate = (!documentDetails.item.node.isLocked && documentDetails.item.node.permissions.user["Write"]) || false;
    }
+
+   // Widget instantiation metadata...
+   var documentTags = {
+      id : "DocumentTags", 
+      name : "Alfresco.DocumentTags",
+      options : {
+         nodeRef : model.nodeRef,
+         siteId : model.site
+      }
+   };
+   model.widgets = [documentTags];
 }
 
 main();
-
-model.widgets = [];

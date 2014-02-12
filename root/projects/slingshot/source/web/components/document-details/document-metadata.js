@@ -43,6 +43,10 @@
    Alfresco.DocumentMetadata = function DocumentMetadata_constructor(htmlId)
    {
       Alfresco.DocumentMetadata.superclass.constructor.call(this, "Alfresco.DocumentMetadata", htmlId);
+
+      // Decoupled event listeners
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
+
       return this;
    };
 
@@ -133,6 +137,17 @@
 			var dateFormat = (showTime=='false') ? me.msg("date-format.defaultDateOnly") : me.msg("date-format.default")
             this.innerHTML = formatDate(fromISO8601(Dom.getAttribute(this, "data-date-iso8601")), dateFormat )
          });
+      },
+
+      /**
+       * Refresh component in response to metadataRefresh event
+       *
+       * @method doRefresh
+       */
+      doRefresh: function DocumentMetadata_doRefresh()
+      {
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh, this);
+         this.refresh('components/document-details/document-metadata?nodeRef={nodeRef}' + (this.options.siteId ? '&site={siteId}' :  '') + (this.options.formId ? '&formId={formId}' :  ''));
       }
    });
 

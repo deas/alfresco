@@ -1,3 +1,4 @@
+<@standalone>
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <#include "../form/form.css.ftl"/>
@@ -42,4 +43,4 @@
       </#if>
    </@>
 </@>
-
+</@>

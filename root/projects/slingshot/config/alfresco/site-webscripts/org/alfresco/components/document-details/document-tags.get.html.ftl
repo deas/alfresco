@@ -1,10 +1,12 @@
+<@standalone>
 <@markup id="css" >
    <#-- CSS Dependencies -->
    <@link href="${url.context}/res/components/document-details/document-tags.css" group="document-details"/>
 </@>
 
 <@markup id="js">
-   <#-- No JavaScript Dependencies -->
+      <#-- JavaScript Dependencies -->
+      <@script src="${url.context}/res/components/document-details/document-tags.js" group="document-details"/>
 </@>
 
 <@markup id="widgets">
@@ -44,4 +46,5 @@
          </div>
       </#if>
    </@>
+</@>
 </@>

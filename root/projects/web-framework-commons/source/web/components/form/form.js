@@ -50,7 +50,6 @@
       this.eventGroup = htmlId;
       
       /* Decoupled event listeners */
-      YAHOO.Bubbling.on("metadataRefresh", this.onFormRefresh, this);
       YAHOO.Bubbling.on("mandatoryControlValueUpdated", this.onMandatoryControlValueUpdated, this);
       YAHOO.Bubbling.on("registerValidationHandler", this.onRegisterValidationHandler, this);
       YAHOO.Bubbling.on("addSubmitElement", this.onAddSubmitElement, this);
