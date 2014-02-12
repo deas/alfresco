@@ -74,6 +74,12 @@
    list-style-type: disc;
 }
 
+.comments-list .details .comment-content ul li,
+.comments-list .details .comment-content ol li
+{
+   list-style-position: inside;
+}
+
 .comments-list .details .comment-content ul li
 {
    list-style-type: disc;

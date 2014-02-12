@@ -23,7 +23,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          extValidElements = (extValidElements && extValidElements != "") ? (extValidElements = extValidElements + ",") : "";
          config.extended_valid_elements = extValidElements + "embed[src|type|width|height|flashvars|wmode]";
          
-         config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari,legacyoutput': 'safari,legacyoutput';
+         config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari,legacyoutput,paste': 'safari,legacyoutput,paste';
          config.forced_root_block = "p";
 
          if (!config.init_instance_callback) 

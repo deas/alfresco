@@ -21,7 +21,9 @@ blockquote
 }
 
 .alfresco-share .sticky-wrapper ul,
-.yui-overlay ul
+.yui-overlay ul,
+.alfresco-share .sticky-wrapper ol,
+.yui-overlay ol
 {
    padding: 0;
    margin-left: 0;
