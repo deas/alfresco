@@ -89,7 +89,7 @@
        * Current visible page index - counts from 1
        */
       currentPage: 1,
-
+      
       /**
        * Fired by YUI when parent element is available for scripting
        * @method onReady
@@ -122,6 +122,11 @@
          this._performSearch({
             searchTerm : this.searchTerm
          });
+      },
+
+      _setDefaultDataTableErrors: function ConsoleTagManagement__setDefaultDataTableErrors(dataTable)
+      {
+         dataTable.set("MSG_EMPTY", this.msg("no-tag-found"));
       },
 
       /**
@@ -210,7 +215,8 @@
          this.widgets.dataSource.connXhrMode = "queueRequests";
          this.widgets.dataSource.responseSchema = {
             resultsList: "data.items",
-            fields: ["name","modifier","modified"]
+            fields: ["name","modifier","modified"],
+            metaFields: { totalRecords: "data.totalRecords" }
          };
          
          // YUI Paginator definition
@@ -254,6 +260,7 @@
                catch(e)
                {
                   me._setDefaultDataTableErrors(me.widgets.dataTable);
+                  me.widgets.dataTable.render();
                }
             }
             else if (oResponse.results)
@@ -296,6 +303,17 @@
 
          // Paginator event handler
          this.widgets.paginator.subscribe("changeRequest", function(state, scope){
+            var request = "&tf=" + encodeURIComponent(scope.searchTerm) + "&from="+state.recordOffset + "&size=" + state.rowsPerPage;
+            scope.widgets.dataSource.sendRequest(request,
+            {
+              success: function(sRequest, oResponse, oPayload) {
+                  scope.widgets.dataTable.onDataReturnSetRows.call(scope.widgets.dataTable, sRequest, oResponse, oPayload);
+                  scope.resultsCount = oResponse.meta.totalRecords;
+              },
+              failure: this.onRequestFailure,
+              scope: this
+            });
+
             scope.currentPage = state.page;
             scope.widgets.paginator.setState(state);
          }, this);
@@ -322,10 +340,34 @@
       onSearchClick: function ConsoleTagManagement_onSearchClick(e, args)
       {
          var searchTermElem = Dom.get(this.id + "-search-text");
-          
+
          this._performSearch({
             searchTerm : searchTermElem.value  
          });
+      },
+      
+      // Failure handler
+      onRequestFailure: function failureHandler(sRequest, oResponse)
+      {
+         if (oResponse.status == 401)
+         {
+            // Our session has likely timed-out, so refresh to offer the login page
+            window.location.reload();
+         }
+         else
+         {
+            try
+            {
+               var response = YAHOO.lang.JSON.parse(oResponse.responseText);
+               this.widgets.dataTable.set("MSG_ERROR", response.message);
+               this.widgets.dataTable.showTableMessage(response.message, YAHOO.widget.DataTable.CLASS_ERROR);
+            }
+            catch(e)
+            {
+               this._setDefaultDataTableErrors(this.widgets.dataTable);
+               this.widgets.dataTable.render();
+            }
+         }
       },
       
       /**
@@ -351,52 +393,29 @@
          function successHandler(sRequest, oResponse, oPayload)
          {
             this.widgets.dataTable.onDataReturnInitializeTable.call(this.widgets.dataTable, sRequest, oResponse, oPayload);
-            this.resultsCount = oResponse.results.length;
+            this.resultsCount = oResponse.meta.totalRecords;
+            this.currentPage = 1;
            
             // set focus to search input textbox
             Dom.get(this.id + "-search-text").focus();
          }
          
-         // Failure handler
-         function failureHandler(sRequest, oResponse)
-         {
-            if (oResponse.status == 401)
-            {
-               // Our session has likely timed-out, so refresh to offer the login page
-               window.location.reload();
-            }
-            else
-            {
-               try
-               {
-                  var response = YAHOO.lang.JSON.parse(oResponse.responseText);
-                  this.widgets.dataTable.set("MSG_ERROR", response.message);
-                  this.widgets.dataTable.showTableMessage(response.message, YAHOO.widget.DataTable.CLASS_ERROR);
-               }
-               catch(e)
-               {
-                  this._setDefaultDataTableErrors(this.widgets.dataTable);
-                  this.widgets.dataTable.render();
-               }
-            }
-         }
-         
          // Reload data sending new request for dataSource
          if (this.searchTerm == "" || this.searchTerm == "*")
          {
-            this.widgets.dataSource.sendRequest("",
+            this.widgets.dataSource.sendRequest("&from=0&size=" + this.options.pageSize,
             {
                success: successHandler,
-               failure: failureHandler,
+               failure: this.onRequestFailure,
                scope: this
             });
          }
          else
          {
-            this.widgets.dataSource.sendRequest("&tf=" + encodeURIComponent(this.searchTerm),
+            this.widgets.dataSource.sendRequest("&tf=" + encodeURIComponent(this.searchTerm) + "&from=0&size=" + this.options.pageSize,
             {
                success: successHandler,
-               failure: failureHandler,
+               failure: this.onRequestFailure,
                scope: this
             });
          }
