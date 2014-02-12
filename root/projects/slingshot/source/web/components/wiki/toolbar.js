@@ -265,7 +265,7 @@
                if (this.widgets.hasOwnProperty(index))
                {
                   widget = this.widgets[index];
-                  if (widget.get("srcelement").className != "no-access-check")
+                  if (widget.get("srcelement").className != "no-access-check" && (!(widget._button != null && widget._button.className == "no-access-check")))					  				  
                   {
                      widget.set("disabled", false);
                      if (typeof widget.get("value") == "string")

@@ -265,7 +265,7 @@
                {
                   widget = this.widgets[index];
                   // Skip if this action specifies "no-access-check"
-                  if (widget.get("srcelement").className != "no-access-check")
+                  if (widget.get("srcelement").className != "no-access-check" && (!(widget._button != null && widget._button.className == "no-access-check")))					  
                   {
                      // Default to disabled: must be enabled via permission
                      widget.set("disabled", false);

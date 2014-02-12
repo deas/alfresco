@@ -1501,7 +1501,7 @@
                {
                   widget = this.widgets[index];
                   // Skip if this action specifies "no-access-check"
-                  if (widget && widget.get("srcelement").className != "no-access-check")
+                  if (widget && widget.get("srcelement").className != "no-access-check" && (!(widget._button != null && widget._button.className == "no-access-check")))					  				  				  
                   {
                      fnSetWidgetAccess(widget, obj.userAccess);
                      if (widget.getMenu() !== null)
