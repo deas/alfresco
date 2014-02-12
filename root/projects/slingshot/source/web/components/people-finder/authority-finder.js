@@ -580,8 +580,11 @@
        */
       onSearchClick: function AuthorityFinder_onSearchClick(e, p_obj)
       {
-         var searchTerm = Dom.get(this.id + "-search-text").value;
-         if (searchTerm.length < this.options.minSearchTermLength)
+         var searchTermElem = Dom.get(this.id + "-search-text");
+         var searchTerm = YAHOO.lang.trim(searchTermElem.value);
+
+         // inform the user if the search term entered is too small
+         if (searchTerm.replace(/\*/g, "").length < this.options.minSearchTermLength)
          {
             Alfresco.util.PopupManager.displayMessage(
             {
