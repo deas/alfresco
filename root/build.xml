@@ -202,49 +202,348 @@
          <!-- Exclude tests that require JodConverter/OpenOffice.org as these are hanging the build server -->
          <exclude name="**/*OOoTest.java" />
 
+         <!-- Repo Tests -->
+         <include name="**/org/alfresco/Repository*TestSuite.java" />
+		 <!-- Exclude all the test classes that are run one by one -->
+         <exclude name="**/org/alfresco/RepositoryStartStopTest.java" />
+         <exclude name="**/org/alfresco/cmis/PropertyFilterTest.java" />
+         <exclude name="**/org/alfresco/cmis/acl/CMISAccessControlServiceTest.java" />
+         <exclude name="**/org/alfresco/cmis/dictionary/CMISDictionaryTest.java" />
+         <exclude name="**/org/alfresco/cmis/mapping/CMISPropertyServiceTest.java" />
+         <exclude name="**/org/alfresco/cmis/renditions/CMISRenditionServiceTest.java" />
+         <exclude name="**/org/alfresco/cmis/search/QueryTest.java" />
+         <exclude name="**/org/alfresco/email/server/EmailServiceImplTest.java" />
+         <exclude name="**/org/alfresco/encryption/EncryptorTest.java" />
+         <exclude name="**/org/alfresco/encryption/KeyStoreKeyProviderTest.java" />
+         <exclude name="**/org/alfresco/filesys/FTPServerTest.java" />
+         <exclude name="**/org/alfresco/filesys/config/ServerConfigurationBeanTest.java" />
+         <exclude name="**/org/alfresco/filesys/repo/CIFSContentComparatorTest.java" />
+         <exclude name="**/org/alfresco/filesys/repo/CifsIntegrationTest.java" />
+         <exclude name="**/org/alfresco/filesys/repo/ContentDiskDriverTest.java" />
+         <exclude name="**/org/alfresco/filesys/repo/LockKeeperImplTest.java" />
+         <exclude name="**/org/alfresco/filesys/repo/rules/ShuffleTest.java" />
+         <exclude name="**/org/alfresco/jcr/importer/ImportTest.java" />
+         <exclude name="**/org/alfresco/jcr/item/Alf1791Test.java" />
+         <exclude name="**/org/alfresco/jcr/item/ItemTest.java" />
+         <exclude name="**/org/alfresco/jcr/query/QueryManagerImplTest.java" />
+         <exclude name="**/org/alfresco/jcr/repository/RepositoryImplTest.java" />
+         <exclude name="**/org/alfresco/jcr/session/SessionImplTest.java" />
+         <exclude name="**/org/alfresco/opencmis/CMISTest.java" />
+         <exclude name="**/org/alfresco/opencmis/OpenCmisLocalTest.java" />
+         <exclude name="**/org/alfresco/opencmis/search/OpenCmisQueryTest.java" />
+         <exclude name="**/org/alfresco/repo/action/ActionTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/activities/ActivityServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/activities/feed/FeedNotifierTest.java" />
+         <exclude name="**/org/alfresco/repo/admin/Log4JHierarchyInitTest.java" />
+         <exclude name="**/org/alfresco/repo/admin/RepoAdminServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/admin/patch/PatchTest.java" />
+         <exclude name="**/org/alfresco/repo/admin/registry/RegistryServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/attributes/AttributeServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/audit/AuditTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/avm/AVMTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/blog/BlogServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/bulkimport/impl/BulkImportTest.java" />
+         <exclude name="**/org/alfresco/repo/bulkimport/impl/StripingFilesystemTrackerTest.java" />
+         <exclude name="**/org/alfresco/repo/cache/CacheTest.java" />
+         <exclude name="**/org/alfresco/repo/cache/DefaultCacheFactoryTest.java" />
+         <exclude name="**/org/alfresco/repo/cache/DefaultSimpleCacheTest.java" />
+         <exclude name="**/org/alfresco/repo/cache/lookup/EntityLookupCacheTest.java" />
+         <exclude name="**/org/alfresco/repo/calendar/CalendarHelpersTest.java" />
+         <exclude name="**/org/alfresco/repo/calendar/CalendarServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/coci/CheckOutCheckInServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/configuration/ConfigurableServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/content/ContentFullContextTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/content/ContentMinimalContextTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/content/caching/CachingContentStoreTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/copy/CopyServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/deploy/ASRDeploymentTest.java" />
+         <exclude name="**/org/alfresco/repo/deploy/DeploymentServiceImplFSTest.java" />
+         <exclude name="**/org/alfresco/repo/deploy/DeploymentServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/descriptor/DescriptorServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/dictionary/DictionaryModelTypeTest.java" />
+         <exclude name="**/org/alfresco/repo/dictionary/DictionaryRepositoryBootstrapTest.java" />
+         <exclude name="**/org/alfresco/repo/dictionary/RepoDictionaryDAOTest.java" />
+         <exclude name="**/org/alfresco/repo/dictionary/types/period/PeriodTest.java" />
+         <exclude name="**/org/alfresco/repo/discussion/DiscussionServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/download/DownloadServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/exporter/ExporterComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/exporter/RepositoryExporterComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/forms/FormServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/forms/processor/action/ActionFormProcessorTest.java" />
+         <exclude name="**/org/alfresco/repo/forms/processor/node/FieldProcessorTest.java" />
+         <exclude name="**/org/alfresco/repo/forms/processor/workflow/TaskFormProcessorTest.java" />
+         <exclude name="**/org/alfresco/repo/forms/processor/workflow/WorkflowFormProcessorTest.java" />
+         <exclude name="**/org/alfresco/repo/forum/CommentsTest.java" />
+         <exclude name="**/org/alfresco/repo/i18n/MessageServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/imap/ImapMessageTest.java" />
+         <exclude name="**/org/alfresco/repo/imap/ImapServiceImplCacheTest.java" />
+         <exclude name="**/org/alfresco/repo/imap/ImapServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/importer/FileImporterTest.java" />
+         <exclude name="**/org/alfresco/repo/importer/ImporterComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/invitation/InvitationCleanupTest.java" />
+         <exclude name="**/org/alfresco/repo/invitation/site/InviteSenderTest.java" />
+         <exclude name="**/org/alfresco/repo/jscript/PeopleTest.java" />
+         <exclude name="**/org/alfresco/repo/jscript/RhinoScriptTest.java" />
+         <exclude name="**/org/alfresco/repo/jscript/ScriptBehaviourTest.java" />
+         <exclude name="**/org/alfresco/repo/jscript/ScriptNodeTest.java" />
+         <exclude name="**/org/alfresco/repo/links/LinksServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/JobLockServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/LockBehaviourImplTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/LockServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/LockUtilsTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/mem/LockStoreImplTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/mem/LockStoreImplTxTest.java" />
+         <exclude name="**/org/alfresco/repo/lock/mem/LockableAspectInterceptorTest.java" />
+         <exclude name="**/org/alfresco/repo/management/JmxDumpUtilTest.java" />
+         <exclude name="**/org/alfresco/repo/model/ModelTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/module/ComponentsTest.java" />
+         <exclude name="**/org/alfresco/repo/module/ModuleComponentHelperTest.java" />
+         <exclude name="**/org/alfresco/repo/module/ModuleDetailsImplTest.java" />
+         <exclude name="**/org/alfresco/repo/module/tool/ModuleManagementToolTest.java" />
+         <exclude name="**/org/alfresco/repo/module/tool/WarHelperImplTest.java" />
+         <exclude name="**/org/alfresco/repo/node/ConcurrentNodeServiceSearchTest.java" />
+         <exclude name="**/org/alfresco/repo/node/ConcurrentNodeServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/node/FullNodeServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/node/NodeRefPropertyMethodInterceptorTest.java" />
+         <exclude name="**/org/alfresco/repo/node/NodeServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/node/PerformanceNodeServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/node/archive/ArchiveAndRestoreTest.java" />
+         <exclude name="**/org/alfresco/repo/node/archive/LargeArchiveAndRestoreTest.java" />
+         <exclude name="**/org/alfresco/repo/node/cleanup/TransactionCleanupTest.java" />
+         <exclude name="**/org/alfresco/repo/node/db/DbNodeServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/node/getchildren/GetChildrenCannedQueryTest.java" />
+         <exclude name="**/org/alfresco/repo/node/index/AVMRemoteSnapshotTrackerTest.java" />
+         <exclude name="**/org/alfresco/repo/node/index/FullIndexRecoveryComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/node/index/IndexTransactionTrackerTest.java" />
+         <exclude name="**/org/alfresco/repo/node/index/MissingContentReindexComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/node/integrity/IncompleteNodeTaggerTest.java" />
+         <exclude name="**/org/alfresco/repo/node/integrity/IntegrityEventTest.java" />
+         <exclude name="**/org/alfresco/repo/node/integrity/IntegrityTest.java" />
+         <exclude name="**/org/alfresco/repo/nodelocator/NodeLocatorServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/oauth1/OAuth1CredentialsStoreServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/oauth2/OAuth2CredentialsStoreServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/policy/MTPolicyComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/policy/PolicyComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/policy/PolicyComponentTransactionTest.java" />
+         <exclude name="**/org/alfresco/repo/preference/PreferenceServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/quickshare/QuickShareServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/rating/RatingServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/remotecredentials/RemoteCredentialsServicesTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/MultiUserRenditionTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/RenditionNodeManagerTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/RenditionServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/RenditionServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/RenditionServicePermissionsTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/StandardRenditionLocationResolverTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/executer/HTMLRenderingEngineTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/executer/XSLTFunctionsTest.java" />
+         <exclude name="**/org/alfresco/repo/rendition/executer/XSLTRenderingEngineTest.java" />
+         <exclude name="**/org/alfresco/repo/replication/ReplicationServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/replication/ReplicationServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/MiscellaneousRulesTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/RuleLinkTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/RuleServiceCoverageTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/RuleServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/RuleServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/RuleTypeImplTest.java" />
+         <exclude name="**/org/alfresco/repo/rule/ruletrigger/RuleTriggerTest.java" />
+         <exclude name="**/org/alfresco/repo/search/SearchTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/security/SecurityTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/security/sync/ChainingUserRegistrySynchronizerTest.java" />
+         <exclude name="**/org/alfresco/repo/service/StoreRedirectorProxyFactoryTest.java" />
+         <exclude name="**/org/alfresco/repo/site/RoleComparatorImplTest.java" />
+         <exclude name="**/org/alfresco/repo/site/SiteServiceImplMoreTest.java" />
+         <exclude name="**/org/alfresco/repo/site/SiteServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/solr/SOLRTrackingComponentTest.java" />
+         <exclude name="**/org/alfresco/repo/subscriptions/SubscriptionServiceActivitiesTest.java" />
+         <exclude name="**/org/alfresco/repo/subscriptions/SubscriptionServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/tagging/TaggingServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/template/AVMTemplateNodeTest.java" />
+         <exclude name="**/org/alfresco/repo/template/TemplateServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/template/XSLTProcessorTest.java" />
+         <exclude name="**/org/alfresco/repo/tenant/MultiTDemoTest.java" />
+         <exclude name="**/org/alfresco/repo/tenant/MultiTNodeServiceInterceptorTest.java" />
+         <exclude name="**/org/alfresco/repo/thumbnail/ThumbnailServiceImplParameterTest.java" />
+         <exclude name="**/org/alfresco/repo/thumbnail/ThumbnailServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/thumbnail/conditions/NodeEligibleForRethumbnailingEvaluatorTest.java" />
+         <exclude name="**/org/alfresco/repo/transaction/AlfrescoTransactionSupportTest.java" />
+         <exclude name="**/org/alfresco/repo/transaction/RetryingTransactionHelperTest.java" />
+         <exclude name="**/org/alfresco/repo/transaction/TransactionAwareSingletonTest.java" />
+         <exclude name="**/org/alfresco/repo/transaction/TransactionServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/ContentChunkerImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/HttpClientTransmitterImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/NodeCrawlerTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/RepoTransferReceiverImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/TransferServiceCallbackTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/TransferServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/TransferServiceToBeRefactoredTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/TransferVersionCheckerImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/manifest/ManifestIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/manifest/TransferManifestTest.java" />
+         <exclude name="**/org/alfresco/repo/transfer/script/ScriptTransferServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/urlshortening/BitlyUrlShortenerTest.java" />
+         <exclude name="**/org/alfresco/repo/usage/UsageTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/version/VersionTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/wiki/WikiServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/workflow/WorkflowTestSuite.java" />
+         <exclude name="**/org/alfresco/service/cmr/calendar/CalendarRecurrenceHelperTest.java" />
+         <exclude name="**/org/alfresco/service/cmr/calendar/CalendarTimezoneHelperTest.java" />
+         <exclude name="**/org/alfresco/service/cmr/repository/TemporalSourceOptionsTest.java" />
+         <exclude name="**/org/alfresco/service/cmr/repository/TransformationOptionLimitsTest.java" />
+         <exclude name="**/org/alfresco/service/cmr/repository/TransformationOptionPairTest.java" />
+         <exclude name="**/org/alfresco/tools/RenameUserTest.java" />
+         <exclude name="**/org/alfresco/util/DynamicallySizedThreadPoolExecutorTest.java" />
+         <exclude name="**/org/alfresco/util/FileNameValidatorTest.java" />
+         <exclude name="**/org/alfresco/util/JSONtoFmModelTest.java" />
+         <exclude name="**/org/alfresco/util/ModelUtilTest.java" />
+         <exclude name="**/org/alfresco/util/PropertyMapTest.java" />
+         <exclude name="**/org/alfresco/util/ValueProtectingMapTest.java" />
+         <exclude name="**/org/alfresco/util/json/ExceptionJsonSerializerTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/DbObjectXMLTransformerTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/DbPropertyTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/DbToXMLTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/DefaultComparisonUtilsTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/DifferenceTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/ExportDbTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/MultiFileDumperTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/RedundantDbObjectTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/SchemaComparatorTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/SchemaReferenceFileTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/SchemaToXMLTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/ValidatingVisitorTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/ValidationResultTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/XMLToSchemaTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/ColumnTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/ForeignKeyTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/IndexTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/PrimaryKeyTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/SchemaTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/SequenceTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/model/TableTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/validator/IndexColumnsValidatorTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/validator/NameValidatorTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/validator/SchemaVersionValidatorTest.java" />
+         <exclude name="**/org/alfresco/util/schemacomp/validator/TypeNameOnlyValidatorTest.java" />
+         <exclude name="**/org/alfresco/util/test/junitrules/AlfrescoPersonTest.java" />
+         <exclude name="**/org/alfresco/util/test/junitrules/ApplicationContextInitTest.java" />
+         <exclude name="**/org/alfresco/util/test/junitrules/TemporaryMockOverrideTest.java" />
+         <exclude name="**/org/alfresco/util/test/junitrules/TemporaryNodesTest.java" />
+         <exclude name="**/org/alfresco/util/test/junitrules/TemporarySitesTest.java" />
+		 
+         <!-- Remote API Tests -->
+         <include name="**/org/alfresco/RemoteApi*TestSuite.java" />
+		 <!-- Exclude all the test classes that are run one by one -->
+         <exclude name="**/org/alfresco/repo/webdav/WebDAVHelperIntegrationTest.java" />
+         <exclude name="**/org/alfresco/repo/webdav/WebDAVLockServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/web/util/paging/PagingTest.java" />
+         <exclude name="**/org/alfresco/repo/management/subsystems/test/SubsystemsTest.java" />
+         <exclude name="**/org/alfresco/rest/api/tests/ApiTest.java" />
+         <exclude name="**/org/alfresco/repo/cmis/rest/test/PolicyTest.java" />
+         <exclude name="**/org/alfresco/repo/remoteticket/RemoteAlfrescoTicketServiceTest.java" />
+         <exclude name="**/org/alfresco/repo/webdav/RenameShuffleDetectionTest.java" />
+         <exclude name="**/org/alfresco/repo/webdav/MoveMethodTest.java" />
+         <exclude name="**/org/alfresco/rest/api/tests/TestCMISAPI.java" />
+         <exclude name="**/org/alfresco/repo/webdav/GetMethodTest.java" />
+         <exclude name="**/org/alfresco/repo/webservice/CMLUtilTest.java" />
+         <exclude name="**/org/alfresco/cmis/changelog/CMISChangeLogServiceTest.java" />
+         <exclude name="**/org/alfresco/rest/workflow/api/tests/ProcessDefinitionWorkflowApiTest.java" />
+         <exclude name="**/org/alfresco/repo/cmis/rest/test/AspectTest.java" />
+         <exclude name="**/org/alfresco/rest/workflow/api/tests/ProcessWorkflowApiTest.java" />
+         <exclude name="**/org/alfresco/repo/webdav/WebDAVMethodTest.java" />
+         <exclude name="**/org/alfresco/repo/webdav/WebDAVHelperTest.java" />
+         <exclude name="**/org/alfresco/rest/framework/tests/core/AllRestFrameworkTest.java" />
+         <exclude name="**/org/alfresco/repo/web/util/PagingCursorTest.java" />
+         <exclude name="**/org/alfresco/rest/workflow/api/tests/DeploymentWorkflowApiTest.java" />
+         <exclude name="**/org/alfresco/repo/web/scripts/WebScriptTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/webdav/UnlockMethodTest.java" />
+         <exclude name="**/org/alfresco/repo/cmis/rest/test/CMISAtomTemplatesTest.java" />
+         <exclude name="**/org/alfresco/rest/workflow/api/tests/TaskWorkflowApiTest.java" />
+         <exclude name="**/org/alfresco/repo/webdav/LockInfoImplTest.java" />
+
+         <!-- Enterprise Repo Tests -->
+         <include name="**/org/alfresco/enterprise/EnterpriseRepository*TestSuite.java" />
+		 <!-- Exclude all the test classes that are run one by one -->
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/NonMemberIPAddressPickerImplTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/HazelcastInstanceFactoryTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/ClusteringBootstrapTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/transaction/RetryExceptionsTest.java" />
+         <exclude name="**/org/alfresco/enterprise/heartbeat/HeartBeatTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/ClusterServiceImplSpringTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/content/routing/StoreSelectorAspectContentStoreTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/forms/jmx/JMXFormProcessorTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/index/IndexRecoveryJobTest.java" />
+         <exclude name="**/org/alfresco/enterprise/license/LicenseComponentTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/SyncAdminServiceImplTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/management/script/TypeConversionUtilsTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/AlfrescoTcpIpConfigTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/lock/HazelcastLockStoreTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/cache/HazelcastSimpleCacheTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/cache/InvalidatingCacheTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/SyncTrackerComponentTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/SyncServiceImplTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/deltas/SsmnChangeManagementTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/SyncChangeMonitorTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/messenger/HazelcastMessengerTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/HazelcastTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/ClusterServiceImplTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/HazelcastConfigFactoryBeanTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/management/script/JmxScriptTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/core/MembershipChangeLoggerTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/cache/ClusterAwareCacheFactoryTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cache/HibernateCacheProviderTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/messenger/HazelcastMessengerFactoryTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/management/subsystems/AuthenticationChainTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/audit/SyncAuditServiceImplTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/deltas/AggregatedNodeChangeTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/audit/SyncAuditServiceIntegrationTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/sync/SyncChangeMonitorTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/cluster/lock/HazelcastLockStoreTxTest.java" />
+         <exclude name="**/org/alfresco/enterprise/security/sync/EnterpriseChainingUserRegistrySynchronizerTest.java" />
+
+         <!-- Enterprise Remote API Tests -->
+         <include name="**/org/alfresco/enterprise/EnterpriseRemoteApi*TestSuite.java" />
+		 <!-- Exclude all the test classes that are run one by one -->
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/sync/SyncConfigGetTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/sync/transport/CloudTransportWebScriptsTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/sync/SyncAuditServiceRestApiTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/sync/SyncAdminServiceRestApiTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/sync/RemoteSyncedNodeRestApiTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/admin/UserRegistrySynchronizationTestPostTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/admin/SyncTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/sync/connector/CloudConnectorWebScriptsTest.java" />
+         <exclude name="**/org/alfresco/enterprise/repo/web/scripts/admin/AuthenticationTestPostTest.java" />
+
          <!-- Action Tests -->
          <exclude name="**/org/alfresco/repo/action/**/*Test.java" />
-         <include name="**/org/alfresco/repo/action/ActionTestSuite.java" />
          <!-- Auditable Tests -->
          <exclude name="**/org/alfresco/repo/audit/**/*Test.java" />
-         <include name="**/org/alfresco/repo/audit/AuditTestSuite.java" />
          <!-- AVM Tests -->
          <exclude name="**/org/alfresco/repo/avm/**/*Test.java" />
          <exclude name="**/org/alfresco/repo/avm/**/*TestP.java" />
-         <include name="**/org/alfresco/repo/avm/AVMTestSuite.java" />
          <!-- "Old" CMIS Tests -->
          <exclude name="**/org/alfresco/repo/cmis/ws/*.java" />
          <!-- Content Tests -->
-         <exclude name="**/org/alfresco/repo/content/**/*Test.java" />
          <include name="**/org/alfresco/repo/content/DataModelContentTestSuite.java" />
-         <include name="**/org/alfresco/repo/content/ContentFullContextTestSuite.java" />
-         <include name="**/org/alfresco/repo/content/ContentMinimalContextTestSuite.java" />
-         <include name="**/org/alfresco/repo/content/metadata/xml/XmlMetadataExtracterTest.java" />
-         <include name="**/org/alfresco/repo/content/caching/CachingContentStoreTestSuite.java" />
+         <exclude name="**/org/alfresco/repo/content/**/*Test.java" />
          <!-- Domain Tests -->
          <exclude name="**/org/alfresco/repo/domain/**/*Test.java" />
-         <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
          <!-- Model (Multilingual and File Folder) Tests -->
          <exclude name="**/org/alfresco/repo/model/**/*Test.java" />
-         <include name="**/org/alfresco/repo/model/ModelTestSuite.java" />
          <!-- Publishing Tests -->
          <exclude name="**/org/alfresco/repo/publishing/**/*Test.java" />
-         <include name="**/org/alfresco/repo/publishing/WebPublishingTestSuite.java" />
          <!-- Version Tests -->
          <exclude name="**/org/alfresco/repo/version/**/*Test.java" />
-         <include name="**/org/alfresco/repo/version/VersionTestSuite.java" />
          <!-- Workflow Tests -->
          <exclude name="**/org/alfresco/repo/workflow/**/*Test.java" />
-         <include name="**/org/alfresco/repo/workflow/WorkflowTestSuite.java" />
          <!-- WCM Tests -->
          <exclude name="**/org/alfresco/wcm/**/*Test.java" />
          <!-- Web Script Tests -->
          <exclude name="**/org/alfresco/repo/web/scripts/**/*Test.java" />
-         <include name="**/org/alfresco/repo/web/scripts/WebScriptTestSuite.java" />
          <include name="**/org/alfresco/repo/web/scripts/wcm/sandbox/AssetTest.java" />
          <!-- Search Tests -->
          <exclude name="**/org/alfresco/repo/search/**/*Test.java" />
-         <include name="**/org/alfresco/repo/search/SearchTestSuite.java" />
          <!-- Security Tests -->
          <!-- Note  org.alfresco.repo.security.sync.ChainingUserRegistrySynchronizerTest has its own context and runs on its own -->
          <exclude name="**/org/alfresco/repo/ownable/**/*Test.java" />
@@ -252,14 +551,10 @@
          <exclude name="**/org/alfresco/repo/security/authority/**/*Test.java" />
          <exclude name="**/org/alfresco/repo/security/permissions/**/*Test.java" />
          <exclude name="**/org/alfresco/repo/security/person/**/*Test.java" />
-         <include name="**/org/alfresco/repo/security/SecurityTestSuite.java" />
          <!-- Usage Tests -->
          <exclude name="**/org/alfresco/repo/usage/**/*Test.java" />
-         <include name="**/org/alfresco/repo/usage/UsageTestSuite.java" />
          <!-- System Build Tests (runs using embedded Jetty) -->
          <exclude name="**/org/alfresco/repo/RepoJetty*Test.java" />
-         <!-- embeds: RepoBenchmark*SystemTest -->
-         <include name="**/org/alfresco/repo/bm/RepoBenchmarkSystemTestSuite.java" />
          <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
          <exclude name="**/org/alfresco/repo/transfer/fsr/**/*Test.java" />
          <!-- Messaging facade -->
@@ -289,6 +584,7 @@
 
          <!-- All other tests -->
          <include name="**/*Test.java" />
+
       </patternset>
    </target>
 
