@@ -337,6 +337,13 @@
             searchInput.focus();
          }
          
+         // This is a quick solution for showing all members of the site. The default search string 
+         // is empty and equates to a global search.
+         if (window.location.hash === "#showall" || this.options.minSearchTermLength === 0)
+         {
+            this.doSearch();
+         }
+         
          // Finally show the component body here to prevent UI artifacts on YUI button decoration
          Dom.setStyle(this.id + "-body", "visibility", "visible");
       },
