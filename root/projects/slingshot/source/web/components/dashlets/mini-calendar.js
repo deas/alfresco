@@ -127,7 +127,7 @@
             for (var j = 0; j < resultEvents.length; j++)
             {
                var renderItem = resultEvents[j],
-                  date = renderItem.startAt.iso8601.split("T")[0],
+                  date = toISO8601(fromISO8601(renderItem.startAt.iso8601)).split("T")[0],
                   list = map[date] || [];
 
                list.push(renderItem);
