@@ -311,7 +311,7 @@
                templateUrl: templateUrl,
                actionUrl: null,
                clearForm: true,
-               destroyOnHide: true,
+               destroyOnHide: false,
                doBeforeFormSubmit:
                {
                   fn: doBeforeFormSubmit,
