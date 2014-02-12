@@ -56,6 +56,7 @@ var getMappings = function()
 {
    var mappings = [],
       authorityType = args.authorityType === null ? "all" : String(args.authorityType).toLowerCase(),
+      maxResults = args.maxResults === null ? "0" : args.maxResults,
       siteScope = args.site !== null ? true : false ;
    
    if (authorityType === "all" || authorityType == "user")
@@ -74,7 +75,7 @@ var getMappings = function()
          mappings.push(
          {
             type: MAPPING_TYPE.API,
-            url: "/api/people?filter=" + encodeURIComponent(args.filter),
+            url: "/api/people?filter=" + encodeURIComponent(args.filter) + (maxResults > 0 ? "&maxResults=" + maxResults : ""),
             rootObject: "people",
             fn: mapUser
          });
