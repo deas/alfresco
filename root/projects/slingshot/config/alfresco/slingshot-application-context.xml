@@ -127,7 +127,11 @@
    
    <!-- Override RemoteClient to add additional security processing for HTML responses to content APIs -->
    <bean id="connector.remoteclient" parent="connector.remoteclient.abstract"
-         class="org.alfresco.web.scripts.SlingshotRemoteClient" scope="prototype" />
+         class="org.alfresco.web.scripts.SlingshotRemoteClient" scope="prototype">
+      <property name="swfEnabled">
+         <value>false</value>
+      </property>
+   </bean>
    
    <!-- Override and configure the remote store for Slingshot -->
    <!-- Point to a specific store on the Alfresco instance -->

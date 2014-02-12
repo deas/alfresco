@@ -49,6 +49,13 @@ public class SlingshotRemoteClient extends RemoteClient
 {
     private static final Pattern CONTENT_PATTERN = Pattern.compile(".*/api/(node|path)/content/workspace/SpacesStore/.*");
     
+    private boolean swfEnabled = false;
+    
+    public void setSwfEnabled(boolean swfEnabled)
+    {
+        this.swfEnabled = swfEnabled;
+    }
+    
     @Override
     protected void copyResponseStreamOutput(URL url, HttpServletResponse res, OutputStream out,
             org.apache.commons.httpclient.HttpMethod method, String contentType, int bufferSize) throws IOException
@@ -138,7 +145,7 @@ public class SlingshotRemoteClient extends RemoteClient
                         }
                         processed = true;
                     }
-                    else if (mimetype.equals("application/x-shockwave-flash") || mimetype.equals("image/svg+xml"))
+                    else if ((mimetype.equals("application/x-shockwave-flash") || mimetype.equals("image/svg+xml")) && !swfEnabled)
                     {
                         String msg = I18NUtil.getMessage("security.insecuremimetype");
                         try
