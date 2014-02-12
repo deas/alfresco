@@ -366,7 +366,7 @@
 
          var form = document.createElement("form");
          form.method = "GET";
-         form.action = Alfresco.constants.PROXY_URI + "api/node/content/" + this._currentArchiveNodeURL + "/" + this._currentArchiveName;
+         form.action = Alfresco.constants.PROXY_URI + "api/node/content/" + this._currentArchiveNodeURL + "/" + Alfresco.util.encodeURIPath(this._currentArchiveName);
          document.body.appendChild(form);
 
          var d = form.ownerDocument;
