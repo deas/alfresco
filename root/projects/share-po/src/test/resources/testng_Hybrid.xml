@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Hybrid Tests" verbose="6">
+	<test name="main">
+		<groups>
+			<run>
+				<include name="unit" />
+				<include name="alfresco-one" />
+				<include name="Enterprise4.2" />
+				<include name="Enterprise-only" />
+				<include name="Hybrid" />
+				<exclude name=".*Bug" />
+				<exclude name="chromeOnly" />
+				<exclude name="download" />
+			</run>
+		</groups>
+		<packages>
+			<package name="org.alfresco.po.share" />
+			<package name="org.alfresco.po.share.dashlet" />
+			<package name="org.alfresco.po.share.dashlet.sitecontent" />
+            <package name="org.alfresco.po.share.search" />
+            <package name="org.alfresco.po.share.site" />
+            <package name="org.alfresco.po.share.workflow" />
+            <package name="org.alfresco.po.share.task" />
+            <package name="org.alfresco.po.share.site.document.download" />
+            <package name="org.alfresco.po.share.site.document" />
+		</packages>
+	</test>
+</suite>

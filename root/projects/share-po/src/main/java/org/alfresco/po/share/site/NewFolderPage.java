@@ -1,0 +1,131 @@
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.alfresco.po.share.site;
+
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.WebDrone;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+/**
+ * Create folder page object, holds all element of the HTML page relating to
+ * share's create folder page.
+ * 
+ * @author Michael Suzuki
+ * @since 1.0
+ */
+public class NewFolderPage extends SharePage
+{
+    private static final By FOLDER_TITLE_CSS = By.cssSelector("input[id$='default-createFolder_prop_cm_title']");
+    /**
+     * Constructor.
+     */
+    public NewFolderPage(WebDrone drone)
+    {
+        super(drone);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public NewFolderPage render(RenderTime timer)
+    {
+        basicRender(timer);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public NewFolderPage render()
+    {
+        return render(new RenderTime(maxPageLoadingTime));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public NewFolderPage render(final long time)
+    {
+        return render(new RenderTime(time));
+    }
+
+    /**
+     * @see #createNewFolder(String, String)
+     */
+    public HtmlPage createNewFolder(final String folderName)
+    {
+        return createNewFolder(folderName, null);
+    }
+
+    /**
+     * Create a new folder action by completing and submitting the form.
+     * 
+     * @param folderName    mandatory folder name
+     * @param description   optional folder description
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage createNewFolder(final String folderName, final String description)
+    {
+        if (folderName == null || folderName.isEmpty())
+        {
+            throw new UnsupportedOperationException("Folder Name input required.");
+        }
+        WebElement inputFolderName = drone.find(By.cssSelector("input[id$='default-createFolder_prop_cm_name']"));
+        inputFolderName.sendKeys(folderName);
+        if (description != null)
+        {
+            WebElement inputDescription = drone.find(By.cssSelector("textarea[id$='default-createFolder_prop_cm_description']"));
+            inputDescription.sendKeys(description);
+        }
+        WebElement okButton = drone.find(By.cssSelector("button[id$='default-createFolder-form-submit-button']"));
+        okButton.click();
+        
+        //Wait till the pop up disappears
+        canResume();
+        DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
+        page.setShouldHaveFiles(true);
+        return page;
+    }
+    
+    /**
+     * Create a new folder action by completing and submitting the form.
+     * 
+     * @param folderName    mandatory folder name
+     * @param description   optional folder description
+     * @param folderTitle  options folder Title
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage createNewFolder(final String folderName, final String folderTitle, final String description)
+    {
+        if (folderName == null || folderName.isEmpty())
+        {
+            throw new UnsupportedOperationException("Folder Name input required.");
+        }
+        
+        if(folderTitle != null && !folderTitle.isEmpty())
+        {
+            WebElement inputFolderName = drone.find(FOLDER_TITLE_CSS);
+            inputFolderName.sendKeys(folderTitle);
+        }
+        
+        return createNewFolder(folderName, description);
+    }
+}

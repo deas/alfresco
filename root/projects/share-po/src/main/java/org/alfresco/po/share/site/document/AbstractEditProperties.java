@@ -1,0 +1,123 @@
+package org.alfresco.po.share.site.document;
+
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.webdrone.WebDrone;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+/**
+ * Abstract of edit properties
+ * @author Michael Suzuki
+ * @since 1.4
+ */
+public abstract class AbstractEditProperties extends SitePage
+{
+    protected AbstractEditProperties(WebDrone drone)
+    {
+        super(drone);
+    }
+    protected static final By INPUT_NAME_SELECTOR = By.cssSelector("input[id$='prop_cm_name']");
+    protected static final By INPUT_TITLE_SELECTOR = By.cssSelector("input[id$='prop_cm_title']");
+    protected static final By INPUT_DESCRIPTION_SELECTOR = By.cssSelector("textarea[id$='prop_cm_description']");
+    protected static final By INPUT_AUTHOR_SELECTOR = By.cssSelector("input[id$='prop_cm_author']");
+    protected static final By INPUT_RESOLUTION_UNIT_SELECTOR = By.cssSelector("input[id$='prop_exif_resolutionUnit']");
+    protected static final By INPUT_VERTICAL_RESOLUTION_SELECTOR = By.cssSelector("input[id$='_prop_exif_yResolution']");
+    protected static final By INPUT_ORIENTATION_SELECTOR = By.cssSelector("input[id$='prop_exif_orientation']");
+    protected static final By BUTTON_SELECT_TAG = By.cssSelector("div[id$='cntrl-itemGroupActions']");
+    
+    /**
+     * Clear the input field and inserts the new value.
+     * @param input {@link WebElement} represents the form input
+     * @param value String input value to enter
+     */
+    public void setInput(final WebElement input, final String value)
+    {
+        input.clear();
+        input.sendKeys(value);
+    }
+    /**
+     * Gets the value of the input field
+     * @param by input field descriptor
+     * @return String input value
+     */
+    protected String getValue(By by)
+    {
+        return drone.find(by).getAttribute("value");
+    }
+    /**
+     * Get the String value of name input value.
+     */
+    public String getName()
+    {
+        return getValue(INPUT_NAME_SELECTOR);
+    }
+    /**
+     * Enters a value in to the properties form.
+     * @param name String name input
+     */
+    public void setName(final String name)
+    {
+        setInput(drone.find(INPUT_NAME_SELECTOR), name);
+    }
+    /**
+     * Get value seen on the title input value.
+     */
+    public String getDocumentTitle()
+    {
+        return getValue(INPUT_TITLE_SELECTOR);
+    }
+    /**
+     * Enters a value in to the properties form.
+     * @param title String name input
+     */
+    public void setDocumentTitle(final String title)
+    {
+        setInput(drone.find(INPUT_TITLE_SELECTOR), title);
+    }
+    /**
+     * Get value seen on the description input value.
+     */
+    public String getDescription()
+    {
+        return getValue(INPUT_DESCRIPTION_SELECTOR);
+    }
+    /**
+     * Enters a value in to the properties form.
+     * @param description String name input
+     */
+    public void setDescription(final String description)
+    {
+        setInput(drone.find(INPUT_DESCRIPTION_SELECTOR), description);
+    }
+    
+    /**
+     * Click on Select button to go to Tag page
+     * @return TagPage
+     */
+    public TagPage getTag()
+    {
+         WebElement tagElement = drone.find(BUTTON_SELECT_TAG);
+         tagElement.findElement(By.tagName("button")).click();
+         return new TagPage(drone);
+    }
+    
+    /**
+     * Select cancel button.
+     */
+    public void clickOnCancel()
+    {
+        drone.find(By.cssSelector("button[id$='form-cancel-button']")).click();
+    }
+    /**
+     * Selects the save button that posts the form.
+     */
+    public void clickSave()
+    {
+        WebElement saveButton = drone.find(By.cssSelector("button[id$='form-submit-button']"));
+        if(saveButton.isDisplayed())
+        {
+            saveButton.click();
+        }
+    }
+
+}

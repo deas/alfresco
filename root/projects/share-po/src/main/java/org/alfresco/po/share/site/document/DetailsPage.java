@@ -1,0 +1,734 @@
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.alfresco.po.share.site.document;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+
+/**
+ * <li>This is a parent class for all the pages using View Details as asection.</li>
+ * <li>Functionality here is to support below details: Title,
+ * Modified Details, Like(counter), Favourite, Comment(counter) Comment
+ * Navigation, Properties, Permissions, Share Panel, Tag Panel.</li>
+ *          
+ * @author  Naved Shah
+ * @version 1.7.0 
+ */
+public abstract class DetailsPage extends SitePage
+{
+    protected static final String CHECKEDOUT_MESSAGE_PLACEHOLDER = "div.node-header>div.status-banner.theme-bg-color-2.theme-border-4";
+    protected static final String ACTION_SET_ID = "document.detail.action.set.id";
+    public static final String DOCUMENT_VERSION_PLACEHOLDER = "div.node-header>div.node-info>h1.thin.dark>span.document-version";
+    private static final String FAVOURITE_ACTION = "a.favourite-action";
+    private static final String LIKE_ACTION = "a.like-action";
+    private static final By PROP_FROM_LABEL = By.cssSelector(".viewmode-label");
+    private static final By PROP_FROM_VALUE = By.cssSelector(".viewmode-value");
+    private static final By FORM_VIEW_MODE_FIELD = By.cssSelector(".viewmode-field");
+    private static final String ADD_COMMENT_BUTTON_SPAN_ID = "document.detail.add.comment.button.section";
+    private static final String ADD_FOLDER_COMMENT_BUTTON_SPAN_ID = "folder.detail.add.comment.button.section";
+    private static final String ADD_COMMENT_BUTTON = "span.yui-button.yui-push-button.onAddCommentClick>span.first-child>button";
+    private static final String COMMENT_PANEL = "document.detail.comment.panel.id";
+    private static final String SUBMIT_COMMENT_BUTTON_ID = "document.detail.submit.comment.button.id";
+    private static final String SUBMIT_FOLDER_COMMENT_BUTTON_ID = "folder.detail.submit.comment.button.id";
+    private static final String PROMPT_PANEL_ID = "prompt.panel.id";
+    private static final String DIV_COMMENT_CONTENT = "div.comment-content";
+    private static final String SPAN_LIKE_COMMENT = "span.likes-count";
+    private static final String THIN_DARK_TITLE_ELEMENT = "div.node-header>div.node-info>h1.thin.dark";
+    private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
+    private static final String COMMENT_LINK = ".theme-color-1.comment.template_x002e_node-header_x002e_folder-details_x0023_default";
+    private static final String MANAGE_PERMISSIONS = "div[class$='-permissions'] a";
+    private Log logger = LogFactory.getLog(DetailsPage.class);
+    private SyncInfoPage syncInfoPage;    
+    protected DetailsPage(WebDrone drone)
+    {
+        super(drone);
+    }
+
+    /**
+     * @param type
+     * @return Verify if the page viewed is the @type@ details page.
+     */
+    public boolean isDetailsPage(String type)
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector("div[id$='" + type + "-details']")).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Page, contains Element :" + "div[id$='" + type + "-details']" + " does not exist");
+        }
+        return false;
+    }
+
+    /**
+     * Gets the page detail title.
+     * 
+     * @return String page detail page title
+     */
+    public String getContentTitle()
+    {
+        WebElement element = drone.findAndWait(By.cssSelector(THIN_DARK_TITLE_ELEMENT));
+        return element.getText();
+    }
+
+    /**
+     * Get all the comments that are displayed on the page.
+     * 
+     * @return List<String> collection of comments
+     */
+    public List<String> getComments()
+    {
+        List<String> comments = new ArrayList<String>();
+        try
+        {
+            WebElement commentInput = drone.findByKey(COMMENT_PANEL);
+            WebElement table = commentInput.findElement(By.tagName("table"));
+            List<WebElement> elements = table.findElements(By.cssSelector(DIV_COMMENT_CONTENT));
+            for (WebElement element : elements)
+            {
+                String elementText = element.getText();
+                if (!elementText.isEmpty())
+                {
+                    WebElement p = element.findElement(By.tagName("p"));
+                    comments.add(p.getText());
+                }
+            }
+        }
+        catch (StaleElementReferenceException sere)
+        {
+            logger.error("Element :" + COMMENT_PANEL + " or " + DIV_COMMENT_CONTENT + " does not exist");
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Element :" + COMMENT_PANEL + " or " + DIV_COMMENT_CONTENT + " does not exist");
+        }
+        return comments;
+    }
+
+    /**
+     * Mimics the action of selecting the thumbs up icon on the details page.
+     */
+    public HtmlPage selectLike()
+    {
+        drone.findAndWait(By.cssSelector("a.like-action")).click();
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Checks for the number of positive votes.
+     * 
+     * @return String number of votes
+     */
+    public String getLikeCount()
+    {
+        String count = "";
+        try
+        {
+            count = drone.findAndWait(By.cssSelector(SPAN_LIKE_COMMENT)).getText();
+        }
+        catch (TimeoutException nsee)
+        {
+            logger.error("Element :" + SPAN_LIKE_COMMENT + " does not exist");
+        }
+        return count;
+    }
+
+    /**
+     * Get the detail permissions from view.
+     * 
+     * @return {@link Map} of key values.
+     */
+    public Map<String, String> getPermissionsOfDetailsPage()
+    {
+        
+        Map<String, String> prop = new HashMap<String, String>();
+        try
+        {
+            WebElement formFieldElements = drone.findAndWait(By.cssSelector("#template_x002e_folder-permissions_x002e_folder-details_x0023_default-body"));
+            for (WebElement element : formFieldElements.findElements(FORM_VIEW_MODE_FIELD))
+            {
+                String key = element.findElement(PROP_FROM_LABEL).getText().trim().replace(":", "").replace(" ", "");
+                String value = element.findElement(PROP_FROM_VALUE).getText().trim();
+                prop.put(key, value);
+            }
+            return prop;
+
+        }
+        catch (NoSuchElementException elementException)
+        {
+            logger.error("Field Element is not found");
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Time out while finding form fields");
+        }
+        return Collections.emptyMap();
+    }
+
+    /**
+     * Get the detail properties from view.
+     * 
+     * @return {@link Map} of Key and Values.
+     */
+    public Map<String, String> getProperties()
+    {
+        Map<String, String> prop = new HashMap<String, String>();
+        try
+        {
+            for (WebElement webElement : drone.findAndWaitForElements(By.cssSelector(".form-field")))
+            {
+                String key = webElement.findElement(PROP_FROM_LABEL).getText().trim().replace(":", "").replace(" ", "");
+                String value = webElement.findElement(PROP_FROM_VALUE).getText().trim();
+                prop.put(key, value);
+            }
+            return prop;
+        }
+        catch (TimeoutException exception)
+        {
+            return Collections.emptyMap();
+        }
+
+    }
+
+    /**
+     * Get the tags displayed on the tags section on the details details page.
+     * 
+     * @return Collection of String tag name
+     */
+    public List<String> getTagList()
+    {
+        try
+        {
+            List<WebElement> tagList = drone.findAndWaitForElements(By.cssSelector("span.tag"));
+            if (tagList != null && !tagList.isEmpty())
+            {
+                List<String> tagNames = new ArrayList<String>();
+                for (WebElement tagElement : tagList)
+                {
+                    tagNames.add(tagElement.getText());
+                }
+                return tagNames;
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Element :span.tag does not exist");
+        }
+        return Collections.<String> emptyList();
+    }
+
+    /**
+     * Mimics the action of selecting the Favourite icon on the details page.
+     * 
+     * @return {@link DetailsPage}
+     */
+    public HtmlPage selectFavourite()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(FAVOURITE_ACTION)).click();
+            drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Element :" + FAVOURITE_ACTION + " does not exist");
+        }
+        throw new PageException("Favourite element not present");
+    }
+
+    /**
+     * Gets the Favourites status on the document page.
+     * 
+     * @return Boolean
+     */
+    public boolean isFavourite()
+    {
+        try
+        {
+            WebElement favouriteStatus = drone.find(By.cssSelector(FAVOURITE_ACTION));
+            String status = favouriteStatus.getAttribute("class");
+            if (status != null)
+            {
+                return status.contains("favourite-action-favourite");
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Element :" + FAVOURITE_ACTION + " does not exist");
+            return false;
+        }
+    }
+
+    /**
+     * Gets the Like status on the details page.
+     * 
+     * @return
+     */
+    public boolean isLiked()
+    {
+        try
+        {
+            WebElement likeStatus = drone.find(By.cssSelector(LIKE_ACTION));
+            String status = likeStatus.getAttribute("class");
+            if (status != null)
+            {
+                return status.contains("like-action-liked");
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Element :" + LIKE_ACTION + " does not exist");
+        }
+        return false;
+    }
+
+    /**
+     * Gets the Tool Tip for Favourites action on the details page.
+     * 
+     * @return
+     */
+    public String getToolTipForFavourite()
+    {
+        String toolTip = "";
+        try
+        {
+            WebElement favouriteStatus = drone.find(By.cssSelector(FAVOURITE_ACTION));
+            toolTip = favouriteStatus.getAttribute("title");
+            if (toolTip == null)
+            {
+                toolTip = "";
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new NoSuchElementException("Option to Favourite not found", e);
+        }
+        return toolTip;
+    }
+
+    /**
+     * Gets the Tool Tip Like action on the details page.
+     * 
+     * @return String
+     */
+    public String getToolTipForLike()
+    {
+        String toolTip = "";
+        try
+        {
+            WebElement likeStatus = drone.findAndWait(By.cssSelector(LIKE_ACTION));
+            toolTip = likeStatus.getAttribute("title");
+            if (toolTip == null)
+            {
+                toolTip = "";
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new NoSuchElementException("Option to Like not found", e);
+        }
+        return toolTip;
+    }
+
+    /**
+     * Mimics the action of selecting edit properties on the details page.
+     * 
+     * @return WebDrone (Drone object which has to be casted at runtime)
+     */
+    public EditDocumentPropertiesPage selectEditProperties()
+    {
+        String type = "document";
+        if (this instanceof FolderDetailsPage)
+        {
+            type = "folder";
+        }
+        try
+        {
+            drone.findAndWait(By.cssSelector("div[id$='default-actionSet'] div." + type + "-edit-metadata a")).click();
+            return new EditDocumentPropertiesPage(drone);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Element :" + "div[id$='default-actionSet'] div." + type + "-edit-metadata a" + " does not exist");
+        }
+        throw new PageException("Properties not present in the page");
+    }
+
+    /**
+     * Adding a comment to a details by selecting add to prompt the input field,
+     * as this is based on a rich editor JavaScript was used to enter the
+     * comment.
+     * 
+     * @param comment
+     *            String user comment
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage addComment(final String comment)
+    {
+        WebElement addComment = drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON));
+        if (logger.isTraceEnabled())
+        {
+            logger.trace(String.format("Add Comment panel isDisplayed : %s ", addComment.isDisplayed()));
+        }
+        if (addComment.isDisplayed())
+        {
+
+            boolean isDocument = false;
+            boolean isFolder = false;
+            String jsElementButtonId = "";
+            String whichPage = getTitle();
+
+            if (whichPage.contains("Document"))
+                isDocument = true;
+            else if (whichPage.contains("Folder"))
+                isFolder = true;
+            String addCommentButtonId = addComment.getAttribute("id");
+            /*
+             * Adding comment uses the rich editor to ensure it works on all
+             * drivers we are using a js script to click on add comment, enter
+             * comment to rich editor and double click on adding comment button
+             * to submit.
+             */
+            String addCommentJs = String.format("document.getElementById('%s').click();", addCommentButtonId);
+            String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", comment);
+
+            if (isDocument)
+            {
+                jsElementButtonId = drone.getElement(SUBMIT_COMMENT_BUTTON_ID);
+            }
+            else if (isFolder)
+            {
+                jsElementButtonId = drone.getElement(SUBMIT_FOLDER_COMMENT_BUTTON_ID);
+            }
+            String submitCommentJs = String.format("var t = document.getElementById('%s'); t.click(); t.click();", jsElementButtonId);
+
+            drone.executeJavaScript(addCommentJs);
+            drone.executeJavaScript(setCommentJs);
+            /*
+             * As of Alfresco v4.2 the add comment button is enclosed in a span
+             * that disables/enables the add comment button hence why we need to
+             * know of it to enable the button.
+             */
+            if (alfrescoVersion.getVersion() >= 4.2)
+            {
+                String addCommentDivId = null;
+
+                if (isDocument)
+                    addCommentDivId = drone.getElement(ADD_COMMENT_BUTTON_SPAN_ID);
+                else if (isFolder)
+                    addCommentDivId = drone.getElement(ADD_FOLDER_COMMENT_BUTTON_SPAN_ID);
+                String enableAddCommentButton = String.format("YAHOO.widget.Button.getButton('%s').set('disabled', false)", addCommentDivId);
+                drone.executeJavaScript(enableAddCommentButton);
+            }
+
+            drone.executeJavaScript(submitCommentJs);
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Add Comment has been executed");
+            }
+            // check to ensure js completed
+            if (drone.findAndWait(By.id(addCommentButtonId)).isDisplayed())
+            {
+                if (logger.isTraceEnabled())
+                {
+                    logger.trace("Adding comment JavaScript executed successfully");
+                }
+            }
+        }
+        else
+        {
+            throw new PageException("Add comment form has not been rendered in time");
+        }
+
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("about to render new page response");
+        }
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Removes the comment on detail page.
+     * 
+     * @param comment
+     *            to remove
+     * @return DetailsPage page object response
+     */
+    public HtmlPage removeComment(final String comment)
+    {
+        if (StringUtils.isEmpty(comment))
+        {
+            throw new UnsupportedOperationException("Comment input required");
+        }
+        try
+        {
+            List<WebElement> comments = drone.findAndWaitForElements(By.cssSelector("div.comment-details"));
+
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
+            }
+
+            for (WebElement commentElement : comments)
+            {
+                WebElement targetComment = commentElement.findElement(By.cssSelector(DIV_COMMENT_CONTENT));
+                String commentOnPage = targetComment.getText();
+                boolean commentMatch = comment.equalsIgnoreCase(commentOnPage);
+                if (commentMatch)
+                {
+                    if (logger.isTraceEnabled())
+                    {
+                        logger.trace(String.format("We have found a match to comment ' %s ' : %s", comment, commentMatch));
+                    }
+
+                    ((WebDroneImpl) drone).mouseOver(targetComment);
+                    WebElement delete = commentElement.findElement(By.name(".onConfirmDeleteCommentClick"));
+                    delete.click();
+                    confirmDelete();
+
+                    // Verify the js message has been displayed and waits for it
+                    // to
+                    // disappear
+                    canResume();
+                    break;
+                }
+            }
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Element div.comment-details is not present in page!!");
+        }
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Confirm delete dialog acceptance action.
+     */
+    protected void confirmDelete()
+    {
+        try
+        {
+            WebElement prompt = drone.findAndWaitById(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(By.tagName("button"));
+            // Find the delete button in the prompt
+            WebElement delete = findButton("Delete", elements);
+            delete.click();
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Element :" + PROMPT_PANEL_ID + " does not exist");
+        }
+
+    }
+
+    /**
+     * Verifies the modified information is present in the page object.
+     * 
+     * @return
+     */
+    public boolean isModifiedByDetailsPresent()
+    {
+        String selector = AlfrescoVersion.Enterprise42  == alfrescoVersion || 
+                AlfrescoVersion.Enterprise43.equals(alfrescoVersion) ? "span.item-modifier" : "div.node-info > div:nth-of-type(2)" ;
+        try
+        {
+            WebElement modified = drone.find(By.cssSelector(selector));
+            boolean hasLink = modified.findElement(By.tagName("a")).isDisplayed();
+            if (!modified.getText().isEmpty() && hasLink)
+            {
+                return true;
+            }
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Element :" + selector + "can not be found on the page");
+        }
+        catch (NoSuchElementException nse) { }
+        return false;
+
+    }
+
+    /**
+     * Verify the share panel is present or not in the page.
+     * 
+     * @return
+     */
+    public boolean isSharePanePresent()
+    {
+        try
+        {
+            WebElement sharePaneElement = drone.find(By.cssSelector(PAGE_SHARE_PANEL));
+            if (drone.getCurrentUrl().equals(sharePaneElement.getAttribute("href").replace("#", "").trim()))
+                return true;
+        }
+        catch (NoSuchElementException exce)
+        {
+            logger.error("Element :" + PAGE_SHARE_PANEL + " does not exist");
+        }
+        return false;
+
+    }
+
+    /**
+     * Get Rich Text Editor to edit the contents of Comments etc.
+     * 
+     * @return
+     */
+    public TinyMceEditor getContentPage()
+    {
+
+        WebElement addComment = drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON));
+        if (logger.isTraceEnabled())
+        {
+            logger.trace(String.format("Add Comment panel isDisplayed : %s ", addComment.isDisplayed()));
+        }
+        if (addComment.isDisplayed())
+        {
+            String addCommentButtonId = addComment.getAttribute("id");
+            /*
+             * Adding comment uses the rich editor to ensure it works on all
+             * drivers we are using a js script to click on add comment, enter
+             * comment to rich editor and double click on adding comment button
+             * to submit.
+             */
+            String addCommentJs = String.format("document.getElementById('%s').click();", addCommentButtonId);
+            drone.executeJavaScript(addCommentJs);
+        }
+
+        return new TinyMceEditor(drone);
+    }
+
+    /**
+     * @return
+     */
+    public boolean isCommentLinkPresent()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(COMMENT_LINK)).isDisplayed();
+        }
+        catch (TimeoutException toe)
+        {
+
+        }
+        throw new PageException("Comment link is not present!");
+    }
+    
+    /**
+     * The number of comments value displayed on the span comment count.
+     * 
+     * @return int total number of comments
+     */
+    public int getCommentCount()
+    {
+        try
+        {
+            WebElement span = drone.findAndWait(By.cssSelector("span.comment-count"));
+            return Integer.valueOf(span.getText());
+        }
+        catch(TimeoutException e) {}
+        catch(NumberFormatException ne) {}
+        
+        return 0;
+    }
+    
+    /**
+     * Mimics the action of selecting the Manage Permission icon on the document
+     * page.
+     * 
+     * @return {@link ManagePermissionsPage}
+     */
+    public ManagePermissionsPage selectManagePermissions()
+    {
+        logger.trace(" -- Searching for manage permission link --");
+        drone.find(By.cssSelector(MANAGE_PERMISSIONS)).click();
+        logger.trace(" -- Got it --");
+        return new ManagePermissionsPage(drone);
+    }
+    
+    /**
+     * Get Sync info page details.
+     * @return
+     */
+    public SyncInfoPage getSyncInfoPage()
+    {
+        try
+        {
+            if(drone.isElementDisplayed(By.cssSelector(".document-sync")))
+            {
+               return this.syncInfoPage == null ? new SyncInfoPage(drone) : this.syncInfoPage;
+            }
+        }
+        catch(TimeoutException toe)
+        {
+            logger.error("This content is not Synced, Can not return SyncInfoPage!!"); 
+        }
+        throw new PageException("This content is not Synced, Can not return SyncInfoPage!!"); 
+    }
+
+    /**
+     * Mimics the action of select the manage aspects.
+     * 
+     * @return {@link SelectAspectsPage}
+     */
+    public SelectAspectsPage selectManageAspects()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(".document-manage-aspects>a")).click();
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element");
+            throw new PageException("Unable to select manage aspects", exception);
+        }
+        return new SelectAspectsPage(drone);
+    }
+}
