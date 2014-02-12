@@ -161,7 +161,12 @@
             this.editor.getEditor().onSaveContent.add(function(ed, e)
             {
                e.format = 'text';
-               e.content = tinyMCE.activeEditor.getBody().textContent;
+               var content = tinyMCE.activeEditor.getBody().textContent;
+               if (content == undefined)
+               {
+                   content = tinyMCE.activeEditor.getBody().innerText;
+               }
+               e.content = content;
             });
          }
       },
