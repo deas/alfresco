@@ -35,7 +35,11 @@
                <div class="detail-list-item <#if link_index = 0>first-item<#elseif !link_has_next>last-item</#if>">
                   <div>
                      <div class="link">
-                        <a <#if !link.internal>target="_blank"</#if> href="<#if link.url?substring(0,1) == "/" || link.url?index_of("://") == -1>http://</#if>${link.url?html}" class="theme-color-1">${link.title?html}</a>
+                        <#if !link.url?? || link.url?string?length<1>
+                           ${link.name?html} - ${msg("link.noUrl")}
+                        <#else>
+                           <a <#if !link.internal>target="_blank"</#if> href="<#if link.url?substring(0,1) == "/" || link.url?index_of("://") == -1>http://</#if>${link.url?html}" class="theme-color-1">${link.title?html}</a>
+                        </#if>
                      </div>
                      <div class="actions">
                         <a id="${args.htmlid}-details-span-${link_index}" href="${url.context}/page/site/${site}/links-view?linkId=${link.name}" class="details" title="${msg("link.details")}">&nbsp;</a>
