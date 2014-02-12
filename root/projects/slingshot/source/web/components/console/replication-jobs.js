@@ -570,7 +570,9 @@
                   file: encodeURIComponent(job.targetName),
                   path: encodeURIComponent(this.options.targetGroupPath)
                });
-               job.targetNameClass = "server";
+               
+               job.targetNameClass = job.targetExists ? "server" : "warning ";
+
                job.targetHTML = '<a href="' + transferTargetUrl + '">' + $html(job.targetName) + '</a>';
             }
 
