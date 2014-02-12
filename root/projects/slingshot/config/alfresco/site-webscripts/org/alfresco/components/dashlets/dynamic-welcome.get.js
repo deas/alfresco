@@ -317,8 +317,8 @@ function main()
       initArgs : ["\"" + args.htmlid + "\"",
                   "\"" + model.dashboardUrl + "\"",
                   "\"" + model.dashboardType + "\"",
-                  "\"" + (model.siteNodeRef == null ? "" :  model.siteNodeRef) + "\"",
-                  "\"" + (model.site == null ? "" :  model.site) + "\""]
+                  "\"" + (model.siteNodeRef == null ? "" : model.siteNodeRef) + "\"",
+                  "\"" + (model.site == null ? "" : jsonUtils.encodeJSONString(model.site)) + "\""]
    };
    model.widgets = [dynamicWelcome];
 }
