@@ -9,8 +9,8 @@
                <input type="radio" id="${el}-recentsites" name="3" value="${msg("button.recentsites")}" />
                <input type="radio" id="${el}-favouritesites" name="4" value="${msg("button.favouritesites")}" />
                <input type="radio" id="${el}-site" name="0" value="${msg("button.site")}" checked="checked" />
-               <#if isAdmin = true>
-                  <input type="radio" id="${el}-repository" name="1" value="${msg("button.repository")}" />
+               <#if showRepositoryLink = "true">
+               <input type="radio" id="${el}-repository" name="1" value="${msg("button.repository")}" />
                </#if>
                <input type="radio" id="${el}-shared" name="5" value="${msg("button.shared")}" />
                <input type="radio" id="${el}-myfiles" name="2" value="${msg("button.myfiles")}" />
