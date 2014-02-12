@@ -19,10 +19,16 @@
 package org.alfresco.module.vti.handler.alfresco;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.alfresco.module.vti.metadata.dic.Permission;
 import org.alfresco.repo.SessionUser;
+import org.alfresco.repo.security.authentication.AuthenticationComponent;
+import org.alfresco.repo.site.SiteModel;
+import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.service.cmr.site.SiteService;
 import org.apache.commons.httpclient.HttpException;
@@ -45,6 +51,8 @@ public class AlfrescoDwsServiceHandlerTest
     private @Mock SessionUser user;
     private ShareUtilsEx shareUtils;
     private @Mock SiteService siteService;
+    private @Mock FileInfo dwsFileInfo;
+    private @Mock AuthenticationComponent authenticationComponent;
     
     @Before
     public void setUp() throws Exception
@@ -53,6 +61,69 @@ public class AlfrescoDwsServiceHandlerTest
         handler = new AlfrescoDwsServiceHandler();
         handler.setShareUtils(shareUtils);
         handler.setSiteService(siteService);
+        handler.setAuthenticationComponent(authenticationComponent);
+    }
+
+    /**
+     * Test for MNT-10095
+     */
+    @Test
+    public void userPermissionsTest()
+    {
+        List<Permission> permissions;
+        String fileName = "fileName";
+        Mockito.when(dwsFileInfo.getName()).thenReturn(fileName);
+
+        String userName = "userName";
+
+        // non site member
+        Mockito.when(authenticationComponent.getCurrentUserName()).thenReturn(userName);
+        Mockito.when(siteService.getMembersRole(fileName, userName)).thenReturn(null);
+        permissions = handler.doGetUsersPermissions(dwsFileInfo);
+
+        assertTrue("There should be no permissions for non site member", permissions.isEmpty());
+
+        // consumer
+        Mockito.when(authenticationComponent.getCurrentUserName()).thenReturn(userName);
+        Mockito.when(siteService.getMembersRole(fileName, userName)).thenReturn(SiteModel.SITE_CONSUMER);
+        permissions = handler.doGetUsersPermissions(dwsFileInfo);
+
+        assertTrue("There should be no permissions for consumer", permissions.isEmpty());
+
+        // contributor
+        Mockito.when(authenticationComponent.getCurrentUserName()).thenReturn(userName);
+        Mockito.when(siteService.getMembersRole(fileName, userName)).thenReturn(SiteModel.SITE_CONTRIBUTOR);
+        permissions = handler.doGetUsersPermissions(dwsFileInfo);
+
+        assertEquals("There should be 3 permissions for contributor", 3, permissions.size());
+        assertTrue(permissions.contains(Permission.DELETE_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.EDIT_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.INSERT_LIST_ITEMS));
+
+        // collaborator
+        Mockito.when(authenticationComponent.getCurrentUserName()).thenReturn(userName);
+        Mockito.when(siteService.getMembersRole(fileName, userName)).thenReturn(SiteModel.SITE_COLLABORATOR);
+        permissions = handler.doGetUsersPermissions(dwsFileInfo);
+
+        assertEquals("There should be 4 permissions for collaborator", 4, permissions.size());
+        assertTrue(permissions.contains(Permission.DELETE_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.EDIT_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.INSERT_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.MANAGE_LISTS));
+
+        // manager
+        Mockito.when(authenticationComponent.getCurrentUserName()).thenReturn(userName);
+        Mockito.when(siteService.getMembersRole(fileName, userName)).thenReturn(SiteModel.SITE_MANAGER);
+        permissions = handler.doGetUsersPermissions(dwsFileInfo);
+
+        assertEquals("There should be 7 permissions for manager", 7, permissions.size());
+        assertTrue(permissions.contains(Permission.DELETE_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.EDIT_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.INSERT_LIST_ITEMS));
+        assertTrue(permissions.contains(Permission.MANAGE_LISTS));
+        assertTrue(permissions.contains(Permission.MANAGE_ROLES));
+        assertTrue(permissions.contains(Permission.MANAGE_SUBWEBS));
+        assertTrue(permissions.contains(Permission.MANAGE_WEB));
     }
 
     @Test

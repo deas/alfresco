@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -439,6 +439,12 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
     {
         List<Permission> permissions = new ArrayList<Permission>();
         String userRole = siteService.getMembersRole(dwsFileInfo.getName(), authenticationComponent.getCurrentUserName());
+
+        // MNT-10095, set consumer role to not member of the site
+        if (userRole == null)
+        {
+            return permissions;
+        }
 
         if (userRole.equals(SiteModel.SITE_CONSUMER))
         {
