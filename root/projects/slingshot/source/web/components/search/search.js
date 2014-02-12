@@ -289,16 +289,10 @@
             searchRepository: this.options.initialSearchRepository
          });
          
-         // toggle site scope links
-         var toggleLink = Dom.get(this.id + "-site-link");
-         Event.addListener(toggleLink, "click", this.onSiteSearch, this, true);
-         toggleLink = Dom.get(this.id + "-all-sites-link");
-         Event.addListener(toggleLink, "click", this.onAllSiteSearch, this, true);
-         toggleLink = Dom.get(this.id + "-repo-link");
-         Event.addListener(toggleLink, "click", this.onRepositorySearch, this, true);
-         
          // search YUI button
          this.widgets.searchButton = Alfresco.util.createYUIButton(this, "search-button", this.onSearchClick);
+         
+         this._disableItems();
          
          // menu button for sort options
          this.widgets.sortButton = new YAHOO.widget.Button(this.id + "-sort-menubutton",
@@ -843,6 +837,8 @@
             
             // set focus to search input textbox
             Dom.get(this.id + "-search-text").focus();
+            
+            this._enableItems();
          }
          
          // Failure handler
@@ -871,6 +867,8 @@
                   }
                   break;
             }
+            
+            this._enableItems();
          }
          
          this.widgets.dataSource.sendRequest(this._buildSearchParams(
@@ -880,6 +878,52 @@
             failure: failureHandler,
             scope: this
          });
+      },
+      
+      /** 
+       * Disables Search button and links
+       *
+       * @method _disableItems
+       */
+      _disableItems: function Search__disableItems()
+      {
+         // disables  "All Sites" link
+         var toggleLink = Dom.get(this.id + "-all-sites-link");
+         Event.removeListener(toggleLink, "click");
+         toggleLink.style.color="#aaa";
+         // disables  "Repository" link
+         toggleLink = Dom.get(this.id + "-repo-link");
+         Event.removeListener(toggleLink, "click");
+         toggleLink.style.color="#aaa";
+         //disables Site link
+         toggleLink = Dom.get(this.id + "-site-link");
+         Event.removeListener(toggleLink, "click");
+         toggleLink.style.color="#aaa";
+         // disables Search button
+         this.widgets.searchButton.set("disabled", true);
+      },
+ 
+      /** 
+       * Enables Search button and links
+       *
+       * @method _enableItems
+       */      
+      _enableItems: function Search__enableItems()
+      {
+         // enables  "All Sites" link
+         var toggleLink = Dom.get(this.id + "-all-sites-link");
+         Event.addListener(toggleLink, "click", this.onAllSiteSearch, this, true);
+         toggleLink.style.color="";
+         // enables  "Repository" link
+         toggleLink = Dom.get(this.id + "-repo-link");
+         Event.addListener(toggleLink, "click", this.onRepositorySearch, this, true);
+         toggleLink.style.color="";
+         // enables  "Site" link
+         toggleLink = Dom.get(this.id + "-site-link");
+         Event.addListener(toggleLink, "click", this.onRepositorySearch, this, true);
+         toggleLink.style.color="";
+         // enables  Search button
+         this.widgets.searchButton.set("disabled", false);
       },
       
       /**
