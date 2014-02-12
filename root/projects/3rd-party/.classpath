@@ -250,10 +250,10 @@
 	<classpathentry exported="true" kind="lib" path="lib/opensaml/xmltooling-1.3.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opensaml/esapi-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/opensaml/not-yet-commons-ssl-0.3.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-bpmn-converter-5.13-alf-20130918.jar" sourcepath="src/activiti-bpmn-converter-5.13-alf-20130918-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-bpmn-model-5.13-alf-20130918.jar" sourcepath="src/activiti-model-5.13-alf-20130918-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.13-alf-20130918.jar" sourcepath="src/activiti-engine-5.13-alf-20130918-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.13-alf-20130918.jar" sourcepath="src/activiti-spring-5.13-alf-20130918-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-bpmn-converter-5.13-alf-20140106.jar" sourcepath="src/activiti-bpmn-converter-5.13-alf-20140106-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-bpmn-model-5.13-alf-20140106.jar" sourcepath="src/activiti-model-5.13-alf-20140106-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.13-alf-20140106.jar" sourcepath="src/activiti-engine-5.13-alf-20140106-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.13-alf-20140106.jar" sourcepath="src/activiti-spring-5.13-alf-20140106-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/woodstox-core-asl-4.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.10.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-1.4.01.jar"/>
