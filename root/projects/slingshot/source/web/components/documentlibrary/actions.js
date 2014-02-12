@@ -562,7 +562,18 @@
                      path: filePath
                   }
                },
-               message: this.msg("message.delete.success", displayName)
+               message: this.msg("message.delete.success", displayName),
+               callback:
+               {
+                  fn: function successDeleteCallback(response, obj)
+                  {
+                      if (this.totalRecords)
+                      {
+                          this.totalRecords -= response.json.successCount;
+                      }
+                  },
+                  scope: this
+               }
             },
             failure:
             {

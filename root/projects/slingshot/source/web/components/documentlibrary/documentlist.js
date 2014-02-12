@@ -3843,6 +3843,20 @@
        */
 
       /**
+       * MNT-10180: if current page of DocList to update
+       * is empty then go to the first page of the DocList
+       */
+      _checkIfUpdatedPageIsEmpty: function DL__checkIfUpdatedPageIsEmpty()
+      {
+          var pageOffset = (this.currentPage - 1) * this.options.pageSize;
+          if (pageOffset >= this.totalRecords)
+          {
+              this.widgets.paginator.setPage(1);
+              this.currentPage = 1;
+          }
+      },
+
+      /**
        * Generic file action event handler
        *
        * @method onFileAction
@@ -3856,6 +3870,7 @@
          {
             if (!obj.multiple)
             {
+               this._checkIfUpdatedPageIsEmpty();
                this._updateDocList.call(this);
             }
          }
@@ -3890,6 +3905,7 @@
          {
             this.options.highlightFile = obj.highlightFile;
          }
+         this._checkIfUpdatedPageIsEmpty();
          this._updateDocList.call(this);
       },
 

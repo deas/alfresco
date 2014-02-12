@@ -1089,6 +1089,7 @@
                return;
             }
             
+            this.modules.docList.totalRecords -= data.json.totalResults;
             YAHOO.Bubbling.fire("filesDeleted");
             
             for (i = 0, ii = data.json.totalResults; i < ii; i++)
