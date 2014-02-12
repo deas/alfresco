@@ -765,12 +765,13 @@
             }
             
             // make sure the rolover listener gets attached to the new element
-            Alfresco.util.rollover.registerListenersByClassName(this.id, 'reply', 'div');  
+            Alfresco.util.rollover.registerListenersByClassName(this.id, 'reply', 'div');
+
+            // MNT-10636 fix. Replies count should be increased only when new reply is added and shouldn't be increased
+            // when reply is updated.
+            this.options.topicTotalReplyCount += 1;
+            YAHOO.Bubbling.fire("addedNewReply", this.options.topicTotalReplyCount);
          }
-         
-        this.options.topicTotalReplyCount += 1;
-        YAHOO.Bubbling.fire("addedNewReply", this.options.topicTotalReplyCount);
-         
          // finally hide the form / show the updated view in case of an edit
          this._hideOpenForms();
       },
