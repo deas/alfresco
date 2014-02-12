@@ -19,13 +19,14 @@ function main()
    {
       // Yes we did - now remove sitestore model artifacts...
       
-      // remove dashboard page instance
+      // remove dashboard page instance and update view cache
       if (dashboardPage != null)
       {
          dashboardPage.remove();
+         viewResolverUtils.removeFromCache(dashboardURL);
       }
       
-      // remove component instances
+      // remove component instances from caches
       for (var i=0; i < components.length; i++)
       {
          components[i].remove();
