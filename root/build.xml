@@ -699,7 +699,7 @@
          <fileset dir="${dir.project.3rdparty.lib}/activiti" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/fop" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/abdera" includes="*.jar"/>
-         <fileset dir="${dir.project.3rdparty.lib}/gdata-1.45.0" includes="*.jar"/>
+         <fileset dir="${dir.project.3rdparty.lib}/gdata-1.47.1" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/spring-social" includes="*.jar"/>
 		 <fileset dir="${dir.project.3rdparty.lib}/opensaml" includes="*.jar"/>
       </copy>
