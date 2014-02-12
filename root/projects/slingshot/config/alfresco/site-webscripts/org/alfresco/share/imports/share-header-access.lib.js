@@ -1678,7 +1678,7 @@ function getHeaderLogoUrl() {
 
 function getUserPreferences() {
    var userPreferences = {};
-   var prefs = eval('(' + preferences.value + ')');
+   var prefs = jsonUtils.toObject(preferences.value);
    return prefs
 }
 var userPreferences = getUserPreferences();
