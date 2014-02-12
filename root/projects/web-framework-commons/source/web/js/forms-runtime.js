@@ -613,7 +613,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                // YAHOO doesn't seem to process the propertychange via the addListener so we need to take
                // matters into our own hands. Listening for the "propertychange" event is required so that
                // the forms runtime can validate when autocomplete is used in IE.
-               if (YAHOO.env.ua.ie > 0 && when == "propertychange")
+               if (YAHOO.env.ua.ie && YAHOO.env.ua.ie < 11 && when == "propertychange")
                {
                   var _this = this, _fieldId = field.id;
                   field.attachEvent("onpropertychange", function(e) {
