@@ -1163,7 +1163,7 @@ span.item-modifier
 {
    display: inline;
    background: no-repeat url(../components/images/quickshare-indicator-16.png) center center;
-   padding: 0.5em;
+   padding: 0 0.5em;
 }
 .quickshare-action-menu .bd
 {
