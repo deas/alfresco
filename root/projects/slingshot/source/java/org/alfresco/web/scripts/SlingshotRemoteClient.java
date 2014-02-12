@@ -114,6 +114,13 @@ public class SlingshotRemoteClient extends RemoteClient
                                     res.setContentType("text/plain");
                                 }
                             }
+                            else if (mimetype.equals("text/x-component"))
+                            {
+                                // IE supports "behaviour" which means that css can load a .htc file that could
+                                // contain XSS code in the form of jscript, vbscript etc, to stop it form being
+                                // evaluated we set the contient type to text/plain
+                                res.setContentType("text/plain");
+                            }
 
                             // push the modified response to the real outputstream
                             try
