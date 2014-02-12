@@ -55,6 +55,8 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
 
     private static final String ALL_DAY_DATE_FROMAT = "yyyyMMdd";
     
+    private static final String PREFIX_MAILTO = "mailto:";
+    
     private static Log logger = LogFactory.getLog(AddMeetingFromICalEndpoint.class);
 
     private static long DAY = 24 * 60 * 60 * 1000;
@@ -212,6 +214,10 @@ public abstract class AbstractMeetingFromICalEndpoint extends AbstractMeetingEnd
         String currentAttendee = null;
         for (int i = 0; (currentAttendee = params.get("ATTENDEE" + i)) != null; i++)
         {
+            if (currentAttendee.startsWith(PREFIX_MAILTO))
+            {
+                currentAttendee = currentAttendee.substring(PREFIX_MAILTO.length());
+            }
             attendees.add(currentAttendee);
         }
         meeting.setAttendees(attendees);
