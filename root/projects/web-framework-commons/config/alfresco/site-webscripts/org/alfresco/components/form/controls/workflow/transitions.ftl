@@ -1,4 +1,4 @@
-<#if form.mode == "edit" && ((form.data['prop_bpm_status']?? && form.data['prop_bpm_status'] != 'Completed') || form.data['prop_bpm_status']?? == false)>
+<#if form.mode == "edit" >
 <script type="text/javascript">//<![CDATA[
 (function()
 {
