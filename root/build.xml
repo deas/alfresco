@@ -220,6 +220,7 @@
          <include name="**/org/alfresco/repo/content/ContentFullContextTestSuite.java" />
          <include name="**/org/alfresco/repo/content/ContentMinimalContextTestSuite.java" />
          <include name="**/org/alfresco/repo/content/metadata/xml/XmlMetadataExtracterTest.java" />
+         <include name="**/org/alfresco/repo/content/caching/CachingContentStoreTestSuite.java" />
          <!-- Domain Tests -->
          <exclude name="**/org/alfresco/repo/domain/**/*Test.java" />
          <include name="**/org/alfresco/repo/domain/DomainTestSuite.java" />
