@@ -24,7 +24,7 @@
              <#if field.control.params.style??>style="${field.control.params.style}"</#if>
              <#if field.value?is_number>value="${field.value?c}"<#else>value="${field.value?html}"</#if>
              <#if field.description??>title="${field.description}"</#if>
-             <#if field.control.params.maxLength??>maxlength="${field.control.params.maxLength}"</#if> 
+             <#if field.control.params.maxLength??>maxlength="${field.control.params.maxLength}"<#else>maxlength="1024"</#if> 
              <#if field.control.params.size??>size="${field.control.params.size}"</#if> 
              <#if field.disabled && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if> />
       <@formLib.renderFieldHelp field=field />
