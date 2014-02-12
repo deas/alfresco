@@ -316,6 +316,19 @@
                   Alfresco.util.populateHTML(
                      [ p_formUI.parentId, response.serverResponse.responseText ]
                   );
+                  
+                  var formEl = Dom.get(p_formUI.parentId),
+                      me = this;
+                  // MNT-10256 fix, update date fields so that they match common format
+                  if (formEl)
+                  {
+                     Dom.getElementsByClassName("viewmode-value-date", "span", formEl, function()
+                     {
+                        var showTime = Dom.getAttribute(this, "data-show-time")
+                        var dateFormat = (showTime=='false') ? me.msg("date-format.defaultDateOnly") : me.msg("date-format.default")
+                        this.innerHTML = Alfresco.util.formatDate(Alfresco.util.fromISO8601(Dom.getAttribute(this, "data-date-iso8601")), dateFormat )
+                     });
+                  }
                };
                
                var data =
