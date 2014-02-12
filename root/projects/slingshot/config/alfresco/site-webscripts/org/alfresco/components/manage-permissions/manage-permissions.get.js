@@ -16,7 +16,7 @@ function main()
       name : "Alfresco.component.ManagePermissions",
       options : {
          nodeRef : args.nodeRef,
-         site : page.url.templateArgs.site
+         site : (this.page != null) ? page.url.templateArgs.site : ""
       }
       
    };
