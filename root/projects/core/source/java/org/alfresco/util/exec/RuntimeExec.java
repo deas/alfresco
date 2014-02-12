@@ -567,10 +567,7 @@ public class RuntimeExec
             String execErr = e.getMessage();
             int exitValue = defaultFailureExitValue;
             ExecutionResult result = new ExecutionResult(null, commandToExecute, errCodes, exitValue, execOut, execErr);
-            if (logger.isDebugEnabled())
-            {
-                logger.debug(result);
-            }
+            logFullEnvironmentDump(result);
             return result;
         }
 
@@ -613,19 +610,43 @@ public class RuntimeExec
         ExecutionResult result = new ExecutionResult(process, commandToExecute, errCodes, exitValue, execOut, execErr);
 
         // done
-        if (logger.isTraceEnabled() && processProperties != null)
+        logFullEnvironmentDump(result);
+        return result;
+    }
+
+    /**
+     * Dump the full environment in debug mode
+     */
+    private void logFullEnvironmentDump(ExecutionResult result)
+    {
+        if (logger.isTraceEnabled())
         {
             StringBuilder sb = new StringBuilder();
-            sb.append(result).append("\n   env: ");
-            for (int i=0; i<processProperties.length; i++)
+            sb.append(result);
+
+            // Environment variables modified by Alfresco
+            if (processProperties != null && processProperties.length > 0)
             {
-                String property = processProperties[i];
-                if (i > 0)
+                sb.append("\n   modified environment: ");
+                for (int i=0; i<processProperties.length; i++)
                 {
+                    String property = processProperties[i];
                     sb.append("\n        ");
+                    sb.append(property);
                 }
-                sb.append(property);
             }
+
+            // Dump the full environment
+            sb.append("\n   existing environment: ");
+            Map<String, String> envVariables = System.getenv();
+            for (Map.Entry<String, String> entry : envVariables.entrySet())
+            {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                sb.append("\n        ");
+                sb.append(name + "=" + value);
+            }
+
             logger.trace(sb);
         }
         else if (logger.isDebugEnabled())
@@ -634,14 +655,6 @@ public class RuntimeExec
         }
         
         // close output stream (connected to input stream of native subprocess) 
-        try 
-        {
-            process.getOutputStream().close();
-        } 
-        catch(Exception ignore)
-        {}        
-        
-        return result;
     }
 
     /**
