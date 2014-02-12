@@ -807,8 +807,8 @@
             <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/xml</param>
          </content>
          <content id="folder" label="create-content.folder" icon="folder" index="5" type="javascript">
-            <param name="function">onNewFolder</param>
-         </content>
+            <param name="function">onNewFolder</param>
+         </content>
       </create-content>
 
       <create-content-by-template>true</create-content-by-template>
