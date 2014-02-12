@@ -155,6 +155,15 @@
          {
             _this._handleContentChange();
          });
+         // MNT-10232: Description is displayed with tags
+         if (this.id.indexOf("_prop_cm_") > 0 && this.id.indexOf("_prop_cm_content") == -1)
+         {
+            this.editor.getEditor().onSaveContent.add(function(ed, e)
+            {
+               e.format = 'text';
+               e.content = tinyMCE.activeEditor.getBody().textContent;
+            });
+         }
       },
 
       /**
