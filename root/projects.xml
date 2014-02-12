@@ -519,6 +519,7 @@
 
                 <pathelement location="${dir.project.repository.config}" />
                 <pathelement location="${dir.project.repository.test.resources}" />
+                <pathelement location="${dir.project.webserviceclient.test.resources}" />
 
                 <pathelement location="${dir.project.system-build-test}/config" />
                 <pathelement location="${dir.project.system-build-test}/keystore" />
