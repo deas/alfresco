@@ -115,6 +115,7 @@
                </field>
                <field id="cm:description">
                   <control>
+                     <control-param name="maxLength">1024</control-param>
                      <control-param name="activateLinks">true</control-param>
                   </control>
                </field>
@@ -167,6 +168,7 @@
                </field>
                <field id="cm:description">
                   <control>
+                     <control-param name="maxLength">1024</control-param>
                      <control-param name="activateLinks">true</control-param>
                   </control>
                </field>
@@ -202,6 +204,11 @@
                </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="cm:description">
+                 <control>
+                    <control-param name="maxLength">1024</control-param>
+                 </control>
                </field>
                <field id="cm:content">
                   <control>
@@ -242,6 +249,7 @@
                </field>
                <field id="cm:description">
                   <control>
+                     <control-param name="maxLength">1024</control-param>
                      <control-param name="activateLinks">true</control-param>
                   </control>
                </field>
@@ -283,6 +291,7 @@
                </field>
                <field id="cm:description">
                   <control>
+                     <control-param name="maxLength">1024</control-param>
                      <control-param name="activateLinks">true</control-param>
                   </control>
                </field>
@@ -326,6 +335,11 @@
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
+               <field id="cm:description">
+                  <control>
+                     <control-param name="maxLength">1024</control-param>
+                  </control>
+               </field>
                <field id="cm:content">
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
@@ -356,6 +370,11 @@
             <appearance>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="cm:description">
+                  <control>
+                     <control-param name="maxLength">1024</control-param>
+                  </control>
                </field>
                <field id="cm:content">
                   <control>
@@ -421,6 +440,11 @@
                </field>
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="cm:description">
+                  <control>
+                     <control-param name="maxLength">1024</control-param>
+                  </control>
                </field>
             </appearance>
          </form>
