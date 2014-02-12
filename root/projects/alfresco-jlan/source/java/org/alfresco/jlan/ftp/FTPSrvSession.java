@@ -2804,7 +2804,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			disk = (DiskInterface) ftpPath.getSharedDevice().getInterface();
 			int sts = disk.fileExists(this, tree, ftpPath.getSharePath());
 
-			if ( sts == FileStatus.NotExist) {
+			if ( (sts == FileStatus.NotExist) || 
+				 // Special condition where we are changing case of file name but the search above is case insensitive	
+			     ((sts == FileStatus.FileExists) & m_renameFrom.getSharePath().equalsIgnoreCase(ftpPath.getSharePath()))
+			     ) {
 
 				// Rename the file/directory
 
@@ -2824,10 +2827,9 @@ public class FTPSrvSession extends SrvSession implements Runnable {
 			}
 			else {
 
-				// File does not exist or is a directory
-
+				// Destination file already exists or is a directory
 				sendFTPResponse(550, "File " + req.getArgument()
-						+ (sts == FileStatus.NotExist ? " not available" : " is a directory"));
+						+ (sts == FileStatus.FileExists ? " already exists" : " is a directory"));
 				return;
 			}
 		}
