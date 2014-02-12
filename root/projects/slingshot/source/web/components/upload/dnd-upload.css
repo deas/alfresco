@@ -365,6 +365,7 @@
 .dnd-file-selection-button-overlay-wrapper
 {
    position: relative;
+   overflow: hidden;
 }
 
 .ie10-dnd-file-selection-button {
@@ -373,5 +374,7 @@
 
 
 .dnd-file-selection-button-overlay-wrapper input.dnd-file-selection-button {
-  width: 100%;
+  width: 200%;
+  left: -100%;
+  cursor: pointer;
 }
