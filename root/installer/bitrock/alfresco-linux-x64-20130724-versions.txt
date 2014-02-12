@@ -1,6 +1,6 @@
 alfresco Stack - 20130724
 gcc 3.4.6
-java 1.6.0_45
+java 1.7.0_25
 pkg-config 0.22
 libtool 1.5.8
 make 3.81
@@ -12,7 +12,7 @@ jpegsrc 6b
 tiff 3.9.4
 freetype 2.3.4
 libwmf 0.2.8.4
-ghostscript 8.56
+ghostscript 8.64
 imagemagick 6.8.6-6
 swftools 0.9.1
 libstdcplusplus 0

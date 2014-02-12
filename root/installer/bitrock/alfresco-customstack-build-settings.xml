@@ -42,10 +42,10 @@
         <setInstallerVariable name="alfresco_wcmqs_config_source_file" value="${alfresco_svn_rootdir.unix}/modules/wcmquickstart/wcmquickstartclientapi/config/alfresco" />
 
         <!-- Binaries -->
-        <setInstallerVariable name="common_distribution_folder" value="${binaries_folder}/common-20130725" />
+        <setInstallerVariable name="common_distribution_folder" value="${binaries_folder}/common-20140108" />
         <setInstallerVariable name="postgres_distribution_folder" value="${binaries_folder}/postgresql-9.2.4" />
-        <setInstallerVariable name="imagemagick_distribution_folder_windows" value="${binaries_folder}/ImageMagick-6.8.6" />
-        <setInstallerVariable name="imagemagick_distribution_folder_unix" value="${binaries_folder}/ImageMagick-6.8.6" />
+        <setInstallerVariable name="imagemagick_distribution_folder_windows" value="${binaries_folder}/ImageMagick-6.8.6-gs8.64" />
+        <setInstallerVariable name="imagemagick_distribution_folder_unix" value="${binaries_folder}/ImageMagick-6.8.6-gs8.64" />
         <setInstallerVariable name="java_distribution_folder" value="${binaries_folder}/java-1.7.0_25" />
         <setInstallerVariable name="libreoffice_distribution_folder" value="${binaries_folder}/libreoffice-4.0" />
         <setInstallerVariable name="swftools_distribution_folder" value="${binaries_folder}/swftools-0.9.2" />
