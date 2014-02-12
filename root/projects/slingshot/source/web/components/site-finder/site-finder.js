@@ -223,12 +223,6 @@
                   }
                }
 
-               // Sort the sites by their title
-               items.sort(function (site1, site2)
-               {
-                  return (site1.title > site2.title) ? 1 : (site1.title < site2.title) ? -1 : 0;
-               });
-
                // Resolve what sites the user is site admin for
                var siteManagers, i, j, k, l;
                for (i = 0, j = items.length; i < j; i++)
