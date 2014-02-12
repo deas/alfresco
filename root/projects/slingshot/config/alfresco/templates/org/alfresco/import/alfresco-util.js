@@ -457,7 +457,6 @@ var AlfrescoUtil =
                {
                   // Parse json using Java to a native Object
                   pageMetadata = jsonUtils.toObject(pageMetadata);
-
                }
                catch(e)
                {

@@ -248,7 +248,6 @@ function getPages(includeUnusedPages)
          {
             try
             {
-
                // Parse json using Java to a native Array (wrap in an object to keep toObject happy)
                sitePages = jsonUtils.toObject('{"tmp":' + sitePages + '}').tmp;
             }
@@ -267,7 +266,6 @@ function getPages(includeUnusedPages)
             {
                // Parse json using Java to a native Object
                pageMetadata = jsonUtils.toObject(pageMetadata);
-
             }
             catch(e)
             {
