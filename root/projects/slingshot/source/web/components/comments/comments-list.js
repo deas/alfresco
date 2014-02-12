@@ -35,6 +35,7 @@
       YAHOO.Bubbling.on("editorInitialized", this.onEditorInitialized, this);
       YAHOO.Bubbling.on("commentNode", this.onCommentNode, this);
       YAHOO.Bubbling.on("versionReverted", function(){ this.widgets.alfrescoDataTable.reloadDataTable(); }, this);
+      YAHOO.Bubbling.on("metadataRefresh", function(){ this.widgets.alfrescoDataTable.reloadDataTable(); }, this);
      
       this.busy = false;
       this.hashChecked = false;
@@ -222,6 +223,10 @@
          if (permissions["create"])
          {
             Dom.removeClass(this.id + "-actions", "hidden");
+         }
+         else
+         {
+            Dom.addClass(this.id + "-actions", "hidden");
          }
 
          // Return response unmodified
