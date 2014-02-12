@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -366,7 +366,9 @@ public class VtiPathHelper extends AbstractLifecycleBean
        }
        
        // Handle the case of the context with no site/document
-       if (uri.equalsIgnoreCase(alfrescoContext))
+       // MNT-10128 : delete the last "/" from the requested URI
+       if (uri.equalsIgnoreCase(alfrescoContext) ||
+               (uri.endsWith("/") ? alfrescoContext.equalsIgnoreCase(uri.substring(0, uri.length() - 1)) : false))
        {
            if (logger.isDebugEnabled())
            {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -69,6 +69,11 @@ public class VtiPathHelperTest extends AbstractVtiPathHelperTestBase<VtiPathHelp
 
         // Decompose a URI path containing the context path only.
         parts = pathHelper.doDecomposeURLWork(ALFRESCO_CONTEXT, "/alfresco", SiteModel.TYPE_SITE);
+        assertDecomposedURL("/alfresco", "", parts);
+
+        // Decompose a URI path containing the context path with a slash in the end.
+        // See MNT-10128
+        parts = pathHelper.doDecomposeURLWork(ALFRESCO_CONTEXT, "/alfresco/", SiteModel.TYPE_SITE);
         assertDecomposedURL("/alfresco", "", parts);
 
         // Decompose an empty URI path.
