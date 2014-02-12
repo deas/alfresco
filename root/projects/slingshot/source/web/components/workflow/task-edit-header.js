@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -345,8 +345,16 @@
                               // Check referrer and fall back to user dashboard if unavailable.
                               if(this.referrerValue) 
                               {
-                                 // Take the user to the most suitable place
-                                 this.navigateForward(true);
+                                 // MNT-10182. The user may not have rights to see task details any more.
+                                 if (this.referrerValue == 'tasks')
+                                 {
+                                    document.location.href = $siteURL("my-tasks");
+                                 }
+                                 else
+                                 {
+                                    // Take the user to the most suitable place
+                                    this.navigateForward(true);
+                                 }
                               } else {
                                  // ALF-20001. If referrer isn't available, either because there was no previous page 
                                  // (because the user navigated directly to the page via an emailed link)
