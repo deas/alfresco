@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A cache backed by a simple <code>HashMap</code>.
+ * A cache backed by a simple <code>ConcurrentHashMap</code>.
  * <p>
- * <b>Note:</b> This cache is not transaction- or thread-safe.  Use it for single-threaded tests only.
+ * <b>Note:</b> This cache is not transaction-safe.  Use it for tests or wrap it appropriately.
  * 
  * @author Derek Hulley
  * @since 3.2
