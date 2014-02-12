@@ -286,6 +286,11 @@
                      Dom.get(this.configDialog.id + "-new_window").checked = (this.options.target == "_blank");
                      
                      var select = Dom.get(this.configDialog.id + "-limit"), options = select.options, option, i, j;
+                     // ALF-14482 fix. Remembering the checkbox state.
+                     var newWindowCheckBox = Dom.get(this.configDialog.id + "-new_window");
+
+                     newWindowCheckBox.defaultChecked = newWindowCheckBox.checked;
+
                      for (i = 0, j = options.length; i < j; i++)
                      {
                         option = options[i];
@@ -301,12 +306,13 @@
             });
          }
 
+         // ALF-14482 fix. Remembering the checkbox state.
          this.configDialog.onCancel = function RssFeed_doBeforeDialogShow_onCancel()
          {
             this.hide();
             var checkbox = this.dialog.form.new_window;
             checkbox.checked = checkbox.defaultChecked;
-         }
+         };
 
          this.configDialog.setOptions(
          {
