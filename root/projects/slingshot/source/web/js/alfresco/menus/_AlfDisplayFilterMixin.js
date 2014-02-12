@@ -18,14 +18,15 @@
  */
 
 /**
- * This mixin provides display filtering capabilities. It can be mixed into any widget so that
- * if the widget is configured with a [filterTopic]{@link modulealfresco/menus/AlfDisplayFilterMixin#filterTopic]
- * then it will used as a subscription topic and the [filter]{@link modulealfresco/menus/AlfDisplayFilterMixin#filter]
- * function will be called each time it is published on.
+ * <p>This mixin provides display filtering capabilities. It can be mixed into any widget so that
+ * if the widget is configured with a [filterTopic]{@link module:alfresco/menus/AlfDisplayFilterMixin#filterTopic]
+ * then it will used as a subscription topic and the [filter]{@link module:alfresco/menus/AlfDisplayFilterMixin#filter]
+ * function will be called each time it is published on.</p>
  * 
  * @module alfresco/menus/_AlfDisplayFilterMixin
  * @extends module:alfresco/core/Core
  * @author Dave Draper
+ * @public
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
@@ -36,8 +37,13 @@ define(["dojo/_base/declare",
    return declare([AlfCore], {
       
       /**
+       * This is the topic to which the widget will subscribe to receive notification of filter requests.
+       * When the topic is published on the [filter function]{@link module:alfresco/menus/_AlfDisplayFilterMixin#filter}
+       * will be called which by default does nothing. It is up to the inheriting module to override this
+       * function to determine whether or not the widget is displayed or hidden.
+       * 
        * @instance
-       * @type {string} filterTopic The topic to subscribe to for filtering events
+       * @type {string}
        * @default null
        */
       filterTopic: null,
@@ -55,6 +61,11 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This does nothing by default and should be overridden by the inheriting module
+       * to determine whether or not the widget should be displayed or hidden. The 
+       * [show]{@link module:alfresco/menus/_AlfDisplayFilterMixin#show} and 
+       * [hide]{@link module:alfresco/menus/_AlfDisplayFilterMixin#hide} functions should
+       * be called to change the widgets display state.
        * 
        * @instance
        * @param {object} payload The payload published on the filter topic 

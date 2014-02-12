@@ -28,8 +28,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
         "alfresco/services/_RatingsServiceTopicMixin",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, CoreXhr, _RatingsServiceTopicMixin, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, CoreXhr, _RatingsServiceTopicMixin, lang, AlfConstants) {
    
    return declare([AlfCore, CoreXhr, _RatingsServiceTopicMixin], {
       
@@ -52,7 +53,7 @@ define(["dojo/_base/declare",
        * @param {string} nodeRefUri The nodeRef URI fragment representation
        */
       getAddRatingsUrl: function alfresco_services_RatingsService__getRatingsUrl(nodeRefUri) {
-         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRefUri + "/ratings";
+         return AlfConstants.PROXY_URI + "api/node/" + nodeRefUri + "/ratings";
       },
       
       /**
@@ -62,7 +63,7 @@ define(["dojo/_base/declare",
        * @param {string} nodeRefUri The nodeRef URI fragment representation
        */
       getRemoveRatingsUrl: function alfresco_services_RatingsService__getRatingsUrl(nodeRefUri) {
-         return Alfresco.constants.PROXY_URI + "api/node/" + nodeRefUri + "/ratings/likesRatingScheme";
+         return AlfConstants.PROXY_URI + "api/node/" + nodeRefUri + "/ratings/likesRatingScheme";
       },
       
       /**

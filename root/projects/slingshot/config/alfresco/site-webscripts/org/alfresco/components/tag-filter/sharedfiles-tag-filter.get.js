@@ -1,7 +1,7 @@
 function main()
 {
    // Shared Files root node
-   model.rootNode = "alfresco://shared";
+   model.rootNode = "alfresco://company/shared";
    
    // Widget instantiation metadata...
    var filters = config.scoped['DocumentLibrary']['filters'],

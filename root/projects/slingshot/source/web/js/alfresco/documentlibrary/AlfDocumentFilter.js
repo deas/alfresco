@@ -47,7 +47,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDocumentFilter.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDocumentFilter.properties"}],
@@ -56,7 +56,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfDocumentFilter.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDocumentFilter.css"}],
@@ -64,7 +64,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
@@ -72,7 +72,7 @@ define(["dojo/_base/declare",
        * Indicates that the filter should be hidden. This will be set to "true" if any required data is missing
        * 
        * @instance
-       * @type {boolean} hide 
+       * @type {boolean}
        * @default false
        */
       hide: false,

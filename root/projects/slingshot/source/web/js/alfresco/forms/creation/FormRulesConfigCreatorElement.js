@@ -39,7 +39,7 @@ define(["alfresco/forms/controls/MultipleEntryElement",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {Array} i18nRequirements
+       * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/FormCreation.properties"}],
       

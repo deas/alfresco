@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       

@@ -53,7 +53,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Grid.css"}]
        */
       cssRequirements: [{cssFile:"./css/Grid.css"}],
@@ -62,7 +62,7 @@ define(["dojo/_base/declare",
        * The HTML template to use for the widget.
        * 
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
@@ -98,12 +98,56 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      setupKeyboardNavigation: function alfresco_documentlibrary_views_AlfGalleryView__setupKeyboardNavigation() {
-         this.connectKeyNavHandlers([keys.LEFT_ARROW], [keys.RIGHT_ARROW]);
+      setupKeyboardNavigation: function alfresco_documentlibrary_views_layouts_Grid__setupKeyboardNavigation() {
+         // this.connectKeyNavHandlers([keys.LEFT_ARROW], [keys.RIGHT_ARROW]);
          this._keyNavCodes[keys.UP_ARROW] = lang.hitch(this, "focusOnCellAbove");
+         this._keyNavCodes[keys.RIGHT_ARROW] = lang.hitch(this, "focusOnCellRight");
          this._keyNavCodes[keys.DOWN_ARROW] = lang.hitch(this, "focusOnCellBelow");
+         this._keyNavCodes[keys.LEFT_ARROW] = lang.hitch(this, "focusOnCellLeft");
       },
-      
+
+      /**
+       *
+       *
+       * @instance
+       */
+      focusOnCellLeft: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellLeft() {
+         var target = null;
+             focusIndex = this.getIndexOfChild(this.focusedChild),
+             allChildren = this.getChildren(),
+             childCount = this.getChildren().length;
+         if (focusIndex > 0)
+         {
+            target = allChildren[focusIndex-1]
+         }
+         else
+         {
+            target = allChildren[childCount-1];
+         }
+         this.focusChild(target); 
+      },
+
+      /**
+       *
+       *
+       * @instance
+       */
+      focusOnCellRight: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellLeft() {
+         var target = null;
+             focusIndex = this.getIndexOfChild(this.focusedChild),
+             allChildren = this.getChildren(),
+             childCount = this.getChildren().length;
+         if (focusIndex < childCount-1)
+         {
+            target = allChildren[focusIndex+1]
+         }
+         else
+         {
+            target = allChildren[0];
+         }
+         this.focusChild(target); 
+      },
+
       /**
        * Gives focus to the cell immediately above the currently focused cell. If the focused cell is on the
        * first row then it will select the cell in the same column on the last column (and if there isn't a cell
@@ -111,7 +155,7 @@ define(["dojo/_base/declare",
        *  
        * @instance
        */
-      focusOnCellAbove: function alfresco_documentlibrary_views_AlfGalleryView__focusOnCellAbove() {
+      focusOnCellAbove: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellAbove() {
          var target = null;
              focusIndex = this.getIndexOfChild(this.focusedChild),
              focusColumn = (focusIndex % this.columns) + 1,
@@ -145,13 +189,13 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      focusOnCellBelow: function alfresco_documentlibrary_views_AlfGalleryView__focusOnCellBelow() {
+      focusOnCellBelow: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellBelow() {
          var target = null;
              focusIndex = this.getIndexOfChild(this.focusedChild),
              focusColumn = (focusIndex % this.columns),
              allChildren = this.getChildren(),
              childCount = this.getChildren().length;
-         if (focusIndex + this.columns > childCount)
+         if ((focusIndex + this.columns) >= childCount)
          {
             target = allChildren[focusColumn];
          }
@@ -200,7 +244,7 @@ define(["dojo/_base/declare",
        * @instance resizeCell
        * @param {Object} containerNodeMarginBox The margin box for the container nodes parent
        * @param {number} widthToSet The widget for the cell (in pixels)
-       * @param {DOM Element} node The node to set width on
+       * @param {element} node The node to set width on
        * @param {number} index The current index of the element in the array
        */
       resizeCell: function alfresco_documentlibrary_views_layouts_Grid__resizeCell(containerNodeMarginBox, widthToSet, node, index) {

@@ -1,5 +1,5 @@
-.alfresco_renderers_InlineEditProperty {
-  margin-left: 20px;
+.alfresco-renderers-Property.alfresco_renderers_InlineEditProperty {
+  /*margin-left: 20px; */
 }
 
 .alfresco_renderers_InlineEditProperty .alfresco-renderers-Property {

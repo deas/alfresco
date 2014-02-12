@@ -18,6 +18,12 @@
  */
 
 /**
+ * <p>This module is used by the [AlfDropDownMenu]{@link module:alfresco/menus/AlfDropDownMenu} to wrap
+ * any widgets placed into a menu where the widget structure does not match the required DOM fragment
+ * for a [menu item]{@link module:alfresco/menus/AlfMenuItem}. This widget is then able to delegate 
+ * user actions such as click and focus to prevent errors and ensure that keyboard navigation of menus
+ * continues to work correctly.</p>
+ *
  * @module alfresco/menus/AlfMenuItemWrapper
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
@@ -52,7 +58,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfMenuItemWrapper.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuItemWrapper.css"}],

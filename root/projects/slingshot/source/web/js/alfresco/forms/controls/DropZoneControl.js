@@ -36,8 +36,8 @@ define(["alfresco/forms/controls/BaseFormControl",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
-       * @default [{cssFile:"./css/RadioButton.css"}]
+       * @type {object[]}
+       * @default [{cssFile:"./css/DropZoneControl.css"}]
        */
       cssRequirements: [{cssFile:"./css/DropZoneControl.css"}],
       
@@ -50,7 +50,8 @@ define(["alfresco/forms/controls/BaseFormControl",
             id : this.generateUuid(),
             name: this.name,
             value: this.value,
-            pubSubScope: this.pubSubScope
+            pubSubScope: this.pubSubScope,
+            acceptTypes: this.acceptTypes
          };
       },
       
@@ -62,7 +63,7 @@ define(["alfresco/forms/controls/BaseFormControl",
       },
       
       /**
-       * 
+       * @instance
        */
       setupChangeEvents: function alfresco_forms_controls_DropZoneControl__setupChangeEvents() {
          on(this.domNode, "onWidgetUpdate", lang.hitch(this, "validate"));
@@ -79,10 +80,7 @@ define(["alfresco/forms/controls/BaseFormControl",
          var value = "";
          if (this.wrappedWidget != null)
          {
-            value = {
-               widgets: this.wrappedWidget.getWidgetDefinitions()
-            };
-            value = dojoJSON.stringify(value);
+            value = this.wrappedWidget.getWidgetDefinitions();
          }
          return value;
       }

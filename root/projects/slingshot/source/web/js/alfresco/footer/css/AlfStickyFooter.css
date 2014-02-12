@@ -1,0 +1,40 @@
+html, body {
+   height: 100%;
+}
+
+body {
+   margin: 0px;
+   padding: 0px;
+ }
+
+/* First node in the body !!! Need to set this */
+div#wrapper {
+   width: 100%;
+   min-height: 100%;
+   height: auto !important;
+   height: 100%;
+   margin: 0px 0px -41px 0px;
+}
+
+/* div#footer_wrapper */
+div.alfresco-footer-AlfStickFooter {
+   width: 100%;
+   height: 41px;
+}
+
+div#content_wrapper {
+   width: 100%;
+   padding: 0px 0px 41px 0px;
+ }
+
+/* div#footer_wrapper, div#content_wrapper */
+div.alfresco-footer-AlfStickFooter, div#content_wrapper {
+   min-width: 942px;
+}
+
+/* div#footer_inner_wrapper, div#content_inner_wrapper */
+div.alfresco-footer-AlfStickFooter > div.inner, 
+div#content_inner_wrapper {
+   width: 942px;
+   margin: 0px auto;
+}

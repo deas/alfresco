@@ -32,13 +32,15 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/ExplorerItem.html",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
+        "service/constants/Default",
+        "alfresco/renderers/FileType",
         "dojo/on",
         "dojo/string",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
         "dojo/dom-style"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, tabTemplate, itemTemplate, AlfCore, CoreXhr, on, stringUtil, array, lang, domConstruct, domStyle) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, tabTemplate, itemTemplate, AlfCore, CoreXhr, AlfConstants, FileType, on, stringUtil, array, lang, domConstruct, domStyle) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreXhr], {
       
@@ -46,8 +48,8 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
-       * @default [{cssFile:"./css/SlidingTabs.css"}]
+       * @type {object[]}
+       * @default [{cssFile:"./css/Explorer.css"}]
        */
       cssRequirements: [{cssFile:"./css/Explorer.css"}],
       
@@ -73,6 +75,54 @@ define(["dojo/_base/declare",
       nodeRef: "alfresco/company/home",
       
       /**
+       * The type that should be selectable from the results. This information is used when requesting the data and
+       * will determine what items can be selected.
+       *
+       * @instance
+       * @type {string}
+       * @default "cm:content"
+       */
+      selectableType: "cm:content",
+
+      /**
+       * Indicates that items that can't be selected should be hidden. A use of this would be to allow documents to be hidden when attempting
+       * to select a folder to copy to.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      hideUnselectableTypes: false,
+
+      /**
+       * Indicates whether or not the current user needs create permissions on an item to select it. For example, if this explorer widget was 
+       * being used to select a folder to copy a document into then the user would need create permissions on the item they select.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      needsCreatePermissionToSelect: false,
+
+      /**
+       * Indicates whether or not the current user needs edit permissions on an item to select it. 
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      needsEditPermissionToSelect: false,
+
+      /**
+       * Indicates whether or not the current user needs delete permissions on an item to select it.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      needsDeletePermissionToSelect: false,
+
+      /**
        * @instance
        */
       postCreate: function alfresco_pickers_Explorer__postCreate() {
@@ -84,9 +134,9 @@ define(["dojo/_base/declare",
          // 2. Iterate over the results build a content page for each level.
          
          this.serviceXhr({
-            url: Alfresco.constants.PROXY_URI + "api/forms/picker/node/" + this.nodeRef + "/children",
+            url: AlfConstants.PROXY_URI + "api/forms/picker/node/" + this.nodeRef + "/children?selectableType=" + this.selectableType,
             data: {
-               selectableType: "cm:content",
+               selectableType: this.selectableType,
                searchTerm: "",
                size: "1000"
             },
@@ -317,14 +367,36 @@ define(["dojo/_base/declare",
          var contentItemNode = domConstruct.create("div", {className: "content-item", style: {width: this.contentFrameWidth + "px"}});
          
          array.forEach(items, function(item, i) {
-            var itemNode = domConstruct.create("div", { innerHTML: item[this.itemDisplayAttr]}, contentItemNode);
-//            var itemNode = domConstruct.toDom(stringUtil.substitute(itemTemplate, {
-//               itemName: item[this.itemDisplayAttr]
-//            }));
-            if (item.isContainer == true)
+
+            if (this.hideUnselectableTypes == true && item.selectable == false)
             {
-               on(itemNode, "click", lang.hitch(this, "getLocation", item[this.idAttr]));
+               // Don't show items that aren't selectable as requested...
             }
+            else
+            {
+               // Display the item if it is the correct type (or if we don't mind)...
+               var classes = "";
+               if (!item.selectable == true)
+               {
+                  classes += " unselectable";
+               }
+
+               var itemNode = domConstruct.create("div", {
+                  className: classes
+               }, contentItemNode);
+               var iconNode = domConstruct.create("span", {}, itemNode);
+               new FileType({
+                  size: "small",
+                  currentItem: item
+               }, iconNode);
+               var nameNode = domConstruct.create("span", { innerHTML: item[this.itemDisplayAttr]}, itemNode);
+
+               if (item.isContainer == true)
+               {
+                  on(itemNode, "click", lang.hitch(this, "getLocation", item[this.idAttr]));
+               }
+            }
+            
          }, this);
          
          return contentItemNode;
@@ -336,7 +408,7 @@ define(["dojo/_base/declare",
        */
       getLocation: function alfresco_pickers_Explorer__getLocation(locationId) {
          this.serviceXhr({
-            url: Alfresco.constants.PROXY_URI + "api/forms/picker/node/" + locationId.replace(/:\//g, "") + "/children",
+            url: AlfConstants.PROXY_URI + "api/forms/picker/node/" + locationId.replace(/:\//g, "") + "/children?selectableType=" + this.selectableType,
             data: {
                selectableType: "cm:content",
                searchTerm: "",

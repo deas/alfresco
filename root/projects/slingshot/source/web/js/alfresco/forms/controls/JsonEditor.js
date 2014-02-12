@@ -42,7 +42,7 @@ define(["alfresco/forms/controls/BaseFormControl",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type cssRequirements {Array}
+       * @type {Array}
        */
       cssRequirements: [{cssFile:"./css/JsonEditor.css"},
                         {cssFile:"/js/lib/jsoneditorlib/jsoneditor-min.css"}],
@@ -202,7 +202,7 @@ define(["alfresco/forms/controls/BaseFormControl",
        */
       getValue: function alfresco_forms_controls_JsonEditor__getValue() {
          var value = "";
-         if (this.wrappedWidget != null)
+         if (this.wrappedWidget != null && typeof this.wrappedWidget.getText === "function")
          {
             value = this.wrappedWidget.getText();
          }

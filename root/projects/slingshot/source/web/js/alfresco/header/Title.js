@@ -29,8 +29,9 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/Title.html",
         "dojo/_base/lang",
-        "alfresco/core/Core"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, lang, AlfCore) {
+        "alfresco/core/Core",
+        "service/constants/Default"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, lang, AlfCore, AlfConstants) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
@@ -38,7 +39,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Title.css"}]
        */
       cssRequirements: [{cssFile:"./css/Title.css"}],
@@ -46,19 +47,19 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
       
       /**
        * @instance
-       * @type {string} title The title to be displayed. This should be a localized value.
+       * @type {string}
        */
       label: null,
       
       /**
        * @instance
-       * @type {string} targetUrl The URL for the title link.
+       * @type {string}
        */
       targetUrl: null,
       
@@ -82,7 +83,7 @@ define(["dojo/_base/declare",
          this.textNode.innerHTML = this.label;
          if (this.targetUrl)
          {
-            this.textNode.href = Alfresco.constants.URL_PAGECONTEXT + this.targetUrl;
+            this.textNode.href = AlfConstants.URL_PAGECONTEXT + this.targetUrl;
          }
          this.alfSubscribe("ALF_UPDATE_PAGE_TITLE", lang.hitch(this, "updatePageTitle"));
       },

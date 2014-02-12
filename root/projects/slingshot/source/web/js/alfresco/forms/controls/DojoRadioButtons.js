@@ -30,21 +30,13 @@ define(["alfresco/forms/controls/BaseFormControl",
         "dojo/text!./templates/RadioButtons.html",
         "alfresco/core/Core",
         "dijit/form/RadioButton",
+        "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-construct"], 
-        function(BaseFormControl, declare, _Widget, _Templated, RadioButtonTemplate, RadioButtonsTemplate, AlfCore, DojoRadioButton, array, domConstruct) {
+        function(BaseFormControl, declare, _Widget, _Templated, RadioButtonTemplate, RadioButtonsTemplate, AlfCore, DojoRadioButton, lang, array, domConstruct) {
    
    // TODO: This should probably be moved to it's own module
    var RadioButton = declare([_Widget, _Templated, AlfCore], {
-      
-      /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
-       * @default [{cssFile:"./css/RadioButton.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/RadioButton.css"}],
       
       /**
        * @instance
@@ -60,7 +52,7 @@ define(["alfresco/forms/controls/BaseFormControl",
       /**
        * @instance
        */
-      postCreate: function() {
+      postCreate: function alfresco_forms_controls_DojoRadioButton_RadioButton__postCreate() {
          this._radioButton = new DojoRadioButton({name: this.name, value: this.value});
          this._radioButton.placeAt(this._radioButtonNode);
          this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
@@ -71,15 +63,6 @@ define(["alfresco/forms/controls/BaseFormControl",
    var RadioButtons = declare([_Widget, _Templated, AlfCore], {
       
       /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
-       * @default [{cssFile:"./css/RadioButtons.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/RadioButtons.css"}],
-      
-      /**
        * @instance
        * @type {string}
        */
@@ -87,6 +70,8 @@ define(["alfresco/forms/controls/BaseFormControl",
       
       /**
        * @instance
+       * @type {object[]}
+       * @default null
        */
       options: null,
       
@@ -113,7 +98,7 @@ define(["alfresco/forms/controls/BaseFormControl",
       /**
        * @instance
        */
-      postCreate: function() {
+      postCreate: function alfresco_forms_controls_DojoRadioButton_RadioButtons__postCreate() {
          // Create an object to map each option value to the RadioButton that represents it...
          this.optionToWidget = {};
          if (this.options != null && this.options instanceof Array)
@@ -129,17 +114,19 @@ define(["alfresco/forms/controls/BaseFormControl",
                }
             }, this);
          }
+         this.setValue(this.value);
       },
       
       /**
        * @instance
+       * @param {object} option The option to add
        */
-      addOption: function(option) {
+      addOption: function alfresco_forms_controls_DojoRadioButton_RadioButtons__addOption(option) {
          // Create and add a new RadioButton and record a reference to it...
          option.name = this.name; // Add the name to create the radio button "group" (TODO: Is this necessary for our purpose?)
          var rb = new RadioButton(option);
          rb.placeAt(this.containerNode);
-         this.options.push(option);
+         // this.options.push(option);
          this.optionToWidget[option.value] = rb;
          
          var _this = this; 
@@ -156,11 +143,28 @@ define(["alfresco/forms/controls/BaseFormControl",
             }
          }, true);
       },
+
+      /**
+       * @instance
+       * @param {boolean} isChecked Indicates whether or not the button has been checked or not.
+       */
+      onButtonChange: function alfresco_forms_controls_DojoRadioButton_RadioButtons__onButtonChange(isChecked) {
+         if (isChecked)
+         {
+            this.currentValue = this.value;
+            this.control.formControlValueChange(name, _this.lastValue, _this.currentValue);
+            this.control.validate();
+         }
+         else
+         {
+            this.lastValue = this.value;
+         }
+      },
       
       /**
        * @instance
        */
-      removeOption: function(option) {
+      removeOption: function alfresco_forms_controls_DojoRadioButton_RadioButtons__removeOption(option) {
          if (typeof option.value == "string")
          {
             // Destroy the widget...
@@ -172,9 +176,21 @@ define(["alfresco/forms/controls/BaseFormControl",
       },
       
       /**
+       * 
+       * @instance
+       * @param {object} value The value to set.
+       */
+      setValue: function alfresco_forms_controls_DojoRadioButton_RadioButtons__setValue(value) {
+         if (this.optionToWidget != null && this.optionToWidget[value] != null)
+         {
+            this.optionToWidget[value]._radioButton.set('checked', true);
+         }
+      },
+
+      /**
        * @instance
        */
-      getValue: function() {
+      getValue: function alfresco_forms_controls_DojoRadioButton_RadioButtons__getValue() {
          for (var key in this.optionToWidget) {
             var selected =  this.optionToWidget[key]._radioButton.get("checked");
             if (selected)
@@ -188,9 +204,18 @@ define(["alfresco/forms/controls/BaseFormControl",
    return declare([BaseFormControl], {
       
       /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance cssRequirements {Array}
+       * @type {object[]}
+       * @default [{cssFile:"./css/DojoRadioButtons.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/DojoRadioButtons.css"}],
+
+      /**
        * @instance
        */
-      getWidgetConfig: function() {
+      getWidgetConfig: function alfresco_forms_controls_DojoRadioButton__getWidgetConfig() {
          // Return the configuration for the widget
          return {
             id : this.generateUuid(),
@@ -204,7 +229,7 @@ define(["alfresco/forms/controls/BaseFormControl",
       /**
        * @instance
        */
-      createFormControl: function(config) {
+      createFormControl: function alfresco_forms_controls_DojoRadioButton__createFormControl(config) {
          // Create the inner class that we've defined above. The reason for doing this is that it
          // provides the standard widget API that the BaseFormControl is expecting...
          return new RadioButtons(config);

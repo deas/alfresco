@@ -38,6 +38,7 @@ define(["dojo/_base/declare",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/documentlibrary/_AlfDndDocumentUploadMixin",
         "alfresco/core/Core",
+        "alfresco/core/JsNode",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/keys",
@@ -45,7 +46,7 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "dijit/registry"], 
         function(declare, _WidgetBase, _TemplatedMixin, _KeyNavContainer, template, _MultiItemRendererMixin, _AlfDndDocumentUploadMixin, 
-                 AlfCore, lang, array, keys, domConstruct, domClass, registry) {
+                 AlfCore, JsNode, lang, array, keys, domConstruct, domClass, registry) {
    
    return declare([_WidgetBase, _TemplatedMixin, _KeyNavContainer, _MultiItemRendererMixin, AlfCore, _AlfDndDocumentUploadMixin], {
       
@@ -53,7 +54,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDocumentListView.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDocumentListView.properties"}],
@@ -62,7 +63,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfDialog.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDocumentListView.css"}],
@@ -70,7 +71,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
@@ -96,6 +97,10 @@ define(["dojo/_base/declare",
          this.setupKeyboardNavigation();
          this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
+         if (this.currentData != null)
+         {
+            this.renderView();
+         }
       },
       
       /**
@@ -103,18 +108,9 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the documents that have been provided.
        */
       onDocumentsLoaded: function alfresco_documentlibrary_views_AlfDocumentListView__onDocumentsLoaded(payload) {
-         var filterId = lang.getObject("payload.requestConfig.filter.filterId", false, payload);
-         if (filterId == "path")
-         {
-            this.addUploadDragAndDrop(this.domNode);
-         }
-         else
-         {
-            this.removeUploadDragAndDrop(this.domNode);
-         }
          for (var i = 0; i<payload.response.items.length; i++)
          {
-            payload.response.items[i].jsNode = new Alfresco.util.Node(payload.response.items[i].node);
+            payload.response.items[i].jsNode = new JsNode(payload.response.items[i].node);
          }
          this.setData(payload.response);
          this.renderView();
@@ -168,9 +164,11 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @type {Object}
-       * @default null
+       * @default {}
        */
-      viewSelectionConfig: null,
+      viewSelectionConfig: {
+         label: "Abstract"
+      },
       
       /**
        * This should be overridden to give each view a name. If it's not overridden then the view will just get given
@@ -178,10 +176,10 @@ define(["dojo/_base/declare",
        * issues with preferences.
        * 
        * @instance
-       * @returns {string} null
+       * @returns {string} "Abstract"
        */
       getViewName: function alfresco_documentlibrary_views_AlfDocumentListView__getViewName() {
-         return null;
+         return "Abstract";
       },
       
       /**
@@ -226,7 +224,16 @@ define(["dojo/_base/declare",
          }
          if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
          {
-            this.renderData();
+            try
+            {
+               this.renderData();
+            }
+            catch(e)
+            {
+               this.alfLog("error", "The following error occurred rendering the data", e, this);
+               this.renderErrorDisplay();
+            }
+            
          }
          else
          {
@@ -270,6 +277,18 @@ define(["dojo/_base/declare",
          domConstruct.empty(this.containerNode);
          domConstruct.create("div", {
             innerHTML: this.message("doclistview.no.data.message")
+         }, this.containerNode);
+      },
+
+      /**
+       * This method is called when there is an error occurred rendering the view
+       * 
+       * @instance
+       */
+      renderErrorDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderErrorDisplay() {
+         domConstruct.empty(this.containerNode);
+         domConstruct.create("div", {
+            innerHTML: this.message("doclistview.rendering.error.message")
          }, this.containerNode);
       }
    });

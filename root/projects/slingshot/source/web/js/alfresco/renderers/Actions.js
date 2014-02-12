@@ -30,8 +30,9 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
         "dojo/_base/array",
-        "dojo/_base/lang"], 
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"], 
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants) {
 
    return declare([AlfMenuBar, _AlfDocumentListTopicMixin], {
       
@@ -73,7 +74,7 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Adding action", action);
          var menuItem = new AlfMenuItem({
             label: action.label,
-            iconImage: Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
+            iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
             type: action.type,
             publishTopic: this.singleDocumentActionTopic,
             publishPayload: {

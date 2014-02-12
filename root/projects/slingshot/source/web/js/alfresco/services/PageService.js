@@ -29,9 +29,11 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreXhr",
         "alfresco/services/_PageServiceTopicMixin",
         "alfresco/core/NotificationUtils",
-        "dojo/request/xhr",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, CoreXhr, _PageServiceTopicMixin, NotificationUtils, xhr, lang) {
+        "alfresco/core/ObjectTypeUtils",
+        "dojo/_base/lang",
+        "dojo/_base/array",
+        "service/constants/Default"],
+        function(declare, AlfCore, CoreXhr, _PageServiceTopicMixin, NotificationUtils, ObjectTypeUtils, lang, array, AlfConstants) {
    
    return declare([AlfCore, CoreXhr, _PageServiceTopicMixin, NotificationUtils], {
       
@@ -39,7 +41,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/ActionService.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/PageService.properties"}],
@@ -52,37 +54,91 @@ define(["dojo/_base/declare",
        */
       constructor: function alfresco_services_PageService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe(this.availablePagesRequestTopic, lang.hitch(this, "loadPages"));
+         this.alfSubscribe("ALF_AVAILABLE_PAGE_DEFINITIONS", lang.hitch(this, "loadPages"));
          this.alfSubscribe(this.createPageTopic, lang.hitch(this, "createPage"));
          this.alfSubscribe(this.updatePageTopic, lang.hitch(this, "updatePage"));
       },
       
       /**
        * Makes an XHR request to retrieve the pages that are available. The pages returned are those
-       * that have been created and stored in the Data Dictionary on the Alfresco repository. Having 
-       * retrieved the available pages it will publish on the "AvailablePages" topic.
+       * that have been created and stored in the Data Dictionary on the Alfresco repository. 
+       *
        * @instance
+       * @param {object} The paylod containing additional data. This can contain a "responseTopic" to 
+       * publish the options back on.
        */
-      loadPages: function alfresco_services_PageService__loadPages() {
+      loadPages: function alfresco_services_PageService__loadPages(payload) {
+
          this.serviceXhr({
-            url: Alfresco.constants.PROXY_URI + "/remote-share/pages",
+            url: AlfConstants.PROXY_URI + "/remote-share/pages",
             method: "GET",
-            successCallback: this.pageCreateSuccess,
-            failureCallback: this.pageCreateFailure,
+            responseTopic: payload.responseTopic,
+            successCallback: this.loadPagesSuccess,
+            failureCallback: this.loadPagesFailure,
             callbackScope: this
          });
       },
       
       /**
+       * This processes the results returned from the XHR request to obtain the available pages that have been
+       * defined on the repository. This is necessary because the REST API doesn't return the data in an way
+       * that fits with the typical use case (e.g. for providing selectable options in form controls). This function
+       * has been written in respect of the [onPubSubOptions]{@link module:alfresco/forms/controls/BaseFormControl#onPubSubOptions}
+       * function.
+       *
        * @instance
        * @param {object} response
        * @param {object} originalRequestConfig
        */
       loadPagesSuccess: function alfresco_services_PageService__loadPagesSuccess(response, originalRequestConfig) {
-         this.alfPublish(this.availablePagesTopic, {
-            response: response,
-            originalRequestConfig: originalRequestConfig
-         });
+         if (response != null && response.items != null && ObjectTypeUtils.isArray(response.items))
+         {
+            var topic = (originalRequestConfig.responseTopic != null) ? originalRequestConfig.responseTopic : this.availablePagesLoadSuccess;
+            var pageDefs = [];
+            array.forEach(response.items, lang.hitch(this, "processAvailablePageDefResults", pageDefs));
+
+            // NOTE: This is something of an assumption that we want to set the processed "pageDefs" as the "options" attribute
+            //       here, but this has been written in respect of retrieving options to be displayed in a drop-down menu (e.g
+            //       a form control extending alfresco/forms/controls/BaseFormControl) so it needs to be set in the "options"
+            //       attribute although this should arguably be configurable.
+            this.alfPublish(topic, {
+               options: pageDefs,
+               response: response,
+               originalRequestConfig: originalRequestConfig
+            });
+         }
+         else
+         {
+            this.alfLog("error", "The request to retrieve available page definitions returned a response that could not be interpreted", response, originalRequestConfig, this);
+         }
+         
+      },
+
+      /**
+       * This updates the supplied array of page defintion with the current page definition. This checks that the supplied
+       * definition has both "name" and "nodeRef" attributes - the "name" attribute is converted to a "label" attribute and
+       * the "nodeRef" attribute is converted to a "value" attribute in order to make the ultimately returned array be 
+       * compatible with options for form controls. If the definition does not have these attributes then it is not added to
+       * the array.
+       * 
+       * @instance
+       * @param {object[]} pageDefs The array of page definitions to add the current definition to
+       * @param {object} def The current definition to add to the supplied array
+       * @param {number} index The index of the page def in the original results set
+       */
+      processAvailablePageDefResults: function alfresco_services_PageService__processAvailablePageDefResults(pageDefs, def, index) {
+         if (def.name == null || def.nodeRef == null)
+         {
+            this.alfLog("error", "Missing attributes from page definition", def, this);
+         }
+         else
+         {
+            var processedDef = {
+               label: def.name,
+               value: def.nodeRef
+            }
+            pageDefs.push(processedDef);
+         }
       },
       
       /**
@@ -98,21 +154,49 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Extracts the page definition from the supplied payload. If the payload contains a "pageDefinition"
+       * attribute then it is expected that the value is "stringified" JSON, but if it is supplied as
+       * individual "publishOnReady", "services" and "widgets" attributes then they will need to be combined
+       * and stringified.
+       *
+       * @instance
+       * @param {object} payload The payload from which to retrieve the page definition.
+       */
+      getPageDefinitionFromPayload: function alfresco_services_PageService__getPageDefinitionFromPayload(payload) {
+         var pageDefinition = {};
+         if (payload.pageDefinition == null)
+         {
+
+            pageDefinition = {
+               publishOnReady: payload.publishOnReady,
+               services: payload.services,
+               widgets: payload.widgets
+            };
+            // pageDefinition = dojoJson.stringify(pageDefinition);
+         }
+         else
+         {
+            pageDefinition = payload.pageDefinition;
+         }
+         return pageDefinition;
+      },
+
+
+      /**
        * 
        * @instance
        * @param {object} payload The details of the page to create
        */
       createPage: function alfresco_services_PageService__createPage(payload) {
          if (payload != null && 
-             payload.pageDefinition != null &&
              payload.pageName != null)
          {
             var data = {
                name: payload.pageName,
-               json: payload.pageDefinition
+               json: this.getPageDefinitionFromPayload(payload)
             };
             this.serviceXhr({
-               url : Alfresco.constants.PROXY_URI + "remote-share/page-definition",
+               url : AlfConstants.PROXY_URI + "remote-share/page-definition",
                data: data,
                method: "POST",
                successCallback: this.pageCreateSuccess,
@@ -165,11 +249,11 @@ define(["dojo/_base/declare",
              payload.pageName != null)
          {
             var data = {
-                  name: payload.pageName,
-                  json: payload.pageDefinition
+               name: payload.pageName,
+               json: this.getPageDefinitionFromPayload(payload)
             };
             this.serviceXhr({
-               url : Alfresco.constants.PROXY_URI + "remote-share/page-definition/" + payload.pageName,
+               url : AlfConstants.PROXY_URI + "remote-share/page-definition/" + payload.pageName,
                data: data,
                method: "PUT",
                successCallback: this.pageUpdateSuccess,

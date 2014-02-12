@@ -28,19 +28,20 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "alfresco/renderers/_JsNodeMixin",
         "dojo/text!./templates/Comments.html",
         "alfresco/core/Core",
         "alfresco/core/UrlUtils",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, UrlUtils, domClass) {
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, template, AlfCore, UrlUtils, domClass) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, UrlUtils], {
+   return declare([_WidgetBase, _TemplatedMixin, _JsNodeMixin, AlfCore, UrlUtils], {
       
       /**
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/Comments.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Comments.properties"}],
@@ -49,7 +50,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Comments.css"}]
        */
       cssRequirements: [{cssFile:"./css/Comments.css"}],

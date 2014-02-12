@@ -1,0 +1,9 @@
+<webscript>
+  <shortname>Gets a unit test model from the HTTP session</shortname>
+  <description>
+     This WebScript should be used in tandem with the unit-test-model.post WebScript. This gets a previous set model
+     from the HTTP Session which is then passed to the processJsonModel directive to be rendered as a page.
+  </description>
+  <family>Unit Testing</family>
+  <url>/unit-test-model</url>
+</webscript>

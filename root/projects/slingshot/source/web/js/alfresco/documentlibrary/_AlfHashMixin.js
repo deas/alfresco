@@ -31,13 +31,13 @@
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
+        "alfresco/documentlibrary/_AlfFilterMixin",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "dojo/hash",
-        "dojo/_base/lang",
-        "dojo/io-query"], 
-        function(declare, AlfCore, _AlfDocumentListTopicMixin, hash, lang, ioQuery) {
+        "dojo/_base/lang"], 
+        function(declare, AlfCore, _AlfFilterMixin, _AlfDocumentListTopicMixin, hash, lang) {
    
-   return declare([AlfCore, _AlfDocumentListTopicMixin], {
+   return declare([AlfCore, _AlfFilterMixin, _AlfDocumentListTopicMixin], {
 
       /**
        * Extends the constructor chain to subscribe to the "/dojo/hashchange" topic which is hitched
@@ -68,39 +68,7 @@ define(["dojo/_base/declare",
        * anything to happen.
        */
       onHashChange: function alfresco_documentlibrary__AlfHashMixin__onHashChange(payload) {
-         var filterObj = ioQuery.queryToObject(payload);
-         this.alfLog("log", "New filter", filterObj);
-         
-         if (filterObj != null && filterObj.filter != null)
-         {
-            // The filter attribute will be divided up into up to 3 parts by the "bar" character (|)
-            // Part 1 = filterId (e.g. "path")
-            // Part 2 = filterData (e.g. "/some/folder/location")
-            // Part 3 = filterDisplay (?? don't actually know where this is used - but it can be provided!)
-            var splitFilter = filterObj.filter.split("|");
-            if (typeof splitFilter[0] !== "undefined")
-            {
-               filterObj.filterId = splitFilter[0];
-            }
-            if (typeof splitFilter[1] !== "undefined")
-            {
-               filterObj.filterData = splitFilter[1];
-            }
-            if (typeof splitFilter[2] !== "undefined")
-            {
-               filterObj.filterDisplay = splitFilter[2];
-            }
-         }
-         else
-         {
-            filterObj = {
-               filterId: "path",
-               filterData: "/",
-               filterDisplay: ""
-            };
-         }
-         
-         // Publish the updated filter...
+         var filterObj = this.processFilter(payload);
          this.alfLog("log", "Publishing decoded filter", filterObj);
          this.alfPublish(this.filterChangeTopic, filterObj);
       }

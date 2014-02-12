@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/Links.html",
         "alfresco/core/Core",
         "dojo/dom-construct",
-        "dojo/_base/array"], 
-        function(declare, _Widget, _Templated, template, AlfCore, domConstruct, array) {
+        "dojo/_base/array",
+        "service/constants/Default"], 
+        function(declare, _Widget, _Templated, template, AlfCore, domConstruct, array, AlfConstants) {
    
    return declare([_Widget, _Templated, AlfCore], {
       
@@ -41,7 +42,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Links.css"}]
        */
       cssRequirements: [{cssFile:"./css/Links.css"}],
@@ -69,7 +70,7 @@ define(["dojo/_base/declare",
                if (page.label && page.value)
                {
                   var nodeRef = page.value.replace("://", "/"),
-                      uri = Alfresco.constants.URL_PAGECONTEXT + "hdp/ws/rpr/" + nodeRef;
+                      uri = AlfConstants.URL_PAGECONTEXT + "hdp/ws/rpr/" + nodeRef;
                   domConstruct.create("div", {
                      innerHTML: "<a href='" + uri + "'>" + this.encodeHTML(page.label) + "</a>"
                   }, _this.linksNode);

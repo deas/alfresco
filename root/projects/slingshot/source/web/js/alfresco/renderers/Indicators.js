@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "dojo/dom-construct"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, array, lang, domConstruct) {
+        "dojo/dom-construct",
+        "service/constants/Default"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, array, lang, domConstruct, AlfConstants) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
@@ -42,7 +43,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/Indicators.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Indicators.properties"}],
@@ -51,7 +52,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Indicators.css"}]
        */
       cssRequirements: [{cssFile:"./css/Indicators.css"}],
@@ -141,7 +142,7 @@ define(["dojo/_base/declare",
          var label = this.message(indicator.label, messageArgs);
          
          domConstruct.create("img", {
-            "src": Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon,
+            "src": AlfConstants.URL_RESCONTEXT + 'components/documentlibrary/indicators/' + indicator.icon,
             "title": label,
             "alt": indicator.id
          }, outer);

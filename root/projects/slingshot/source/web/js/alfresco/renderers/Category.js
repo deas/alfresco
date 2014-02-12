@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/Category.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Category.properties"}],
@@ -47,7 +47,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
       
@@ -55,7 +55,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Category.css"}]
        */
       cssRequirements: [{cssFile:"./css/Category.css"}],

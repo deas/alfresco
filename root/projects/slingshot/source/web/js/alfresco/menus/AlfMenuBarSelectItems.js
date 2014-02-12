@@ -81,7 +81,7 @@ define(["dojo/_base/declare",
       /**
        * The topic that the widget will listen to.
        * @instance
-       * @type {string}  
+       * @type {string}
        * @default "ALF_DOCLIST_FILE_SELECTION" 
        */
       notificationTopic: "ALF_DOCLIST_FILE_SELECTION",

@@ -28,8 +28,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
         "alfresco/services/_QuickShareServiceTopicMixin",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, CoreXhr, _QuickShareServiceTopicMixin, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, CoreXhr, _QuickShareServiceTopicMixin, lang, AlfConstants) {
    
    return declare([AlfCore, CoreXhr, _QuickShareServiceTopicMixin], {
       
@@ -103,7 +104,7 @@ define(["dojo/_base/declare",
        * @param {string} nodeRefUri The nodeRef URI fragment representation
        */
       getAddQuickShareUrl: function alfresco_services_QuickShareService__getRatingsUrl(nodeRefUri) {
-         return Alfresco.constants.PROXY_URI + "api/internal/shared/share/" + nodeRefUri;
+         return AlfConstants.PROXY_URI + "api/internal/shared/share/" + nodeRefUri;
       },
       
       /**
@@ -113,7 +114,7 @@ define(["dojo/_base/declare",
        * @param {string} shareId The id to of the share to remove
        */
       getRemoveQuickShareUrl: function alfresco_services_QuickShareService__getRatingsUrl(shareId) {
-         return Alfresco.constants.PROXY_URI + "api/internal/shared/unshare/" + shareId;
+         return AlfConstants.PROXY_URI + "api/internal/shared/unshare/" + shareId;
       },
       
       /**

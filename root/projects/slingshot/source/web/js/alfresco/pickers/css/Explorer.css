@@ -58,3 +58,14 @@
     float: left;
     display: inline-block;
 }
+
+/* This rule ensures that all items are aligned in a row (e.g. the file type icon next to the name of the item) */
+.alfresco-pickers-Explorer div.content-items > div.content-item > div > div {
+   display: inline-block;
+   vertical-align: middle;
+}
+
+/* Make items that cannot be selectable slightly see through - this should arguably be a "disabled" colour for accessibility purposes */
+.alfresco-pickers-Explorer div.content-items > div.content-item > div.unselectable {
+  opacity: 0.5;
+}

@@ -101,6 +101,9 @@ define(["dojo/_base/declare",
                            {
                               name: "alfresco/documentlibrary/views/layouts/Column",
                               config: {
+                                 style: {
+                                    marginLeft: "20px" // This adds the "gutter" for any inline edit pencils to appear into.
+                                 },
                                  widgets: [
                                     {
                                        name: "alfresco/documentlibrary/views/layouts/Cell",

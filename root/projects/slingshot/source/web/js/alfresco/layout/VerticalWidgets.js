@@ -18,17 +18,83 @@
  */
 
 /**
- * @module alfresco/layouts/VerticalWidgets
+ * <p>This should be used to stack widgets in a column. Each widget will be allocated 100% of the available width and
+ * will consume as much vertical height as required. It is possible to space widgets by setting the 
+ * [widgetMarginTop]{@link module:alfresco/layout/VerticalWidgets#widgetMarginTop} and
+ * [widgetMarginBottom]{@link module:alfresco/layout/VerticalWidgets#widgetMarginBottom} attributes (but you should bear
+ * in mind that if using both attributes then the gap between 2 widgets will be the <b>combination</b> of both values).</p>
+ * <p>Example configuration:</p>
+ * <p><pre>{
+ *    "name": "alfresco/layout/VerticalWidgets",
+ *    "config": {
+ *       "widgetMarginTop": 10,
+ *       "widgetMarginBottom": 10
+ *       "widgets": [
+ *          {
+ *             "name": "alfresco/logo/Logo"
+ *          },
+ *          {
+ *             "name": "alfresco/logo/Logo"
+ *          }
+ *       ]
+ *    }
+ * }</pre></p>
+ * @module alfresco/layout/VerticalWidgets
  * @extends module:alfresco/core/ProcessWidgets
  * @author Dave Draper
  */
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
         "dojo/dom-construct",
+        "dojo/dom-style",
         "dojo/_base/array"], 
-        function(ProcessWidgets, declare, domConstruct, array) {
+        function(ProcessWidgets, declare, domConstruct, domStyle, array) {
    
    return declare([ProcessWidgets], {
       
+      /**
+       * The CSS class (or a space separated list of classes) to include in the DOM node.
+       * 
+       * @instance
+       * @type {string}
+       * @default "horizontal-widgets"
+       */
+      baseClass: "alfresco-layout-VerticalWidgets",
+
+      /**
+       * This is the size of margin (in pixels) that will appear to the left of every widget added. 
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      widgetMarginTop: null,
+
+      /**
+       * This is the size of margin (in pixels) that will appear to the right of every widget added. 
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      widgetMarginBottom: null,
+
+      /**
+       * Iterate over the created widgets and add the requested margin to them.
+       *
+       * @instance
+       */
+      allWidgetsProcessed: function alfresco_layout_VerticalWidgets__allWidgetsProcessed(widgets) {
+         if (this.widgetMarginTop != null ||
+             this.widgetMarginBottom != null)
+         {
+            array.forEach(widgets, function(widget, i) {
+               domStyle.set(widget.domNode, {
+                  "marginTop": this.widgetMarginTop + "px",
+                  "marginBottom": this.widgetMarginBottom + "px"
+               });
+            }, this);
+         }
+      }
    });
 });

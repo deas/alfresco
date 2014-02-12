@@ -248,9 +248,7 @@ function getPages(includeUnusedPages)
          {
             try
             {
-               // Parse json using Java to a org.json.simple.JSONArray (wrap in an object to keep toObject happy)
-               sitePages = jsonUtils.toObject('{"tmp":' + sitePages + '}').tmp;
-               
+
                // Print array as json and use eval so we get a Rhino javascript array to execute as usual
                sitePages = eval("(" + sitePages.toString() + ")");
             }
@@ -1802,6 +1800,20 @@ function getHeaderModel() {
                            config: {
                               label: "Update Logging Preferences",
                               publishTopic: "ALF_UPDATE_LOGGING_PREFERENCES"
+                           }
+                        },
+                        {
+                           name: "alfresco/menus/AlfMenuItem",
+                           config: {
+                              label: "Show Pub/Sub Log",
+                              publishTopic: "ALF_SHOW_PUBSUB_LOG"
+                           }
+                        },
+                        {
+                           name: "alfresco/menus/AlfMenuItem",
+                           config: {
+                              label: "Show Data Model",
+                              publishTopic: "ALF_SHOW_DATA_MODEL"
                            }
                         }
                      ]

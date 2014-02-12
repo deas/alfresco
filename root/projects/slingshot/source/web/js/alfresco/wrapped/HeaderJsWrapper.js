@@ -18,6 +18,13 @@
  */
 
 /**
+ * <p>This was written with the express and only purpose of supporting Share configured to display the 
+ * header menu in "legacy" mode and should not be used for any other purpose. It is designed to wrap
+ * "app-items" elements of type "js" of which there are only expected to be a single entry representing
+ * the "Site" drop-down menu. There is no expectation that this should work with any other JavaScript
+ * resource and is intended to support the bare minimum functionality for rendering the "legacy" header
+ * using this framework.</p>
+ *
  * @module alfresco/wrapped/HeaderJsWrapper
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin

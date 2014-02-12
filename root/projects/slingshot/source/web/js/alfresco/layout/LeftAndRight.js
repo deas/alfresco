@@ -35,10 +35,11 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/LeftAndRight.css"}]
        */
-      cssRequirements: [{cssFile:"./css/LeftAndRight.css"}],
+      cssRequirements: [{cssFile:"./css/LeftAndRight.css"},
+                        {cssFile:"./css/HorizontalWidgets.css"}],
       
       /**
        * The HTML template to use for the widget.

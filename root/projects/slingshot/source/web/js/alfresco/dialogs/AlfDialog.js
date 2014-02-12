@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfDialog.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDialog.css"}],
@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDialog.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDialog.properties"}],
@@ -66,7 +66,7 @@ define(["dojo/_base/declare",
        * Basic text content to be added to the dialog.
        * 
        * @instance
-       * @type {String} textContent
+       * @type {String}
        * @default ""
        */
       textContent: "",
@@ -110,10 +110,28 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_dialogs_AlfDialog__postCreate() {
          this.inherited(arguments);
+
+         // Listen for requests to resize the dialog...
+         this.alfSubscribe("ALF_RESIZE_DIALOG", lang.hitch(this, "onResizeRequest"));
+
          domClass.add(this.domNode, "alfresco-dialog-AlfDialog");
          this.bodyNode = domConstruct.create("div", {
             "class" : "dialog-body"
          }, this.containerNode, "last");
+
+         // It is important to create the buttons BEFORE creating the main body. This is especially important
+         // for when the buttons will respond to initial setup events from a form placed inside the body (e.g.
+         // so that the buttons are disabled initially if required)
+         if (this.widgetsButtons != null)
+         {
+            this.creatingButtons = true;
+            this.buttonsNode = domConstruct.create("div", {
+               "class" : "footer"
+            }, this.containerNode, "last");
+            this.processWidgets(this.widgetsButtons, this.buttonsNode);
+            this.creatingButtons = false;
+         }
+
          if (this.widgetsContent != null)
          {
             // Add widget content to the container node...
@@ -126,45 +144,19 @@ define(["dojo/_base/declare",
             // setting basic text content in an confirmation dialog...
             html.set(this.bodyNode, this.encodeHTML(this.textContent));
          }
-         
-         if (this.widgetsButtons != null)
-         {
-            this.buttonsNode = domConstruct.create("div", {
-               "class" : "footer"
-            }, this.containerNode, "last");
-            this.processWidgets(this.widgetsButtons, this.buttonsNode);
-         }
       },
       
       /**
-       * Extends the inherited function to ensure that all the widgets created in the dialog body are included
-       * in any publish payloads. This is important in order that the subscription callback has access to any
-       * data that the user may have set. 
-       * 
+       * Calls the resize() function
+       *
        * @instance
-       * @param {DOM element} rootNode The DOM node where the widget should be created.
-       * @param {object} widgetConfig The configuration for the widget to be created
-       * @param {number} index The index of the widget configuration in the array that it was taken from
+       * @param {object} payload
        */
-      processWidget: function alfresco_dialogs_AlfDialog__processWidget(rootNode, widgetConfig, index) {
-         if (this.buttonsNode)
-         {
-            // Ensure that the contents of the dialog are included in any publication...
-            if (widgetConfig.config == null)
-            {
-               widgetConfig.config = {};
-            }
-            if (widgetConfig.config.publishPayload == null)
-            {
-               widgetConfig.config.publishPayload = {};
-            }
-            
-            var widgets = registry.findWidgets(this.containerNode);
-            widgetConfig.config.publishPayload.dialogContent = widgets;
-         }
-         this.inherited(arguments);
+      onResizeRequest: function alfresco_dialogs_AlfDialog__onResizeRequest(payload) {
+         this.alfLog("log", "Resizing dialog");
+         this.resize();
       },
-      
+
       /**
        * Iterates over any buttons that are created and calls the [attachButtonHandler]{@link module:alfresco/dialogs/AlfDialog#attachButtonHandler} 
        * function with each of them to ensure that clicking a button always results in the dialog being hidden. It is up to the 
@@ -174,13 +166,37 @@ define(["dojo/_base/declare",
        * @param {Object[]}
        */
       allWidgetsProcessed: function alfresco_dialogs_AlfDialog__allWidgetsProcessed(widgets) {
-         if (this.buttonsNode)
+         if (this.creatingButtons == true)
          {
-            // If buttonsNode exists then we know this has been called after creating buttons...
+            // When creating the buttons, attach the handler to each created...
+            this._buttons = [];
             array.forEach(widgets, lang.hitch(this, "attachButtonHandler"));
+         }
+         else
+         {
+            // Once all the content is created the widget instances are added to the publish payload
+            // of all the buttons. This is done so that the dialog content is always included in publish
+            // requests. It is important NOT to override the default payload...
+            array.forEach(this._buttons, function(button, index) {
+               if (button.publishPayload == null)
+               {
+                  button.publishPayload = {};
+               }
+               button.publishPayload.dialogContent = widgets;
+               button.publishPayload.dialogRef = this; // Add a reference to the dialog itself so that it can be destroyed
+            });
          }
       },
       
+      /**
+       * This field is used to keep track of the buttons that are created.
+       * 
+       * @instance
+       * @type {object[]
+       * @default null
+       */
+      _buttons: null,
+
       /**
        * Hitches each button click to the "hide" method so that whenever a button is clicked the dialog will be hidden.
        * It's assumed that the buttons will take care of their own business.
@@ -192,6 +208,7 @@ define(["dojo/_base/declare",
       attachButtonHandler: function alfresco_dialogs_AlfDialog__attachButtonHandler(widget, index) {
          if (widget != null)
          {
+            this._buttons.push(widget); // Add the button so we can add the content to them later...
             aspect.before(widget, "onClick", lang.hitch(this, "hide"));
          }
       }

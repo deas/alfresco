@@ -1,7 +1,16 @@
 .alfresco-renderers-Property {
-   margin: 0 10px 0 20px;
+   /*margin: 0 10px 0 0;*/
    line-height: 20px;
    color: $theme-color-1;
+}
+
+.alfresco-renderers-Property.alfresco-renderers-Property.block {
+   display: block;
+}
+
+.alfresco-renderers-Property > span.label {
+   color: #606060;
+   margin-right: 5px;
 }
 
 .alfresco-renderers-Property.faded {
@@ -9,21 +18,25 @@
 }
 
 .alfresco-renderers-Property.small {
-   font-size: 83%
+   font-size: 83%;
 }
 
 .alfresco-renderers-Property.medium {
-   font-size: 100%%
+   font-size: 100%;
 }
 
 .alfresco-renderers-Property.large {
    font-size: 116%;
 }
 
-.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item:hover .alfresco-renderers-Property.share-hidden.hover-only {
+.alfresco-renderers-Property .hidden {
+  display: none;
+}
+
+.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item:hover .alfresco-renderers-Property.hover-only > span.inner {
    display: inline;
 }
 
-.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item .alfresco-renderers-Property.share-hidden.hover-only{
+.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item .alfresco-renderers-Property.hover-only > span.inner {
    display: none;
 }

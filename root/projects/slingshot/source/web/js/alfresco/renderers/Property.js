@@ -34,15 +34,17 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "alfresco/renderers/_JsNodeMixin",
         "alfresco/core/ObjectTypeUtils",
         "dojo/text!./templates/Property.html",
         "alfresco/core/Core",
         "alfresco/renderers/_ItemLinkMixin",
         "dojo/_base/lang",
-        "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, ObjectTypeUtils, template, AlfCore, _ItemLinkMixin, lang, domClass) {
+        "dojo/dom-class",
+        "dojo/dom-style"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, ObjectTypeUtils, template, AlfCore, _ItemLinkMixin, lang, domClass, domStyle) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _ItemLinkMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _JsNodeMixin, _ItemLinkMixin], {
       
       
       /**
@@ -52,14 +54,14 @@ define(["dojo/_base/declare",
        * @type {string[]}
        * @default ["/yui/yahoo/yahoo.js","/js/alfresco.js"]
        */
-      nonAmdDependencies: ["/yui/yahoo/yahoo.js",
+      nonAmdDependencies: ["/js/yui-common.js",
                            "/js/alfresco.js"],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/Property.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Property.properties"}],
@@ -68,7 +70,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Property.css"}]
        */
       cssRequirements: [{cssFile:"./css/Property.css"}],
@@ -137,7 +139,7 @@ define(["dojo/_base/declare",
        * By default this is the empty string but will be converted to the HTML for opening an anchor
        * when the property is to be used as a link to access the item
        * @instance
-       * @type {string}  
+       * @type {string}
        * @default ""
        */
       anchorOpen: "",
@@ -146,7 +148,7 @@ define(["dojo/_base/declare",
        * By default this is the empty string but will be converted to the HTML for closing an anchor
        * when the property is to be used as a link to access the item
        * @instance
-       * @type {string}  
+       * @type {string}
        * @default ""
        */
       anchorClose: "",
@@ -170,7 +172,7 @@ define(["dojo/_base/declare",
       /**
        * This can be either small, medium or large.
        * @instance
-       * @type {string}  
+       * @type {string}
        * @default "medium"
        */
       renderSize: "medium",
@@ -195,18 +197,46 @@ define(["dojo/_base/declare",
       onlyShowOnHover: false,
       
       /**
+       * The label for the property. Won't be shown if left as null.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      label: null,
+
+      /**
+       * Indicates whether or not the property will be rendered on a new line.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      renderOnNewLine: false,
+
+      /**
        * Set up the attributes to be used when rendering the template.
        * 
        * @instance
        */
       postMixInProperties: function alfresco_renderers_Property__postMixInProperties() {
-         if (this.renderAsLink)
+         if (this.label != null)
          {
-            var linkDetails = this.generateFileFolderLink();
-            var itemLinkHref = linkDetails.itemLinkHref + linkDetails.itemLinkRelative;
-            this.anchorOpen = "<a href='" + itemLinkHref + "'>"
-            this.anchorClose = "</a>"
+            this.label = this.message(this.label) + ": ";
          }
+         else
+         {
+            this.label = "";
+         }
+         
+         // if (this.renderAsLink)
+         // {
+         //    // var linkDetails = this.generateFileFolderLink();
+         //    // var itemLinkHref = linkDetails.itemLinkHref + linkDetails.itemLinkRelative;
+         //    // this.anchorOpen = "<a href='" + itemLinkHref + "'>"
+         //    // this.anchorClose = "</a>"
+         //    this.createItemLinnk(this.domNode);
+         // }
          
          if (ObjectTypeUtils.isString(this.propertyToRender) && 
              ObjectTypeUtils.isObject(this.currentItem) && 
@@ -222,6 +252,11 @@ define(["dojo/_base/declare",
 
          this.renderedValueClass = this.renderedValueClass + " " + this.renderSize;
          
+         if (this.renderOnNewLine == true)
+         {
+            this.renderedValueClass = this.renderedValueClass + " block";
+         }
+
          // If the renderedValue is not set then display a warning message if requested...
          if (this.renderedValue == null && this.warnIfNotAvailable)
          {
@@ -263,11 +298,16 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_renderers_Property__postCreate() {
          if (this.onlyShowOnHover == true)
          {
-            domClass.add(this.domNode, "share-hidden hover-only")
+            domClass.add(this.domNode, "hover-only");
          }
          else
          {
             // No action
+         }
+
+         if (this.renderAsLink)
+         {
+            this.createItemLink(this.renderedValueNode);
          }
       },
       

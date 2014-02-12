@@ -34,8 +34,9 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "alfresco/layout/LeftAndRight",
         "alfresco/renderers/Selector",
-        "alfresco/renderers/MoreInfo"], 
-        function(declare, Thumbnail, template, lang, domStyle, domClass, LeftAndRight, Selector, MoreInfo) {
+        "alfresco/renderers/MoreInfo",
+        "service/constants/Default"], 
+        function(declare, Thumbnail, template, lang, domStyle, domClass, LeftAndRight, Selector, MoreInfo, AlfConstants) {
 
    return declare([Thumbnail], {
       
@@ -52,7 +53,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/GalleryThumbnail.css"}]
        */
       cssRequirements: [{cssFile:"./css/GalleryThumbnail.css"}],
@@ -77,13 +78,13 @@ define(["dojo/_base/declare",
        * @returns {boolean}
        */
       getFolderImage: function alfresco_renderers_GalleryThumbnail__getDefaultFolderImage() {
-         return Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/images/folder-256.png";
+         return AlfConstants.URL_RESCONTEXT + "components/documentlibrary/images/folder-256.png";
       },
       
       /**
        * The type of rendition to use for the thumbnail
        * @instance
-       * @type {string} renditionName
+       * @type {string}
        * @default "imgpreview"
        */
       renditionName: "imgpreview",

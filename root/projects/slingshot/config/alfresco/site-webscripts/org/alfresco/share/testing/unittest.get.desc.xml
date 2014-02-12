@@ -1,0 +1,6 @@
+<webscript>
+  <shortname>Unit Test</shortname>
+  <description>This WebScript is a standalone unit test page that is designed to have test page definitions posted to it.</description>
+  <family>Unit Testing</family>
+  <url>/unittest</url>
+</webscript>

@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
        * be locked in the open state.
        * 
        * @instance
-       * @type _lockPopupsOpen {boolean}
+       * @type {boolean}
        */
       _lockPopupsOpen: false,
 
@@ -77,7 +77,7 @@ define(["dojo/_base/declare",
        * The scope to use for i18n messages.
        * 
        * @instance
-       * @type i18nScope {String}
+       * @type {String}
        */
       i18nScope: "org.alfresco.Menus",
       
@@ -85,7 +85,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type cssRequirements {Array}
+       * @type {Array}
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBar.css"}],
       
@@ -93,14 +93,14 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type i18nRequirements {Array}
+       * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfMenuBar.properties"}],
       
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
       
@@ -108,7 +108,7 @@ define(["dojo/_base/declare",
        * A reference to the MenuBar
        * 
        * @instance
-       * @type _menuBar {Object}
+       * @type {Object}
        */
       _menuBar: null,
       

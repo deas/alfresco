@@ -26,21 +26,103 @@
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
+        "service/constants/Default",
         "alfresco/core/UrlUtils",
-        "alfresco/core/PathUtils"], 
-        function(declare, AlfCore, UrlUtils, PathUtils) {
+        "alfresco/core/PathUtils",
+        "dojo/_base/lang",
+        "dojo/on",
+        "dojo/_base/event",
+        "dojo/query",
+        "dojo/NodeList",
+        "dojo/NodeList-manipulate"], 
+        function(declare, AlfCore, AlfConstants, UrlUtils, PathUtils, lang, on, event, query, NodeList, nlManip) {
    
    return declare([AlfCore, UrlUtils, PathUtils], {
 
       /**
+       * This function can be called to create a "link" from an item to another page (e.g. this would
+       * typically be used on an item within a collection to navigate to the details of that item)
+       * This will wrap the node in an anchor element but will actually publish a navigation when clicked
+       * and swallow the click event to prevent the browser from processing it directly.
+       *
+       * @instance
+       * @param {element} domNode The node on which to create the link.
+       */
+      createItemLink: function alfresco_renderers__ItemLinkMixin__createItemLink(domNode) {
+
+         if (domNode == null) 
+         {
+            this.alfLog("warn", "A request has been made to create a link for an item, but no DOM node has been provided", this);
+         }
+         else
+         {
+            // Generate the link information for the current item...
+            var payload = this.generateFileFolderLink();
+
+            // Work out the URL to use in a fake anchor (the anchor click will never be processed)...
+            // TODO: This code is based on something similar from "alfresco/menus/_AlfMenuItemMixin" and the two should be merged into
+            //       a common helper function - probably in this module...
+            var url;
+            if (typeof payload.type == "undefined" ||
+                payload.type == null ||
+                payload.type == "" ||
+                payload.type == "SHARE_PAGE_RELATIVE")
+            {
+               url = AlfConstants.URL_PAGECONTEXT + payload.url;
+            }
+            else if (payload.type == "CONTEXT_RELATIVE")
+            {
+               url = AlfConstants.URL_CONTEXT + payload.url;
+            }
+            else if (payload.type == "FULL_PATH")
+            {
+               url = payload.url;
+            }
+            else
+            {
+               url = window.location.pathname + "#" + payload.url;
+            }
+
+            // Attach the click event to the node...
+            on(domNode, "click", lang.hitch(this, "onItemLinkClick", payload));
+            dojo.query(domNode).wrap("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
+         }
+      },
+
+      /**
+       * This is the topic that will be published when the item is clicked. The default is aimed at being processed
+       * by the [NavigationService]{@link module:alfresco/services/NavigationService} but it can be overridden by the
+       * widget mixing in this class to set a custom topic to use.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_NAVIGATE_TO_PAGE"
+       */
+      linkClickTopic: "ALF_NAVIGATE_TO_PAGE",
+
+      /**
+       * This handles the onClick events of the linked item. The supplied payload will be published to the navigation
+       * service to redirect the page or update the current URL hash.
+       *
+       * @instance
+       * @param {event} evt The click event
+       */
+      onItemLinkClick: function alfresco_renderers__ItemLinkMixin__onItemLinkClick(payload, evt) {
+         // Stop the event to prevent the browser from processing the clicked anchor...
+         event.stop(evt);
+         this.alfLog("log", "Item link clicked: ", payload, this);
+         this.alfPublish(this.linkClickTopic, payload);
+      },
+
+      /**
        * @instance
        */
-      generateFileFolderLink: function alfresco_renderers_Thumbnail__generateFileFolderLink() {
+      generateFileFolderLink: function alfresco_renderers__ItemLinkMixin__generateFileFolderLink() {
          
-         var link = {
-            itemLinkHref: "",
-            itemLinkClass: "",
-            itemLinkRelative: ""
+         var payload = {
+            url: "",
+            type: "FULL_PATH",
+            target: "CURRENT"
          };
          if (this.currentItem != null && this.currentItem.node)
          {
@@ -54,14 +136,14 @@ define(["dojo/_base/declare",
             {
                if (jsNode.isContainer)
                {
-                  link.itemLinkHref = $siteURL("documentlibrary?path=" + encodeURIComponent(this.currentItem.location.path),
+                  payload.url = $siteURL("documentlibrary?path=" + encodeURIComponent(this.currentItem.location.path),
                   {
                      site: this.currentItem.location.site.name
                   });
                }
                else
                {
-                  link.itemLinkHref = this.getActionUrls(this.currentItem, this.currentItem.location.site.name).documentDetailsUrl;
+                  payload.url = this.getActionUrls(this.currentItem, this.currentItem.location.site.name).documentDetailsUrl;
                }
             }
             else
@@ -71,16 +153,14 @@ define(["dojo/_base/declare",
                   if (this.currentItem.parent.isContainer)
                   {
                      // handle folder parent node
-                     link.itemLinkHref = "#";
-                     link.itemLinkClass = "filter-change";
-                     link.itemLinkRelative = this.generatePathMarkup(this.currentItem.location);
+                     payload.type = "HASH";
+                     payload.url = this.generatePathMarkup(this.currentItem.location);
                   }
                   else if (this.currentItem.location.path === "/")
                   {
                      // handle Repository root parent node (special store_root type - not a folder)
-                     link.itemLinkHref = "#";
-                     link.itemLinkClass = "filter-change";
-                     link.itemLinkRelative = this.generateFilterMarkup({
+                     payload.type = "HASH";
+                     payload.url = this.generateFilterMarkup({
                         filterId: "path",
                         filterData: $combine(this.currentItem.location.path, "")
                      });
@@ -88,7 +168,8 @@ define(["dojo/_base/declare",
                   else
                   {
                      // handle unknown parent node types
-                     link.itemLinkHref = "#";
+                     payload.type = "HASH";
+                     payload.url = "#";
                   }
                }
                else
@@ -98,23 +179,66 @@ define(["dojo/_base/declare",
                   var actionsUrls = this.getActionUrls(this.currentItem);
                   if (jsNode.isLink && jsNode.linkedNode.isContainer)
                   {
-                     link.itemLinkHref = actionUrls.folderDetailsUrl;
+                     payload.url = actionUrls.folderDetailsUrl;
                   }
                   else
                   {
-                     link.itemLinkHref = actionUrls.documentDetailsUrl;
+                     payload = this.getDetailsPayload();
                   }
                }
             }
          }
-         return link;
+         payload.item = this.currentItem;
+         return payload;
       },
       
+      /**
+       * The standard details URL can be optionally overridden to go do a different page
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+      customDetailsURL: null,
+
+      /**
+       * Retrieves the navigation payload to use for accessing the details page for an item. The defail payload
+       * can be overridden by setting a [custom details URL]{@link module:alfresco/renderers/_ItemLinkMixin#customDetailsURL}
+       * or by overriding this function in classes that mixin this module.
+       *
+       * @returns {object} The navigtation payload to use.
+       */
+      getDetailsPayload: function alfresco_renderers__ItemLinkMixin__getDetailsUrl() {
+         var payload = {
+            url: "",
+            type: "FULL_PATH",
+            target: "CURRENT"
+         };
+         if (this.customDetailsURL == null)
+         {
+            var actionsUrls = this.getActionUrls(this.currentItem);
+            payload.url = actionUrls.documentDetailsUrl;
+         }
+         else
+         {
+            // If a custom URL has been provided then use that but append the nodeRef URI on the end
+            payload.url = this.customDetailsURL
+            if (lang.exists("currentItem.jsNode.nodeRef.uri", this))
+            {
+               // If the current item is a node with an accessible uri attribute then append it to the URL...
+               // We should possibly only do this if a boolean attribute is set to true but at the moment
+               // I can't see any cases where you wouldn't want to specify the node...
+               payload.url += "/" + this.currentItem.jsNode.nodeRef.uri;
+            }
+         }
+         return payload;
+      },
+
       /**
        * @instance
        * @param {object} filter
        */
-      generateFilterMarkup: function alfresco_renderers_Thumbnail__generateFilterMarkup(filter)
+      generateFilterMarkup: function alfresco_renderers__ItemLinkMixin__generateFilterMarkup(filter)
       {
          var filterObj = Alfresco.util.cleanBubblingObject(filter);
          return YAHOO.lang.substitute("filter={filterId}|{filterData}|{filterDisplay}", filterObj, function(p_key, p_value, p_meta)
@@ -127,7 +251,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} locn
        */
-      generatePathMarkup: function alfresco_renderers_Thumbnail__generatePathMarkup(locn)
+      generatePathMarkup: function alfresco_renderers__ItemLinkMixin__generatePathMarkup(locn)
       {
          return this.generateFilterMarkup(
          {

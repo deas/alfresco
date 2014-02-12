@@ -26,21 +26,36 @@
  */
 define(["dojo/_base/declare",
         "alfresco/core/CoreData",
+        "alfresco/core/PubSubLog",
+        "service/constants/Default",
         "dijit/registry",
         "dojo/topic",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
+        "dojo/dom-style",
         "dojox/uuid/generateRandomUuid",
         "dojo/request/xhr",
         "dojo/json",
         "dojo/date/stamp",
         "dojox/html/entities",
         "dojo/sniff"], 
-        function(declare, CoreData, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp, htmlEntities, has) {
+        function(declare, CoreData, PubSubLog, AlfConstants, registry, pubSub, array, lang, domConstruct, domStyle, uuid, xhr, JSON, stamp, htmlEntities, has) {
    
    return declare(null, {
       
+      /**
+       * This has been added purely to prevent any object that inherits from this mixin from being 
+       * iterated over in the pub/sub log. It aims to prevent infinite loops (although there is protection
+       * for this in the [SubscriptionLog]{@link module:alfresco/testing/SubscriptionLog}) module). It should
+       * also ensure that only useful information is displayed in the log.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      excludeFromPubSubLog: true,
+
       /**
        * Creates and returns a new UUID (universally unique identifier). The UUID is generated using the
        * dojox/uuid/generateRandomUuid module
@@ -367,7 +382,18 @@ define(["dojo/_base/declare",
        */
       alfPublish: function alfresco_core_Core__alfPublish(topic, payload, global) {
          var scopedTopic = (global ? "" : this.pubSubScope) + topic;
+         if (payload == null)
+         {
+            payload = {};
+         }
          payload.alfTopic = scopedTopic;
+
+         if (AlfConstants.DEBUG == true)
+         {
+            PubSubLog.getSingleton().pub(scopedTopic, payload, this);
+         }
+
+         // Publish...
          pubSub.publish(scopedTopic, payload);
       },
       
@@ -385,6 +411,12 @@ define(["dojo/_base/declare",
        */
       alfSubscribe: function alfresco_core_Core__alfSubscribe(topic, callback, global) {
          var scopedTopic = (global ? "" : this.pubSubScope) + topic;
+
+         if (AlfConstants.DEBUG == true)
+         {
+            PubSubLog.getSingleton().sub(scopedTopic, callback, this);
+         }
+
          var handle = pubSub.subscribe(scopedTopic, callback);
          if (this.alfSubscriptions == null)
          {
@@ -404,6 +436,10 @@ define(["dojo/_base/declare",
       alfUnsubscribe: function alfresco_core_Core__alfUnsubscribe(handle) {
          if (handle) 
          {
+            if (AlfConstants.DEBUG == true)
+            {
+               PubSubLog.getSingleton().unsub(handle, this);
+            }
             handle.remove();
          }
       },
@@ -438,6 +474,26 @@ define(["dojo/_base/declare",
                this.alfRemoveDataListener(binding);
             }, this);
          }
+
+         if (this.servicesToDestroy != null)
+         {
+            array.forEach(this.servicesToDestroy, function(service, i) {
+               if (service != null && typeof service.destroy === "function")
+               {
+                  service.destroy();
+               }
+            }, this);
+         }
+
+         if (this.widgetsToDestroy != null)
+         {
+            array.forEach(this.widgetsToDestroy, function(widget, i) {
+               if (widget != null && typeof widget.destroy === "function")
+               {
+                  widget.destroy();
+               }
+            }, this);
+         }
       },
 
       /**
@@ -447,7 +503,7 @@ define(["dojo/_base/declare",
        * 
        * @instance 
        * @param {Object[]} widgets An array of the widget definitions to instantiate
-       * @param {DOM Element} rootNode The DOM node which should be used to add instantiated widgets to
+       * @param {element} rootNode The DOM node which should be used to add instantiated widgets to
        */
       processWidgets: function alfresco_core_Core__processWidgets(widgets, rootNode) {
          // There are two options for providing configuration, either via a JSON object or
@@ -479,7 +535,7 @@ define(["dojo/_base/declare",
        * out widget creation in specific circumstances.
        *
        * @instance
-       * @param {DOM element} rootNode The DOM node where the widget should be created.
+       * @param {element} rootNode The DOM node where the widget should be created.
        * @param {object} widgetConfig The configuration for the widget to be created
        * @param {number} index The index of the widget configuration in the array that it was taken from
        */
@@ -576,6 +632,26 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This will be used to keep track of all services that are created so that they can be destroyed
+       * when the the current instance is destroyed.
+       *
+       * @instance
+       * @type {object[]}
+       * @default
+       */
+      servicesToDestroy: null,
+
+      /**
+       * This will be used to keep track of all widgets that are created so that they can be destroyed
+       * when the the current instance is destroyed.
+       *
+       * @instance
+       * @type {object[]}
+       * @default
+       */
+      widgetsToDestroy: null,
+
+      /**
        * Handles the dependency management and instantiation of services required.
        * 
        * @instance
@@ -585,6 +661,11 @@ define(["dojo/_base/declare",
          var _this = this;
          if (services)
          {
+            if (this.servicesToDestroy == null)
+            {
+               this.servicesToDestroy = [];
+            }
+
             // Iterate over all the widgets in the configuration object and add them...
             array.forEach(services, function(entry, i) {
                var dep = null,
@@ -603,7 +684,8 @@ define(["dojo/_base/declare",
                }
                var requires = [dep];
                require(requires, function(ServiceType) {
-                  new ServiceType(config);
+                  var service = new ServiceType(config);
+                  _this.servicesToDestroy.push(service);
                });
             });
          }
@@ -616,7 +698,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @param {object} widget The widget definition to create the DOM node for
-       * @param {DOM Element} rootNode The DOM node to create the new DOM node as a child of
+       * @param {element} rootNode The DOM node to create the new DOM node as a child of
        * @param {string} rootClassName A string containing one or more space separated CSS classes to set on the DOM node
        */
       createWidgetDomNode: function alfresco_core_Core__createWidgetDomNode(widget, rootNode, rootClassName) {
@@ -640,7 +722,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @param {object} config The configuration for the widget
-       * @param {DOM Element} domNode The DOM node to attach the widget to
+       * @param {element} domNode The DOM node to attach the widget to
        * @param {function} callback A function to call once the widget has been instantiated
        * @param {object} callbackScope The scope with which to call the callback
        * @param {number} index The index of the widget to create (this will effect it's location in the 
@@ -697,12 +779,24 @@ define(["dojo/_base/declare",
             // Instantiate the new widget
             // This is an asynchronous response so we need a callback method...
             widget = new WidgetType(initArgs, domNode);
+            if (_this.widgetsToDestroy == null)
+            {
+               _this.widgetsToDestroy = [];
+               _this.widgetsToDestroy.push(widget);
+            }
             _this.alfLog("log", "Created widget", widget);
             widget.startup();
             if (config.assignTo != null)
             {
                _this[config.assignTo] = widget;
             }
+
+            // Set any additional style attributes...
+            if (initArgs.style != null && widget.domNode != null)
+            {
+               domStyle.set(widget.domNode, initArgs.style);
+            }
+
             if (callback)
             {
                // If there is a callback then call it with any provided scope (but default to the
@@ -716,31 +810,6 @@ define(["dojo/_base/declare",
             this.alfLog("warn", "A widget was not declared so that it's modules were included in the loader cache", config, this);
          }
          return widget;
-      },
-      
-      /**
-       * Mixes in additional functions defined by a "functionMixins" instance property. This function 
-       * is no longer commonly used and may not actually be required. It was initially provided
-       * for form processing. It's being marked as deprecated as it may get deleted
-       * 
-       * @instance
-       * @deprecated
-       */
-      processFunctionMixins: function alfresco_core_Core__processFunctionMixins() {
-         var _this = this;
-         if (this.functionMixins != null)
-         {
-           
-            array.forEach(this.functionMixins, function(mixin, index) {
-               var requires = [mixin];
-               require(requires, function(MixinType) {
-                  // This is an asynchronous response so we need a callback method...
-                  var mixinInstance = new MixinType();
-                  _this.alfLog("log", "Created mixin", mixinInstance);
-                  declare.safeMixin(_this, mixinInstance);
-               });
-            });
-         }
       },
       
       /**

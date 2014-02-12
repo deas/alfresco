@@ -49,7 +49,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfDocumentActionMenuItem.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDocumentActionMenuItem.css"}],

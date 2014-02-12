@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "alfresco/menus/_AlfPopupCloseMixin",
         "dojo/dom-construct",
         "dojo/dom-class",
-        "alfresco/menus/AlfMenuGroups"], 
-        function(declare, PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domConstruct, domClass, AlfMenuGroups) {
+        "alfresco/menus/AlfMenuGroups",
+        "service/constants/Default"], 
+        function(declare, PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domConstruct, domClass, AlfMenuGroups, AlfConstants) {
    
    return declare([PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin], {
       
@@ -50,7 +51,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfMenuBarPopup.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBarPopup.css"}],
@@ -71,6 +72,16 @@ define(["dojo/_base/declare",
        * @default ""
        */
       iconAltText: "",
+
+      /**
+       * If an optional iconSrc is provided, the menu icon will be rendered using that image instead of
+       * the transparent one.
+       * 
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      iconSrc: "",
       
       /**
        * This CSS class is added to the container node when an icon is to be included with the label. By
@@ -110,7 +121,7 @@ define(["dojo/_base/declare",
          {
             this.iconNode = domConstruct.create("img", { 
                className: this.iconClass, 
-               src: Alfresco.constants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
+               src: AlfConstants.URL_RESCONTEXT + (this.iconSrc ? this.iconSrc : "js/alfresco/menus/css/images/transparent-20.png"),
                alt: this.message(this.iconAltText)
             }, this.focusNode, "first");
             if (this.label)

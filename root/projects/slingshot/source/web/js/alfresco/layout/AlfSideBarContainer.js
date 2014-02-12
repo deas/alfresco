@@ -46,10 +46,12 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfSideBarContainer.css"}]
        */
-      cssRequirements: [{cssFile:"./css/AlfSideBarContainer.css"}],
+      cssRequirements: [{cssFile:"/themes/lightTheme/yui/assets/skin.css"},
+                        {cssFile:"/css/yui-fonts-grids.css"},
+                        {cssFile:"./css/AlfSideBarContainer.css"}],
       
       /**
        * The HTML template to use for the widget.
@@ -58,6 +60,19 @@ define(["dojo/_base/declare",
        */
       templateString: template,
       
+      /**
+       * This uses the YUI YAHOO.util.Resize widget.
+       * 
+       * @instance
+       * @type {String[]} 
+       */
+      nonAmdDependencies: ["/yui/yahoo-dom-event/yahoo-dom-event.js",
+                           "/yui/dragdrop/dragdrop.js",
+                           "/yui/element/element.js",
+                           "/yui/animation/animation.js",
+                           "/yui/resize/resize.js"],
+
+
       /**
        * Indicates whether or not to show the sidebar when initially rendered.
        * @instance
@@ -342,7 +357,7 @@ define(["dojo/_base/declare",
       
       /**
        * @instance
-       * @type {integer} hiddenSidebarWidth Keeps track of the last sidebar width before it gets hidden.
+       * @type {integer}
        */
       hiddenSidebarWidth: null,
       

@@ -52,7 +52,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/SlideOverlay.css"}]
        */
       cssRequirements: [{cssFile:"./css/SlideOverlay.css"}],

@@ -25,8 +25,10 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/core/PathUtils"], 
-        function(declare, PathUtils) {
+        "alfresco/core/PathUtils",
+        "service/constants/Default",
+        "dojo/_base/lang"], 
+        function(declare, PathUtils, AlfConstants, lang) {
    
    return declare([PathUtils], {
 
@@ -37,7 +39,8 @@ define(["dojo/_base/declare",
        * @type {String[]}
        * @default ["/js/alfresco.js"]
        */
-      nonAmdDependencies: ["/js/alfresco.js"],
+      nonAmdDependencies: ["/js/yui-common.js",
+                           "/js/alfresco.js"],
       
       /**
        * Generate User Profile link
@@ -51,39 +54,42 @@ define(["dojo/_base/declare",
          {
             return '<span>' + this.message("details.user.deleted", Alfresco.util.encodeHTML(oUser.userName)) + '</span>';
          }
-         return Alfresco.util.userProfileLink(oUser.userName, YAHOO.lang.trim(oUser.firstName + " " + oUser.lastName));
+         return this.userProfileLink(oUser.userName, YAHOO.lang.trim(oUser.firstName + " " + oUser.lastName));
+      },
+
+      /**
+       *
+       * @instance
+       * @param {string} userName User Name
+       * @param {string} fullName Full display name. "userName" used if this param is empty or not supplied
+       * @param {string} linkAttr Optional attributes to add to the <a> tag, e.g. "class"
+       * @param {boolean} disableLink Optional attribute instructing the link to be disabled (ie returning a span element rather than an a href element)
+       * @return {string} The populated HTML Link
+       */
+      userProfileLink: function(userName, fullName, linkAttr, disableLink) {
+         if (!YAHOO.lang.isString(userName) || userName.length === 0)
+         {
+            return "";
+         }
+
+         var html = Alfresco.util.encodeHTML(YAHOO.lang.isString(fullName) && fullName.length > 0 ? fullName : userName),
+               template = AlfConstants.URI_TEMPLATES["userprofilepage"],
+               uri = "";
+
+         // If the "userprofilepage" template doesn't exist or is empty, or we're in portlet mode we'll just return the user's fullName || userName
+         if (disableLink || YAHOO.lang.isUndefined(template) || template.length === 0 || lang.getObject("Alfresco.constants.PORTLET"))
+         {
+            return '<span>' + html + '</span>';
+         }
+
+         // Generate the link
+         uri = this.uriTemplate("userprofilepage", {
+            userid: userName
+         });
+
+         return '<a href="' + uri + '" ' + (linkAttr || "") + '>' + html + '</a>';
       },
       
-      /**
-       * Returns a populated URI template, given a TemplateId and an object literal
-       * containing the tokens to be substituted.
-       * Understands when the application is hosted in a Portal environment.
-       *
-       * @instance
-       * @param {string} templateId URI TemplateId from web-framework configuration
-       * @param {object} obj The object literal containing the token values to substitute
-       * @param {boolean} absolute Whether the URL should include the protocol and host
-       * @returns {string|null} The populated URI or null if templateId not found
-       */
-      uriTemplate: function(templateId, obj, absolute) {
-         return Alfresco.util.uriTemplate(templateId, obj, absolute);
-      },
-
-      /**
-       * Returns a populated URI template, given the URI template and an object literal
-       * containing the tokens to be substituted.
-       * Understands when the application is hosted in a Portal environment.
-       *
-       * @instance
-       * @param {string} template URI Template to be populated
-       * @param {object} obj The object literal containing the token values to substitute
-       * @param {boolean} absolute Whether the URL should include the protocol and host
-       * @returns {string|null} The populated URI or null if templateId not found
-       */
-      renderUriTemplate: function(template, obj, absolute) {
-         return Alfresco.util.renderUriTemplate(template, obj, absolute);
-      },
-
       /**
        * Returns a URL to a site page.
        * If no Site ID is supplied, generates a link to the non-site page.
@@ -98,9 +104,115 @@ define(["dojo/_base/declare",
        * @returns {string} The populated URL
        */
       siteURL: function(pageURI, obj, absolute) {
-         return Alfresco.util.siteURL(pageURI, obj, absolute);
+         // return Alfresco.util.siteURL(pageURI, obj, absolute);
+
+         return this.uriTemplate("sitepage", YAHOO.lang.merge(obj || {},
+         {
+            pageid: pageURI
+         }), absolute);
       },
       
+      /**
+       * 
+       * @instance
+       * param {string} template
+       * @param {object} obj
+       * @param {boolean} absolute
+       */
+      uriTemplate: function(templateId, obj, absolute) {
+         // Check we know about the templateId
+         if (!(templateId in AlfConstants.URI_TEMPLATES))
+         {
+            return null;
+         }
+         return this.renderUriTemplate(AlfConstants.URI_TEMPLATES[templateId], obj, absolute);
+      },
+
+      /**
+       * 
+       * @instance
+       * @param {string} template
+       * @param {object} obj
+       * @param {boolean} absolute
+       */
+      renderUriTemplate: function(template, obj, absolute) {
+         // If a site page was requested but no {siteid} given, then use the current site or remove the missing parameter
+         if (template.indexOf("{site}") !== -1)
+         {
+            if (obj.hasOwnProperty("site"))
+            {
+               // A site parameter was given - is it valid?
+               if (!Alfresco.util.isValueSet(obj.site) && (lang.getObject("Alfresco.constants.PAGECONTEXT") && Alfresco.constants.PAGECONTEXT.length == 0))
+               {
+                  // Not valid - remove site part of template
+                  template = template.replace("/site/{site}", "");
+               }
+               else if (lang.getObject("Alfresco.constants.PAGECONTEXT") && Alfresco.constants.PAGECONTEXT.length > 0)
+               {
+                  template = template.replace("/site/{site}", "/context/" + Alfresco.constants.PAGECONTEXT);
+               }
+            }
+            else
+            {
+               if (lang.getObject("Alfresco.constants.SITE") && Alfresco.constants.SITE.length > 0)
+               {
+                  // We're currently in a Site, so generate an in-Site link
+                  obj.site = Alfresco.constants.SITE;
+               }
+               else if (lang.getObject("Alfresco.constants.PAGECONTEXT") && Alfresco.constants.PAGECONTEXT.length > 0)
+               {
+                  template = template.replace("/site/{site}", "/context/" + Alfresco.constants.PAGECONTEXT);
+               }
+               else
+               {
+                  // No current Site context, so remove from the template
+                  template = template.replace("/site/{site}", "");
+               }
+            }
+         }
+
+         var uri = template,
+               regExp = /^(http|https):\/\//;
+
+         /**
+          * NOTE: YAHOO.lang.substitute is currently somewhat broken in YUI 2.9.0
+          * Specifically, strings are no longer recursively substituted, even with the new "recurse"
+          * flag set to "true". See http://yuilibrary.com/projects/yui2/ticket/2529100
+          */
+         while (uri !== (uri = YAHOO.lang.substitute(uri, obj))){}
+
+         if (!regExp.test(uri))
+         {
+            // Page context required
+            uri = this.combinePaths(AlfConstants.URL_PAGECONTEXT, uri);
+         }
+
+         // Portlet scriptUrl mapping required?
+         if (AlfConstants.PORTLET)
+         {
+            // Remove the context prefix
+            if (uri.indexOf(AlfConstants.URL_CONTEXT) === 0)
+            {
+               uri = this.combinePaths("/", uri.substring(AlfConstants.URL_CONTEXT.length));
+            }
+
+            uri = AlfConstants.PORTLET_URL.replace("$$scriptUrl$$", encodeURIComponent(decodeURIComponent(uri.replace(/%25/g, "%2525").replace(/%26/g, "%252526"))));
+         }
+
+         // Absolute URI needs current protocol and host
+         if (absolute && (uri.indexOf(location.protocol + "//") !== 0))
+         {
+            // Don't use combinePaths in case the PORTLET_URL encoding is fragile
+            if (uri.substring(0, 1) !== "/")
+            {
+               uri = "/" + uri;
+            }
+            uri = location.protocol + "//" + location.host + uri;
+         }
+
+         return uri;
+      },
+
       /**
        * This function is required to support "legacy" action handling within Share. 
        * 
@@ -124,24 +236,28 @@ define(["dojo/_base/declare",
          var site = {
             siteId: (siteId != null) ? siteId : recordSiteId
          };
-         actionUrls =
+         try
          {
-            downloadUrl: this.combinePaths(Alfresco.constants.PROXY_URI, contentUrl) + "?a=true",
-            viewUrl:  this.combinePaths(Alfresco.constants.PROXY_URI, contentUrl) + "\" target=\"_blank",
-            documentDetailsUrl: this.generatePageUrl("document-details?nodeRef=" + strNodeRef, site),
-            folderDetailsUrl: this.generatePageUrl("folder-details?nodeRef=" + strNodeRef, site),
-            editMetadataUrl: this.generatePageUrl("edit-metadata?nodeRef=" + strNodeRef, site),
-            inlineEditUrl: this.generatePageUrl("inline-edit?nodeRef=" + strNodeRef, site),
-            managePermissionsUrl: this.generatePageUrl("manage-permissions?nodeRef=" + strNodeRef, site),
-            manageTranslationsUrl: this.generatePageUrl("manage-translations?nodeRef=" + strNodeRef, site),
-            workingCopyUrl: this.generatePageUrl("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef), site),
-            workingCopySourceUrl: this.generatePageUrl("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef), site),
-            viewGoogleDocUrl: workingCopy.googleDocUrl + "\" target=\"_blank",
-            explorerViewUrl: this.combinePaths(repositoryUrl, "/n/showSpaceDetails/", nodeRefUri, site) + "\" target=\"_blank",
-            cloudViewUrl: this.combinePaths(Alfresco.constants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" + strNodeRef)
-         };
-         
-         actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
+            actionUrls = {};
+            actionUrls.downloadUrl = this.combinePaths(AlfConstants.PROXY_URI, contentUrl) + "?a=true";
+            actionUrls.viewUrl =  this.combinePaths(AlfConstants.PROXY_URI, contentUrl) + "\" target=\"_blank";
+            actionUrls.documentDetailsUrl = this.generatePageUrl("document-details?nodeRef=" + strNodeRef, site);
+            actionUrls.folderDetailsUrl = this.generatePageUrl("folder-details?nodeRef=" + strNodeRef, site);
+            actionUrls.editMetadataUrl = this.generatePageUrl("edit-metadata?nodeRef=" + strNodeRef, site);
+            actionUrls.inlineEditUrl = this.generatePageUrl("inline-edit?nodeRef=" + strNodeRef, site);
+            actionUrls.managePermissionsUrl = this.generatePageUrl("manage-permissions?nodeRef=" + strNodeRef, site);
+            actionUrls.manageTranslationsUrl = this.generatePageUrl("manage-translations?nodeRef=" + strNodeRef, site);
+            actionUrls.workingCopyUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef), site);
+            actionUrls.workingCopySourceUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef), site);
+            actionUrls.viewGoogleDocUrl = workingCopy.googleDocUrl + "\" target=\"_blank";
+            actionUrls.explorerViewUrl = this.combinePaths(repositoryUrl, "/n/showSpaceDetails/", nodeRefUri, site) + "\" target=\"_blank";
+            actionUrls.cloudViewUrl = this.combinePaths(AlfConstants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" + strNodeRef);
+            actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
+         }
+         catch (e)
+         {
+            this.alfLog("error", "The following error occurred generating action URLs", e, record, this);
+         }
          return actionUrls;
       },
       
@@ -177,7 +293,7 @@ define(["dojo/_base/declare",
          // Generate a URL to the relevant details page
          siteUrl = node.isContainer ? actionUrls.folderDetailsUrl : actionUrls.documentDetailsUrl;
          // Strip off this webapp's context as the mapped one might be different
-         siteUrl = siteUrl.substring(Alfresco.constants.URL_CONTEXT.length);
+         siteUrl = siteUrl.substring(AlfConstants.URL_CONTEXT.length);
 
          return this.combinePaths(urlMapping[repoId], "/", siteUrl);
       }

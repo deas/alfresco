@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfBreadcrumbTrail.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfBreadcrumbTrail.properties"}],
@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfBreadcrumbTrail.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfBreadcrumbTrail.css"}],
@@ -65,7 +65,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
@@ -107,6 +107,12 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onPathChanged"));
          this.alfSubscribe(this.showPathTopic, lang.hitch(this, "onShowBreadcrumb"));
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, "onFilterSelection"));
+
+         if (this._currentNode != null && this.currentPath != null)
+         {
+            this._currentFolderUrl = "folder-details?nodeRef=" + this._currentNode.parent.nodeRef;
+            this.renderBreadcrumbTrail();
+         }
       },
 
       /**

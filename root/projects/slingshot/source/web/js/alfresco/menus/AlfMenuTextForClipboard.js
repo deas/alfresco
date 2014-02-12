@@ -18,6 +18,31 @@
  */
 
 /**
+ * <p>This widget was written with the intention of making it easy to copy-and-paste text from within a 
+ * [drop-down menu]{@link module:alfresco/menus/AlfMenuBarPopup}. It was written to implement the
+ * "Quick Share" menu in the Document Library where a user is able to quickly access the link to the shared
+ * document from within the menu.</p>
+ * <p>It is intended to be placed inside a [cascading menu]{@link module:alfresco/menus/AlfCascadingMenu} so that
+ * when a user expands the cascade using the keyboard the text is immediately highlighted so that they can simply
+ * use CTRL-C to capture it.</p>
+ * <p>Sample configuration: </p>
+ * <p><pre>{
+ *    name: "alfresco/menus/AlfCascadingMenu",
+ *     config: {
+ *        id: "MyCascade",
+ *        label: "Copy some text...",
+ *        widgets: [
+ *           {
+ *              name: "alfresco/menus/AlfMenuTextForClipboard",
+ *              config: {
+ *                 id: "MyTextToCopy",
+ *                 label: "Copy me: ",
+ *                 textForClipboard: "Some sample text"
+ *              }
+ *           }
+ *        ]
+ *     }
+ *  }</pre></p>
  * @module alfresco/menus/AlfMenuTextForClipboard
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
@@ -50,13 +75,31 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfMenuTextForClipboard.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuTextForClipboard.css"}],
       
       /**
-       * 
+       * A label for the text to be copied. This can be a i18n key for translation or a specific label.
+       * It can be left as null or the empty string if a label is not required.
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      label: null,
+
+      /**
+       * The text to be made available for copying. 
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      textForClipboard: null,
+
+      /**
+       * This ensures that the label 
        * @instance
        */
       postMixInProperties: function alfresco_menus_AlfMenuTextForClipboard__postMixInProperties() {

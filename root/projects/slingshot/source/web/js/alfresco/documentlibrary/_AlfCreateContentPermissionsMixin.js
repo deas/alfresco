@@ -41,7 +41,7 @@ define(["dojo/_base/declare",
        * be set during instantiation based on the current user permissions for the current context.
        * 
        * @instance
-       * @type {string} permission 
+       * @type {string}
        * @default "CreateChildren"
        */
       permission: "CreateChildren",

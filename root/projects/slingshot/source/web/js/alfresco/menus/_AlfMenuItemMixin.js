@@ -29,6 +29,7 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreRwd",
         "alfresco/menus/_AlfPopupCloseMixin",
         "alfresco/services/_NavigationServiceTopicMixin",
+        "service/constants/Default",
         "dojo/dom-class", 
         "dojo/dom-style",
         "dojo/dom-construct",
@@ -38,7 +39,7 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/NodeList",
         "dojo/NodeList-manipulate"],
-        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, domClass, domStyle, domConstruct, on, lang, event, query, NodeList) {
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event, query, NodeList) {
    
    return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin], {
 
@@ -46,7 +47,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/_AlfMenuItemMixin.css"}]
        */
       cssRequirements: [{cssFile:"./css/_AlfMenuItemMixin.css"}],
@@ -89,7 +90,7 @@ define(["dojo/_base/declare",
       // TODO: It might be nice to retrieve this from the NavigationService itself??
       /**
        * Indicates how the target URL should be handled. This defaults to "SHARE_PAGE_RELATIVE" which means that the URL
-       * will be appended to the 'Alfresco.constants.URL_PAGECONTEXT' Global JavaScript constant. This can be overridden
+       * will be appended to the 'AlfConstants.URL_PAGECONTEXT' Global JavaScript constant. This can be overridden
        * on instantiation to indicate that another URL type, such as "FULL_PATH" should be used.
        * 
        * @instance
@@ -147,7 +148,7 @@ define(["dojo/_base/declare",
                 this.targetUrlType == "" ||
                 this.targetUrlType == this.sharePageRelativePath)
             {
-               url = Alfresco.constants.URL_PAGECONTEXT + this.targetUrl;
+               url = AlfConstants.URL_PAGECONTEXT + this.targetUrl;
             }
             else if (this.targetUrlType == this.contextRelativePath)
             {
@@ -192,13 +193,13 @@ define(["dojo/_base/declare",
          if (this.iconClass && this.iconClass != "dijitNoIcon" && this.iconNode)
          {
             var iconNodeParent = this.iconNode.parentNode;
-            domConstruct.empty(iconNodeParent);
+            domConstruct.destroy(this.iconNode);
             this.iconNode = domConstruct.create("img", {
                role:"presentation",
                className: "dijitInline dijitIcon dijitMenuItemIcon " + this.iconClass,
                src: Alfresco.constants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
                alt: this.message(this.iconAltText)
-            }, iconNodeParent);
+            }, iconNodeParent, "first");
          }
          else if (this.iconImage && this.iconNode)
          {
@@ -211,9 +212,10 @@ define(["dojo/_base/declare",
             domStyle.set(this.iconNode, { backgroundImage: "url(" + this.iconImage + ")",
                                           width: this.iconImageWidth,
                                           height: this.iconImageHeight,
-                                          display: "block" });
+                                          display: "inline-block",
+                                          verticalAlign: "middle" });
          }
-         else
+         else if (this.iconNode != null)
          {
             // If there is no iconClass or iconImage then we need to explicitly set the the
             // parent element of the icon node to have an inherited width. This is because there

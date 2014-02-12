@@ -34,7 +34,7 @@ define(["dojo/_base/declare"],
        * processed widget container.
        * 
        * @instance
-       * @type {string} dynamicallyAddWidgetTopic
+       * @type {string}
        * @default "ALF_DYNAMICALLY_ADD_WIDGET"
        */
       dynamicallyAddWidgetTopic: "ALF_DYNAMICALLY_ADD_WIDGET"

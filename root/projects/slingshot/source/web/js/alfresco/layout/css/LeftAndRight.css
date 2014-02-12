@@ -1,22 +1,11 @@
-.left-and-right .left-widgets {
+.alfresco-layout-LeftAndRight {
+   width: 100%;
+}
+
+.alfresco-layout-LeftAndRight > div > div.left-widgets {
    float: left;
 }
 
-.left-and-right .right-widgets {
-   float: right;
-}
-
-.horizontal-widgets {
-}
-
-.horizontal-widget {
-   float: left;
-}
-
-.left-widgets {
-   float: left;
-}
-
-.right-widgets {
+.alfresco-layout-LeftAndRight > div > div.right-widgets {
    float: right;
 }

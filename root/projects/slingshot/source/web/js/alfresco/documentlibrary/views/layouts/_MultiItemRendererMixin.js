@@ -32,22 +32,23 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/core/Core",
+        "alfresco/core/WidgetsProcessingFilterMixin",
         "alfresco/core/ObjectTypeUtils",
+        "alfresco/core/JsNode",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "dojo/dom-class",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-style"], 
-        function(declare, AlfCore, ObjectTypeUtils, _AlfDocumentListTopicMixin, domClass, array, lang, domStyle) {
+        function(declare, WidgetsProcessingFilterMixin, ObjectTypeUtils, JsNode, _AlfDocumentListTopicMixin, domClass, array, lang, domStyle) {
    
-   return declare([AlfCore, _AlfDocumentListTopicMixin], {
+   return declare([WidgetsProcessingFilterMixin, _AlfDocumentListTopicMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/_MultiItemRendererMixin.css"}]
        */
       cssRequirements: [{cssFile:"./css/_MultiItemRendererMixin.css"}],
@@ -57,7 +58,7 @@ define(["dojo/_base/declare",
        * an "items" attribute.
        * 
        * @instance
-       * @type {{items: Object}[]|null}
+       * @type {Object[]}
        * @default null
        */
       currentData: null,
@@ -67,7 +68,7 @@ define(["dojo/_base/declare",
        * items array that is currently being rendered
        * 
        * @instance
-       * @type {number|null} currentIndex The current index within the current data
+       * @type {number}
        * @default null
        */
       currentIndex: null,
@@ -76,7 +77,7 @@ define(["dojo/_base/declare",
        * The current item being rendered
        * 
        * @instance
-       * @type {Object|null} 
+       * @type {Object} 
        * @default null
        */
       currentItem: null,
@@ -159,7 +160,9 @@ define(["dojo/_base/declare",
          
          if (this.containerNode != null)
          {
-            this.processWidgets(this.widgets, this.containerNode);
+            // It is necessary to clone the widget definition to prevent them being modified for future iterations...
+            var clonedWidgets = lang.clone(this.widgets);
+            this.processWidgets(clonedWidgets, this.containerNode);
          }
          else
          {
@@ -273,7 +276,7 @@ define(["dojo/_base/declare",
        * 
        * @instance 
        * @param {Object} config The configuration to pass as an instantiation argument to the widget
-       * @param {DOM Element} domNode The DOM node to attach the widget to
+       * @param {element} domNode The DOM node to attach the widget to
        * @param {function} callback A function to call once the widget has been instantiated
        * @param {Array} callbackArgs An array of arguments to pass to the callback function
        */
@@ -290,164 +293,11 @@ define(["dojo/_base/declare",
             // break anything else...
             if (typeof this.currentItem.jsNode === "undefined" && this.currentItem.node != null)
             {
-               this.currentItem.jsNode = new Alfresco.util.Node(this.currentItem.node);
+               this.currentItem.jsNode = new JsNode(this.currentItem.node);
             }
             config.config.currentItem = this.currentItem;
             this.inherited(arguments);
          }
-      },
-      
-      /**
-       * Overrides [filterWidget]{@link module:alfresco/core/Core#filterWidget} to check for a "renderFilter" attribute
-       * included in the supplied widget configuration. This is then used to determine whether or not the widget
-       * should be created for the [currentItem]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentItem}
-       * being rendered.
-       *
-       * @instance
-       * @param {object} widgetConfig The configuration for the widget to be created
-       * @returns {boolean} The result of the filter evaluation or true if no "renderFilter" is provided
-       */
-      filterWidget: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__filterWidget(widgetConfig) {
-         var shouldRender = true;
-         if (widgetConfig.config && widgetConfig.config.renderFilter)
-         {
-            // If filter configuration is provided, then switch the default so that rendering will NOT occur...
-            shouldRender = false;
-      
-            // Check that the object has a the supplied property...
-            var renderFilterConfig = widgetConfig.config.renderFilter;
-            if (!ObjectTypeUtils.isArray(renderFilterConfig))
-            {
-               this.alfLog("warn", "A request was made to filter a widget, but the filter configuration was not an array", this, widgetConfig);
-            }
-            else
-            {
-               // Check that the widget passes all the filter checks...
-               // TODO: Should we provide the ability to switch from AND to OR??
-               shouldRender = array.every(renderFilterConfig, lang.hitch(this, "processFilterConfig"));
-            }
-         }
-         else
-         {
-            this.alfLog("log", "A request was made to filter a widget but the configuration does not have a 'config.renderFilter' attribute.", this, widgetConfig);
-         }
-         return shouldRender;
-      },
-      
-      /**
-       * @instance
-       */
-      processFilterConfig: function(renderFilterConfig, index) {
-         var passesFilter = false;
-         if (this.filterPropertyExists(renderFilterConfig))
-         {
-            // Compare the property value against the applicable values... 
-            var renderFilterProperty = this.getRenderFilterPropertyValue(renderFilterConfig),
-                renderFilterValues = this.getRenderFilterValues(renderFilterConfig);
-            passesFilter = array.some(renderFilterValues, lang.hitch(this, "processFilter", renderFilterConfig, renderFilterProperty));
-         }
-         else if (renderFilterConfig.renderOnAbsentProperty == true)
-         {
-            passesFilter = true;
-         }
-         else
-         {
-            this.alfLog("log", "A request was made to filter a widget but the configured filter is not a property of the current item", this, renderFilterConfig);
-         }
-         return passesFilter;
-      },
-      
-      /**
-       * This is called from the [filterWidget]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#filterWidget} function 
-       * for each acceptable filter value and compares it against the supplied target value.
-       * 
-       * @instance
-       * @param {object} renderFilterConfig The configuration for the filter
-       * @param {string|boolean|number} target The target object to match (ideally this should be a string, boolean or a number 
-       * @returns {boolean} true If the supplied value matches the target value and false otherwise.
-       */
-      processFilter: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__processFilter(renderFilterConfig, target, currValue) {
-         if (ObjectTypeUtils.isString(currValue))
-         {
-            currValue = lang.trim(currValue);
-         }
-         if (renderFilterConfig.negate == null || renderFilterConfig.negate == false)
-         {
-            return currValue == target;
-         }
-         else
-         {
-            return currValue != target;
-         }
-      },
-      
-      /**
-       * Checks to see whether or not the supplied filter property is a genuine attribute of the
-       * [currentItem]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentItem}.
-       * 
-       * @instance
-       * @param {{property: string, values: string[]|string}} renderFilterConfig The filter configuration to process.
-       * @returns {boolean} true if the property exists and false if it doesn't.
-       */
-      filterPropertyExists: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__filterPropertyExists(renderFilterConfig) {
-         return (ObjectTypeUtils.isString(renderFilterConfig.property) && ObjectTypeUtils.isObject(this.currentItem) && lang.exists(renderFilterConfig.property, this.currentItem));
-      },
-      
-      /**
-       * Processes the "filterProperty" attribute defined in the filter configuration (which is expected to be a dot notation path to an attribute
-       * of the [currentItem]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentItem}. This 
-       * property is then retrieved from [currentItem]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentItem}
-       * and returned so that it can be compared against the "values" configuration. Retrieval of the 
-       * 
-       * @instance
-       * @param {{property: string, values: string[]|string}} renderFilter The filter configuration to process.
-       * @returns {object} The property of [currentItem]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentItem} defined
-       * by the "property" attribute of the filter configuration.
-       */
-      getRenderFilterPropertyValue: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__getRenderFilterPropertyValue(renderFilterConfig) {
-         return lang.getObject(renderFilterConfig.property, false, this.currentItem);
-      },
-      
-      /**
-       *
-       * @instance
-       * @param {{property: string, values: string[]|string}} renderFilter The filter configuration to process.
-       * @returns {string} The name of the filter
-       */
-      getCustomRenderFilterProperty: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__getCustomRenderFilterProperty(currentItem) {
-         var result = null;
-         if (currentItem instanceof Boolean || typeof currentItem == "boolean")
-         {
-            result = currentItem ? "folder" : "document";
-         }
-         return result;
-      },
-      
-      /**
-       * Attempt to convert the supplied filter value into an array. Filter values should be configured as an array of
-       * strings but this also allows single strings to be used (which are converted into a single element array) but 
-       * if all else fails then an empty array will be returned.
-       *
-       * @instance
-       * @param {{property: string, values: string[]|string}} renderFilter The filter configuration to process.
-       * @returns {string[]} An array (assumed to be of strings) that is either empty, the same array supplied as an argument or a single
-       * string element supplied as an argument.
-       */
-      getRenderFilterValues: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__getRenderFilterValues(renderFilter) {
-         var result = null;
-         if (ObjectTypeUtils.isArray(renderFilter.values))
-         {
-            result = renderFilter.values;
-         }
-         else if (ObjectTypeUtils.isString(renderFilter.values))
-         {
-            result = [renderFilter.values];
-         }
-         else
-         {
-            result = [];
-         }
-         return result;
       }
    });
 });

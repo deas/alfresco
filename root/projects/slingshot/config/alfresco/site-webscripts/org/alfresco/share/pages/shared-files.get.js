@@ -7,8 +7,8 @@
 // var widgets = getHeaderModel().concat([getDocumentLibraryModel("", "", user.properties['userHome'])]);
 
 // TODO: We actually need to have a Shared Files location - this will be implemented by ALF-17036 - currently just setting to company home
-var services = getDocumentLibraryServices(null, null, "alfresco://company/home");
-var widgets = [getDocumentLibraryModel(null, null, "alfresco://company/home")];
+var services = getDocumentLibraryServices(null, null, "alfresco://company/shared");
+var widgets = [getDocumentLibraryModel(null, null, "alfresco://company/shared")];
 
 //Change the root label of the tree to be "My Files" rather than "Documents"
 var tree = widgetUtils.findObject(widgets, "id", "DOCLIB_TREE");

@@ -31,8 +31,10 @@
 define(["dojo/_base/declare",
         "dijit/form/Button",
         "alfresco/core/Core",
-        "dojo/dom-class"], 
-        function(declare, Button, AlfCore, domClass) {
+        "dojo/dom-class",
+        "dojo/_base/array",
+        "dojo/_base/lang"], 
+        function(declare, Button, AlfCore, domClass, array, lang) {
    
    return declare([Button, AlfCore], {
       
@@ -73,6 +75,15 @@ define(["dojo/_base/declare",
       publishPayload: null,
       
       /**
+       * Additional classes to be applied to the root DOM element.
+       * 
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      additionalCssClasses: "",
+
+      /**
        * Extends the default implementation to check that the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} attribute has been set
        * to something other null and if it hasn't initialises it to a new (empty) object.
        * 
@@ -94,27 +105,67 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_buttons_AlfButton__postCreate() {
          this.inherited(arguments);
-         domClass.add(this.domNode, "alfresco-buttons-AlfButton");
+         domClass.add(this.domNode, "alfresco-buttons-AlfButton " + (this.additionalCssClasses != null ? this.additionalCssClasses : ""));
+
+         if (this.disableOnInvalidControls == true)
+         {
+            this.invalidControls = [];
+            this.alfSubscribe("ALF_INVALID_CONTROL", lang.hitch(this, "onInvalidControl"));
+            this.alfSubscribe("ALF_VALID_CONTROL", lang.hitch(this, "onValidControl"));
+         }
       },
       
       /**
-       * This override is required purely to address an IE8 issue. As soon as IE8 support is dropped we
-       * can remove this override. It was added to address ALF-20544 and ALF-20547.
+       * Indicates whether or not the button should disable itself if any controls publish information indicating that
+       * they are in an invalid state.
        *
        * @instance
-       * @param {evt} evt The click event.
-       * @returns {boolean} 
+       * @type {boolean}
+       * @default false
        */
-      _onClick: function alfresco_buttons_AlfButton___onClick(evt) {
-         try
+      disableOnInvalidControls: false,
+
+      /**
+       * This will be instantiated as an array and used to keep track of any controls that report themselves as being
+       * in an invalid state. The button should only be enabled when this list is empty.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default null
+       */
+      invalidControls: null,
+
+      /**
+       * Handles the reporting of an invalid field. This will disable the button to prevent users from clicking it.
+       * 
+       * @instance
+       * @param {object} payload The published details of the invalid field.
+       */
+      onInvalidControl: function alfresco_buttons_AlfButton__onInvalidControl(payload) {
+         var alreadyCaptured = array.some(this.invalidControls, function(item) {
+            return item == payload.name;
+         });
+         if (!alreadyCaptured)
          {
-            return this.inherited(arguments);
+            this.invalidControls.push(payload.name);
          }
-         catch(e)
-         {
-            this.onClick(evt);
-            return false;
-         }
+         this.set("disabled", "true");
+      },
+      
+      /**
+       * Handles the reporting of a valid field. If the field was previously recorded as being
+       * invalid then it is removed from the [invalidControls]{@link module:alfresco/forms/Form#invalidControls}
+       * attribute and it was the field was the only field in error then the "OK" button is 
+       * enabled. 
+       * 
+       * @instance
+       * @param {object} payload The published details of the field that has become valid
+       */
+      onValidControl: function alfresco_buttons_AlfButton__onValidControl(payload) {
+         this.invalidControls = array.filter(this.invalidControls, function(item) {
+            return item != payload.name;
+         });
+         this.set("disabled", this.invalidControls.length > 0);
       },
 
       /**
@@ -127,13 +178,12 @@ define(["dojo/_base/declare",
       onClick: function alfresco_buttons_AlfButton__onClick(evt) {
          if (this.publishTopic != null && this.publishTopic != "")
          {
-            this.alfPublish(this.publishTopic, this.publishPayload);
+            this.alfPublish(this.publishTopic, this.publishPayload, (this.publishGlobal !== undefined && this.publishGlobal == true));
          }
          else
          {
             this.alfLog("warn", "A widget was clicked but did not provide any information on how to handle the event", this);
          }
-         return false;
       }
    });
 });

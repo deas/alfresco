@@ -34,7 +34,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance 
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfMenuBarPopup.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBarPopup.css"}],
@@ -44,7 +44,7 @@ define(["dojo/_base/declare",
        * True by default.
        * 
        * @instance
-       * @type {boolean} showArrow
+       * @type {boolean}
        * @default true
        */
       showArrow: true,

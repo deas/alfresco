@@ -29,11 +29,21 @@ define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/_base/array",
-        "dojo/_base/lang"], 
-        function(ProcessWidgets, declare, domConstruct, array, lang) {
+        "dojo/_base/lang",
+        "dojo/dom-class"], 
+        function(ProcessWidgets, declare, domConstruct, array, lang, domClass) {
    
    return declare([ProcessWidgets], {
       
+      /**
+       * This is the base class for the page
+       *
+       * @instance
+       * @type {string}
+       * @default "alfresco-core-Page"
+       */
+      baseClass: "alfresco-core-Page",
+
       /**
        * Overrides the superclass implementation to call [processServices]{@link module:alfresco/core/Core#processServices}
        * and [processWidgets]{@link module:alfresco/core/Core#processWidgets} as applicable.
@@ -65,6 +75,11 @@ define(["alfresco/core/ProcessWidgets",
          {
             array.forEach(this.publishOnReady, lang.hitch(this, "onReadyPublish"));
          }
+
+         this.alfPublish("ALF_WIDGETS_READY", {});
+
+         // Add a class to indicate that the page is ready. This is primarily for testing purposes.
+         domClass.add(this.domNode, "allWidgetsProcessed");
       },
       
       /**
@@ -83,5 +98,6 @@ define(["alfresco/core/ProcessWidgets",
             this.alfLog("warn", "The page was configured with an onload publication but no 'publishTopic' was provided", publicationDetails, this);
          }
       }
+
    });
 });

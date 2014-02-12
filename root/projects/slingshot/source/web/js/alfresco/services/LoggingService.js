@@ -30,8 +30,10 @@ define(["dojo/_base/declare",
         "dojo/sniff",
         "dijit/registry",
         "alfresco/dialogs/AlfDialog",
-        "alfresco/buttons/AlfButton"],
-        function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, has, registry, AlfDialog, AlfButton) {
+        "alfresco/buttons/AlfButton",
+        "alfresco/testing/SubscriptionLog",
+        "alfresco/debug/CoreDataDebugger"],
+        function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, has, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
    
    return declare([AlfCore, _PreferenceServiceTopicMixin], {
       
@@ -39,7 +41,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/LoggingService.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/LoggingService.properties"}],
@@ -67,8 +69,18 @@ define(["dojo/_base/declare",
        * @param {array} args The constructor arguments.
        */
       constructor: function alfresco_services_LoggingService__constructor(args) {
+         lang.mixin(this, args);
          this.alfSubscribe("ALF_LOGGING_STATUS_CHANGE", lang.hitch(this, "onLoggingStatusChange"));
          this.alfSubscribe("ALF_UPDATE_LOGGING_PREFERENCES", lang.hitch(this, "onDetailsDialog"));
+         this.alfSubscribe("ALF_SHOW_PUBSUB_LOG", lang.hitch(this, "showPubSubLog"));
+         this.alfSubscribe("ALF_SHOW_DATA_MODEL", lang.hitch(this, "showDataModel"));
+
+         if (this.loggingPreferences != null)
+         {
+            // Set up subscriptions if the LoggingService has been instantiated with default
+            // preferences...
+            this.handleSubscription();
+         }
          
          this.alfPublish(this.getPreferenceTopic, {
             preference: this.loggingPreferencesId,
@@ -77,6 +89,46 @@ define(["dojo/_base/declare",
          });
       },
       
+      /**
+       *
+       * @instance
+       * @param {object} payload
+       */
+      showPubSubLog: function alfresco_services_LoggingService__showPubSubLog(payload) {
+         if (this.pubSubLog == null)
+         {
+            this.pubSubLog = new AlfDialog({
+               title: this.message("logging.pubSubLog.title"),
+               widgetsContent: [
+                  {
+                     name: "alfresco/testing/SubscriptionLog"
+                  }
+               ]
+            });
+         }
+         this.pubSubLog.show();
+      },
+
+      /**
+       * This displays a dialog that displays the current data model built up through the use of the
+       * [CoreData singleton]{@link module:alfresco/core/CoreData}.
+       * 
+       * @instance
+       * @param {object} payload The request payload
+       */
+      showDataModel: function alfresco_services_LoggingService__showDataModel(payload) {
+         var dialog = new AlfDialog({
+            pubSubScope: this.pubSubScope,
+            title: this.message("logging.dataModel.title"),
+            widgetsContent: [
+               {
+                  name: "alfresco/debug/CoreDataDebugger"
+               }
+            ]
+         });
+         dialog.show();
+      },
+
       /**
        * Handles requests to change the current logging status.
        * 

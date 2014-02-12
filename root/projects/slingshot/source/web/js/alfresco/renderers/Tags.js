@@ -54,10 +54,11 @@ define(["dojo/_base/declare",
         "dojo/store/util/SimpleQueryEngine",
         "dojo/data/util/filter",
         "dojo/aspect",
-        "dojo/html"], 
+        "dojo/html",
+        "service/constants/Default"], 
         function(declare, Property, _OnDijitClickMixin, ObjectTypeUtils, CoreXhr, template, array, lang, ReadOnlyTag, EditTag, 
                  domConstruct, registry, on, domAttr, domClass, keys, event, JsonRest, ComboBox, NlsComboBox, validate, QueryResults, 
-                 SimpleQueryEngine, filter, aspect, html) {
+                 SimpleQueryEngine, filter, aspect, html, AlfConstants) {
 
    return declare([Property, _OnDijitClickMixin, CoreXhr], {
       
@@ -65,7 +66,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Tags.css"}]
        */
       cssRequirements: [{cssFile:"./css/Tags.css"}],
@@ -189,7 +190,7 @@ define(["dojo/_base/declare",
          if (this.tagStore == null)
          {
             this.tagStore = new JsonRest({
-               target: Alfresco.constants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children"
+               target: AlfConstants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children"
             });
             aspect.before(this.tagStore, "query", lang.hitch(this, "interceptQuery"));
          }
@@ -341,7 +342,7 @@ define(["dojo/_base/declare",
        * @returns {string} The URL to use when remotely creating tags
        */
       getCreateRemoteTagURL: function alfresco_renderers_Tags__createRemoteTag() {
-         return Alfresco.constants.PROXY_URI + "api/tag/workspace/SpacesStore"; 
+         return AlfConstants.PROXY_URI + "api/tag/workspace/SpacesStore"; 
       },
       
       /**

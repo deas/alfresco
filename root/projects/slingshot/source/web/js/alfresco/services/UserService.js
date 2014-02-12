@@ -30,8 +30,9 @@ define(["dojo/_base/declare",
         "alfresco/core/NotificationUtils",
         "dojo/request/xhr",
         "dojo/json",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang, AlfConstants) {
    
    return declare([AlfCore, AlfXhr, NotificationUtils], {
       
@@ -39,7 +40,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/ActionService.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/UserService.properties"}],
@@ -63,7 +64,7 @@ define(["dojo/_base/declare",
        */
       updateUserStatus: function alf_services_UserService__updateUserStatus(data) {
          var _this = this,
-             url = Alfresco.constants.URL_SERVICECONTEXT + "components/profile/userstatus";
+             url = AlfConstants.URL_SERVICECONTEXT + "components/profile/userstatus";
          this.serviceXhr({url : url,
                           data: data,
                           method: "POST",

@@ -31,8 +31,9 @@ define(["dojo/_base/declare",
         "dojo/json",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "alfresco/buttons/AlfButton"],
-        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang, domConstruct, AlfButton) {
+        "alfresco/buttons/AlfButton",
+        "service/constants/Default"],
+        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang, domConstruct, AlfButton, AlfConstants) {
    
    return declare([AlfCore, AlfXhr, NotificationUtils], {
       
@@ -40,7 +41,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type i18nRequirements {Array}
+       * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/SiteService.properties"}],
       
@@ -62,11 +63,13 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_EDIT_SITE", lang.hitch(this, "editSite"));
          this.alfSubscribe("ALF_ADD_FAVOURITE_SITE", lang.hitch(this, "addSiteAsFavourite"));
          this.alfSubscribe("ALF_REMOVE_FAVOURITE_SITE", lang.hitch(this, "removeSiteFromFavourites"));
+         this.alfSubscribe("ALF_GET_RECENT_SITES", lang.hitch(this, "getRecentSites"));
+         this.alfSubscribe("ALF_GET_FAVOURITE_SITES", lang.hitch(this, "getFavouriteSites"));
          
          // Make sure that the edit-site.js file is loaded. This is required for as it handles legacy site
          // editing. At some stage this will not be needed when a new edit site dialog is provided.
          var _this = this;
-         require([Alfresco.constants.URL_RESCONTEXT + "modules/edit-site.js"], function() {
+         require([AlfConstants.URL_RESCONTEXT + "modules/edit-site.js"], function() {
             _this.alfLog("log", "Edit Site JavaScript resource loaded");
          });
       },
@@ -84,7 +87,7 @@ define(["dojo/_base/declare",
              config.site && 
              config.responseTopic)
          {
-            var url = Alfresco.constants.PROXY_URI + "api/sites/" + config.site;
+            var url = AlfConstants.PROXY_URI + "api/sites/" + config.site;
             this.serviceXhr({url : url,
                              method: "GET",
                              site: config.site,
@@ -129,7 +132,7 @@ define(["dojo/_base/declare",
          if (config.site && config.user)
          {
             // Set up the favourites information...
-            var url = Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(config.user) + "/preferences",
+            var url = AlfConstants.PROXY_URI + "api/people/" + encodeURIComponent(config.user) + "/preferences",
                 favObj = {org:{alfresco:{share:{sites:{favourites:{}}}}}};
             favObj.org.alfresco.share.sites.favourites[config.site] = true;
             this.serviceXhr({url : url,
@@ -171,7 +174,7 @@ define(["dojo/_base/declare",
          if (config.site && config.user)
          {
             // Set up the favourites information...
-            var url = Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(config.user) + "/preferences?pf=org.alfresco.share.sites.favourites." + config.site;
+            var url = AlfConstants.PROXY_URI + "api/people/" + encodeURIComponent(config.user) + "/preferences?pf=org.alfresco.share.sites.favourites." + config.site;
             this.serviceXhr({url : url,
                              site: config.site,
                              user: config.user,
@@ -209,7 +212,7 @@ define(["dojo/_base/declare",
          if (config.site)
          {
             this.alfLog("log", "A request has been made for a user to become the manager of a site: ", config);
-            var url = Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/memberships";
+            var url = AlfConstants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/memberships";
             var data = {
                   role: (config.role) ? config.role : "SiteManager",
                   person: {
@@ -241,7 +244,7 @@ define(["dojo/_base/declare",
             // PLEASE NOTE: The default role for joining a site is "SiteConsumer", however this can be overridden
             // if a role is included in the supplied configuration...
             this.alfLog("log", "A request has been made for a user to join a site: ", config);
-            var url = Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/invitations";
+            var url = AlfConstants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/invitations";
             var data = {
                invitationType: "MODERATED",
                inviteeRoleName: (config.role) ? config.role : "SiteConsumer",
@@ -315,7 +318,7 @@ define(["dojo/_base/declare",
             // PLEASE NOTE: The default role for joining a site is "SiteConsumer", however this can be overridden
             // if a role is included in the supplied configuration...
             this.alfLog("log", "A request has been made for a user to join a site: ", config);
-            var url = Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/memberships";
+            var url = AlfConstants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/memberships";
             var data = {
                role: (config.role) ? config.role : "SiteConsumer",
                person: {
@@ -446,7 +449,7 @@ define(["dojo/_base/declare",
          if (config.site && config.user)
          {
             this.alfLog("log", "A request has been made for a user to leave a site: ", config);
-            var url = Alfresco.constants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/memberships/" + encodeURIComponent(config.user);
+            var url = AlfConstants.PROXY_URI + "api/sites/" + encodeURIComponent(config.site) + "/memberships/" + encodeURIComponent(config.user);
             this.serviceXhr({url : url,
                              method: "DELETE",
                              site: config.site,
@@ -488,7 +491,7 @@ define(["dojo/_base/declare",
       /**
        * This function is called when a user has failued to leave a site.
        * 
-       * @method siteLeftFailure
+       * @instance
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
@@ -519,7 +522,51 @@ define(["dojo/_base/declare",
        * @instance
        */
       leaveSiteSuccess: function alf_services_SiteService__leaveSiteSuccess(response, requestConfig) {
-         window.location.href = Alfresco.constants.URL_CONTEXT;
+         window.location.href = AlfConstants.URL_CONTEXT;
+      },
+
+      /**
+       * Handles requests to retrieve the current users list of recently visited sites.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      getRecentSites: function alfresco_services_SiteService__getRecentSites(payload) {
+         var url = AlfConstants.PROXY_URI + "api/people/" + AlfConstants.USERNAME + "/sites/recent";
+         if (this.currentSite)
+         {
+            url = url + "/site/" + this.currentSite;
+         }
+         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_GET_RECENT_SITES";
+         var config = {
+            alfTopic: alfTopic,
+            url: url,
+            method: "GET",
+            callbackScope: this
+         };
+         this.serviceXhr(config);
+      },
+
+      /**
+       * Handles requests to retrieve the current users list of favourite sites.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      getFavouriteSites: function alfresco_services_SiteService__getFavouriteSites(payload) {
+         var url = AlfConstants.PROXY_URI + "api/people/" + AlfConstants.USERNAME + "/sites/favourites";
+         if (this.currentSite)
+         {
+            url = url + "/site/" + this.currentSite;
+         }
+         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_GET_FAVOURITE_SITES";
+         var config = {
+            alfTopic: alfTopic,
+            url: url,
+            method: "GET",
+            callbackScope: this
+         };
+         this.serviceXhr(config);
       }
    });
 });

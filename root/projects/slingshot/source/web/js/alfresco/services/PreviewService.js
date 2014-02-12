@@ -30,8 +30,9 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreXhr",
         "alfresco/services/_PreviewServiceTopicMixin",
         "dojo/request/xhr",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, CoreXhr, _PreviewServiceTopicMixin, xhr, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, CoreXhr, _PreviewServiceTopicMixin, xhr, lang, AlfConstants) {
    
    return declare([AlfCore, CoreXhr, _PreviewServiceTopicMixin], {
       
@@ -59,7 +60,7 @@ define(["dojo/_base/declare",
             };
             
             this.serviceXhr({
-               url: Alfresco.constants.URL_SERVICECONTEXT + "/service/surf/dojo/xhr/dependencies",
+               url: AlfConstants.URL_SERVICECONTEXT + "/service/surf/dojo/xhr/dependencies",
                method: "POST",
                query: query,
                successCallback: this.generateDependenciesSuccess,

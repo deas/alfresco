@@ -20,7 +20,7 @@ function widgets()
       assignTo: "docListToolbar",
       options: {
          siteId: "",
-         rootNode: "alfresco://shared",
+         rootNode: "alfresco://company/shared",
          hideNavBar: Boolean(toolbar.preferences.hideNavBar),
          googleDocsEnabled: toolbar.googleDocsEnabled,
          repositoryBrowsing: toolbar.rootNode != null,
@@ -38,7 +38,7 @@ function widgets()
          syncMode : model.syncMode != null ? model.syncMode : "",
          siteId : "",
          containerId : "documentLibrary",
-         rootNode : "alfresco://shared",
+         rootNode : "alfresco://company/shared",
          usePagination : (args.pagination == "true"),
          sortAscending : (model.preferences.sortAscending != null ? model.preferences.sortAscending : true),
          sortField : model.preferences.sortField != null ? model.preferences.sortField : "cm:name",

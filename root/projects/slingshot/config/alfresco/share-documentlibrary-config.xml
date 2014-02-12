@@ -814,13 +814,13 @@
       <create-content-by-template>true</create-content-by-template>
 
       <multi-select>
-         <action type="action-link" id="onActionDownload" label="menu.selected-items.download" />
-         <action type="action-link" id="onActionCopyTo" label="menu.selected-items.copy" />
-         <action type="action-link" id="onActionMoveTo" permission="Delete" label="menu.selected-items.move"/>
-         <action type="action-link" id="onActionAssignWorkflow" asset="document" label="menu.selected-items.assign-workflow"/>
-         <action type="action-link" id="onActionDelete" permission="Delete" label="menu.selected-items.delete" notAspect="hwf:hybridWorkflow" />
-         <action type="action-link" id="onActionCloudSync" asset="document"  permission="CreateChildren" label="menu.selected-items.cloudSync" notAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
-         <action type="action-link" id="onActionCloudSyncRequest" label="menu.selected-items.cloudRequestSync" hasAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
+         <action type="action-link" id="onActionDownload" icon="document-download" label="menu.selected-items.download" />
+         <action type="action-link" id="onActionCopyTo" icon="document-copy-to" label="menu.selected-items.copy" />
+         <action type="action-link" id="onActionMoveTo" icon="document-move-to" permission="Delete" label="menu.selected-items.move"/>
+         <action type="action-link" id="onActionAssignWorkflow" asset="document" icon="document-assign-workflow" label="menu.selected-items.assign-workflow"/>
+         <action type="action-link" id="onActionDelete" icon="document-delete" permission="Delete" label="menu.selected-items.delete" notAspect="hwf:hybridWorkflow" />
+         <action type="action-link" id="onActionCloudSync" asset="document" icon="document-cloud-sync"  permission="CreateChildren" label="menu.selected-items.cloudSync" notAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
+         <action type="action-link" id="onActionCloudSyncRequest" icon="document-request-sync" label="menu.selected-items.cloudRequestSync" hasAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
       </multi-select>
 
    </config>
@@ -1003,8 +1003,8 @@
          </action>
 
          <!-- Inline edit -->
-         <action id="document-inline-edit" type="pagelink" label="actions.document.inline-edit">
-            <param name="page">inline-edit?nodeRef={node.nodeRef}</param>
+         <action id="document-inline-edit" type="javascript" label="actions.document.inline-edit">
+            <param name="function">onActionEditInline</param>
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>

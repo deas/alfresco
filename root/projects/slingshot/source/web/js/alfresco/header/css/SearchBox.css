@@ -37,8 +37,6 @@
 
 /* This defines the search icon for use in popup menu items only */
 .alfresco-share .alf-search-icon {
-   background: url("./images/search-16-gray.png");
-   background-repeat: no-repeat;
    height: 16px;
    width: 16px;
    display: block;

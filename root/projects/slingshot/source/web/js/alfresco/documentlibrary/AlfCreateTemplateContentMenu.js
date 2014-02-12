@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreXhr",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
-        "dojo/_base/array"], 
-        function(declare, AlfCascadingMenu, AlfCoreXhr, AlfMenuGroup, AlfMenuItem, array) {
+        "dojo/_base/array",
+        "service/constants/Default"], 
+        function(declare, AlfCascadingMenu, AlfCoreXhr, AlfMenuGroup, AlfMenuItem, array, AlfConstants) {
    
    return declare([AlfCascadingMenu, AlfCoreXhr], {
       
@@ -42,7 +43,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfCreateTemplateContentMenu.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfCreateTemplateContentMenu.properties"}],
@@ -129,7 +130,7 @@ define(["dojo/_base/declare",
             var url = this._templatesUrl;
             if (url == null)
             {
-               url = Alfresco.constants.PROXY_URI + "slingshot/doclib/node-templates";
+               url = AlfConstants.PROXY_URI + "slingshot/doclib/node-templates";
             }
             this.serviceXhr({url : url,
                              method: "GET",
@@ -243,7 +244,7 @@ define(["dojo/_base/declare",
        * The iconClass to use on each template content menu item
        * 
        * @instance
-       * @type {string} templateIconClass
+       * @type {string}
        * @default "alf-textdoc-icon"
        */
       templateIconClass: "alf-textdoc-icon",

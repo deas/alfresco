@@ -126,7 +126,7 @@ define(["dojo/_base/declare"],
        * The name of the group into which to place all view selection menu items.
        * 
        * @instance
-       * @type {string}  
+       * @type {string}
        * @default "DOCUMENT_LIBRARY_VIEW"
        */
       viewSelectionMenuItemGroup: "DOCUMENT_LIBRARY_VIEW",

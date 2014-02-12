@@ -47,7 +47,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type cssRequirements {Array}
+       * @type {Array}
        */
       cssRequirements: [{cssFile:"./css/DropAndPreview.css"}],
       
@@ -55,14 +55,14 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type i18nRequirements {Array}
+       * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/DropAndPreview.properties"}],
       
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
       
@@ -92,11 +92,26 @@ define(["dojo/_base/declare",
       initialItems: null,
       
       /**
+       * The types that this drop zone will accept. By default this is set to null but if not specified
+       * in the configuration this will be initialised to ["widget"].
+       *
+       * @instance
+       * @type {string[]}
+       * @default null
+       */
+      acceptTypes: null,
+
+      /**
        * @instance
        */
       postCreate: function alfresco_creation_DropZone__postCreate() {
+         if (this.acceptTypes == null)
+         {
+            this.acceptTypes = ["widget"];
+         }
+         
          this.previewTarget = new Source(this.previewNode, { 
-            accept: ["widget"],
+            accept: this.acceptTypes,
             creator: lang.hitch(this, "creator"),
             withHandles: true,
             horizontal: this.horizontal
@@ -169,8 +184,16 @@ define(["dojo/_base/declare",
             
             // Get the field name to use as the label (this can change) and the id (which should remain
             // static once created) to populate an individual option.
-            var fieldName = lang.getObject("defaultConfig.name", false, currentField),
-                fieldId = lang.getObject("defaultConfig.fieldId", false, currentField);
+            var fieldName = lang.getObject("updatedConfig.name", false, currentField.data);
+            if (fieldName == null)
+            {
+               fieldName = lang.getObject("defaultConfig.name", false, currentField.data);
+            }
+            var fieldId = lang.getObject("updatedConfig.fieldId", false, currentField.data);
+            if (fieldId == null)
+            {
+               fieldId = lang.getObject("defaultConfig.fieldId", false, currentField.data);
+            }
             currentFields.push({
                label: fieldName,
                value: fieldId
@@ -180,37 +203,112 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Get all the widgets defined with the DropZone to get any sub-widget definitions that they define.
+       *
        * @instance
        * @returns {object[]}
        */
       getWidgetDefinitions: function alfresco_creation_DropZone__getWidgetDefinitions() {
+            
+         // Get all the widgets defined with the DropZone to get any widget definitions that they define...
          var widgetDefs = [];
-            
-         // Get all the widgets defined with the DropZone to get any widget
-         // definitions that they define...
-         array.forEach(this.previewTarget.getAllNodes(), function(node, i) {
-            var currentField = this.previewTarget.getItem(node.id);
-            var newDef = {
-               name: currentField.data.module,
-               config: currentField.data.defaultConfig,
-               widgetsForDisplay: currentField.data.widgetsForDisplay // Save the widgets to use for display??
-            };
-            
-            // Mixin any additional configuration...
-            // This is for the benefit of the widget being added to, not the widget being instantiated...
-            lang.mixin(newDef, currentField.data.additionalConfig);
-            
-            var widget = registry.byNode(node);
-            if (widget != null && typeof widget.getWidgetDefinitions === "function")
-            {
-               var defs = widget.getWidgetDefinitions();
-               lang.setObject("config.widgets", defs, newDef);
-//               newDef.config.widgets = defs;
-            }
-            widgetDefs.push(newDef);
-         }, this);
-         
+         array.forEach(this.previewTarget.getAllNodes(), lang.hitch(this, "getWidgetDefinition", widgetDefs));
          return widgetDefs;
+      },
+
+      /**
+       * This function retrieves the configuration for an individual widget that has been dropped into 
+       * the drop zone.
+       *
+       * @instance
+       * @param {object[]} widgetDefs The object array to add the new widget definition object into
+       * @param {element} node The DOM node from which to retrieve the widget data
+       * @param {number} i The index of the node.
+       */
+      getWidgetDefinition: function alfresco_creation_DropZone__getWidgetDefinition(widgetDefs, node, i) {
+         var currentField = this.previewTarget.getItem(node.id);
+
+         // Allow alternatives to "name" and "config" to be specified in the item data...
+         var itemNameKey = (currentField.data.itemNameKey != null) ? currentField.data.itemNameKey : "name",
+             itemConfigKey = (currentField.data.itemConfigKey != null) ? currentField.data.itemConfigKey : "config";
+
+         // Create the new definition...
+         var newDef = {
+            widgetsForDisplay: currentField.data.widgetsForDisplay // Save the widgets to use for display??
+         };
+
+         // Set the name and config...
+         newDef[itemNameKey] = currentField.data.module;
+
+         // If "updatedConfiguration" is available then use that, otherwise use the default configuration...
+         // There should be "updatedConfig" if the user has modified the default form and saved it...
+         // ...Also mixin any additional configuration...
+         // This is for the benefit of the widget being added to, not the widget being instantiated...
+         if (currentField.data.updatedConfig != null)
+         {
+            newDef[itemConfigKey] = currentField.data.updatedConfig.defaultConfig;
+            lang.mixin(newDef, currentField.data.additionalConfig);
+         }
+         else
+         {
+            newDef[itemConfigKey] = currentField.data.defaultConfig;
+            lang.mixin(newDef, currentField.data.additionalConfig);
+         }
+         
+         // Get any sub-widget definitinos and add them to the new definition...
+         this.getSubWidgetDefinitions(node, newDef, currentField);
+         
+         widgetDefs.push(newDef);
+      },
+
+      /**
+       * Gets any widgets that are defined within the widget bound to the supplied node. If a widget dropped
+       * into the drop-zone has any widgets that have been dropped into it then there definitions need to be
+       * retrieved and saved.
+       *
+       * @instance
+       * @param {element} node The DOM node from which to retrieve the widget data
+       * @param {object} The definition object that should be updated
+       */
+      getSubWidgetDefinitions: function alfresco_creation_DropZone__getSubWidgetDefinitions(node, newDef, currentField) {
+         var widget = registry.byNode(node);
+         if (widget != null && 
+             typeof widget.getWidgetDefinitions === "function")
+         {
+            var defs = widget.getWidgetDefinitions();
+            if (defs == null || defs.length == 0)
+            {
+               // No action
+            }
+            else
+            {
+               // It's possible to configure an alternative to "config.widgets" as the value to set the drag and dropped
+               // items of. "config.widgets" is the default because it is expected that a set of nested widgets will be constructed
+               // however it is also possible to drop an object that represents a Publication. In this case the value to be set
+               // will most likely be "publishPayload.widgets"...
+               var itemDroppedItemsKey = (currentField.data.itemDroppedItemsKey != null) ? currentField.data.itemDroppedItemsKey : "config.widgets"
+               lang.setObject(itemDroppedItemsKey, defs, newDef);
+
+               // It's also possible to "mixin" data from the definition directly into the config for the new definition. This
+               // has been added to support widgets dropped into a publication that is dropped into a widget (e.g. the form controls in
+               // a request dialog publication dropped into a menu item)...
+               if (currentField.data.itemDroppedMixinKey != null)
+               {
+                  try
+                  {
+                     var mixinValue = lang.getObject(currentField.data.itemDroppedMixinKey, false, defs);
+                     if (mixinValue != null)
+                     {
+                        lang.mixin(newDef.config, mixinValue);
+                     }
+                  }
+                  catch (e)
+                  {
+                     this.alfLog("warn", "An error occurred mixing in dropped attributes");
+                  }
+               }
+            }
+         }
       },
       
       /**
@@ -288,12 +386,18 @@ define(["dojo/_base/declare",
                this.alfLog("log", "Updating item", payload);
 
                var clonedConfig = lang.clone(payload.originalConfig);
-               
+
+               // Create a new attribute to store the updated configuration, this is going to be 
+               // set using the dot-notation properties so that attributes such as "clonedConfig.updatedConfig.defaultConfig.x"
+               // might exist...
+               clonedConfig.updatedConfig = {};
+
                // Update the original configuration with the new data...
                for (var key in payload.updatedConfig)
                {
                   // Use "setObject" to allow keys to be dot-notation properties.
                   lang.setObject(key, payload.updatedConfig[key], clonedConfig);
+                  lang.setObject(key, payload.updatedConfig[key], clonedConfig.updatedConfig);
                }
                // Update the configuration values...
                for (var i=0; i<clonedConfig.widgetsForConfig.length; i++)

@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/services/QuickShareService
+ * @module alfresco/services/PreferenceService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreXhr
  * @mixes module:alfresco/services/_AlfDocumentListTopicMixin
@@ -29,8 +29,9 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreXhr",
         "alfresco/services/_PreferenceServiceTopicMixin",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, CoreXhr, _PreferenceServiceTopicMixin, _AlfDocumentListTopicMixin, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, CoreXhr, _PreferenceServiceTopicMixin, _AlfDocumentListTopicMixin, lang, AlfConstants) {
    
    return declare([AlfCore, CoreXhr, _PreferenceServiceTopicMixin, _AlfDocumentListTopicMixin], {
       
@@ -144,7 +145,7 @@ define(["dojo/_base/declare",
          {
             // Set users preference url...
             var _this = this,
-                url = Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(Alfresco.constants.USERNAME) + "/preferences";
+                url = AlfConstants.PROXY_URI + "api/people/" + encodeURIComponent(AlfConstants.USERNAME) + "/preferences";
             
             // Set the remote preference...
             var preferenceObj = {};

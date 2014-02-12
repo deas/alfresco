@@ -29,12 +29,13 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/WidgetConfig.html",
         "alfresco/core/Core",
+        "alfresco/forms/Form",
         "dojo/_base/lang",
         "dijit/registry",
         "dojo/_base/array",
         "dijit/form/Button",
         "dojo/dom-class"], 
-        function(declare, _Widget, _Templated, template, AlfCore, lang, registry, array, Button, domClass) {
+        function(declare, _Widget, _Templated, template, AlfCore, Form, lang, registry, array, Button, domClass) {
    
    return declare([_Widget, _Templated, AlfCore], {
       
@@ -42,7 +43,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type cssRequirements {Array}
+       * @type {Array}
        */
       cssRequirements: [{cssFile:"./css/WidgetConfig.css"}],
       
@@ -50,14 +51,14 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type i18nRequirements {Array}
+       * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/WidgetConfig.properties"}],
       
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
       
@@ -66,14 +67,27 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @type {string}
-       * @default ""
+       * @default "ALF_CONFIGURE_WIDGET"
        */
       configTopic: "ALF_CONFIGURE_WIDGET",
       
       /**
        * Can be used to clear the currently displayed widget.
+       * 
+       * @instance
+       * @type {string}
+       * @default "ALF_CLEAR_CONFIGURE_WIDGET"
        */
       clearTopic: "ALF_CLEAR_CONFIGURE_WIDGET",
+
+      /**
+       * Can be used to clear the currently displayed widget.
+       * 
+       * @instance
+       * @type {string}
+       * @default "ALF_SAVE_CONFIGURE_WIDGET"
+       */
+      saveTopic: "ALF_SAVE_CONFIGURE_WIDGET",
       
       /**
        * @instance
@@ -81,14 +95,7 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_creation_WidgetConfig__postCreate() {
          this.alfSubscribe(this.configTopic, lang.hitch(this, "displayWidgetConfig"));
          this.alfSubscribe(this.clearTopic, lang.hitch(this, "clearCurrentDisplay"));
-         
-         this.saveButton = new Button({
-            label: "Save",
-            onClick: lang.hitch(this, "saveWidgetConfig")
-         }, this.controlsNode);
-         
-         // Hide the button...
-         domClass.add(this.saveButton.domNode, "share-hidden");
+         this.alfSubscribe(this.saveTopic, lang.hitch(this, "saveWidgetConfig"));
       },
       
       /**
@@ -110,11 +117,13 @@ define(["dojo/_base/declare",
          {
             // Get the values for the current widgets...
             var updatedConfig = {};
-            var currentWidgets = registry.findWidgets(this.configNode);
-            for (var i=0; i<currentWidgets.length; i++)
+            if (this.form == null)
             {
-               var c = currentWidgets[i];
-               updatedConfig[c.get("name")] = c.getValue();
+               this.alfLog("warn", "No form instance found to retrieve config data from", this);
+            }
+            else
+            {
+               updatedConfig = this.form.getValue();
             }
             
             this.alfPublish("ALF_UPDATE_RENDERED_WIDGET", {
@@ -136,7 +145,6 @@ define(["dojo/_base/declare",
       clearCurrentDisplay: function alfresco_creation_WidgetConfig__clearCurrentDisplay() {
          var currentWidgets = registry.findWidgets(this.configNode);
          array.forEach(currentWidgets,  lang.hitch(this, "destroyOldConfigWidget"));
-         domClass.add(this.saveButton.domNode, "share-hidden");
       },
       
       /**
@@ -149,30 +157,32 @@ define(["dojo/_base/declare",
          // Clear the previous widgets...
          this.clearCurrentDisplay();
          
-         // Create the new widgets...
-         if (lang.exists("selectedItem.data.configWidgets", payload))
-         {
-            // Save the current widget configuration...
-            this.currentWidgetConfig = payload;
-            
-            // Create the controls for configuring the widget...
-            this.processWidgets(payload.selectedItem.data.configWidgets, this.configNode);
-            
-            domClass.remove(this.saveButton.domNode, "share-hidden");
-         }
-         // TODO: THE BLOCK ABOVE NEEDS DELETING ONCE THE OTHER WIDGETS HAVE BEEN UPDATED TO NOT RELY ON THE "DATA" OBJECT
          if (lang.exists("selectedItem.widgetsForConfig", payload))
          {
             // Save the current widget configuration...
             this.currentWidgetConfig = payload;
             
             // Create the controls for configuring the widget...
-            this.processWidgets(payload.selectedItem.widgetsForConfig, this.configNode);
-            
-            domClass.remove(this.saveButton.domNode, "share-hidden");
+            // NOTE: Although it would make more sense for the form to have it's own scope, this would prevent
+            //       it from receiving information about other form fields that have been dropped
+            this.form = new Form({
+               pubSubScope: this.pubSubScope,
+               okButtonPublishTopic: this.saveTopic,
+               okButtonLabel: this.message("saveConfig.button.label"),
+               // okButtonPublishGlobal: true,
+               cancelButtonPublishTopic: this.clearTopic,
+               // cancelButtonPublishGlobal: true,
+               widgets: payload.selectedItem.widgetsForConfig
+            });
+            this.form.placeAt(this.configNode);
          }
       },
       
+      /**
+       * 
+       * @instance
+       * @param {object[]} widgets The widgets that have been created.
+       */
       allWidgetsProcessed: function alfresco_creation_WidgetConfig__allWidgetsProcessed(widgets) {
          this.alfLog("log", "Widget config processed");
       },

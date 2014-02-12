@@ -14,7 +14,7 @@
 }
 
 /* This ensures that the menu is displayed inline rather than below the widget */
-.alfresco-renderers-Toggle .on.quick-share.enabled div.alf-menu-bar {
+.alfresco-renderers-Toggle .on.quick-share.enabled div.alfresco-menus-AlfMenuBar {
   display: inline-block;
 }
 

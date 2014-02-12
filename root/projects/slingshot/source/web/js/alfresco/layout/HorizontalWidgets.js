@@ -18,19 +18,61 @@
  */
 
 /**
- * @module alfresco/layouts/HorizontalWidgets
+ * <p>This should be used to lay widgets out in a horizontal line. If no specific widths are requested
+ * by the child widgets then each will be allotted an equal amount of the available space. However, it is
+ * possible for each widget to request a width in either pixels or percentage (and it is possible to mix
+ * and match). Pixel dimensions will be allocated first and the percentages will be of the remaining available
+ * width after fixed sizes are deducted. Any widgets that do not request a specific width will be allocated 
+ * an equal amount of whatever is left.</p>
+ * <p>It is also possible to define gaps between widgets by using the 
+ * [widgetMarginLeft]{@link module:alfresco/layout/HorizontalWidgets#widgetMarginLeft} and
+ * [widgetMarginRight]{@link module:alfresco/layout/HorizontalWidgets#widgetMarginRight} attributes (but you should bear
+ * in mind that if using both attributes then the gap between 2 widgets will be the <b>combination</b> of both values).</p>
+ * <p><b>PLEASE NOTE: Resize operations are not currently handled - this will be addressed in the future</b></p>
+ * <p><pre>{
+ *    "name": "alfresco/layout/VerticalWidgets",
+ *    "config": {
+ *       "widgetMarginLeft": 10,
+ *       "widgetMarginRight": 10
+ *       "widgets": [
+ *          {
+ *             "name": "alfresco/logo/Logo",
+ *             "widthPx" 300
+ *          },
+ *          {
+ *             "name": "alfresco/logo/Logo",
+ *             "widthPc" 50
+ *          }
+ *       ]
+ *    }
+ * }</pre></p>
+ * @module alfresco/layout/HorizontalWidgets
  * @extends module:alfresco/core/ProcessWidgets
  * @author Dave Draper
  */
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
         "dojo/text!./templates/HorizontalWidgets.html",
+        "dojo/_base/lang",
+        "dojo/_base/array",
         "dojo/dom-construct",
-        "dojo/dom-style"], 
-        function(ProcessWidgets, declare, template, domConstruct, domStyle) {
+        "dojo/dom-style",
+        "dojo/dom-geometry",
+        "dojo/on",
+        "alfresco/core/ObjectTypeUtils"], 
+        function(ProcessWidgets, declare, template, lang, array, domConstruct, domStyle, domGeom, on, ObjectTypeUtils) {
    
    return declare([ProcessWidgets], {
       
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/HorizontalWidgets.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/HorizontalWidgets.css"}],
+
       /**
        * The HTML template to use for the widget.
        * @instance
@@ -58,6 +100,24 @@ define(["alfresco/core/ProcessWidgets",
       widgetWidth: null,
       
       /**
+       * This is the size of margin (in pixels) that will appear to the left of every widget added. 
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      widgetMarginLeft: null,
+
+      /**
+       * This is the size of margin (in pixels) that will appear to the right of every widget added. 
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      widgetMarginRight: null,
+
+      /**
        * Sets up the default width to be allocated to each child widget to be added.
        * 
        * @instance
@@ -65,13 +125,118 @@ define(["alfresco/core/ProcessWidgets",
       postCreate: function alfresco_layout_HorizontalWidgets__postCreate() {
          // Split the full width between all widgets... 
          // We should update this to allow for specific widget width requests...
-         if (this.widgets)
+         // on(window, "resize", lang.hitch(this, "onResize"));
+
+         if (this.widgets != null)
          {
-            this.widgetWidth = 100 / this.widgets.length; 
+            // Get the dimensions of the current DOM node...
+            var computedStyle = domStyle.getComputedStyle(this.domNode);
+            var output = domGeom.getMarginBox(this.domNode, computedStyle);
+            var overallwidth = output.w;
+
+            // Substract the margins from the overall width
+            var leftMarginsSize = 0,
+                rightMarginsSize = 0;
+            if (this.widgetMarginLeft != null && !isNaN(this.widgetMarginLeft))
+            {
+               leftMarginsSize = this.widgets.length * parseInt(this.widgetMarginLeft);
+            }
+            if (this.widgetMarginRight != null && !isNaN(this.widgetMarginLeft))
+            {
+               rightMarginsSize = this.widgets.length * parseInt(this.widgetMarginRight);
+            }
+            var remainingWidth = overallwidth - leftMarginsSize - rightMarginsSize;
+
+            // Work out how many pixels widgets have requested and substract that from the remainder...
+            var widgetRequestedWidth = 0;
+            var widgetsWithNoWidthReq = 0;
+            array.forEach(this.widgets, function(widget, index) {
+               if (widget.widthPx != null && !isNaN(widget.widthPx))
+               {
+                  widgetRequestedWidth += parseInt(widget.widthPx);
+                  widget.widthCalc = widget.widthPx;
+               }
+               else if (widget.widthPc != null && !isNaN(widget.widthPc))
+               {
+                  // No action, just avoiding adding to the count of widgets that don't request
+                  // a width as either a pixel or percentage size.
+               }
+               else
+               {
+                  // The current widget either hasn't requested a width or has reuested it with a value
+                  // that is not a number. It will therefore get an equal share of whatever remainder is left.
+                  widgetsWithNoWidthReq++;
+               }
+            });
+
+            // Check to see if there is actually any space left across the page...
+            // There's not really a lot we can do about it if not but it's useful to warn developers so that they
+            // can spot that there's a potential fault...
+            remainingWidth = remainingWidth - widgetRequestedWidth;
+            if (remainingWidth < 0)
+            {
+               this.alfLog("warn", "There is no horizontal space left for widgets requesting a percentage of available space", this);
+            }
+
+            // Update the widgets that have requested a percentage of space with a value that is calculated from the remaining space
+            var totalWidthAsRequestedPercentage = 0;
+            array.forEach(this.widgets, function(widget, index) {
+               if (widget.widthPc != null && !isNaN(widget.widthPc))
+               {
+                  var pc = parseInt(widget.widthPc);
+                  totalWidthAsRequestedPercentage += pc;
+
+                  if (pc > 100)
+                  {
+                     this.alfLog("warn", "A widget has requested more than 100% of available horizontal space", widget, this);
+                  }
+
+                  widget.widthCalc = remainingWidth * (pc/100);
+               }
+            }, this);
+
+            // Work out the remaining percentage of the page that can be divided between widgets that haven't requested a specific
+            // widget in either pixels or as a percentage...
+            var remainingPercentage = 0;
+            if (totalWidthAsRequestedPercentage > 100)
+            {
+               this.alfLog("warn", "Widgets have requested more than 100% of the available horizontal space", this);
+            }
+            else
+            {
+               remainingPercentage = 100 - totalWidthAsRequestedPercentage;
+            }
+
+            // Divide up the remaining horizontal space between the remaining widgets...
+            var remainingPercentage = remainingPercentage / widgetsWithNoWidthReq,
+                standardWidgetWidth = remainingWidth * (remainingPercentage/100);
+            array.forEach(this.widgets, function(widget, index) {
+               if ((widget.widthPc != null && !isNaN(widget.widthPc)) ||
+                   (widget.widthPx != null && !isNaN(widget.widthPx)))
+               {
+                  // No action required. 
+               }
+               else
+               {
+                  widget.widthCalc = standardWidgetWidth;
+               }
+            });
          }
          this.inherited(arguments);
       },
       
+      /**
+       *
+       *
+       * @instance
+       * @param {object} evt The resize event.
+       */
+      onResize: function alfresco_layout_HorizontalWidgets__onResize(evt) {
+         this.alfLog("log", "Resizing");
+
+         // TODO: Implement to resize when the window changes...
+      },
+
       /**
        * This overrides the default implementation to ensure that each each child widget added has the 
        * appropriate CSS classes applied such that they appear horizontally. It also sets the width
@@ -79,22 +244,24 @@ define(["alfresco/core/ProcessWidgets",
        * percentage assigned to each child widget) or the specific width configured for the widget.
        * 
        * @instance
-       * @param {object} widget The definition of the widget to create the DOM node for.
+       * @param {object} widget The widget definition to create the DOM node for
+       * @param {element} rootNode The DOM node to create the new DOM node as a child of
+       * @param {string} rootClassName A string containing one or more space separated CSS classes to set on the DOM node
        * @returns {element} A new DOM node for the widget to be attached to
        */
-      createWidgetDomNode: function alfresco_layout_HorizontalWidgets__createWidgetDomNode(widget) {
+      createWidgetDomNode: function alfresco_layout_HorizontalWidgets__createWidgetDomNode(widget, rootNode, rootClassName) {
          var outerDiv = domConstruct.create("div", { className: "horizontal-widget"}, this.containerNode);
          
-         var width = this.widgetWidth + "%";
-        
-         if (widget.config && widget.config.width)
-         {
-            width = widget.config.width;
-         }
          // Set the width of each widget according to how many there are...
-         domStyle.set(outerDiv, {
-            "width" : width
-         });
+         var style = {
+            "marginLeft": this.widgetMarginLeft + "px",
+            "marginRight": this.widgetMarginRight + "px"
+         }
+         if (widget.widthCalc != 0)
+         {
+            style.width =  widget.widthCalc + "px";
+         }
+         domStyle.set(outerDiv, style);
          
          var innerDiv = domConstruct.create("div", {}, outerDiv);
          return innerDiv;

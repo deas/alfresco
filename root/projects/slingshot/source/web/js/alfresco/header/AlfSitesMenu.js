@@ -34,8 +34,9 @@ define(["dojo/_base/declare",
         "alfresco/header/AlfMenuItem",
         "alfresco/header/AlfCascadingMenu",
         "dojo/dom-style",
-        "dijit/popup"], 
-        function(declare, AlfMenuBarPopup, AlfXhr, lang, array, aspect, registry, AlfMenuGroup, AlfMenuItem, AlfCascadingMenu, domStyle, popup) {
+        "dijit/popup",
+        "service/constants/Default"], 
+        function(declare, AlfMenuBarPopup, AlfXhr, lang, array, aspect, registry, AlfMenuGroup, AlfMenuItem, AlfCascadingMenu, domStyle, popup, AlfConstants) {
    
    /**
     * This extends "alfresco/header/AlfMenuBarPopup" to add additional subscriptions for site data changes. Most
@@ -47,7 +48,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfSitesMenu.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfSitesMenu.properties"}],
@@ -201,7 +202,7 @@ define(["dojo/_base/declare",
             var url = this._menuUrl;
             if (url == null)
             {
-               url = Alfresco.constants.URL_SERVICECONTEXT + "header/sites-menu/recent";
+               url = AlfConstants.URL_SERVICECONTEXT + "header/sites-menu/recent";
                if (this.currentSite)
                {
                   url = url + "/site/" + this.currentSite;
@@ -357,7 +358,7 @@ define(["dojo/_base/declare",
             var url = this._favouritesUrl;
             if (url == null)
             {
-               url = Alfresco.constants.URL_SERVICECONTEXT + "header/sites-menu/favourites";
+               url = AlfConstants.URL_SERVICECONTEXT + "header/sites-menu/favourites";
             }
             this.serviceXhr({url : url,
                              method: "GET",
@@ -821,7 +822,7 @@ define(["dojo/_base/declare",
        * The label for the "Recently Visited Sites" group.
        * 
        * @instance
-       * @type {string} recentGropLabel
+       * @type {string}
        * @default "recent.sites.label"
        */
       recentGroupLabel: "recent.sites.label",
@@ -830,7 +831,7 @@ define(["dojo/_base/declare",
        * The label for the "Favourite Sites" group.
        * 
        * @instance
-       * @type {string} favouriteGroupLabel
+       * @type {string}
        * @default "favourite.sites.label"
        */
       favouriteGroupLabel: "favourite.sites.label",
@@ -840,70 +841,70 @@ define(["dojo/_base/declare",
        * favourite menu items.
        * 
        * @instance
-       * @type {string} usefulGroupLabel
+       * @type {string}
        * @default "useful.sites.label"
        */
       usefulGroupLabel: "useful.sites.label",
       
       /**
        * @instance
-       * @type {string} favouriteGroupIconClass
+       * @type {string}
        * @default "alf-favourite-site-icon"
        */
       favouriteGroupIconClass: "alf-favourite-site-icon",
       
       /**
        * @instance
-       * @type {string} siteFinderLabel
+       * @type {string}
        * @default "site-finder.label"
        */
       siteFinderLabel: "site-finder.label",
       
       /**
        * @instance
-       * @type {string} siteFinderIconClass
+       * @type {string}
        * @default "alf-site-finder-icon"
        */
       siteFinderIconClass: "alf-site-finder-icon",
       
       /**
        * @instance
-       * @type {string} createSiteLabel
+       * @type {string}
        * @default "create-site.label"
        */
       createSiteLabel: "create-site.label",
       
       /**
        * @instance
-       * @type {string} createSiteIconClass
+       * @type {string}
        * @default "alf-create-site-icon"
        */
       createSiteIconClass: "alf-create-site-icon",
       
       /**
        * @instance
-       * @type {string} addFavouriteLabel
+       * @type {string}
        * @default "add-favourite-site.label"
        */
       addFavouriteLabel: "add-favourite-site.label",
       
       /**
        * @instance
-       * @type {string} addFavouriteIconClass
+       * @type {string}
        * @default "alf-favourite-site-icon"
        */
       addFavouriteIconClass:  "alf-add-favourite-site-icon",
       
       /**
        * @instance
-       * @type {string} removeFavouriteLabel
+       * @type {string}
        * @default "remove-favourite-site.label"
        */
       removeFavouriteLabel: "remove-favourite-site.label",
       
       /**
        * @instance
-       * @type {string} removeFavouriteIconClass
+       * @type {string}
        * @default "alf-remove-favourite-site-icon"
        */
       removeFavouriteIconClass: "alf-remove-favourite-site-icon"

@@ -41,13 +41,13 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
       /**
        * @instance
-       * @type {Object} config 
+       * @type {Object}
        * @default null
        * @deprecated Not sure that this is required anymore?
        */

@@ -41,7 +41,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type cssRequirements {Array}
+       * @type {Array}
        */
       cssRequirements: [{cssFile:"./css/WidgetDragWrapper.css"}],
       
@@ -49,14 +49,14 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type i18nRequirements {Array}
+       * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/WidgetDragWrapper.properties"}],
       
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
       

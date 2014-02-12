@@ -106,6 +106,15 @@ define(["dojo/_base/declare"],
       availablePagesTopic: "ALF_AVAILABLE_PAGE_DEFINITIONS",
       
       /**
+       * This topic is used to indicate that an attempt to load the details of the available pages succeeded.
+       * 
+       * @instance
+       * @type {string}
+       * @default "ALF_AVAILABLE_PAGE_DEFINITIONS_LOAD_SUCCESS"
+       */
+      availablePagesLoadSuccess: "ALF_AVAILABLE_PAGE_DEFINITIONS_LOAD_SUCCESS",
+
+      /**
        * This topic is used to indicate that an attempt to load the details of the available pages failed.
        * 
        * @instance

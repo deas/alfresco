@@ -1,0 +1,91 @@
+--- StringUtil.java.original	2013-06-27 21:54:46.000000000 +0100
++++ StringUtil.java	2013-10-07 10:37:49.826869467 +0100
+@@ -1042,7 +1042,7 @@
+                     escapeType = json ? NO_ESC : ESC_BACKSLASH; 
+                 } else if (c == '\\') {
+                     escapeType = ESC_BACKSLASH; 
+-                } else if (c == '/' && (i == 0 || s.charAt(i - 1) == '<')) {  // against closing elements
++                } else if (c == '/' ) {
+                     escapeType = ESC_BACKSLASH; 
+                 } else if (c == '>') {  // against "]]> and "-->"
+                     final boolean dangerous;
+--- ClassString.java.original	2013-06-27 21:54:48.000000000 +0100
++++ ClassString.java	2013-10-07 12:48:45.559051436 +0100
+@@ -48,6 +48,10 @@
+  * individuals on behalf of the Visigoth Software Society. For more
+  * information on the Visigoth Software Society, please see
+  * http://www.visigoths.org/
++ * 
++ * 2013 - Alfresco Software, Ltd.
++ * Alfresco Software has modified source of this file
++ * The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src 
+  */
+ package freemarker.ext.beans;
+ 
+@@ -67,13 +71,21 @@
+     private static final Class NUMBER_CLASS = Number.class;
+ 
+     private final Class[] classes;
++    private final boolean[] isNull;
+     
+     ClassString(Object[] objects) {
+         int l = objects.length;
+         classes = new Class[l];
++        isNull = new boolean[l];
+         for(int i = 0; i < l; ++i) {
+             Object obj = objects[i];
+-            classes[i] = obj == null ? MethodUtilities.OBJECT_CLASS : obj.getClass();
++            if(obj == null) {
++               classes[i] = MethodUtilities.OBJECT_CLASS;
++               isNull[i] = true;
++            } else {
++               classes[i] = obj.getClass();
++               isNull[i] = false;
++            }
+         }
+     }
+     
+@@ -217,14 +229,14 @@
+             }
+         }
+         for(int i = 0; i < fl; ++i) {
+-            if(!isMethodInvocationConvertible(formalTypes[i], classes[i])) {
++            if(!isMethodInvocationConvertible(formalTypes[i], classes[i], isNull[i])) {
+                 return false;
+             }
+         }
+         if(varArg) {
+             Class varArgType = formalTypes[fl].getComponentType();
+             for(int i = fl; i < cl; ++i) {
+-    		if(!isMethodInvocationConvertible(varArgType, classes[i])) {
++    		if(!isMethodInvocationConvertible(varArgType, classes[i], isNull[i])) {
+                     return false;
+                 }
+             }
+@@ -249,7 +261,7 @@
+      * type or an object type of a primitive type that can be converted to
+      * the formal type.
+      */
+-    static boolean isMethodInvocationConvertible(Class formal, Class actual) {
++    static boolean isMethodInvocationConvertible(Class formal, Class actual, boolean isNull) {
+         // Check for identity or widening reference conversion
+         if(formal.isAssignableFrom(actual)) {
+             return true;
+@@ -290,10 +302,17 @@
+                 // This can actually cause us trouble as this is a narrowing 
+                 // conversion, not widening. 
+                 return true;
++            } else if(isNull) {
++                // Object versions can take a null
++                return true;
+             } else {
+                 return false;
+             }
+         }
++        else if(isNull) {
++            // Object versions can take a null
++            return true;
++        }
+         return false;
+     }
+     

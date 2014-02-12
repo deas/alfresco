@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDocumentFilters.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDocumentFilters.properties"}],
@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfDocumentFilters.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDocumentFilters.css"}],
@@ -65,7 +65,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       

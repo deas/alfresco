@@ -6,7 +6,7 @@
 function main()
 {
    // Repository Library root node
-   model.rootNode = "alfresco://shared";
+   model.rootNode = "alfresco://company/shared";
    
    var evaluateChildFolders = "true",
        maximumFolderCount = "-1";

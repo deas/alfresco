@@ -38,7 +38,7 @@ define(["dojo/_base/declare"],
        * The purpose of this function is to return information on selection of text in an element.
        * 
        * @instance
-       * @param {DOM Element} el The element to find the text selection for.
+       * @param {element} el The element to find the text selection for.
        * @returns {Object} An object with the attributes "start" and "end" that indicate the text selection.
        */
       getInputSelection: function(el) {
@@ -104,7 +104,7 @@ define(["dojo/_base/declare"],
        * The purpose is to set the carat in the supplied element.
        * 
        * @instance
-       * @param {DOM Element} el The element to set the carat position on
+       * @param {element} el The element to set the carat position on
        * @param {number} position The index at which to set the carat
        */
       setCaretPosition: function(el, position) {

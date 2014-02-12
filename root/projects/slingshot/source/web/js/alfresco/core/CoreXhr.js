@@ -22,6 +22,7 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
+        "service/constants/Default",
         "dijit/registry",
         "dojo/topic",
         "dojo/_base/array",
@@ -30,11 +31,23 @@ define(["dojo/_base/declare",
         "dojox/uuid/generateRandomUuid",
         "dojo/request/xhr",
         "dojo/json",
-        "dojo/date/stamp"], 
-        function(declare, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp) {
+        "dojo/date/stamp",
+        "dojo/cookie"], 
+        function(declare, AlfConstants, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp, dojoCookie) {
    
    return declare(null, {
       
+      /**
+       * Ensures that the csrfProperties are retrieved from the Alfresco constants provided by Surf.
+       * 
+       * @instance
+       * @param {object} args The constructor arguments.
+       */
+      constructor: function(args){
+         lang.mixin(this, args);
+         this.csrfProperties = AlfConstants.CSRF_POLICY.properties || {};
+      },
+
       /**
        * This function can be used to clean up JSON responses to remove any superfluous whitespace characters and
        * remove any trailing commas in arrays/objects. This function is particularly handy since Dojo can be very
@@ -44,7 +57,7 @@ define(["dojo/_base/declare",
        * @param {string} input
        * @returns {string} A cleaned up JSON response.
        */
-      cleanupJSONResponse: function alfresco_core_Core__cleanupJSONResponse(input) {
+      cleanupJSONResponse: function alfresco_core_CoreXhr__cleanupJSONResponse(input) {
          var r = input;
          if (typeof input == "string")
          {
@@ -68,7 +81,7 @@ define(["dojo/_base/declare",
        * @param {Object} config The configuration for the request
        * @todo List the available config object attributes
        */
-      serviceXhr: function alfresco_core_Core__serviceXhr(config) {
+      serviceXhr: function alfresco_core_CoreXhr__serviceXhr(config) {
          
          var _this = this;
          
@@ -81,9 +94,9 @@ define(["dojo/_base/declare",
             else
             {
                var headers = (config.headers) ? config.headers : { 'Content-Type': 'application/json' };
-               if (Alfresco && Alfresco.util && Alfresco.util.CSRFPolicy && Alfresco.util.CSRFPolicy.isFilterEnabled())
+               if (this.isCsrfFilterEnabled())
                {
-                  headers[Alfresco.util.CSRFPolicy.getHeader()] = Alfresco.util.CSRFPolicy.getToken();
+                  headers[this.getCsrfHeader()] = this.getCsrfToken();
                }
                
                xhr(config.url, {
@@ -97,7 +110,15 @@ define(["dojo/_base/declare",
                   // HANDLE SUCCESS...
                   if (typeof response == "string")
                   {
-                     response = JSON.parse(_this.cleanupJSONResponse(response));
+                     try
+                     {
+                        response = JSON.parse(_this.cleanupJSONResponse(response));
+                     }
+                     catch (e)
+                     {
+                        this.alfLog("error", "An error occurred parsing an XHR JSON success response", response, this);
+                     }
+                     
                   }
                   if (typeof config.successCallback == "function")
                   {
@@ -115,7 +136,14 @@ define(["dojo/_base/declare",
                   
                   if (typeof response == "string")
                   {
-                     response = JSON.parse(_this.cleanupJSONResponse(response));
+                     try
+                     {
+                        response = JSON.parse(_this.cleanupJSONResponse(response));
+                     }
+                     catch (e)
+                     {
+                        this.alfLog("error", "An error occurred parsing an XHR JSON failure response", response, this);
+                     }
                   }
                   if (typeof config.failureCallback == "function")
                   {
@@ -133,7 +161,14 @@ define(["dojo/_base/declare",
                   
                   if (typeof response == "string")
                   {
-                     response = JSON.parse(_this.cleanupJSONResponse(response));
+                     try
+                     {
+                        response = JSON.parse(_this.cleanupJSONResponse(response));
+                     }
+                     catch (e)
+                     {
+                        this.alfLog("error", "An error occurred parsing an XHR JSON progress response", response, this);
+                     }
                   }
                   if (typeof config.progressCallback == "function")
                   {
@@ -160,7 +195,7 @@ define(["dojo/_base/declare",
        * @param {object} response The object returned from the successful XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
        */
-      defaultSuccessCallback: function alfresco_core_Core__defaultSuccessCallback(response, requestConfig) {
+      defaultSuccessCallback: function alfresco_core_CoreXhr__defaultSuccessCallback(response, requestConfig) {
          this.alfLog("log", "[DEFAULT CALLBACK] The following successful response was received", response, requestConfig);
          if (requestConfig.alfTopic)
          {
@@ -178,7 +213,7 @@ define(["dojo/_base/declare",
        * @param {object} response The object returned from the failed XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
        */
-      defaultFailureCallback: function alfresco_core_Core__defaultFailureCallback(response, requestConfig) {
+      defaultFailureCallback: function alfresco_core_CoreXhr__defaultFailureCallback(response, requestConfig) {
          this.alfLog("log", "[DEFAULT CALLBACK] The following failure response was received", response, requestConfig);
          if (requestConfig.alfTopic)
          {
@@ -221,7 +256,7 @@ define(["dojo/_base/declare",
        * @param {object} response The object returned from the progress update of the XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
        */
-      defaultProgressCallback: function alfresco_core_Core__defaultProgressCallback(response, requestConfig) {
+      defaultProgressCallback: function alfresco_core_CoreXhr__defaultProgressCallback(response, requestConfig) {
          this.alfLog("log", "[DEFAULT CALLBACK] The following progress response was received", response, requestConfig);
          if (requestConfig.alfTopic)
          {
@@ -230,6 +265,83 @@ define(["dojo/_base/declare",
                response: response
             });
          }
+      },
+
+      /**
+       * Use this method and check if the CSRF filter is enabled before trying to set the CSRF header or parameter.
+       * Will be disabled if the filter contains no rules.
+       *
+       * @instance
+       * @return {*}
+       */
+      isCsrfFilterEnabled: function alfresco_core_CoreXhr__isCsrfFilterEnabled()
+      {
+         return AlfConstants.CSRF_POLICY.enabled;
+      },
+
+      /**
+       * Returns the name of the request header to put the token in when sending XMLHttpRequests.
+       *
+       * @instance
+       * @return {String} The name of the request header to put the token in.
+       */
+      getCsrfHeader: function alfresco_core_CoreXhr__getCsrfHeader()
+      {
+         return this.csrfResolve(AlfConstants.CSRF_POLICY.header);
+      },
+
+      /**
+       * Returns the name of the request parameter to put the token in when sending multipart form uploads.
+       *
+       * @instance
+       * @return {String} The name of the request header to put the token in.
+       */
+      getCsrfParameter: function alfresco_core_CoreXhr__getCsrfParameter()
+      {
+         return this.csrfResolve(AlfConstants.CSRF_POLICY.parameter);
+      },
+
+      /**
+       * Returns the name of the cookie that holds the value of the token.
+       *
+       * @instance
+       * @return {String} The name of the request header to put the token in.
+       */
+      getCsrfCookie: function alfresco_core_CoreXhr__getCsrfCookie()
+      {
+         return this.csrfResolve(AlfConstants.CSRF_POLICY.cookie);
+      },
+
+      /**
+       * Returns the token.
+       *
+       * Note! Make sure to use this method just before a request is made against the server since it might have been
+       * updated in another browser tab or window.
+       *
+       * @instance
+       * @returns {String} The name of the request header to put the token in.
+       */
+      getCsrfToken: function alfresco_core_CoreXhr__getCsrfToken()
+      {
+         var token = null;
+         var cookieName = this.getCsrfCookie();
+         if (cookieName)
+         {
+            token = dojoCookie(cookieName);
+            if (token)
+            {
+               // remove quotes to support Jetty app-server - bug where it quotes a valid cookie value see ALF-18823
+               token = token.replace(/"/g, '');
+            }
+         }
+         return token;
+      },
+
+      /**
+       * @instance
+       */
+      csrfResolve: function alfresco_core_CoreXhr__csrfResolve(str) {
+         return lang.replace(str, this.csrfProperties);
       }
    });
 });

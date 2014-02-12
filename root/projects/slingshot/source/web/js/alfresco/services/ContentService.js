@@ -18,18 +18,22 @@
  */
 
 /**
- * @module alfresco/services/QuickShareService
+ * @module alfresco/services/ContentService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
+        "alfresco/core/CoreXhr",
+        "service/constants/Default",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, _AlfDocumentListTopicMixin, lang) {
+        "dojo/_base/lang",
+        "alfresco/core/NodeUtils",
+        "alfresco/dialogs/AlfFormDialog"],
+        function(declare, AlfCore, CoreXhr, AlfConstants, _AlfDocumentListTopicMixin, lang, NodeUtils, AlfFormDialog) {
    
-   return declare([AlfCore, _AlfDocumentListTopicMixin], {
+   return declare([AlfCore, CoreXhr, _AlfDocumentListTopicMixin], {
       
       /**
        * Re-use the old Alfresco.DocListToolbar scope. This could be replaced with a custom scope if the i18nRequirements file is also changed.
@@ -56,9 +60,78 @@ define(["dojo/_base/declare",
          lang.mixin(this, args);
          this.alfSubscribe("ALF_CURRENT_NODEREF_CHANGED", lang.hitch(this, "handleCurrentNodeChange"));
          this.alfSubscribe("ALF_SHOW_UPLOADER", lang.hitch(this, "showUploader"));
+         this.alfSubscribe("ALF_CONTENT_SERVICE_UPLOAD_REQUEST_RECEIVED", lang.hitch(this, "onFileUploadRequest"));
          this.alfSubscribe("ALF_CREATE_NEW_FOLDER", lang.hitch(this, "createNewFolder"));
+         this.alfSubscribe("ALF_CREATE_CONTENT_REQUEST", lang.hitch(this, "onCreateContent"));
+         this.alfSubscribe("ALF_UPDATE_CONTENT_REQUEST", lang.hitch(this, "onUpdateContent"));
       },
       
+      /**
+       * This handles requests to create content.
+       *
+       * @instance
+       * @param {object} payload The details of the content to create
+       */
+      onCreateContent: function alfresco_services_ContentService__onCreateFolder(payload) {
+
+         if (payload.alf_destination == null || payload.alf_destination == "")
+         {
+            payload.alf_destination = this._currentNode.parent.nodeRef;
+         }
+         var type = null;
+         if (payload.type == null)
+         {
+            type = "cm%3acontent";
+         }
+         else
+         {
+            type = payload.type;
+         }
+         var url = AlfConstants.PROXY_URI + "api/type/" + type + "/formprocessor"
+         this.serviceXhr({url : url,
+                          data: payload,
+                          method: "POST",
+                          successCallback: this.contentCreationSuccess,
+                          callbackScope: this});
+      },
+
+      /**
+       * This handles requests to update content
+       *
+       * @instance
+       * @param {object} payload The details of the content to update
+       */
+      onUpdateContent: function alfresco_services_ContentService__onUpdateContent(payload) {
+
+         if (payload.nodeRef == null)
+         {
+            this.alfLog("warn", "A request was made to update content but no 'nodeRef' attribute was provided", payload, this);
+         }
+         else
+         {
+            var nodeRef = NodeUtils.processNodeRef(payload.nodeRef);
+            var url = AlfConstants.PROXY_URI + "api/node/" + nodeRef.uri + "/formprocessor";
+            delete payload["nodeRef"];
+            this.serviceXhr({url : url,
+                             data: payload,
+                             method: "POST",
+                             successCallback: this.contentCreationSuccess,
+                             callbackScope: this});
+         }
+      },
+
+      /**
+       * This is a generic success callback handler for content creation that simply publishes a request to
+       * reload the current data.
+       *
+       * @instance
+       * @param {object} response The response from the request
+       * @param {object} originalRequestConfig The configuration passed on the original request
+       */
+      contentCreationSuccess: function alfresco_services_ContentService__contentCreationSuccess(response, originalRequestConfig) {
+         this.alfPublish(this.reloadDataTopic, {});
+      },
+
       /**
        * The current Node that content will be worked relative to.
        * @instance
@@ -84,34 +157,86 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This function will open a [AlfFormDialog]{@link module:alfresco/forms/AlfFormDialog} containing a 
+       * [file select form control]{@link module:alfresco/forms/controls/FileSelect} so that the user can 
+       * select one or more files to upload. When the dialog is confirmed the 
+       * [onFileUploadRequest]{@link module:alfresco/services/ContentService#onFileUploadRequest}
+       * function will be called to destroy the dialog and pass the upload request on.
        * 
        * @instance
+       * @param {object} payload
        */
       showUploader: function alfresco_services_ContentService__showUploader(payload) {
-         var multiUploadConfig =
-         {
-            destination: this._currentNode.parent.nodeRef,
-            filter: [],
-            mode: 3,
-            thumbnails: "doclib",
-            onFileUploadComplete:
-            {
-               fn: this.uploadComplete,
-               scope: this
-            }
-         };
-         Alfresco.util.ComponentManager.findFirst("Alfresco.DNDUpload").show(multiUploadConfig);
+
+         this.uploadDialog = new AlfFormDialog({
+            dialogTitle: "Select files to upload",
+            dialogConfirmationButtonTitle: "Upload",
+            dialogCancellationButtonTitle: "Cancel",
+            formSubmissionTopic: "ALF_CONTENT_SERVICE_UPLOAD_REQUEST_RECEIVED",
+            formSubmissionPayload: {
+               targetData: {
+                  destination: this._currentNode.parent.nodeRef,
+                  siteId: null,
+                  containerId: null,
+                  uploadDirectory: null,
+                  updateNodeRef: null,
+                  description: "",
+                  overwrite: false,
+                  thumbnails: "doclib",
+                  username: null
+               }
+            },
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/FileSelect",
+                  config: {
+                     label: "Select files to upload...",
+                     name: "files"
+                  }
+               }
+            ]
+         });
+         this.uploadDialog.show();
       },
-      
+
       /**
-       * This function is called when an upload started from the uploader displayed by the 'showUploader' function
-       * complete.
+       * This function will be called whenever the [AlfFormDialog]{@link module:alfresco/forms/AlfFormDialog} created
+       * by the [showUploader function]{@link module:alfresco/services/ContentService#showUploader} is confirmed to
+       * trigger a dialog. This will destroy the dialog and pass the supplied payload onto the [AlfUpload]{@link module:alfresco/upload/AlfUpload}
+       * module to actually perform the upload. It is necessary to destroy the dialog to ensure that all the subscriptions
+       * are removed to prevent subsequent upload requests from processing old data.
+       *
+       * @instance
+       * @param {object} payload The file upload data payload to pass on
+       */
+      onFileUploadRequest: function alfresco_services_ContentService__onFileUploadRequest(payload) {
+         if (this.uploadDialog != null)
+         {
+            this.uploadDialog.destroyRecursive();
+         }
+         var responseTopic = this.generateUuid();
+         this._uploadSubHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onFileUploadComplete"), true);
+         payload.alfResponseTopic = responseTopic;
+         this.alfPublish("ALF_UPLOAD_REQUEST", payload);
+      },
+
+      /**
+       * This function is called once the document upload is complete. It publishes a request to reload the
+       * current document list data.
        * 
        * @instance
        */
-      uploadComplete: function alfresco_services_ContentService__uploadComplete(complete) {
-         // No action here. The normal action is only to post activity updates and that is not currently
-         // required.
+      onFileUploadComplete: function alfresco_services_ContentService__onFileUploadComplete() {
+         this.alfLog("log", "Upload complete");
+         if (this._uploadSubHandle != null)
+         {
+            this.alfUnsubscribe(this._uploadSubHandle);
+         }
+         else
+         {
+            this.alfLog("warn", "A subscription handle was not found for processing file upload completion - this could be a potential memory leak", this);
+         }
+         this.alfPublish(this.reloadDataTopic, {});
       },
       
       /**
@@ -127,7 +252,7 @@ define(["dojo/_base/declare",
             Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.message("label.new-folder.header");
          };
          
-         var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
+         var templateUrl = YAHOO.lang.substitute(AlfConstants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
          {
             itemKind: "type",
             itemId: "cm:folder",

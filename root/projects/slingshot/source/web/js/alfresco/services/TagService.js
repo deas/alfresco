@@ -27,8 +27,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
         "alfresco/services/_TagServiceTopics",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, AlfXhr, _TagServiceTopics, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, AlfXhr, _TagServiceTopics, lang, AlfConstants) {
    
    return declare([AlfCore, AlfXhr], {
       
@@ -88,11 +89,11 @@ define(["dojo/_base/declare",
            var url = null;
            if (this.siteId != null && this.containerId != null)
            {
-              url = Alfresco.constants.PROXY_URI + "api/tagscopes/site/" + this.siteId + "/" + this.containerId + "/tags?d=" + d + "&topN=" + maxTags;
+              url = AlfConstants.PROXY_URI + "api/tagscopes/site/" + this.siteId + "/" + this.containerId + "/tags?d=" + d + "&topN=" + maxTags;
            }
            else if (this.rootNode != null)
            {
-              Alfresco.constants.PROXY_URI + "collaboration/tagQuery?d=" + d + "&m=" + maxTags + "&s=count&n=" + encodeURIComponent(this.rootNode);
+              AlfConstants.PROXY_URI + "collaboration/tagQuery?d=" + d + "&m=" + maxTags + "&s=count&n=" + encodeURIComponent(this.rootNode);
            }
            else
            {

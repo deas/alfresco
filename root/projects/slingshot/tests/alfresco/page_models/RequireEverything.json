@@ -1,0 +1,13 @@
+{
+   "services": [
+      {
+         "name": "alfresco/testing/RequireEverything"
+      }
+   ],
+   "widgets": [
+      
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

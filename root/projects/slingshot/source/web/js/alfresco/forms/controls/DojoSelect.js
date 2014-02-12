@@ -36,9 +36,9 @@ define(["alfresco/forms/controls/BaseFormControl",
       getWidgetConfig: function alfresco_forms_controls_DojoSelect__getWidgetConfig() {
          // Return the configuration for the widget
          return {
-            id : this.generateUuid(),
+            id : this.id + "_CONTROL",
             name: this.name,
-            value: this.value,
+            value: (this.value != null) ? this.value : null,
             options: (this.options != null) ? this.options : []
          };
       },

@@ -43,7 +43,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Selector.css"}]
        */
       cssRequirements: [{cssFile:"./css/Selector.css"}],

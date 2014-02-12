@@ -30,8 +30,9 @@ define(["dojo/_base/declare",
         "alfresco/services/_NavigationServiceTopicMixin",
         "dojo/hash",
         "dojo/_base/array",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, _NavigationServiceTopicMixin, hash, array, lang) {
+        "dojo/_base/lang",
+        "service/constants/Default"],
+        function(declare, AlfCore, _NavigationServiceTopicMixin, hash, array, lang, AlfConstants) {
    
    return declare([AlfCore, _NavigationServiceTopicMixin], {
       
@@ -108,7 +109,7 @@ define(["dojo/_base/declare",
                 data.type == "" ||
                 data.type == this.sharePageRelativePath)
             {
-               url = Alfresco.constants.URL_PAGECONTEXT + data.url;
+               url = AlfConstants.URL_PAGECONTEXT + data.url;
             }
             else if (data.type == this.contextRelativePath)
             {

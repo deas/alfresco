@@ -40,7 +40,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/LicenseWarning.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/LicenseWarning.properties"}],
@@ -49,7 +49,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/LicenseWarning.css"}]
        */
       cssRequirements: [{cssFile:"./css/LicenseWarning.css"}],
@@ -69,7 +69,7 @@ define(["dojo/_base/declare",
       
       /**
        * @instance
-       * @type {boolean} userIsAdmin Indicates whether or not the current user has admin priveleges
+       * @type {boolean}
        */
       userIsAdmin: false,
       

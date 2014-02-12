@@ -36,6 +36,7 @@
    vertical-align: middle;
    width: 16px;
    height: 16px;
+   margin-top: 12px;
    /*float: right; */
    clear: right;
 }
@@ -50,5 +51,11 @@
    position: absolute;
    top: 5px;
    left: 5px;
+   margin-right: 20px;
    font-size: xx-small;
+}
+
+.alfresco-creation-DragZoneWrapper > .control > .alfresco-html-Label {
+   padding-top: 15px;
+   vertical-align: inherit;
 }

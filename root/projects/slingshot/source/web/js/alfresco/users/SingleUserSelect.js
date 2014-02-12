@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/string",
         "dojo/dom-class",
-        "alfresco/users/SingleUserSelectMenu"], 
-        function(declare, FilteringSelect, AlfCore, JsonRest, UserTemplate, lang, array, stringUtil, domClass, SingleUserSelectMenu) {
+        "alfresco/users/SingleUserSelectMenu",
+        "service/constants/Default"], 
+        function(declare, FilteringSelect, AlfCore, JsonRest, UserTemplate, lang, array, stringUtil, domClass, SingleUserSelectMenu, AlfConstants) {
    
    return declare([FilteringSelect, AlfCore], {
       
@@ -41,7 +42,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type cssRequirements {Array}
+       * @type {Array}
        */
       cssRequirements: [{cssFile:"./css/SingleUserSelect.css"}],
       
@@ -50,6 +51,17 @@ define(["dojo/_base/declare",
        * @type {object}
        */
       dropDownClass: SingleUserSelectMenu,
+
+      /**
+       * This is used to search within each user "item" as a unique key. There is a possible collision with
+       * duplicate names that hasn't been addressed. The alternative is to use "userName" to guarantee uniqueness
+       * and then update the _autoCompleteText function 
+       * 
+       * @instance
+       * @type {string}
+       * @default "filter"
+       */
+      searchAttr: "filter",
 
       /**
        * Extends the inherited function to create a JsonRest store that uses the standard Alfresco people REST API for
@@ -72,7 +84,7 @@ define(["dojo/_base/declare",
        * @instance 
        */
       getRestUrl: function alfresco_users_SingleUserSelect__getRestUrl() {
-         return Alfresco.constants.PROXY_URI + "api/people";
+         return AlfConstants.PROXY_URI + "api/people";
       },
       
       /**
@@ -106,7 +118,7 @@ define(["dojo/_base/declare",
          menuLabel.html = true;
          
          var updatedLabel = stringUtil.substitute(UserTemplate, {
-            avatarUrl: (item.avatar ? Alfresco.constants.PROXY_URI + item.avatar : Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png"),
+            avatarUrl: (item.avatar ? AlfConstants.PROXY_URI + item.avatar : AlfConstants.URL_RESCONTEXT + "components/images/no-user-photo-64.png"),
             name: menuLabel.label,
             email: item.email
          })

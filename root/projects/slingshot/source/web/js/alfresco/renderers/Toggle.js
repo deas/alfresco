@@ -29,21 +29,22 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "alfresco/renderers/_JsNodeMixin",
         "dojo/text!./templates/Toggle.html",
         "alfresco/core/Core",
         "alfresco/renderers/_ItemLinkMixin",
         "dijit/_OnDijitClickMixin",
         "dojo/_base/lang",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, _ItemLinkMixin, _OnDijitClickMixin, lang, domClass) {
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, template, AlfCore, _ItemLinkMixin, _OnDijitClickMixin, lang, domClass) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _ItemLinkMixin, _OnDijitClickMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, _JsNodeMixin, AlfCore, _ItemLinkMixin, _OnDijitClickMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/Toggle.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Toggle.properties"}],
@@ -52,7 +53,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Toggle.css"}]
        */
       cssRequirements: [{cssFile:"./css/Toggle.css"}],

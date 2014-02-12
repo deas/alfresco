@@ -43,7 +43,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfCreateContentMenuBarPopup.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfCreateContentMenuBarPopup.properties"}],
@@ -61,7 +61,7 @@ define(["dojo/_base/declare",
        * Sets a default icon class for the menu bar popup
        * 
        * @instance
-       * @type {string} iconClass 
+       * @type {string}
        * @default "alf-create-icon"
        */
       iconClass: "alf-create-icon",

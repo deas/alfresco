@@ -22,8 +22,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dojo/_base/lang"], 
-        function(declare, lang) {
+        "dojo/_base/lang",
+        "alfresco/core/JsNode"], 
+        function(declare, lang, JsNode) {
    
    return declare(null, {
 
@@ -40,7 +41,7 @@ define(["dojo/_base/declare",
             // break anything else...
             if (typeof this.currentItem.jsNode === "undefined" && this.currentItem.node != null)
             {
-               this.currentItem.jsNode = new Alfresco.util.Node(this.currentItem.node);
+               this.currentItem.jsNode = new JsNode(this.currentItem.node);
             }
          }
       }

@@ -25,8 +25,9 @@
  */
 define(["dojo/_base/declare",
         "alfresco/renderers/Banner",
-        "alfresco/core/UrlUtils"], 
-        function(declare, Banner, UrlUtils) {
+        "alfresco/core/UrlUtils",
+        "service/constants/Default"], 
+        function(declare, Banner, UrlUtils, AlfConstants) {
 
    return declare([Banner, UrlUtils], {
       
@@ -34,7 +35,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/LockedBanner.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/LockedBanner.properties"}],
@@ -58,7 +59,7 @@ define(["dojo/_base/declare",
          // Google Docs Integration...
          if (this.currentItem.workingCopy && this.currentItem.workingCopy.googleDocUrl != null)
          {
-            if (bannerUser.userName === Alfresco.constants.USERNAME)
+            if (bannerUser.userName === AlfConstants.USERNAME)
             {
                this.bannerMessage = this.message(nodeTypePrefix + "google-docs-owner", { "0": '<a href="' + this.currentItem.workingCopy.googleDocUrl + '" target="_blank">' + this.message("details.banner.google-docs.link") + '</a>'});
             }
@@ -70,7 +71,7 @@ define(["dojo/_base/declare",
          // Regular Working Copy handling...
          else
          {
-            if (this.currentItem.workingCopy && bannerUser.userName === Alfresco.constants.USERNAME)
+            if (this.currentItem.workingCopy && bannerUser.userName === AlfConstants.USERNAME)
             {
                this.bannerMessage = this.message(nodeTypePrefix + (this.currentItem.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
             }

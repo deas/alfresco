@@ -29,8 +29,9 @@ define(["dojo/_base/declare",
         "alfresco/menus/_AlfMenuItemMixin",
         "alfresco/core/Core",
         "dojo/dom-construct",
-        "dojo/dom-class"], 
-        function(declare, MenuBarItem, _AlfMenuItemMixin, AlfCore, domConstruct, domClass) {
+        "dojo/dom-class",
+        "service/constants/Default"], 
+        function(declare, MenuBarItem, _AlfMenuItemMixin, AlfCore, domConstruct, domClass, AlfConstants) {
    
    /**
     * Currently this extends the default Dojo implementation of a MenuBarItem without making any changes. Despite
@@ -57,24 +58,24 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_menus_AlfMenuBarPopup__postCreate() {
-         if (this.label)
-         {
-            this.set("label", this.message(this.label));
-         }
          domClass.add(this.containerNode, "alf-menu-bar-label-node");
-         if (this.iconClass && this.iconClass != "dijitNoIcon")
+         if ((this.iconClass && this.iconClass != "dijitNoIcon") ||
+             this.iconImage != null)
          {
             this.iconNode = domConstruct.create("img", { 
                className: this.iconClass, 
-               src: Alfresco.constants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
-               alt: this.message(this.iconAltText)
+               src: AlfConstants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
+               alt: this.message(this.iconAltText),
+               style: {
+                  display: "inline-block"
+               }
             }, this.focusNode, "first");
             if (this.label)
             {
                domClass.add(this.containerNode, this.labelWithIconClass);
             }
          }
-         
+         this.setupIconNode();
          this.inherited(arguments);
       }
    });

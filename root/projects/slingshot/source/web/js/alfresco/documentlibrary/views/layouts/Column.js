@@ -42,7 +42,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Column.css"}]
        */
       cssRequirements: [{cssFile:"./css/Column.css"}],
@@ -51,7 +51,7 @@ define(["dojo/_base/declare",
        * The HTML template to use for the widget.
        * 
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
@@ -72,9 +72,9 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @param {Object} widget The widget definition to create the DOM node for
-       * @param {DOM Element} rootNode The DOM node to create the new DOM node as a child of
+       * @param {element} rootNode The DOM node to create the new DOM node as a child of
        * @param {String} rootClassName A string containing one or more space separated CSS classes to set on the DOM node
-       * @returns {DOM Element} A new DOM node for a processed widget to attach to
+       * @returns {element} A new DOM node for a processed widget to attach to
        */
       createWidgetDomNode: function alfresco_renderers_Column__createWidgetDomNode(widget, rootNode, rootClassName) {
          var nodeToAdd = nodeToAdd = domConstruct.create("TR", {}, rootNode);

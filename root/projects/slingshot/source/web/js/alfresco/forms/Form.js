@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDialog.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Form.properties"}],
@@ -130,6 +130,15 @@ define(["dojo/_base/declare",
       scopeFormControls: true,
       
       /**
+       * Indicates whether or not to create buttons for this form.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      displayButtons: true,
+      
+      /**
        * @instance
        */
       postCreate: function alfresco_forms_Form__postCreate() {
@@ -149,8 +158,8 @@ define(["dojo/_base/declare",
          
          // Set up the handlers for form controls reporting themselves as valid or invalid
          // following user update...
-         this.alfSubscribe("_invalidFormControl", lang.hitch(this, "onInvalidField"));
-         this.alfSubscribe("_validFormControl", lang.hitch(this, "onValidField"));
+         this.alfSubscribe("ALF_INVALID_CONTROL", lang.hitch(this, "onInvalidField"));
+         this.alfSubscribe("ALF_VALID_CONTROL", lang.hitch(this, "onValidField"));
 
          // Add the widgets to the form...
          // The widgets should automatically inherit the pubSubScope from the form to scope communication
@@ -159,9 +168,12 @@ define(["dojo/_base/declare",
          {
             this.processWidgets(this.widgets, this._form.domNode);
          }
-         
-         // Create the buttons for the form...
-         this.createButtons();
+
+         if (this.displayButtons == true)
+         {
+            // Create the buttons for the form...
+            this.createButtons();
+         }
       },
       
       /**
@@ -172,12 +184,12 @@ define(["dojo/_base/declare",
        * @param {object} payload The published details of the invalid field.
        */
       onInvalidField: function alfresco_forms_Form__onInvalidField(payload) {
-         var alreadyCaptured = array.some(this._invalidFormControls, function(item) {
-            return item == payload.name;
+         var alreadyCaptured = array.some(this.invalidFormControls, function(item) {
+            return item == payload.fieldId;
          });
          if (!alreadyCaptured)
          {
-            this.invalidFormControls.push(payload.name);
+            this.invalidFormControls.push(payload.fieldId);
          }
          if (this.okButton)
          {
@@ -196,26 +208,25 @@ define(["dojo/_base/declare",
        */
       onValidField: function alfresco_forms_Form__onValidField(payload) {
          this.invalidFormControls = array.filter(this.invalidFormControls, function(item) {
-            return item != payload.name;
+            return item != payload.fieldId;
          });
          if (this.okButton)
          {
             this.okButton.set("disabled", this.invalidFormControls.length > 0);
-            
-            // Update the publishPayload of the "OK" button so that when it is clicked
-            // it will provide the current form data...
-            var formValue = this.getValue();
-            array.forEach(this.additionalButtons, function(button, index) {
-               if (button.publishPayload != null)
-               {
-                  lang.mixin(button.publishPayload, formValue);
-               }
-               else
-               {
-                  button.publishPayload = formValue;
-               }
-            });
          }
+         // Update the publishPayload of the "OK" button so that when it is clicked
+         // it will provide the current form data...
+         var formValue = this.getValue();
+         array.forEach(this.additionalButtons, function(button, index) {
+            if (button.publishPayload != null)
+            {
+               lang.mixin(button.publishPayload, formValue);
+            }
+            else
+            {
+               button.publishPayload = formValue;
+            }
+         });
       },
       
       /**
@@ -261,6 +272,13 @@ define(["dojo/_base/declare",
       okButtonPublishPayload: null,
       
       /**
+       * @instance 
+       * @type {string}
+       * @default null
+       */
+      okButtonPublishGlobal: null,
+
+      /**
        * The label that will be used for the "Cancel" button. This value can either be an explicit
        * localised value or an properties key that will be used to retrieve a localised value.
        *
@@ -283,6 +301,13 @@ define(["dojo/_base/declare",
        * @defualt null
        */
       cancelButtonPublishPayload: null,
+
+      /**
+       * @instance
+       * @type {object}
+       * @defualt null
+       */
+      cancelButtonPublishGlobal: null,
       
       /**
        * This can be configured with details of additional buttons to be included with the form.
@@ -311,17 +336,23 @@ define(["dojo/_base/declare",
          if (this.showOkButton == true)
          {
             this.okButton = new AlfButton({
+               pubSubScope: this.pubSubScope,
                label: this.message(this.okButtonLabel),
+               additionalCssClasses: "confirmationButton",
                publishTopic: this.okButtonPublishTopic,
-               publishPayload: this.okButtonPublishPayload
+               publishPayload: this.okButtonPublishPayload,
+               publishGlobal: this.okButtonPublishGlobal
             }, this.okButtonNode);
          }
          if (this.showCancelButton == true)
          {
             this.cancelButton = new AlfButton({
+               pubSubScope: this.pubSubScope,
                label: this.message(this.cancelButtonLabel),
+               additionalCssClasses: "cancelButton",
                publishTopic: this.cancelButtonPublishTopic,
-               publishPayload: this.cancelButtonPublishPayload
+               publishPayload: this.cancelButtonPublishPayload,
+               publishGlobal: this.cancelButtonPublishGlobal
             }, this.cancelButtonNode);
          }
          
@@ -344,8 +375,6 @@ define(["dojo/_base/declare",
        * @instance
        */
       allWidgetsProcessed: function alfresco_forms_Form__allWidgetsProcessed(widgets) {
-         this.validate();
-         
          // If additional button configuration has been processed, then get a reference to ALL the buttons...
          if (this.widgetsAdditionalButtons != null && 
             this.additionalButtons != null &&
@@ -353,103 +382,39 @@ define(["dojo/_base/declare",
          {
             this.additionalButtons = registry.findWidgets(this.buttonsNode);
          }
-      },
-      
-      /**
-       * Handles posting the form...
-       *  
-       * @instance
-       */
-      _onOK: function() {
-         var _this = this;
-         var xhrArgs = {
-            url: this.postUrl,
-            handleAs: "json",
-            load: function(response) {
-               _this._onPostSuccess(response);
-            },
-            error: function(response) {
-               _this._onPostFailure(response);
-            }
-         };
-         
-         // A form can either be posted directly or its contents converted into a JSON string
-         // (this has been done to support existing Share WebScripts - such as for site creation)...
-         if (this.convertFormToJsonString)
-         {
-            xhrArgs.headers = { "Content-Type": "application/json"};
-            xhrArgs.postData = this._convertFormToJsonString(); 
-         }
-         else
-         {
-            xhrArgs.form =  this._form.id;
-         }
-         
-         xhr.post(xhrArgs);
-      },
-      
-      /**
-       * Converts values of the widgets contained in the form into a JSON string
-       * 
-       * @instance
-       */
-      _convertFormToJsonString: function() {
-         // Construct a JSON string payload
-         var payload = {};
-         array.forEach(this._form.getChildren(), function(entry, i) {
-            var name = entry.get("name");
-            if (name)
+         array.forEach(widgets, function(widget, i) {
+            if (widget.publishValue && typeof widget.publishValue == "function")
             {
-               var widget = entry.get("_wrappedWidget");
-               payload[entry.get("name")] = widget ? (widget.value ? widget.value : "") : "";
+               widget.publishValue();
             }
          });
-         
-         return json.stringify(payload);
-      },
-     
-      /**
-       * Handles post success...
-       * 
-       * @instance
-       */
-      _onPostSuccess: function(response) {
-         var payload = {
-            response: response,
-            form: this._form
-         }
-         this.alfPublish(this.id + "_POST_SUCCESS", payload);
-      },
-      
-      /**
-       * Handles post failure...
-       * 
-       * @instance
-       */
-      _onPostFailure: function(response) {
-         this.alfPublish(this.id + "_POST_FAILURE", response);
-      },
-      
-      // 
-      /**
-       * Handles cancelling the form.
-       * 
-       * @instance
-       */
-      _onCancel: function() {
-         this.alfPublish(this.id + "_CANCEL", null);
+         this.validate();
       },
       
       /**
        * @instance
        * @return {object}
        */
-      getValue: function() {
+      getValue: function alfresco_forms_Form__getValue() {
          var values = {};
          if (this._form)
          {
             array.forEach(this._form.getChildren(), function(entry, i) {
-               values[entry.get("name")] = entry.getValue();
+
+               // Only include field values if the control is NOT hidden or disabled
+               // unless specifically requested by the configuration. This allows
+               // multiple controls to represent a single field but also allows intentionally
+               // hidden fields to still have data submitted
+               if (((entry._visible !== undefined && entry._visible == false) ||
+                    (entry._disabled !== undefined && entry._disabled == true)) &&
+                   (entry.postWhenHiddenOrDisabled !== undefined && entry.postWhenHiddenOrDisabled == false))
+               {
+                  // Don't set the value (line below is just to allow debug point to be set)
+               }
+               else
+               {
+                  values[entry.get("name")] = entry.getValue();
+               }
             });
          }
          this.alfLog("log", "Returning form values: ", values);
@@ -460,41 +425,42 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} values The values to set
        */
-      setValue: function(values) {
+      setValue: function alfresco_forms_Form__setValue(values) {
          this.alfLog("log", "Setting form values: ", values);
          if (values && values instanceof Object)
          {
             if (this._form)
             {
                array.forEach(this._form.getChildren(), function(entry, i) {
-                  entry.setValue(values[entry.get("name")]);
+                  if (((entry._visible !== undefined && entry._visible == false) ||
+                       (entry._disabled !== undefined && entry._disabled == true)) &&
+                      (entry.noValueUpdateWhenHiddenOrDisabled !== undefined && entry.noValueUpdateWhenHiddenOrDisabled == true))
+                  {
+                     // Don't set the value as the field is hidden or disabled and has requested that it not be updated
+                     // in these circumstances. The typical reason for this is that multiple controls represent a single
+                     // field and it is not the displayed control so shouldn't be updated to preserve its default value.
+                  }
+                  else
+                  {
+                     entry.setValue(values[entry.get("name")]);
+                  }
                });
             }
          }
+         this.validate();
       },
       
       /**
        * @instance
        * @returns {boolean}
        */
-      validate: function() {
+      validate: function alfresco_forms_Form__validate() {
          this.alfLog("log", "Validating form", this._form);
          
-         // THIS IS NOT A TYPO... the publish operation is performed twice. The first time 
-         // will initialise the rules engine in each widget with the values of all the other
-         // form controls that they have expressed an interest in and the second time will allow
-         // the rules to be processed.
          array.forEach(this._processedWidgets, function(widget, i) {
             if (widget.publishValue && typeof widget.publishValue == "function")
             {
-               widget.validate(); // Validate the initial value
-               widget.publishValue();
-            }
-         });
-         array.forEach(this._processedWidgets, function(widget, i) {
-            if (widget.publishValue && typeof widget.publishValue == "function")
-            {
-               widget.publishValue();
+               widget.validate();
             }
          });
          

@@ -23,8 +23,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/renderers/Thumbnail"], 
-        function(declare, Thumbnail) {
+        "alfresco/renderers/Thumbnail",
+        "service/constants/Default"], 
+        function(declare, Thumbnail, AlfConstants) {
 
    return declare([Thumbnail], {
       
@@ -41,7 +42,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/SmallThumbnail.css"}]
        */
       cssRequirements: [{cssFile:"./css/SmallThumbnail.css"}],
@@ -66,12 +67,12 @@ define(["dojo/_base/declare",
              jsNode = this.currentItem.jsNode;
          if (jsNode.isContainer || (jsNode.isLink && jsNode.linkedNode.isContainer))
          {
-            url = Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/images/folder-32.png";
+            url = AlfConstants.URL_RESCONTEXT + "components/documentlibrary/images/folder-32.png";
             // TODO: DnD
          }
          else
          {
-            url = Alfresco.constants.URL_RESCONTEXT + "components/images/filetypes/" + Alfresco.util.getFileIcon(this.currentItem.fileName);
+            url = AlfConstants.URL_RESCONTEXT + "components/images/filetypes/" + Alfresco.util.getFileIcon(this.currentItem.node.properties["cm:name"]);
             // TODO: Preview
          }
          return url;

@@ -38,7 +38,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfGalleryViewSlider.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfGalleryViewSlider.css"}],
@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
       /**
        * Indicates whether or not to show the bigger/smaller buttons at either end of the slider
        * @instance
-       * @type {boolean} showButtons 
+       * @type {boolean}
        * @default true
        */
       showButtons: true,

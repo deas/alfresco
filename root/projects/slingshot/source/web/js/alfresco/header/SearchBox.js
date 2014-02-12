@@ -38,9 +38,9 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/on"], 
         function(declare, lang, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, template,  AlfCore, AlfMenuBar, fx, domAttr, domConstruct, on) {
-   
+
    return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, AlfCore], {
-      
+
       /**
        * The scope to use for i18n messages.
        * 
@@ -48,79 +48,83 @@ define(["dojo/_base/declare",
        * @type {string}
        */
       i18nScope: "org.alfresco.SearchBox",
-      
+
       /**
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/SearchBox.css"}]
        */
       cssRequirements: [{cssFile:"./css/SearchBox.css"}],
-      
+
       /**
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/SearchBox.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/SearchBox.properties"}],
-      
+
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type template {String}
+       * @type {String}
        */
       templateString: template,
 
       /**
        * @instance
-       * @type {object} _searchMenu This should be instantiated with the menu bar widget for the search options.
+       * @type {object}
        * @default null
        */
       _searchMenu: null,
-      
+
       /**
        * @instance
-       * @type {integer} _focusedWidth The width of the search box when it is focused (in pixels)
+       * @type {integer}
        * @default 250
        */
       _focusedWidth: "250",
-      
+
       /**
        * @instance
-       * @type {integer} _blurredWidth The width of the search box when it does not have focus (in pixels)
+       * @type {integer}
        * @default 100
        */
       _blurredWidth: "100",
-      
+
       /**
        * @instance
-       * @type {string} site The current site that the search box relates to. If null, search is not initially confined to site
+       * @type {string}
        * @default null
        */
       site: null,
-      
+
       /**
        * @instance
-       * @type {boolean} advancedSearch True to show the AdvancedSearch option, false to hide it.
+       * @type {boolean}
        * @default true
        */
       advancedSearch: true,
-      
+
       /**
        * @instance
        */
       postCreate: function alfresco_header_SearchBox__postCreate() {
+
          var _this = this;
+         domAttr.set(this._searchTextNode, "id", "HEADER_SEARCHBOX_FORM_FIELD");
          domAttr.set(this._searchTextNode, "value", this.message("search.instruction"));
          on(this._searchTextNode, "keydown", function(evt) {
             _this.onSearchBoxKeyDown(evt);
          });
-         
+
          if (this.advancedSearch)
          {
+            var currSite = lang.getObject("Alfresco.constants.SITE");
+
             this._searchMenu = new AlfMenuBar({
                widgets: [
                   {
@@ -129,6 +133,7 @@ define(["dojo/_base/declare",
                         id: this.id + "_DROPDOWN_MENU",
                         showArrow: false,
                         label: "",
+                        iconSrc: "js/alfresco/header/css/images/search-16-gray.png",
                         iconClass: "alf-search-icon",
                         widgets: [
                            {
@@ -137,7 +142,7 @@ define(["dojo/_base/declare",
                                  id: this.id + "_ADVANCED_SEARCH",
                                  i18nScope: "org.alfresco.SearchBox",
                                  label: "search.advanced",
-                                 targetUrl: (Alfresco.constants.SITE != "" ? "site/" + Alfresco.constants.SITE + "/" : "") + "advsearch"
+                                 targetUrl: (currSite != null ? "site/" + currSite + "/" : "") + "advsearch"
                               }
                            }
                         ]
@@ -148,8 +153,11 @@ define(["dojo/_base/declare",
             this._searchMenu.placeAt(this._searchMenuNode);
             this._searchMenu.startup();
          }
+
+         this.addAccessibilityLabel();
+
       },
-      
+
       /**
        * Handles keydown events that occur on the <input> element used for capturing search terms.
        * @instance
@@ -162,17 +170,13 @@ define(["dojo/_base/declare",
             if (terms.length !== 0)
             {
                this.alfLog("log", "Search request for: ", terms);
-               
+
                var url = "search?t=" + encodeURIComponent(terms);
                if (this.site != null)
                {
                   url = "site/" + this.site + "/" + url;
                }
-               else if (this.repository)
-               {
-                  url += "&r=true";
-               }
-               
+
                this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
                   url: url,
                   type: "SHARE_PAGE_RELATIVE",
@@ -181,7 +185,7 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * When the search node gains focus then search instruction should be removed. 
        * @instance
@@ -190,14 +194,26 @@ define(["dojo/_base/declare",
          domAttr.set(this._searchTextNode, "value", "");
          this._searchTextNode.focus();
       },
-     
+
       /**
        * When the search node loses focus the search instruction should be reset.
-       * 
        * @instance
        */
       onSearchNodeBlur: function alfresco_header_SearchBox__onSearchNodeBlur() {
          domAttr.set(this._searchTextNode, "value", this.message("search.instruction"));
+      },
+
+      /**
+       * When the search box loads, add a label to support accessibility
+       * @instance
+       */
+      addAccessibilityLabel: function alfresco_header_SearchBox__addAccessibilityLabel() {
+         domConstruct.create("label", {
+            "for": "HEADER_SEARCHBOX_FORM_FIELD",
+            innerHTML: this.message("search.label"),
+            "class": "hidden"
+         }, this._searchTextNode, "before");
       }
+
    });
 });

@@ -43,7 +43,7 @@
 }
 
 /* Sets the highlight on the menu bar items in the header bar ONLY */
-.alfresco-share .alf-header .alf-menu-bar .dijitMenuPassive .dijitMenuItemHover {
+.alfresco-share .alf-header .alfresco-menus-AlfMenuBar .dijitMenuPassive .dijitMenuItemHover {
    background-color: #717171;
    color: #fff;
 }

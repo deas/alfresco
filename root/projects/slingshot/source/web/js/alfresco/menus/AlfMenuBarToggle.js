@@ -18,6 +18,39 @@
  */
 
 /**
+ * <p>This provides a basic on/off state toggle button that can be placed on a
+ * [menu bar]{@link module:alfresco/menus/AlfMenuBar}. By default it simply renders
+ * a switch with localized "On" and "Off" labels and doesn't actually perform any
+ * action beyond rendering it's current state.</p>
+ * <p>It can be configured with custom labels and/or icons to represent state. Ideally
+ * each state should be given a publish topic and payload so that it can interact
+ * with other widgets and perform a useful action. This is done by configuing the "onConfig"
+ * and "offConfig" attributes.</p>
+ * <p>Example configuration:</p>
+ * <p><pre>{
+ *    name: "alfresco/menus/AlfMenuBarToggle",
+ *    config: {
+ *       id: "MyToggle",
+ *       checked: true,
+ *       onConfig: {
+ *          label: "Turned On",
+ *          iconClass: "on-icon",
+ *          publishTopic: "toggle_changed",
+ *          publishPayload: {
+ *             value: "ON"
+ *          }
+ *       },
+ *       offConfig: {
+ *          label: "Turned Off",
+ *          iconClass: "off-icon",
+ *          publishTopic: "toggle_changed",
+ *          publishPayload: {
+ *             value: "OFF"
+ *          }
+ *       }
+ *    }
+ * }</pre></p>
+ *
  * @module alfresco/menus/AlfMenuBarToggle
  * @extends module:alfresco/menus/AlfMenuBarItem
  * @author Dave Draper
@@ -35,7 +68,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfMenuBarToggle.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfMenuBarToggle.css"}],
@@ -44,7 +77,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfMenuBarToggle.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfMenuBarToggle.properties"}],
@@ -60,6 +93,7 @@ define(["dojo/_base/declare",
       
       /**
        * The configuration representing the toggle in it's 'on' state
+       *
        * @instance
        * @type {object} 
        * @default null
@@ -67,7 +101,8 @@ define(["dojo/_base/declare",
       onConfig: null,
       
       /**
-       * 
+       * The configuration representing the toggle in it's 'off' state
+       *
        * @instance
        * @type {object} 
        * @default null
@@ -75,6 +110,11 @@ define(["dojo/_base/declare",
       offConfig: null,
       
       /**
+       * This sets default values for the [onConfig]{@link module:alfresco/menus/AlfMenuBarToggle#onConfig}
+       * and [offConfig]{@link module:alfresco/menus/AlfMenuBarToggle#offConfig} attributes if they 
+       * have not been configured. The defaults are localised "On" and "Off" labels with no publication
+       * data for either state.
+       *
        * @instance
        */
       constructor: function alfresco_menus_AlfMenuBarToggle__constructor(args) {
@@ -98,7 +138,11 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * 
+       * Sets up the initial state of the widget based on the [onConfig]{@link module:alfresco/menus/AlfMenuBarToggle#onConfig}
+       * and [offConfig]{@link module:alfresco/menus/AlfMenuBarToggle#offConfig} attributes. The
+       * [renderToggle]{@link module:alfresco/menus/AlfMenuBarToggle#renderToggle} function is called
+       * to render the starting state.
+       *
        * @instance
        */
       postCreate: function alfresco_menus_AlfMenuBarToggle__postCreate() {
@@ -127,6 +171,10 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This performs the rendering of the toggle when the widget is instantiated and 
+       * when the state is changed. The labels and icons are updated to reflect the new
+       * state.
+       * 
        * @instance
        * @param {object} newConfig The new configuration to apply to the toggle button
        * @param {object} oldConfig The old configuration being removed from the toggle button.
@@ -154,7 +202,9 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * 
+       * This handles the user clicking on the toggle. The state is changed (e.g. from OFF on ON)
+       * and any data associated with the new state is published on the configured topic. 
+       *
        * @instance
        */
       onClick: function alfresco_menus_AlfMenuBarToggle__onClick() {

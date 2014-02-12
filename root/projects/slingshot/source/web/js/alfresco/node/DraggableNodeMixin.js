@@ -182,7 +182,7 @@ define(["dojo/_base/declare",
        * Returns the dragged node to its starting position if it hasn't been dropped onto a valid target.
        * 
        * @instance
-       * @type {object} mover The drag start event
+       * @type {object}
        */
       onDragEnd: function alfresco_node_DraggableNodeMixin__onDragEnd(mover) {
          this.alfLog("log", "Drag ended", mover);

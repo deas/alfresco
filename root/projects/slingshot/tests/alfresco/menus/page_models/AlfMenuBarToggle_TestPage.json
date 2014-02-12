@@ -1,0 +1,71 @@
+{
+   "widgets": [
+      {
+         "name": "alfresco/menus/AlfMenuBar",
+         "config": {
+            "widgets": [
+               {
+                  "name": "alfresco/menus/AlfMenuBarToggle",
+                  "config": {
+                     "id": "BASIC_MENU_BAR_TOGGLE"
+                  }
+               },
+               {
+                  "name": "alfresco/menus/AlfMenuBarToggle",
+                  "config": {
+                     "id": "MENU_BAR_TOGGLE_CUSTOM_LABEL",
+                     "checked": true,
+                     "onConfig": {
+                        "label": "On (Custom Label)",
+                        "publishTopic": "CLICK",
+                        "publishPayload": {
+                           "clicked": "TOGGLE_WITH_LABEL",
+                           "value": "ON"
+                        }
+                     },
+                     "offConfig": {
+                        "label": "Off (Custom Label)",
+                        "publishTopic": "CLICK",
+                        "publishPayload": {
+                           "clicked": "TOGGLE_WITH_LABEL",
+                           "value": "OFF"
+                        }
+                     }
+                  }
+               },
+               {
+                  "name": "alfresco/menus/AlfMenuBarToggle",
+                  "config": {
+                     "checked": false,
+                     "id": "MENU_BAR_TOGGLE_WITH_ICON",
+                     "onConfig": {
+                        "label": "On (Custom Label)",
+                        "iconClass": "alf-sort-ascending-icon",
+                        "publishTopic": "CLICK",
+                        "publishPayload": {
+                           "clicked": "TOGGLE_WITH_ICON",
+                           "value": "ON"
+                        }
+                     },
+                     "offConfig": {
+                        "label": "Off (Custom Label)",
+                        "iconClass": "alf-sort-descending-icon",
+                        "publishTopic": "CLICK",
+                        "publishPayload": {
+                           "clicked": "TOGGLE_WITH_ICON",
+                           "value": "OFF"
+                        }
+                     }
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

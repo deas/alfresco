@@ -35,8 +35,12 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/Thumbnail.html",
         "alfresco/core/Core",
         "alfresco/renderers/_ItemLinkMixin",
-        "alfresco/documentlibrary/_AlfDndDocumentUploadMixin"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, template, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin) {
+        "alfresco/documentlibrary/_AlfDndDocumentUploadMixin",
+        "service/constants/Default",
+        "dojo/_base/lang",
+        "alfresco/core/NodeUtils"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, template, AlfCore, 
+                 _ItemLinkMixin, _AlfDndDocumentUploadMixin, AlfConstants, lang, NodeUtils) {
 
    return declare([_WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin], {
       
@@ -44,7 +48,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Thumbnail.css"}]
        */
       cssRequirements: [{cssFile:"./css/Thumbnail.css"}],
@@ -71,17 +75,41 @@ define(["dojo/_base/declare",
        */
       postMixInProperties: function alfresco_renderers_Thumbnail__postMixInProperties() {
          
+         // TODO: These defaults should probably be instance variables?
+         this.itemLinkHref = "";
+         this.itemLinkClass = "";
+         this.itemLinkRelative = "";
+         this.imgId = "";
+         this.thumbnailUrl = "";
+         this.imgAltText = "";
+         this.imgTitle = "";
+
          if (this.currentItem != null && this.currentItem.node)
          {
             var jsNode = this.currentItem.jsNode;
-            var linkDetails = this.generateFileFolderLink();
-            this.itemLinkHref = linkDetails.itemLinkHref + linkDetails.itemLinkRelative;
-            this.itemLinkClass = linkDetails.itemLinkClass;
-            this.itemLinkRelative = linkDetails.itemLinkRelative;
             this.thumbnailUrl = this.generateThumbnailUrl();
+            if (this.currentItem.displayName == null)
+            {
+               this.currentItem.displayName = jsNode.properties["cm:name"];
+            }
             this.imgTitle = this.encodeHTML(this.currentItem.displayName);
             this.imgAltText = (this.currentItem.displayName != null) ? this.currentItem.displayName.substring(this.currentItem.displayName.lastIndexOf(".")) : "";
             this.imgId = jsNode.nodeRef.nodeRef;
+         }
+         else if (this.currentItem != null && this.currentItem.nodeRef != null)
+         {
+            // Fallback to just having a nodeRef available... this has been added to handle rendering of 
+            // thumbnails in search results where full node information may not be available...
+            var nodeRef = NodeUtils.processNodeRef(this.currentItem.nodeRef);
+            if (this.currentItem.type == "folder")
+            {
+               this.thumbnailUrl =  AlfConstants.URL_RESCONTEXT + "components/search/images/folder.png";
+            }
+            else
+            {
+               this.thumbnailUrl = AlfConstants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib/?c=queue&ph=true&lastModified=" + this.currentItem.modifiedOn;
+            }
+            
          }
       },
       
@@ -91,7 +119,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       getFolderImage: function alfresco_renderers_Thumbnail__getDefaultFolderImage() {
-         return Alfresco.constants.URL_RESCONTEXT + "components/documentlibrary/images/folder-64.png";
+         return AlfConstants.URL_RESCONTEXT + "components/documentlibrary/images/folder-64.png";
       },
       
       /**
@@ -132,7 +160,7 @@ define(["dojo/_base/declare",
                   {
                      if (thumbnailModData[i].indexOf(this.renditionName) != -1)
                      {
-                        url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + this.renditionName + "?c=queue&ph=true&lastModified=" + thumbnailModData[i];
+                        url = AlfConstants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + this.renditionName + "?c=queue&ph=true&lastModified=" + thumbnailModData[i];
                         break;
                      }
                   }
@@ -141,7 +169,7 @@ define(["dojo/_base/declare",
          }
          if (url == null)
          {
-            url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + this.renditionName + "?c=queue&ph=true";
+            url = AlfConstants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + this.renditionName + "?c=queue&ph=true";
          }
          return url;
       },
@@ -152,11 +180,13 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Thumbnail__postCreate() {
          this.inherited(arguments);
-         if (this.currentItem.jsNode.isContainer)
+         var isContainer = lang.getObject("currentItem.jsNode.isContainer", false, this);
+         if (isContainer == true)
          {
             this.addUploadDragAndDrop(this.imgNode);
             this.addNodeDropTarget(this.imgNode);
          }
+         this.createItemLink(this.domNode);
       }
    });
 });

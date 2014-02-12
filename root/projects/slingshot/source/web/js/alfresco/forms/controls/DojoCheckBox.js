@@ -39,7 +39,7 @@ define(["alfresco/forms/controls/BaseFormControl",
             id : this.generateUuid(),
             name: this.name,
             value: this.value,
-            checked: this.value
+            checked: (this.value == "true" || this.value == true)
          };
       },
       
@@ -61,6 +61,10 @@ define(["alfresco/forms/controls/BaseFormControl",
          if (this.wrappedWidget)
          {
             value = this.wrappedWidget.get("checked");
+            if (value == "")
+            {
+               value = this.value;
+            }
          }
          this.alfLog("log", "Returning value for field: '" + this.name + "': ", value);
          return value;

@@ -29,6 +29,7 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/Tree.html",
         "alfresco/core/Core",
+        "service/constants/Default",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "alfresco/services/_NavigationServiceTopicMixin",
         "dojo/dom-construct",
@@ -39,7 +40,7 @@ define(["dojo/_base/declare",
         "dijit/Tree",
         "dojo/aspect",
         "dojo/when"], 
-        function(declare, _Widget, _Templated, template, AlfCore, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin, domConstruct, 
+        function(declare, _Widget, _Templated, template, AlfCore, AlfConstants, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin, domConstruct, 
                  lang, array, TreeStore, ObjectStoreModel, Tree, aspect, when) {
    
    return declare([_Widget, _Templated, AlfCore, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin], {
@@ -48,7 +49,7 @@ define(["dojo/_base/declare",
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/Tree.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/Tree.properties"}],
@@ -57,7 +58,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/Tree.css"}]
        */
       cssRequirements: [{cssFile:"./css/Tree.css"}],
@@ -136,11 +137,11 @@ define(["dojo/_base/declare",
          var url = null;
          if (this.siteId != null && this.containerId != null)
          {
-            url = Alfresco.constants.PROXY_URI + "slingshot/doclib/treenode/site/" + this.siteId + "/documentlibrary";
+            url = AlfConstants.PROXY_URI + "slingshot/doclib/treenode/site/" + this.siteId + "/documentlibrary";
          }
          else if (this.rootNode != null)
          {
-            url = Alfresco.constants.PROXY_URI + "slingshot/doclib/treenode/node/alfresco/company/home";
+            url = AlfConstants.PROXY_URI + "slingshot/doclib/treenode/node/alfresco/company/home";
          }
          else
          {

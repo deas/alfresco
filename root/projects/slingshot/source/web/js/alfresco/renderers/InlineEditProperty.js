@@ -39,8 +39,9 @@ define(["dojo/_base/declare",
         "dojo/dom-attr",
         "dojo/_base/fx",
         "dojo/keys",
-        "dojo/_base/event"], 
-        function(declare, Property, _OnDijitClickMixin, CoreXhr, template, domClass, html, domAttr, fx, keys, event) {
+        "dojo/_base/event",
+        "service/constants/Default"], 
+        function(declare, Property, _OnDijitClickMixin, CoreXhr, template, domClass, html, domAttr, fx, keys, event, AlfConstants) {
 
    return declare([Property, _OnDijitClickMixin, CoreXhr], {
       
@@ -48,7 +49,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/InlineEditProperty.css"}]
        */
       cssRequirements: [{cssFile:"./css/InlineEditProperty.css"}],
@@ -92,7 +93,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      onEditClick: function alfresco_renderers_InlineEditProperty__onEditClick() {
+      onEditClick: function alfresco_renderers_InlineEditProperty__onEditClick(evt) {
          if (this.renderPropertyNotFound)
          {
             domAttr.set(this.editInputNode, "value", "");
@@ -100,6 +101,7 @@ define(["dojo/_base/declare",
          domClass.toggle(this.renderedValueNode, "hidden");
          domClass.toggle(this.editNode, "hidden");
          this.editInputNode.focus(); // Focus on the input node so typing can occur straight away
+         if (evt != undefined) event.stop(evt);
       },
       
       /**
@@ -141,7 +143,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      onSave: function alfresco_renderers_InlineEditProperty__onSave() {
+      onSave: function alfresco_renderers_InlineEditProperty__onSave(evt) {
          // TODO: There's an argument to suggest that this should be handled via a pub/sub event ?
          if (this.postParam != null)
          {
@@ -167,7 +169,7 @@ define(["dojo/_base/declare",
        */
       getSaveUrl: function alfresco_renderers_InlineEditProperty__getSaveUrl() {
          var nodeRef = new Alfresco.util.NodeRef(this.currentItem.nodeRef);
-         var url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/formprocessor";
+         var url = AlfConstants.PROXY_URI + "api/node/" + nodeRef.uri + "/formprocessor";
          return url;
       },
       

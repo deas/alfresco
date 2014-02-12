@@ -232,6 +232,10 @@
 
    <bean id="webscript.org.springframework.extensions.messages.post" parent="webscript" class="org.alfresco.web.scripts.MessagesWebScript" />
 
+   <!-- Java controllers for unit test WebScripts. The first sets a model in the session and the second retrieves it -->
+   <bean id="webscript.org.alfresco.share.testing.unit-test-model.post" parent="webscript" class="org.alfresco.web.scripts.UnitTestSetModelWebScript" />
+   <bean id="webscript.org.alfresco.share.testing.unit-test-model.get" parent="webscript" class="org.alfresco.web.scripts.UnitTestGetModelWebScript" />
+
    <!-- Scripting model extensions -->
    <bean id="slingshot.scriptprocessor.preferences" parent="baseScriptExtension" class="org.alfresco.web.scripts.UserPreferences">
       <property name="extensionName" value="preferences" />

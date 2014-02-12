@@ -38,6 +38,7 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
         "alfresco/core/PathUtils",
+        "alfresco/core/JsNode",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "alfresco/documentlibrary/_AlfHashMixin",
         "alfresco/core/DynamicWidgetProcessingTopics",
@@ -48,7 +49,7 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfCheckableMenuItem",
         "dojo/dom-construct",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, AlfCoreXhr, PathUtils, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics,
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, AlfCoreXhr, PathUtils, JsNode, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics,
                  _PreferenceServiceTopicMixin, AlfDocumentListView, array, lang, AlfCheckableMenuItem, domConstruct, domClass) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, AlfCoreXhr, PathUtils, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics, _PreferenceServiceTopicMixin], {
@@ -60,13 +61,14 @@ define(["dojo/_base/declare",
        * @type {string[]}
        * @default ["/js/alfresco.js"]
        */
-      nonAmdDependencies: ["/js/alfresco.js"],
+      nonAmdDependencies: ["/js/yui-common.js",
+                           "/js/alfresco.js"],
       
       /**
        * An array of the i18n files to use with this widget.
        * 
        * @instance
-       * @type {{i18nFile: string}[]}
+       * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDocumentList.properties"}],
@@ -75,7 +77,7 @@ define(["dojo/_base/declare",
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
-       * @type {{cssFile: string, media: string}[]}
+       * @type {object[]}
        * @default [{cssFile:"./css/AlfDocumentList.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDocumentList.css"}],
@@ -83,7 +85,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String} template
+       * @type {String}
        */
       templateString: template,
       
@@ -118,6 +120,34 @@ define(["dojo/_base/declare",
       widgets: null,
       
       /**
+       * Indicates whether pagination should be used when requesting documents (e.g. include the page number and the number of
+       * results per page)
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      usePagination: true,
+
+      /**
+       * Indicates whether or not folders should be shown in the document library.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showFolders: true,
+
+      /**
+       * Indicates whether the location should be driven by changes to the browser URL hash
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      useHash: false,
+
+      /**
        * Subscribe the document list topics.
        * 
        * @instance
@@ -128,7 +158,14 @@ define(["dojo/_base/declare",
             callback: this.setPageSize,
             callbackScope: this
          });
-         this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
+
+         // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
+         // be required on the same page and they can't all feed off the hash to drive the location.
+         if (this.useHash)
+         {
+            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
+         }
+         
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
          this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
@@ -138,6 +175,11 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, "loadData"));
          
+         // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
+         // that this widget requests...
+         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDataLoadSuccess"));
+         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
+
          // Get the messages for the template...
          this.noViewSelectedMessage = this.message("doclist.no.view.message");
          this.noDataMessage = this.message("doclist.no.data.message");
@@ -160,6 +202,66 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This is the topic that will be subscribed to for responding to item clicks unless [useHash]{@link module:alfresco/documentlibrary/AlfDocumentList#useHash}
+       * is set to true. [Views]{@link module:alfresco/documentlibrary/views/AlfDocumentListView} that defined
+       * renderers that provide links using the [_ItemLinkMixin]{@link module:alfresco/renderers/_ItemLinkMixin} should
+       * be configured to set a matching [linkClickTopic][_ItemLinkMixin]{@link module:alfresco/renderers/_ItemLinkMixin#linkClickTopic}
+       * attribute in order to have their actions processed.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_DOCLIST_NAV"
+       */
+      linkClickTopic: "ALF_DOCLIST_NAV",
+
+      /**
+       * This function is called whenever the [linkClickTopic]{@link module:alfresco/documentlibrary/AlfDocumentList#linkClickTopic}
+       * is published. It processes the payload and updates the current filter and then refreshes the current
+       * data by calling [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#loadData}.
+       * 
+       * @instance
+       * @param {object} payload
+       */
+      onItemLinkClick: function alfresco_documentlibrary_AlfDocumentList__onItemLinkClick(payload) {
+         var node = lang.getObject("item.node", false, payload);
+         if (node.isContainer == true || node.isLink == true)
+         {
+            this.onFolderClick(payload);
+         }
+         else
+         {
+            this.onDocumentClick(payload);
+         }
+         
+      },
+
+      /**
+       * 
+       * @instance
+       * @param {object} payload
+       */
+      onFolderClick: function alfresco_documentlibrary_AlfDocumentList__onFolderClick(payload) {
+         if (payload.url != null)
+         {
+            this.currentFilter = this.processFilter(payload.url);
+            this.loadData();
+         }
+         else
+         {
+            this.alfLog("warn", "A 'url' attribute was expected to be provided for an item click", payload, this);
+         }
+      },
+
+      /**
+       * 
+       * @instance
+       * @param {object} payload
+       */
+      onDocumentClick: function alfresco_documentlibrary_AlfDocumentList__onDocumentClick(payload) {
+         // No action for the moment
+      },
+
+      /**
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfDocumentList__postCreate() {
@@ -174,7 +276,22 @@ define(["dojo/_base/declare",
             this.processWidgets(this.widgets);
          }
          
-         this.initialiseFilter(); // Function provided by the _AlfHashMixin
+         if (this.useHash)
+         {
+            // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
+            // actually get the initial filter and use it to generate the first data set...
+            this.initialiseFilter(); // Function provided by the _AlfHashMixin
+         }
+         else
+         {
+            // When not using a URL hash (e.g. because this DocList is being used as a secondary item - 
+            // maybe as part of a picker, etc) then we need to load the initial data set using the instance
+            // variables provided. We also need to subscribe to topics that indicate that the location has 
+            // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
+            // should be matched by the "linkClickTopic" of this instance)
+            this.alfSubscribe(this.linkClickTopic, lang.hitch(this, "onItemLinkClick"));
+            this.loadData();
+         }
       },
       
       /**
@@ -187,6 +304,17 @@ define(["dojo/_base/declare",
       allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentList__allWidgetsProcessed(widgets) {
          var _this = this;
          array.forEach(widgets, lang.hitch(this, "registerView"));
+
+         // If no default view has been provided, then just use the first...
+         if (this._currentlySelectedView == null)
+         {
+            for (view in this.viewMap)
+            {
+               this._currentlySelectedView = view;
+               break;
+            }
+         }
+
          this.alfPublish(this.viewSelectionTopic, {
             value: this._currentlySelectedView
          });
@@ -479,15 +607,39 @@ define(["dojo/_base/declare",
        */
       loadData: function alfresco_documentlibrary_AlfDocumentList__loadData() {
          this.showLoadingMessage(); // Commented out because of timing issues...
-         var url = Alfresco.constants.URL_SERVICECONTEXT + "components/documentlibrary/data/doclist/" + this.buildDocListParams();
-         var config = {
-            url: url,
-            method: "GET",
-            successCallback: this.onDataLoadSuccess,
-            failureCallback: this.onDataLoadFailure,
-            callbackScope: this
+
+         var documentPayload = {
+            path: this.currentPath,
+            type: this.showFolders ? "all" : "documents",
+            site: this.siteId,
+            container: this.containerId,
+            sortAscending: this.sortAscending,
+            sortField: this.sortField,
+            filter: this.currentFilter,
+            libraryRoot: this.rootNode
+         };
+
+         if (this.usePagination)
+         {
+            documentPayload.page = this.currentPage;
+            documentPayload.pageSize = this.currentPageSize;
          }
-         this.serviceXhr(config);
+         if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
+         {
+            // Repository mode (don't resolve Site-based folders)
+            documentPayload.nodeRef = this.nodeRef.toString();
+         }
+
+         // Override any of the default settings with the values provided in the function argument...
+         if (typeof overrides === "object")
+         {
+            documentPayload = lang.mixin(documentPayload, overrides);
+         }
+
+         // Set a response topic that is scoped to this widget...
+         documentPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
+
+         this.alfPublish("ALF_RETRIEVE_DOCUMENTS_REQUEST", documentPayload, true);
       },
       
       /**
@@ -497,14 +649,14 @@ define(["dojo/_base/declare",
        * @param {object} response The response object
        * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
        */
-      onDataLoadSuccess: function alfresco_documentlibrary_AlfDocumentList__onDataLoadSuccess(response, originalRequestConfig) {
-         this.alfLog("log", "Data Loaded", response, originalRequestConfig);
+      onDataLoadSuccess: function alfresco_documentlibrary_AlfDocumentList__onDataLoadSuccess(payload) {
+         this.alfLog("log", "Data Loaded", payload, this);
          
-         for (var i = 0; i<response.items.length; i++)
+         for (var i = 0; i<payload.response.items.length; i++)
          {
-            response.items[i].jsNode = new Alfresco.util.Node(response.items[i].node);
+            payload.response.items[i].jsNode = new JsNode(payload.response.items[i].node);
          }
-         this._currentData = response;
+         this._currentData = payload.response;
          
          // Publish the details of the loaded documents. The initial use case for this was to allow
          // the selected items menu to know how many items were available for selection but it
@@ -590,82 +742,23 @@ define(["dojo/_base/declare",
       currentPageSize: 25,
       
       /**
-      * Build URI parameter string for doclist JSON data webscript
-      *
-      * @instance _buildDocListParams
-      * @param {{page: string, pageSize: number, path: string, type: string, site: string, container: string, filter: string}}
-      */
-      buildDocListParams: function alfresco_documentlibrary_AlfDocumentList__buildDocListParams(overrides) {
-         
-         // Set up the default options from derived from the arguments used to instantiate 
-         // this particular DocumentList.
-         var obj = {
-            path: this.currentPath,
-            type: this.showFolders ? "all" : "documents",
-            site: this.siteId,
-            container: this.containerId,
-            filter: this.currentFilter
-         };
+       * The inital sort order.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      sortAscending: true,
 
-         // Pagination in use?
-         if (this.usePagination)
-         {
-            obj.page = this.currentPage;
-            obj.pageSize = this.currentPageSize;
-         }
+      /**
+       * The initial field to sort results on.
+       *
+       * @instance
+       * @type {string}
+       * @default "cm:name"
+       */
+      sortField: "cm:name",
 
-         // Override any of the default settings with the values provided in the function argument...
-         if (typeof overrides === "object")
-         {
-            obj = lang.mixin(obj, overrides);
-         }
-
-         // Construct the URI for the request...
-         var uriPart = (this.siteId != null) ? "{type}/site/{site}/{container}" : "{type}/node/alfresco/company/home";
-         if (obj.filter.filterId === "path")
-         {
-            // If a path has been provided in the filter then it is necessary to perform some special 
-            // encoding. We need to ensure that the data is URI encoded, but we want to preserve the 
-            // forward slashes. We also need to "double encode" all % characters because FireFox has
-            // a nasty habit of decoding them *before* they've actually been posted back... this 
-            // guarantees that the user will be able to bookmark valid URLs...
-            var encodedPath = encodeURIComponent(obj.filter.filterData).replace(/%2F/g, "/").replace(/%25/g,"%2525");
-            uriPart += this.combinePaths("/", encodedPath);
-         }
-         
-         // Build the URI stem
-         var params = lang.replace(uriPart, {
-            type: encodeURIComponent(obj.type),
-            site: encodeURIComponent(obj.site),
-            container: encodeURIComponent(obj.container)
-         });
-
-         // Filter parameters
-         params += "?filter=" + encodeURIComponent(obj.filter.filterId);
-         if (obj.filter.filterData && obj.filter.filterId !== "path")
-         {
-            params += "&filterData=" + encodeURIComponent(obj.filter.filterData);
-         }
-
-         // Paging parameters
-         if (this.usePagination)
-         {
-            params += "&size=" + obj.pageSize + "&pos=" + obj.page;
-         }
-
-         // Sort parameters
-         params += "&sortAsc=" + this.sortAscending + "&sortField=" + encodeURIComponent(this.sortField);
-         if (this.siteId == null)
-         {
-            // Repository mode (don't resolve Site-based folders)
-            params += "&libraryRoot=" + encodeURIComponent(this.rootNode.toString());
-         }
-         
-         // View mode and No-cache
-         params += "&view=browse&noCache=" + new Date().getTime();
-         return params;
-      },
-      
       /**
        * @instance
        * @param {object} payload The published details of the selected items

@@ -19,21 +19,6 @@ body {
    clear: both;
 }
 
-.horizontal-widgets {
-}
-
-.horizontal-widget {
-   float: left;
-}
-
-.left-widgets {
-   float: left;
-}
-
-.right-widgets {
-   float: right;
-}
-
 .share-hidden {
    display: none;
 }

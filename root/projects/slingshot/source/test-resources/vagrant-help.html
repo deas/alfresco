@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Vagrant Help</title>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css" />
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+	<style>
+	body{
+		padding: 20px;
+	}
+	</style>
+</head>
+<body>
+
+<h1>Vagrant Help</h1>
+
+<h2>Prerequisites</h2>
+<p>The code you write locally should work when scaled for production. These tools help us do that by creating identical environments for development and production.</p>
+<p><em>The following downloads are free. Please install with the default settings</em></p>
+<ul>
+	<li>Download and install <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">VirtualBox</a> </li>
+	<li>Download and install <a href="http://www.vagrantup.com/" target="_blank">Vagrant</a></li>
+	<li>Download and install <a href="http://nodejs.org/download/" target="_blank">NodeJS</a></li>
+</ul>
+<p><em>It is assumed that you can use a command line and have some vague idea of what a virtual machine and Vagrant is. If not please read about it first: <a href="http://www.vagrantup.com/">http://www.vagrantup.com/</a></em></p>
+
+<h2>The Process</h2>
+<ol>
+	<li>Using Vagrant we run up a pre-configured virtual machine (VM)</li>
+	<li>Vagrant runs a setup file which adds useful elements to the VM such as Selenium and a couple of browsers</li>
+	<li>Vagrant runs the VM in a local private network encompassing itself and your own computer, meaning that you can see the VM and the VM can see you</li>
+	<li>Selenium can be seen on a particular port - 4444 in this instance</li>
+	<li>Tests written using the Selenium web-driver and any array of test tools can then be run against a Selenium initialised browser inside the VM</li>
+</ol>
+
+<h2>Vagrant Commands</h2>
+<dl>
+	<dt>> vagrant up</dt>
+	<dd>Start the VM according to the <em>Vagrantfile</em> configuration. If a VM has already been provisioned it will be run up. If no VM has been provisioned a new one will be.</dd>
+	<dt>> vagrant halt</dt>
+	<dd>Stop a running VM</dd>
+	<dt>> vagrant reload</dt>
+	<dd>Restart a running VM. This will re-run some aspect of setup.</dd>
+	<dt>> vagrant suspend</dt>
+	<dd>Pause a running VM</dd>
+	<dt>> vagrant resume</dt>
+	<dd>Resume a VM from suspended</dd>
+	<dt>> vagrant destroy</dt>
+	<dd>Completely wipe a VM image from VirtualBox</dd>
+	<dt>> vagrant ssh</dt>
+	<dd>Open a Vagrant ssh session - very useful for finding out if your software is available and running</dd>
+	<dt>> vagrant help</dt>
+	<dd>Show vagrant help</dd>
+</ul>
+
+<h2>Testing</h2>
+<p>Once Vagrant has run up a VM you will want to fire tests against the instance of Selenium running therein. For this you will need Selenium web-driver. Assuming you have Node.js installed locally, web-driver can be installed with the following command:</p>
+<pre>npm install selenium-webdriver</pre>
+
+<h2>Notes</h2>
+<ul>
+	<li>Once the VM is up and running, if eveything has gone to plan you should be able to see a Selenium console on the following URL: <a href="http://192.168.56.4/:4444/wd/hub/static/resource/hub.html">http://192.168.56.4:4444/wd/hub/static/resource/hub.html</a></li>
+	<li><strong>vagrant destroy</strong> is a useful command that gives you a completely fresh VM but it also deletes almost everything about the VM. Therefore an <strong>up</strong> command will take very much longer due to artifact downloading if a <strong>destroy</strong> has been issued previously.</li>
+</ul>
+
+</body>
+</html>

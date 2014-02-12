@@ -316,99 +316,42 @@ define(["dojo/_base/declare",
        * to perform the upload.
        *
        * @instance
-       * @param {object} e HTML5 drag and drop event
+       * @param {object} evt HTML5 drag and drop event
        */
-      onDndUploadDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onDndUploadDrop(e) {
+      onDndUploadDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onDndUploadDrop(evt) {
          try
          {
             // Only perform a file upload if the user has *actually* dropped some files!
-            this.alfLog("log", "Upload drop detected", e);
-            if (e.dataTransfer.files !== undefined && e.dataTransfer.files !== null && e.dataTransfer.files.length > 0)
+            this.alfLog("log", "Upload drop detected", evt);
+            if (evt.dataTransfer.files !== undefined && evt.dataTransfer.files !== null && evt.dataTransfer.files.length > 0)
             {
-               // We need to get the upload progress dialog widget so that we can display it.
-               // The function called has been added to file-upload.js and ensures the dialog is a singleton.
-               var progressDialog = Alfresco.getDNDUploadProgressInstance();
+               this.removeDndHighlight();
+               var config = this.getUploadConfig();
+               var defaultConfig = {
+                  siteId: null,
+                  containerId: null,
+                  uploadDirectory: null,
+                  updateNodeRef: null,
+                  description: "",
+                  overwrite: false,
+                  thumbnails: "doclib",
+                  username: null
+               };
+               var updatedConfig = lang.mixin(defaultConfig, config);
 
-               var continueWithUpload = false;
+               // Set up a response topic for receiving notifications that the upload has completed...
+               var responseTopic = this.generateUuid();
+               this._uploadSubHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onFileUploadComplete"), true);
 
-               // Check that at least one file with some data has been dropped...
-               var zeroByteFiles = "", i, j;
-               
-               j = e.dataTransfer.files.length;
-               for (i = 0; i < j; i++)
-               {
-                  if (e.dataTransfer.files[i].size > 0)
-                  {
-                     continueWithUpload = true;
-                  }
-                  else
-                  {
-                     zeroByteFiles += '"' + e.dataTransfer.files[i].fileName + '", ';
-                  }
-               }
-
-               if (!continueWithUpload)
-               {
-                  zeroByteFiles = zeroByteFiles.substring(0, zeroByteFiles.lastIndexOf(", "));
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: progressDialog.msg("message.zeroByteFiles", zeroByteFiles)
-                  });
-               }
-
-               // Perform some checks on based on the browser and selected files to ensure that we will
-               // support the upload request.
-               if (continueWithUpload && progressDialog.uploadMethod === progressDialog.INMEMORY_UPLOAD)
-               {
-                  // Add up the total size of all selected files to see if they exceed the maximum allowed.
-                  // If the user has requested to upload too large a file or too many files in one operation
-                  // then generate an error dialog and abort the upload...
-                  var totalRequestedUploadSize = 0;
-
-                  j = e.dataTransfer.files.length;
-                  for (i = 0; i < j; i++)
-                  {
-                     totalRequestedUploadSize += e.dataTransfer.files[i].size;
-                  }
-                  if (totalRequestedUploadSize > progressDialog.getInMemoryLimit())
-                  {
-                     continueWithUpload = false;
-                     Alfresco.util.PopupManager.displayPrompt(
-                     {
-                         text: progressDialog.msg("inmemory.uploadsize.exceeded", Alfresco.util.formatFileSize(progressDialog.getInMemoryLimit()))
-                     });
-                  }
-               }
-
-               // If all tests are passed...
-               if (continueWithUpload)
-               {
-                  var customConfig = this.getUploadConfig();
-
-                  // Remove the drag highlight...
-                  this.removeDndHighlight();
-
-                  // Show uploader for multiple files
-                  var standardConfig =
-                  {
-                     files: e.dataTransfer.files,
-                     filter: [],
-                     mode: progressDialog.MODE_MULTI_UPLOAD,
-                     thumbnails: "doclib",
-                     onFileUploadComplete:
-                     {
-                        fn: this.onFileUploadComplete,
-                        scope: this
-                     }
-                  };
-
-                  lang.mixin(standardConfig, customConfig);
-                  progressDialog.show(standardConfig);
-               }
+               this.alfPublish("ALF_UPLOAD_REQUEST", {
+                  alfResponseTopic: responseTopic,
+                  files: evt.dataTransfer.files,
+                  targetData: updatedConfig
+               });
             }
             else
             {
-               this.alfLog("error", "A drop event was detected, but no files were present for upload: ", e.dataTransfer);
+               this.alfLog("error", "A drop event was detected, but no files were present for upload: ", evt.dataTransfer);
             }
          }
          catch(exception)
@@ -417,8 +360,8 @@ define(["dojo/_base/declare",
          }
          // Remove the drag highlight...
          this.removeDndHighlight();
-         e.stopPropagation();
-         e.preventDefault();
+         evt.stopPropagation();
+         evt.preventDefault();
       },
       
       /**
@@ -447,8 +390,6 @@ define(["dojo/_base/declare",
             try
             {
                config = {
-                  uploadDirectoryName: this.currentItem.location.file,
-                  uploadDirectory: this.combinePaths(location.path, location.file),
                   destination: this.currentItem.nodeRef
                };
             }
@@ -466,7 +407,6 @@ define(["dojo/_base/declare",
             {
                // Best guess for document list view...
                config = {
-                  uploadDirectoryName: this.currentData.metadata.parent.properties["cm:name"],
                   destination: this.currentData.metadata.parent.nodeRef
                };
             }
@@ -487,6 +427,14 @@ define(["dojo/_base/declare",
        */
       onFileUploadComplete: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onFileUploadComplete() {
          this.alfLog("log", "Upload complete");
+         if (this._uploadSubHandle != null)
+         {
+            this.alfUnsubscribe(this._uploadSubHandle);
+         }
+         else
+         {
+            this.alfLog("warn", "A subscription handle was not found for processing file upload completion - this could be a potential memory leak", this);
+         }
          this.alfPublish(this.reloadDataTopic, {});
       }
    });
