@@ -153,7 +153,7 @@
     <dependency.mockito.version>1.9.5</dependency.mockito.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.0-M15</dependency.surf.version>
-    <dependency.activiti.version>5.13-alf-20140106</dependency.activiti.version>
+    <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>
     <dependency.poi.version>3.10-beta2-20130720</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
   </properties>
