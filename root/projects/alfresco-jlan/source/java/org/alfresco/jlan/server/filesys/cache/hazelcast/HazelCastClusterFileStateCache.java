@@ -434,9 +434,16 @@ public class HazelCastClusterFileStateCache extends ClusterFileStateCache implem
 	 * @param path String
 	 * @return FileState
 	 */
-	public FileState findFileState(String path) {
-		return m_stateCache.get( FileState.normalizePath(path, isCaseSensitive()));
-	}
+    public FileState findFileState(String path)
+    {
+        HazelCastClusterFileState fstate = m_stateCache.get( FileState.normalizePath(path, isCaseSensitive()));
+        // Set the state cache the state belongs to, may have been fetched from the cluster
+        if (fstate != null)
+        {
+            fstate.setStateCache(this);
+        }
+        return fstate;
+    }
 
 	/**
 	 * Find the file state for the specified path, and optionally create a new file state if not
