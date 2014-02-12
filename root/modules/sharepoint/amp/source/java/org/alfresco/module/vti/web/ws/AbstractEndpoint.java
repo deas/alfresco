@@ -230,7 +230,7 @@ public abstract class AbstractEndpoint extends VtiUtilBase implements VtiEndpoin
           String context = soapRequest.getAlfrescoContextName();
           String dws = getDwsFromUri(soapRequest);
           
-          String splitWith = context + dws;
+          String splitWith = context + (context.endsWith("/") ? "" : "/") + dws;
           int splitAt = fileName.indexOf(splitWith);
           
           if(splitAt == -1)

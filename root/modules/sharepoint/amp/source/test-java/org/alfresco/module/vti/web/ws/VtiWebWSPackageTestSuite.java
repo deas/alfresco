@@ -26,6 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     TestAbstractListEndpointTest.class,
+    TestAbstractEndpointTest.class,
     TestAbstractListItemsEndpointTest.class
 })
 public class VtiWebWSPackageTestSuite
