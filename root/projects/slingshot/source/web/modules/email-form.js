@@ -380,8 +380,10 @@
             Dom.get(this.id + "-template").value = "";
          }
 
-         // Update submit elements & show the dialog
+         // Enable the ok button
+         this.widgets.okButton.set("disabled", false);
 
+         // Show the dialog
          this.widgets.dialog.show();
       },
 
