@@ -46,6 +46,17 @@
       <version>1.4</version>
     </dependency>
     <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.8.0</version>
+        <exclusions>
+            <exclusion>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>                
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate</artifactId>
       <version>3.2.6-alf-20131023</version>
