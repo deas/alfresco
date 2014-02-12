@@ -182,7 +182,6 @@
 
       <patternset id="files.tests.startup">
          <include name="**/RepositoryStartupTest.java" />
-         <include name="**/IndexCheckServiceImplTest.java" />
       </patternset>
       <patternset id="files.tests">
          <!-- System Build Tests (runs using embedded Jetty) -->
