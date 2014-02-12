@@ -31,12 +31,18 @@ public class AlfrescoTicketCmisAuthenticationProvider extends StandardAuthentica
     private WebScriptCaller webscriptCaller;
     private ReentrantLock ticketLock = new ReentrantLock(true);
     private long refetchTicketNotBefore = System.currentTimeMillis();
+    private long refetchTicketDelay = 10000L;
 
     public void setWebscriptCaller(WebScriptCaller webscriptCaller)
     {
         this.webscriptCaller = webscriptCaller;
     }
 
+    protected void setRefetchTicketDelay(long refetchTicketDelay)
+    {
+        this.refetchTicketDelay = refetchTicketDelay;
+    }
+    
     @Override
     protected String getPassword()
     {
@@ -59,7 +65,7 @@ public class AlfrescoTicketCmisAuthenticationProvider extends StandardAuthentica
                 if (ticket == null)
                 {
                     ticket = webscriptCaller.getTicket(super.getUser(), super.getPassword());
-                    refetchTicketNotBefore = System.currentTimeMillis() + 10000L;
+                    refetchTicketNotBefore = System.currentTimeMillis() + refetchTicketDelay;
                 }
             }
             finally

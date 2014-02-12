@@ -106,7 +106,7 @@
                 <executions>
                     <execution>
                         <id>extract-quick-resource-files</id>
-                        <phase>generate-test-resources</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>

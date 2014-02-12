@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.cmr.repository.Period;
 import org.alfresco.util.VersionNumber;
-import org.springframework.extensions.surf.util.ISO8601DateFormat;
+import org.alfresco.util.ISO8601DateFormat;
 
 public class DefaultTypeConverterTest extends TestCase
 {

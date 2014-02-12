@@ -23,9 +23,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.alfresco.error.AlfrescoRuntimeException;
-
 import junit.framework.TestCase;
+
+import org.alfresco.error.AlfrescoRuntimeException;
 
 public class ISO8601DateFormatTest extends TestCase
 {
@@ -165,12 +165,7 @@ public class ISO8601DateFormatTest extends TestCase
        
        TimeZone  tz = TimeZone.getTimeZone("Australia/Sydney");
        String testSydney = "2011-02-04T16:13:14";
-       String testGMT    = "2011-02-04T05:13:14";
        String testUTC    = "2011-02-04T05:13:14.000Z";
-       
-       //null time zone so the Default Timezone will be used
-       date = ISO8601DateFormat.parse(testGMT, null);
-       assertEquals(testUTC, ISO8601DateFormat.format(date));
        
        //Sydney
        date = ISO8601DateFormat.parse(testSydney, tz);

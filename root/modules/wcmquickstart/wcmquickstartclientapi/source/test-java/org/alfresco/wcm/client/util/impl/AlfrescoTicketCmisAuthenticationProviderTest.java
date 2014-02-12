@@ -61,6 +61,7 @@ public class AlfrescoTicketCmisAuthenticationProviderTest
         authProvider = new AlfrescoTicketCmisAuthenticationProvider();
         authProvider.setWebscriptCaller(mockedWebscriptCaller);
         authProvider.setSession(mockedSession);
+        authProvider.setRefetchTicketDelay(2000L);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class AlfrescoTicketCmisAuthenticationProviderTest
     {
         
         Set<String> replies = new TreeSet<String>();
-        long stopTime = System.currentTimeMillis() + 15000L;
+        long stopTime = System.currentTimeMillis() + 3000L;
         while (stopTime > System.currentTimeMillis())
         {
             replies.add(authProvider.getPassword());
@@ -103,7 +104,7 @@ public class AlfrescoTicketCmisAuthenticationProviderTest
     {
         
         final Set<String> replies = Collections.synchronizedSet(new TreeSet<String>());
-        final long stopTime = System.currentTimeMillis() + 15000L;
+        final long stopTime = System.currentTimeMillis() + 3000L;
         final List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>(20));
         
         for (int i = 0; i < 20; ++i)

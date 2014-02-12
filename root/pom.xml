@@ -118,7 +118,8 @@
     <db.master.url>jdbc:postgresql:template1</db.master.url>
     <db.username>alfresco</db.username>
     <db.password>alfresco</db.password>
-    <dir.root>${basedir}/target/alf_test_data</dir.root>
+    <test.working.dir>${project.build.directory}</test.working.dir>
+    <dir.root>${test.working.dir}/alf_test_data</dir.root>
     <img.exe>convert</img.exe>
     <swf.exe>pdf2swf</swf.exe>
 
@@ -610,6 +611,53 @@
 			</dependency>
 		</dependencies>
 	</profile>
+    <profile>
+        <id>h2</id>
+        <properties>
+            <db.params>MODE=PostgreSQL;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=10000;MVCC=TRUE</db.params>
+            <db.master.url>jdbc:h2:${test.working.dir}/h2_data/${db.name};${db.params}</db.master.url>
+            <db.driver>org.h2.jdbcx.JdbcDataSource</db.driver>
+            <db.url>${db.master.url}</db.url>
+        </properties>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <configuration>
+                        <systemProperties>
+                            <db.driver>org.h2.jdbcx.JdbcDataSource</db.driver>
+                            <db.url>${db.master.url}</db.url>
+                        </systemProperties>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>tk.skuro.alfresco</groupId>
+                            <artifactId>h2-support</artifactId>
+                            <version>1.6</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>1.3.173</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </build>
+        <dependencies>
+            <dependency>
+                <groupId>tk.skuro.alfresco</groupId>
+                <artifactId>h2-support</artifactId>
+                <version>1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.3.173</version>
+            </dependency>
+        </dependencies>
+    </profile>
 	<profile>
 		<id>solr-http</id>
 		<build>
