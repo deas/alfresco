@@ -23,7 +23,7 @@
    </div>
    <awe:markContent id="<%=subTextNodeRef%>" title="Edit Links" />
    
-   <div class="copyright">&copy; 2013 Customer, Inc. All Rights Reserved.</div>
+   <div class="copyright">&copy; 2014 Customer, Inc. All Rights Reserved.</div>
    
    <awe:endTemplate />
 </body>

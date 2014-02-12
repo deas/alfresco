@@ -1,5 +1,5 @@
 <%--
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -80,7 +80,7 @@ div.panel
       <br/>
       <br/>
       <br/>
-      <a href="http://www.alfresco.com">Alfresco Software</a> Inc. &copy; 2005-2013 All rights reserved.
+      <a href="http://www.alfresco.com">Alfresco Software</a> Inc. &copy; 2005-2014 All rights reserved.
    </div>
    <div>
 <%

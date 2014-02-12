@@ -28,7 +28,7 @@
                </div>
                <div style="padding-top:32px">
                   <span class="login-copyright">
-                     &copy; 2005-2013 Alfresco Software Inc. All rights reserved.
+                     &copy; 2005-2014 Alfresco Software Inc. All rights reserved.
                   </span>
                </div>
                <input type="hidden" id="success" name="success" value="${successUrl}"/>
