@@ -2038,6 +2038,31 @@
          });
 
          /**
+          * File mimetype
+          */
+         this.registerRenderer("mimetype", function(record, label)
+         {
+            var jsNode = record.jsNode,
+               html = "",
+               mimetypeDisplayName = "";
+
+            if (!jsNode.isContainer && !jsNode.isLink)
+            {
+               if(typeof jsNode.mimetypeDisplayName !== "undefined")
+               {
+                  mimetypeDisplayName = jsNode.mimetypeDisplayName;
+               }
+               else
+               {
+                  mimetypeDisplayName = this.msg("label.mimetype.unknown");
+               }
+               html += '<span class="item">' + label + mimetypeDisplayName + '</span>';
+            }
+
+            return html;
+         });
+
+         /**
           * Tags
           */
          this.registerRenderer("tags", function(record, label)

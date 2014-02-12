@@ -191,7 +191,7 @@
                            "label": "table.dublincore.label.contributor"
                         },
                         {
-                           "property": "cm:mimetype",
+                           "property": "mimetype",
                            "label": "table.dublincore.label.mimetype"
                         },
                         {

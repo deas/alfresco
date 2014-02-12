@@ -8629,6 +8629,7 @@ Alfresco.constants = YAHOO.lang.merge(Alfresco.constants || {},
          /* Content Nodes */
          contentURL: node.contentURL,
          mimetype: node.mimetype,
+         mimetypeDisplayName: node.mimetypeDisplayName,
          size: node.size,
 
          /* Properties */
