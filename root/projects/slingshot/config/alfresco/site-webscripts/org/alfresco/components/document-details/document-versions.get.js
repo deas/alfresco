@@ -9,7 +9,7 @@ function main()
    if (documentDetails)
    {
       var userPermissions = documentDetails.item.node.permissions.user;
-      model.allowNewVersionUpload = userPermissions["Write"] || false;
+      model.allowNewVersionUpload = (!documentDetails.item.node.isLocked && documentDetails.item.node.permissions.user["Write"]) || false;
       model.isWorkingCopy = (documentDetails.item && documentDetails.item.workingCopy && documentDetails.item.workingCopy.isWorkingCopy) ? true : false;
    }
    
