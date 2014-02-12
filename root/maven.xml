@@ -262,9 +262,9 @@
         <!-- Web Framework Commons -->
         <mvndeploypom file="${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"
             artifactId="alfresco-web-framework-commons"
-            classifiers="sources,javadoc,config,tests"
-            types="jar,jar,jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-web-framework-commons-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip"
+            classifiers="sources,javadoc,config,tests,classes"
+            types="jar,jar,jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-web-framework-commons-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-web-framework-commons-doc.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-config.zip,${dir.continuous.assemble.config}/alfresco-web-framework-commons-test-resources.zip,${dir.project.webframeworkcommons.dist}/${file.name.jar.webframeworkcommons}"
             pomFile="${dir.project.webframeworkcommons}/pom.xml" />
     </target>
             
