@@ -2375,7 +2375,7 @@
                {
                   item.parentType = item.parent.type;
                }
-               return '<img src="' + me.getIconURL(item, iconSize) + '" width="' + iconSize + '" alt="' + $html(item.description) + '" title="' + $html(item.name) + '" />'; 
+               return '<img src="' + me.getIconURL(item, iconSize) + '" style="border-style:none;"' + '" width="' + iconSize + '" alt="' + $html(item.description) + '" title="' + $html(item.name) + '" />'; 
             }
             return $html(p_value);
          };
