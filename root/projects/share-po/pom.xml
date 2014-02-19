@@ -13,8 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
         <webdrone.page.render.wait.time>6000</webdrone.page.render.wait.time>
-        <!-- enterprise.build.plan e.g.ALF-ENTERPRISEHEAD0 -->
-        <enterprise.build.plan>ALF-ENTERPRISEHEAD0</enterprise.build.plan>
+        <enterprise.build.plan>e.g.ALF-ENTERPRISEHEAD0</enterprise.build.plan>
         <test.exclude>nonEnterprise</test.exclude>
     </properties>
     <repositories>
@@ -204,7 +203,7 @@
                                         <echo>Recreating database...</echo>
                                         <sql driver="org.postgresql.Driver" url="jdbc:postgresql:template1" userid="alfresco" password="alfresco" autocommit="true">drop database if exists alfresco; create database alfresco</sql>
                                         <echo>Downloading Alfresco installer...</echo>
-                                        <sshexec username="tomcat" host="pbld01.alfresco.com" keyfile="${user.home}/.ssh/id_rsa" outputproperty="installerPath" command="ls -rt /data/bamboo/artifacts/${enterprise.build.plan}/JOB1/build-*/ALL/alfresco-enterprise-*-installer-linux-x64.??? | tail -1 | tr ' ' '?' " />
+                                        <sshexec username="tomcat" host="pbld01.alfresco.com" keyfile="${user.home}/.ssh/id_rsa" outputproperty="installerPath" command="ls -rt /data/bamboo/artifacts/${enterprise.build.plan}/JOB*/build-*/ALL/alfresco-enterprise-*-installer-linux-x64.??? | tail -1 | tr ' ' '?' " />
                                         <scp remoteFile="tomcat@pbld01.alfresco.com:${installerPath}" localTofile="target/alf-installer.bin" keyfile="${user.home}/.ssh/id_rsa" />
                                         <chmod file="target/alf-installer.bin" perm="a+x" verbose="true" />
                                         <echo>Installing Alfresco...</echo>
