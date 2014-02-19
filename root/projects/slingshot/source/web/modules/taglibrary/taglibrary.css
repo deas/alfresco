@@ -33,7 +33,7 @@
 .tags_box ul
 {
    max-height: 10em;
-   overflow-y: auto;
+   overflow-y: hidden;
    padding-left: 0px;
 }
 
