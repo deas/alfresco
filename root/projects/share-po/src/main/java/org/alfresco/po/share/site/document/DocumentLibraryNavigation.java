@@ -855,7 +855,14 @@ public class DocumentLibraryNavigation extends SharePage
     {
         try
         {
-            selectItemInOptionsDropDown(By.cssSelector(".showFolders"));
+            if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+            {
+                drone.find(By.cssSelector("button[id$='howFolders-button-button']")).click();
+            }
+            else
+            {
+                selectItemInOptionsDropDown(By.cssSelector(".showFolders"));
+            }
             return FactorySharePage.resolvePage(drone);
         }
         catch(NoSuchElementException nse)
