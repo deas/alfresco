@@ -897,8 +897,11 @@
          toggleLink.style.color="#aaa";
          //disables Site link
          toggleLink = Dom.get(this.id + "-site-link");
-         Event.removeListener(toggleLink, "click");
-         toggleLink.style.color="#aaa";
+         if (toggleLink)
+         {
+            Event.removeListener(toggleLink, "click");
+            toggleLink.style.color="#aaa";
+         }
          // disables Search button
          this.widgets.searchButton.set("disabled", true);
       },
@@ -920,8 +923,11 @@
          toggleLink.style.color="";
          // enables  "Site" link
          toggleLink = Dom.get(this.id + "-site-link");
-         Event.addListener(toggleLink, "click", this.onRepositorySearch, this, true);
-         toggleLink.style.color="";
+         if (toggleLink)
+         {
+            Event.addListener(toggleLink, "click", this.onSiteSearch, this, true);
+            toggleLink.style.color="";
+         }
          // enables  Search button
          this.widgets.searchButton.set("disabled", false);
       },
