@@ -788,7 +788,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             throw new PageOperationException("Option Download Folder is not possible against a file, must be folder to workFileDirectoryInfoTest");
         }
-        if(!(AlfrescoVersion.Enterprise42.equals(version) || AlfrescoVersion.Enterprise43.equals(version)))
+        if(AlfrescoVersion.Enterprise41.equals(version))
         {
             throw new AlfrescoVersionException("Option Download Folder as Zip is not available for this version of Alfresco");
         }

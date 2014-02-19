@@ -325,10 +325,10 @@ public class DocumentLibraryNavigation extends SharePage
      */
     public DocumentLibraryPage selectDownloadAsZip()
     {
-    	if(!(AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || AlfrescoVersion.Enterprise43.equals(alfrescoVersion)))
-    	{
-    		throw new UnsupportedOperationException("Download as Zip option si not available on this version " + alfrescoVersion.toString());
-    	}
+        if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+        {
+            throw new UnsupportedOperationException("Download as Zip option si not available on this version " + alfrescoVersion.toString());
+        }
         try
         {
             if(isSelectedItemMenuVisible())

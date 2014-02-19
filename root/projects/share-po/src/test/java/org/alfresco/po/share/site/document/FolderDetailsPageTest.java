@@ -204,7 +204,9 @@ public class FolderDetailsPageTest extends AbstractTest
     public void testDownloadAsZipFolder()
     {
         if (logger.isTraceEnabled())
+        {
             logger.trace("====testDownloadAsZipFolder====");
+        }
         Assert.assertTrue(folderDetailsPage.isDownloadAsZipAtTopRight());
         folderDetailsPage.selectDownloadFolderAsZip("folder").render();
     }

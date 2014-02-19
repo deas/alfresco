@@ -28,7 +28,6 @@ import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
-import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -86,14 +85,6 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled()) logger.trace("====createData====");
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
-        try
-        {
-            documentLibPage = documentLibPage.getNavigation().selectShowFolders().render();
-        } 
-        catch (PageOperationException e)
-        {
-        }
-        documentLibPage.render();
         NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
         documentLibPage = newFolderPage.createNewFolder(folderName, folderDescription).render();
         FileDirectoryInfo content = getFolder();
