@@ -45,7 +45,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Site document library page object, holds all element of the HTML page
  * relating to share's site document library page.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -53,7 +53,7 @@ public class DocumentDetailsPage extends DetailsPage
 {
     private static final Log logger = LogFactory.getLog(DocumentDetailsPage.class);
     private static final String UPLOADED_DOCUMENT_NEW_VERSION_PLACEHOLDER = "div[class$='document-upload-new-version']";
-    private static final String REVISON_HISTORY_PANEL = "document.detail.version.history.panel";    
+    private static final String REVISON_HISTORY_PANEL = "document.detail.version.history.panel";
     private static final String DOWNLOAD_FILE_CSS_LOCATOR = "div.node-header>div.node-action>span>span>a";
     private static final String EDIT_OFFLINE_LINK = "div.document-edit-offline>a";
     private static final String INLINE_EDIT_LINK = ".document-inline-edit>a";
@@ -76,9 +76,9 @@ public class DocumentDetailsPage extends DetailsPage
     private static final String LOCATION_IN_CLOUD = "p.location";
     private static final String SYNC_STATUS = ".cloud-sync-details-info>p:not(.location)";
     private static final String COMMENT_COUNT = "span.comment-count";
-    private String previousVersion;
+    protected String previousVersion;
     private String expectedVersion;
-    private String documentVersion;
+    protected String documentVersion;
     private boolean isGoogleCreate = false;
     private static final String GOOGLE_DOCS_URL = "googledocsEditor?";
     private static final By WORKFLOW_INFO = By.cssSelector("div.document-workflows>div>div.info");
@@ -107,7 +107,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Verifies if the page has rendered completely by checking the page load is
      * complete and in addition it will observe key HTML elements have rendered.
-     * 
+     *
      * @param timer Max time to wait
      * @return {@link DocumentDetailsPage}
      */
@@ -171,7 +171,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets document version value from top of the details page
-     * 
+     *
      * @return String value of document version
      */
     public synchronized String getDocumentVersion()
@@ -182,7 +182,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if button on version history view is displayed
-     * 
+     *
      * @return true if visible on the page
      */
     public boolean isUploadNewVersionDisplayed()
@@ -199,7 +199,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if the action to edit offline is available
-     * 
+     *
      * @return true if visible on the page
      */
     public boolean isEditOfflineLinkDisplayed()
@@ -230,7 +230,7 @@ public class DocumentDetailsPage extends DetailsPage
     		return false;
     	}
     }
-    
+
     /**
      * Check for locked by you banner that appears on the top
      * of the page when document is locked by edit off line and locked by you when viewing original.
@@ -247,7 +247,7 @@ public class DocumentDetailsPage extends DetailsPage
     		return false;
     	}
     }
-    
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -284,7 +284,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets the document detail title.
-     * 
+     *
      * @return String document detail page title
      */
     public String getDocumentTitle()
@@ -296,7 +296,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of clicking on the upload new version button.
-     * 
+     *
      * @return HtmlPage page response object
      */
     public HtmlPage selectUploadNewVersion()
@@ -308,15 +308,15 @@ public class DocumentDetailsPage extends DetailsPage
         WebElement link = drone.findAndWait(By.cssSelector("div.document-upload-new-version>a"));
         String version = getDocumentVersion();
         link.click();
-        
+
         return getFileUpdatePage(drone, version, isEditOfflineLinkDisplayed());
     }
-    
+
     /**
      * File upload page pop up object.
-     * 
+     *
      * @param drone {@link WebDrone} browser client
-     * @param version the number of the original document 
+     * @param version the number of the original document
      * @param editOffLine mode status
      * @return {@link UpdateFilePage} page object response
      */
@@ -326,7 +326,7 @@ public class DocumentDetailsPage extends DetailsPage
     }
     /**
      * Locates the revision history DIV.
-     * 
+     *
      * @return {@link WebElement} represent revision history
      */
     public WebElement getRevisionPanel()
@@ -336,7 +336,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Get the comments of the last commit from the revision history panel
-     * 
+     *
      * @return String comments
      */
     public String getCommentsOfLastCommit()
@@ -371,7 +371,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         return false;
     }
-    
+
     /**
      * Select the edit off line link.
      * @return {@link HtmlPage} edit off line page.
@@ -397,12 +397,12 @@ public class DocumentDetailsPage extends DetailsPage
             }
             return new DocumentEditOfflinePage(drone);
         }
-        catch (NoSuchElementException nse) 
-        { 
+        catch (NoSuchElementException nse)
+        {
         	throw new PageException("Unable to edit offline", nse);
         }
     }
-    
+
     /**
      * Mimics the action of selecting In Line Edit.
      *
@@ -420,9 +420,9 @@ public class DocumentDetailsPage extends DetailsPage
             logger.error("Not able to find the web element");
             throw new PageOperationException("Unable to select Inline Edit", exception);
         }
-        
+
         return new EditTextDocumentPage(drone);
-        
+
     }
 
     /**
@@ -449,12 +449,12 @@ public class DocumentDetailsPage extends DetailsPage
         catch (NoSuchElementException nse) { }
         return filePath;
     }
-    
+
     /**
      * Downloads the document shown by the current page, optionally
      * doing it by clicking the link in the browser (no control) or
      * by doing a URL-based download.
-     * 
+     *
      * @param file          optional file to download to.  When given
      *                      the link <b>will not be clicked</b> but the
      *                      file will be downloaded directly from the server.
@@ -464,7 +464,7 @@ public class DocumentDetailsPage extends DetailsPage
     {
         boolean click = (file == null);
         String path = downloadFile(DOWNLOAD_FILE_CSS_LOCATOR, click);
-        
+
         // A file was provided so stream into it
         if (file != null)
         {
@@ -483,7 +483,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Get the file size from the properties
-     * section of the document details page. 
+     * section of the document details page.
      * @return String size
      */
     public String getDocumentSize()
@@ -491,38 +491,38 @@ public class DocumentDetailsPage extends DetailsPage
         WebElement fileSize = drone.find(By.cssSelector(DOCUMENT_PROPERTIES_DISPLAYED_SIZE));
         return fileSize.getText();
     }
-    
-    
+
+
     /**
      * This test case needs flash player installed on linux box and till that it will be disabled.
      * Gets the Preview status on the document page.
-     * 
+     *
      * @return boolean
      */
     public boolean isPreviewDisplayed() {
         try
         {
             return drone.findAndWait(By.cssSelector(DOCUMENT_PREVIEW_WITH_FLASH_PLAYER)).isDisplayed();
-        }        
+        }
         catch (TimeoutException nse)
         {
             try
             {
                 return drone.find(By.cssSelector(DOCUMENT_PREVIEW_WITHOUT_FLASH_PLAYER)).isDisplayed();
-            }        
+            }
             catch (TimeoutException e) { }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Gets the No Preview Message on the document page.
-     * 
+     *
      * @return boolean
      */
-    public boolean isNoPreviewMessageDisplayed() 
-    {        
+    public boolean isNoPreviewMessageDisplayed()
+    {
         try
         {
             WebElement noPreviewElement = drone.findAndWait(By.cssSelector(NO_DOCUMENT_PREVIEW));
@@ -530,7 +530,7 @@ public class DocumentDetailsPage extends DetailsPage
             if (noPreviewElement != null)
             {
                 String message = noPreviewElement.getText();
-                
+
                 if(message != null && (message.contains(DOCUMENT_CANT_BE_PREVIEWED) || message.contains(FILE_ISNT_VISIBLE)))
                 {
                     return true;
@@ -557,11 +557,11 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Clicks on download link when no preview message is displayed for
      * unsupported details.
-     * 
+     *
      * @return {@link DocumentDetailsPage}
      */
     public DocumentDetailsPage clickOnDownloadLinkForUnsupportedDocument() {
-    	
+
 		try {
 			WebElement noPreviewElement = drone.findAndWait(By
 					.cssSelector(NO_DOCUMENT_PREVIEW));
@@ -573,7 +573,7 @@ public class DocumentDetailsPage extends DetailsPage
 					exception);
 		}
 
-		return new DocumentDetailsPage(drone);       
+		return new DocumentDetailsPage(drone);
     }
 
     /**
@@ -615,7 +615,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets the No Preview Message on the document page.
-     * 
+     *
      * @return boolean
      */
     public boolean isSignUpDialogVisible()
@@ -688,7 +688,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of clicking on the assign workflow link.
-     * 
+     *
      * @return StartWorkFlowPage page response object
      */
     public StartWorkFlowPage selectStartWorkFlowPage()
@@ -744,7 +744,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Public method to transfer control based to google docs based on how the
      * session gets initiated.
-     * 
+     *
      * @author sprasanna
      * @return {@link HtmlPage} page response
      */
@@ -752,9 +752,9 @@ public class DocumentDetailsPage extends DetailsPage
     {
         WebElement link = drone.findAndWait(By.cssSelector(LINK_EDIT_IN_GOOGLE_DOCS));
         link.click();
-        
+
         By jsMessage = By.cssSelector("div.bd>span.message");
-        
+
         //TODO Remove try Catch Block Once Cloud version in 31
         try
         {
@@ -764,9 +764,9 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch (TimeoutException timeoutException)
         {
-            
+
         }
-            
+
         if (!drone.getCurrentUrl().contains(GOOGLE_DOCS_URL))
         {
             return new GoogleDocsAuthorisation(drone, documentVersion, isGoogleCreate);
@@ -782,7 +782,7 @@ public class DocumentDetailsPage extends DetailsPage
             {
                 return new EditInGoogleDocsPage(drone, documentVersion, isGoogleCreate);
             }
-        
+
             throw new PageException(errorMessage);
         }
     }
@@ -790,7 +790,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Public method to transfer control based to google docs based on how the
      * session gets initiated.
-     * 
+     *
      * @author sprasanna
      * @return {@link HtmlPage} page response
      */
@@ -811,7 +811,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if Link Edit in Google docs is visible.
-     * 
+     *
      * @author sprasanna
      * @return true if displayed
      */
@@ -829,7 +829,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if Link Resume Editing in Google docs is visible.
-     * 
+     *
      * @author sprasanna
      * @return true if displayed
      */
@@ -844,7 +844,7 @@ public class DocumentDetailsPage extends DetailsPage
             return false;
         }
     }
-     
+
     /**
      * Verify if the action to edit offline is available
      *
@@ -879,27 +879,6 @@ public class DocumentDetailsPage extends DetailsPage
                 logger.info("Comment count is not displayed");
             }
         }
-        return false;
-    }
-
-
-    /**
-     * Checks if hide record link is displayed.
-     * This will only be visible under the following
-     * condition:
-     * <ul>
-     *  <li> Record management module enabled</li>
-     *  <li> When the document has been declared as record</li>
-     * </ul>
-     * @return true if link is displayed
-     */
-    public boolean isHideRecordLinkDisplayed()
-    {
-        try
-        {
-            return drone.find(By.cssSelector("div#onHideRecordAction.rm-hide-record")).isDisplayed();
-        }
-        catch (NoSuchElementException nse) { }
         return false;
     }
 
@@ -1012,14 +991,14 @@ public class DocumentDetailsPage extends DetailsPage
         catch (NoSuchElementException nse) {}
         return false;
     }
-    
+
     /**
-     * Opens the "Copy this link to share the current page" in the new tab  
-     * 
+     * Opens the "Copy this link to share the current page" in the new tab
+     *
      * @return {@link DocumentDetailsPage}
      */
     public DocumentDetailsPage openCopyThisLinkInNewTab() {
-    	
+
 		try {
 			WebElement copyThisLink = drone.findAndWait(By.cssSelector(COPY_THIS_LINK_TO_SHARE_THE_CURRENT_PAGE));
 			drone.createNewTab();
@@ -1029,9 +1008,9 @@ public class DocumentDetailsPage extends DetailsPage
 			throw new PageException("Unable to find  Copy This Link To Share The Current Page ", exception);
 		}
 
-		return new DocumentDetailsPage(drone);       
+		return new DocumentDetailsPage(drone);
     }
-	
+
     public String getExpectedVersion()
 	{
         return expectedVersion;
@@ -1040,6 +1019,6 @@ public class DocumentDetailsPage extends DetailsPage
 	{
         this.expectedVersion = expectedVersion;
 	}
-    
+
 
 }

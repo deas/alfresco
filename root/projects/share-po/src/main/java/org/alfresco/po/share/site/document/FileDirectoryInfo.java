@@ -6,6 +6,7 @@ import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public interface FileDirectoryInfo
@@ -14,7 +15,7 @@ public interface FileDirectoryInfo
     /**
      * Gets the name of the file or directory, if none then empty string is
      * returned.
-     * 
+     *
      * @return String title
      */
      String getName();
@@ -26,7 +27,7 @@ public interface FileDirectoryInfo
 
     /**
      * Checks if the FileDirectory is of a folder type.
-     * 
+     *
      * @return true if folder
      */
      boolean isTypeFolder();
@@ -34,7 +35,7 @@ public interface FileDirectoryInfo
     /**
      * Gets the description of the file or directory, if none then empty string
      * is returned.
-     * 
+     *
      * @return String Content description
      */
      String getDescription();
@@ -42,7 +43,7 @@ public interface FileDirectoryInfo
     /**
      * Gets the Create / Edit Information of the file or directory, if none then
      * empty string is returned.
-     * 
+     *
      * @return String Content Edit Information
      */
      String getContentEditInfo();
@@ -50,14 +51,14 @@ public interface FileDirectoryInfo
     /**
      * Gets the Tag Information of the file or directory, if none then 'No Tags'
      * string is returned.
-     * 
+     *
      * @return List<String> List of tags added to the content
      */
      List<String> getTags();
 
     /**
-     * Get the {@link List} of added {@link Categories}. 
-     * 
+     * Get the {@link List} of added {@link Categories}.
+     *
      * @return {@link List} of {@link Categories}
      */
      List<Categories> getCategories();
@@ -71,7 +72,7 @@ public interface FileDirectoryInfo
     /**
      * Selects the edit properties link on the select data row on
      * DocumentLibrary Page.
-     * 
+     *
      * @return {@link EditDocumentPropertiesPopup} response
      */
      EditDocumentPropertiesPopup selectEditProperties();
@@ -79,7 +80,7 @@ public interface FileDirectoryInfo
     /**
      * Selects the view in browser link on the select data row on
      * DocumentLibrary Page.
-     * 
+     *
      */
      void selectViewInBrowser();
 
@@ -97,7 +98,7 @@ public interface FileDirectoryInfo
     /**
      * Checks if the Like option is selected on the selected data row on
      * DocumentLibrary Page
-     * 
+     *
      * @return {boolean} true if the content is liked
      */
      boolean isLiked();
@@ -105,28 +106,28 @@ public interface FileDirectoryInfo
     /**
      * Checks if the Favourite option is selected on the selected data row on
      * DocumentLibrary Page
-     * 
+     *
      * @return {Boolean} true if the content is marked as Favourite
      */
      boolean isFavourite();
 
     /**
      * Gets the like count for the selected data row on DocumentLibrary Page
-     * 
+     *
      * @return {String} Like Count
      */
      String getLikeCount();
 
     /**
      * Check if tags are attached to the selected content.
-     * 
+     *
      * @return boolean <tt>true</tt> if content has one or more Tags
      */
      boolean hasTags();
 
     /**
      * Adds the specified Tag to the file or directory.
-     * 
+     *
      * @param tagName String tag to be added
      */
      void addTag(String tagName);
@@ -134,7 +135,7 @@ public interface FileDirectoryInfo
     /**
      * Get NodeRef for the content on the selected data row on DocumentLibrary
      * Page.
-     * 
+     *
      * @return {String} Node Ref / GUID
      */
      String getContentNodeRef();
@@ -142,7 +143,7 @@ public interface FileDirectoryInfo
     /**
      * Gets the Title of the file or directory, if none then empty string
      * is returned.
-     * 
+     *
      * @return String Content description
      */
      String getTitle();
@@ -166,12 +167,12 @@ public interface FileDirectoryInfo
      void clickOnTagRemoveButton(String tagName);
 
     /**
-     * This method is used to click on save button when editing a tag. 
+     * This method is used to click on save button when editing a tag.
      */
      void clickOnTagSaveButton();
 
     /**
-     * This method is used to click on cancel button when editing a tag. 
+     * This method is used to click on cancel button when editing a tag.
      */
      void clickOnTagCancelButton();
 
@@ -188,7 +189,7 @@ public interface FileDirectoryInfo
 
     /**
      * Clicks on the thumbnail next to the contentRow.
-     * 
+     *
      * @return {Link SitePage} Instance of SitePage page object
      */
      SitePage selectThumbnail();
@@ -201,21 +202,21 @@ public interface FileDirectoryInfo
     /**
      * Returns true if content in the selected data row on DocumentLibrary is
      * folder Page.
-     * 
+     *
      * @return {boolean} <tt>true</tt> if the content is of type folder.
      */
      boolean isFolder();
 
     /**
      * Returns whether the file / dir is cloud synced.
-     * 
+     *
      * @return
      */
      boolean isCloudSynced();
 
     /**
      * Returns whether the file / dir is part of workflow.
-     * 
+     *
      * @return
      */
      boolean isPartOfWorkflow();
@@ -238,16 +239,16 @@ public interface FileDirectoryInfo
      String getNodeRef();
 
     /**
-     * Selects the <View Details> link on the select data row on DocumentLibrary Page. 
+     * Selects the <View Details> link on the select data row on DocumentLibrary Page.
      * Only available for content type = Folder.
-     * 
+     *
      * @return {@link DocumentLibraryPage} response
      */
      FolderDetailsPage selectViewFolderDetails();
 
     /**
      * This method clicks on tag Name link.
-     * 
+     *
      * @param tagName
      * @return {@link DocumentLibraryPage}
      */
@@ -263,7 +264,7 @@ public interface FileDirectoryInfo
 
     /**
      * Selects the edit in google docs link
-     * 
+     *
      * @return {@link DestinationAndAssigneePage} response
      */
      HtmlPage selectEditInGoogleDocs();
@@ -356,22 +357,6 @@ public interface FileDirectoryInfo
      boolean isDeletePresent();
 
     /**
-     * Action of selecting the declare records button
-     * that appear in the action drop down, this is only
-     * available in the Records Management Module.
-     */
-     HtmlPage declareRecord();
-
-    /**
-     * Verify if item is a record.
-     * Part of Records management module, when a document
-     * is a record a small banner info is displayed indicating
-     * that it is a record
-     * @return true if record banner is visible
-     */
-     boolean isRecord();
-
-    /**
      * Select the link manage rules from
      * the actions drop down.
      */
@@ -420,14 +405,14 @@ public interface FileDirectoryInfo
 
     /**
      * select Copy to... link from more option of document library.
-     * 
+     *
      * @return CopyOrMoveContentPage
      */
      CopyOrMoveContentPage selectCopyTo();
 
     /**
      * select Move to... link from more option of document library.
-     * 
+     *
      * @return CopyOrMoveContentPage
      */
      CopyOrMoveContentPage selectMoveTo();
@@ -436,14 +421,14 @@ public interface FileDirectoryInfo
 
     /**
      * select StartWorkFlow... link from more option of document library.
-     * 
+     *
      * @return StartWorkFlowPage
      */
      StartWorkFlowPage selectStartWorkFlow();
 
     /**
      * Select UploadNewVersion - link fro more option of document library
-     * 
+     *
      * @return - UpdateFilePage
      */
 
@@ -482,9 +467,17 @@ public interface FileDirectoryInfo
 
     /**
      * Mimics the action of select the manage aspects.
-     * 
+     *
      * @return {@link SelectAspectsPage}
      */
      SelectAspectsPage selectManageAspects();
 
+     /**
+      * Performs the find with an added resolveStaleness.
+      * If we encounter the staleness exception we refresh the web
+      * element we are working with and re-do the search.
+      * @param By css selector
+      * @return {@link WebElement}
+      */
+     WebElement findElement(By cssSelector);
 }

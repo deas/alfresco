@@ -43,7 +43,7 @@ public final class FactoryShareFileDirectoryInfo
 
     /**
      * Gets the FileDirectoryInfo based on the given view type.
-     * 
+     *
      * @param drone
      *            {@link org.alfresco.webdrone.WebDrone}
      * @param viewType
@@ -51,10 +51,8 @@ public final class FactoryShareFileDirectoryInfo
      */
     public static FileDirectoryInfo getPage(final String nodeRef, final WebElement webElement, final WebDrone drone, final ViewType viewType)
     {
-        try
+        switch (viewType)
         {
-            switch (viewType)
-            {
             case SIMPLE_VIEW:
                 return new SimpleViewFileDirectoryInfo(nodeRef, webElement, drone);
             case DETAILED_VIEW:
@@ -67,15 +65,6 @@ public final class FactoryShareFileDirectoryInfo
                 return new TableViewFileDirectoryInfo(nodeRef, webElement, drone);
             default:
                 throw new PageException(String.format("%s does not match any known file directory view name", viewType.name()));
-            }
         }
-        catch (Exception ex)
-        {
-            throw new PageException("Workflow object can not be matched: " + viewType.name(), ex);
-        }
-
     }
-
 }
-
-

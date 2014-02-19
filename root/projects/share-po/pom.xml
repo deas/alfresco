@@ -97,8 +97,8 @@
 
     <!-- Pacakge Application into a standalone  -->
     <build>
-        <sourceDirectory>src/main</sourceDirectory>
-        <testSourceDirectory>src/test</testSourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -171,7 +171,6 @@
             <plugin>
                 <!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop server -->
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
                 <executions>
                     <execution>
                         <id>default-cli</id>

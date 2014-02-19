@@ -40,14 +40,14 @@ import org.openqa.selenium.WebElement;
  */
 public class CreateSitePage extends SharePage
 {
-    private static final By MODERATED_CHECKBOX = By.cssSelector("input[id$='-isModerated']");
-    private static final By PRIVATE_CHECKBOX = By.cssSelector("input[id$='-isPrivate']");
-    private static final By PUBLIC_CHECKBOX = By.cssSelector("input[id$='-isPublic']");
-    private static final By INPUT_DESCRIPTION = By.cssSelector("textarea[id$='-description']");
-    private static final By INPUT_TITLE = By.name("title");
-    private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='ok-button-button']");
-    private static final By CANCEL_BUTTON = By.cssSelector("button[id$='cancel-button-button']");
-    private static final By CREATE_SITE_FORM = By.cssSelector("form[id$='createSite-instance-form']");
+    protected static final By MODERATED_CHECKBOX = By.cssSelector("input[id$='-isModerated']");
+    protected static final By PRIVATE_CHECKBOX = By.cssSelector("input[id$='-isPrivate']");
+    protected static final By PUBLIC_CHECKBOX = By.cssSelector("input[id$='-isPublic']");
+    protected static final By INPUT_DESCRIPTION = By.cssSelector("textarea[id$='-description']");
+    protected static final By INPUT_TITLE = By.name("title");
+    protected static final By SUBMIT_BUTTON = By.cssSelector("button[id$='ok-button-button']");
+    protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='cancel-button-button']");
+    protected static final By CREATE_SITE_FORM = By.cssSelector("form[id$='createSite-instance-form']");
 
     /**
      * Constructor.

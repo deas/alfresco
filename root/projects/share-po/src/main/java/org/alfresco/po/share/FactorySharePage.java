@@ -33,12 +33,12 @@ import org.alfresco.po.share.site.AddGroupsPage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
-import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
-import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.SiteMembersPage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
+import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -84,7 +84,7 @@ public class FactorySharePage implements PageFactory
     public static final String DOCUMENTLIBRARY = "documentlibrary";
     public static final String NODE_REFRESH_META_DATA_IDENTIFIER = "?refreshMetadata"; 
     protected static final String FAILURE_PROMPT = "div[id='prompt']";
-    private static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
+    protected static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
     static 
     {
         pages = new ConcurrentHashMap<String, Class<? extends SharePage>>();

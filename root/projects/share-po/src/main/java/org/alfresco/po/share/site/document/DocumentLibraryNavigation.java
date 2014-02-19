@@ -52,10 +52,10 @@ import org.openqa.selenium.WebElement;
 /**
  * Represent elements found on the HTML page relating to the document library
  * sub navigation bar that appears on the document library site page.
- * 
+ *
  * @author Michael Suzuki
  * @author Shan Nagarajan
- * 
+ *
  * @since 1.0
  */
 public class DocumentLibraryNavigation extends SharePage
@@ -78,9 +78,9 @@ public class DocumentLibraryNavigation extends SharePage
     private static final By MOVE_TO = By.cssSelector(".onActionMoveTo");
     private static final By DESELECT_ALL = By.cssSelector(".onActionDeselectAll");
     private static final By START_WORKFLOW = By.cssSelector(".onActionAssignWorkflow");
-    
+
     private Log logger = LogFactory.getLog(this.getClass());
-    
+
     /**
      * Constructor.
      */
@@ -113,7 +113,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * @return      <tt>true</tt> if the <b>Upload</b> link is available
-     * 
+     *
      * @since 1.5.1
      */
     public boolean hasFileUploadLink()
@@ -131,7 +131,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action of selecting the file upload button.
-     * 
+     *
      * @return HtmlPage response page object
      */
     public HtmlPage selectFileUpload()
@@ -146,7 +146,7 @@ public class DocumentLibraryNavigation extends SharePage
     }
     /**
      * Get file upload page pop up object.
-     * 
+     *
      * @param drone WebDrone browser client
      * @param repositoryBrowsing        <tt>true</tt> if we are doing repository browsing
      * @return SharePage page object response
@@ -186,10 +186,10 @@ public class DocumentLibraryNavigation extends SharePage
         }
         throw new PageException(FILE_UPLOAD_ERROR_MESSAGE);
     }
-    
+
     /**
      * @return      <tt>true</tt> if the <b>New Folder</b> link is available
-     * 
+     *
      * @since 1.5.1
      */
     public boolean hasNewFolderLink()
@@ -234,16 +234,16 @@ public class DocumentLibraryNavigation extends SharePage
         button.click();
         return getNewFolderPage(drone);
     }
-    
+
     /**
      * Mimics the action of selecting Create Plain Text.
-     * 
+     *
      * @return {@link SharePage}
-     * @throws Exception 
+     * @throws Exception
      */
     public  HtmlPage selectCreateContent(ContentType content)
     {
-       
+
         if(alfrescoVersion.isCloud())
         {
         switch (content)
@@ -258,12 +258,12 @@ public class DocumentLibraryNavigation extends SharePage
             default:
                 throw new UnsupportedOperationException("Create Plain Text not Available for Cloud");
         }
-        }    
+        }
        try
         {
            drone.findAndWait(CREATE_CONTENT_BUTTON).click();
            drone.findAndWait(content.getContentLocator()).click();
-            
+
           }
         catch (TimeoutException exception)
         {
@@ -272,11 +272,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
            return content.getContentCreationPage(drone);
     }
-    
-    
+
+
     /**
      * Mimics the action of Selected Items.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage clickSelectedItems()
@@ -297,11 +297,11 @@ public class DocumentLibraryNavigation extends SharePage
             logger.error("Selected Item not available : " + SELECTED_ITEMS.toString());
             throw new PageException("Not able to find the Selected Items Button.", e);
         }
-        
+
     }
-    
+
     /**
-     * 
+     *
      * @return true is Selected Item Menu Visible, else false.
      */
     public boolean isSelectedItemMenuVisible()
@@ -318,7 +318,7 @@ public class DocumentLibraryNavigation extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Mimics the action select download as Zip from selected Item.
      * @return {@link DocumentLibraryPage}
@@ -489,7 +489,7 @@ public class DocumentLibraryNavigation extends SharePage
     }
     /**
      * New folder page pop up object.
-     * 
+     *
      * @param drone WebDrone browser client
      * @param repositoryBrowsing        <tt>true</tt> if we are creating a folder in the Repository browser
      * @return NewFolderPage page object response
@@ -546,7 +546,7 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageOperationException(exceptionMessage, e);
         }
     }
-    
+
     /**
      * Click on delete item of selected items drop down.
      * @return
@@ -576,8 +576,8 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageOperationException(exceptionMessage, e);
         }
     }
-    
-    
+
+
     /**
      * Click on copy to item of selected items drop down.
      * @return
@@ -607,10 +607,10 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageOperationException(exceptionMessage, e);
         }
     }
-    
+
     /**
      * Click on Move to item of selected items drop down.
-     * 
+     *
      * @return
      */
     public CopyOrMoveContentPage selectMoveTo()
@@ -639,7 +639,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Click on DeselectAll item of selected items drop down.
-     * 
+     *
      * @return
      */
     public HtmlPage selectDesellectAll()
@@ -695,11 +695,11 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageOperationException(exceptionMessage, e);
         }
     }
-  
+
 
     /**
      * Select the option drop down, introduced in
-     * Alfresco enterprise 4.2 and clicks on the button in 
+     * Alfresco enterprise 4.2 and clicks on the button in
      * the dropdown.
      * @param By selector location of button in dropdown to select
      */
@@ -714,38 +714,38 @@ public class DocumentLibraryNavigation extends SharePage
                 WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
                 HtmlElement dropdownButton = new HtmlElement(btn, drone);
                 dropdownButton.click();
-                
+
                 WebElement dropdown = drone.findAndWait(By.cssSelector("div[id$='default-options-menu']"));
                 if(dropdown.isDisplayed())
                 {
                     new HtmlElement(drone.find(button), drone).click();
                     break;
-                }            
+                }
             }
             catch (StaleElementReferenceException stale) { }
             finally { timer.end(); }
         }
     }
-    
+
     /**
      * Selects the Detailed View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectDetailedView()
     {
         try
         {
-            switch (alfrescoVersion) 
+            switch (alfrescoVersion)
             {
                 case Enterprise41:
                     drone.findAndWait(By.cssSelector("button[title='Detailed View']")).click();
                     break;
-                    
+
                 case Cloud:
                     drone.findAndWait(By.cssSelector("button[id$='default-detailedView-button']")).click();
                     break;
-                    
+
                 default:
                     selectItemInOptionsDropDown(By.cssSelector("span.view.detailed"));
                     break;
@@ -761,7 +761,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Selects the Detailed View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectFilmView()
@@ -791,17 +791,17 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageException("Exceeded the time to find css.",e);
         }
     }
-    
+
     /**
      * Selects the Detailed View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectSimpleView()
     {
         try
         {
-            switch (alfrescoVersion) 
+            switch (alfrescoVersion)
             {
                 case Enterprise41:
                     drone.findAndWait(By.cssSelector("button[title='Simple View']")).click();
@@ -821,10 +821,10 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageException("Exceeded the time to find css.", e);
         }
     }
-    
+
     /**
      * Mimics the action of selecting the Hide Folders in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectHideFolders()
@@ -845,10 +845,10 @@ public class DocumentLibraryNavigation extends SharePage
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Hide Folder Option");
     }
-    
+
     /**
      * Mimics the action of selecting the Show Folders in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectShowFolders()
@@ -869,7 +869,7 @@ public class DocumentLibraryNavigation extends SharePage
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Show Folder Option");
     }
-    
+
     /**
      * Closes the Option Menu if it is opened.
      */
@@ -882,10 +882,10 @@ public class DocumentLibraryNavigation extends SharePage
             dropdownButton.click();
         }
     }
-    
+
     /**
      * Mimics the action of selecting the Hide Breadcrump in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectHideBreadcrump()
@@ -906,10 +906,10 @@ public class DocumentLibraryNavigation extends SharePage
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Hide Breadcrump Option");
     }
-    
+
     /**
      * Mimics the action of selecting the Show Folders in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectShowBreadcrump()
@@ -930,10 +930,10 @@ public class DocumentLibraryNavigation extends SharePage
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Show Breadcrump Option");
     }
-    
+
     /**
-     * Method to check the visibility of navigation bar. 
-     * 
+     * Method to check the visibility of navigation bar.
+     *
      * @return true if navigation bar visible else false.
      */
     public boolean isNavigationBarVisible()
@@ -947,10 +947,10 @@ public class DocumentLibraryNavigation extends SharePage
             return false;
         }
     }
-    
+
     /**
      * Mimcis the action of click the folder up button in Navigation bar.
-     * 
+     *
      * @return {@link HtmlPage}
      */
     public HtmlPage clickFolderUp()
@@ -973,10 +973,10 @@ public class DocumentLibraryNavigation extends SharePage
            throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
         }
     }
-    
+
     /**
      * Returns the {@link List} for Folders as {@link ShareLink}.
-     * 
+     *
      * @return {@link List} of {@link ShareLink} Folders.
      */
     public List<ShareLink> getFoldersInNavBar()
@@ -999,14 +999,14 @@ public class DocumentLibraryNavigation extends SharePage
         else
         {
            throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
-        } 
+        }
     }
-    
+
     /**
      * Mimics the action selecting the folder in the navigation bar.
-     * 
+     *
      *  @param folderName - Folder Name to be selected in navigation bar.
-     * 
+     *
      * @return {@link HtmlPage}
      */
     public HtmlPage selectFolderInNavBar(String folderName)
@@ -1028,10 +1028,10 @@ public class DocumentLibraryNavigation extends SharePage
            throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
         }
     }
-    
+
     /**
      * Selects the Gallery View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectGalleryView()
@@ -1047,10 +1047,10 @@ public class DocumentLibraryNavigation extends SharePage
             throw new PageException("Exceeded the time to find css.", e);
         }
     }
-    
+
     /**
-     * This method is used to find the view type. 
-     * 
+     * This method is used to find the view type.
+     *
      * @param By selector location of button in dropdown to select
      */
     public ViewType getViewType()
@@ -1058,10 +1058,10 @@ public class DocumentLibraryNavigation extends SharePage
         try
         {
             ViewType type = null;
-            
+
             if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
             {
-                try 
+                try
                 {
                     if(drone.findAndWait(By.cssSelector("span[id$='default-simpleView']")).getAttribute("class").contains("checked"))
                     {
@@ -1074,8 +1074,8 @@ public class DocumentLibraryNavigation extends SharePage
                             type = ViewType.DETAILED_VIEW;
                         }
                     }
-                } 
-                catch (TimeoutException e) 
+                }
+                catch (TimeoutException e)
                 {
                     logger.error("Not able to find the view type " + e.getMessage());
                     throw new PageOperationException("Not able find the view type on this page.", e);
@@ -1083,7 +1083,8 @@ public class DocumentLibraryNavigation extends SharePage
             }
             else
             {
-                String text = (String) drone.executeJavaScript("return document.getElementsByClassName('setDefaultView')[0].innerHTML");
+                // The place holder is not set properly all the time
+                String text = (String) drone.executeJavaScript("return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').options.viewRendererName;");
                 type = ViewType.getViewType(text);
             }
             return type;

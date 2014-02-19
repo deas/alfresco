@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.po.share.AlfrescoVersion;
-import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
@@ -49,7 +48,7 @@ import org.openqa.selenium.WebElement;
  * Entity that models the list of file or directories as it appears on the
  * {@link DocumentLibraryPage}. The list models the HTML element representing
  * the file or directory.
- * 
+ *
  * @author Michael Suzuki
  * @author Shan Nagarajan
  */
@@ -124,7 +123,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             title = findAndWait(By.cssSelector(FILENAME_IDENTIFIER)).getText();
-            
+
         }
         catch (TimeoutException te)
         {
@@ -211,14 +210,14 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException te)
         {
-            if(logger.isDebugEnabled()) 
+            if(logger.isDebugEnabled())
             {
                 logger.debug("Timed out while waiting for Tag Information", te);
             }
         }
         return tagsList;
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getCategories()
      */
@@ -277,7 +276,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         editProperties.click();
         return new EditDocumentPropertiesPopup(getDrone());
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectViewInBrowser()
      */
@@ -288,36 +287,36 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         getDrone().mouseOverOnElement(actions);
         WebElement viewInBrowser = findElement(By.cssSelector("div.document-view-content>a"));
         viewInBrowser.click();
-        
+
         Set<String> winSet = getDrone().getWindowHandles();
         List<String> winList = new ArrayList<String>(winSet);
         String newTab = winList.get(winList.size() - 1);
         //close the original tab
-        getDrone().closeWindow(); 
+        getDrone().closeWindow();
         //switch to new tab
-        getDrone().switchToWindow(newTab); 
+        getDrone().switchToWindow(newTab);
     }
 
     /**
      * Selects the 'Actions' menu link on the select data row on DocumentLibrary
      * Page.
-     * 
+     *
      * @return {@link WebElement} WebElement that allows access to Actions menu for the selected Content
      */
     public WebElement selectContentActions()
     {
         return findElement(By.cssSelector(ACTIONS_MENU));
     }
-    
+
     /**
      * Selects the 'Actions' menu link on the select data row on DocumentLibrary Page.
-     * 
+     *
      * @return List of {@link WebElement} available for the selected Content
      */
     public List<WebElement> getContentActions()
     {
         try
-        { 
+        {
             return selectContentActions().findElements(By.cssSelector(ACTIONS_LIST));
         }
         catch (Exception e)
@@ -370,13 +369,13 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 return liked;
             }
         }
-        catch(NoSuchElementException nse){ }     
+        catch(NoSuchElementException nse){ }
         catch(StaleElementReferenceException stale)
         {
             resolveStaleness();
-            return isLiked(); 
+            return isLiked();
         }
-        return false;  
+        return false;
     }
 
     /* (non-Javadoc)
@@ -398,7 +397,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch(StaleElementReferenceException stale)
         {
             resolveStaleness();
-            return isFavourite(); 
+            return isFavourite();
         }
         return false;
     }
@@ -446,7 +445,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         if(tagName == null || tagName.isEmpty())
         {
             throw new IllegalArgumentException("Tag Name is required");
-        }   
+        }
         try
         {
             clickOnAddTag();
@@ -493,7 +492,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         return "FileDirectoryInfo [getName()=" + getName() + "]";
     }
 
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getTitle()
      */
@@ -510,7 +509,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * This method gets the list of in line tags after clicking on tag info icon.
-     * 
+     *
      * @return List<WebElement> collection of tags
      */
     private List<WebElement> getInlineTagList()
@@ -586,7 +585,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             throw new IllegalArgumentException("tagName is required.");
         }
-        
+
         try
         {
             getRemoveTagButton(tagName).click();
@@ -598,7 +597,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     }
 
     /**
-     * This method finds the remove button on tag element and returns button 
+     * This method finds the remove button on tag element and returns button
      * @param tagName
      * @return WebElement
      */
@@ -657,7 +656,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             throw new PageException("Exceeded time to find the Save button css.", ex);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCheckbox()
      */
@@ -667,7 +666,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         findElement(By.cssSelector(SELECT_CHECKBOX)).click();
         domEventCompleted();
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isCheckboxSelected()
      */
@@ -681,7 +680,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch(NoSuchElementException nse){ }
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectThumbnail()
      */
@@ -697,10 +696,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         return new DocumentLibraryPage(getDrone());
     }
-    
+
     /**
      * Returns the WebElement for Actions in the selected row.
-     * 
+     *
      * @return {Link WebElement} from where the set of Actions available for the
      *         selected content can be accessed
      */
@@ -708,7 +707,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         return findElement(By.xpath(String.format(CONTENT_ACTIONS, nodeRef)));
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectMoreAction()
      */
@@ -720,7 +719,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         WebElement contentActions = selectAction();
         return contentActions.findElement(By.cssSelector(moreActions));
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isFolder()
      */
@@ -776,7 +775,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             return false;
         }
-        
+
     }
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownloadFolderAsZip()
@@ -823,7 +822,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             throw new PageException("Unable to click download folder as a zip", nse);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownload()
      */
@@ -853,47 +852,47 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             return super.findAndWait(By.cssSelector(SELECT_CHECKBOX)).getAttribute("value");
         }
         catch (StaleElementReferenceException e)
-        { 
+        {
             throw new PageException("Unable to obtain nodeRef id required for FileDirectoryInfo", e);
         }
     }
 
     /**
      * Refresh web element mechanism.
-     * As the page changes every id on every action or event 
+     * As the page changes every id on every action or event
      * that takes place on the page, we refresh the web element
-     * we were working with by re-finding it on the page 
+     * we were working with by re-finding it on the page
      * and updating the page object.
      */
-    private void resolveStaleness() 
+    private void resolveStaleness()
     {
         if(nodeRef == null || nodeRef.isEmpty())
         {
             throw new UnsupportedOperationException(String.format("Content noderef is required: %s",nodeRef));
         }
-        
+
         List<WebElement> elements = getDrone().findAll(By.cssSelector(String.format("input[value='%s']",nodeRef)));
         if(elements == null || elements.isEmpty())
         {
             throw new UnsupportedOperationException("there are no elements matching the node ref : " + nodeRef);
         }
-        
+
         for(WebElement element : elements)
         {
             if(element.getText() != null && element.getAttribute("value").equalsIgnoreCase(nodeRef))
             {
                 WebElement row = element.findElement(By.xpath("../../.."));
-                
+
                 if(row.getAttribute("class").contains("alf-gallery-item-thumbnail"))
                 {
                     row = element.findElement(By.xpath("../../../.."));
                 }
-                
+
                 setWebElement(row);
             }
         }
     }
-    
+
     /**
      * Performs the find and wait given amount of time
      * with an added resolveStaleness.
@@ -915,15 +914,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             return findAndWait(cssSelector);
         }
     }
-    
-    /**
-     * Performs the find with an added resolveStaleness.
-     * If we encounter the staleness exception we refresh the web
-     * element we are working with and re-do the search.
-     * @param By css selector
-     * @return {@link WebElement}
-     */
 
+    /*
+     * @see org.alfresco.webdrone.HtmlElement#findElement(org.openqa.selenium.By)
+     */
     @Override
     public WebElement findElement(By cssSelector)
     {
@@ -946,7 +940,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
      */
 
     @Override
-    public List<WebElement> findAllWithWait(By cssSelector) 
+    public List<WebElement> findAllWithWait(By cssSelector)
     {
         try
         {
@@ -958,7 +952,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             return findAllWithWait(cssSelector);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectViewFolderDetails()
      */
@@ -972,7 +966,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         return new FolderDetailsPage(getDrone());
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagNameLink(java.lang.String)
      */
@@ -1122,7 +1116,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUnSyncAndRemoveContentFromCloud(boolean)
      */
@@ -1147,7 +1141,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         return new DocumentLibraryPage(getDrone());
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUnSyncFromCloud()
      */
@@ -1158,9 +1152,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         getDrone().mouseOverOnElement(actions);
         selectMoreAction().click();
         WebElement unSyncToCloud = findAndWait(By.cssSelector("div#onActionCloudUnsync>a[title='Unsync from Cloud']"));
-        unSyncToCloud.click();        
+        unSyncToCloud.click();
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isViewCloudSyncInfoLinkPresent()
      */
@@ -1173,10 +1167,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             return viewCloudSync.isDisplayed();
         }
         catch(TimeoutException e) { }
-        
+
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnViewCloudSyncInfo()
      */
@@ -1188,7 +1182,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             findAndWait(SYNC_INFO_PAGE).click();
             return new SyncInfoPage(getDrone());
         }
-        catch(TimeoutException e) 
+        catch(TimeoutException e)
         {
             logger.error("Exceeded the time to find css." + e.getMessage());
         }
@@ -1206,7 +1200,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         inLineEdit.click();
         return new InlineEditPage(drone);
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getCloudSyncType()
      */
@@ -1215,16 +1209,16 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            return findAndWait(SYNC_INFO_PAGE).getAttribute("title");           
+            return findAndWait(SYNC_INFO_PAGE).getAttribute("title");
         }
-        catch(TimeoutException e) 
+        catch(TimeoutException e)
         {
             logger.error("Exceeded the time to find css." + e.getMessage());
         }
         throw new PageException("Not able to click on view cloud sync info link.");
     }
-    
-  
+
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getContentInfo()
      */
@@ -1235,7 +1229,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             return findAndWait(INFO_BANNER).getText();
         }
-        catch(TimeoutException e) 
+        catch(TimeoutException e)
         {
             logger.error("Exceeded the time to find Info banner.");
         }
@@ -1308,7 +1302,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         return false;
     }
-   
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditInGoogleDocsPresent()
      */
@@ -1326,7 +1320,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isDeletePresent()
      */
@@ -1341,43 +1335,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException e) {}
         catch (TimeoutException e) {}
-        
+
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#declareRecord()
-     */
-    @Override
-    public HtmlPage declareRecord()
-    {
-        selectMoreAction().click();
-        try
-        {
-            drone.find(By.cssSelector("div#onActionSimpleRepoAction.rm-create-record a")).click();
-        }
-        catch (NoSuchElementException nse)
-        {
-            throw new PageOperationException("Unable to find declare record button from the drop down", nse);
-        }
-        canResume();
-        return FactorySharePage.resolvePage(drone);
-    }
-
-    /* (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isRecord()
-     */
-    @Override
-    public boolean isRecord()
-    {
-        try
-        {
-            return this.find(By.cssSelector("div.info-banner")).isDisplayed();
-        }
-        catch (NoSuchElementException e) { }
-        return false;
-    }
-    
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManageRules()
      */
@@ -1390,7 +1351,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         btn.click();
         return drone.getCurrentPage();
     }
-        
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isUnSyncFromCloudLinkPresent()
      */
@@ -1456,7 +1417,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         throw  new PageException("Unable to select Request Sync option");
     }
 
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isRequestToSyncLinkPresent()
      */
@@ -1501,7 +1462,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         return false;
     }
-        
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManagePermission()
      */
@@ -1511,7 +1472,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             selectMoreAction().click();
-            WebElement managePermissionLink = findAndWait(By.cssSelector(LINK_MANAGE_PERMISSION));         
+            WebElement managePermissionLink = findAndWait(By.cssSelector(LINK_MANAGE_PERMISSION));
             managePermissionLink.click();
             return new ManagePermissionsPage(drone);
         }
@@ -1525,7 +1486,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         throw new PageOperationException("Manage permission link is not displayed for selected data row");
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCopyTo()
      */
@@ -1534,7 +1495,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
     	return selectCopyOrMoveTo("Copy to...");
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectMoveTo()
      */
@@ -1543,7 +1504,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
     	return selectCopyOrMoveTo("Move to...");
     }
-    
+
     private CopyOrMoveContentPage selectCopyOrMoveTo(String linkText)
     {
         try
@@ -1589,7 +1550,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             logger.trace("deleting");
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectStartWorkFlow()
      */
@@ -1615,11 +1576,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         throw new PageException("Unable to find assign workflow.");
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUploadNewVersion()
      */
-    
+
     @Override
     public UpdateFilePage selectUploadNewVersion()
     {
@@ -1628,7 +1589,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             selectMoreAction().click();
             WebElement uploadNewVersionLink = findElement(By.cssSelector("div[class$='document-upload-new-version'] a"));
             uploadNewVersionLink.click();
-        }   
+        }
         catch (NoSuchElementException e) { }
         catch (StaleElementReferenceException st)
         {
@@ -1637,7 +1598,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         //TODO add version
         return new UpdateFilePage(drone, "");
-    }    
+    }
 
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isManagePermissionLinkPresent()
@@ -1649,9 +1610,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             selectMoreAction().click();
             return drone.find(By.cssSelector(LINK_MANAGE_PERMISSION)).isDisplayed();
-            
+
         }
-        catch (NoSuchElementException nse) 
+        catch (NoSuchElementException nse)
         {
            if (logger.isTraceEnabled())
             {
@@ -1660,8 +1621,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         return false;
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditPropertiesLinkPresent()
      */
@@ -1674,19 +1635,19 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             resolveStaleness();
             return findAndWait(By.cssSelector("div.document-edit-properties a.action-link")).isDisplayed();
         }
-        catch (NoSuchElementException nse) 
+        catch (NoSuchElementException nse)
         {
            if (logger.isTraceEnabled())
             {
                 logger.trace("Edit properties link is not displayed for selected data row");
             }
         }
-        catch (TimeoutException e) 
+        catch (TimeoutException e)
         {
 		}
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditOffline()
      */
@@ -1768,7 +1729,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             selectMoreAction().click();
             WebElement manageAspectLink = findElement(By.cssSelector("div[class$='document-manage-aspects'] a"));
             manageAspectLink.click();
-        }   
+        }
         catch (NoSuchElementException e) { }
         catch (StaleElementReferenceException st)
         {
