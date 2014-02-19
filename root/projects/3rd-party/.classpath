@@ -248,7 +248,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-engine-5.13-alf-20140107.jar" sourcepath="src/activiti-engine-5.13-alf-20140107-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/activiti/activiti-spring-5.13-alf-20140107.jar" sourcepath="src/activiti-spring-5.13-alf-20140107-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/woodstox-core-asl-4.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.10.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="lib/stax2-api-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/devenv/xmlunit-1.4.jar"/>
@@ -272,5 +271,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.47.1/gdata-media-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gdata-1.47.1/gdata-youtube-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava-11.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/alfresco-xmlfactory-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.10.0-alfresco-patched.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
