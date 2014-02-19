@@ -898,7 +898,7 @@
             // path (if the filter is anything else such as tags then there won't be a specific
             // location to upload to!)...
             me._removeDragAndDrop();
-            if (me.currentFilter.filterId === "path")
+            if (me.currentFilter.filterId === "path" || me.currentFilter.filterId === "favourites")
             {
                me._addDragAndDrop();
             }

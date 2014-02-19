@@ -3960,7 +3960,7 @@
             // path (if the filter is anything else such as tags then there won't be a specific
             // location to upload to!)...
             this._removeDragAndDrop();
-            if (obj.filterId === "path")
+            if (obj.filterId === "path" || obj.filterId === "favourites")
             {
                this._addDragAndDrop();
             }
@@ -4466,9 +4466,6 @@
                page: successPage
             };
 
-         delete successFilter.doclistFirstTimeNav;
-         YAHOO.Bubbling.fire("filterChanged", successFilter);
-
          // Clear the current document list if the data webscript is taking too long
          var fnShowLoadingMessage = function DL_fnShowLoadingMessage()
          {
@@ -4568,6 +4565,9 @@
                pathChanged = (this.currentPath != successFilter.filterData);
                this.currentPath = successFilter.filterData;
             }
+
+            delete successFilter.doclistFirstTimeNav;
+            YAHOO.Bubbling.fire("filterChanged", successFilter);
 
             // Ensure that the correct view is selected for the current folder/user preference...
             this._updateDefaultViewOptions(pathChanged);
