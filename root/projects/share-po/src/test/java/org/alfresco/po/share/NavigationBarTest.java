@@ -125,13 +125,12 @@ public class NavigationBarTest extends AbstractTest
     @Test(dependsOnMethods= "navigateDashBoard",groups = "Enterprise-only")
     public void navigateToRepository() throws Exception
     {
-    	AlfrescoVersion version = drone.getProperties().getVersion();
+        AlfrescoVersion version = drone.getProperties().getVersion();
         if(version.isCloud())
         {
             throw new SkipException("This feature is not supported in cloud so skip it");
         }
-        page.getNav().selectRepository();
-        RepositoryPage repoPage =  drone.getCurrentPage().render();
+        RepositoryPage repoPage = page.getNav().selectRepository().render();
         Assert.assertTrue(repoPage.isBrowserTitle("Repository"));
     }
     
@@ -176,7 +175,6 @@ public class NavigationBarTest extends AbstractTest
     {
         page = drone.getCurrentPage().render();
         String strInvitedUser = username.substring(username.lastIndexOf("@") + 1, username.length());
-    //    Assert.assertNotNull(page.getNav().selectNetworkDropdown());
         Assert.assertNotNull(page.getNav().selectNetwork(strInvitedUser).render());
     }
 

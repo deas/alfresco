@@ -53,6 +53,7 @@ import org.openqa.selenium.WebElement;
  */
 public class DocumentLibraryPage extends SitePage
 {
+    protected static final String JS_DOCUMENT_VIEW_TYPE = "return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').options.viewRendererName;";
     private static final String JS_SCRIPT_CHECK_DOCLIST = "return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').widgets.dataTable._getViewRecords();";
     private static Log logger = LogFactory.getLog(DocumentLibraryPage.class);
     //private static final String SITE_FILE_UPLOAD_BUTTON = "site.document.library.nav.upload.id";

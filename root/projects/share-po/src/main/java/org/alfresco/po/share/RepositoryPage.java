@@ -70,8 +70,8 @@ public class RepositoryPage extends DocumentLibraryPage
         super.render(timer);
         if(!AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
         {
-        	String text = (String) drone.executeJavaScript("return document.getElementsByClassName('setDefaultView')[0].innerHTML");
-        	setViewType(ViewType.getViewType(text));
+            String text = (String) drone.executeJavaScript(JS_DOCUMENT_VIEW_TYPE);
+            setViewType(ViewType.getViewType(text));
         }
         return this;
     }
@@ -99,11 +99,4 @@ public class RepositoryPage extends DocumentLibraryPage
     {
         return isBrowserTitle("Repository Browser");
     }
-
-    /**
-     * Selects the title of the folder link.
-     * 
-     * @param title folder title
-     * @return page response object (same type as this)
-     */
 }
