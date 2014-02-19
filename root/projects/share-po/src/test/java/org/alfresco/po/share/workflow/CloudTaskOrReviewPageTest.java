@@ -1,18 +1,34 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.po.share.workflow;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.alfresco.po.share.AbstractTest;
-import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.MyTasksPage;
-import org.alfresco.po.share.ShareErrorPopup;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -20,8 +36,8 @@ import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.MyProfilePage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.HtmlPage;
 import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
@@ -40,22 +56,25 @@ import org.testng.annotations.Test;
 public class CloudTaskOrReviewPageTest extends AbstractTest
 {
     private String siteName;
+    private String cloudSite;
     private File file;
     DocumentLibraryPage documentLibraryPage;
     protected long maxPageLoadingTime = 20000;
     private StartWorkFlowPage startWorkFlowPage;
     private CloudTaskOrReviewPage cloudTaskOrReviewPage;
+    private int requiredApprovalPercentage;
 
     /**
      * Pre test to create a site and document content with properties set and navigate to StartWorkFlow  page.
      *
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "CloudTaskOrReviewPage" + System.currentTimeMillis();
+        requiredApprovalPercentage = 100;
+        cloudSite = "Auto Account's Home";
         file = SiteUtil.prepareFile();
         loginAs(username, password);
         MyProfilePage myProfilePage = ((SharePage) drone.getCurrentPage()).getNav().selectMyProfile().render();
@@ -77,7 +96,7 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
         cloudTaskOrReviewPage = ((CloudTaskOrReviewPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.CLOUD_TASK_OR_REVIEW)).render();
     }
 
-    @AfterClass(alwaysRun = true)
+    @AfterClass
     public void teardown() throws Exception
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -93,11 +112,12 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
     {
         cloudTaskOrReviewPage.selectTask(TaskType.CLOUD_REVIEW_TASK);
         assertTrue(cloudTaskOrReviewPage.isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK));
+        assertFalse(cloudTaskOrReviewPage.isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK));
         // assertFalse(isButtonSubmitted());
         WorkFlowFormDetails formDetails = createWorkflowForm();
         // Fill form Detail
         DocumentDetailsPage documentDetailsPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render(maxPageLoadingTime);
-        Assert.assertTrue(documentDetailsPage.isDocumentDetailsPage());
+        assertTrue(documentDetailsPage.isDocumentDetailsPage());
     }
 
     /**
@@ -108,13 +128,13 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
     @Test(dependsOnMethods = "completeCloudTaskOrReviewPage")
     public void checkExceptionForNullDocs() throws Exception
     {
-        MyTasksPage myTasksPage = ((DashBoardPage) drone.getCurrentPage()).getNav().selectMyTasks().render();
+        MyTasksPage myTasksPage = ((SharePage) drone.getCurrentPage()).getNav().selectMyTasks().render();
         StartWorkFlowPage startWorkFlowPage = myTasksPage.selectStartWorkflowButton().render();
         cloudTaskOrReviewPage = ((CloudTaskOrReviewPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.CLOUD_TASK_OR_REVIEW)).render();
 
         WorkFlowFormDetails formDetails = createWorkflowForm();
-        ShareErrorPopup returnedPage = (ShareErrorPopup) cloudTaskOrReviewPage.startWorkflow(formDetails).render(maxPageLoadingTime);
-        Assert.assertTrue("Error should be displayed", returnedPage.isShareErrorDisplayed());
+        SharePopup returnedPage = (SharePopup) cloudTaskOrReviewPage.startWorkflow(formDetails).render(maxPageLoadingTime);
+        assertTrue(returnedPage.isShareMessageDisplayed(), "Error should be displayed");
     }
 
     @Test
@@ -122,7 +142,7 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
     {
         cloudTaskOrReviewPage.render();
         SharePage returnedPage = cloudTaskOrReviewPage.selectViewMoreActionsBtn(file.getName()).render();
-        assertTrue("A document details page should be returned.", returnedPage instanceof DocumentDetailsPage);
+        assertTrue(returnedPage instanceof DocumentDetailsPage, "A document details page should be returned.");
         startWorkFlowPage = ((DocumentDetailsPage) returnedPage).selectStartWorkFlowPage().render();
         cloudTaskOrReviewPage = ((CloudTaskOrReviewPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.CLOUD_TASK_OR_REVIEW)).render();
     }
@@ -135,7 +155,7 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
     private WorkFlowFormDetails createWorkflowForm()
     {
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
-        formDetails.setSiteName("test");
+        formDetails.setSiteName(cloudSite);
         List<String> reviewers = new ArrayList<String>();
         reviewers.add(cloudUserName);
         formDetails.setReviewers(reviewers);
@@ -145,6 +165,7 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
         formDetails.setContentStrategy(KeepContentStrategy.DELETECONTENT);
         formDetails.setTaskPriority(Priority.HIGH);
         formDetails.setTaskType(TaskType.CLOUD_REVIEW_TASK);
+        formDetails.setApprovalPercentage(requiredApprovalPercentage);
         return formDetails;
     }
     

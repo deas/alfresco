@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
  * @author Meenal Bhave
  * @since 1.7.0
  */
-public class ShareErrorPopup extends SharePage
+public class SharePopup extends SharePage
 {      
     private static final String FAILURE_PROMPT = "div[id='prompt']";
     private static final String DEFAULT_BUTTON = "span.yui-button";
@@ -43,14 +43,14 @@ public class ShareErrorPopup extends SharePage
      * 
      * @param drone WebDriver to access page
      */
-    public ShareErrorPopup(WebDrone drone)
+    public SharePopup(WebDrone drone)
     {
         super(drone);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public ShareErrorPopup render(RenderTime timer)
+    public SharePopup render(RenderTime timer)
     {
         while(true)
         {
@@ -59,7 +59,7 @@ public class ShareErrorPopup extends SharePage
             {
                 try{ this.wait(100L); } catch (InterruptedException e) {}
             }
-        	if(isShareErrorDisplayed())
+        	if(isShareMessageDisplayed())
         	{
         		break;
         	}
@@ -71,14 +71,14 @@ public class ShareErrorPopup extends SharePage
 
     @SuppressWarnings("unchecked")
     @Override
-    public ShareErrorPopup render()
+    public SharePopup render()
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public ShareErrorPopup render(final long time)
+    public SharePopup render(final long time)
     {
         return render(new RenderTime(time));
     }         
@@ -89,13 +89,13 @@ public class ShareErrorPopup extends SharePage
      * @return SharePage
      * @throws ShareException with the Error message
      */
-    public HtmlPage handleErrorMessage() throws ShareException
+    public HtmlPage handleMessage() throws ShareException
     {
-        if (isShareErrorDisplayed())
+        if (isShareMessageDisplayed())
         {
-            String errorMessage = getShareErrorMessage();
-            clickOKOnError().render();            
-            throw new ShareException(errorMessage);
+            String message = getShareMessage();
+            clickOK().render();            
+            throw new ShareException(message);
         }
 
         return FactorySharePage.resolvePage(drone);
@@ -105,7 +105,7 @@ public class ShareErrorPopup extends SharePage
      * Helper method to click on the OK button to return to the original page
      * 
      */
-    private HtmlPage clickOKOnError()
+    public HtmlPage clickOK()
     {
         WebElement popupMessage = getErrorPromptElement();
         popupMessage.findElement(By.cssSelector(DEFAULT_BUTTON)).click();
@@ -116,7 +116,7 @@ public class ShareErrorPopup extends SharePage
      * Helper method to get the error message in the Share Error Popup
      * @return String Share Error Message displayed in the popup
      */
-    public String getShareErrorMessage()
+    public String getShareMessage()
     {
         try
         {
@@ -133,12 +133,12 @@ public class ShareErrorPopup extends SharePage
      * Helper method to return true if Share Error popup is displayed 
      * @return boolean <tt>true</tt> is Share Error popup is displayed
      */
-    public boolean isShareErrorDisplayed()
+    public boolean isShareMessageDisplayed()
     {
         try
         {
-            WebElement errorMessage = getErrorPromptElement();
-            if (errorMessage != null && errorMessage.isDisplayed())
+            WebElement message = getErrorPromptElement();
+            if (message != null && message.isDisplayed())
             {
                 return true;
             }

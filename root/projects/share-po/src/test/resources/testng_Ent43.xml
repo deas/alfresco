@@ -9,18 +9,13 @@
             <include name="Enterprise-only" />
             <!-- <include name="Repository" /> -->
             <exclude name="Cloud-only" />
-            <exclude name="Bug42" />
+            <exclude name=".*Bug42" />
             <exclude name=".*Bug" />
             <exclude name="chromeOnly" />
             <exclude name="Hybrid" />
             <exclude name="download" />
         </run>
     </groups>
-    <test name="Share">
-        <packages>
-            <package name="org.alfresco.po.share" />
-        </packages>
-    </test>
     <test name="Dashlets">
         <packages>
             <package name="org.alfresco.po.share.dashlet" />
@@ -59,6 +54,11 @@
     <test name="Document">
         <packages>
             <package name="org.alfresco.po.share.site.document" />
+        </packages>
+    </test>
+    <test name="Share">
+        <packages>
+            <package name="org.alfresco.po.share" />
         </packages>
     </test>
 </suite>

@@ -24,14 +24,14 @@ import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.task.EditTaskPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -53,18 +53,15 @@ public class AssignmentPageTest extends AbstractTest
     CloudTaskOrReviewPage cloudTaskOrReviewPage;
     AssignmentPage assignmentPage;
     WorkFlowDetailsPage workFlowDetailsPage;
-    MyTasksPage myTasksPage;
-    EditTaskPage editTaskPage;
-
     String workFlow1;
     String workFlow2;
     String dueDate;
+    DateTime due;
     String workFlowComment;
-
+    int requiredApprovalPercentage;
     String cloudNetwork;
     String cloudUserSite;
     String cloudFolder;
-
     private static String siteName;
     private File wfTestFile;
 
@@ -73,23 +70,24 @@ public class AssignmentPageTest extends AbstractTest
      *
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups = "Hybrid")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashBoardPage = loginAs(username, password);
 
         workFlow1 = "MyWF-" + System.currentTimeMillis() + "-1";
         workFlow2 = "MyWF-" + System.currentTimeMillis() + "-2";
         dueDate = "17/09/2015";
+        due = DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate);
         workFlowComment = System.currentTimeMillis() + "-Comment";
+        requiredApprovalPercentage = 50;
 
         cloudNetwork = cloudUserName.split("@")[1];
         cloudUserSite = "Auto Account's Home";
         cloudFolder = "Documents";
 
         siteName = "site" + System.currentTimeMillis();
-        wfTestFile = SiteUtil.prepareFile("WorkFlowTestFile");
+        wfTestFile = SiteUtil.prepareFile("WF-F");
         SiteUtil.createSite(drone, siteName, "description", "Public");
 
         SiteDashboardPage siteDashboardPage = drone.getCurrentPage().render();
@@ -100,7 +98,7 @@ public class AssignmentPageTest extends AbstractTest
         signInToCloud(drone, cloudUserName, cloudUserPassword);
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterClass(groups = "Hybrid")
     public void tearDown()
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -132,7 +130,7 @@ public class AssignmentPageTest extends AbstractTest
         cloudTaskOrReviewPage.enterMessageText(workFlow1);
         cloudTaskOrReviewPage.enterDueDateText(dueDate);
         cloudTaskOrReviewPage.selectTask(TaskType.CLOUD_REVIEW_TASK);
-        cloudTaskOrReviewPage.enterRequiredApprovalPercentage("100");
+        cloudTaskOrReviewPage.enterRequiredApprovalPercentage(requiredApprovalPercentage);
     }
 
     @Test(groups = "Hybrid", dependsOnMethods = "enterRequiredApprovalPercentage")
@@ -148,7 +146,7 @@ public class AssignmentPageTest extends AbstractTest
 
         Assert.assertEquals(cloudTaskOrReviewPage.getDestinationNetwork(), cloudNetwork);
         Assert.assertEquals(cloudTaskOrReviewPage.getDestinationSite(), cloudUserSite);
-        Assert.assertEquals(cloudTaskOrReviewPage.getDestinationFolder(), cloudFolder+"/");
+        Assert.assertEquals(cloudTaskOrReviewPage.getDestinationFolder(), cloudFolder + "/");
     }
 
     @Test(groups = "Hybrid", dependsOnMethods = "verifyDestinationDetails")
@@ -168,7 +166,7 @@ public class AssignmentPageTest extends AbstractTest
         List<String> userNames = new ArrayList<String>();
         userNames.add(cloudUserName);
 
-        assignmentPage.selectAssignment(userNames);
+        assignmentPage.selectReviewers(userNames);
     }
 
     @Test(groups = "Hybrid", dependsOnMethods = "isUserFound")
@@ -182,8 +180,7 @@ public class AssignmentPageTest extends AbstractTest
     public void selectStartWorkflow()
     {
         cloudTaskOrReviewPage.render();
-        cloudTaskOrReviewPage.selectStartWorkflow();
-        myWorkFlowsPage.render();
+        myWorkFlowsPage = cloudTaskOrReviewPage.selectStartWorkflow().render();
     }
 
     @Test(groups = "Hybrid", dependsOnMethods = "selectStartWorkflow")
@@ -193,5 +190,78 @@ public class AssignmentPageTest extends AbstractTest
         Assert.assertTrue(workFlowDetailsPage.getAssignee().contains(cloudUserName));
     }
 
+    @Test(groups = "Hybrid", dependsOnMethods = "getAssignee")
+    public void getWorkFlowDetailsGeneralInfo()
+    {
+        WorkFlowDetailsGeneralInfo generalInfo = workFlowDetailsPage.getWorkFlowDetailsGeneralInfo();
+        Assert.assertEquals(generalInfo.getTitle(), WorkFlowTitle.CLOUD_TASK_OR_REVIEW);
+        Assert.assertEquals(generalInfo.getDescription(), WorkFlowDescription.CREATE_A_TASK_OR_START_A_REVIEW);
+        Assert.assertEquals(generalInfo.getStartedBy(), "Administrator");
+        Assert.assertEquals(generalInfo.getDueDate().toLocalDate(), due.toLocalDate());
+        Assert.assertEquals(generalInfo.getCompleted(), "<in progress>");
+        Assert.assertEquals(generalInfo.getStartDate().toLocalDate(), new DateTime().toLocalDate());
+        Assert.assertEquals(generalInfo.getPriority(), Priority.MEDIUM);
+        Assert.assertEquals(generalInfo.getStatus(), WorkFlowStatus.WORKFLOW_IN_PROGRESS);
+        Assert.assertEquals(generalInfo.getMessage(), workFlow1);
+    }
+
+    @Test(groups = "Hybrid", dependsOnMethods = "getWorkFlowDetailsGeneralInfo")
+    public void getWorkFlowDetailsMoreInfo()
+    {
+        WorkFlowDetailsMoreInfo moreInfo = workFlowDetailsPage.getWorkFlowDetailsMoreInfo();
+
+        Assert.assertEquals(moreInfo.getType(), TaskType.CLOUD_REVIEW_TASK);
+        Assert.assertEquals(moreInfo.getDestination(), cloudNetwork);
+        Assert.assertEquals(moreInfo.getAfterCompletion(), KeepContentStrategy.getKeepContentStrategy("Keep content on cloud and remove sync"));
+        Assert.assertFalse(moreInfo.isLockOnPremise());
+        Assert.assertEquals(moreInfo.getAssignmentList().size(), 1);
+        Assert.assertEquals(moreInfo.getAssignmentList().get(0), "Auto Account (user1@premiernet.test)");
+    }
+
+    @Test(groups = "Hybrid", dependsOnMethods = "getWorkFlowDetailsMoreInfo")
+    public void getWorkFlowItems()
+    {
+        List<WorkFlowDetailsItem> items = workFlowDetailsPage.getWorkFlowItems();
+        Assert.assertEquals(items.size(), 1);
+        Assert.assertEquals(items.get(0).getItemName(), wfTestFile.getName());
+        Assert.assertEquals(items.get(0).getDescription(), "(None)");
+        Assert.assertEquals(items.get(0).getDateModified().toLocalDate(), new DateTime().toLocalDate());
+    }
+
+    @Test(groups = "Hybrid", dependsOnMethods = "getWorkFlowItems")
+    public void getWorkFlowItem()
+    {
+        List<WorkFlowDetailsItem> item = workFlowDetailsPage.getWorkFlowItem(wfTestFile.getName());
+        Assert.assertEquals(item.size(), 1);
+        Assert.assertEquals(item.get(0).getItemName(), wfTestFile.getName());
+        Assert.assertEquals(item.get(0).getDescription(), "(None)");
+        Assert.assertEquals(item.get(0).getDateModified().toLocalDate(), new DateTime().toLocalDate());
+    }
+
+    @Test(groups = "Hybrid", dependsOnMethods = "getWorkFlowItem")
+    public void isNoTasksMessageDisplayed()
+    {
+        Assert.assertTrue(workFlowDetailsPage.isNoTasksMessageDisplayed());
+    }
+
+    @Test(groups = "Hybrid", dependsOnMethods = "isNoTasksMessageDisplayed")
+    public void getCurrentTasksList()
+    {
+        List<WorkFlowDetailsCurrentTask> currentTasks = workFlowDetailsPage.getCurrentTasksList();
+        Assert.assertEquals(currentTasks.size(), 0);
+    }
+
+    @Test(groups = "Hybrid", dependsOnMethods = "getCurrentTasksList")
+    public void getWorkFlowHistoryList()
+    {
+        List<WorkFlowDetailsHistory> historyList = workFlowDetailsPage.getWorkFlowHistoryList();
+
+        Assert.assertEquals(historyList.size(), 1);
+        Assert.assertEquals(historyList.get(0).getType(), WorkFlowHistoryType.START_TASK_OR_REVIEW_ON_CLOUD);
+        Assert.assertEquals(historyList.get(0).getCompletedBy(), "admin");
+        Assert.assertEquals(historyList.get(0).getCompletedDate().toLocalDate(), new DateTime().toLocalDate());
+        Assert.assertEquals(historyList.get(0).getOutcome(), WorkFlowHistoryOutCome.TASK_DONE);
+        Assert.assertEquals(historyList.get(0).getComment(), "");
+    }
     // Workflow1 is created and currently the user is on WorkFlowDetailsPage
 }

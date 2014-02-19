@@ -10,14 +10,13 @@ package org.alfresco.po.share.site.document;
 import java.io.File;
 
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.MyProfilePage;
+import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
-import org.alfresco.po.share.util.FailedTestListener;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -47,9 +46,8 @@ public class DocumentDetailsPageCloudSyncTest extends AbstractDocumentTest
      *
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName1 = "Site-1" + System.currentTimeMillis();
         file1 = SiteUtil.prepareFile("File-1"+System.currentTimeMillis());
@@ -79,7 +77,7 @@ public class DocumentDetailsPageCloudSyncTest extends AbstractDocumentTest
         cloudSyncPage.disconnectCloudAccount();
         // Delete site
         SiteUtil.deleteSite(drone, siteName1);
-        ShareUtil.logout(drone);
+        logout(drone);
     }
 
     @Test

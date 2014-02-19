@@ -74,6 +74,18 @@ public final class FactoryShareDashlet
             {
                 return new SiteWelcomeDashlet(drone);
             }
+            if ("site-notice".equalsIgnoreCase(name))
+            {
+                return new SiteNoticeDashlet(drone);
+            }
+            if ("site-search".equalsIgnoreCase(name))
+            {
+                return new SiteSearchDashlet(drone);
+            }
+            if ("saved-search".equalsIgnoreCase(name))
+            {
+                return new SavedSearchDashlet(drone);
+            }
 
             throw new PageException(String.format("%s does not match any known dashlet name", name));
         }

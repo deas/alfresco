@@ -18,13 +18,18 @@
  */
 package org.alfresco.po.share.workflow;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.ElementState;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -51,14 +56,14 @@ public class MyWorkFlowsPage extends SharePage
 
     private static final By START_WORKFLOW_BUTTON = By.cssSelector("button[id$='-startWorkflow-button-button']");
     private static final By WORKFLOW_ROWS = By.cssSelector("tr.yui-dt-rec");
-    private final By ACTIVE_LINK = By.cssSelector("a[rel='active']");
-    private final By COMPLETED_LINK = By.cssSelector("a[rel='completed']");
+    private static final By ACTIVE_LINK = By.cssSelector("a[rel='active']");
+    private static final By COMPLETED_LINK = By.cssSelector("a[rel='completed']");
 
-    private final By SUB_TITLE = By.cssSelector("h2[id$='_default-filterTitle']");
+    private static final By SUB_TITLE = By.cssSelector("h2[id$='_default-filterTitle']");
 
-    RenderElement LOADING_ELEMENT = new RenderElement(By.cssSelector(".yui-dt-loading"), ElementState.INVISIBLE);
-    RenderElement START_WORKFLOW_BUTTON_RENDER = RenderElement.getVisibleRenderElement(START_WORKFLOW_BUTTON);
-    RenderElement CONTENT = new RenderElement(By.cssSelector("div.yui-dt-liner"), ElementState.PRESENT);
+    private RenderElement loadingElement = new RenderElement(By.cssSelector(".yui-dt-loading"), ElementState.INVISIBLE);
+    private RenderElement startWorkFlowButtonRender = RenderElement.getVisibleRenderElement(START_WORKFLOW_BUTTON);
+    private RenderElement content = new RenderElement(By.cssSelector("div.yui-dt-liner"), ElementState.PRESENT);
     /**
      * Constructor.
      *
@@ -74,7 +79,7 @@ public class MyWorkFlowsPage extends SharePage
     @Override
     public MyWorkFlowsPage render(RenderTime timer)
     {
-        elementRender(timer, START_WORKFLOW_BUTTON_RENDER, LOADING_ELEMENT, CONTENT);
+        elementRender(timer, startWorkFlowButtonRender, loadingElement, content);
         return this;
     }
 
@@ -105,14 +110,14 @@ public class MyWorkFlowsPage extends SharePage
     /**
      * Clicks on Start workflow button.
      *
-     * @return {@link org.alfresco.po.share.workflow.StartWorkFlowPage}
+     * @return {@link org.alfresco.webdrone.share.workflow.StartWorkFlowPage}
      */
-    public StartWorkFlowPage selectStartWorkflowButton()
+    public HtmlPage selectStartWorkflowButton()
     {
         try
         {
             drone.findAndWait(By.cssSelector("button[id$='-startWorkflow-button-button']")).click();
-            return new StartWorkFlowPage(drone);
+            return FactorySharePage.resolvePage(drone);
         }
         catch (TimeoutException e)
         {
@@ -122,11 +127,15 @@ public class MyWorkFlowsPage extends SharePage
     }
 
     /**
-     * @param taskName
+     * @param workFlowName
      * @return
      */
     private List<WebElement> findWorkFlowRow(String workFlowName)
     {
+        if(StringUtils.isEmpty(workFlowName))
+        {
+            throw new IllegalArgumentException("Workflow Name can't be empty");
+        }
         List<WebElement> workflowRowsElements = new ArrayList<WebElement>();
 
         try
@@ -136,8 +145,11 @@ public class MyWorkFlowsPage extends SharePage
             {
                 for (WebElement workFlowRow : workFlowRows)
                 {
-                    if (workFlowName.equals(workFlowRow.findElement(By.cssSelector("h3 a")).getText()))
+                    
+                    if (StringUtils.deleteWhitespace(workFlowName).equals(StringUtils.deleteWhitespace(workFlowRow.findElement(By.cssSelector("h3 a")).getText())))
+                    {
                         workflowRowsElements.add(workFlowRow);
+                    }
                 }
             }
         }
@@ -202,7 +214,7 @@ public class MyWorkFlowsPage extends SharePage
      * @param workFlowName
      * @return
      */
-    public WorkFlowDetailsPage selectWorkFlow(String workFlowName)
+    public HtmlPage selectWorkFlow(String workFlowName)
     {
         if(StringUtils.isEmpty(workFlowName))
         {
@@ -217,7 +229,7 @@ public class MyWorkFlowsPage extends SharePage
         else if(workFlowRow.size() == 1)
         {
             workFlowRow.get(0).findElement(By.cssSelector("td.yui-dt-col-title>div.yui-dt-liner>h3>a[title='View History']")).click();
-            return new WorkFlowDetailsPage(drone);
+            return FactorySharePage.resolvePage(drone);
         }
         else if(workFlowRow.size() > 1)
         {
@@ -260,7 +272,7 @@ public class MyWorkFlowsPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            throw new PageException("Page Subtitle is not displayed");
+            throw new PageException("Page Subtitle is not displayed", te);
         }
     }
 
@@ -269,11 +281,11 @@ public class MyWorkFlowsPage extends SharePage
      *
      * @return {@link MyWorkFlowsPage}
      */
-    public MyWorkFlowsPage selectActiveWorkFlows()
+    public HtmlPage selectActiveWorkFlows()
     {
         drone.find(ACTIVE_LINK).click();
         drone.waitUntilVisible(SUB_TITLE, "Active Workflows", TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
-        return new MyWorkFlowsPage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -281,43 +293,40 @@ public class MyWorkFlowsPage extends SharePage
      *
      * @return {@link MyWorkFlowsPage}
      */
-    public MyWorkFlowsPage selectCompletedWorkFlows()
+    public HtmlPage selectCompletedWorkFlows()
     {
         drone.findAndWait(COMPLETED_LINK).click();
         drone.waitUntilVisible(SUB_TITLE, "Completed Workflows", TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
-        return new MyWorkFlowsPage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
      * Method to cancel given workflow. If more than one workflow found, cancel all workflows.
      * @param workFlowName
      */
-    public void cancelWorkFlow(String workFlowName)
+    public HtmlPage cancelWorkFlow(String workFlowName)
     {
-        if(StringUtils.isEmpty(workFlowName))
-        {
-            throw new IllegalArgumentException("Workflow Name cannot be null");
-        }
-
         List<WebElement> workFlowRow = findWorkFlowRow(workFlowName);
         if(workFlowRow.size() < 1)
         {
             throw new PageException("No workflows found with name: " + workFlowName);
         }
-
         try
         {
-            for (WebElement workFlow: workFlowRow)
+            for (int i=(workFlowRow.size()-1); i>=0; i--)
             {
-                drone.mouseOverOnElement(workFlow);
-                drone.findAndWait(By.cssSelector("td.yui-dt-last>div.yui-dt-liner>div.workflow-cancel-link>a")).click();
-                drone.waitForElement(By.cssSelector("div#prompt"), 1000);
+                workFlowRow = findWorkFlowRow(workFlowName);
+                drone.mouseOverOnElement(workFlowRow.get(i));
+                workFlowRow.get(i).findElement(By.cssSelector("td.yui-dt-last>div.yui-dt-liner>div.workflow-cancel-link>a>span")).click();
+                drone.waitForElement(By.cssSelector("div#prompt"), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
                 List<WebElement> buttons = drone.findAll(By.cssSelector("div#prompt>div.ft>span.button-group>span.yui-button>span.first-child>button"));
                 for(WebElement button: buttons)
                 {
                     if(button.getText().equals("Yes"))
                     {
                         button.click();
+                        drone.waitUntilElementPresent(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        drone.waitUntilElementDeletedFromDom(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         break;
                     }
                 }
@@ -325,8 +334,9 @@ public class MyWorkFlowsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Cancel workflow link doesn't exists for workflow: " + workFlowName);
+            throw new PageException("Cancel workflow link doesn't exists for workflow: " + workFlowName, nse);
         }
+        return this;
     }
 
     /**
@@ -339,20 +349,18 @@ public class MyWorkFlowsPage extends SharePage
         {
             throw new IllegalArgumentException("Workflow Name cannot be null");
         }
-
         List<WebElement> workFlowRow = findWorkFlowRow(workFlowName);
         if(workFlowRow.size() < 1)
         {
             throw new PageException("No workflows found with name: " + workFlowName);
         }
-
         try
         {
             for (WebElement workFlow: workFlowRow)
             {
                 drone.mouseOverOnElement(workFlow);
-                drone.findAndWait(By.cssSelector("td.yui-dt-last>div.yui-dt-liner>div.workflow-delete-link>a")).click();
-                drone.waitForElement(By.cssSelector("div#prompt"), 1000);
+                workFlow.findElement(By.cssSelector("td.yui-dt-last>div.yui-dt-liner>div.workflow-delete-link>a")).click();
+                drone.waitForElement(By.cssSelector("div#prompt"), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
                 List<WebElement> buttons = drone.findAll(By.cssSelector("div#prompt>div.ft>span.button-group>span.yui-button>span.first-child>button"));
                 for(WebElement button: buttons)
                 {
@@ -366,11 +374,8 @@ public class MyWorkFlowsPage extends SharePage
         }
         catch (TimeoutException nse)
         {
-            throw new PageException("Cancel workflow link doesn't exists for workflow: " + workFlowName);
+            throw new PageException("Cancel workflow link doesn't exists for workflow: " + workFlowName, nse);
         }
-        catch (NoSuchElementException nse)
-        {
-
-        }
+        catch (NoSuchElementException nse) { }
     }
 }

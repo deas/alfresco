@@ -30,6 +30,7 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -142,6 +143,10 @@ public class GoogleDocsAuthorisation extends SharePage
                 okButton.click();
                 }
                 catch (TimeoutException te)
+                {
+                    throw new TimeoutException("authorisation prompt was not found", te);
+                }
+                catch (NoSuchElementException te)
                 {
                     throw new TimeoutException("authorisation prompt was not found", te);
                 }

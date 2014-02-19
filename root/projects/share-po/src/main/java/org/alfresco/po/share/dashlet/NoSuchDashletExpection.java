@@ -18,7 +18,6 @@
 
 package org.alfresco.po.share.dashlet;
 
-import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 
 /**

@@ -17,6 +17,7 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
+
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -36,6 +37,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
     protected static final By DESCRIPTION = By.cssSelector("textarea[id$='default_prop_cm_description']");
     protected static final By CONTENT = By.cssSelector("textarea[id$='default_prop_cm_content']");
     protected static final By SUBMIT_BUTTON = By.cssSelector("button[id$='form-submit-button']");
+    protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='form-cancel-button']");
     
     public CreatePlainTextContentPage(WebDrone drone)
     {
@@ -46,7 +48,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
     @Override
     public CreatePlainTextContentPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(NAME), getVisibleRenderElement(TITLE), getVisibleRenderElement(DESCRIPTION), getVisibleRenderElement(CONTENT), getVisibleRenderElement(SUBMIT_BUTTON));
+        elementRender(timer, getVisibleRenderElement(NAME), getVisibleRenderElement(TITLE), getVisibleRenderElement(DESCRIPTION), getVisibleRenderElement(CONTENT), getVisibleRenderElement(SUBMIT_BUTTON), getVisibleRenderElement(CANCEL_BUTTON));
         return this;
     }
 
@@ -75,7 +77,28 @@ public class CreatePlainTextContentPage extends InlineEditPage
      */
     public DocumentDetailsPage create(ContentDetails details) 
     {
-        if(details == null || details.getName() == null || details.getName().trim().isEmpty())
+    	createContent(details);
+        WebElement createButton = drone.find(SUBMIT_BUTTON);
+        createButton.click();
+        return new DocumentDetailsPage(drone);
+        
+    }
+    
+   /**
+    * Cancel button interaction on the form
+    * @return {@link DocumentDetailsPage}
+    */
+    public DocumentLibraryPage cancel(ContentDetails details)
+    {
+    	createContent(details);
+       	WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
+   		cancelButton.click();
+   		return new DocumentLibraryPage(drone);
+    }
+    
+    private void createContent(ContentDetails details) 
+    {
+    	if(details == null || details.getName() == null || details.getName().trim().isEmpty())
         {
             throw new UnsupportedOperationException("Name can't be null or empty");
         }
@@ -104,10 +127,5 @@ public class CreatePlainTextContentPage extends InlineEditPage
             contentElement.sendKeys(details.getContent());
         }
         
-        WebElement createButton = drone.find(SUBMIT_BUTTON);
-        createButton.click();
-        return new DocumentDetailsPage(drone);
-        
     }
-    
 }

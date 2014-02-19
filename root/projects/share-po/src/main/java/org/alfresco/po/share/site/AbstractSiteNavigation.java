@@ -52,15 +52,15 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     protected static final String SITE_LINK_NAV_PLACEHOLER = "div.site-navigation > span:nth-of-type(%d) > a";
     public static final String LABEL_DOCUMENTLIBRARY_TEXT = "span#HEADER_SITE_DOCUMENTLIBRARY_text";
     public static final String LABEL_DOCUMENTLIBRARY_PLACEHOLDER = "div#HEADER_SITE_DOCUMENTLIBRARY";
-    protected final String siteNavPlaceHolder;
+    private final String siteNavPlaceHolder;
     private final String dashboardLink;
-    protected AlfrescoVersion alfrescoVersion;
+    private AlfrescoVersion alfrescoVersion;
     public AbstractSiteNavigation(WebDrone drone)
     {
         super(drone);
         alfrescoVersion = drone.getProperties().getVersion();
         siteNavPlaceHolder = alfrescoVersion.isDojoSupported() ? "div[id^='alfresco/layout/LeftAndRight']": "div#alf-hd";
-        setWebElement(drone.find(By.cssSelector(siteNavPlaceHolder)));
+        setWebElement(drone.findAndWait(By.cssSelector(siteNavPlaceHolder)));
         dashboardLink = alfrescoVersion.isDojoSupported() ? "div#HEADER_SITE_DASHBOARD": String.format(SITE_LINK_NAV_PLACEHOLER,1);
     }
     /**
@@ -146,5 +146,10 @@ public abstract class AbstractSiteNavigation extends HtmlElement
             catch (NoSuchElementException nse) { }
         }
         return false;
+    }
+    
+    protected AlfrescoVersion getAlfrescoVersion()
+    {
+        return alfrescoVersion;
     }
 }

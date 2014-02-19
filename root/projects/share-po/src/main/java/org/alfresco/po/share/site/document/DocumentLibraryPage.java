@@ -17,15 +17,19 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.Pagination;
+import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SitePage;
-import org.alfresco.webdrone.HtmlElement;
+import org.alfresco.po.share.workflow.FactoryShareFileDirectoryInfo;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -43,14 +47,16 @@ import org.openqa.selenium.WebElement;
  * relating to share's site document library page.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
+ * 
  * @since 1.0
  */
 public class DocumentLibraryPage extends SitePage
 {
     private static final String JS_SCRIPT_CHECK_DOCLIST = "return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').widgets.dataTable._getViewRecords();";
     private static Log logger = LogFactory.getLog(DocumentLibraryPage.class);
-    private static final String SITE_FILE_UPLOAD_BUTTON = "site.document.library.nav.upload.id";
-    private static final String SITE_CREATE_NEW_FOLDER_BUTTON = "site.document.library.nav.create.folder.id";
+    //private static final String SITE_FILE_UPLOAD_BUTTON = "site.document.library.nav.upload.id";
+    //private static final String SITE_CREATE_NEW_FOLDER_BUTTON = "site.document.library.nav.create.folder.id";
     private static final String PAGINATION_BUTTON_NEXT = "a.yui-pg-next";
     private static final String PAGINATION_BUTTON_PREVIOUS = "a.yui-pg-previous";
     public static final String FILES_AND_DOCUMENTS_TABLE_CSS = "table#yuievtautoid-0 > tbody.yui-dt-data > tr";
@@ -59,10 +65,12 @@ public class DocumentLibraryPage extends SitePage
     private static final String FILE_UPLOAD_INSTRUCTION = "div.docListInstructionsWithDND";
     private static final String BOTTOM_PAGINATOR_LOCATION = "div[id$='_default-paginatorBottom']";
     private static final By THUMBNAIL_IMAGE = By.cssSelector("td[class$='yui-dt-col-thumbnail'] img");
+    private static final By DOCUMENTS_TREE_CSS = By.cssSelector("div.filter.doclib-filter h2");
     private final String subfolderName;
     private boolean shouldHaveFiles;
     private final String hasTags;
     private String contentName;
+    private ViewType viewType;
     public enum Optype
     {
         REQ_TO_SYNC,  
@@ -166,12 +174,12 @@ public class DocumentLibraryPage extends SitePage
                             {
                                 try{ this.wait(100L); } catch (InterruptedException e) {}
                             }
-                            if(dataRendered()) break;
+                            if(dataRendered()){break;}
                         }
                     } 
                     else
                     {
-                        if(dataRendered()) break;
+                        if(dataRendered()){ break; }
                     }
                 } 
             }
@@ -183,6 +191,11 @@ public class DocumentLibraryPage extends SitePage
             {
                 timer.end();
             }
+        }
+        
+        if(!(this instanceof RepositoryPage))
+        {
+        	viewType = getNavigation().getViewType();
         }
         return this;
     }
@@ -205,7 +218,8 @@ public class DocumentLibraryPage extends SitePage
     {
         try
         {
-           return(drone.find(By.cssSelector("table>tbody>tr>td.yui-dt-empty>div")).isDisplayed());
+            WebElement loadingElement = drone.find(By.cssSelector("table>tbody>tr>td.yui-dt-empty>div"));
+            return(loadingElement.isDisplayed() && loadingElement.getText().contains("Loading"));
            
         }
         catch (NoSuchElementException e) { }
@@ -228,7 +242,7 @@ public class DocumentLibraryPage extends SitePage
             {
                 if(logger.isTraceEnabled())
                 {
-                    logger.trace("dataRendered check with shouldHaveFiles");
+                    logger.trace("dataRendered check with shouldHaveFiles ");
                 }
                 return hasData();
             }
@@ -263,23 +277,46 @@ public class DocumentLibraryPage extends SitePage
         // Look for results
         try
         {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("starting hasData check");
+            }
             if(hasNoData())
             {
+                if(logger.isTraceEnabled())
+                {
+                    logger.trace("hasNoData returned true so returning false");
+                }
                 return false;
             }
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("checking has content rows");
+            }
             boolean hasContentRows = hasFiles();
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("checking has content row done hasContentRows: " + hasContentRows);
+            }
             if(hasContentRows)
             {
                 if(hasTags != null)
                 {
                     if(!(hasTags.isEmpty()))
                     {
+                        if(logger.isTraceEnabled())
+                        {
+                            logger.trace("hasTags check: " + hasTags);
+                        }
                         hasContentRows = hasTag();
+                        if(logger.isTraceEnabled())
+                        {
+                            logger.trace("hasTags check done, hasContentRows: " + hasContentRows);
+                        }
                     }
                 }
             }
             return hasContentRows;
-
         }
         catch (NoSuchElementException e) { }
         return false; 
@@ -294,7 +331,7 @@ public class DocumentLibraryPage extends SitePage
         // Look for Tags
         try
         {
-            return getContentRow(contentName).getTags().contains(hasTags.toLowerCase());
+            return getFileDirectoryInfo(contentName).getTags().contains(hasTags.toLowerCase());
         }
         catch (NoSuchElementException e) { }
         return false; 
@@ -304,7 +341,7 @@ public class DocumentLibraryPage extends SitePage
      * Checks to verify if we are in the correct sub folder document library page.
      * @return true if bread crumb match location of the sub folder name.
      */
-    public synchronized boolean isSubFolderDocLib(final String name)
+    private boolean isSubFolderDocLib(final String name)
     {
         //If we are expected to be in sub folder assert by checking the bread crumb
         try
@@ -317,7 +354,10 @@ public class DocumentLibraryPage extends SitePage
                 return true;
             }
         }
-        catch (Exception e) { }
+        catch (Exception e) 
+        {
+        	logger.debug("Unable to determine if in sub folder of: " + subfolderName);
+        }
 
         return false;
     }
@@ -334,6 +374,12 @@ public class DocumentLibraryPage extends SitePage
     public DocumentLibraryPage render(final long time)
     {
         return render(new RenderTime(time));
+    }
+
+    public DocumentLibraryPage renderItem(final long time, String itemName)
+    {
+        elementRender(new RenderTime(time), RenderElement.getVisibleRenderElement(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..",itemName))));
+        return this;
     }
 
     /**
@@ -355,7 +401,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public DocumentLibraryNavigation getNavigation()
     {
-        return new DocumentLibraryNavigation(drone, SITE_FILE_UPLOAD_BUTTON, SITE_CREATE_NEW_FOLDER_BUTTON);
+        return new DocumentLibraryNavigation(drone);
     }
     
     /**
@@ -409,7 +455,10 @@ public class DocumentLibraryPage extends SitePage
         try
         {
             boolean noFiles = !hasFiles();
-            if(logger.isTraceEnabled()) logger.trace(String.format("Documet list has no files: %s", noFiles));
+            if(logger.isTraceEnabled())
+            {
+                logger.trace(String.format("Documet list has no files: %s", noFiles));
+            }
             
             if(noFiles)
             {
@@ -429,7 +478,7 @@ public class DocumentLibraryPage extends SitePage
                 List<FileDirectoryInfo> fileDirectoryList = new ArrayList<FileDirectoryInfo>();
                 for (WebElement result : results)
                 {
-                    FileDirectoryInfo file = new FileDirectoryInfo(result.getAttribute("value"), result, drone);
+                    FileDirectoryInfo file = getFileDirectoryInfo(result.getAttribute("value"), result);
                     if(logger.isTraceEnabled())
                     {
                         logger.trace("adding file" + file.getName());
@@ -469,23 +518,25 @@ public class DocumentLibraryPage extends SitePage
      * Selects the title of the folder link.
      * 
      * @param title String folder title
-     * @return DocumentLibraryPage page response object
+     * @return HtmlPage page response object
      */
-    public DocumentLibraryPage selectFolder(final String title)
+    
+    public HtmlPage selectFolder(final String title)
     {
         selectEntry(title).click();
-        return new DocumentLibraryPage(drone, title);
+        return drone.getCurrentPage();
     }
-
+       
+    
     /**
      * Selects an entry regardless of type (file or folder)
      * @return 
      */
     protected WebElement selectEntry(final String title)
     {
-        if(title == null || title.isEmpty()) throw new IllegalArgumentException("Title is required");
+        if(title == null || title.isEmpty()) {throw new IllegalArgumentException("Title is required");}
         String search = String.format("//h3/span/a[text()='%s']",title);
-        return drone.find(By.xpath(search));
+        return drone.findAndWait(By.xpath(search), WAIT_TIME_3000);
     }
 
     /**
@@ -495,7 +546,7 @@ public class DocumentLibraryPage extends SitePage
      */
     private synchronized FileDirectoryInfo findFileOrFolder(final String name)
     {
-        if(name == null || name.isEmpty()) throw new IllegalArgumentException("Name is required");
+        if(name == null || name.isEmpty()) { throw new IllegalArgumentException("Name is required");}
         if(logger.isTraceEnabled())
         {
             logger.trace("Look in collection for: " + name);
@@ -569,15 +620,15 @@ public class DocumentLibraryPage extends SitePage
      */
     public Integer getCommentCount()
     {
-    	try
-    	{
-    		WebElement span = drone.find(By.cssSelector("span.comment-count"));
-    		return Integer.valueOf(span.getText());
-    	}
-    	catch (NoSuchElementException nse)
-    	{
-    		return 0;
-		}
+        try
+        {
+            WebElement span = drone.find(By.cssSelector("span.comment-count"));
+            return Integer.valueOf(span.getText());
+        }
+        catch (NoSuchElementException nse)
+        {
+            return 0;
+        }
     }
 
     /**
@@ -624,14 +675,14 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage deleteItem(final String name)
     {
-        if (name == null) throw new IllegalArgumentException("require name value");
+        if (name == null) {throw new IllegalArgumentException("require name value");}
         FileDirectoryInfo item = getFileDirectoryInfo(name);
         item.selectDelete();
         confirmDelete();
-        return new DocumentLibraryPage(drone);
-    }
-    
-    /**
+        return drone.getCurrentPage();
+   }
+   
+   /**
      * Locates the file or folder and deletes it.
      * 
      * @param name
@@ -658,7 +709,7 @@ public class DocumentLibraryPage extends SitePage
             logger.trace("deleting");
         }
     }
-
+    
     /**
      * Returns the ShareContentRow for the selected contentName.
      * @param WebDrone drone
@@ -668,7 +719,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public synchronized FileDirectoryInfo getContentRow(final String name)
     {
-        if(name == null || name.isEmpty()) throw new UnsupportedOperationException("Name input value is required");
+        if(name == null || name.isEmpty()){ throw new UnsupportedOperationException("Name input value is required");}
         return findFileOrFolder(name);
     }
     
@@ -678,7 +729,7 @@ public class DocumentLibraryPage extends SitePage
      * @param tagName
      * @return {@link DocumentLibraryPage}
      */
-    public DocumentLibraryPage clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(String tagName)
+    public HtmlPage clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(String tagName)
     {
         if(tagName == null)
         {
@@ -695,7 +746,7 @@ public class DocumentLibraryPage extends SitePage
             if(text != null && text.equalsIgnoreCase(tagName))
             {
                 tag.click();
-                return new DocumentLibraryPage(drone);
+                return FactorySharePage.resolvePage(drone);
             }
         }
         
@@ -716,7 +767,10 @@ public class DocumentLibraryPage extends SitePage
         }
         catch(TimeoutException e)
         {
-            logger.error("Exceeded the time to find the All Tags css." + e.getMessage());
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded the time to find the All Tags css." + e.getMessage());
+            }
             return Collections.emptyList();
         }
     }
@@ -745,65 +799,6 @@ public class DocumentLibraryPage extends SitePage
          return tagNames;
     }
 
-    /**
-     * Select the option drop down, introduced in
-     * Alfresco enterprise 4.2 and clicks on the button in 
-     * the dropdown.
-     * @param By selector location of button in dropdown to select
-     */
-    private void selectItemInOptionsDropDown(By button)
-    {
-        RenderTime timer = new RenderTime(WAIT_TIME_3000);
-        while(true)
-        {
-            timer.start();
-            try
-            {
-                WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
-                HtmlElement dropdownButton = new HtmlElement(btn, drone);
-                dropdownButton.click();
-                
-                WebElement dropdown = drone.findAndWait(By.cssSelector("div[id$='default-options-menu']"));
-                if(dropdown.isDisplayed())
-                {
-                    new HtmlElement(drone.find(button), drone).click();
-                    break;
-                }            
-            }
-            catch (StaleElementReferenceException stale) { }
-            finally { timer.end(); }
-        }
-    }
-    
-    /**
-     * Selects the Detailed View of the Document Library.
-     * 
-     * @return {@link DocumentLibraryPage}
-     */
-    public DocumentLibraryPage selectDetailedView()
-    {
-        try
-        {
-            switch (alfrescoVersion) 
-            {
-                case Enterprise41:
-                    drone.findAndWait(By.cssSelector("button[title='Detailed View']")).click();
-                    break;
-                case Cloud:
-                    drone.findAndWait(By.cssSelector("button[id$='default-detailedView-button']")).click();
-                    break;
-                default:
-                    selectItemInOptionsDropDown(By.cssSelector("span.view.detailed"));
-                    break;
-            }
-            return new DocumentLibraryPage(drone);
-        }
-        catch (TimeoutException e)
-        {
-            logger.error("Exceeded the time to find css." + e.getMessage());
-            throw new PageException("Exceeded the time to find css.");
-        }
-    }
     
     /**
      * Check the uploaded content has uploaded successfully
@@ -815,7 +810,7 @@ public class DocumentLibraryPage extends SitePage
         //If we are expected content to be uploaded successful check whether it is uploaded
         try
         {
-            DocumentLibraryPage docPage = FactorySharePage.resolvePage(drone).render();
+            DocumentLibraryPage docPage = drone.getCurrentPage().render();
             List<FileDirectoryInfo> results = docPage.getFiles();
             for (FileDirectoryInfo filenames : results)
             {
@@ -846,7 +841,7 @@ public class DocumentLibraryPage extends SitePage
         {
             WebElement row = drone.find(By.cssSelector(String.format("tbody.yui-dt-data tr:nth-of-type(%d)", number)));
             String nodeRef = row.findElement(THUMBNAIL_IMAGE).getAttribute("id");
-            return new FileDirectoryInfo(nodeRef, row, drone);
+            return getFileDirectoryInfo(nodeRef, row);
         }
         catch (NoSuchElementException e)
         {
@@ -867,11 +862,15 @@ public class DocumentLibraryPage extends SitePage
         }
         try
         {
-            WebElement row = drone.find(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..",title)));
+            WebElement row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..",title)), WAIT_TIME_3000);
             String nodeRef = row.findElement(THUMBNAIL_IMAGE).getAttribute("id");
-            return new FileDirectoryInfo(nodeRef, row, drone);
+            return getFileDirectoryInfo(nodeRef, row);
         }
         catch (NoSuchElementException e)
+        {
+            throw new PageException(String.format("File directory info with title %s was not found",title), e);
+        }
+        catch (TimeoutException e)
         {
             throw new PageException(String.format("File directory info with title %s was not found",title), e);
         }
@@ -914,5 +913,109 @@ public class DocumentLibraryPage extends SitePage
             logger.error("Message element not found!!");
         }
         throw new PageOperationException("Message element not found!!");
-    }   
+    }
+    
+    /**
+     * Returns true if Cloud Sync sign up dialog is visible
+     * @return boolean
+     */
+    public boolean isSignUpDialogVisible()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector("form.cloud-auth-form")).isDisplayed();
+        }
+        catch (TimeoutException te)
+        {
+             return false;
+        }
+    }
+    
+    /**
+     * This method returns the count for the given tag string.
+     * 
+     * @param tagName
+     * @return int
+     */
+    public int getTagsCountUnderTagsTreeMenuOnDocumentLibrary(String tagName)
+    {
+        if (tagName == null)
+        {
+            throw new UnsupportedOperationException("TagName is required.");
+        }
+
+        try
+        {
+            String count = drone.findAndWait(By.xpath(String.format(".//ul[@class='filterLink']//a[@rel='%s']/..", tagName.toLowerCase()))).getText();
+
+            return Integer.parseInt(count.substring(count.indexOf("(")+1, count.indexOf(")")));
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Exceeded time to find out the " + tagName + " count: " + te.getMessage());
+        }
+        catch (NumberFormatException ne)
+        {
+            logger.error("Unable to convert tags count string value into int : " + ne.getMessage());
+        }
+
+        throw new PageException("Unable to find the given tag count : " + tagName);
+    }
+ 
+    /**
+     * Check the documents tree is expanded or not , on DocumentLibraryPage or Repository Page.
+     * 
+     * @return - boolean
+     */
+    public boolean isDocumentsTreeExpanded()
+    {
+        try
+        {
+            WebElement documents = drone.find(DOCUMENTS_TREE_CSS);
+            if (documents.getAttribute("class").contains("open"))
+            {
+                return true;
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Exceeded time to find the documents tree." + e.getMessage());
+        }
+
+        return false;
+    }
+    
+    /**
+     * This method is used to click on the documents tree, on DocumentLibraryPage or Repository Page.
+     * 
+     * @return - DocumentLibraryPage
+     */
+    public HtmlPage clickDocumentsTreeExpanded()
+    {
+        try
+        {
+            drone.findAndWait(DOCUMENTS_TREE_CSS).click();
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded time to find the documents tree." + e.getMessage());
+        }
+        throw new PageException("Unable to find the Documents Tree link." );
+    }
+    
+    private FileDirectoryInfo getFileDirectoryInfo(String nodeRef, WebElement webElement)
+    {
+        if(viewType == null)
+        {
+            throw new UnsupportedOperationException("Document Library page render is needed.");
+        }
+        
+        return FactoryShareFileDirectoryInfo.getPage(nodeRef, webElement, drone, viewType);
+    }
+
+    protected void setViewType(ViewType viewType)
+    {
+        this.viewType = viewType;
+    }
 }

@@ -46,7 +46,7 @@ public class NewWorkflowPage extends WorkFlowPage
     private static final By DUE_DATE = By.cssSelector("input[id$='workflowDueDate-cntrl-date']");
     private static final By MESSAGE_TEXT = By.cssSelector("textarea[id$='prop_bpm_workflowDescription']");
     private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='-form-submit-button']");
-
+    private static final By CANCEL_BUTTON = By.cssSelector("button[id$='-form-cancel-button']");
     /**
      * Constructor.
      *
@@ -70,7 +70,7 @@ public class NewWorkflowPage extends WorkFlowPage
                     timer.start();
                     if (!alfrescoVersion.isCloud())
                     {
-                        drone.waitForElement(MESSAGE_TEXT, (maxPageLoadingTime));
+                        drone.find(MESSAGE_TEXT);
                     }
                     break;
                 }
@@ -125,7 +125,7 @@ public class NewWorkflowPage extends WorkFlowPage
             enterDueDateText(formDetails.getDueDate());
         }
         AssignmentPage assignmentPage = selectReviewer().render();
-        assignmentPage.selectAssignment(formDetails.getReviewers());
+        assignmentPage.selectReviewers(formDetails.getReviewers());
         WebElement saveButton = drone.findAndWait(SUBMIT_BUTTON);
         String saveButtonId = saveButton.getAttribute("id");
         saveButton.click();
@@ -158,7 +158,7 @@ public class NewWorkflowPage extends WorkFlowPage
     @Override
     protected WebElement getStartWorkflowButton()
     {
-        return drone.find(By.cssSelector("button[id$='-form-submit-button']"));
+        return drone.find(SUBMIT_BUTTON);
     }
 
     @Override
@@ -166,4 +166,31 @@ public class NewWorkflowPage extends WorkFlowPage
     {
         return drone.find(DUE_DATE);
     }
+
+    /**
+     * Method to fill in the form details and cancel new workflow. 
+     * @return HtmlPage
+     */
+    @Override
+    public HtmlPage cancelCreateWorkflow(WorkFlowFormDetails formDetails) throws InterruptedException
+    {
+        if (formDetails == null || StringUtils.isEmpty(formDetails.getMessage()) || formDetails.getReviewers().size() < 1
+                || isReviewersBlank(formDetails.getReviewers()))
+        {
+            throw new UnsupportedOperationException("siteName or message or cloudUsers cannot be blank");
+        }
+        enterMessageText(formDetails.getMessage());
+        if(formDetails.getDueDate() != null)
+        {
+            enterDueDateText(formDetails.getDueDate());
+        }
+        AssignmentPage assignmentPage = selectReviewer().render();
+        assignmentPage.selectReviewers(formDetails.getReviewers());
+        WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
+        String cancelButtonId = cancelButton.getAttribute("id");
+        cancelButton.click();
+        drone.waitUntilElementDeletedFromDom(By.id(cancelButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
+    }
+    
 }

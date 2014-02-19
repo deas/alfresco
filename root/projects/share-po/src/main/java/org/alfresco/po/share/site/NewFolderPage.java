@@ -18,12 +18,18 @@
  */
 package org.alfresco.po.share.site;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -32,11 +38,22 @@ import org.openqa.selenium.WebElement;
  * share's create folder page.
  * 
  * @author Michael Suzuki
- * @since 1.0
+ * @since  1.0
  */
 public class NewFolderPage extends SharePage
 {
-    private static final By FOLDER_TITLE_CSS = By.cssSelector("input[id$='default-createFolder_prop_cm_title']");
+    private final By folderTitleCss = By.cssSelector("input[id$='default-createFolder_prop_cm_title']");
+    private final By name = By.cssSelector("input[id$='default-createFolder_prop_cm_name']");
+    private final By descriptionLocator = By.cssSelector("textarea[id$='default-createFolder_prop_cm_description']");
+    private final By submitButton = By.cssSelector("button[id$='default-createFolder-form-submit-button']");
+    private final By cancelButton = By.cssSelector("button[id$='createFolder-form-cancel-button']");
+    
+    private final RenderElement folderTitleElement = getVisibleRenderElement(folderTitleCss);
+    private final RenderElement nameElement = getVisibleRenderElement(name);
+    private final RenderElement descriptionElement = getVisibleRenderElement(descriptionLocator);
+    private final RenderElement submitButtonElement = getVisibleRenderElement(submitButton);
+    private final RenderElement cancelButtonElement = getVisibleRenderElement(cancelButton);
+    
     /**
      * Constructor.
      */
@@ -49,7 +66,7 @@ public class NewFolderPage extends SharePage
     @Override
     public NewFolderPage render(RenderTime timer)
     {
-        basicRender(timer);
+        elementRender(timer, folderTitleElement, nameElement, descriptionElement, submitButtonElement, cancelButtonElement);
         return this;
     }
 
@@ -84,22 +101,13 @@ public class NewFolderPage extends SharePage
      */
     public HtmlPage createNewFolder(final String folderName, final String description)
     {
-        if (folderName == null || folderName.isEmpty())
-        {
-            throw new UnsupportedOperationException("Folder Name input required.");
-        }
-        WebElement inputFolderName = drone.find(By.cssSelector("input[id$='default-createFolder_prop_cm_name']"));
-        inputFolderName.sendKeys(folderName);
-        if (description != null)
-        {
-            WebElement inputDescription = drone.find(By.cssSelector("textarea[id$='default-createFolder_prop_cm_description']"));
-            inputDescription.sendKeys(description);
-        }
-        WebElement okButton = drone.find(By.cssSelector("button[id$='default-createFolder-form-submit-button']"));
+        typeName(folderName);
+        typeDescription(description);
+        WebElement okButton = drone.find(submitButton);
         okButton.click();
         
         //Wait till the pop up disappears
-        canResume();
+        waitUntilMessageAppearAndDisappear("Folder");
         DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
         page.setShouldHaveFiles(true);
         return page;
@@ -119,13 +127,87 @@ public class NewFolderPage extends SharePage
         {
             throw new UnsupportedOperationException("Folder Name input required.");
         }
-        
-        if(folderTitle != null && !folderTitle.isEmpty())
-        {
-            WebElement inputFolderName = drone.find(FOLDER_TITLE_CSS);
-            inputFolderName.sendKeys(folderTitle);
-        }
-        
+        typeTitle(folderTitle);
         return createNewFolder(folderName, description);
     }
+    
+    /**
+     * Clear & Type Folder Name on the Text box.
+     * @param folderName
+     */
+    public void typeName(final String folderName)
+    {
+        if (StringUtils.isEmpty(folderName))
+        {
+            throw new IllegalArgumentException("Folder Name input required.");
+        }
+        clearAndType(name, folderName);
+    }
+    
+    /**
+     * Clear & Type the Folder Title for box.
+     * @param folderTitle
+     */
+    public void typeTitle(final String folderTitle)
+    {
+        if(folderTitle != null && !folderTitle.isEmpty())
+        {
+            clearAndType(folderTitleCss, folderTitle);
+        } 
+    }
+    
+    /**
+     * Clear & Type the Description for box.
+     * @param description
+     */
+    public void typeDescription(final String description)
+    {
+        if (description != null && !description.isEmpty())
+        {
+            clearAndType(descriptionLocator, description);
+        }
+    }
+    
+    private void clearAndType(By by, String text)
+    {
+        WebElement element = drone.find(by);
+        element.clear();
+        element.sendKeys(text);
+    }
+    
+    /**
+     * Mimics the action of clicking the cancel button.
+     * 
+     * @return {@link HtmlPage} Page Response.
+     */
+    public HtmlPage selectCancel()
+    {
+        WebElement cancelElement = drone.find(cancelButton);
+        String id = cancelElement.getAttribute("id");
+        cancelElement.click();
+        drone.waitUntilElementDeletedFromDom(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return drone.getCurrentPage();
+    }
+    /**
+     * Wait until the black message box appear with text then wait until same black message disappear with text.
+     * 
+     * @param text - Text to be checked in the black message.
+     */
+    protected void waitUntilMessageAppearAndDisappear(String text)
+    {
+        waitUntilMessageAppearAndDisappear(text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+    }
+    
+    /**
+     * Wait until the black message box appear with text then wait until same black message disappear with text.
+     * 
+     * @param text - Text to be checked in the black message.
+     * @param timeInSeconds - Time to wait in seconds.
+     */
+    protected void waitUntilMessageAppearAndDisappear(String text, long timeInSeconds)
+    {
+        //drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, timeInSeconds);
+        drone.waitUntilElementDisappears(By.cssSelector("div.bd>span.message"), timeInSeconds);
+    }
+    
 }

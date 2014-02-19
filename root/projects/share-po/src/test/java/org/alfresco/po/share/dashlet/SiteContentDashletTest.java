@@ -35,8 +35,8 @@ import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.dashlet.sitecontent.DetailedViewInformation;
 import org.alfresco.po.share.dashlet.sitecontent.SimpleViewInformation;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
@@ -52,6 +52,7 @@ import org.testng.annotations.Test;
  * Integration test site content dashlet page elements.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  * @since 1.4
  */
 @Test(groups={"check", "alfresco-one"})
@@ -200,7 +201,8 @@ public class SiteContentDashletTest extends AbstractSiteDashletTest
         dashlet = siteDashBoard.getDashlet(SITE_CONTENT).render();
         assertEquals(dashlet.getCurrentFilter(), I_AM_EDITING);
 
-        if (alfrescoVersion.equals(AlfrescoVersion.Cloud))
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (version.equals(AlfrescoVersion.Cloud))
         {
             siteDashBoard = dashlet.selectFilter(SYNCED_CONTENT);
             dashlet = siteDashBoard.getDashlet(SITE_CONTENT).render();
@@ -244,7 +246,6 @@ public class SiteContentDashletTest extends AbstractSiteDashletTest
         for (SimpleViewInformation simpleViewInformation : informations)
         {
             assertTrue(simpleViewInformation.getContentStatus().contains("Created"));
-            assertTrue(simpleViewInformation.isPreviewDisplayed());
             assertNotNull(simpleViewInformation.getContentDetail());
             assertNotNull(simpleViewInformation.getThumbnail());
             assertNotNull(simpleViewInformation.getUser());

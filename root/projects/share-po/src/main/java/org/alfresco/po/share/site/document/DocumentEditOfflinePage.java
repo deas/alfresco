@@ -24,17 +24,22 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 public class DocumentEditOfflinePage extends DocumentDetailsPage
 {
     private final By cancelEditOffLineBtn;
+    private static final String VIEW_ORIGINAL_DOCUMENT = "div.document-view-original>a";
+    private static final String  VIEW_WORKING_COPY = "div.document-view-working-copy>a";
+    
     public DocumentEditOfflinePage(WebDrone drone)
     {
         super(drone);
-        String selector = dojoSupport ? "div#onActionCancelEditing>a.action-link" :
+        String selector = isDojoSupport() ? "div#onActionCancelEditing>a.action-link" :
             "div[id$='default-actionSet']>div.document-cancel-editing>a.action-link"; 
         cancelEditOffLineBtn = By.cssSelector(selector);
     }
@@ -131,4 +136,41 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
         catch (NoSuchElementException nse) { }
         return FactorySharePage.resolvePage(drone);
     }
+    
+    /**
+     * Mimics the action of clicking on View Original Document link
+     * @return
+     */
+    public HtmlPage selectViewOriginalDocument()
+    {
+    	try
+        {
+            WebElement link = drone.findAndWait(By.cssSelector(VIEW_ORIGINAL_DOCUMENT));
+            link.click();
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageOperationException("Unable to select View Original Document ", e);
+        }
+    	return FactorySharePage.resolvePage(drone);
+    }
+    
+    /**
+     * Mimics the action of clicking on View Working Copy link
+     * @return
+     */
+    public DocumentEditOfflinePage selectViewWorkingCopy()
+    {
+    	try
+        {
+            WebElement link = drone.findAndWait(By.cssSelector(VIEW_WORKING_COPY));
+            link.click();
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageOperationException("Unable to select View Working Copy ", e);
+        }
+    	return new DocumentEditOfflinePage(drone);
+    }
+    
 }

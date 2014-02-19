@@ -15,9 +15,9 @@ import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.MyProfilePage;
+import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
-import org.alfresco.po.share.util.FailedTestListener;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -43,9 +43,8 @@ public class SelectSyncToCloudTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName1 = "Site-1" + System.currentTimeMillis();
         file1 = SiteUtil.prepareFile("File-1"+System.currentTimeMillis());

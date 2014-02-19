@@ -54,7 +54,7 @@ public abstract class SearchResultsPage extends SharePage
     private static final String CURRENT_POSITION_CSS = "span.yui-pg-current-page.yui-pg-page";
     private static final String PAGINATION_BUTTON_NEXT = "a.yui-pg-next";
     private static final String PAGINATION_BUTTON_PREVIOUS = "a.yui-pg-previous";
-    private final String GO_TO_ADVANCED_SEACH;
+    private final String goToAdvancedSearch;
     private static final String SORT_BY_RELEVANCE ="button[id$='default-sort-menubutton-button']";
     private static final String SORT_LIST = "span[id$='-sort-menubutton'] + div>div.bd>ul>li>a";
     
@@ -63,14 +63,14 @@ public abstract class SearchResultsPage extends SharePage
      */
     public SearchResultsPage(WebDrone drone)
     {
-        super(drone);
+        super(drone);                
         switch (alfrescoVersion)
         {
         case Enterprise41:
-            GO_TO_ADVANCED_SEACH = ".navigation-item.forwardLink>a";
+            goToAdvancedSearch = ".navigation-item.forwardLink>a";
             break;       
         default:
-            GO_TO_ADVANCED_SEACH = "span#HEADER_ADVANCED_SEARCH_text";
+            goToAdvancedSearch = "span#HEADER_ADVANCED_SEARCH_text";
             break;
         }
     }
@@ -91,7 +91,9 @@ public abstract class SearchResultsPage extends SharePage
                 if(drone.find(By.cssSelector(SEARCH_INFO_DIV)).isDisplayed())
                 {
                     if(completedSearch())
-                    break;
+                    {
+                        break;
+                    }
                 }
             }
             catch (Exception e){}
@@ -399,7 +401,10 @@ public abstract class SearchResultsPage extends SharePage
      */
     public HtmlPage selectItem(String title)
     {
-        if(title == null || title.isEmpty()) throw new IllegalArgumentException("Title is required");
+        if(title == null || title.isEmpty())
+        {
+            throw new IllegalArgumentException("Title is required");
+        }
         drone.find(By.xpath(String.format("//h3/a[text()='%s']",title))).click();
         return FactorySharePage.getUnknownPage(drone);
     }
@@ -451,7 +456,7 @@ public abstract class SearchResultsPage extends SharePage
      */
     public HtmlPage goBackToAdvanceSearch()
     {
-        drone.find(By.cssSelector(GO_TO_ADVANCED_SEACH)).click();
+        drone.find(By.cssSelector(goToAdvancedSearch)).click();
         return FactorySharePage.resolvePage(drone);
     }
     
@@ -479,7 +484,7 @@ public abstract class SearchResultsPage extends SharePage
         }
         catch (TimeoutException nse)
         {
-            throw new NoSuchElementException("Sort link is not found");
+            throw new NoSuchElementException("Sort link is not found", nse);
         }
     }
     

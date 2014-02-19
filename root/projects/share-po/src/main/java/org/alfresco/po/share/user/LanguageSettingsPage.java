@@ -83,7 +83,7 @@ public class LanguageSettingsPage extends SharePage
 
     public ProfileNavigation getProfileNav()
     {
-        return ProfileNavigation.getInstance(drone);
+        return new ProfileNavigation(drone);
     }
 
     /**
@@ -98,13 +98,10 @@ public class LanguageSettingsPage extends SharePage
             Select languageDropDown = new Select(drone.find(LANGUAGE_DROP_DOWN));
             languageDropDown.selectByValue(language.getLanguageValue());
             drone.find(OK_BUTTON).click();
-//            drone.setLanguage(language);
-//            drone.getWebProperties().setLanguageProperties(null);
-            //TODO
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element" + nse.getMessage());
+            throw new PageException("Unable to find Element", nse);
         }
         return this;
     }
@@ -123,7 +120,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element" + nse.getMessage());
+            throw new PageException("Unable to find Element", nse);
         }
     }
 
@@ -140,9 +137,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element" + nse.getMessage());
+            throw new PageException("Unable to find Element", nse);
         }
     }
-
-
 }

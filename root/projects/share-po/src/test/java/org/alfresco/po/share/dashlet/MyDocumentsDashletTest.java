@@ -1,4 +1,3 @@
-package org.alfresco.po.share.dashlet;
 ///*
 // * Copyright (C) 2005-2012 Alfresco Software Limited.
 // *

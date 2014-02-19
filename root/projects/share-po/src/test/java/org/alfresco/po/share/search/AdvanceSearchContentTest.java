@@ -36,9 +36,9 @@ import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.MimeType;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
-import org.junit.Assert;
+import org.alfresco.po.share.util.SiteUtil;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -81,7 +81,7 @@ public class AdvanceSearchContentTest extends AbstractTest
         SiteUtil.createSite(drone, siteName, "Public");
         SitePage site = drone.getCurrentPage().render();
         DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
-        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload();
+        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
         docPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
         DocumentDetailsPage docDetailsPage = docPage.selectFile(fileName).render();
         EditDocumentPropertiesPage editPage = docDetailsPage.selectEditProperties().render();
@@ -170,19 +170,19 @@ public class AdvanceSearchContentTest extends AbstractTest
         Assert.assertEquals(username, contentSearchPage.getModifier());
     }
 
-//    /**
-//     * Test to validate mime type
-//     */
-//    @Test(groups={"Enterprise-only","Enterprise4.2Bug"})
-//    public void mimeTypeSearchTest() throws Exception
-//    {
-//        contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
-//        contentSearchPage.selectMimeType("XHTML");
-//        SearchResultsPage searchResults = searchRetry();
-//        Assert.assertTrue(searchResults.hasResults());
-//        searchResults.goBackToAdvanceSearch().render();
-//        // Assert.assertEquals("XHTML",contentSearchPage.getMimeType());
-//    }
+    /**
+     * Test to validate mime type
+     */
+    @Test(groups={"Enterprise-only","Enterprise4.2Bug"})
+    public void mimeTypeSearchTest() throws Exception
+    {
+        contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
+        contentSearchPage.selectMimeType("XHTML");
+        SearchResultsPage searchResults = searchRetry();
+        Assert.assertTrue(searchResults.hasResults());
+        searchResults.goBackToAdvanceSearch().render();
+        // Assert.assertEquals("XHTML",contentSearchPage.getMimeType());
+    }
 
     /**
      * This Test is to check when I pass Null value to the keyword field and
@@ -345,7 +345,7 @@ public class AdvanceSearchContentTest extends AbstractTest
         docPage = folderPage.createNewFolder("TestFolder", "testFolder Description").render();
         docPage.selectFolder("TestFolder").render();
         
-        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload();
+        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
         docPage = (DocumentLibraryPage) upLoadPage.uploadFile(newFile.getCanonicalPath());
         docPage.render();
         

@@ -16,8 +16,8 @@ import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
  * @version 1.6.1
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = "Enterprise-only")
+@Test(groups="Enterprise-only")
 public class DocumentLibraryPageTagTest extends AbstractTest
 {
     private static String siteName;
@@ -48,9 +48,8 @@ public class DocumentLibraryPageTagTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
 
@@ -85,29 +84,37 @@ public class DocumentLibraryPageTagTest extends AbstractTest
     @Test
     public void testEditingTagAndCancelChanges() throws Exception
     {
+        List<FileDirectoryInfo> results = documentLibPage.render().getFiles();
+
         int i = 0;
-        FileDirectoryInfo content = documentLibPage.getFiles().get(i);
-        Assert.assertTrue(content.getContentEditInfo().contains("Created just now by "));
+        for (FileDirectoryInfo content : results)
+        {
+            if (!content.isTypeFolder())
+            {
+                Assert.assertTrue(content.getContentEditInfo().contains("Created just now by "));
 
-        // Get Node reference
-        Assert.assertNotNull(content.getContentNodeRef(), "Node Reference is null");
+                // Get Node reference
+                Assert.assertNotNull(content.getContentNodeRef(), "Node Reference is null");
 
-        // Tag
-        Assert.assertFalse(content.hasTags());
+                // Tag
+                Assert.assertFalse(content.hasTags());
 
         content.addTag(tags.get(0));
         
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
         content = documentLibPage.getFiles().get(i);
 
-        List<String> contentTags = content.getTags();
-        Assert.assertEquals(contentTags.size(), tags.size());
+                List<String> contentTags = content.getTags();
+                Assert.assertEquals(contentTags.size(), tags.size());
 
-        for (String tagName : contentTags)
-        {
-            content.clickOnAddTag();
-            Assert.assertTrue(content.removeTagButtonIsDisplayed(tagName));
-            content.clickOnTagCancelButton();
+                for (String tagName : contentTags)
+                {
+                    content.clickOnAddTag();
+                    Assert.assertTrue(content.removeTagButtonIsDisplayed(tagName));
+                    content.clickOnTagCancelButton();
+                }
+            }
+            i++;
         }
     }
     //Until WD-71 is fixed nonCloud tag will remain as it fails.
@@ -188,19 +195,26 @@ public class DocumentLibraryPageTagTest extends AbstractTest
     public void testEditingTagAndSaveChanges() throws Exception
     {
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
-        FileDirectoryInfo content = documentLibPage.getFiles().get(0);
+        List<FileDirectoryInfo> results = documentLibPage.render().getFiles();
 
-        List<String> contentTags = content.getTags();
-        Assert.assertEquals(contentTags.size(), tags.size());
-
-        for (String tagName : contentTags)
+        for (FileDirectoryInfo content : results)
         {
-            content.clickOnAddTag();
-            content.clickOnTagRemoveButton(tagName);
-            content.clickOnTagSaveButton();
+            if (!content.isTypeFolder())
+            {
+                List<String> contentTags = content.getTags();
+                Assert.assertEquals(contentTags.size(), tags.size());
+
+                for (String tagName : contentTags)
+                {
+                    content.clickOnAddTag();
+                    content.clickOnTagRemoveButton(tagName);
+                    content.clickOnTagSaveButton();
+                }
+            }
         }
         
-        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = (DocumentLibraryPage) documentLibPage.getSiteNav().selectSiteDocumentLibrary();
+        documentLibPage.render();
         
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(file.getName()).hasTags());
     }
@@ -210,6 +224,7 @@ public class DocumentLibraryPageTagTest extends AbstractTest
     {
         DocumentLibraryPage docLib = new DocumentLibraryPage(drone);
         Assert.assertNotNull(docLib.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(null));
+
     }
     
 }

@@ -34,8 +34,7 @@ import org.openqa.selenium.By;
 public class MyProfilePage extends SharePage
 {
     
-    private final By EDIT_PROFILE_BUTTON = By.cssSelector("button[id$='-button-edit-button']");
- 
+    private final By editProfileButton = By.cssSelector("button[id$='-button-edit-button']");
 
     /**
      * Constructor.
@@ -51,7 +50,7 @@ public class MyProfilePage extends SharePage
     @Override
     public MyProfilePage render(RenderTime timer)
     {
-        elementRender(timer, RenderElement.getVisibleRenderElement(EDIT_PROFILE_BUTTON));
+        elementRender(timer, RenderElement.getVisibleRenderElement(editProfileButton));
         return this;
     }
 
@@ -84,6 +83,6 @@ public class MyProfilePage extends SharePage
 
     public ProfileNavigation getProfileNav()
     {
-        return ProfileNavigation.getInstance(drone);
+        return new ProfileNavigation(drone);
     }
 }

@@ -106,7 +106,7 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
             
             if(element != null)
             {
-                details.setContent(element.getText());
+                details.setContent(element.getAttribute("value"));
             }
         }
         return details;

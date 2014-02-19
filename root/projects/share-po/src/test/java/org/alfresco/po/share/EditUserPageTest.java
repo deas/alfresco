@@ -25,7 +25,7 @@ public class EditUserPageTest extends AbstractTest
     private DashBoardPage dashBoard;
     private String userinfo = "user" + System.currentTimeMillis() + "@test.com";
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups = {"Enterprise-only", "Cloud-only"})
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -34,7 +34,8 @@ public class EditUserPageTest extends AbstractTest
 
     private void createUser() throws Exception
     {
-        if (!alfrescoVersion.isCloud())
+    	AlfrescoVersion version = drone.getProperties().getVersion();
+        if (!version.isCloud())
         {
             UserSearchPage page = dashBoard.getNav().getUsersPage().render();
             NewUserPage newPage = page.selectNewUser().render();

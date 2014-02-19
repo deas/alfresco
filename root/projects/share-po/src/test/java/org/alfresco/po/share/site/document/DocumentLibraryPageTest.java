@@ -14,9 +14,12 @@ import java.util.List;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.exception.PageException;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -31,11 +34,12 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
+@Test(groups={"Firefox17Ent"})
 public class DocumentLibraryPageTest extends AbstractDocumentTest
 {
     private static final String NEW_TEST_FILENAME = "test.txt";
     private static String siteName;
-    private static String folderName, folderName2, folderName3;
+    private static String folderName, folderName2, folderName3, folderNameDelete;
     private static String folderDescription;
     private static DocumentLibraryPage documentLibPage;
     private File file1;
@@ -46,14 +50,14 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups="alfresco-one")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";
         folderName2 = folderName + "-1";
         folderName3 = folderName + "-2";
+        folderNameDelete = folderName + "delete";
         folderDescription = String.format("Description of %s", folderName);
         ShareUtil.loginAs(drone, shareUrl, username, password).render();
         SiteUtil.createSite(drone, siteName, "description", "Public");
@@ -97,7 +101,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertEquals(files.size(), 0);
         NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
         documentLibPage = newFolderPage.createNewFolder(folderName, folderDescription).render();
-        documentLibPage.selectDetailedView();
+        documentLibPage = (documentLibPage.getNavigation().selectDetailedView()).render();
         
         files = documentLibPage.getFiles();
         FileDirectoryInfo folder = files.get(0);
@@ -125,6 +129,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     {
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
         Assert.assertEquals(fileInfo.getName(), file1.getName());
+        Assert.assertTrue(fileInfo.isEditPropertiesLinkPresent());
         EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
         Assert.assertNotNull(editPage);
         editPage.setDescription("the description");
@@ -206,7 +211,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         List<FileDirectoryInfo> files = documentLibPage.getFiles();
         Assert.assertEquals(files.size(), 0);
-        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
+        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder().render();
         documentLibPage = newFolderPage.createNewFolder(folderName, title, folderDescription).render();
         files = documentLibPage.getFiles();
         FileDirectoryInfo folder = files.get(0);
@@ -222,9 +227,16 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         int noOfFiles = documentLibPage.getFiles().size();
-        documentLibPage = documentLibPage.selectDetailedView();
+        documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectDetailedView()).render();
         Assert.assertNotNull(documentLibPage);
         Assert.assertEquals(documentLibPage.getFiles().size(), noOfFiles);
+    }
+    
+    @Test(dependsOnMethods="selectDetailedView", groups="alfresco-one")
+    public void createFolderSelectCancel() throws Exception
+    {
+        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder().render();
+        documentLibPage = newFolderPage.selectCancel().render();
     }
     
     @Test
@@ -240,7 +252,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
      * @author sprasanna 
      * @throws Exception 
      */
-    @Test(dependsOnMethods = "selectDetailedView", groups="alfresco-one")
+    @Test(dependsOnMethods = "createFolderSelectCancel", groups="alfresco-one")
     public void isContentUploadedSucessfulTest() throws Exception
     {
         File file1 = SiteUtil.prepareFile();
@@ -260,14 +272,14 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     {
         drone.refresh();//refresh to unselect rows
         documentLibPage = drone.getCurrentPage().render();
-        documentLibPage = documentLibPage.getNavigation().clickSelectedItems();
+        documentLibPage = documentLibPage.getNavigation().clickSelectedItems().render();
     }
     
     @Test(dependsOnMethods="clickSelectedItemsWithException", groups="Enterprise4.2")
     public void clickSelectedItems()
     {
         documentLibPage.getFileDirectoryInfo(folderName).selectCheckbox();
-        documentLibPage = documentLibPage.getNavigation().clickSelectedItems();
+        documentLibPage = documentLibPage.getNavigation().clickSelectedItems().render();
         Assert.assertTrue(documentLibPage.getNavigation().isSelectedItemMenuVisible());
     }
     
@@ -281,7 +293,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     public void selectAll() throws Exception
     {
         documentLibPage.render();
-        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        UploadFilePage uploadForm = documentLibPage.getNavigation().render().selectFileUpload().render();
         documentLibPage = (DocumentLibraryPage) uploadForm.uploadFile(file2.getCanonicalPath());
         documentLibPage.render();
         documentLibPage = documentLibPage.getNavigation().selectAll().render();
@@ -291,5 +303,156 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
             Assert.assertTrue(file.isCheckboxSelected());
         }
     }
+    @Test(dependsOnMethods="selectAll", groups="Enterprise4.2")
+    public void deleteFolderFromNavigation() throws Exception
+    {
+        documentLibPage.render();
+        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
+        documentLibPage = newFolderPage.createNewFolder(folderNameDelete, folderDescription).render();
+        documentLibPage.getFileDirectoryInfo(folderNameDelete).selectCheckbox();
+        ConfirmDeletePage deletePage= documentLibPage.getNavigation().render().selectDelete().render();
+        deletePage.selectAction(Action.Delete).render();
+    }
     
-}
+    @Test(dependsOnMethods="deleteFolderFromNavigation", groups="Enterprise4.2")
+    public void selectCopyTo() throws Exception
+    {
+    	String copyToFolder = "copyFolder";
+    	NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
+    	documentLibPage = newFolderPage.createNewFolder(copyToFolder, copyToFolder).render();
+    	documentLibPage.getFileDirectoryInfo(copyToFolder).selectCheckbox();    	
+    	CopyOrMoveContentPage copyTo = documentLibPage.getNavigation().render().selectCopyTo().render();
+    	documentLibPage = copyTo.selectOkButton().render();
+  
+    	for (FileDirectoryInfo dirInfo: documentLibPage.getFiles()  ) {
+    		boolean isCopied = dirInfo.getName().contains("Copy of") ? true : false;
+			if(isCopied)
+			{
+				Assert.assertTrue(dirInfo.getName().contains(copyToFolder));
+			}
+		}
+        
+    }
+    
+    
+    @Test(dependsOnMethods="selectCopyTo", groups="Enterprise4.2")
+    public void selectMoveTo() throws Exception
+    {
+        String moveToFolder = "moveFolder";
+        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
+        documentLibPage = newFolderPage.createNewFolder(moveToFolder, moveToFolder).render();
+        documentLibPage.getFileDirectoryInfo(moveToFolder).selectCheckbox();        
+        CopyOrMoveContentPage copyTo = documentLibPage.getNavigation().render().selectMoveTo().render();
+        documentLibPage = copyTo.selectOkButton().render();
+  
+        for (FileDirectoryInfo dirInfo: documentLibPage.getFiles()  ) {
+            boolean isMoved = dirInfo.getName().contains("Move of") ? true : false;
+            if(isMoved)
+            {
+                Assert.assertTrue(dirInfo.getName().contains(moveToFolder));
+            }
+        }
+        
+    }
+    
+    /**
+     * test to upload new version 
+     * @author sprasanna
+     * @throws Exception
+     */ 
+    @Test(dependsOnMethods="selectMoveTo", groups="Enterprise4.2")
+    public void selectUploadNewVersion() throws Exception
+    {
+        File tempFile = SiteUtil.prepareFile();
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        UpdateFilePage updateFilePage =  documentLibPage.getFileDirectoryInfo(tempFile.getName()).selectUploadNewVersion().render();
+        updateFilePage.selectMajorVersionChange();
+        updateFilePage.selectCancel();
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertTrue(documentLibPage.getTitle().contains("Document Library"));
+    } 
+    
+    /**
+     * Select Delete and perform cancel and OK action 
+     * @author sprasanna 
+     * @throws Exception 
+     * 
+     */
+    
+    @Test(dependsOnMethods="selectUploadNewVersion", groups="Enterprise4.2")
+    public void selectDeleteforContent() throws Exception
+    {
+       documentLibPage.render();
+       FileDirectoryInfo file;
+        ConfirmDeletePage confirmdialog;
+        int fileSize = 0;
+        File tempFile = SiteUtil.prepareFile();
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        file = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        confirmdialog = file.selectDelete().render();
+        documentLibPage = ((DocumentLibraryPage) confirmdialog.selectAction(Action.Cancel)).render();
+        fileSize = documentLibPage.getFiles().size();
+        Assert.assertTrue(documentLibPage.getTitle().contains("Document Library"));
+        file = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        confirmdialog = file.selectDelete().render();
+        documentLibPage = ((DocumentLibraryPage) confirmdialog.selectAction(Action.Delete)).render();
+        Assert.assertEquals(documentLibPage.getFiles().size(), fileSize-1);
+    } 
+    
+    @Test( dependsOnMethods="selectDeleteforContent" , groups="Enterprise4.2")
+    public void testTagsCount() throws IOException
+    {
+        String tagName = "tagcount";
+        File tempFile = SiteUtil.prepareFile();
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        DocumentDetailsPage detailsPage = documentLibPage.selectFile(tempFile.getName()).render();
+        EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
+        TagPage tagPage = propertiesPage.getTag().render();
+        tagPage = tagPage.enterTagValue(tagName).render();
+        propertiesPage = tagPage.clickOkButton().render();
+        detailsPage = propertiesPage.selectSave().render();
+        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(tagName).render();
+        
+        Assert.assertNotNull(documentLibPage);
+        Assert.assertTrue(documentLibPage.getTagsCountUnderTagsTreeMenuOnDocumentLibrary(tagName) == 1);
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+    }
+    
+    @Test( dependsOnMethods="testTagsCount" , groups="Enterprise4.2")
+    public void testDocumentsTree() throws IOException
+    {
+        Assert.assertTrue(documentLibPage.isDocumentsTreeExpanded());
+        documentLibPage.clickDocumentsTreeExpanded();
+        Assert.assertFalse(documentLibPage.isDocumentsTreeExpanded());
+        documentLibPage.clickDocumentsTreeExpanded();
+    }
+    
+    @Test(dependsOnMethods="testDocumentsTree", groups="Enterprise4.2")
+    public void selectStartWorkFlow() throws Exception
+    {
+        documentLibPage.render();
+        File tempFile = SiteUtil.prepareFile();
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        
+        if(documentLibPage.getFileDirectoryInfo("copyFolder").isCheckboxSelected())
+        {
+            documentLibPage.getFileDirectoryInfo("copyFolder").selectCheckbox();
+        }
+        
+        if(!documentLibPage.getFileDirectoryInfo(tempFile.getName()).isCheckboxSelected())
+        {
+            documentLibPage.getFileDirectoryInfo(tempFile.getName()).selectCheckbox();
+        }
+        
+        StartWorkFlowPage workFlowPage= documentLibPage.getNavigation().render().selectStartWorkFlow().render();
+        
+        Assert.assertNotNull(workFlowPage);
+        Assert.assertTrue(workFlowPage.getTitle().contains("Start Workflow"));
+    }
+ }
+    

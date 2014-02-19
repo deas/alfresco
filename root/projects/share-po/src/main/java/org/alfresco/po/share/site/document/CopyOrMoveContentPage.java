@@ -1,7 +1,23 @@
-/**
- * 
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
@@ -9,7 +25,9 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -33,22 +51,20 @@ public class CopyOrMoveContentPage  extends SharePage
 {
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
 
-    private final RenderElement FOOTER_ELEMENT = getVisibleRenderElement(By.cssSelector("div[id$='default-copyMoveTo-wrapper'] div.bdft"));
-    private final RenderElement HEADER_ELEMENT = getVisibleRenderElement(By.cssSelector("div[id$='default-copyMoveTo-title']"));
-    private final RenderElement FOLDER_PATH_ELEMENT = getVisibleRenderElement(By.cssSelector("div[id$='default-copyMoveTo-treeview']>div.ygtvitem"));
-
-    private final By DESTINATION_LIST_CSS = By.cssSelector(".mode.flat-button>div>span>span>button");
-    private final By SITE_LIST_CSS = By.cssSelector("div.site>div>div>a>h4");
-    private final By DEFAULT_DOCUMENTS_FOLDER_CSS = By
-            .cssSelector("div.path>div[id$='default-copyMoveTo-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel");
-    private final By FOLDER_ITEMS_LIST_CSS = By.cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable span.ygtvlabel");
-    private final By SELECTED_FOLDER_ITEMS_LIST_CSS = By
-            .cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem.selected>div.ygtvchildren>div.ygtvitem span.ygtvlabel");
-    private final By COPY_MOVE_OK_BUTTON_CSS = By.cssSelector("button[id$='default-copyMoveTo-ok-button']");
-    private final By COPY_MOVE_CANCEL_BUTTON_CSS = By.cssSelector("button[id$='default-copyMoveTo-cancel-button']");
-    private final By COPY_MOVE_DIALOG_CLOSE_BUTTON_CSS = By.cssSelector("div[id$='default-copyMoveTo-dialog'] .container-close");
-    private final By COPY_MOVE_DIALOG_TITLE_CSS = By.cssSelector("div[id$='default-copyMoveTo-title']");
-    
+    private final By folderPathElementId = By.cssSelector("div[id$='default-copyMoveTo-treeview']>div.ygtvitem, div[id$='_default-ruleConfigAction-destinationDialog-treeview']>div.ygtvitem");
+    private final RenderElement footerElement = getVisibleRenderElement(By.cssSelector("div[id$='default-copyMoveTo-wrapper'] div.bdft, div[id$='_default-ruleConfigAction-destinationDialog-wrapper'] div.bdft"));
+    private final RenderElement headerElement = getVisibleRenderElement(By.cssSelector("div[id$='default-copyMoveTo-title'], div[id$='_default-ruleConfigAction-destinationDialog-title']"));
+    private final By destinationListCss = By.cssSelector(".mode.flat-button>div>span>span>button");
+    private final By siteListCss = By.cssSelector("div.site>div>div>a>h4");
+    private final By defaultDocumentsFolderCss = By.cssSelector("div.path>div[id$='default-copyMoveTo-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel,"
+            + "div.path>div[id$='_default-ruleConfigAction-destinationDialog-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel");
+    private final By folderItemsListCss = By.cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable span.ygtvlabel");
+    private final By selectedFolderItemsListCss = By.cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem.selected>div.ygtvchildren>div.ygtvitem span.ygtvlabel");
+    private final By copyMoveOkButtonCss = By.cssSelector("button[id$='default-copyMoveTo-ok-button'], button[id$='_default-ruleConfigAction-destinationDialog-ok-button']");
+    private final By copyMoveCancelButtonCss = By.cssSelector("button[id$='default-copyMoveTo-cancel-button'], button[id$='_default-ruleConfigAction-destinationDialog-cancel']");
+    private final By copyMoveDialogCloseButtonCss = By.cssSelector("div[id$='default-copyMoveTo-dialog'] .container-close, div[id$='_default-ruleConfigAction-destinationDialog-dialog'] .container-close");
+    private final By copyMoveDialogTitleCss = By.cssSelector("div[id$='default-copyMoveTo-title'], div[id$='_default-ruleConfigAction-destinationDialog-title']");
+   
     /**
      * Constructor.
      *
@@ -57,13 +73,14 @@ public class CopyOrMoveContentPage  extends SharePage
     public CopyOrMoveContentPage(WebDrone drone)
     {
         super(drone);
+    
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public CopyOrMoveContentPage render(RenderTime timer)
     {
-        elementRender(timer, HEADER_ELEMENT, FOOTER_ELEMENT, FOLDER_PATH_ELEMENT);
+        elementRender(timer, headerElement, footerElement);
         return this;
     }
 
@@ -86,19 +103,18 @@ public class CopyOrMoveContentPage  extends SharePage
      * 
      * @return String
      */
+    
     public String getDialogTitle()
     {
         String title = "";
-
         try
         {
-            title = drone.findAndWait(COPY_MOVE_DIALOG_TITLE_CSS).getText();
+            title = drone.findAndWait(copyMoveDialogTitleCss).getText();
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to find the Copy/Move Dialog Css : " + e.getMessage());
+            logger.warn("Unable to find the Copy/Move Dialog Css : " + e.getMessage());
         }
-
         return title;
     }
     
@@ -111,19 +127,17 @@ public class CopyOrMoveContentPage  extends SharePage
     public List<String> getDestinations()
     {
         List<String> destinations = new LinkedList<String>();
-
         try
         {
-            for (WebElement destination : drone.findAndWaitForElements(DESTINATION_LIST_CSS))
+            for (WebElement destination : drone.findAndWaitForElements(destinationListCss))
             {
                 destinations.add(destination.getText());
             }
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to get the list of destionations : " + e.getMessage());
+            logger.warn("Unable to get the list of destionations : " + e.getMessage());
         }
-
         return destinations;
     }
     
@@ -139,14 +153,14 @@ public class CopyOrMoveContentPage  extends SharePage
 
         try
         {
-            for (WebElement site : drone.findAndWaitForElements(SITE_LIST_CSS))
+            for (WebElement site : drone.findAndWaitForElements(siteListCss))
             {
                 sites.add(site.getText());
             }
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to get the list of sites : " + e.getMessage());
+            logger.warn("Unable to get the list of sites : " + e.getMessage());
         }
 
         return sites;
@@ -161,60 +175,60 @@ public class CopyOrMoveContentPage  extends SharePage
     public List<String> getFolders()
     {
         List<String> folders = new LinkedList<String>();
-
         try
         {
-            for (WebElement folder : drone.findAndWaitForElements(FOLDER_ITEMS_LIST_CSS))
+            for (WebElement folder : drone.findAndWaitForElements(folderItemsListCss))
             {
                 folders.add(folder.getText());
             }
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to get the list of folders : " + e.getMessage());
+            logger.warn("Unable to get the list of folders : " + e.getMessage());
         }
-
         return folders;
     }
     
     /**
      * This method finds the clicks on copy/move button.
      * 
-     * @return DocumentLibraryPage
+     * @return HtmlPage Document library page/ Repository Page
      */
-    public DocumentLibraryPage selectOkButton()
+    public HtmlPage selectOkButton()
     {
         try
         {
-            drone.findAndWait(COPY_MOVE_OK_BUTTON_CSS).click();
-
-            drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-            drone.waitUntilElementDeletedFromDom(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-
-            return new DocumentLibraryPage(drone);
-        }
+            drone.findAndWait(copyMoveOkButtonCss).click();
+            drone.waitForElement(By.cssSelector("div.bd>span.message"),
+                    SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilElementDeletedFromDom(By.cssSelector("div.bd>span.message"),
+                    SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return FactorySharePage.resolvePage(drone);
+        } 
         catch (TimeoutException e)
         {
             logger.error("Unable to find the Copy/Move Button Css : " + e.getMessage());
-            throw new PageException("Unable to find the Copy/Move button on Copy/Move Dialog.");
+            throw new PageException("Unable to find the Copy/Move button on Copy/Move Dialog.", e);
         }
     }
     
+    
     /**
      * This method finds the clicks on cancel button and 
-     * control will be on DocumentLibraryPage only.
+     * control will be on HTML page DocumentLibrary Page/Repository Page
      * 
      */
-    public void selectCancelButton()
+    public HtmlPage selectCancelButton()
     {
         try
         {
-            drone.findAndWait(COPY_MOVE_CANCEL_BUTTON_CSS).click();
+            drone.findAndWait(copyMoveCancelButtonCss).click();
+            return FactorySharePage.resolvePage(drone);
         }
         catch (TimeoutException e)
         {
             logger.error("Unable to find the cancel button Css : " + e.getMessage());
-            throw new PageException("Unable to find the cancel button on Copy/Move Dialog.");
+            throw new PageException("Unable to find the cancel button on Copy/Move Dialog.", e);
         }
     }
     
@@ -227,12 +241,12 @@ public class CopyOrMoveContentPage  extends SharePage
     {
         try
         {
-            drone.findAndWait(COPY_MOVE_DIALOG_CLOSE_BUTTON_CSS).click();
+            drone.findAndWait(copyMoveDialogCloseButtonCss).click();
         }
         catch (TimeoutException e)
         {
             logger.error("Unable to find the close button Css : " + e.getMessage());
-            throw new PageException("Unable to find the close button on Copy/Move Dialog.");
+            throw new PageException("Unable to find the close button on Copy/Move Dialog.", e);
         }
     }
     
@@ -249,18 +263,23 @@ public class CopyOrMoveContentPage  extends SharePage
         {
             throw new IllegalArgumentException("Destination name is required");
         }
-
         try
         {
-            for (WebElement destination : drone.findAndWaitForElements(DESTINATION_LIST_CSS))
+            for (WebElement destination : drone.findAndWaitForElements(destinationListCss))
             {
                 if (destination.getText() != null)
                 {
                     if (destination.getText().equalsIgnoreCase(destinationName))
                     {
                         destination.click();
-                        drone.waitForElement(SITE_LIST_CSS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-
+                        if(destinationName.contains("Sites"))
+                        {
+                        drone.waitForElement(siteListCss, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        }
+                        else if ((destinationName.contains("Repository")) || (destinationName.contains("Shared Files")) || (destinationName.contains("My Files")))
+                        { 
+                            drone.waitForElement(folderPathElementId, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        }
                         return new CopyOrMoveContentPage(drone);
                     }
                 }
@@ -268,11 +287,11 @@ public class CopyOrMoveContentPage  extends SharePage
         }
         catch (NoSuchElementException ne)
         {
-            logger.error("Unable to find the inner text of destionation : " + ne.getMessage());
+            logger.error("Unable to find the inner text of destionation", ne);
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to get the list of destionations : " + e.getMessage());
+            logger.error("Unable to get the list of destionations",e);
         }
 
         throw new PageOperationException("Unable to select Destination : " + destinationName);
@@ -294,28 +313,29 @@ public class CopyOrMoveContentPage  extends SharePage
 
         try
         {
-            for (WebElement site : drone.findAndWaitForElements(SITE_LIST_CSS))
+            for (WebElement site : drone.findAndWaitForElements(siteListCss))
             {
                 if (site.getText() != null)
                 {
                     if (site.getText().equalsIgnoreCase(siteName))
                     {
                         site.click();
-                        drone.waitForElement(DEFAULT_DOCUMENTS_FOLDER_CSS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                        drone.waitForElement(FOLDER_ITEMS_LIST_CSS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        drone.waitForElement(defaultDocumentsFolderCss, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        drone.waitForElement(folderItemsListCss, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
 
                         return new CopyOrMoveContentPage(drone);
                     }
                 }
             }
+            throw new PageOperationException("Unable to find the site: " + siteName);
         }
         catch (NoSuchElementException ne)
         {
-            logger.error("Unable to find the inner text of site : " + ne.getMessage());
+            logger.error("Unable to find the inner text of site", ne);
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to get the list of sites : " + e.getMessage());
+            logger.error("Unable to get the list of sites", e);
         }
 
         throw new PageOperationException("Unable to select site.");
@@ -328,7 +348,7 @@ public class CopyOrMoveContentPage  extends SharePage
      * @param folderPath
      * @return CopyOrMoveContentPage
      */
-    public CopyOrMoveContentPage selectFolder(String... folderPath)
+    public CopyOrMoveContentPage selectPath(String... folderPath)
     {
         if (folderPath == null || folderPath.length < 1)
         {
@@ -340,34 +360,50 @@ public class CopyOrMoveContentPage  extends SharePage
         {
             for (String folder : folderPath)
             {
-                length--;
-                drone.waitForElement(FOLDER_ITEMS_LIST_CSS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                folderNames = drone.findAndWaitForElements(FOLDER_ITEMS_LIST_CSS);
+                try
+                {
+                    drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+                } 
+                catch (TimeoutException e) {}
+                //drone.waitFor(WAIT_TIME_3000);
+                folderNames = drone.findAndWaitForElements(folderItemsListCss);
+                boolean selected = false;
                 for (WebElement folderName : folderNames)
                 {
-                    if (folderName.getText().equals(folder))
-                    {
+                    if (folderName.getText().equalsIgnoreCase(folder))
+                    {   
+                        selected = true;
                         folderName.click();
                         logger.info("Folder \"" + folder + "\" selected");
-                        if (length > 0)
+                        if (length > 1)
                         {
-                            drone.waitForElement(FOLDER_ITEMS_LIST_CSS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                            drone.waitForElement(SELECTED_FOLDER_ITEMS_LIST_CSS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                            drone.waitForElement(folderItemsListCss, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                            drone.waitForElement(selectedFolderItemsListCss, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         }
                         break;
                     }
+                }
+                length--;
+                if (!selected)
+                {
+                   throw new PageException("Cannot select the folder metioned in the path");
                 }
             }
             return new CopyOrMoveContentPage(drone);
         }
         catch (NoSuchElementException ne)
         {
-            logger.error("Unable find the folder name. " + ne.getMessage());
+            logger.error("Unable find the folder name. ", ne);
         }
         catch (TimeoutException te)
         {
-            logger.error("Unable find the folders css. " + te.getMessage());
+            logger.error("Unable find the folders css. ", te);
         }
         throw new PageOperationException("Unable to select the folder path.");
+    }
+
+    protected By getCopyMoveOkButtonCss()
+    {
+        return copyMoveOkButtonCss;
     }
 }

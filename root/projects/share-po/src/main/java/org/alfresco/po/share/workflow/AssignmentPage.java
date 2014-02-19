@@ -18,18 +18,26 @@
  */
 package org.alfresco.po.share.workflow;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.ElementState;
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -38,20 +46,37 @@ import org.openqa.selenium.WebElement;
  * Assignment page is to select the cloud reviewer in the workflow start form.
  * 
  * @author Siva Kaliyappan
+ * @author Shan Nagarajan
  * @since 1.6.2
  */
 public class AssignmentPage extends SharePage
 {
+    private static final int LOADING_WAIT_TIME = 2000;
     private static Log logger = LogFactory.getLog(AssignmentPage.class);
-    private static final By SEARCH_TEXT = By.cssSelector("div[style^='visibility: visible'] input[id$='searchText']");
-    private static final By SEARCH_BUTTON = By.cssSelector("div[style^='visibility: visible'] button[id$='searchButton-button']");
-    private static final By OK_BUTTON = By.cssSelector("div[style^='visibility: visible'] button[id$='cntrl-ok-button']");
-    private static final By SELECT_CLOUD_REVIEWER = By.cssSelector("a[title='Add']>span");
-    private static final By WAIT_CLOUD_REVIEWER = (By.cssSelector("div[style^='visibility: visible'] div[id$='cntrl-picker-results']>table>tbody>tr>td>div>h3, div[id$='-cntrl-picker-left']>div[id$='_assignment-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner"));
-    private static final By LIST_CLOUD_REVIEWER = (By.cssSelector("div[style^='visibility: visible'] div[id$='picker-results']"));
+    private static final By SEARCH_TEXT = By.cssSelector("input[id$='searchText']");
+    private static final By SEARCH_BUTTON = By.xpath("//button[contains(@id, 'searchButton-button')]");
+    private static final By OK_BUTTON = By.cssSelector("button[id$='cntrl-ok-button']");
+    private static final By CANCEL_BUTTON = By.cssSelector("button[id$='cntrl-cancel-button']");
+    private static final By SELECT_CLOUD_REVIEWER = By.xpath("//a[starts-with(@class, 'add-item')]");
+    private static final By LIST_CLOUD_REVIEWER = (By.cssSelector("div[id$='_assignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr, div[id$='_assignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr"));
+    private static final By SELECTED_USERS = (By.cssSelector("div[id$='_assignee-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr, div[id$='_assignment-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr"));
+    private static final By SEARCH_RESULTS_SECTION = (By.cssSelector("div[id$='_assignee-cntrl-picker-results'], div[id$='_assignment-cntrl-picker-results']"));
+    private static final By SELECTED_ITEMS_SECTION = (By.cssSelector("div[id$='_assignee-cntrl-picker-selectedItems'], div[id$='_assignment-cntrl-picker-selectedItems']"));
+    private static final By CLOSE_BUTTON = (By.cssSelector("div[id$='_assignee-cntrl-picker']>a.container-close, div[id$='_assignment-cntrl-picker']>a.container-close"));
+    private static final By ENTER_A_SEARCH_TERM_MESSAGE = (By.cssSelector("div[id$='-cntrl-picker-left']>div[id$='_assignee-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner, div[id$='-cntrl-picker-left']>div[id$='_assignment-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner"));
+    private static final By WARNING_MESSAGE = (By.cssSelector("div#message_c>div#message>div.bd>span.message"));
+
+    private final RenderElement searchFieldElement = new RenderElement(SEARCH_TEXT, ElementState.PRESENT);
+    private final RenderElement searchButtonElement = new RenderElement(SEARCH_BUTTON, ElementState.PRESENT);
+    private final RenderElement searchResultsSectionElement = getVisibleRenderElement(SEARCH_RESULTS_SECTION);
+    private final RenderElement selectedItemsSectionElement = getVisibleRenderElement(SELECTED_ITEMS_SECTION);
+    private final RenderElement okButtonElement = new RenderElement(OK_BUTTON, ElementState.PRESENT);
+    private final RenderElement cancelButtonElement = new RenderElement(CANCEL_BUTTON, ElementState.PRESENT);
+    private final RenderElement closeButtonElement = getVisibleRenderElement(CLOSE_BUTTON);
+
     /**
      * Constructor.
-     * 
+     *
      * @param drone
      *            WebDriver to access page
      */
@@ -64,7 +89,7 @@ public class AssignmentPage extends SharePage
     @Override
     public AssignmentPage render(RenderTime timer)
     {
-        basicRender(timer);
+        elementRender(timer, searchFieldElement, searchButtonElement, searchResultsSectionElement, selectedItemsSectionElement, okButtonElement, cancelButtonElement, closeButtonElement);
         return this;
     }
 
@@ -83,39 +108,98 @@ public class AssignmentPage extends SharePage
     }
 
     /**
+     * Method to add multiple Users
+     * @param userNames
+     */
+    public void selectUsers(List<String> userNames)
+    {
+        for (String userName : userNames)
+        {
+            selectUser(userName);
+        }
+    }
+
+    /**
+     * Method to add a single user
+     * @param userName
+     */
+    public void selectUser(String userName)
+    {
+        if(StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("User Name can't empty or null.");
+        }
+        List<WebElement> elements = retrieveCloudUsers(userName);
+
+        userName = userName.toLowerCase();
+        for (WebElement webElement : elements) 
+        {
+
+            if(webElement.findElement(By.cssSelector(".item-name")).getText().toLowerCase().contains("("+userName+")"))
+            {
+                drone.mouseOverOnElement(webElement.findElement(SELECT_CLOUD_REVIEWER));
+                webElement.findElement(SELECT_CLOUD_REVIEWER).click();
+                if(!isUserSelected(userName))
+                {
+                    try
+                    {
+                        webElement.findElement(SELECT_CLOUD_REVIEWER).click();
+                    }
+                    catch (ElementNotVisibleException enve)
+                    {
+
+                    }
+                }
+                break;
+            }
+        }
+    }
+    /**
      * Method to select the cloud reviewer and submit.
-     * 
+     *
      * @return Assignment Page return type clod sync cloud user part will be
      *         modified after completing other page objects.
      */
-    public void selectAssignment(List<String> userNames)
+    public void selectReviewers(List<String> userNames)
     {
-        
-        for (String userName : userNames)
-        {
-            List<WebElement> elements = retrieveCloudUsers(userName);
-            for (WebElement webElement : elements) {
-                if(webElement.findElement(By.cssSelector(".item-name")).getText().contains("("+userName+")"))
-                {
-                    Dimension dimension =((WebDroneImpl) drone).getDriver().manage().window().getSize();
-                    ((WebDroneImpl)drone).getDriver().manage().window().maximize();
-                    drone.mouseOverOnElement(webElement.findElement(SELECT_CLOUD_REVIEWER));
-                    webElement.findElement(SELECT_CLOUD_REVIEWER).click();
-                    ((WebDroneImpl)drone).getDriver().manage().window().setSize(dimension);
-                    break;
-                }
-            }
-        }
-        drone.findAndWait(OK_BUTTON).click();
+        selectUsers(userNames);
+        selectOKButton();
     }
-    
+
+    /**
+     * Method to select the cloud assignee and submit.
+     *
+     * @return Assignment Page return type clod sync cloud user part will be
+     *         modified after completing other page objects.
+     */
+    public void selectAssignee(String userName)
+    {
+        selectUser(userName);
+        selectOKButton();
+    }
+
+    public void selectOKButton()
+    {
+        try
+        {
+            getVisibleElement(OK_BUTTON).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find OK button", nse);
+        }
+    }
     /**
      * Method to get the cloud reviewers
-     * 
+     *
      * @return List of users
      */
     public List<WebElement> retrieveCloudUsers(String userName)
     {
+        if(StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("User Name can't empty or null.");
+        }
         try
         {
             searchForUser(userName);
@@ -140,11 +224,15 @@ public class AssignmentPage extends SharePage
         }
         try
         {
-            WebElement searchText = drone.findAndWait(SEARCH_TEXT);
-            searchText.clear();
-            searchText.sendKeys(userName);
-            drone.findAndWait(SEARCH_BUTTON).click();
-            drone.waitForElement(WAIT_CLOUD_REVIEWER, 2);
+            clearSearchField();
+            getVisibleElement(SEARCH_TEXT).sendKeys(userName);
+            selectSearchButton();
+            try
+            {
+                drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(LOADING_WAIT_TIME, MILLISECONDS));
+            } 
+            catch (TimeoutException e) {}
+            //drone.waitFor(LOADING_WAIT_TIME);
         }
         catch (NoSuchElementException nse)
         {
@@ -152,7 +240,7 @@ public class AssignmentPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Search button not found" + toe.getMessage());
+            logger.error("Timed out: " + toe.getMessage());
         }
     }
 
@@ -167,8 +255,16 @@ public class AssignmentPage extends SharePage
         {
             throw new IllegalArgumentException("UserName cannot be null");
         }
-        List<WebElement> users = retrieveCloudUsers(userName);
-        return (users.size() == 1 && users.get(0).getText().equals("No items found"));
+        try
+        {
+            searchForUser(userName);
+            WebElement message = drone.find(By.cssSelector("div[id$='_assignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-message>tr div, div[id$='_assignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-message>tr div"));
+            return message.isDisplayed() && message.getText().equals("No items found");
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
     }
 
     /**
@@ -182,18 +278,257 @@ public class AssignmentPage extends SharePage
         {
             throw new IllegalArgumentException("UserName cannot be null");
         }
-        List<WebElement> users = retrieveCloudUsers(userName);
-        for (WebElement user : users)
+        try
         {
-            if(users.size() == 1 && users.get(0).getText().equals("No items found"))
+            List<WebElement> users = retrieveCloudUsers(userName);
+            for (WebElement user : users)
             {
-                return false;
-            }
-            else if(user.findElement(By.cssSelector(".item-name")).getText().contains("("+userName+")"))
-            {
-                return true;
+                if(user.findElement(By.cssSelector(".item-name")).getText().contains("("+userName+")"))
+                {
+                    return true;
+                }
             }
         }
+        catch (PageException pe)
+        {
+        }
         return false;
+    }
+
+    /**
+     * Method to check "Enter a search term" message is displayed
+     * @return
+     */
+    public boolean isEnterASearchTermMessageDisplayed()
+    {
+        try
+        {
+            return (drone.find(ENTER_A_SEARCH_TERM_MESSAGE).isDisplayed() && drone.find(ENTER_A_SEARCH_TERM_MESSAGE).getText().equals("Enter a search term"));
+        }
+        catch (NoSuchElementException nse)
+        {}
+        return false;
+    }
+
+    /**
+     * Method to clear Search Field
+     */
+    public void clearSearchField()
+    {
+        try
+        {
+            getVisibleElement(SEARCH_TEXT).clear();
+        }
+        catch (NoSuchElementException nse)
+        {
+            if(logger.isErrorEnabled())
+            {
+                logger.error("Unable to find Search Field");
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public void selectSearchButton()
+    {
+        try
+        {
+            getVisibleElement(SEARCH_BUTTON).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Unable to find Search button");
+        }
+    }
+
+    /**
+     * Method to get the warning message (Eg: "Enter at least 1 character(s) to search")
+     * Returns empty string if unable to find the element
+     * This method should be called as soon as the warning message disappears quickly.
+     * @return Warning Message
+     */
+    public String getWarningMessage()
+    {
+        try
+        {
+            return drone.findAndWait(WARNING_MESSAGE).getText();
+        }
+        catch (TimeoutException te)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find Warning Message");
+            }
+            return "";
+        }
+    }
+
+    /**
+     * Method to get User list after search
+     * @param userName
+     * @return List of users
+     */
+    public List<String> getUserList(String userName)
+    {
+        List<WebElement> userElements = retrieveCloudUsers(userName);
+        List<String> userList = new ArrayList<String>(userElements.size());
+        for(WebElement user: userElements)
+        {
+            userList.add(user.getText());
+        }
+        return userList;
+    }
+
+    /**
+     * Method to verify Add Icon is present for a given user
+     * @param userName
+     * @return True if Add icon is present
+     */
+    public boolean isAddIconPresent(String userName)
+    {
+        if(StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("User Name cannot be empty");
+        }
+        List<WebElement> elements = retrieveCloudUsers(userName);
+        boolean isDisplayed = false;
+
+        for (WebElement webElement : elements)
+        {
+            if(webElement.findElement(By.cssSelector(".item-name")).getText().contains("("+userName+")"))
+            {
+                isDisplayed = drone.find(SELECT_CLOUD_REVIEWER).isDisplayed();
+                break;
+            }
+        }
+        return isDisplayed;
+    }
+
+    /**
+     * Method to get Selected User elements
+     * @return List of User Elements
+     */
+    private List<WebElement> getSelectedUserElements()
+    {
+        try
+        {
+            return drone.findAll(SELECTED_USERS);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Users found");
+        }
+        return Collections.<WebElement> emptyList();
+    }
+
+    /**
+     * Method to verify if the given user is selected or not
+     * @param userName
+     * @return True if selected
+     */
+    public boolean isUserSelected(String userName)
+    {
+        if(StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("User Name cannot be empty");
+        }
+        List<WebElement> selectedUsers = getSelectedUserElements();
+        boolean isDisplayed = false;
+        for(WebElement user: selectedUsers)
+        {
+            if (user.findElement(By.cssSelector("h3.name")).getText().contains("("+userName+")"))
+            {
+                isDisplayed = true;
+                break;
+            }
+        }
+        return isDisplayed;
+    }
+
+    /**
+     * Method to remove a user from Selected Users list
+     * @param userName
+     */
+    public void removeUser(String userName)
+    {
+        if(StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("User Name cannot be empty");
+        }
+        List<WebElement> selectedUsers = getSelectedUserElements();
+
+        if(selectedUsers.size() < 1)
+        {
+            throw new PageOperationException("User is not selected.");
+        }
+        
+        for(WebElement user: selectedUsers)
+        {
+            if (user.findElement(By.cssSelector("h3.name")).getText().contains("("+userName+")"))
+            {
+                drone.mouseOverOnElement(user.findElement(By.cssSelector("a.remove-item")));
+                user.findElement(By.cssSelector("a.remove-item")).click();
+                
+                if(isUserSelected(userName))
+                {
+                    try
+                    {
+                        user.findElement(By.cssSelector("a.remove-item")).click();
+                    }
+                    catch (ElementNotVisibleException enve)
+                    {
+
+                    }
+                }
+                
+                break;
+            }
+        }
+    }
+
+    /**
+     * Method to remove given users from Selected Users list
+     * @param userNames List
+     */
+    public void removeUsers(List<String> userNames)
+    {
+        if(userNames == null || userNames.isEmpty())
+        {
+            throw new IllegalArgumentException("User Names list cannot be Null");
+        }
+        for(String userName: userNames)
+        {
+            removeUser(userName);
+        }
+    }
+
+    /**
+     * Method to select Close button
+     */
+    public void selectCloseButton() {
+        try
+        {
+            drone.find(CLOSE_BUTTON).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find Close Button", nse);
+        }
+    }
+
+    /**
+     * Method to select Cancel button
+     */
+    public void selectCancelButton() {
+        try
+        {
+            getVisibleElement(CANCEL_BUTTON).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find Close Button", nse);
+        }
     }
 }

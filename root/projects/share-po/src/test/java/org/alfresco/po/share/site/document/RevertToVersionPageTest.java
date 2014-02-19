@@ -1,4 +1,3 @@
-package org.alfresco.po.share.site.document;
 ///*
 // * Copyright (C) 2005-2012 Alfresco Software Limited. This file is part of Alfresco Alfresco is free software: you can redistribute it and/or modify it under
 // * the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any
@@ -6,14 +5,14 @@ package org.alfresco.po.share.site.document;
 // * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You should have received a copy of the GNU Lesser General
 // * Public License along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
 // */
-//package org.alfresco.webdrone.share.site.document;
+//package org.alfresco.po.share.site.document;
 //
 //import java.io.File;
 //
-//import org.alfresco.webdrone.WebDroneUtil;
-//import org.alfresco.webdrone.share.site.UploadFilePage;
-//import org.alfresco.webdrone.testng.listener.FailedTestListener;
-//import org.alfresco.webdrone.util.SiteUtil;
+//import org.alfresco.po.share.ShareUtil;
+//import org.alfresco.po.share.site.UploadFilePage;
+//import org.alfresco.po.share.util.SiteUtil;
+//import org.alfresco.po.util.FailedTestListener;
 //import org.testng.Assert;
 //import org.testng.annotations.AfterClass;
 //import org.testng.annotations.BeforeClass;
@@ -46,7 +45,7 @@ package org.alfresco.po.share.site.document;
 //    private void prepare() throws Exception
 //    {
 //        siteName = "site" + System.currentTimeMillis();
-//        WebDroneUtil.loginAs(drone, shareUrl, username, password).render();
+//        ShareUtil.loginAs(drone, shareUrl, username, password).render();
 //        SiteUtil.createSite(drone, siteName, "description", "Public");
 //        file1 = SiteUtil.prepareFile("File1");
 //    }
@@ -83,11 +82,10 @@ package org.alfresco.po.share.site.document;
 //        documentDetailsPage = inlineEditPage.save(contentDetails).render();
 //        Assert.assertEquals(documentDetailsPage.getProperties().get("Description"), "Test Description");
 //
-//        RevertToVersionPage revertToVersionPage = documentDetailsPage.selectRevertToVersion("1.0");
-//        revertToVersionPage.render();
+//        RevertToVersionPage revertToVersionPage = documentDetailsPage.selectRevertToVersion("1.0").render();
 //        documentDetailsPage = revertToVersionPage.submit().render();
-//        drone.refresh();
-//        Assert.assertEquals(documentDetailsPage.getProperties().get("Description"), "(None)");
+//        String expected = documentDetailsPage.getProperties().get("Description");
+//        Assert.assertEquals(expected, "(None)");
 //
 //        documentDetailsPage.selectRevertToVersion("test");
 //        Assert.fail("Should have not reached this line as the above statement throw IllegalArgumentException");

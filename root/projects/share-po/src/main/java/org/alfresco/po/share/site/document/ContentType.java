@@ -39,9 +39,8 @@ public enum ContentType
     GOOGLESPREADSHEET     (By.cssSelector("span.spreadsheet-file")),
     GOOGLEPRESENTATION    (By.cssSelector("span.presentation-file"));
       
-    By contentLocator;
-    String getContentDescription ;
-    boolean isGoogleCreate = true;
+    private By contentLocator;
+    private boolean isGoogleCreate = true;
 
     public By getContentLocator()
     {

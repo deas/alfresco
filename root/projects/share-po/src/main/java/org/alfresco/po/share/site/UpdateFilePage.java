@@ -21,13 +21,13 @@ package org.alfresco.po.share.site;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -41,22 +41,32 @@ import org.openqa.selenium.WebElement;
 public class UpdateFilePage extends SharePage
 {
     private static Log logger = LogFactory.getLog(UpdateFilePage.class);
-    
+    private static final String CANCEL_BTN_CSS = "span[id*='%s'] button[id$='default-cancelOk-button-button']";
+    private static final String SUBMIT_BTN_CSS = "span[id*='%s'] button[id$='default-upload-button-button']";
+    private static final String MAJOR_BTN_CSS = "div[id*='%s'] input[id$='majorVersion-radioButton']";
+    private static final String MINOR_BTN_CSS = "div[id*='%s'] input[id$='minorVersion-radioButton']";
+    private static final String TEXT_AREA_CSS = "div[id*='%s'] textarea[id$='-description-textarea']";
 	private static final String PLANIN_HTML_IDENTIFIER = "html-upload";
 	private static final String HTML5_IDENTIFIER = "dnd-upload";
     private static final String NON_HTML5_INPUT_FILE_FIELD = "input[id$='default-filedata-file']";
 	private static final String INPUT_DND_FILE_SELECTION_BUTTON = "input.dnd-file-selection-button";
 	private static final String UPDATE_PAGE_TITLE_SPAN_CSS = "div[id$='html-upload'] span[id$='default-title-span']";
-	protected  String textAreaCssLocation;
-	protected String minorVersionRadioButton;
-	protected  String majorVersionRadioButton;
-    protected  String submitButton;
-    protected String cancelButton;
-    
-    protected final String documentVersion;
+	private String textAreaCssLocation;
+    private String minorVersionRadioButton;
+	private String majorVersionRadioButton;
+	private String submitButton;
+	private String cancelButton;
+	private String documentVersion;
     @SuppressWarnings("unused")
     private final boolean isEditOffLine;
 
+    /**
+     * Constructor.
+     */
+    public UpdateFilePage(WebDrone drone, final String documentVersion)
+    {
+    	this(drone, documentVersion, false);
+    }
     /**
      * Constructor.
      */
@@ -68,46 +78,21 @@ public class UpdateFilePage extends SharePage
         
         //Check if supports HTML5 form input as cloud supports and enterprise doesnt.
         String prefix = alfrescoVersion.isFileUploadHtml5() ? HTML5_IDENTIFIER : PLANIN_HTML_IDENTIFIER;
-        textAreaCssLocation = String.format("div[id*='%s'] textarea[id$='-description-textarea']", prefix);
-        minorVersionRadioButton = String.format("div[id*='%s'] input[id$='minorVersion-radioButton']", prefix);
-        majorVersionRadioButton = String.format("div[id*='%s'] input[id$='majorVersion-radioButton']", prefix);
-        submitButton =  String.format("span[id*='%s'] button[id$='default-upload-button-button']", prefix);
-        
-        
+        textAreaCssLocation = String.format(TEXT_AREA_CSS, prefix);
+        minorVersionRadioButton = String.format(MINOR_BTN_CSS, prefix);
+        majorVersionRadioButton = String.format(MAJOR_BTN_CSS, prefix);
+        submitButton = String.format(SUBMIT_BTN_CSS, prefix);
+        cancelButton = String.format(CANCEL_BTN_CSS, prefix);
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public synchronized UpdateFilePage render(RenderTime timer)
     {
-        while (true)
-        {
-            timer.start();
-            try { this.wait(50L); } catch (InterruptedException e) {}
-            // Look for comment box
-            try
-            {
-                if (!drone.findAndWait(By.cssSelector(textAreaCssLocation)).isDisplayed())
-                {
-                    continue;
-                }
-                if (!drone.find(By.cssSelector(minorVersionRadioButton)).isDisplayed())
-                {
-                    continue;
-                }
-                if (!drone.find(By.cssSelector(majorVersionRadioButton)).isDisplayed())
-                {
-                    continue;
-                }
-            }
-            catch (NoSuchElementException e)
-            {
-                // It's not there
-                continue;
-            }
-            // Everything was found and is visible
-            break;
-        }
+        RenderElement textArea = RenderElement.getVisibleRenderElement(By.cssSelector(textAreaCssLocation));
+        RenderElement minorRadioButton = RenderElement.getVisibleRenderElement(By.cssSelector(minorVersionRadioButton));
+        RenderElement majorRadioButton = RenderElement.getVisibleRenderElement(By.cssSelector(majorVersionRadioButton));
+        elementRender(timer, textArea, minorRadioButton, majorRadioButton);
         return this;
     }
 
@@ -140,22 +125,21 @@ public class UpdateFilePage extends SharePage
     {
         drone.findAndWait(By.cssSelector(majorVersionRadioButton)).click();
     }
-
     /**
      * Clicks on the submit upload button.
      */
     public HtmlPage submit()
     {
         //Get the expected version number
-        
+        String previousVersion = (String) drone.executeJavaScript("Alfresco.getFileUploadInstance(this).showConfig.updateVersion;");
         drone.findAndWait(By.cssSelector(submitButton)).click();
         int countCheck = 0;
         //Check upload file dialog had gone
-        while(true && countCheck < 3)
+        while(countCheck < 3)
         {
             try
             {
-                drone.findAndWait(By.cssSelector(UPDATE_PAGE_TITLE_SPAN_CSS), 20, 10);
+            	drone.find(By.cssSelector(UPDATE_PAGE_TITLE_SPAN_CSS));
             }
             catch (Exception e)
             {
@@ -164,7 +148,12 @@ public class UpdateFilePage extends SharePage
             }
             countCheck ++;
         }
-        return new DocumentDetailsPage(drone, documentVersion);
+        HtmlPage page = drone.getCurrentPage();
+        if(page instanceof DocumentDetailsPage)
+        {
+            return new DocumentDetailsPage(drone, previousVersion);
+        }
+        return page;
     }
 
     /**
@@ -211,7 +200,53 @@ public class UpdateFilePage extends SharePage
         catch(TimeoutException e)
         {
             logger.error ("Exceeded time to find the cancel button." + e.getMessage());
-            throw new PageException("Unable to find the cancel button css : "+ cancelButton);
+            throw new PageException("Unable to find the cancel button css : "+ cancelButton, e);
         }
     }
+    
+    protected void setTextAreaCssLocation(String textAreaCssLocation)
+    {
+        this.textAreaCssLocation = textAreaCssLocation;
+    }
+    
+    protected void setMinorVersionRadioButton(String minorVersionRadioButton)
+    {
+        this.minorVersionRadioButton = minorVersionRadioButton;
+    }
+    
+    protected void setMajorVersionRadioButton(String majorVersionRadioButton)
+    {
+        this.majorVersionRadioButton = majorVersionRadioButton;
+    }
+    
+    protected void setSubmitButton(String submitButton)
+    {
+        this.submitButton = submitButton;
+    }
+    
+    protected void setCancelButton(String cancelButton)
+    {
+        this.cancelButton = cancelButton;
+    }
+    
+    protected String getMinorVersionRadioButton()
+    {
+        return minorVersionRadioButton;
+    }
+    
+    protected String getMajorVersionRadioButton()
+    {
+        return majorVersionRadioButton;
+    }
+    
+    protected String getSubmitButton()
+    {
+        return submitButton;
+    }
+    
+    protected String getDocumentVersion()
+    {
+        return documentVersion;
+    }
+
 }

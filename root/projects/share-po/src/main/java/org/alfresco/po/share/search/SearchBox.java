@@ -18,11 +18,15 @@
  */
 package org.alfresco.po.share.search;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -32,38 +36,21 @@ import org.openqa.selenium.WebElement;
  * functionality.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  * @since 1.1
  */
-public class SearchBox extends SharePage
+public class SearchBox extends HtmlElement
 {
+    private final Log logger = LogFactory.getLog(SearchBox.class);
+    private final By selector;
     /**
      * Constructor.
      */
-    public SearchBox(WebDrone drone)
+    public SearchBox(WebDrone drone, boolean isDojoSupport)
     {
         super(drone);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public SearchBox render(RenderTime timer)
-    {
-        basicRender(timer);
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public SearchBox render()
-    {
-        return render(new RenderTime(maxPageLoadingTime));
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public SearchBox render(final long time)
-    {
-        return render(new RenderTime(time));
+        String searchField = isDojoSupport ? "input.alf-search-box-text" : "input[id$='searchText']";
+        selector = By.cssSelector(searchField);
     }
     
     /**
@@ -80,14 +67,18 @@ public class SearchBox extends SharePage
         }
         try
         {
-            String selector = dojoSupport ? "input.alf-search-box-text" : "input[id$='searchText']";
-            WebElement input = drone.find(By.cssSelector(selector));
+            
+            WebElement input = drone.findAndWait(selector);
             input.clear();
             input.sendKeys(term + "\n");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Apply search on the keyword: " + term);
+            }
+            //wait till the search box is displayed on the page to determine the page is loaded.
+            drone.waitUntilElementPresent(selector, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
         }
-        catch (NoSuchElementException nse)
-        {
-        }
+        catch (NoSuchElementException nse){ }
         return FactorySharePage.resolvePage(drone);
     }
 }

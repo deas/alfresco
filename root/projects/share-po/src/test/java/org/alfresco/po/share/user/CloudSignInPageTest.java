@@ -18,7 +18,7 @@
  */
 package org.alfresco.po.share.user;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Set;
@@ -28,9 +28,9 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
-import org.alfresco.po.share.util.FailedTestListener;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -87,7 +87,7 @@ public class CloudSignInPageTest extends AbstractTest
     {
         cloudSignInPage.selectFogotPassordLink();
         switchWindow();
-        assertTrue("Title not matched. Was found to be - " + drone.getTitle(), drone.getTitle().contains("Login"));
+        assertTrue(drone.getTitle().contains("Login"), "Title not matched. Was found to be - " + drone.getTitle());
         closeWindowAndSwitchBack();
     }
 
@@ -101,7 +101,7 @@ public class CloudSignInPageTest extends AbstractTest
     {
         cloudSignInPage.selectSignUpLink();
         switchWindow();
-        assertTrue("Title not matched. Was found to be - " + drone.getTitle(), drone.getTitle().contains("Cloud Document Management"));
+        assertTrue(drone.getTitle().contains("Cloud Document Management"), "Title not matched. Was found to be - " + drone.getTitle());
         closeWindowAndSwitchBack();
     }
     

@@ -32,6 +32,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 /**
@@ -106,8 +108,8 @@ public class CloudSignInPage extends SharePage
         WebElement button = drone.findAndWait(CONNECT_BUTTON);
         String id = button.getAttribute("id");
         button.submit();
-        drone.waitUntilElementDisappears(By.id(id), maxPageLoadingTime);
-        drone.waitForPageLoad(maxPageLoadingTime);
+        drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         try
         {
             if(isDisconnectButtonDisplayed())
@@ -121,7 +123,7 @@ public class CloudSignInPage extends SharePage
         }
         catch (PageRenderTimeException pte)
         {
-            throw new PageException("Neither DestinationAndAssigneePage or CloudSyncPage is returned");
+            throw new PageException("Neither DestinationAndAssigneePage or CloudSyncPage is returned", pte);
         }
     }
 
@@ -145,7 +147,7 @@ public class CloudSignInPage extends SharePage
                     return true;
                 }
             }
-            catch (NoSuchElementException e)
+            catch (NoSuchElementException nse)
             {
             }
             catch (StaleElementReferenceException se)
@@ -163,6 +165,13 @@ public class CloudSignInPage extends SharePage
             catch (StaleElementReferenceException se)
             {
             }
+            
+            try
+            {
+                return !drone.find(By.cssSelector("div[id$='cloudDestination-cloud-folder-treeview']")).isDisplayed();
+            }
+            catch (NoSuchElementException nse) {}
+            catch (StaleElementReferenceException se) {}
             time.end();
             continue;
         }

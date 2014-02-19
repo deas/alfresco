@@ -18,8 +18,12 @@
  */
 package org.alfresco.po.share.workflow;
 
-import org.alfresco.po.share.MyTasksPage;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -87,11 +91,12 @@ public class ViewWorkflowPage extends SharePage
      * 
      * @return {@link MyTasksPage} - instance of my task page.
      */
-    public MyTasksPage selectCancelWorkflowButton()
+    public HtmlPage selectCancelWorkflowButton()
     {
         drone.findAndWait(CANCEL_BUTTON).click();
         drone.findAndWait(By.cssSelector("#prompt span.button-group>span:first-of-type button")).click();
-        return new MyTasksPage(drone);
+        drone.waitUntilElementDisappears(CANCEL_BUTTON, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**

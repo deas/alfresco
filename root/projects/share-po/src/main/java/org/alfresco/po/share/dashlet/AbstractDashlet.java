@@ -41,7 +41,8 @@ import org.openqa.selenium.WebElement;
 abstract class AbstractDashlet extends SharePage
 {
     protected WebElement dashlet;
-    
+    private By resizeHandle;
+
     /**
      * Constructor.
      */
@@ -194,4 +195,18 @@ abstract class AbstractDashlet extends SharePage
         }
         throw new PageException("no documents found matching the given title: " + title);
     }
+    
+    /**
+     * This method is used to scroll down the current window.
+     */
+    protected void scrollDownToDashlet()
+    {
+        drone.findAndWait(resizeHandle).click();
+    }
+
+    protected void setResizeHandle(By resizeHandle)
+    {
+        this.resizeHandle = resizeHandle;
+    }
+
 }

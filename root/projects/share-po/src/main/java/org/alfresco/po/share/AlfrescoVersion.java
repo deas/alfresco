@@ -1,24 +1,20 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share;
+
 import org.alfresco.webdrone.Version;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Alfresco site type and version enum.
@@ -28,7 +24,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum AlfrescoVersion implements Version
 {
-    Share(null,4.2,true),//The current
+    //The current
+    Share(null,4.2,true),
     Enterprise(null),
     Enterprise41(Enterprise, 4.1, false),
     Enterprise42(Enterprise, 4.2, true),
@@ -37,20 +34,22 @@ public enum AlfrescoVersion implements Version
     Cloud2(Cloud, 2.0, true),
     MyAlfresco(Cloud, 2.1, true);
 
-    private static final String ALFRESCO_VERSION_DOES_NOT_MATCH_ERROR = "version %s does not match to an existing AlfrescoVersion:" +
-            "Share, Enterprise41, Enterprise42, Enterprise43, Cloud1 or Cloud2 or MyAlfresco";
+    private static final String ALFRESCO_VERSION_DOES_NOT_MATCH_ERROR = "version %s does not match to an existing AlfrescoVersion:"
+            + " Enterprise41, Enterprise42, Enterprise43, Cloud1 or Cloud2 or MyAlfresco";
     private AlfrescoVersion parent;
     private Double version;
     private boolean dojoSuport;
-    
+
     private AlfrescoVersion(AlfrescoVersion parent)
     {
         this.parent = parent;
         this.version = 0.0;
         this.dojoSuport = false;
     }
+
     /**
      * Constructor.
+     * 
      * @param parent {@link AlfrescoVersion}
      * @param version Alfresco version identifier
      * @param dojoSupport Alfresco that have dojo in ui.
@@ -64,54 +63,55 @@ public enum AlfrescoVersion implements Version
 
     /**
      * Checks if its a cloud base enum.
+     * 
      * @return true if its cloud base enum
      */
     public boolean isCloud()
     {
-        if(AlfrescoVersion.Cloud == this) 
-        { 
-            return true; 
+        if (AlfrescoVersion.Cloud == this)
+        {
+            return true;
         }
-        else if(parent != null && parent == Cloud)
+        else if (parent != null && parent == Cloud)
         {
             return true;
         }
         return false;
     }
-        
+
     /**
      * Flag to indicates if file upload is supported
      * by HTML5
+     * 
      * @return true if supported which at present only cloud does
      */
-    public boolean isFileUploadHtml5(){
-       return isCloud() || dojoSuport;
+    public boolean isFileUploadHtml5()
+    {
+        return !AlfrescoVersion.Enterprise41.equals(this);
     }
-    
+
     /**
      * Create {@link AlfrescoVersion} from string.
+     * 
      * @param value String alfresco version
      * @return {@link AlfrescoVersion} version
      */
-    public static AlfrescoVersion fromString(String value){
-        //If no value then use current alfresco
-        if(StringUtils.isBlank(value) || value.startsWith("$") || ShareProperties.DEFAULT_ALFRESCO.equalsIgnoreCase(value))
+    public static AlfrescoVersion fromString(String value)
+    {
+        if (value == null || value.trim().isEmpty())
         {
             return AlfrescoVersion.Share;
         }
-        //If legacy alfresco is used
-        if(value.startsWith("Enterprise"))
+        String version = value;
+        if (value.startsWith("Enterprise") && value.contains("-"))
         {
-            if(value.contains("-"))
-            {
-                value = value.replace("-", "");
-            }
+            version = version.replace("-", "");
         }
-        for(AlfrescoVersion version: AlfrescoVersion.values())
-        {   
-            if(value.equalsIgnoreCase(version.name()))
+        for (AlfrescoVersion alfrescoVersion : AlfrescoVersion.values())
+        {
+            if (version.equalsIgnoreCase(alfrescoVersion.name()))
             {
-                return version;
+                return alfrescoVersion;
             }
         }
         throw new IllegalArgumentException(String.format(ALFRESCO_VERSION_DOES_NOT_MATCH_ERROR, value));
@@ -121,10 +121,10 @@ public enum AlfrescoVersion implements Version
     {
         return version;
     }
-    
+
     public boolean isDojoSupported()
     {
         return dojoSuport;
     }
-    
+
 }

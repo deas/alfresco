@@ -59,7 +59,9 @@ public enum SiteContentFilter
         for (SiteContentFilter filter : SiteContentFilter.values())
         {
             if (description.contains(filter.getDescription()))
+            {
                 return filter;
+            }
         }
         return null;
     }

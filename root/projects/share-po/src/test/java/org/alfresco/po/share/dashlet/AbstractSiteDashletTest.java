@@ -2,13 +2,16 @@ package org.alfresco.po.share.dashlet;
 
 import java.io.File;
 
+import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.AbstractDocumentTest;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.util.SiteUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.AfterClass;
@@ -34,19 +37,20 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
     {
         try
         {
-            File file = SiteUtil.prepareFile();
-            fileName = file.getName();
-            loginAs(username, password);
-            SiteUtil.createSite(drone,siteName, 
-                     "description",
-                     "Public");
-            SitePage site = drone.getCurrentPage().render();
-            DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
-            UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload();
-            docPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
-            DocumentDetailsPage dd = docPage.selectFile(fileName).render();
-            dd.selectLike().render();
-         }
+             File file = SiteUtil.prepareFile();
+             fileName = file.getName();
+             loginAs(username, password);
+             SiteUtil.createSite(drone,siteName, 
+                         "description",
+                         "Public");
+             SitePage site = drone.getCurrentPage().render();
+             DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
+             //DocumentLibraryPage docPage = getDocumentLibraryPage(siteName).render();
+             UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
+             docPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
+             DocumentDetailsPage dd = docPage.selectFile(fileName).render();
+             dd.selectLike();
+        }
         catch (Throwable pe)
         {
             saveScreenShot("uploadDodDashlet");
@@ -56,13 +60,15 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
     
     protected void navigateToSiteDashboard()
     {
-        String urlPath = String.format("%s/page/site/%s/dashboard", shareUrl, siteName);
-        drone.navigateTo(urlPath);
         if(logger.isTraceEnabled())
         {
-            logger.trace("navigating to " + urlPath);
+            logger.trace("navigate to " + shareUrl);
         }
-        siteDashBoard = drone.getCurrentPage().render();
+        drone.navigateTo(shareUrl);
+        DashBoardPage boardPage = drone.getCurrentPage().render();
+        SiteFinderPage finderPage = boardPage.getNav().selectSearchForSites().render();
+        finderPage = finderPage.searchForSite(siteName).render();
+        siteDashBoard = finderPage.selectSite(siteName).render();
     }
     
     @AfterClass(alwaysRun=true)
@@ -70,8 +76,11 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
     {
         try
         {
-            SiteUtil.deleteSite(drone, siteName);
-            closeWebDrone();
+            if(drone != null && !StringUtils.isEmpty(siteName))
+            {
+                SiteUtil.deleteSite(drone, siteName);
+                closeWebDrone();
+            }
         }
         catch (Exception e)
         {

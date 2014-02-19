@@ -25,9 +25,9 @@ public class ActivityShareLink
      */
     public ActivityShareLink(final ShareLink user, final ShareLink document, final ShareLink site, final String description)
     {
-        if(null == user) throw new UnsupportedOperationException("Use share link is required");
-        if(null == document) throw new UnsupportedOperationException("Document share link is required");
-        if(null == site) throw new UnsupportedOperationException("Site share link is required");
+        if(null == user){ throw new UnsupportedOperationException("Use share link is required");}
+        if(null == document){ throw new UnsupportedOperationException("Document share link is required");}
+        if(null == site){ throw new UnsupportedOperationException("Site share link is required");}
         this.user = user;
         this.document = document;
         this.site = site;
@@ -41,8 +41,8 @@ public class ActivityShareLink
      */
     public ActivityShareLink(final ShareLink user, final ShareLink site, final String description)
     {
-        if(null == user) throw new UnsupportedOperationException("Use share link is required");
-        if(null == site) throw new UnsupportedOperationException("Site share link is required");
+        if(null == user){ throw new UnsupportedOperationException("Use share link is required");}
+        if(null == site){ throw new UnsupportedOperationException("Site share link is required");}
         this.user = user;
         this.document = null;
         this.site = site;

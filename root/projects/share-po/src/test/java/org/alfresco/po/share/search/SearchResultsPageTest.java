@@ -39,6 +39,7 @@ import org.testng.annotations.Test;
  * Integration test to verify search page elements are in place.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
@@ -46,7 +47,7 @@ public class SearchResultsPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
     
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(groups={"Enterprise-only", "alfresco-one"})
     public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -62,7 +63,7 @@ public class SearchResultsPageTest extends AbstractTest
     @Test(groups="alfresco-one")
     public void searchEmptyResult()
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         SearchResultsPage resultPage = search.search("y@z").render();
         Assert.assertNotNull(resultPage);
         Assert.assertFalse(resultPage.hasResults());
@@ -71,7 +72,7 @@ public class SearchResultsPageTest extends AbstractTest
     @Test(groups = {"Enterprise-only"},dependsOnMethods="searchEmptyResult")
     public void selectNthSearchResult() throws Exception
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         SearchResultsPage resultPage = search.search("ipsum").render();
         Assert.assertNotNull(resultPage);
 
@@ -82,7 +83,7 @@ public class SearchResultsPageTest extends AbstractTest
     @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectNthSearchResult")
     public void selectSearchResultOfTypeFolder() throws Exception
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         SearchResultsPage resultPage = search.search("Images").render();
         Assert.assertNotNull(resultPage);
 
@@ -93,7 +94,7 @@ public class SearchResultsPageTest extends AbstractTest
     @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeFolder")
     public void selectSearchResultOfTypeWiki() throws Exception
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         SearchResultsPage resultPage = search.search("Project").render();
         Assert.assertNotNull(resultPage);
         
@@ -104,7 +105,7 @@ public class SearchResultsPageTest extends AbstractTest
     @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeWiki")
     public void selectSearchResultOfTypeDataList() throws Exception
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         SearchResultsPage resultPage = search.search("Issue Log").render();
         Assert.assertNotNull(resultPage);
         
@@ -115,7 +116,7 @@ public class SearchResultsPageTest extends AbstractTest
     @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeDataList")
     public void pagination()
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         SearchResultsPage result = search.search("a").render();
         RepositoryResultsPage repoResults = result.selectRepository().render();
         repoResults = repoResults.search("email").render();
@@ -161,12 +162,12 @@ public class SearchResultsPageTest extends AbstractTest
      * @throws Exception
      */
 
-    @Test(groups = { "Enterprise-only" })
+    @Test(groups = { "Enterprise-only" }, dependsOnMethods="pagination")
     public void searchSortDescTest() throws Exception
     {
         boolean sortDescription = false;
         SearchResultsPage resultPage;
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         resultPage = search.search("ipsum").render();
         Assert.assertNotNull(resultPage);
         List<String> sortDescripion = resultPage.sortListItemsDescription();
@@ -202,11 +203,11 @@ public class SearchResultsPageTest extends AbstractTest
      * @throws Exception
      */
 
-    @Test(groups = { "Enterprise-only" })
+    @Test(groups = { "Enterprise-only" }, dependsOnMethods="searchSortDescTest")
     public void searchSortTest() throws Exception
     {
         SearchResultsPage resultPage;
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         resultPage = search.search("ipsum").render();
         Assert.assertNotNull(resultPage);
         resultPage = (SearchResultsPage) resultPage.sortPage(SortType.NAME).render();
@@ -231,7 +232,7 @@ public class SearchResultsPageTest extends AbstractTest
      * @author sprasanna
      * @throws UnsupportedOperationException
      */
-    @Test(expectedExceptions = IllegalArgumentException.class, groups = "Enterprise-only")
+    @Test(expectedExceptions = IllegalArgumentException.class, groups = "Enterprise-only", dependsOnMethods="searchSortTest")
     public void searchSortExceptionTest() throws Exception
     {
         SearchResultsPage resultPage = new SiteResultsPage(drone);

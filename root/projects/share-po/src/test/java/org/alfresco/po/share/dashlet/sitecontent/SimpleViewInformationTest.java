@@ -21,7 +21,6 @@ package org.alfresco.po.share.dashlet.sitecontent;
 import static org.testng.Assert.assertEquals;
 
 import org.alfresco.po.share.ShareLink;
-import org.alfresco.po.share.dashlet.sitecontent.SimpleViewInformation;
 import org.alfresco.webdrone.WebDrone;
 import org.mockito.Mockito;
 import org.openqa.selenium.WebElement;

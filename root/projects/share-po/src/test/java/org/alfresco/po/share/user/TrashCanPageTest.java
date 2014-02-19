@@ -20,17 +20,19 @@
 package org.alfresco.po.share.user;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -47,15 +49,21 @@ import org.testng.annotations.Test;
 public class TrashCanPageTest extends AbstractTest
 {
     private String siteName;
+    private String siteName1;
     private String fileName1;
     private String fileName2;
     private String fileName3;
+    private String fileName4;
+    private String fileName5;
+    private String userName ;
+    private String folderName;
     DocumentLibraryPage docPage;
     DashBoardPage dashBoard;
     SiteDashboardPage site;
     MyProfilePage myprofile;
     TrashCanPage trashCan;
 
+   
     /**
      * Pre test to create a content with properties set.
      * 
@@ -65,117 +73,347 @@ public class TrashCanPageTest extends AbstractTest
     @BeforeClass(groups = { "Enterprise4.2" })
     private void prepare() throws Exception
     {
+        String fname = anotherUser.getfName();
+        String lname = anotherUser.getlName();
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if(version.equals(AlfrescoVersion.Enterprise42))
+        {
+            userName = "Administrator";
+        }
+        else userName = fname + lname;
         siteName = "TrashCanTest" + System.currentTimeMillis();
+        siteName1 = "TrashCanTest1" + System.currentTimeMillis();
+        folderName = "folder1" + System.currentTimeMillis();;
         File file0 = SiteUtil.prepareFile("file1.txt");
         fileName1 = file0.getName();
         File file1 = SiteUtil.prepareFile("file2.txt");
         fileName2 = file1.getName();
         File file2 = SiteUtil.prepareFile("file3.txt");
         fileName3 = file2.getName();
+        File file3 = SiteUtil.prepareFile("file4.txt");
+        fileName4 = file3.getName();
+        File file4 = SiteUtil.prepareFile("file5.txt");
+        fileName5 = file4.getName();
         loginAs(username, password);
         SiteUtil.createSite(drone, siteName, "Public");
-        SitePage site = drone.getCurrentPage().render();
+        SiteUtil.createSite(drone, siteName1, "Public");
+        SiteUtil.deleteSite(drone, siteName1);
+        SiteFinderPage siteFinderPage = drone.getCurrentPage().render();
+        siteFinderPage = siteFinderPage.searchForSite(siteName).render();
+        SiteDashboardPage site = siteFinderPage.selectSite(siteName).render();
         docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
-        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload();
+        NewFolderPage folder = docPage.getNavigation().selectCreateNewFolder().render();
+        docPage = folder.createNewFolder(folderName).render();
+        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
         upLoadPage.uploadFile(file0.getCanonicalPath()).render();
-        upLoadPage = docPage.getNavigation().selectFileUpload();
+        upLoadPage = docPage.getNavigation().selectFileUpload().render();
         upLoadPage.uploadFile(file1.getCanonicalPath()).render();
-        upLoadPage = docPage.getNavigation().selectFileUpload();
+        upLoadPage = docPage.getNavigation().selectFileUpload().render();
         upLoadPage.uploadFile(file2.getCanonicalPath()).render();
+        upLoadPage = docPage.getNavigation().selectFileUpload().render();
+        upLoadPage.uploadFile(file3.getCanonicalPath()).render();
+        upLoadPage = docPage.getNavigation().selectFileUpload().render();
+        upLoadPage.uploadFile(file4.getCanonicalPath()).render();
         docPage = drone.getCurrentPage().render();
+
         docPage = docPage.deleteItem(fileName1).render();
-        docPage = docPage.deleteItem(fileName2).render(); 
-        docPage = docPage.deleteItem(fileName3).render(); 
-   }
+        docPage = docPage.deleteItem(fileName2).render();
+        docPage = docPage.deleteItem(fileName3).render();
+        docPage = docPage.deleteItem(fileName4).render();
+        docPage = docPage.deleteItem(fileName5).render();
+        docPage = docPage.deleteItem(folderName).render();
+    }
 
     @AfterClass(groups = { "Enterprise4.2" })
     public void deleteSite()
     {
+        trashCan.selectEmpty().render();
         SiteUtil.deleteSite(drone, siteName);
+    }
+    
+    public TrashCanPage getTrashCan()
+    {
+        dashBoard = docPage.getNav().selectMyDashBoard().render();
+        myprofile = dashBoard.getNav().selectMyProfile().render();
+        trashCan = myprofile.getProfileNav().selectTrashCan().render();
+        return trashCan;
     }
 
     /**
      * Test to Check from My profile Page trashCan Page can be accessed
      */
 
-    @Test(groups = { "Enterprise4.2" })
-    public void testTrashCanDisplayed()
+    @Test(groups = { "Enterprise4.2" }, priority=1)
+    public void test101TrashCanDisplayed()
     {
-        dashBoard = docPage.getNav().selectMyDashBoard().render();
-        myprofile = dashBoard.getNav().selectMyProfile().render();
-        trashCan = myprofile.getProfileNav().selectTrashCan().render();
+        trashCan = getTrashCan();
         Assert.assertTrue(trashCan.getPageTitle().equalsIgnoreCase("User Trashcan"));
+        trashCan = (TrashCanPage) trashCan.itemSearch("ZZZZZ").render();
+        Assert.assertTrue(trashCan.checkNoItemsMessage());
+        trashCan = trashCan.clearSearch().render();
     }
-    
-    /**
-    * Test to Check searching in trashcan
-    */
-    
-    @Test(dependsOnMethods = "testTrashCanDisplayed",groups = { "Enterprise4.2" })
-    public void testTrashCanSearch()
+    /*
+     * Test to check deleted files and folder are present in trashCan
+     */
+    @Test(groups = { "Enterprise4.2" }, priority=2)
+    public void test102TrashCanInfoOfDeleteItems()
     {
-        boolean results = false;
-        trashCan = (TrashCanPage) trashCan.itemSearch("file").render();
-        Assert.assertTrue(trashCan.hasTrashCanItems());
-        List<String> trashCanItem = new ArrayList<String>();
-        trashCanItem = trashCan.getSearchResults();
-        for (String searchTerm : trashCanItem)
+        trashCan = getTrashCan();
+        List<TrashCanItem> item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE, fileName1, "documentLibrary");
+        if(item1.size() == 1)
         {
-            if (searchTerm.contains("file")) results = true;
+            Assert.assertTrue(item1.get(0).getFileName().equalsIgnoreCase(fileName1));
+            Assert.assertTrue(item1.get(0).getUserFullName().equalsIgnoreCase(userName));
+            Assert.assertTrue(item1.get(0).getDate().contains(Integer.toString(Calendar.getInstance().get(Calendar.YEAR))));
         }
-        Assert.assertTrue(results);
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+        List<TrashCanItem> item6 = trashCan.getTrashCanItemForContent(TrashCanValues.FOLDER, folderName, "documentLibrary");
+        if(item6.size() <= 1)
+        {
+            Assert.assertTrue(item6.get(0).getFileName().equalsIgnoreCase(folderName));
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        } 
+        List<TrashCanItem> item7 = trashCan.getTrashCanItemForContent(TrashCanValues.SITE, siteName1, "sites");
+        if(item7.size() <= 1)
+        {
+            Assert.assertTrue(item7.get(0).getFileName().equalsIgnoreCase(siteName1));
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }     
     }
-    
+    /**
+     * Test to check the differnt select options ie All
+     */
+    @Test(groups = { "Enterprise4.2" }, priority=3)
+    public void test103SelectActionsAll()
+    {
+        trashCan = getTrashCan();
+        trashCan = (TrashCanPage) trashCan.selectAction(SelectActions.ALL).render();
+        List<TrashCanItem>  item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName1, "documentLibrary");
+        List<TrashCanItem>  item2 =  trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName2, "documentLibrary");
+        List<TrashCanItem>  item3 =  trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName3, "documentLibrary");
+        List<TrashCanItem>  item4 =  trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName4, "documentLibrary");
+        List<TrashCanItem>  item5 =  trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName5, "documentLibrary");
+        if(item1.size()<= 1)
+        {
+            Assert.assertTrue(item1.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+        if(item2.size()<= 1)
+        {
+            Assert.assertTrue(item2.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+        if(item3.size()<= 1)
+        {
+            Assert.assertTrue(item3.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+        if(item4.size()<= 1)
+        {
+            Assert.assertTrue(item4.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+        if(item5.size()<= 1)
+        {
+            Assert.assertTrue(item5.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+    }
+
+    /**
+     * Test to check the differnt select options ie invert
+     */
+    @Test(groups = { "Enterprise4.2" }, priority=4)
+    public void test104SelectActionsInvert()
+    {
+        trashCan = (TrashCanPage) trashCan.selectAction(SelectActions.INVERT).render();
+        List<TrashCanItem>  item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName1, "documentLibrary");
+        if(item1.size()<= 1)
+        {
+            Assert.assertFalse(item1.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+     }
+
+    /**
+     * Test to check the differnt select options ie none
+     */
+    @Test(dependsOnMethods = "test104SelectActionsInvert", groups = { "Enterprise4.2" } , priority=5)
+    public void test105SelectActionsnone()
+    {
+        trashCan = (TrashCanPage) trashCan.selectAction(SelectActions.NONE).render();
+        List<TrashCanItem>  item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName2, "documentLibrary");
+        if(item1.size()<= 1)
+        {
+            Assert.assertFalse(item1.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+    }
+
     /**
      * Test to Check searching in trashcan
      */
-    
-    @Test(dependsOnMethods = "testTrashCanSearch",groups = { "Enterprise4.2" })
-    public void testTrashCanSelectCheckBox()
+
+    @Test(dependsOnMethods = "test105SelectActionsnone", groups = { "Enterprise4.2" }, priority=6)
+    public void test106TrashCanSearch()
     {
-        trashCan = (TrashCanPage) trashCan.selectTrashCanItem(fileName1).render();
-        Assert.assertTrue(trashCan.isCheckBoxSelected(fileName1));
+        boolean results = false;
+        trashCan = getTrashCan();
+        trashCan = (TrashCanPage) trashCan.itemSearch("ZZZZZ").render();
+        Assert.assertTrue(trashCan.checkNoItemsMessage());
+        trashCan = (TrashCanPage) trashCan.itemSearch("file").render();
+        List<TrashCanItem> trashCanItem = trashCan.getTrashCanItems();
+        Assert.assertFalse(trashCanItem.isEmpty());
+        for (TrashCanItem searchTerm : trashCanItem)
+        {
+            if (searchTerm.getFileName().contains("file")) results = true;
+        }
+        Assert.assertTrue(results);
     }
+
+    /**
+     * Test to Check searching in trashcan
+     */
+
+    @Test(groups = { "Enterprise4.2" }, priority=7)
+    public void test107TrashCanSelectCheckBox()
+    {
+        trashCan = getTrashCan();
+        List<TrashCanItem>  item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName4, "documentLibrary");
+        if(item1.size() <= 1)
+        {
+          trashCan= item1.get(0).selectTrashCanItemCheckBox();
+           Assert.assertTrue(item1.get(0).isCheckBoxSelected());
+        }
+        else
+        {
+            Assert.fail("Cannot find unique file");
+        }
+    }   
     
+    /**
+     * Test to Validated Selected items can be recovered
+     */
+    @Test(groups = { "Enterprise4.2" }, priority=8)
+    public void test108TrashCanSelectedRecover()
+    {
+        boolean results = false;
+        trashCan = getTrashCan();
+        List<TrashCanItem>  item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE,fileName4, "documentLibrary");
+        trashCan= item1.get(0).selectTrashCanItemCheckBox();
+        TrashCanRecoverConfirmDialog trashCanRecoverConfirmation = trashCan.selectedRecover().render();
+        trashCan = trashCanRecoverConfirmation.clickRecoverOK().render();
+        List<TrashCanItem> trashCanItem = trashCan.getTrashCanItems();
+        for (TrashCanItem itemTerm : trashCanItem)
+        {
+            if (itemTerm.getFileName().contains("fileName4")) results = true;
+        }
+        Assert.assertFalse(results);
+    }
+
+    /**
+     * Test to Validated Selected items can be recovered
+     */
+    @Test(dependsOnMethods = "test108TrashCanSelectedRecover", groups = { "Enterprise4.2" }, priority=9)
+    public void test109TrashCanSelectedDelete()
+    {
+        boolean results = false;
+        List<TrashCanItem> item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE, fileName5, "documentLibrary");
+        if (item1.size() <= 1)
+        {
+            trashCan = item1.get(0).selectTrashCanItemCheckBox();
+        }
+        TrashCanDeleteConfirmationPage trashCanDeleteConfirmation = trashCan.selectedDelete().render();
+        TrashCanDeleteConfirmDialog trashCanConfrimDialog = (TrashCanDeleteConfirmDialog) trashCanDeleteConfirmation.clickOkButton().render();
+        trashCan = trashCanConfrimDialog.clickDeleteOK().render();
+        List<TrashCanItem> trashCanItemResults = trashCan.getTrashCanItems();
+        for (TrashCanItem itemTerm : trashCanItemResults)
+        {
+            if (itemTerm.getFileName().contains("fileName5")) results = true;
+        }
+        Assert.assertFalse(results);
+    }
+
+    /**
+     * Test to Clear the search entry trashcan
+     */
+    @Test(dependsOnMethods = "test109TrashCanSelectedDelete", groups = { "Enterprise4.2" }, priority=10)
+    public void test110TrashClear()
+    {
+        trashCan = (TrashCanPage) trashCan.clearSearch().render();
+        Assert.assertTrue(trashCan.getPageTitle().equalsIgnoreCase("User Trashcan"));
+    }
+
     /**
      * Test to Recover an item trashcan
      */
 
-    @Test(dependsOnMethods = "testTrashCanSelectCheckBox",groups = { "Enterprise4.2" })
-    public void testTrashCanRecover()
+    @Test(dependsOnMethods = "test110TrashClear", groups = { "Enterprise4.2" }, priority=11)
+    public void test111TrashCanRecover()
     {
-        trashCan = (TrashCanPage) trashCan.selectTrashCanAction(fileName1, "Recover").render();
-        Assert.assertTrue(trashCan.getPageTitle().equalsIgnoreCase("User Trashcan"));
+        List<TrashCanItem> item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE, fileName1, "documentLibrary");
+        if(item1.size() <= 1)
+        {
+           trashCan = (TrashCanPage) item1.get(0).selectTrashCanAction(TrashCanValues.RECOVER).render();
+        }
+        List<TrashCanItem> item2 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE, fileName1, "documentLibrary");
+        Assert.assertTrue(item2.isEmpty());
 
     }
-    
+
     /**
      * Test to Delete an item trashcan
      */
-    @Test(dependsOnMethods = "testTrashCanRecover",groups = { "Enterprise4.2" })
-    public void testTrashCanDelete()
+    @Test(dependsOnMethods = "test111TrashCanRecover", groups = { "Enterprise4.2" }, priority=12)
+    public void test112TrashCanDelete()
     {
-        TrashCanDeleteConfirmationDialogPage trashCanDeleteDialog = trashCan.selectTrashCanAction(fileName2, "Delete").render();
-        Assert.assertTrue(trashCanDeleteDialog.isConfirmationDialogDisplayed());
-        trashCan = trashCanDeleteDialog.clickOkButton().render();
-        Assert.assertTrue(trashCan.getPageTitle().equalsIgnoreCase("User Trashcan"));
+        List<TrashCanItem> item1 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE, fileName2, "documentLibrary");
+        if(item1.size() <= 1)
+        {
+            TrashCanDeleteConfirmationPage trashCanConfirmationDeleteDialog = (TrashCanDeleteConfirmationPage) item1.get(0).selectTrashCanAction(TrashCanValues.DELETE).render();
+            Assert.assertTrue(trashCanConfirmationDeleteDialog.isConfirmationDialogDisplayed());
+            trashCan = trashCanConfirmationDeleteDialog.clickOkButton().render();
+        }
+       List<TrashCanItem> item2 = trashCan.getTrashCanItemForContent(TrashCanValues.FILE, fileName2, "documentLibrary");
+        Assert.assertTrue(item2.isEmpty());
     }
-    
-    /**
-     * Test to Clear the search entry trashcan
-     */
-    @Test(dependsOnMethods = "testTrashCanDelete",groups = { "Enterprise4.2" })
-    public void testTrashClear()
-    {
-        trashCan = trashCan.clearSearch().render();
-        Assert.assertTrue(trashCan.getPageTitle().equalsIgnoreCase("User Trashcan"));
-    }
-    
+
+     
     /**
      * Test to Empty trashcan
      */
-    @Test(dependsOnMethods = "testTrashClear",groups = { "Enterprise4.2" })
-    public void testTrashCanEmpty()
+    @Test(dependsOnMethods = "test112TrashCanDelete", groups = { "Enterprise4.2" }, priority=13)
+    public void test113TrashCanEmpty()
     {
         TrashCanEmptyConfirmationPage trashCanEmptyDialogPage = (TrashCanEmptyConfirmationPage) trashCan.selectEmpty().render();
         Assert.assertTrue(trashCanEmptyDialogPage.isConfirmationDialogDisplayed());
@@ -183,4 +421,5 @@ public class TrashCanPageTest extends AbstractTest
         Assert.assertTrue(trashCan.getPageTitle().equalsIgnoreCase("User Trashcan"));
         Assert.assertFalse(trashCan.hasTrashCanItems());
     }
+
 }

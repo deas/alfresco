@@ -18,12 +18,19 @@
  */
 package org.alfresco.po.share.dashlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.NewUserPage;
+import org.alfresco.po.share.UserSearchPage;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
@@ -51,7 +58,8 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
     {
         siteName = "MyActDashletTests" + System.currentTimeMillis();
         uploadDocument();
-        if (alfrescoVersion.isCloud())
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (version.isCloud())
         {
             firstName = anotherUser.getfName();
             lastName = anotherUser.getlName();
@@ -103,17 +111,23 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
     public void selectActivity() throws Exception
     {
         DocumentDetailsPage page = null;
+        ActivityShareLink active = null;
         //This dashlet should not take over a minute to display the target activity.
-        RenderTime timer = new RenderTime(60000);
+        long minimunRenderTime = 60000;
+        long renderTime = popupRendertime;
+        if(renderTime < minimunRenderTime)
+        {
+        	renderTime = minimunRenderTime;
+        }
+        RenderTime timer = new RenderTime(renderTime);
         while(true)
         {
             timer.start();
             try
             {
-                drone.refresh();
-                MyActivitiesDashlet dashlet = dashBoard.getDashlet("activities").render();
-                ActivityShareLink active = dashlet.selectLink(fileName);
-                page = active.getDocument().click().render();
+            	drone.refresh();
+            	MyActivitiesDashlet dashlet = dashBoard.getDashlet("activities").render();
+                active = dashlet.selectLink(fileName);
                 break;
             }
             catch (PageException e) {}
@@ -122,6 +136,7 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
                 timer.end();
             }
         }
+        page = active.getDocument().click().render();
         Assert.assertNotNull(page);
         Assert.assertEquals(true, page.isDocumentDetailsPage());
     }   
@@ -166,6 +181,54 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         ActivityShareLink activity= dashlet.selectLink(fileName);
         String expected = String.format("%s %s added document %s in %s", firstName, lastName, fileName, siteName);
         Assert.assertEquals(activity.getDescription(), expected);
+    }
+    
+    protected void uploadDocument()throws Exception
+    {
+        try
+        {
+            File file = SiteUtil.prepareFile();
+            fileName = file.getName();
+            
+            if ( !alfrescoVersion.isCloud() )
+            {
+            dashBoard = loginAs(username, password);
+            //Creating new user.
+           
+                UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+                NewUserPage newPage = page.selectNewUser().render();
+                newPage.inputFirstName(firstName);
+                newPage.inputLastName(lastName);
+                newPage.inputEmail(userName);
+                newPage.inputUsername(userName);
+                newPage.inputPassword(userName);
+                newPage.inputVerifyPassword(userName);
+                UserSearchPage userCreated = newPage.selectCreateUser().render();
+                userCreated.searchFor(userName).render();
+                Assert.assertTrue(userCreated.hasResults());
+              logout(drone);
+              loginAs(userName, userName);
+            }
+            else
+                loginAs(username,password);
+            
+            SiteUtil.createSite(drone,siteName, 
+                                "description",
+                                "Public");
+            SitePage site = drone.getCurrentPage().render();
+            DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
+            UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
+            docPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
+            DocumentDetailsPage detailsPage = docPage.selectFile(fileName).render();
+            dashBoard = detailsPage.getNav().selectMyDashBoard().render();
+            //DocumentDetailsPage dd = docPage.selectFile(fileName).render();
+            //dd.selectLike();
+        }
+        catch (Throwable pe)
+        {
+            saveScreenShot("uploadDodDashlet");
+            logger.error("Problem deleting site", pe);
+        }
     }
     
 }

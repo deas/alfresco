@@ -18,9 +18,21 @@
  */
 package org.alfresco.po.share;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -31,18 +43,25 @@ import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.ShareTestProperty;
+import org.alfresco.po.share.workflow.MyWorkFlowsPage;
+import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 /**
  * Abstract test holds all common methods and functionality to test against
  * Benchmark Grid tests.
@@ -54,6 +73,7 @@ public abstract class AbstractTest
     private static Log logger = LogFactory.getLog(AbstractTest.class);
     private static ApplicationContext ctx;
     protected static String shareUrl;
+    protected static String hybridShareUrl;
     protected static String password;
     protected static String username;
     protected static String googleusername;
@@ -66,7 +86,16 @@ public abstract class AbstractTest
     public static String downloadDirectory;
     public boolean hybridEnabled;
     protected WebDrone drone;
+    protected WebDrone hybridDrone;
+    protected WebDrone customDrone;
+    protected WebDrone customHybridDrone;
     protected String testName;
+    protected String hybridUserName;
+    protected String hybridUserPassword;
+    
+    protected long popupRendertime;
+
+    public static long maxWaitTime_CloudSync = 50000;
     
     public WebDrone getDrone()
     {
@@ -74,15 +103,20 @@ public abstract class AbstractTest
     }
 
     @BeforeSuite(alwaysRun = true)
-    public void setupContext() throws Exception
+    @Parameters({"contextFileName"})
+    public void setupContext(@Optional("share-po-test-context.xml")String contextFileName) throws Exception
     {
         if(logger.isTraceEnabled())
         {
             logger.trace("Starting test context");
         }
-        ctx = new ClassPathXmlApplicationContext( "share-po-test-context.xml","webdrone-context.xml");
 
-        ShareTestProperty t = ctx.getBean(ShareTestProperty.class);
+        List<String> contextXMLList = new ArrayList<String>();
+        contextXMLList.add(contextFileName);
+        contextXMLList.add("webdrone-context.xml");
+        ctx = new ClassPathXmlApplicationContext(contextXMLList.toArray(new String[contextXMLList.size()]));
+
+        ShareTestProperty t = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = t.getShareUrl();
         username = t.getUsername();
         password = t.getPassword();
@@ -93,12 +127,21 @@ public abstract class AbstractTest
         hybridEnabled = t.isHybridEnabled();
         cloudUserName = t.getCloudUserName();
         cloudUserPassword = t.getCloudUserPassword();
+        popupRendertime = t.getPopupRendertime();
+
+        if(hybridEnabled)
+        {
+            ShareTestProperty testProperty = (ShareTestProperty) ctx.getBean("shareHybridTestProperties");
+            hybridShareUrl = testProperty.getShareUrl();
+            hybridUserName = testProperty.getUsername();
+            hybridUserPassword = testProperty.getPassword();
+        }
+
         if(logger.isTraceEnabled())
         {
             logger.trace("Alfresco version is" + alfrescoVersion);
             logger.trace("Alfresco shareUrl is" + shareUrl);
         }
-
         anotherUser = (UserProfile) ctx.getBean("anotherUser");
         if(logger.isTraceEnabled())
         {
@@ -109,6 +152,11 @@ public abstract class AbstractTest
     @BeforeClass(alwaysRun = true)
     public void getWebDrone() throws Exception
     {
+        if(hybridEnabled)
+        {
+            hybridDrone = (WebDrone) ctx.getBean("hybridDrone");
+            hybridDrone.maximize();
+        }
         drone = (WebDrone) ctx.getBean("webDrone");
         drone.maximize();
     }
@@ -125,6 +173,18 @@ public abstract class AbstractTest
         {
             drone.quit();
             drone = null;
+        }
+        // Close the browser
+        if (hybridDrone != null)
+        {
+            hybridDrone.quit();
+            hybridDrone = null;
+        }
+        // Close the browser
+        if (customDrone != null)
+        {
+            customDrone.quit();
+            customDrone = null;
         }
     }
 
@@ -145,6 +205,31 @@ public abstract class AbstractTest
         }
         return ShareUtil.loginAs(drone, shareUrl, userInfo).render();
     }
+
+    /**
+     * Helper to log admin user into dashboard.
+     *
+     * @return DashBoardPage page object.
+     * @throws Exception if error
+     */
+    public DashBoardPage loginAs(WebDrone drone, String shareUrl, final String... userInfo) throws Exception
+    {
+        if(shareUrl == null)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("null shareUrl");
+            }
+        }
+        return ShareUtil.loginAs(drone, shareUrl, userInfo).render();
+    }
+    
+    public void saveOsScreenShot(String methodName) throws IOException, AWTException
+    {
+    	Robot robot = new Robot();
+    	BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+        ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName+ "_OS" +".png"));
+    }
     
     public void saveScreenShot(String methodName) throws IOException
     {
@@ -155,6 +240,14 @@ public abstract class AbstractTest
         File file = drone.getScreenShot();
         File tmp = new File("target/webdrone-" + methodName + ".png");
         FileUtils.copyFile(file, tmp);
+        try 
+        {
+			saveOsScreenShot(methodName);
+		} 
+        catch (AWTException e) 
+        {
+        	logger.error("Not able to take the OS screen shot: " + e.getMessage());
+		}
     }
     
     public void savePageSource(String methodName) throws IOException
@@ -185,6 +278,32 @@ public abstract class AbstractTest
         DashBoardPage dashBoard = drone.getCurrentPage().render();
         MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
         return dashlet.selectSite(siteName).click().render();
+    }
+    
+    /**
+     * User Log out using logout URL Assumes User is logged in.
+     * 
+     * @param drone WebDrone Instance
+     */
+    public static void logout(WebDrone drone)
+    {
+        if(drone != null){
+            try
+            {           
+                if (drone.getCurrentUrl().contains(shareUrl.trim()))
+                {
+                    ShareUtil.logout(drone);
+                    if(logger.isTraceEnabled())
+                    {
+                        logger.trace("Logout");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // Already logged out.
+            }
+        }
     }
     
     /**
@@ -224,7 +343,7 @@ public abstract class AbstractTest
         }
         finally
         {
-            ShareUtil.logout(drone);
+            logout(drone);
         }
     }
 
@@ -288,5 +407,71 @@ public abstract class AbstractTest
                 cloudSyncPage.disconnectCloudAccount().render();
             }
         }
+    }
+
+    /**
+     * Method to Cancel a WorkFlow or Delete a WorkFlow (To use in TearDown method)
+     * @param workFlow
+     */
+    protected void cancelWorkFlow(String workFlow)
+    {
+        SharePage sharePage = drone.getCurrentPage().render();
+        MyWorkFlowsPage myWorkFlowsPage = sharePage.getNav().selectWorkFlowsIHaveStarted().render();
+        myWorkFlowsPage.render();
+        if(myWorkFlowsPage.isWorkFlowPresent(workFlow))
+        {
+            myWorkFlowsPage.cancelWorkFlow(workFlow);
+        }
+        myWorkFlowsPage = myWorkFlowsPage.selectCompletedWorkFlows().render();
+        if(myWorkFlowsPage.isWorkFlowPresent(workFlow))
+        {
+            myWorkFlowsPage.deleteWorkFlow(workFlow);
+        }
+    }
+
+    /**
+     * This method is used to get if the task is present or not.
+     * If the task is not displayed, retry for defined time(maxWaitTime_CloudSync)
+     * @param driver
+     * @param fileName
+     * @return boolean
+     */
+    public static boolean checkIfTaskIsPresent(WebDrone driver, String taskName)
+    {
+        MyTasksPage myTasksPage = (MyTasksPage) driver.getCurrentPage();
+        myTasksPage.render();
+
+        RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+        try
+        {
+            while (true)
+            {
+                t.start();
+                try
+                {
+                    if(myTasksPage.isTaskPresent(taskName))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            driver.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(1000, MILLISECONDS));
+                        }
+                        catch (TimeoutException e) {}
+                        driver.refresh();
+                    }
+                }
+                finally
+                {
+                    t.end();
+                }
+            }
+        }
+        catch (PageRenderTimeException p)
+        {
+        }
+        return false;
     }
 }

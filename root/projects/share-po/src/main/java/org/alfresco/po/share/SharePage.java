@@ -19,6 +19,8 @@
 package org.alfresco.po.share;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,8 +30,10 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.Page;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,13 +47,14 @@ import org.openqa.selenium.WebElement;
  * Abstract of an Alfresco Share HTML page.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  */
 public abstract class SharePage extends Page
 {
     private Log logger = LogFactory.getLog(this.getClass());
     private static final String USER_LOGGED_IN_LABEL = "navigation.dropdown.user";
     protected static final int WAIT_TIME_3000 = 3000;
-    protected boolean dojoSupport;
+    private boolean dojoSupport;
     protected static final By PROMPT_PANEL_ID = By.id("prompt"); 
     protected AlfrescoVersion alfrescoVersion;
     protected long popupRendertime;
@@ -118,6 +123,7 @@ public abstract class SharePage extends Page
             break;
         case Enterprise42:
             selector = By.cssSelector("div.logo img");
+            break;
         //Latest share 
         default:
             selector = By.cssSelector("div.alfresco-logo-Logo img");
@@ -215,7 +221,7 @@ public abstract class SharePage extends Page
      */
     public SearchBox getSearch()
     {
-        return new SearchBox(drone);
+        return new SearchBox(drone,isDojoSupport());
     }
 
     /**
@@ -247,6 +253,15 @@ public abstract class SharePage extends Page
     public void disbaleFileUploadFlash()
     {
         drone.executeJavaScript("Alfresco.util.ComponentManager.findFirst('Alfresco.FileUpload').options.adobeFlashEnabled=false;");
+    }
+    /**
+     * Change share file upload to single mode upload.
+     * As selenium is unable to interact with flash we disable the normal file upload mode.
+     * In addtion firefox does not display the html5 input element to send data hence
+     * we use single mode. 
+     */
+    public void setSingleMode()
+    {
         drone.executeJavaScript("var singleMode=Alfresco.util.ComponentManager.findFirst('Alfresco.HtmlUpload'); Alfresco.util.ComponentManager.findFirst('Alfresco.FileUpload').uploader=singleMode;");
     }
     
@@ -332,6 +347,54 @@ public abstract class SharePage extends Page
      * Waits for given {@link ElementState} of all render elements when rendering a page.
      * If the given element not reach element state, it will time out and throw 
      * {@link TimeoutException}. If operation to find all elements
+     * times out a {@link PageRenderTimeException} is thrown
+     * 
+     * Renderable elements will be scanned from class using {@link RenderWebElement} annotation.
+     *
+     * @param renderTime render timer
+     */
+    public void webElementRender(RenderTime renderTime)
+    {
+        if(renderTime == null)
+        {
+            throw new UnsupportedOperationException("RenderTime is required");
+        }
+        List<RenderElement> elements = new ArrayList<RenderElement>();
+        Field[] fields = this.getClass().getDeclaredFields();
+        for (Field field : fields) 
+        {
+            if(field.isAnnotationPresent(RenderWebElement.class))
+            {
+                if(field.getType().equals(By.class))
+                {
+                    RenderWebElement webElement = (RenderWebElement) field.getAnnotation(RenderWebElement.class);
+                    field.setAccessible(true);
+                    try 
+                    {
+                        elements.add(new RenderElement((By) field.get(this), webElement.state()));
+                    } 
+                    catch (IllegalArgumentException e) 
+                    {
+                        logger.error("Object may not be instance of By class " + e.getMessage());
+                    } 
+                    catch (IllegalAccessException e) 
+                    {
+                        logger.error("Not able access the field: " + field.getName() + e.getMessage());
+                    }
+                }
+                else
+                {
+                    throw new PageOperationException("");
+                }
+            }
+        }
+        elementRender(renderTime, elements.toArray(new RenderElement[elements.size()]));
+    }
+    
+    /**
+     * Waits for given {@link ElementState} of all render elements when rendering a page.
+     * If the given element not reach element state, it will time out and throw 
+     * {@link TimeoutException}. If operation to find all elements
      * times out a {@link PageRenderTimeException} is thrown 
      *
      * @param renderTime render timer
@@ -339,8 +402,14 @@ public abstract class SharePage extends Page
      */
     public void elementRender(RenderTime renderTime, RenderElement... elements)
     {
-        if(renderTime == null) throw new UnsupportedOperationException("RenderTime is required");
-        if(elements == null || elements.length < 1) throw new UnsupportedOperationException("RenderElements are required");
+        if(renderTime == null)
+        {
+            throw new UnsupportedOperationException("RenderTime is required");
+        }
+        if(elements == null || elements.length < 1)
+        {
+            throw new UnsupportedOperationException("RenderElements are required");
+        }
         for(RenderElement element:elements)
         {
             try
@@ -356,7 +425,7 @@ public abstract class SharePage extends Page
             }
             finally
             {
-                renderTime.end();
+                renderTime.end(element.getLocator().toString());
             }
         }
     }
@@ -407,7 +476,7 @@ public abstract class SharePage extends Page
     
     /**
      * <li>Click the element which passed and wait for given ElementState on the same element.</li>
-     * <li>If the Element State not changed, then render the {@link ShareErrorPopup} Page, if it is rendered the return {@link ShareErrorPopup} page.</li>
+     * <li>If the Element State not changed, then render the {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
      * 
      * @param locator
      * @param elementState
@@ -441,7 +510,7 @@ public abstract class SharePage extends Page
                 }
                 catch (TimeoutException e)
                 {
-                    ShareErrorPopup errorPopup = new ShareErrorPopup(drone);
+                    SharePopup errorPopup = new SharePopup(drone);
                     try
                     {
                         errorPopup.render(new RenderTime(popupRendertime));
@@ -454,7 +523,7 @@ public abstract class SharePage extends Page
                 }
                 finally
                 {
-                    time.end();
+                    time.end(locatorById.toString());
                 }
                 break;
             }
@@ -486,21 +555,93 @@ public abstract class SharePage extends Page
         }
         return "";
     }
-    public void setAlfrescoVersion(AlfrescoVersion alfrescoVersion) {
+    public void setAlfrescoVersion(AlfrescoVersion alfrescoVersion)
+    {
         this.alfrescoVersion = alfrescoVersion;
     }
+    public long getPopupRendertime() 
+    {
+        return popupRendertime;
+    }
 
-	public long getPopupRendertime() {
-		return popupRendertime;
-	}
-
-	public void setPopupRendertime(long popupRendertime) {
-		this.popupRendertime = popupRendertime;
-	}
-
-	public void setElementWaitInSeconds(long elementWaitInSeconds) {
-		this.elementWaitInSeconds = elementWaitInSeconds;
-	}
+    public void setPopupRendertime(long popupRendertime) 
+    {
+        this.popupRendertime = popupRendertime;
+    }
+    public void setElementWaitInSeconds(long elementWaitInSeconds) 
+    {
+        this.elementWaitInSeconds = elementWaitInSeconds;
+    }   
 	
+    /**
+     * Helper to consistently get the Site Short Name.
+     *
+     * @param siteName String Name of the test for uniquely identifying / mapping test data with the test
+     *
+     * @return String site short name
+     */
+    public static String getSiteShortName(String siteName)
+    {
+        String siteShortName = "";
+        String[] unAllowedCharacters = {"_", "!"};
+
+        for(String removeChar:unAllowedCharacters)
+        {
+            siteShortName = siteName.replace(removeChar, "");
+        }
+
+        return siteShortName.toLowerCase();
+    }
     
+    /**
+     * Wait until the black message box appear with text then wait until same black message disappear with text.
+     * 
+     * @param text - Text to be checked in the black message.
+     * @param timeInSeconds - Time to wait in seconds.
+     */
+    protected void waitUntilMessageAppearAndDisappear(String text, long timeInSeconds)
+    {
+        drone.waitUntilElementDisappears(By.cssSelector("div.bd>span.message"), timeInSeconds);
+    }
+    /**
+     * Return the {@link RenderElement} of the action message.
+     * Checks that the black box with the message is not showing
+     * on the page or showing pending state passed invisible vs visible.
+     * @param state {@link ElementState} the visiblity state of element
+     * @return {@link RenderElement} of action message based on state
+     */
+    public RenderElement getActionMessageElement(ElementState state)
+    {
+        String messageSelector = "div#message, div.bd";
+        if(AlfrescoVersion.Enterprise41.equals(drone.getProperties().getVersion()))
+        {
+                messageSelector = "div.bd";
+        }
+        return new RenderElement(By.cssSelector(messageSelector), ElementState.INVISIBLE);
+    }
+    
+    /**
+     * Find the all the elements for given locator and returns the first visible {@link WebElement}.
+     * It could be used to elemanate the hidden element with same locators.
+     * 
+     * @param locator
+     * @return {@link WebElement}
+     */
+    protected WebElement getVisibleElement(By locator)
+    {
+        List<WebElement> searchElements = drone.findAll(locator);
+        for (WebElement webElement : searchElements)
+        {
+            if(webElement.isDisplayed())
+            {
+                return webElement;
+            }
+        }
+        throw new PageOperationException("Not able find the visible element for given locator : " + locator.toString());
+    }
+
+    protected boolean isDojoSupport()
+    {
+        return dojoSupport;
+    }
 }

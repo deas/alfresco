@@ -26,6 +26,7 @@ import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -44,9 +45,9 @@ import org.openqa.selenium.WebElement;
 public class Navigation extends SharePage
 {
     private static final String SITE_FINDER_LINK = "div[id$='app_sites-sites-menu']>div>ul[class^='site-finder-menuitem']>li>a";
-    private  final  String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
-    private final String NETWORK_NAMES = "network.names";
-    private final String USER_NAME_DROP_DOWN ;
+    private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
+    private static final String NETWORK_NAMES = "network.names";
+    private final String userNameDropDown ;
 
     /**
      * Constructor
@@ -56,7 +57,8 @@ public class Navigation extends SharePage
     public Navigation(WebDrone drone)
     {
         super(drone);
-        USER_NAME_DROP_DOWN = drone.getElement("user.dropdown");
+        userNameDropDown = drone.getElement("user.dropdown");
+      
     }
 
     @SuppressWarnings("unchecked")
@@ -89,7 +91,7 @@ public class Navigation extends SharePage
      */
     public DashBoardPage selectMyDashBoard()
     {
-        String selector = dojoSupport ? "div#HEADER_HOME" : "a[id$='-dashboard-button']";
+        String selector = isDojoSupport() ? "div#HEADER_HOME" : "a[id$='-dashboard-button']";
     	drone.find(By.cssSelector(selector)).click();
         return new DashBoardPage(drone);
     }
@@ -101,7 +103,7 @@ public class Navigation extends SharePage
      */
     public PeopleFinderPage selectPeople()
     {
-        String selector = dojoSupport ? "div#HEADER_PEOPLE" : "a[id$='people-button']";
+        String selector = isDojoSupport() ? "div#HEADER_PEOPLE" : "a[id$='people-button']";
     	drone.find(By.cssSelector(selector)).click();
         return new PeopleFinderPage(drone);
     }
@@ -116,9 +118,9 @@ public class Navigation extends SharePage
         selectSitesDropdown();
         try
         {
-            if(dojoSupport)
+            if(isDojoSupport())
             {
-                drone.findAndWait(By.cssSelector("td#HEADER_SITES_MENU_SITE_FINDER_text")).click();
+              drone.findAndWait(By.cssSelector(drone.getElement("site.finder"))).click();
             }
             else
             {
@@ -141,8 +143,8 @@ public class Navigation extends SharePage
     public CreateSitePage selectCreateSite()
     {
         selectSitesDropdown();
-        String selector = dojoSupport ? "td#HEADER_SITES_MENU_CREATE_SITE_text" : "ul.create-site-menuitem>li>a";
-        drone.find(By.cssSelector(selector)).click();
+        String selector = isDojoSupport() ? "td#HEADER_SITES_MENU_CREATE_SITE_text" : "ul.create-site-menuitem>li>a";
+        drone.findAndWait(By.cssSelector(selector)).click();
         return new CreateSitePage(drone);
     }
 
@@ -153,7 +155,7 @@ public class Navigation extends SharePage
     protected void selectSitesDropdown()
     {
         // Wait is applied as the link is within a java script.
-        String selector = dojoSupport ? "div#HEADER_SITES_MENU" : "button[id$='app_sites-button']";
+        String selector = isDojoSupport() ? "div#HEADER_SITES_MENU" : "button[id$='app_sites-button']";
         WebElement siteButton = drone.find(By.cssSelector(selector));
         siteButton.click();
     }
@@ -164,7 +166,7 @@ public class Navigation extends SharePage
      */
     private void selectUserDropdown()
     {
-    	WebElement userButton = drone.find(By.cssSelector(USER_NAME_DROP_DOWN));
+    	WebElement userButton = drone.find(By.cssSelector(userNameDropDown));
         userButton.click();
     }
 
@@ -176,7 +178,7 @@ public class Navigation extends SharePage
     public MyProfilePage selectMyProfile()
     {
         selectUserDropdown();
-        String selector = dojoSupport ? "td#HEADER_USER_MENU_PROFILE_text" : "div[id$='usermenu_user'] ul li:nth-of-type(2) a";
+        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_PROFILE_text" : "div[id$='usermenu_user'] ul li:nth-of-type(2) a";
         drone.findAndWait(By.cssSelector(selector)).click();
         return new MyProfilePage(drone);
     }
@@ -188,7 +190,7 @@ public class Navigation extends SharePage
      */
     public ChangePasswordPage selectChangePassword()
     {
-        String selector = dojoSupport ? "td#HEADER_USER_MENU_CHANGE_PASSWORD_text" : "div[id$='usermenu_user'] ul li:nth-of-type(3) a";
+        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_CHANGE_PASSWORD_text" : "div[id$='usermenu_user'] ul li:nth-of-type(3) a";
         selectUserDropdown();
         drone.findAndWait(By.cssSelector(selector)).click();
         return new ChangePasswordPage(drone); 
@@ -202,7 +204,7 @@ public class Navigation extends SharePage
     public LoginPage logout()
     {
         selectUserDropdown();
-        String selector = dojoSupport ? "td#HEADER_USER_MENU_LOGOUT_text" : "div[id$='usermenu_user'] ul li:nth-of-type(5) a";
+        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_LOGOUT_text" : "div[id$='usermenu_user'] ul li:nth-of-type(5) a";
         drone.findAndWait(By.cssSelector(selector)).click();
         return new LoginPage(drone);
     }
@@ -214,7 +216,7 @@ public class Navigation extends SharePage
      */
     public RepositoryPage selectRepository()
     {
-        String selector = dojoSupport ? "div#HEADER_REPOSITORY" : "a[id$='app_repository-button']"; 
+        String selector = isDojoSupport() ? "div#HEADER_REPOSITORY" : "a[id$='app_repository-button']"; 
     	drone.find(By.cssSelector(selector)).click();
         return new RepositoryPage(drone);
     }
@@ -227,19 +229,16 @@ public class Navigation extends SharePage
     {
         try
         {
-          if(dojoSupport)
+          if(isDojoSupport())
           {
               // TODO ALF-19185 - Bug Advance Search
               String usersPageURL = "/page/advsearch";
               String currentUrl = drone.getCurrentUrl();
-
               if (currentUrl != null)
               {
                   String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
                   drone.navigateTo(url);
               }
-              // drone.findAndWait(By.cssSelector("div#HEADER_SEARCH_BOX_DROPDOWN_MENU")).click();
-              // drone.findAndWait(By.cssSelector("td#HEADER_SEARCH_BOX_ADVANCED_SEARCH_text")).click();
           }
           else
           {
@@ -259,7 +258,7 @@ public class Navigation extends SharePage
      * Navigates to the users page on Admin Console - Enterprise Only option.
      * @return {@link UserSearchPage} Instance of UserSearchPage
      */
-    public UserSearchPage getUsersPage()
+    public HtmlPage getUsersPage()
     {       
         if(alfrescoVersion.isCloud())
         {
@@ -296,7 +295,7 @@ public class Navigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            throw new PageException(this.getClass().getName() + " : selectNetworkDropdown() : failed to render in time. " + e);
+            throw new PageException(this.getClass().getName() + " : selectNetworkDropdown() : failed to render in time. ", e);
         }
     }
     
@@ -316,7 +315,6 @@ public class Navigation extends SharePage
         {
             throw new IllegalArgumentException("Network name is required.");
         }
-
         try
         {
             String networkNamesid = drone.getElement(NETWORK_NAMES);
@@ -335,7 +333,7 @@ public class Navigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            throw new PageException(this.getClass().getName() + " : selectNetwork() : failed to render in time. " + e);
+            throw new PageException(this.getClass().getName() + " : selectNetwork() : failed to render in time. ", e);
         }
     }
 
@@ -366,7 +364,7 @@ public class Navigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            throw new PageException(this.getClass().getName() + " : selectUserNetwork() : failed to render in time. " + e);
+            throw new PageException(this.getClass().getName() + " : selectUserNetwork() : failed to render in time. ", e);
         }
     }
 
@@ -378,10 +376,12 @@ public class Navigation extends SharePage
      */
     public MyTasksPage selectMyTasks()
     {
-        if (dojoSupport)
+        if (isDojoSupport())
         {
-
-            drone.find(By.cssSelector("#HEADER_TASKS")).click();
+            if(!alfrescoVersion.isCloud())
+            {
+                drone.find(By.cssSelector("#HEADER_TASKS")).click();
+            }
             drone.find(By.cssSelector("#HEADER_MY_TASKS")).click();
         }
         else
@@ -406,8 +406,28 @@ public class Navigation extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Workflows I've started link");
+            throw new PageException("Unable to find Workflows I've started link", nse);
         }
-
+    }
+    
+    /**
+     * Navigates to the groups page on Admin Console - Enterprise Only option.
+     * @return {@link GroupsPage} Instance of UserSearchPage
+     */
+    public GroupsPage getGroupsPage()
+    {       
+        if(alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+        }
+        //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
+        String usersPageURL = "/page/console/admin-console/groups";
+        String currentUrl = drone.getCurrentUrl();
+        if(currentUrl != null)
+        {
+            String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+            drone.navigateTo(url);
+        }
+        return new GroupsPage(drone);
     }
 }

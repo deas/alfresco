@@ -40,7 +40,7 @@ public enum WorkFlowType
     REVIEW_AND_APPROVE("Review And Approve"),
     SEND_DOCS_FOR_REVIEW("Send Document(s) For Review");
 
-    String title;
+    private String title;
 
     WorkFlowType(String desc)
     {
@@ -54,26 +54,30 @@ public enum WorkFlowType
 
     protected WebElement getTaskTypeElement(WebDrone drone)
     {
-        By dropDown = By.cssSelector("div[id$='default-workflow-definition-menu'] li");
+        By dropDown = By.cssSelector("div[id$='default-workflow-definition-menu'] li span.title");
         List<WebElement> liElements = drone.findAll(dropDown);
         for (WebElement liElement : liElements)
         {
-            if (liElement.getText().contains(this.title))
+        	String elementText = liElement.getText().trim();
+            if (elementText.equalsIgnoreCase(this.title.trim()))
             {
                 return liElement;
             }
         }
         return null;
     }
+    
 
     public static WorkFlowType getWorkflowType(String type)
     {
         for (WorkFlowType workflow : WorkFlowType.values())
         {
             if (type.contains(workflow.toString()))
+            {
                 return workflow;
+            }
         }
-        return null;
+        throw new IllegalArgumentException("Workflow Type not able find for given name: " + type);
     }
 
     /**
@@ -87,8 +91,10 @@ public enum WorkFlowType
         for (WorkFlowType workflow : WorkFlowType.values())
         {
             if (title.contains(workflow.getTitle()))
+            {
                 return workflow;
+            }
         }
-        return null;
+        throw new IllegalArgumentException("Workflow Type not able find for given Title: " + title);
     }
 }

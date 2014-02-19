@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 public class DashBoardPage extends SharePage implements Dashboard
 {
     
-    private static final Log logger = LogFactory.getLog(DashBoardPage.class);
+    private static final Log LOGGER = LogFactory.getLog(DashBoardPage.class);
 
     /**
      * Constructor.
@@ -49,6 +49,7 @@ public class DashBoardPage extends SharePage implements Dashboard
     @Override
     public DashBoardPage render(RenderTime timer)
     {
+        basicRender(timer);
         // We don't know if the dashlets will appear so do the basic rendering
         try
         {
@@ -90,7 +91,7 @@ public class DashBoardPage extends SharePage implements Dashboard
         }
         catch (Exception e)
         {
-            logger.error(e);
+            LOGGER.error(e);
         }
         return false;
     }

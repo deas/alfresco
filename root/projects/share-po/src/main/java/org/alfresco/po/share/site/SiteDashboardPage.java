@@ -51,7 +51,9 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     private static final String PROJECT_WIKI_ID = "#HEADER_SITE_WIKI-PAGE_text";
     private static final String WELCOME_DASHLET = "div.dashlet.dynamic-welcome";
-    private String ELMENTS_CLICKABLE;
+    private String clickableElements;
+    private static final By CONFIGURE_SEARCH_DIALOG_BOX = By
+            .cssSelector("div[id$='default-configDialog-configDialog_c'][style*='visibility: visible']>div[id$='_default-configDialog-configDialog']");
 
     /**
      * Constructor
@@ -165,8 +167,8 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     {
         try
         {
-            ELMENTS_CLICKABLE = drone.getElement("multiple.clickable.object");
-            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(ELMENTS_CLICKABLE));
+            clickableElements = drone.getElement("multiple.clickable.object");
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(clickableElements));
             for (WebElement webElement : elements)
             {
                     if ("More".equals(webElement.getText()) || name.equals(webElement.getText()))
@@ -216,6 +218,23 @@ public class SiteDashboardPage extends SitePage implements Dashboard
         }
         catch (NoSuchElementException e) { }
         catch (StaleElementReferenceException ste){}
+        return false;
+    }
+
+    /**
+     * Method to find if the Configure Saved Search dialog displayed
+     * @return True if displayed
+     */
+    public boolean isConfigureSavedSearchDialogDisplayed()
+    {
+        try
+        {
+            drone.waitUntilElementDisappears(CONFIGURE_SEARCH_DIALOG_BOX, 2);
+        }
+        catch (TimeoutException te)
+        {
+            return true;
+        }
         return false;
     }
 }

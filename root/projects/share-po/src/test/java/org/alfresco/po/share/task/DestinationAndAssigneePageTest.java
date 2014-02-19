@@ -22,7 +22,6 @@ import java.io.File;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.CreateNewFolderInCloudPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -61,7 +60,6 @@ public class DestinationAndAssigneePageTest extends AbstractTest
      * Test process of accessing DestinationAndAssignee page.
      * @throws Exception 
      */
-
     @SuppressWarnings("unused")
     @BeforeClass
     private void setUp() throws Exception
@@ -71,7 +69,7 @@ public class DestinationAndAssigneePageTest extends AbstractTest
         file2 = SiteUtil.prepareFile("File-2"+System.currentTimeMillis());
 
         loginAs(username, password);
-
+        disconnectCloudSync(drone);
         // signInToCloud(drone, cloudUserName, cloudUserPassword);
 
         //SiteUtil.createSite(drone, siteName2, "Public");
@@ -95,9 +93,7 @@ public class DestinationAndAssigneePageTest extends AbstractTest
     @Test(dependsOnMethods = "isFileSyncSetUp")
     public void isSignUpDialogVisible() throws Exception
     {
-
         CloudSignInPage cloudSignInPage = documentDetailsPage.selectSyncToCloud().render();
-
         //Verify Sign-In dialog is displayed
         Assert.assertTrue(documentDetailsPage.isSignUpDialogVisible());
 
@@ -114,7 +110,7 @@ public class DestinationAndAssigneePageTest extends AbstractTest
         Assert.assertTrue(cloudSyncPage.isTitlePresent());
 
         CloudSignInPage cloudSignInPage = cloudSyncPage.selectCloudSign().render();
-        cloudSyncPage = cloudSignInPage.loginAs(cloudUserName, cloudUserPassword).render();
+        cloudSyncPage = cloudSignInPage.loginAs(hybridUserName, hybridUserPassword).render();
 
         // Verify the disconnect button is displayed after set up cloud sync
         Assert.assertTrue(cloudSyncPage.isDisconnectButtonDisplayed());
@@ -167,6 +163,12 @@ public class DestinationAndAssigneePageTest extends AbstractTest
     }
 
     @Test(dependsOnMethods="testLockOnPremCheckBox")
+    public void isSyncButtonEnabled() throws Exception
+    {
+        Assert.assertTrue(destinationAndAssigneePage.isSyncButtonEnabled());
+    }
+
+    @Test(dependsOnMethods="isSyncButtonEnabled")
     public void testIncludeSubFolderCheckBox() throws Exception
     {
         folder = "TempFolder"+System.currentTimeMillis();
@@ -211,7 +213,7 @@ public class DestinationAndAssigneePageTest extends AbstractTest
         CloudSyncPage cloudSyncPage = myProfilePage.getProfileNav().selectCloudSyncPage().render();
         cloudSyncPage.disconnectCloudAccount();
         SiteUtil.deleteSite(drone, siteName1);
-        ShareUtil.logout(drone);
+        logout(drone);
     }
 
 }

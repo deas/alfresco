@@ -18,8 +18,12 @@
  */
 package org.alfresco.po.share.site;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
+import org.alfresco.webdrone.ElementState;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -87,7 +91,7 @@ public class CreateNewFolderInCloudPage extends SharePage
      *
      * @param folderName    mandatory folder name
      * @param description   optional folder description
-     * @return {@link org.alfresco.po.share.HtmlPage} page response
+     * @return {@link DestinationAndAssigneePage} page response
      */
     public DestinationAndAssigneePage createNewFolder(final String folderName, final String description)
     {
@@ -104,11 +108,15 @@ public class CreateNewFolderInCloudPage extends SharePage
                 WebElement inputDescription = drone.find(DESCRIPTION);
                 inputDescription.sendKeys(description);
             }
-            WebElement okButton = drone.find(SAVE_BUTTON);
-            okButton.click();
-
+            submit(SAVE_BUTTON, ElementState.INVISIBLE);
             //Wait till the pop up disappears
-            canResume();
+            //canResume();
+            try
+            {
+                drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+            }
+            catch (TimeoutException e) {}
+            //drone.waitFor(WAIT_TIME_3000);
             return new DestinationAndAssigneePage(drone);
         }
         catch (TimeoutException te)
@@ -134,7 +142,7 @@ public class CreateNewFolderInCloudPage extends SharePage
      * @param folderName    mandatory folder name
      * @param description   optional folder description
      * @param folderTitle  options folder Title
-     * @return {@link org.alfresco.po.share.HtmlPage} page response
+     * @return {@link DestinationAndAssigneePage} page response
      */
     public DestinationAndAssigneePage createNewFolder(final String folderName, final String folderTitle, final String description)
     {

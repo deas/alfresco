@@ -40,13 +40,14 @@ import org.openqa.selenium.WebElement;
  */
 public class CreateSitePage extends SharePage
 {
-    protected static final By MODERATED_CHECKBOX = By.cssSelector("input[id$='-isModerated']");
-    protected static final By PRIVATE_CHECKBOX = By.cssSelector("input[id$='-isPrivate']");
-    protected static final By INPUT_DESCRIPTION = By.cssSelector("textarea[id$='-description']");
-    protected static final By INPUT_TITLE = By.name("title");
-    protected static final By SUBMIT_BUTTON = By.cssSelector("button[id$='ok-button-button']");
-    protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='cancel-button-button']");
-    protected static final By CREATE_SITE_FORM = By.cssSelector("form[id$='createSite-instance-form']");
+    private static final By MODERATED_CHECKBOX = By.cssSelector("input[id$='-isModerated']");
+    private static final By PRIVATE_CHECKBOX = By.cssSelector("input[id$='-isPrivate']");
+    private static final By PUBLIC_CHECKBOX = By.cssSelector("input[id$='-isPublic']");
+    private static final By INPUT_DESCRIPTION = By.cssSelector("textarea[id$='-description']");
+    private static final By INPUT_TITLE = By.name("title");
+    private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='ok-button-button']");
+    private static final By CANCEL_BUTTON = By.cssSelector("button[id$='cancel-button-button']");
+    private static final By CREATE_SITE_FORM = By.cssSelector("form[id$='createSite-instance-form']");
 
     /**
      * Constructor.
@@ -134,15 +135,7 @@ public class CreateSitePage extends SharePage
             throw new IllegalArgumentException("Site type is required");
         }
 
-        if(isModerated)
-        {
-            drone.find(MODERATED_CHECKBOX).click();
-        }
-        
-        if(isPriavte)
-        {
-            drone.find(PRIVATE_CHECKBOX).click();  
-        }
+        selectSiteVisibility(isPriavte, isModerated);
 
         return createSite(siteName, description, siteType);
     }
@@ -162,7 +155,7 @@ public class CreateSitePage extends SharePage
                     inputDescription.sendKeys(description);
                 }
                 selectSiteType(siteType);
-                return submit(SUBMIT_BUTTON, ElementState.DELETE_FROM_DOM);
+                return selectOk();
                 //drone.find(SUBMIT_BUTTON).click();
                 //return new SiteDashboardPage(drone);
             default: 
@@ -170,6 +163,39 @@ public class CreateSitePage extends SharePage
                         " out of the following possible options: Collaboration");
         }
 
+    }
+
+    /**
+     * Clicks on OK buttong and checks whether site page has been loaded.
+     * 
+     * @return
+     */
+    public HtmlPage selectOk()
+    {
+        return submit(SUBMIT_BUTTON, ElementState.DELETE_FROM_DOM);
+    }
+
+    /**
+     * Selects the visibility required for site to be created/edited.
+     * 
+     * @param isPrivate
+     * @param isModerated
+     */
+    public void selectSiteVisibility(final boolean isPrivate, final boolean isModerated)
+    {
+        if(isPrivate)
+        {
+            drone.findAndWait(PRIVATE_CHECKBOX).click();  
+            return;
+        }
+        else
+        {
+            drone.findAndWait(PUBLIC_CHECKBOX).click();
+            if(isModerated)
+            {
+            	drone.findAndWait(MODERATED_CHECKBOX).click();
+            }
+        }
     }
     
     /**

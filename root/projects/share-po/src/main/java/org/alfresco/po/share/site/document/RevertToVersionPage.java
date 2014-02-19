@@ -36,10 +36,10 @@ public class RevertToVersionPage extends UpdateFilePage
     public RevertToVersionPage(WebDrone drone, String documentVersion, boolean editOffline)
     {
         super(drone, documentVersion, editOffline);
-        minorVersionRadioButton = "input[id$='minorVersion-radioButton']";
-        majorVersionRadioButton = "input[id$='majorVersion-radioButton']";
-        submitButton="button#alfresco-revertVersion-instance-ok-button-button";
-        cancelButton="button#alfresco-revertVersion-instance-cancel-button-button";
-        textAreaCssLocation="textarea[id$='-description-textarea']";
+        setMinorVersionRadioButton("input[id$='minorVersion-radioButton']");
+        setMajorVersionRadioButton("input[id$='majorVersion-radioButton']");
+        setSubmitButton("button#alfresco-revertVersion-instance-ok-button-button");
+        setCancelButton("button#alfresco-revertVersion-instance-cancel-button-button");
+        setTextAreaCssLocation("textarea[id$='-description-textarea']");
     }
 }

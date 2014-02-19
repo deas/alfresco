@@ -18,19 +18,22 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.UserSearchPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -42,24 +45,28 @@ import org.testng.annotations.Test;
  * (JIRA Issue: WEBDRONE-284) 
  *  Add group names back. 
  **/
-@Test(groups = {"BuildBrokenBug"})
+@Test(groups = { "Enterprise4.2", "Cloud2", "Firefox17Ent"})
 public class ManagePermissionsTest extends AbstractTest
 {
 
+    private static String FNAME = "Administrator";
     private String siteName;
     private File sampleFile;
     private ManagePermissionsPage pageUnderTest;
     private UserSearchPage pageReturned;
-
     @BeforeClass
     public void beforeClass() throws IOException
     {
+        if(alfrescoVersion.isCloud()){
+            FNAME = "Auto";
+        }
         siteName = "site" + System.currentTimeMillis();
 
         ShareUtil.loginAs(drone, shareUrl, username, password).render();
         SiteUtil.createSite(drone, siteName, "description", "Public");
-        SitePage page = drone.getCurrentPage().render();
-        DocumentLibraryPage documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        SitePage sitePage = drone.getCurrentPage().render();
+
+        DocumentLibraryPage documentLibPage = sitePage.getSiteNav().selectSiteDocumentLibrary().render();
         sampleFile = SiteUtil.prepareFile();
         UploadFilePage upLoadPage = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = upLoadPage.uploadFile(sampleFile.getCanonicalPath()).render();
@@ -77,11 +84,11 @@ public class ManagePermissionsTest extends AbstractTest
     @Test
     public void toggleInheritPermissionTest()
     {
-        pageUnderTest = pageUnderTest.toggleInheritPermission(false).render();
-        assertTrue("The Inherit permissio table should not be displayed.", !pageUnderTest.isInheritPermissionEnabled());
+        pageUnderTest = pageUnderTest.toggleInheritPermission(false, ButtonType.Yes).render();
+        assertTrue(!pageUnderTest.isInheritPermissionEnabled(), "The Inherit permissio table should not be displayed.");
 
-        pageUnderTest = pageUnderTest.toggleInheritPermission(true).render();
-        assertTrue("The Inherit permissio table should be displayed.", pageUnderTest.isInheritPermissionEnabled());
+        pageUnderTest = pageUnderTest.toggleInheritPermission(true, ButtonType.No).render();
+        assertTrue(pageUnderTest.isInheritPermissionEnabled(), "The Inherit permissio table should be displayed.");
         
     }
 
@@ -100,21 +107,63 @@ public class ManagePermissionsTest extends AbstractTest
         UserSearchPage searchPage = pageReturned;
         pageUnderTest = searchPage.searchAndSelectUser(userProfile);
         pageUnderTest.render();
-        assertTrue("User did not get added to 'Locally Set Permissions' table as user", pageUnderTest.isDirectPermissionForUser(userProfile));
+        assertTrue(pageUnderTest.isDirectPermissionForUser(userProfile), "User did not get added to 'Locally Set Permissions' table as user");
+    }
+    
+    @Test(dependsOnMethods="searchUserTest", expectedExceptions=IllegalArgumentException.class, expectedExceptionsMessageRegExp="Name cannot be null")
+    public void setAccessTypeWithNullName()
+    {
+        String name = null;
+        pageUnderTest.setAccessType(name, UserRole.COLLABORATOR);
     }
 
-    @Test(dependsOnMethods = "searchUserTest")
+    @Test(dependsOnMethods="setAccessTypeWithNullName", expectedExceptions=IllegalArgumentException.class, expectedExceptionsMessageRegExp="UserProfile cannot be null")
+    public void setAccessTypeWithNullProfile()
+    {
+        UserProfile name = null;
+        pageUnderTest.setAccessType(name, UserRole.COLLABORATOR);
+    }
+
+    @Test(dependsOnMethods="setAccessTypeWithNullProfile", expectedExceptions=IllegalArgumentException.class, expectedExceptionsMessageRegExp="Access type cannot be null")
+    public void setAccessTypeWithNullRole()
+    {
+        String name = FNAME;
+        pageUnderTest.setAccessType(name, null);
+    }
+    
+    @Test(dependsOnMethods = "setAccessTypeWithNullRole")
     public void setAccessTypeTest()
     {
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUsername(username);
+        userProfile.setfName(FNAME);
+        userProfile.setlName("");
         UserRole userRole = UserRole.COLLABORATOR;
-        pageUnderTest.setAccessType(userRole);
+        String userFullName = FNAME;
+        
+        //Test ManagePermissionsPage.setAccessType(UserProfile, UserRole)
+        pageUnderTest.setAccessType(userFullName, userRole);
         DocumentDetailsPage pageReturned = (DocumentDetailsPage) pageUnderTest.selectSave();
         pageReturned.render();
         assertTrue(pageReturned instanceof DocumentDetailsPage);
         pageUnderTest = pageReturned.selectManagePermissions().render();
         UserRole role = pageUnderTest.getAccessType();
-        assertTrue("Access type should have been '" + userRole + "' but was - " + pageUnderTest.getAccessType(),
-                UserRole.COLLABORATOR.equals(role));
+        assertTrue(UserRole.COLLABORATOR.equals(role),
+                "Access type should have been '" + userRole + "' but was - " + pageUnderTest.getAccessType());
+        pageReturned = (DocumentDetailsPage) pageUnderTest.selectCancel();
+        pageReturned.render();
+        assertTrue(pageReturned instanceof DocumentDetailsPage);
+        
+        //Test ManagePermissionsPage.setAccessType(String, UserRole)
+        pageUnderTest = pageReturned.selectManagePermissions().render();
+        pageUnderTest.setAccessType(userProfile, userRole);
+        pageReturned = (DocumentDetailsPage) pageUnderTest.selectSave();
+        pageReturned.render();
+        assertTrue(pageReturned instanceof DocumentDetailsPage);
+        pageUnderTest = pageReturned.selectManagePermissions().render();
+        role = pageUnderTest.getAccessType();
+        assertTrue(UserRole.COLLABORATOR.equals(role),
+                "Access type should have been '" + userRole + "' but was - " + pageUnderTest.getAccessType());
         pageReturned = (DocumentDetailsPage) pageUnderTest.selectCancel();
         pageReturned.render();
         assertTrue(pageReturned instanceof DocumentDetailsPage);
@@ -125,9 +174,50 @@ public class ManagePermissionsTest extends AbstractTest
     {
         pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();
         Assert.assertFalse(pageUnderTest.isUserExistForPermission(username));       
-        assertTrue(pageUnderTest.isUserExistForPermission("Administrator"));
-        assertTrue(pageUnderTest.updateUserRole("Administrator", UserRole.CONSUMER));        
+        assertTrue(pageUnderTest.isUserExistForPermission(FNAME));
+        assertTrue(pageUnderTest.updateUserRole(FNAME, UserRole.CONSUMER));        
         ((DocumentDetailsPage) pageUnderTest.selectCancel()).render();        
+    }
+    
+    
+    @Test(dependsOnMethods = "updateRoleTest")
+    public void getInheritedPermissions()
+    {
+        pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();       
+        String role = pageUnderTest.getInheritedPermissions().get("site_"+siteName.toLowerCase()+"_"+ StringUtils.replace(UserRole.SITEMANAGER.getRoleName().trim(), " ", ""));
+        Assert.assertEquals(role, UserRole.SITEMANAGER.getRoleName());
+    }
+    @Test(dependsOnMethods = "getInheritedPermissions")
+    public void getExistingPermissionTest()
+    {
+        String userName = "EVERYONE";
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if(AlfrescoVersion.Cloud2.equals(version))
+        {
+            userName = "INTERNAL_USERS";
+        }
+        UserRole role = pageUnderTest.getExistingPermissionForInheritPermission(userName);
+        Assert.assertEquals(role, UserRole.SITECONSUMER);
+    }
+    @Test(dependsOnMethods = "getExistingPermissionTest")
+    public void deleteExistingPermissionTest()
+    {
+        String userName = "Administrator";
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if(AlfrescoVersion.Cloud2.equals(version))
+        {
+            userName = "Auto Account";
+        }
+        Assert.assertTrue(pageUnderTest.deleteUserOrGroupFromPermission(userName, UserRole.COLLABORATOR));
+    }
+    
+    @Test(dependsOnMethods = "deleteExistingPermissionTest")
+    public void isEveryOnePresent()
+    {
+        
+        pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();    
+        ManagePermissionsPage.UserSearchPage userSearchPage = pageUnderTest.selectAddUser().render();
+        Assert.assertTrue(userSearchPage.isEveryOneDisplayed("<>?:\"|}{+_)(*&^%$#@!~;"));
     }
     
 }

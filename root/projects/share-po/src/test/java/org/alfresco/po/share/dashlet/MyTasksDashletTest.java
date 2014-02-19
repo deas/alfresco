@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.exception.PageException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -34,18 +35,17 @@ import org.testng.annotations.Test;
  * @author Michael Suzuki
  * @since 1.3
  */
-@Test(groups={"alfresco-one"})
 public class MyTasksDashletTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
     
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups={"alfresco-one"})
     public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password).render();
     }
     
-    @Test
+    @Test(groups={"alfresco-one"})
     public void instantiateMyTasksDashlet()
     {
         MyTasksDashlet dashlet = new MyTasksDashlet(drone);
@@ -55,7 +55,7 @@ public class MyTasksDashletTest extends AbstractTest
     /**
      * Gets empty collection when no tasks are visible.
      */
-    @Test(dependsOnMethods="selectMyTasksDashlet")
+    @Test(dependsOnMethods="selectMyTasksDashlet", groups={"alfresco-one"})
     public void getTasksShouldBeEmpty()
     {
         MyTasksDashlet dashlet = new MyTasksDashlet(drone).render();
@@ -70,7 +70,7 @@ public class MyTasksDashletTest extends AbstractTest
      * dashlet from the dash board view.
      * @throws Exception 
      */
-    @Test(dependsOnMethods="selectFake")
+    @Test(dependsOnMethods="selectFake", groups={"alfresco-one"})
     public void selectMyTasksDashlet() throws Exception
     {
     	MyTasksDashlet dashlet = dashBoard.getDashlet("tasks").render();
@@ -78,10 +78,20 @@ public class MyTasksDashletTest extends AbstractTest
         Assert.assertEquals("My Tasks",title);
     }
     
-    @Test(dependsOnMethods="instantiateMyTasksDashlet",expectedExceptions = PageException.class)
+    @Test(dependsOnMethods="instantiateMyTasksDashlet",expectedExceptions = PageException.class, groups={"alfresco-one"})
     public void selectFake() throws Exception
     {
     	MyTasksDashlet dashlet = dashBoard.getDashlet("tasks").render();
         dashlet.selectTask("bla");
+    }
+    
+    @Test(dependsOnMethods="getTasksShouldBeEmpty", groups={"Enterprise4.2"})
+    public void selectStartWorkFlow() throws Exception
+    {
+        MyTasksDashlet dashlet = dashBoard.getDashlet("tasks").render();
+        StartWorkFlowPage startWorkFlow = dashlet.selectStartWorkFlow().render();
+        
+        Assert.assertNotNull(startWorkFlow);
+        Assert.assertTrue(startWorkFlow.getTitle().contains("Start Workflow"));
     }
 }

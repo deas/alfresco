@@ -124,7 +124,7 @@ public class LoginPage extends SharePage
          */
 
         boolean isCloud = alfrescoVersion.isCloud();
-        String selector = dojoSupport || isCloud ? "button[id$='button']" : "input#btn-login";
+        String selector = isDojoSupport() || isCloud ? "button[id$='button']" : "input#btn-login";
         WebElement button = drone.findAndWait(By.cssSelector(selector));
         WebElement passwordInput = drone.findAndWait(PASSWORD_INPUT);
         passwordInput.click();
@@ -150,7 +150,7 @@ public class LoginPage extends SharePage
     {
         try
         {
-            if(alfrescoVersion.isCloud() || dojoSupport)
+            if(alfrescoVersion.isCloud() || isDojoSupport())
             {
                 return drone.find(By.cssSelector("div.error")).isDisplayed();
             }
@@ -164,7 +164,7 @@ public class LoginPage extends SharePage
     
     public String getErrorMessage()
     {
-        if(alfrescoVersion.isCloud() || dojoSupport)
+        if(alfrescoVersion.isCloud() || isDojoSupport())
         {
             return drone.find(By.cssSelector("div.error")).getText();
         }

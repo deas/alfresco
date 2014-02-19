@@ -18,6 +18,7 @@
  */
 package org.alfresco.po.share.task;
 
+import org.alfresco.po.share.workflow.TaskDetailsType;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -32,10 +33,11 @@ public class TaskDetails
 
     private String taskName;
     private DateTime due;
+    private String dueDateString;
     private DateTime startDate;
     private DateTime endDate;
     private String status;
-    private String type;
+    private TaskDetailsType type;
     private String description;
     private String startedBy;
 
@@ -56,7 +58,24 @@ public class TaskDetails
 
     public void setDue(String due)
     {
-        this.due = DateTimeFormat.forPattern("dd MMMMM, yyyy").parseDateTime(due);
+        try
+        {
+            this.due = DateTimeFormat.forPattern("dd MMMMM, yyyy").parseDateTime(due);
+        }
+        catch (IllegalArgumentException ie)
+        {
+            this.due = null;
+        }
+    }
+
+    public String getDueDateString()
+    {
+        return dueDateString;
+    }
+
+    public void setDueDateString(String due)
+    {
+        this.dueDateString = due;
     }
 
     public DateTime getStartDate()
@@ -89,14 +108,14 @@ public class TaskDetails
         this.status = status;
     }
 
-    public String getType()
+    public TaskDetailsType getType()
     {
         return type;
     }
 
     public void setType(String type)
     {
-        this.type = type;
+        this.type = TaskDetailsType.getTaskDetailsType(type);
     }
 
     public String getDescription()

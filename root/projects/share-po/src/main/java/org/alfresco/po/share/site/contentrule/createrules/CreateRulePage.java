@@ -1,0 +1,352 @@
+package org.alfresco.po.share.site.contentrule.createrules;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.List;
+
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPageWithRules;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractActionSelector;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractIfSelector;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorCloudImpl;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.IfSelectorCloudImpl;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.IfSelectorEnterpImpl;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.WhenSelectorImpl;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.WebDrone;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
+
+/**
+ * CreateRulePage page object, holds all element of the HTML page relating to Create Rule Page
+ *
+ * @author Aliaksei Boole
+ * @since 1.0
+ */
+public class CreateRulePage extends SitePage
+{
+    @SuppressWarnings("unused")
+    private static boolean isHaveCreatedRules = false;
+
+    //Drop down selects.
+    private static final By WHEN_OPTIONS_SELECT   = By
+            .cssSelector("ul[id$=ruleConfigType-configs] select[class$='config-name']");
+    private static final By IF_OPTIONS_SELECT     = By
+            .cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
+    private static final By ACTION_OPTIONS_SELECT = By
+            .cssSelector("ul[id$=ruleConfigAction-configs]>li select[class$='config-name']");
+
+    //textField
+    private static final By NAME_FIELD        = By.cssSelector("input[name='title']");
+    private static final By DESCRIPTION_FIELD = By.cssSelector("textarea[name='description']");
+
+    //CheckBoxes
+    private static final By CHECK_BOX_DISABLE            = By
+            .cssSelector("div[class='form-field disabled'] input[title='Disable rule']");
+    private static final By CHECK_BOX_APPLY_TO_SUBFOLDER = By
+            .cssSelector("div[class='form-field applyToChildren'] input[title='Rule applies to subfolders']");
+
+    //Messages
+    private static final By     BALLOON_TEXT_MESSAGE         = By
+            .cssSelector("div[class='balloon'] div[class='text'] div");
+    public static final  String BALLOON_TEXT_VALUE_NOT_EMPTY = "The value cannot be empty.";
+
+    //Buttons
+    private static final By CANCEL_BUTTON                    = By
+            .cssSelector("span[id*='cancel-button'] button[id*='cancel-button']");
+    private static final By CREATE_BUTTON                    = By
+            .cssSelector("span[id*='create-button'] button[id*='create-button']");
+    private static final By CREATE_AND_CREATE_ANOTHER_BUTTON = By
+            .cssSelector("span[id*='createAnother-button'] button[id*='createAnother-button']");
+
+    private static final By CREATED_ALERT  = By.xpath(".//*[@id='message']/div/span");
+
+
+    public CreateRulePage(WebDrone drone)
+    {
+        super(drone);
+    }
+
+    public enum Block
+    {
+        IF_BLOCK("ul[id$=ruleConfigIfCondition-configs]"),
+        WHEN_BLOCK("ul[id$=ruleConfigType-configs]"),
+        ACTION_BLOCK("ul[id$=ruleConfigAction-configs]");
+
+        private final By selector;
+
+        Block(String selector)
+        {
+            this.selector = By.cssSelector(selector);
+        }
+    }
+
+    public enum AddRemoveAction
+    {
+        ADD("span[class*='add-config'] button"),
+        REMOVE("span[class*='remove-config'] button");
+
+        private final By actionSelector;
+
+        AddRemoveAction(String actionSelector)
+        {
+            this.actionSelector = By.cssSelector(actionSelector);
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public CreateRulePage render(RenderTime timer)
+    {
+        elementRender(timer,
+                      getVisibleRenderElement(WHEN_OPTIONS_SELECT),
+                      getVisibleRenderElement(IF_OPTIONS_SELECT),
+                      getVisibleRenderElement(ACTION_OPTIONS_SELECT));
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public CreateRulePage render()
+    {
+        //this page has big render time
+        return render(new RenderTime(maxPageLoadingTime + 20000));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public CreateRulePage render(final long time)
+    {
+        return render(new RenderTime(time));
+    }
+
+    public void addOrRemoveOptionsFieldsToBlock(final Block block, final AddRemoveAction operation)
+    {
+        WebElement blockElement = drone.findAndWait(block.selector);
+        List<WebElement> operationButton = blockElement.findElements(operation.actionSelector);
+        operationButton.get(operationButton.size()-1).click();
+    }
+
+    public WhenSelectorImpl getWhenOptionObj()
+    {
+        return new WhenSelectorImpl(drone);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractIfSelector> T getIfOptionObj()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            return (T) new IfSelectorCloudImpl(drone);
+        }
+        else
+        {
+            return (T) new IfSelectorEnterpImpl(drone);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AbstractActionSelector> T getActionOptionsObj()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            return (T) new ActionSelectorCloudImpl(drone);
+        }
+        else
+        {
+            return (T) new ActionSelectorEnterpImpl(drone);
+        }
+    }
+
+    public void fillNameField(final String text)
+    {
+        fillField(NAME_FIELD, text);
+    }
+
+    public void fillDescriptionField(final String text)
+    {
+        fillField(DESCRIPTION_FIELD, text);
+    }
+
+    private void fillField(By selector, String text)
+    {
+        WebElement inputField = drone.findAndWait(selector);
+        inputField.clear();
+        if (text != null)
+        {
+            inputField.sendKeys(text);
+        }
+    }
+    
+    /**
+     * Clicks on the checkbox to apply rule for subfolders
+     */
+    public void selectApplyToSubfolderCheckbox()
+    {
+        WebElement applyToSubfolderCheckBox = drone.findAndWait(CHECK_BOX_APPLY_TO_SUBFOLDER);
+        applyToSubfolderCheckBox.click();
+    }
+
+    
+    public String getNameFieldText()
+    {
+        return getTextFromInput(NAME_FIELD);
+    }
+
+    public String getDescriptionFieldText()
+    {
+        return getTextFromInput(DESCRIPTION_FIELD);
+    }
+
+    private String getTextFromInput(By selector)
+    {
+        return drone.findAndWait(selector).getAttribute("value");
+    }
+
+    public <T extends FolderRulesPage> T clickCancelButton()
+    {
+        click(CANCEL_BUTTON);
+        return drone.getCurrentPage().render();
+    }
+
+    public CreateRulePage clickAnotherCreate()
+    {
+        click(CREATE_AND_CREATE_ANOTHER_BUTTON);
+        waitUntilCreatedAlert();
+        return this.render();
+    }
+
+    public FolderRulesPageWithRules clickCreate()
+    {
+        click(CREATE_BUTTON);
+        waitUntilCreatedAlert();
+        return drone.getCurrentPage().render();
+    }
+
+    private void click(By locator)
+    {
+        WebElement element = drone.findAndWait(locator);
+        element.click();
+    }
+
+
+    public boolean isNameFieldAndDescriptionEmpty()
+    {
+        WebElement nameFieldText = drone.findAndWait(NAME_FIELD);
+        WebElement descriptionFieldText = drone.findAndWait(DESCRIPTION_FIELD);
+        return (isFieldEmpty(nameFieldText) && isFieldEmpty(descriptionFieldText));
+    }
+
+    public boolean isDefaultSelectsChoiceCorrect()
+    {
+        Select whenSelect = new Select(drone.findAndWait(WHEN_OPTIONS_SELECT));
+        boolean isWhenDefaultTextCorrect = "Items are created or enter this folder"
+                .equals(whenSelect.getFirstSelectedOption().getText());
+        Select ifSelect = new Select(drone.findAndWait(IF_OPTIONS_SELECT));
+        boolean isIfDefaultTextCorrect = "All Items".equals(ifSelect.getFirstSelectedOption().getText());
+        Select actionSelect = new Select(drone.findAndWait(ACTION_OPTIONS_SELECT));
+        boolean isActionDefaultTextCorrect;
+        if (alfrescoVersion.isDojoSupported())
+        {
+            isActionDefaultTextCorrect = "Copy".equals(actionSelect.getFirstSelectedOption().getText());
+        }
+        else
+        {
+            isActionDefaultTextCorrect = "Select...".equals(actionSelect.getFirstSelectedOption().getText());
+        }
+        return (isWhenDefaultTextCorrect && isIfDefaultTextCorrect && isActionDefaultTextCorrect);
+    }
+
+    public boolean isCheckBoxesCorrectByDefault()
+    {
+        WebElement disableRuleCheckBox = drone.findAndWait(CHECK_BOX_DISABLE);
+        WebElement applyToSubfolderCheckBox = drone.findAndWait(CHECK_BOX_APPLY_TO_SUBFOLDER);
+        return (!disableRuleCheckBox.isSelected() && !applyToSubfolderCheckBox.isSelected());
+    }
+
+    public boolean isButtonsCorrectByDefault()
+    {
+        boolean isCreateButtonCorrect = false;
+        boolean isCancelButtonCorrect = false;
+        boolean isAnotherCreateButtonCorrect = false;
+
+        WebElement createButton = drone.findAndWait(CREATE_BUTTON);
+        if (alfrescoVersion.isDojoSupported())
+        {
+            if (isElementEnableAndDisplay(createButton))
+            {
+                createButton.submit();
+                isCreateButtonCorrect = isBalloonMessageDisplayed(BALLOON_TEXT_VALUE_NOT_EMPTY);
+            }
+        }
+        else
+        {
+            isCreateButtonCorrect = (createButton.isDisplayed() && !createButton.isEnabled());
+        }
+        WebElement anotherCreateButton = drone.findAndWait(CREATE_AND_CREATE_ANOTHER_BUTTON);
+        if (alfrescoVersion.isDojoSupported())
+        {
+            if (isElementEnableAndDisplay(anotherCreateButton))
+            {
+                anotherCreateButton.submit();
+                isAnotherCreateButtonCorrect = isBalloonMessageDisplayed(BALLOON_TEXT_VALUE_NOT_EMPTY);
+            }
+        }
+        else
+        {
+            isAnotherCreateButtonCorrect = (createButton.isDisplayed() && !createButton.isEnabled());
+        }
+        WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
+        isCancelButtonCorrect = isElementEnableAndDisplay(cancelButton);
+
+        return (isAnotherCreateButtonCorrect && isCancelButtonCorrect && isCreateButtonCorrect);
+    }
+
+    public boolean isAllButtonEnableAndDisplay()
+    {
+        WebElement createButton = drone.findAndWait(CREATE_BUTTON);
+        WebElement anotherCreateButton = drone.findAndWait(CREATE_AND_CREATE_ANOTHER_BUTTON);
+        WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
+        return (isElementEnableAndDisplay(createButton) &&
+                isElementEnableAndDisplay(anotherCreateButton) &&
+                isElementEnableAndDisplay(cancelButton));
+    }
+
+    private boolean isElementEnableAndDisplay(WebElement element)
+    {
+        return (element.isDisplayed() && element.isEnabled());
+    }
+
+    private boolean isFieldEmpty(WebElement element)
+    {
+        return "".equals(element.getText());
+    }
+
+    private void waitUntilCreatedAlert()
+    {
+        drone.waitUntilElementPresent(CREATED_ALERT, 5);
+        drone.waitUntilElementDeletedFromDom(CREATED_ALERT, 5);
+    }
+
+    public boolean isPageCorrect()
+    {
+        return (isButtonsCorrectByDefault() &&
+                isCheckBoxesCorrectByDefault() &&
+                isNameFieldAndDescriptionEmpty());
+    }
+
+    public boolean isBalloonMessageDisplayed(String text)
+    {
+        WebElement balloonAlert = drone.findAndWait(BALLOON_TEXT_MESSAGE);
+        if (balloonAlert.isDisplayed() && text.equals(balloonAlert.getText().trim()))
+        {
+            return true;
+        }
+        return false;
+    }
+
+}

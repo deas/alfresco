@@ -47,7 +47,7 @@ public class WikiPage extends SitePage
 
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private static  String WIKI_FORMAT_IFRAME = "template_x002e_createform_x002e_wiki-create_x0023_default-content_ifr";
+    private static final String WIKI_FORMAT_IFRAME = "template_x002e_createform_x002e_wiki-create_x0023_default-content_ifr";
     private static final String WIKI_EDIT_IFRAME = "template_x002e_wikipage_x002e_wiki-page_x0023_default-content_ifr";
     private static final By CANCEL_BUTTON = By.cssSelector("a[id$='default-cancel-button-button']");
     private static final By DEFAULT_CONTENT_TOOLBAR = By.cssSelector("div[id$='default-content_toolbargroup']>span");
@@ -62,7 +62,8 @@ public class WikiPage extends SitePage
     private static final By DELETE_WIKI = By.cssSelector("button[id$='default-delete-button-button']");
     private static final By EDIT_WIKI =By.cssSelector("a[href*='action=edit']");
 
-    TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
+    private TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
+
     public enum ImageType{
         JPG,
         PNG,

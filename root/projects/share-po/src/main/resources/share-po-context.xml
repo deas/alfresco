@@ -20,11 +20,11 @@
     <bean id="factoryPage"  class="org.alfresco.po.share.FactorySharePage" />
     <bean id="poProperties"  class="org.alfresco.po.share.ShareProperties" />
     
-	<bean id="sharePage" abstract="true" class="org.alfresco.po.share">
-  		<property name="alfrescoVersion" value="${share.version}"/>
-  		<property name="popupRendertime" value="${webdrone.error.popup.render.time}" />
-  		<property name="elementWaitInSeconds" value="${webdrone.element.action.wait.seconds}" />
-	</bean>    
+    <bean id="sharePage" abstract="true" class="org.alfresco.po.share">
+        <property name="alfrescoVersion" value="${share.version}"/>
+        <property name="popupRendertime" value="${webdrone.error.popup.render.time}" />
+        <property name="elementWaitInSeconds" value="${webdrone.element.action.wait.seconds}" />
+    </bean>    
 	
     <bean id="shareTestProperties" class="org.alfresco.webdrone.util.ShareTestProperty">
         <constructor-arg name="shareUrl" value="${share.target}" />

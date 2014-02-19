@@ -34,8 +34,8 @@ import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -54,10 +54,12 @@ public class SelectContentPageTest extends AbstractTest
     NewWorkflowPage newWorkflowPage;
     DashBoardPage dashBoardPage; 
     private String siteName; 
-    
-    @SuppressWarnings("unused")
+    /**
+     * Prepare test.
+     * @throws Exception if error
+     */
     @BeforeClass(groups = "Enterprise4.2")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashBoardPage = loginAs(username, password);
         siteName = String.format("test-%d-site-crud", System.currentTimeMillis());
@@ -94,8 +96,7 @@ public class SelectContentPageTest extends AbstractTest
         folderPage.render();
         libraryPage = (DocumentLibraryPage) folderPage.createNewFolder("Folder1");
         libraryPage.render();
-        libraryPage = libraryPage.selectFolder("Folder1");
-        libraryPage.render();
+        libraryPage = libraryPage.selectFolder("Folder1").render();
 
         contentPage = libraryPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
         contentPage.render();
@@ -112,23 +113,20 @@ public class SelectContentPageTest extends AbstractTest
         folderPage.render();
         libraryPage = (DocumentLibraryPage) folderPage.createNewFolder("Folder2");
         libraryPage.render();
-        libraryPage = libraryPage.selectFolder("Folder2");
-        libraryPage.render();
+        libraryPage = libraryPage.selectFolder("Folder2").render();
 
         folderPage = libraryPage.getNavigation().selectCreateNewFolder();
         folderPage.render();
         libraryPage = (DocumentLibraryPage) folderPage.createNewFolder("Folder11");
         libraryPage.render();
-        libraryPage = libraryPage.selectFolder("Folder11");
-        libraryPage.render();
+        libraryPage = libraryPage.selectFolder("Folder11").render();
 
         folderPage = libraryPage.getNavigation().selectCreateNewFolder();
         folderPage.render();
         libraryPage = (DocumentLibraryPage) folderPage.createNewFolder("Folder21");
         libraryPage.render();
-        libraryPage = libraryPage.selectFolder("Folder21");
-        libraryPage.render();
-
+        libraryPage = libraryPage.selectFolder("Folder21").render();
+ 
         contentPage = libraryPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
         contentPage.render();
         contentDetails = new ContentDetails();
@@ -142,7 +140,7 @@ public class SelectContentPageTest extends AbstractTest
     }
     
     
-    @AfterClass(alwaysRun = true)
+    @AfterClass(groups = "Enterprise4.2")
     public void teardown() throws Exception
     {
         SiteUtil.deleteSite(drone, siteName);

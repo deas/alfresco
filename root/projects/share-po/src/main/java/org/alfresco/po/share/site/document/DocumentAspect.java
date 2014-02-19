@@ -40,6 +40,7 @@ public enum DocumentAspect
     EMAILED("Emailed"),
     ALIASABLE_EMAIL("Aliasable (Email)"),
     TAGGABLE("Taggable"),
+    INLINE_EDITABLE("Inline Editable"),
     GOOGLE_DOCS_EDITABLE("Google Docs Editable"),
     GEOGRAPHIC("Geographic"),
     EXIF("EXIF"),

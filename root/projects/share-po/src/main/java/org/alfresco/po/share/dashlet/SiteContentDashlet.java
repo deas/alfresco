@@ -46,7 +46,7 @@ import org.openqa.selenium.WebElement;
 public class SiteContentDashlet extends AbstractDashlet implements Dashlet
 {
 
-    private static Log logger = LogFactory.getLog(SiteContentDashlet.class);
+    private static final Log LOGGER = LogFactory.getLog(SiteContentDashlet.class);
     private static final String DATA_LIST_CSS_LOCATION = "h3.filename>a";
     private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.docsummary";
     private static final String DASHLET_DETAILED_VIEW_BUTTON = "button[title='Detailed View']";
@@ -60,9 +60,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
     private static final String DEFAULT_FILTER_BUTTON = "button[id$='default-filters-button']";
     private static final String CONTENT_DETAILS = "div.dashlet.docsummary>div>div>table>tbody>tr>td>div>div>span";
     private static final String EMPTY_CONTENT_HEADING = "div.dashlet.docsummary>div>div>table>tbody>tr>td>div>div>h3";
-    private static final String NUMBER_OF_DOCS_TABLE = "tbody[class$='dt-data']>tr";
+    private static final String NUMBER_OF_DOCS_TABLE = "//tbody[contains(@class,'dt-data')]/tr";
     // Simple View Details Related CSS
-    private static final By SIMPLE_THUMBNAIL_VIEW = By.cssSelector(".icon32>a");
+    private static final By SIMPLE_THUMBNAIL_VIEW = By.xpath("//span[@class='icon32']/a");
     private static final By SIMPLE_FILENAME = By.cssSelector(".filename.simple-view>a");
     private static final By SIMPLE_ITEM = By.cssSelector(".item-simple");
     private static final By SIMPLE_PREVIEW_IMAGE = By.cssSelector("div[id$='default-previewTooltip']>div.bd>img");
@@ -78,7 +78,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
     private static final By DETAIL_CONTENT_STATUTS = By.cssSelector("td>div>div:nth-of-type(1)>span[class='item']:nth-of-type(1)");
     private static final By DETAIL_THUMBNAIL_LINK = By.cssSelector(".thumbnail>a");
 
-    protected WebElement dashlet;
+    private WebElement dashlet;
 
     /**
      * Constructor.
@@ -184,7 +184,10 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled()) logger.trace("Not able to find the Detail View Button.");
+            if(LOGGER.isTraceEnabled())
+            {
+                LOGGER.trace("Not able to find the Detail View Button.");
+            }
         }
         return false;
     }
@@ -201,7 +204,10 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
 
         } catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled()) logger.trace("Not able to find the Simple View Button.");
+            if(LOGGER.isTraceEnabled()) 
+            {
+                LOGGER.trace("Not able to find the Simple View Button.");
+            }
         }
         return false;
     }
@@ -219,7 +225,10 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException exception)
         {
-            if(logger.isTraceEnabled()) logger.trace("Not able to find the Help Button.");
+            if(LOGGER.isTraceEnabled())
+            {
+                LOGGER.trace("Not able to find the Help Button.");
+            }
             throw new NoSuchElementException("Not able to find the Help Button." + exception);
         }
     }
@@ -237,9 +246,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled())
+            if(LOGGER.isTraceEnabled())
             {
-                logger.trace("Not able to find the Help Button.");
+                LOGGER.trace("Not able to find the Help Button.");
             }
         }
         return false;
@@ -265,9 +274,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (NoSuchElementException elementException)
         {
-            if(logger.isTraceEnabled())
+            if(LOGGER.isTraceEnabled())
             {
-                logger.trace("Not able to find the ballon");
+                LOGGER.trace("Not able to find the ballon");
             }
         }
         return false;
@@ -332,9 +341,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if(LOGGER.isTraceEnabled())
             {
-                logger.trace("Exceeded time to find and click the Filter Button.");
+                LOGGER.trace("Exceeded time to find and click the Filter Button.");
             }
         }
     }
@@ -393,7 +402,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException elementException)
         {
-            logger.error("Not able to find the empty heading on Site Content Dashlet");
+            LOGGER.error("Not able to find the empty heading on Site Content Dashlet");
         }
         return "";
     }
@@ -438,7 +447,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         try
         {
             drone.findAndWait(By.cssSelector(DASHLET_SIMPLE_VIEW_BUTTON)).click();
-            List<WebElement> links = drone.findAndWaitForElements(By.cssSelector(NUMBER_OF_DOCS_TABLE));
+            List<WebElement> links = drone.findAndWaitForElements(By.xpath(NUMBER_OF_DOCS_TABLE));
             informations = new ArrayList<SimpleViewInformation>(links.size());
             for (WebElement tr : links)
             {
@@ -462,7 +471,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (NoSuchElementException nse)
         {
-            logger.error(nse);
+            LOGGER.error(nse);
             throw new PageException("Unable to display simple view informationin site content dashlet data", nse);
         }
 
@@ -490,8 +499,8 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         try
         {
             drone.findAndWait(By.cssSelector(DASHLET_DETAILED_VIEW_BUTTON)).click();
-            drone.findAndWait(By.cssSelector(NUMBER_OF_DOCS_TABLE + ">" + DETAIL_DESC));
-            List<WebElement> links = drone.findAndWaitForElements(By.cssSelector(NUMBER_OF_DOCS_TABLE));
+            //drone.findAndWait(By.cssSelector(NUMBER_OF_DOCS_TABLE + ">" + DETAIL_DESC));
+            List<WebElement> links = drone.findAndWaitForElements(By.xpath(NUMBER_OF_DOCS_TABLE));
             if(links == null || links.isEmpty())
             {
                 return Collections.emptyList();
@@ -590,7 +599,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to access site content dashlet filters data", nse);
+            LOGGER.error("Unable to access site content dashlet filters data", nse);
         }
 
         return list;

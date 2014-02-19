@@ -1,7 +1,7 @@
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.SharePage;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.openqa.selenium.By;
@@ -26,7 +26,7 @@ public class SharePageTest extends AbstractTest
     public void elementRenderWithNullRenderTimeObject()
     {
         SharePage page = new DashBoardPage(drone);
-        page.elementRender(null, RenderElement.getVisibleRenderElement(By.cssSelector("bla")) );
+        page.elementRender(null, getVisibleRenderElement(By.cssSelector("bla")) );
     }
     
     @Test(expectedExceptions=UnsupportedOperationException.class)

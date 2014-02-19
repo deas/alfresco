@@ -63,7 +63,7 @@ public abstract class AbstractTaskTest extends AbstractTest
         loginAs(username, password);
         myTasksPage = ((DashBoardPage) drone.getCurrentPage()).getNav().selectMyTasks().render();
         StartWorkFlowPage startWorkFlowPage = myTasksPage.selectStartWorkflowButton().render();
-        NewWorkflowPage newWorkflowPage = startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
+        NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
 
         List<String> reviewers = new ArrayList<String>();
         reviewers.add(username);

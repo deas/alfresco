@@ -28,8 +28,8 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -49,7 +49,7 @@ public class InviteUserOnSiteAndAcceptUserTest extends AbstractTest
     String siteName;
     SiteDashboardPage site;
     InviteMembersPage membersPage;
-    String userName = "user" + System.currentTimeMillis() + "@test.com";
+    String userName = "userz" + System.currentTimeMillis() + "@test.com";
 
     @BeforeClass(groups = "Enterprise-only")
     public void instantiateSiteMembers() throws Exception
@@ -73,10 +73,11 @@ public class InviteUserOnSiteAndAcceptUserTest extends AbstractTest
         site = createSite.createNewSite(siteName).render();
     }
     
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups = "Enterprise-only")
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
+        logout(drone);
     }
 
     /**

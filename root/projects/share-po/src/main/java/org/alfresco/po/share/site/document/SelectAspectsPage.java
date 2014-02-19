@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 200ou5-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -21,14 +21,13 @@ package org.alfresco.po.share.site.document;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -38,8 +37,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-
-import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
+import java.util.Set;
 
 /**
  * Select Aspects page object, this page comes from Document Detail Page's Manage Aspects.
@@ -58,6 +56,7 @@ public class SelectAspectsPage extends SharePage
     private static final By CANCEL = By.cssSelector("button[id$='aspects-cancel-button']");
     private static Log logger = LogFactory.getLog(SelectAspectsPage.class);
     private static final By TITLE  = By.cssSelector("div[id$='aspects-title']");
+   
 
     /**
      * Constructor.
@@ -90,12 +89,12 @@ public class SelectAspectsPage extends SharePage
     }
     
     /**
-     * Add the {@link Aspect} if it is available to add.
+     * remove the {@link Aspect} if it is available to add.
      * 
-     * @param aspects {@link List} of {@link Aspect} to added.
-     * @return {@link DocumentDetailsPage}
+     * @param aspects {@link List} of {@link Aspect} to remove.
+     * @return {@link SelectAspectsPage}
      */
-    public DocumentDetailsPage remove(List<DocumentAspect> aspects)
+    public HtmlPage remove(List<DocumentAspect> aspects)
     {
         return addRemoveAspects(aspects, CURRENTLY_ADDED_ASPECT_TABLE);
     }
@@ -104,28 +103,27 @@ public class SelectAspectsPage extends SharePage
      * Add the {@link Aspect} if it is available to add.
      * 
      * @param aspects {@link List} of {@link Aspect} to added.
-     * @return {@link DocumentDetailsPage}
+     * @return {@link SelectAspectsPage}
      */
-    public DocumentDetailsPage add(List<DocumentAspect> aspects)
+    public HtmlPage add(List<DocumentAspect> aspects)
     {
         return addRemoveAspects(aspects, AVAILABLE_ASPECT_TABLE);
     }
     
-    /**
-     * Add the {@link Aspect} if it is available to add.
-     * 
-     * @param aspects {@link List} of {@link Aspect} to added.
-     * @return {@link DocumentDetailsPage}
-     */
-    private DocumentDetailsPage addRemoveAspects(List<DocumentAspect> aspects, By by)
+    public Set<DocumentAspect> getAvailableAspects()
     {
-        if(aspects == null || aspects.isEmpty())
-        {
-           throw new UnsupportedOperationException("Aspets can't be empty or null."); 
-        }
+        return  getavailableAspectMap(AVAILABLE_ASPECT_TABLE).keySet();
+    }
+    
+    public Set<DocumentAspect> getSelectedAspects()
+    {
+        return  getavailableAspectMap(CURRENTLY_ADDED_ASPECT_TABLE).keySet();
+    }
+    
+    private Map<DocumentAspect, ShareLink> getavailableAspectMap(By by)
+    {
         List<WebElement> availableElements = null;
         Map<DocumentAspect, ShareLink> availableAspectMap = null;
-        int aspectCount = 0;
         try
         {
             availableElements = drone.findAndWaitForElements(by);
@@ -151,10 +149,26 @@ public class SelectAspectsPage extends SharePage
                 }
                 catch (Exception e) 
                 {
-                	logger.error("Exception while finding & adding aspects : " + e.getMessage());
-				}
+                    logger.error("Exception while finding & adding aspects : " + e.getMessage());
+                }
             }
         }
+        return availableAspectMap;
+    }
+    
+    /**
+     * Add the {@link Aspect} if it is available to add.
+     * 
+     * @param aspects {@link List} of {@link Aspect} to added.
+     * @return {@link SelectAspectsPage}
+     */
+    private HtmlPage addRemoveAspects(List<DocumentAspect> aspects, By by)
+    {
+        if(aspects == null || aspects.isEmpty())
+        {
+           throw new UnsupportedOperationException("Aspets can't be empty or null."); 
+        }
+        Map<DocumentAspect, ShareLink> availableAspectMap = getavailableAspectMap(by);
         
         if(availableAspectMap != null && !availableAspectMap.isEmpty()) 
         {
@@ -176,7 +190,6 @@ public class SelectAspectsPage extends SharePage
                         drone.find(CANCEL).click();
                         throw new PageException("Unexpected Refresh on Page lost reference to the Aspects." + exception);
                     }
-                    aspectCount++;
                 } 
                 else
                 {
@@ -185,18 +198,39 @@ public class SelectAspectsPage extends SharePage
             }
         }
         
-        if(aspectCount == 0)
+        return this;
+    }
+    /**
+     * Click on {@link cancel} in {@link selectAspectsPage}  
+     * @return {@link SelectAspectsPage}
+     */
+    public HtmlPage clickCancel()
+    {
+        try
         {
             drone.find(CANCEL).click();
+            return drone.getCurrentPage();
+        } catch (NoSuchElementException nse)
+        {
+            throw new PageException("Not able find the cancel button: ", nse);
         }
-        else
+    }
+    /**
+     * Click on {@link ApplyChanges} in {@link selectAspectsPage}  
+     * @return {@link SelectAspectsPage}
+     */
+    public HtmlPage clickApplyChanges()
+    {
+        try
         {
             drone.find(APPLY_CHANGE).click();
             drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return drone.getCurrentPage();
+        } catch (NoSuchElementException nse)
+        {
+            throw new PageException("Not able find the apply change button", nse);  
         }
-            
-        return new DocumentDetailsPage(drone);
     }
     
     @Override

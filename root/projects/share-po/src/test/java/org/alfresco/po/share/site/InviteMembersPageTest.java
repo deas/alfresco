@@ -18,6 +18,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+/**
+ * 
+ * @author Shan Nagarajan
+ *
+ */
 @Listeners(FailedTestListener.class)
 public class InviteMembersPageTest extends AbstractTest
 {
@@ -141,7 +146,7 @@ public class InviteMembersPageTest extends AbstractTest
         Assert.assertNotNull(membersPage.clickInviteButton());
     }
 
-    @AfterClass(alwaysRun=true ,groups="Enterprise-only")
+    @AfterClass(groups="Enterprise-only")
     public void deleteSite() throws Exception
     {
         SiteFinderPage siteFinder = dashBoard.getNav().selectSearchForSites().render();

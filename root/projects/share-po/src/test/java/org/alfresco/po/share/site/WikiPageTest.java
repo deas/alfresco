@@ -5,18 +5,18 @@ package org.alfresco.po.share.site;
 
 import static org.alfresco.po.share.AlfrescoVersion.Enterprise41;
 import static org.alfresco.po.share.AlfrescoVersion.Enterprise42;
-import static org.alfresco.po.share.AlfrescoVersion.Enterprise43;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
 import org.alfresco.po.share.site.document.TinyMceEditor;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.po.share.site.wiki.WikiPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -40,7 +40,7 @@ public class WikiPageTest extends AbstractSiteDashletTest
     WikiPage wikiPage;
     List<String> textLines = new ArrayList<String>();
     
-    @BeforeClass
+    @BeforeClass(groups={"Enterprise-only"})
     public void createSite() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -48,7 +48,7 @@ public class WikiPageTest extends AbstractSiteDashletTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups={"Enterprise-only"})
     public void tearDown()
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -56,16 +56,12 @@ public class WikiPageTest extends AbstractSiteDashletTest
     @Test
     public void selectCustomizeDashboard() throws Exception
     {
-        if(Enterprise43.equals(alfrescoVersion))
+    	AlfrescoVersion version = drone.getProperties().getVersion();
+        if(Enterprise42.equals(version))
         {
             siteDashBoard.getSiteNav().selectConfigure();
         }
-
-        if(Enterprise42.equals(alfrescoVersion))
-        {
-            siteDashBoard.getSiteNav().selectConfigure();
-        }
-        else if(Enterprise41.equals(alfrescoVersion))
+        else if(Enterprise41.equals(version))
         {
             siteDashBoard.getSiteNav().selectMore();
         }

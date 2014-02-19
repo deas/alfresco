@@ -18,7 +18,7 @@
  */
 package org.alfresco.po.share.workflow;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
@@ -29,7 +29,6 @@ import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.webdrone.HtmlPage;
 import org.openqa.selenium.By;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -45,16 +44,6 @@ import org.testng.annotations.Test;
 @Listeners(FailedTestListener.class)
 public class CloudSyncPageTest extends AbstractTest
 {
-
-    /**
-     * Pretest to check if alfresco version is greater than or equal 4.2.
-     */
-    @SuppressWarnings("unused")
-    @BeforeClass
-    private void prepare()
-    {
-    }
-
     /**
      * This test is to assert the navigation to the cloud sync page.
      *
@@ -66,7 +55,7 @@ public class CloudSyncPageTest extends AbstractTest
         DashBoardPage dashBoard = loginAs(username, password);
         MyProfilePage myProfilePage = dashBoard.getNav().selectMyProfile().render();
         CloudSyncPage cloudSyncPage = myProfilePage.getProfileNav().selectCloudSyncPage().render();
-        assertTrue("Title must  contain User Cloud Auth", cloudSyncPage.getPageTitle().contains("User Cloud Auth"));
+        assertTrue(cloudSyncPage.getPageTitle().contains("User Cloud Auth"), "Title must  contain User Cloud Auth");
     }
 
     /**

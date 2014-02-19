@@ -54,7 +54,9 @@ public enum TaskStatus
         for (TaskStatus status : TaskStatus.values())
         {
             if (value.equalsIgnoreCase(status.taskName))
+            {
                 return status;
+            }
         }
         return null;
     }

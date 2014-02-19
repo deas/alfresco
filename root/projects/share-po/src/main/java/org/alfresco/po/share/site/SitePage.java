@@ -69,7 +69,7 @@ public abstract class SitePage extends SharePage
         boolean displayed = false;
         try
         {
-            String selector = (dojoSupport) ? "div.dijitSelected span":"a.active-page.theme-color-4";
+            String selector = isDojoSupport() ? "div.dijitSelected span":"a.active-page.theme-color-4";
             String title = drone.findAndWait(By.cssSelector(selector)).getText();
             displayed = pageTitle.equalsIgnoreCase(title) ? true : false;
         }

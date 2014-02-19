@@ -28,8 +28,8 @@ import java.util.List;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
 import org.alfresco.po.share.site.wiki.WikiPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -54,11 +54,11 @@ public class CustomizeSitePageTest extends AbstractSiteDashletTest
     public void createSite() throws Exception
     {
         dashBoard = loginAs(username, password);
-        siteName = "CustomizePage" + System.currentTimeMillis();
+        siteName = "customizePage" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups={"Enterprise4.1", "Enterprise-only"})
     public void tearDown()
     {
         SiteUtil.deleteSite(drone, siteName);

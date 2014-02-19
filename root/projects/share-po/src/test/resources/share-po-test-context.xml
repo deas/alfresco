@@ -3,12 +3,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+    xmlns:util="http://www.springframework.org/schema/util"
     xsi:schemaLocation="http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context-3.0.xsd
           http://www.springframework.org/schema/data/mongo
           http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
           http://www.springframework.org/schema/beans
-          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/util 
+          http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
    <import resource="classpath:share-po-context.xml"/>
    <import resource="classpath:*-testContext.xml"/>
@@ -16,6 +19,7 @@
       <property name="locations">
          <list>
             <value>classpath:sharepo.properties</value>
+            <value>classpath:sharepo.hybrid.properties</value>
             <value>classpath:test.properties</value>
             <value>classpath:module.properties</value>
             <value>classpath:custom.properties</value>
@@ -28,23 +32,27 @@
     <bean id="poProperties"  class="org.alfresco.po.share.ShareProperties">
         <constructor-arg name="alfrescoVersion" value="${share.version}" />
     </bean>
-    
+
     <bean id="sharePage" abstract="true" class="org.alfresco.po.share.SharePage">
         <property name="alfrescoVersion" value="${share.version}"/>
         <property name="popupRendertime" value="${webdrone.error.popup.render.time}" />
         <property name="elementWaitInSeconds" value="${webdrone.element.action.wait.seconds}" />
     </bean>    
+
     <bean id="shareTestProperties" class="org.alfresco.po.share.util.ShareTestProperty">
         <constructor-arg name="shareUrl" value="${share.target}" />
+        <constructor-arg name="gridUrl" value="${webdrone.grid.url}" />
         <constructor-arg name="username" value="${test.username}" />
         <constructor-arg name="password" value="${test.password}" />
-       	<constructor-arg name="googleUserName" value="${googleUserName}" />
+        <constructor-arg name="googleUserName" value="${googleUserName}" />
         <constructor-arg name="googlePassword" value="${googlePassword}" />
         <constructor-arg name="alfrescoVersion" value="${share.version}" />
         <constructor-arg name="downloadDirectory" value="${download.directory}" />
         <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
+        <property name="cloudUserName" value="${test.hybrid.username}" />
+        <property name="cloudUserPassword" value="${test.hybrid.password}" />
     </bean>
-    
+
     <!-- Initiating another user that will be required for unit tests.  -->
     <bean id="anotherUser" class="org.alfresco.po.share.site.document.UserProfile">
         <property name="fName" value="${test.user1.fName}" />
@@ -53,4 +61,37 @@
         <property name="password" value="${test.user1.password}" />
         <property name="emailId" value="${test.user1.emailId}" />
     </bean>
+
+    <bean id="shareHybridTestProperties" class="org.alfresco.po.share.util.ShareTestProperty" lazy-init="true">
+        <constructor-arg name="shareUrl" value="${share.hybrid.target}" />
+        <constructor-arg name="gridUrl" value="${webdrone.grid.url}" />
+        <constructor-arg name="username" value="${test.hybrid.username}" />
+        <constructor-arg name="password" value="${test.hybrid.password}" />
+        <constructor-arg name="googleUserName" value="${googleUserName}" />
+        <constructor-arg name="googlePassword" value="${googlePassword}" />
+        <constructor-arg name="alfrescoVersion" value="${share.hybrid.version}" />
+        <constructor-arg name="downloadDirectory" value="${download.hybrid.directory}" />
+        <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
+    </bean>
+
+    <bean id="hybridWebDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory" lazy-init="true">
+        <constructor-arg name="defaultWaitTime" value="${webdrone.hybrid.element.wait.time}" />
+        <constructor-arg name="browser" value="${webdrone.hybrid.browser}" />
+        <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.hybrid.page.render.wait.time}" />
+        <constructor-arg name="factoryPage" ref="factoryPage" />
+        <constructor-arg name="properties" ref="poProperties" />
+                <constructor-arg name="preferences">
+            <util:map key-type="org.alfresco.webdrone.BrowserPreference" value-type="java.lang.Object">
+                <entry key-ref="language" value-ref="englishLocale" />
+            </util:map>
+        </constructor-arg>
+        <property name="gridUrl" value="${webdrone.grid.url}" />
+        <property name="chromeServerPath" value="${webdrone.chrome.server.path}" />
+        <property name="ieServerPath" value="${webdrone.ie.server.path}" />
+        <property name="downloadDirectory" value="${webdrone.page.render.wait.time}"/>
+        <property name="mimeTypes" value="${webdrone.download.mime.types}" />
+    </bean>
+
+    <bean id="hybridDrone" factory-bean="&amp;hybridWebDroneFactoryBean" factory-method="getObject" scope="prototype" destroy-method="quit" lazy-init="true"/>
+
 </beans>

@@ -135,7 +135,7 @@ public class CustomizeSitePage extends SitePage
                 }
                 catch (TimeoutException e)
                 {
-                    throw new PageException("Not able to Site Page in the Page : " + sitePageType);
+                    throw new PageException("Not able to Site Page in the Page : " + sitePageType, e);
                 }
             }
         }

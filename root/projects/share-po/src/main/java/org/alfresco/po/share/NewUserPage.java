@@ -303,6 +303,12 @@ public class NewUserPage extends SharePage
      */
     public HtmlPage createEnterpriseUser(String userName, String fname, String lname, String userEmail, String password)
     {
+        entrpriseUserDetails(userName, fname, lname, userEmail, password);
+        return selectCreateUser();
+    }
+
+private void entrpriseUserDetails(String userName, String fname, String lname, String userEmail, String password)
+{
     	if(StringUtils.isEmpty(userName))
     	{
     		throw new UnsupportedOperationException("User Name can't be empty or null, it is required.");
@@ -329,7 +335,6 @@ public class NewUserPage extends SharePage
 		inputUsername(userName);
 		inputPassword(password);
 		inputVerifyPassword(password);
-		return selectCreateUser();
     }
     
     
@@ -346,32 +351,11 @@ public class NewUserPage extends SharePage
      */
     public HtmlPage createEnterpriseUserWithGroup(String userName, String fname, String lname, String userEmail, String password, String groupName)
     {
-        if(StringUtils.isEmpty(userName))
+        if(groupName == null)
         {
-            throw new UnsupportedOperationException("User Name can't be empty or null, it is required.");
-        }
-        if(StringUtils.isEmpty(fname))
-        {
-            throw new UnsupportedOperationException("First Name can't be empty or null, it is required.");
-        }
-        if(StringUtils.isEmpty(userEmail))
-        {
-            throw new UnsupportedOperationException("User Email can't be empty or null, it is required.");
-        }
-        if(StringUtils.isEmpty(password))
-        {
-            throw new UnsupportedOperationException("Password can't be empty or null, it is required.");
-        }
-        if(lname == null)
-        {
-            throw new UnsupportedOperationException("Last Name can't be null, it is required.");
-        }
-        inputFirstName(fname);
-        inputLastName(lname);
-        inputEmail(userEmail);
-        inputUsername(userName);
-        inputPassword(password);
-        inputVerifyPassword(password);
+            throw new UnsupportedOperationException("Group Name can't be null, it is required.");
+        }       
+        entrpriseUserDetails(userName, fname, lname, userEmail, password);
         searchGroup(groupName).render();
         addGroup(groupName);
         return selectCreateUser();

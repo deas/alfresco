@@ -18,6 +18,8 @@
  */
 package org.alfresco.po.share.site.document;
 
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
@@ -100,19 +102,19 @@ public class EditDocumentPropertiesPopup extends AbstractEditProperties
      * library page.
      * @return {@link DocumentLibraryPage} page response
      */
-    public DocumentLibraryPage selectSave()
+    public HtmlPage selectSave()
     {
         clickSave();
         canResume();
-        return new DocumentLibraryPage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
     /**
      * Select cancel button.
      * @return {@link DocumentLibraryPage} page response
      */
-    protected DocumentLibraryPage selectCancel()
+    public HtmlPage selectCancel()
     {
         clickOnCancel();
-        return new DocumentLibraryPage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
 }

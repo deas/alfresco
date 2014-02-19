@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -135,7 +136,7 @@ public class StartWorkFlowPage extends SharePage
         {
             workflowText = drone.findAndWait(selector).getText().trim();
         }
-        catch (NoSuchElementException e)
+        catch (TimeoutException e)
         {
             logger.info("Workflow drop down button not Present", e);
         }
@@ -153,13 +154,17 @@ public class StartWorkFlowPage extends SharePage
      * StartWorkFlow page is returned in common,for any of its subclass.
      * 
      * @param workFlowType
-	     * @param fromClass TODO
-	     * @param fromClass
+     * @param fromClass
+     * @param fromClass
      * @return
      */
     public WorkFlow getWorkflowPage(WorkFlowType workFlowType)
-    {
-        drone.find(WORKFLOW_BUTTON).click();
+	{
+        if(workFlowType == null)
+        {
+            throw new IllegalArgumentException("Workflow Type can't be null");
+        }
+		drone.find(WORKFLOW_BUTTON).click();
         workFlowType.getTaskTypeElement(drone).click();
         return FactoryShareWorkFlow.getPage(drone, workFlowType);
 	}

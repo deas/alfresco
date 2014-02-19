@@ -25,7 +25,6 @@ import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -144,8 +143,6 @@ public class SiteWelcomeDashlet extends AbstractDashlet implements Dashlet
         {
             logger.trace("Final Welcome Daashlet Removal button has been found and selected");
         }
-        drone.waitUntilElementDisappears(By.cssSelector("div.bd"), ((WebDroneImpl)drone).getDefaultWaitTime());
-
     }
 
     /**

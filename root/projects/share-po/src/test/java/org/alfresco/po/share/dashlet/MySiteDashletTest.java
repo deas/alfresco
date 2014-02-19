@@ -25,8 +25,8 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SitePage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +50,7 @@ public class MySiteDashletTest extends AbstractTest
     private DashBoardPage dashBoard;
     private String siteName;
     
-    @BeforeClass
+    @BeforeClass(groups={"alfresco-one"})
     public void setup()throws Exception
     {
         siteName = "MySiteTests" + System.currentTimeMillis();
@@ -58,7 +58,7 @@ public class MySiteDashletTest extends AbstractTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
 
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups={"alfresco-one"})
     public void deleteSite()
     {
         try

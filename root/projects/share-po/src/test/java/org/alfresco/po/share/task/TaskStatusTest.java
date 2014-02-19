@@ -17,7 +17,6 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.task;
-import org.alfresco.po.share.task.TaskStatus;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

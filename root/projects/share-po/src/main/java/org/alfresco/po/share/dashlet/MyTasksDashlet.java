@@ -20,12 +20,17 @@ package org.alfresco.po.share.dashlet;
 
 import java.util.List;
 
-import org.alfresco.po.share.ShareLink;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.workflow.StartWorkFlowPage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -37,6 +42,8 @@ import org.openqa.selenium.WebElement;
  */
 public class MyTasksDashlet extends AbstractDashlet implements Dashlet
 {
+    private static Log logger = LogFactory.getLog(MyTasksDashlet.class);
+    
     private static final String DATA_LIST_CSS_LOCATION = "h3.filename > a";
     private static final String DIV_DASHLET_CONTENT_PLACEHOLDER = "div.dashlet.my-tasks";
     private static final String ACCEPT_BUTTON = "button[id*='accept-button']";
@@ -152,7 +159,32 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (Exception e)
         {
-            throw new PageException("Unable to find the List of Tasks.");
+            throw new PageException("Unable to find the List of Tasks.", e);
         }
+    }
+    
+    /**
+     * select StartWorkFlow... link from myTasks dashlet.
+     * 
+     * @return StartWorkFlowPage
+     */
+    public StartWorkFlowPage selectStartWorkFlow()
+    {
+        try
+        {
+            WebElement startWorkFlow = drone.findAndWait(By.linkText("Start Workflow"));
+            startWorkFlow.click();
+            return new StartWorkFlowPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Not able to find the web element" + nse.getMessage());
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Exceeded time to find the web element" + exception.getMessage());
+        }
+        
+        throw new PageException("Unable to find assign workflow.");
     }
 }

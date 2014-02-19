@@ -100,7 +100,6 @@ public class EditInGoogleDocsPage extends SitePage
         while (true)
         {
             timer.start();
-
             synchronized (this)
             {
                 try
@@ -127,7 +126,6 @@ public class EditInGoogleDocsPage extends SitePage
                         }
                     }
                 }
-
             }
             catch (NoSuchElementException nse)
             {
@@ -216,7 +214,9 @@ public class EditInGoogleDocsPage extends SitePage
                 return true;
             }
             else
+            {
                 throw new NoSuchElementException("the frame is not found");
+            }
 
         }
         catch (NoSuchElementException nse)
@@ -308,7 +308,7 @@ public class EditInGoogleDocsPage extends SitePage
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("time out in doing a rename of doc title");
+            throw new PageOperationException("time out in doing a rename of doc title", te);
         }
     }
 
@@ -329,7 +329,7 @@ public class EditInGoogleDocsPage extends SitePage
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("time out in finding the name of doc title");
+            throw new PageOperationException("time out in finding the name of doc title", te);
         }
     }
 }

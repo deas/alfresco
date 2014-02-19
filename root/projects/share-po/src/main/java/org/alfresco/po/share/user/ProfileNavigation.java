@@ -20,39 +20,36 @@ package org.alfresco.po.share.user;
 
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 
 /**
  * Represent elements found on the HTML page relating to the profile navigation
  * bar
  * 
  * @author Abhijeet Bharade
- * @since 1.710
+ * @since 1.7.1
  */
 public class ProfileNavigation
 {
-    private final By CLOUD_SYNC_LINK = By.cssSelector("div>a[href='user-cloud-auth']");
-    private final By TRASHCAN_LINK = By.cssSelector("div>a[href='user-trashcan']");
-    private static ProfileNavigation navigation; 
+    private static final By CLOUD_SYNC_LINK = By.cssSelector("div>a[href='user-cloud-auth']");
+    private static final By TRASHCAN_LINK = By.cssSelector("div>a[href='user-trashcan']");
+    private static final By LANGUAGE_LINK = By.cssSelector("div>a[href='change-locale']");
+    private final Log logger = LogFactory.getLog(ProfileNavigation.class);
     
     private final WebDrone drone;
-    private AlfrescoVersion alfrescoVersion;
-
-    public static ProfileNavigation getInstance(WebDrone drone)
-    {
-        if(navigation == null)
-        {
-            navigation = new ProfileNavigation(drone);
-        }
-        return navigation;
-    }
     
     /**
      * Constructor
      * 
      * @param drone WebDriver browser client
      */
-    private ProfileNavigation(WebDrone drone)
+    public ProfileNavigation(WebDrone drone)
     {
         this.drone = drone;
     }
@@ -64,11 +61,21 @@ public class ProfileNavigation
      */
     public CloudSyncPage selectCloudSyncPage()
     {
-        if (alfrescoVersion.isCloud())
+    	AlfrescoVersion version = drone.getProperties().getVersion();
+        if (version.isCloud())
         {
             throw new UnsupportedOperationException("Cloud sync functionality available only for Enterprise.");
         }
-        drone.find(CLOUD_SYNC_LINK).click();
+        try 
+        {
+            drone.findAndWait(CLOUD_SYNC_LINK).click();
+        }
+        catch (TimeoutException exception) 
+        {
+            String message = "Not able to find the Cloud Sync Link";
+            logger.error(message + exception.getMessage());
+            throw new PageException(message, exception);
+        }
         return new CloudSyncPage(drone);
     }
     
@@ -84,8 +91,26 @@ public class ProfileNavigation
         drone.find(TRASHCAN_LINK).click();
         return new TrashCanPage(drone);
     }
-    
-    public void setAlfrescoVersion(AlfrescoVersion alfrescoVersion) {
-        this.alfrescoVersion = alfrescoVersion;
+
+    /**
+     * Method to select Language link
+     * @return
+     */
+    public LanguageSettingsPage selectLanguage()
+    {
+    	AlfrescoVersion version = drone.getProperties().getVersion();
+        if(!version.isCloud())
+        {
+            throw new UnsupportedOperationException("Language Settings are not available for Environment: " + version.toString());
+        }
+        try
+        {
+            drone.find(LANGUAGE_LINK).click();
+            return new LanguageSettingsPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find Language link", nse);
+        }
     }
 }

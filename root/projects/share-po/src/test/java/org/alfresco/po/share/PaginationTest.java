@@ -38,7 +38,7 @@ public class PaginationTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
     
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups={"Enterprise-only"})
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -47,7 +47,7 @@ public class PaginationTest extends AbstractTest
     @Test
     public void pagination() throws Exception
     {
-        SearchBox search = dashBoard.getSearch().render();
+        SearchBox search = dashBoard.getSearch();
         AllSitesResultsPage result = search.search("xyz").render();
         boolean hasPagination = result.paginationDisplayed();
         Assert.assertFalse(hasPagination);

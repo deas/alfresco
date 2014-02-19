@@ -39,7 +39,7 @@ public class SiteMembersPageTest extends AbstractTest
         dashBoard = loginAs(username, password);
         if (!alfrescoVersion.isCloud())
         {
-            UserSearchPage page = dashBoard.getNav().getUsersPage();
+            UserSearchPage page = dashBoard.getNav().getUsersPage().render();
             NewUserPage newPage = page.selectNewUser().render();
             newPage.inputFirstName(userName);
             newPage.inputLastName(userName);
@@ -158,7 +158,7 @@ public class SiteMembersPageTest extends AbstractTest
         Assert.assertNotNull(siteMembersPage.assignRole(userName, null));
     }
 
-    @AfterClass (groups="Enterprise-only", alwaysRun = true)
+    @AfterClass (groups="Enterprise-only")
     public void deleteSite() throws Exception
     {
         SiteFinderPage siteFinder = dashBoard.getNav().selectSearchForSites().render();

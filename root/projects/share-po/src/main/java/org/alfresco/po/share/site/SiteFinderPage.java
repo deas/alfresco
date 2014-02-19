@@ -18,11 +18,13 @@
  */
 package org.alfresco.po.share.site;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -44,9 +46,29 @@ import org.openqa.selenium.WebElement;
  */
 public class SiteFinderPage extends SharePage
 {
-    private Log logger = LogFactory.getLog(this.getClass());
+    private final Log logger = LogFactory.getLog(this.getClass());
     private static final String PROMPT_PANEL_ID = "prompt.panel.id";
     private static final By SEARCH_SUBMIT = By.cssSelector("button[id$='default-button-button']");
+
+    public enum ButtonType
+    {
+        Join("Join"), RequestToJoin("Request to Join"), Leave("Leave"), Delete("Delete");
+
+        private String value;
+
+        /**
+         * @return the value
+         */
+        public String getValue()
+        {
+            return value;
+        }
+
+        ButtonType(String value)
+        {
+            this.value = value;
+        }
+    };
 
     /**
      * Constructor.
@@ -101,9 +123,9 @@ public class SiteFinderPage extends SharePage
     }
 
     /**
-     * TODO shan please add description.
-     * 
-     * @return
+     * check whether message displayed or not
+     *
+     * @return true if message displayed else false
      */
     private boolean isMessageScreenDisplayed()
     {
@@ -142,10 +164,43 @@ public class SiteFinderPage extends SharePage
         WebElement input = drone.findAndWait(By.cssSelector("input[id$='site-finder_x0023_default-term']"));
         input.clear();
         input.sendKeys(title);
-
         WebElement searchSiteButton = drone.findAndWait(SEARCH_SUBMIT);
         searchSiteButton.click();
+        searchActioned();
+       
         return new SiteFinderPage(drone);
+    }
+    /**
+     * Checks if search has been actioned by
+     * checking the results is populated or empty
+     * result message is displayed.
+     */
+    private void searchActioned()
+    {
+        RenderTime timer = new RenderTime(drone.getDefaultWaitTime());
+        while(true)
+        {
+            try
+            {
+                timer.start();
+                if(hasResults())
+                {
+                    break;
+                }
+                if(isMessageScreenDisplayed())
+                {
+                    String msg = drone.find(By.cssSelector("tbody.yui-dt-message")).getText();
+                    if("No sites found".equalsIgnoreCase(msg.trim()))
+                    {
+                    	break;
+                    }
+                }
+            }
+            finally
+            {
+                timer.end();
+            }
+        }
     }
 
     /**
@@ -232,8 +287,9 @@ public class SiteFinderPage extends SharePage
         }
         catch (PageException pe)
         {
-            throw new PageException("Unable to find site to delete");
+            throw new PageException("Unable to find site to delete", pe);
         }
+        drone.waitUntilNotVisible(By.cssSelector(".message"), "Site was deleted", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return new SiteFinderPage(drone);
     }
 
@@ -357,7 +413,9 @@ public class SiteFinderPage extends SharePage
                     // Find the Join/Request to Join button in the prompt
                     for (WebElement webElement : elements)
                     {
-                        if (webElement.getText().contains(buttonString))
+
+                        String text = webElement.getText();
+                        if (text.contains(buttonString))
                         {
                             return webElement;
                         }
@@ -381,7 +439,7 @@ public class SiteFinderPage extends SharePage
      * @param siteName String site name
      * @return {@link SiteDashboardPage} page response object
      */
-    public HtmlPage selectSite(final String siteName)
+    public SiteDashboardPage selectSite(final String siteName)
     {
         if (StringUtils.isEmpty(siteName))
         {
@@ -402,7 +460,7 @@ public class SiteFinderPage extends SharePage
                         logger.info("Site Name: " + site.getText());
                     }
                     site.click();
-                    return FactorySharePage.resolvePage(drone);
+                    return new SiteDashboardPage(drone);
                 }
             }
             if (logger.isTraceEnabled())
@@ -420,5 +478,25 @@ public class SiteFinderPage extends SharePage
             throw new PageException("Site '" + siteName + "' could not be found.");
         }
 
+    }
+
+    /**
+     * Checks weather button is present for a given site name.
+     * 
+     * @param siteName
+     * @param button
+     * @return
+     */
+    public boolean isButtonForSitePresent(String siteName, ButtonType button)
+    {
+        try
+        {
+            findButtonForSite(siteName, button.getValue());
+            return true;
+        }
+        catch (PageException e)
+        {
+            return false;
+        }
     }
 }

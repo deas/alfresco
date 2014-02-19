@@ -1,8 +1,16 @@
 package org.alfresco.po.share.site.document;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -24,6 +32,7 @@ public abstract class AbstractEditProperties extends SitePage
     protected static final By INPUT_VERTICAL_RESOLUTION_SELECTOR = By.cssSelector("input[id$='_prop_exif_yResolution']");
     protected static final By INPUT_ORIENTATION_SELECTOR = By.cssSelector("input[id$='prop_exif_orientation']");
     protected static final By BUTTON_SELECT_TAG = By.cssSelector("div[id$='cntrl-itemGroupActions']");
+    protected static final By CATEGORY_BUTTON_SELECT_TAG = By.cssSelector("div[id$='categories-cntrl-itemGroupActions']");
     
     /**
      * Clear the input field and inserts the new value.
@@ -102,6 +111,40 @@ public abstract class AbstractEditProperties extends SitePage
     }
     
     /**
+     * Click on Select button to go to Category page
+     * @return CategoryPage
+     */
+    public CategoryPage getCategory()
+    {
+         WebElement tagElement = drone.find(CATEGORY_BUTTON_SELECT_TAG);
+         tagElement.findElement(By.tagName("button")).click();
+         return new CategoryPage(drone);
+    }
+    
+    /**
+     * Get the {@link List} of added {@link Categories}. 
+     * 
+     * @return {@link List} of {@link Categories}
+     */
+    public List<Categories> getCategories()
+    {
+        List<Categories> categories = new ArrayList<Categories>();
+        try
+        {
+            List<WebElement> categoryElements = drone.findAll(By.cssSelector("div[class='itemtype-cm:category']"));
+            for (WebElement webElement : categoryElements)
+            {
+                categories.add(Categories.getCategory(webElement.getText()));
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageOperationException("Not able to find categories", e);
+        }
+        return categories;
+    }
+
+    /**
      * Select cancel button.
      */
     public void clickOnCancel()
@@ -116,7 +159,9 @@ public abstract class AbstractEditProperties extends SitePage
         WebElement saveButton = drone.find(By.cssSelector("button[id$='form-submit-button']"));
         if(saveButton.isDisplayed())
         {
+            String id = saveButton.getAttribute("id");
             saveButton.click();
+            drone.waitUntilElementDeletedFromDom(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         }
     }
 

@@ -108,7 +108,9 @@ public class FolderDetailsPage extends DetailsPage
             WebElement pathElement = drone.findAndWait(By.cssSelector(NODE_PATH));
             String pathToBeVerify = "Documents" + " > " + folderName;
             if (!pathToBeVerify.equals(pathElement.getText()))
+            {
                 isPathCorrect = false;
+            }
         }
         catch (TimeoutException noSuchEleExc)
         {
@@ -131,7 +133,9 @@ public class FolderDetailsPage extends DetailsPage
             tagText = drone.findAndWait(By.cssSelector(FOLDER_TAGS)).getText();
             tagValue = drone.findAndWait(By.cssSelector(CSS_PANEL)).getText();
             if (tagText.contains("Tags") && !tagValue.isEmpty())
+            {
                 return true;
+            }
 
         }
         catch (TimeoutException noSuchEleExcep)
@@ -149,9 +153,12 @@ public class FolderDetailsPage extends DetailsPage
      */
     public FolderDetailsPage selectDownloadFolderAsZip(String type)
     {
-        if (!AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || !AlfrescoVersion.Enterprise43.equals(alfrescoVersion)|| AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+        if (!(AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || 
+                AlfrescoVersion.Enterprise43.equals(alfrescoVersion)) || 
+                AlfrescoVersion.Cloud2.equals(alfrescoVersion))
         {
-            throw new UnsupportedOperationException("Option Download Folder as Zip is not available for this version of Alfresco");
+            throw new UnsupportedOperationException(
+                    "Option Download Folder as Zip is not available for this version of Alfresco");
         }
         try
         {

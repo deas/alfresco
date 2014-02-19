@@ -32,10 +32,11 @@ public class WorkFlowDetails
 
     private String workFlowName;
     private DateTime due;
+    private String dueDateString;
     private DateTime startDate;
     private DateTime endDate;
     private WorkFlowType type;
-    private String description;
+    private WorkFlowDescription description;
 
     public String getWorkFlowName()
     {
@@ -62,6 +63,16 @@ public class WorkFlowDetails
         {
             this.due = null;
         }
+    }
+
+    public String getDueDateString()
+    {
+        return dueDateString;
+    }
+
+    public void setDueDateString(String due)
+    {
+        this.dueDateString = due;
     }
 
     public DateTime getStartDate()
@@ -94,13 +105,13 @@ public class WorkFlowDetails
         this.type = WorkFlowType.getWorkflowTypeByTitle(type);
     }
 
-    public String getDescription()
+    public WorkFlowDescription getDescription()
     {
         return description;
     }
 
     public void setDescription(String description)
     {
-        this.description = description;
+        this.description = WorkFlowDescription.getWorkFlowDescription(description);
     }
 }

@@ -1,4 +1,3 @@
-package org.alfresco.po.share.site.document;
 ///*
 // * Copyright (C) 2005-2012 Alfresco Software Limited.
 // *
@@ -18,14 +17,14 @@ package org.alfresco.po.share.site.document;
 // * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
 // */
 //
-//package org.alfresco.webdrone.share.site.document;
+//package org.alfresco.po.share.site.document;
 //
 //import java.util.List;
 //
-//import org.alfresco.webdrone.share.site.SiteDashboardPage;
-//import org.alfresco.webdrone.share.site.SitePage;
-//import org.alfresco.webdrone.testng.listener.FailedTestListener;
-//import org.alfresco.webdrone.util.SiteUtil;
+//import org.alfresco.po.share.site.SiteDashboardPage;
+//import org.alfresco.po.share.site.SitePage;
+//import org.alfresco.po.share.util.SiteUtil;
+//import org.alfresco.po.util.FailedTestListener;
 //import org.testng.Assert;
 //import org.testng.annotations.AfterClass;
 //import org.testng.annotations.BeforeClass;

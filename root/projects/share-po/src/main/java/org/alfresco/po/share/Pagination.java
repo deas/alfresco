@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
  */
 public class Pagination
 {
-    private static final String PAGINATOR = "div.paginator.yui-pg-container";
+    private static final String PAGINATOR = "div[id*='paginator']";
 
     private Pagination(){};
     

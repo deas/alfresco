@@ -22,8 +22,8 @@ import static org.testng.Assert.assertNotNull;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -43,15 +43,15 @@ public class CustomizeSiteDashboardPageTest extends AbstractSiteDashletTest
     CustomiseSiteDashboardPage customizeSiteDashboardPage;
     SiteDashboardPage siteDashboardPage;
 
-    @BeforeClass
+    @BeforeClass(groups="Enterprise4.1")
     public void loadFile() throws Exception
     {
         dashBoard = loginAs(username, password);
-        siteName = "CustomizeSiteDashboardPage" + System.currentTimeMillis();
+        siteName = "customizeSiteDashboardPage" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups="Enterprise4.1")
     public void tearDown()
     {
         SiteUtil.deleteSite(drone, siteName);

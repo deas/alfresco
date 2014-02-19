@@ -21,7 +21,6 @@ package org.alfresco.po.share.site.document;
 import java.io.File;
 
 import org.alfresco.po.share.AbstractTest;
-import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.exception.PageException;
@@ -55,7 +54,7 @@ public abstract class AbstractDocumentTest extends AbstractTest
      */
     protected HtmlPage selectDocument(File file) throws PageException
     {
-        DocumentLibraryPage docsPage = FactorySharePage.resolvePage(drone).render();
+        DocumentLibraryPage docsPage = drone.getCurrentPage().render();
         return docsPage.selectFile(file.getName()).render();
     }
 }

@@ -16,8 +16,8 @@ import java.util.StringTokenizer;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one","Bug42"})
+@Test(groups={"alfresco-one", "Firefox17Ent"})
 public class DocumentDetailsPageTest extends AbstractDocumentTest
 {
     private static Log logger = LogFactory.getLog(DocumentDetailsPageTest.class);
@@ -51,9 +51,8 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "ddSiteTest" + System.currentTimeMillis();
         loginAs(username, password);
@@ -93,8 +92,9 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (logger.isTraceEnabled()) logger.trace("====uploadFile====");
         SitePage site = (SitePage) drone.getCurrentPage();
         site.render();
-        DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
+        DocumentLibraryPage docPage = (DocumentLibraryPage) site.getSiteNav().selectSiteDocumentLibrary();
         docPage.render();
+        docPage = (docPage.getNavigation().selectDetailedView()).render();
         // DocumentLibraryPage docPage = getDocumentLibraryPage(siteName).render();
         Assert.assertTrue(docPage.isTitlePresent(siteName));
         Assert.assertTrue(docPage.isDocumentLibrary());
@@ -134,8 +134,8 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         UpdateFilePage updatePage = docDetailsPage.selectUploadNewVersion().render();
         if (logger.isTraceEnabled()) logger.trace("---selected new version to upload----");
         updatePage.selectMinorVersionChange();
-        updatePage.uploadFile(file.getCanonicalPath());
         updatePage.setComment("Reloading the file with correct image");
+        updatePage.uploadFile(file.getCanonicalPath());
         docDetailsPage = updatePage.submit().render();
         if (logger.isTraceEnabled()) logger.trace("---upload submited----");
 
@@ -151,8 +151,8 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         // Update file with a major version change
         UpdateFilePage updatePage = docDetailsPage.selectUploadNewVersion().render();
         updatePage.selectMajorVersionChange();
-        updatePage.uploadFile(file.getCanonicalPath());
         updatePage.setComment("Reloading the final image");
+        updatePage.uploadFile(file.getCanonicalPath());
         docDetailsPage = updatePage.submit().render();
 
         Assert.assertEquals("2.0", docDetailsPage.getDocumentVersion());
@@ -198,7 +198,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     public void getDocumentProperties()
     {
         DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
-        Map<String, String> properties = docDetailsPage.getProperties();
+        Map<String, Object> properties = docDetailsPage.getProperties();
         Assert.assertNotNull(properties);
         Assert.assertEquals(properties.get("Name"), file.getName());
         Assert.assertEquals(properties.get("Title"), "(None)");
@@ -267,7 +267,8 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws IOException
      */
-    @Test(dependsOnMethods = "downloadFile")
+    //TODO Disbaled since windows OS selenium node is used with grid
+    @Test(dependsOnMethods = "downloadFile", enabled=false)
     public void testIsPreviewDisplayed() throws Exception
     {
         if (logger.isTraceEnabled()) logger.trace("====testIsPreviewDisplayed====");
@@ -281,7 +282,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "testIsPreviewDisplayed")
+    @Test(dependsOnMethods = "downloadFile")
     public void deleteAnExistingFile()
     {
         if (logger.isTraceEnabled()) logger.trace("====deleteAnExistingFile====");
@@ -301,7 +302,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (logger.isTraceEnabled()) logger.trace("====testIsNoPreviewMessageDisplayed====");
         SitePage site = drone.getCurrentPage().render();
         DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
-        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload();
+        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
         file = SiteUtil.prepareFile("UnkownFormat");
         upLoadPage.uploadFile(file.getCanonicalPath()).render();
         DocumentDetailsPage docDetailsPage = selectDocument(file).render();

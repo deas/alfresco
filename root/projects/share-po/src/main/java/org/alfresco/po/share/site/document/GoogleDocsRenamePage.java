@@ -77,16 +77,16 @@ public class GoogleDocsRenamePage extends SharePage
   {
      try
      {
-      WebElement rename = drone.findAndWait(RENAME_DOCUMENT_NAME);
-      rename.clear();
-      rename.sendKeys(newName);
-      drone.find(OK_BUTTON).click();
-      drone.switchToDefaultContent();
-      return new EditInGoogleDocsPage(drone, isGoogleCreate);
+         WebElement rename = drone.findAndWait(RENAME_DOCUMENT_NAME);
+         rename.clear();
+         rename.sendKeys(newName);
+         drone.find(OK_BUTTON).click();
+         drone.switchToDefaultContent();
+         return new EditInGoogleDocsPage(drone, isGoogleCreate);
      }
      catch (TimeoutException te)
      {
-         throw new PageOperationException("cannot rename the doucment - Time out");
+         throw new PageOperationException("cannot rename the doucment - Time out", te);
      }
   }
   

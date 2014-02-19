@@ -41,7 +41,7 @@ public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;
     
-    @BeforeClass(alwaysRun = true, groups={"alfresco-one"})
+    @BeforeClass(groups={"alfresco-one", "Cloud-only", "Enterprise-only"})
     public void setup() throws Exception
     {
         page = loginAs(username, password);
@@ -125,7 +125,8 @@ public class NavigationBarTest extends AbstractTest
     @Test(dependsOnMethods= "navigateDashBoard",groups = "Enterprise-only")
     public void navigateToRepository() throws Exception
     {
-        if(alfrescoVersion.isCloud())
+    	AlfrescoVersion version = drone.getProperties().getVersion();
+        if(version.isCloud())
         {
             throw new SkipException("This feature is not supported in cloud so skip it");
         }
@@ -142,7 +143,8 @@ public class NavigationBarTest extends AbstractTest
     @Test(dependsOnMethods= "navigateToRepository",groups= "Enterprise-only")
     public void advanceSearch() throws Exception
     {
-        if(alfrescoVersion.isCloud())
+    	AlfrescoVersion version = drone.getProperties().getVersion();
+        if(version.isCloud())
         {
             throw new SkipException("This feature is not supported in cloud so skip it");
         }

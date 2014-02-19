@@ -18,6 +18,7 @@ package org.alfresco.po.share.workflow;
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 
 /**
  * A WorkFlow interface.
@@ -57,5 +58,14 @@ public interface WorkFlow extends HtmlPage
      * @param date
      */
     void enterDueDateText(String date);
-
+    
+    /**
+     * Cancels creation of the workflow.
+     *
+     * @param formDetails
+     *
+     * @return HtmlPage page object
+     * @throws Exception
+     */
+    HtmlPage cancelCreateWorkflow(WorkFlowFormDetails formDetails) throws InterruptedException;
 }

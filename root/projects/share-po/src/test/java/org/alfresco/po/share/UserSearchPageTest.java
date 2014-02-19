@@ -37,7 +37,7 @@ public class UserSearchPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups ={"Cloud-only", "Enterprise-only"})
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -52,22 +52,18 @@ public class UserSearchPageTest extends AbstractTest
     @Test(groups = "Enterprise-only", expectedExceptions=ShareException.class)
     public void test101createDuplicateUser() throws Exception
     {         
-        UserSearchPage page = dashBoard.getNav().getUsersPage();
+        UserSearchPage page = dashBoard.getNav().getUsersPage().render();
         NewUserPage newUser = page.selectNewUser().render();
         newUser.createEnterpriseUser("admin", "admin", "admin", "admin@alfresco.com", "admin");
-        //TODO: To be removed when we have a solution identified for Error handling. To be discussed
-        //drone.waitFor(3000);
-        ShareErrorPopup errPopup = (ShareErrorPopup) drone.getCurrentPage();
-        errPopup.render();
-        Assert.assertTrue(errPopup.getShareErrorMessage().contains("Failed to create the user as the username already exists"));
-        errPopup.handleErrorMessage();
+        SharePopup errPopup = FactorySharePage.resolvePage(drone).render();
+        errPopup.handleMessage();
         Assert.fail();
     }
     
     @Test(groups = "Enterprise-only")
     public void test102searchForUser() throws Exception
     {
-            UserSearchPage page = dashBoard.getNav().getUsersPage();
+            UserSearchPage page = dashBoard.getNav().getUsersPage().render();
             Assert.assertTrue(page.isLogoPresent());
             Assert.assertTrue(page.isTitlePresent());
             UserSearchPage resultsEmpty = page.searchFor("").render();
@@ -119,7 +115,9 @@ public class UserSearchPageTest extends AbstractTest
         Assert.assertTrue(userPage.hasResults());
     }
 
-    @Test(groups = "Enterprise-only")
+    //Once below JIRA resolved we can enable the test
+    //https://issues.alfresco.com/jira/browse/ALF-20660
+    @Test(groups = "Enterprise-only", enabled=false)
     public void test106createUserUsingCSV() throws Exception
     {
             UserSearchPage page = dashBoard.getNav().getUsersPage().render();

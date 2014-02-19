@@ -44,18 +44,28 @@ public final class FactoryShareWorkFlow
      * Gets the sub WorkFlow HTML element from the StartWorkFlow page.
      * 
      * @param drone
-     *            {@link org.alfresco.po.share.WebDrone}
+     *            {@link org.alfresco.webdrone.WebDrone}
      * @param fromClass
      * @return workFlowType
      */
     @SuppressWarnings("unchecked")
     public static <T extends WorkFlowPage> T getPage(final WebDrone drone, final WorkFlowType workFlowType)
     {
+        if(drone == null)
+        {
+            throw new IllegalArgumentException("WebDrone can't be null.");
+        }
+        if(workFlowType == null)
+        {
+            throw new IllegalArgumentException("Workflow Type can't be null.");
+        }
         try
         {
             switch (workFlowType)
             {
                 case NEW_WORKFLOW:
+                    return (T) new NewWorkflowPage(drone);
+                case REVIEW_AND_APPROVE:
                     return (T) new NewWorkflowPage(drone);
                 case CLOUD_TASK_OR_REVIEW:
                     return (T) new CloudTaskOrReviewPage(drone);

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.po.share.workflow;
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
@@ -19,15 +37,15 @@ package org.alfresco.po.share.workflow;
  */
 import java.io.File;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -42,11 +60,8 @@ import org.testng.annotations.Test;
 @Listeners(FailedTestListener.class)
 public class StartWorkFlowPageTest extends AbstractTest
 {
-
     private String siteName;
-
     private File file;
-
     DocumentLibraryPage documentLibraryPage;
 
     /**
@@ -54,9 +69,8 @@ public class StartWorkFlowPageTest extends AbstractTest
      *
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups = "Enterprise4.2")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "StartWorkFlow" + System.currentTimeMillis();
         file = SiteUtil.prepareFile();
@@ -64,7 +78,7 @@ public class StartWorkFlowPageTest extends AbstractTest
         SiteUtil.createSite(drone, siteName, "Public");
         SitePage site = drone.getCurrentPage().render();
         documentLibraryPage = site.getSiteNav().selectSiteDocumentLibrary().render();
-        UploadFilePage upLoadPage = documentLibraryPage.getNavigation().selectFileUpload();
+        UploadFilePage upLoadPage = documentLibraryPage.getNavigation().selectFileUpload().render();
         documentLibraryPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
     }
 
@@ -83,11 +97,25 @@ public class StartWorkFlowPageTest extends AbstractTest
     }
 
     /**
-     * This Test case is to Test isWorkflowTypePresent method returns true with correct data.
+     * This Test case is to Test StartWorkFlowPage load.
      *
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2", dependsOnMethods = "navigateToStartWorkFlow")
+    public void selectStartWorkFlowIcon() throws Exception
+    {
+        documentLibraryPage = openSiteDocumentLibraryFromSearch(drone, siteName).render();
+        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(file.getName());
+        StartWorkFlowPage startWorkFlowPage = documentDetailsPage.selectStartWorkFlowIcon().render();
+        Assert.assertTrue(startWorkFlowPage.isWorkFlowTextPresent());
+    }
+
+    /**
+     * This Test case is to Test isWorkflowTypePresent method returns true with correct data.
+     *
+     * @throws Exception
+     */
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectStartWorkFlowIcon")
     public void isWorkflowTypePresentWithValidData() throws Exception
     {
         StartWorkFlowPage startWorkFlowPage = drone.getCurrentPage().render();

@@ -21,7 +21,7 @@ package org.alfresco.po.share.site.document;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import org.alfresco.po.share.ShareErrorPopup;
+import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -48,11 +48,11 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
     public GoogleDocsUpdateFilePage(WebDrone drone, String documentVersion, boolean editOffline)
     {
         super(drone, documentVersion, editOffline);
-        minorVersionRadioButton = "input[id$='default-configDialog-minorVersion-radioButton']";
-        majorVersionRadioButton = "input[id$='default-configDialog-majorVersion-radioButton']";
-        submitButton="button[id$='configDialog-ok-button']";
-        cancelButton="button[id$='configDialog-cancel-button']";
-        textAreaCssLocation="textarea[id$='configDialog-description-textarea']";
+        setMinorVersionRadioButton("input[id$='default-configDialog-minorVersion-radioButton']");
+        setMajorVersionRadioButton("input[id$='default-configDialog-majorVersion-radioButton']");
+        setSubmitButton("button[id$='configDialog-ok-button']");
+        setCancelButton("button[id$='configDialog-cancel-button']");
+        setTextAreaCssLocation("textarea[id$='configDialog-description-textarea']");
     }
 
     /**
@@ -78,11 +78,11 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
             // Look for comment box
             try
             {
-                if (!drone.find(By.cssSelector(minorVersionRadioButton)).isDisplayed())
+                if (!drone.find(By.cssSelector(getMinorVersionRadioButton())).isDisplayed())
                 {
                     continue;
                 }
-                if (!drone.find(By.cssSelector(majorVersionRadioButton)).isDisplayed())
+                if (!drone.find(By.cssSelector(getMajorVersionRadioButton())).isDisplayed())
                 {
                     continue;
                 }
@@ -116,7 +116,7 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
     @Override
     public HtmlPage submit()
     {
-        WebElement submitButtonElement = drone.findAndWait(By.cssSelector(submitButton));
+        WebElement submitButtonElement = drone.findAndWait(By.cssSelector(getSubmitButton()));
         submitButtonElement.click();
 
         String text = "Saving Google Doc";
@@ -131,7 +131,7 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
             }
             catch (TimeoutException e)
             {
-                ShareErrorPopup errorPopup = new ShareErrorPopup(drone);
+                SharePopup errorPopup = new SharePopup(drone);
                 try
                 {
                     errorPopup.render(new RenderTime(popupRendertime));
@@ -149,7 +149,7 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
             break;
         }
 
-        return new DocumentDetailsPage(drone, documentVersion);
+        return new DocumentDetailsPage(drone, getDocumentVersion());
     }
 
 }

@@ -26,9 +26,8 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
-import org.testng.Assert;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -64,21 +63,12 @@ public class EditTaskPageTest extends AbstractTaskTest
         createTask(testUserName, "password");
         pageUnderTest = myTasksPage.navigateToEditTaskPage(taskName, testUserName).render();
     }
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups = "Enterprise4.2")
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
     }
-    @Test(groups = "Enterprise4.2")
-    public void selectReassignButtonTest()
-    {
-        //Validate page is ready to use.
-        pageUnderTest.render();
-        SelectAssigneePage returnPage = pageUnderTest.selectReassignButton().render();
-        Assert.assertNotNull(returnPage);
-        pageUnderTest = returnPage.closePage();
-    }
-    
+
     @Test(groups = "Enterprise4.2")
     public void selectStatusDropDownTest()
     {
@@ -109,7 +99,6 @@ public class EditTaskPageTest extends AbstractTaskTest
         siteFinder = siteFinder.searchForSite(modSiteName).render();
         siteFinder.joinSite(modSiteName).render();
         ShareUtil.logout(drone);
-
         // Rejecting the request to join
         dash = loginAs(testUserName, "password");
         myTasksPage = dash.getNav().selectMyTasks().render();

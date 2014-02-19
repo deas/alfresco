@@ -18,7 +18,7 @@
  */
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -28,13 +28,11 @@ import org.alfresco.webdrone.WebDrone;
  * share's repository page.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  * @since 1.0
  */
 public class RepositoryPage extends DocumentLibraryPage
 {
-    private static final String REPO_FILE_UPLOAD_BUTTON = "repo.document.library.nav.upload.id";
-    private static final String REPO_CREATE_NEW_FOLDER_BUTTON = "repo.document.library.nav.create.folder.id";
-
     /**
      * Constructor.
      * 
@@ -70,6 +68,11 @@ public class RepositoryPage extends DocumentLibraryPage
     public RepositoryPage render(RenderTime timer)
     {
         super.render(timer);
+        if(!AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+        {
+        	String text = (String) drone.executeJavaScript("return document.getElementsByClassName('setDefaultView')[0].innerHTML");
+        	setViewType(ViewType.getViewType(text));
+        }
         return this;
     }
 
@@ -87,13 +90,7 @@ public class RepositoryPage extends DocumentLibraryPage
         return render(new RenderTime(time));
     }
 
-    @Override
-    public DocumentLibraryNavigation getNavigation()
-    {
-        return new DocumentLibraryNavigation(drone, REPO_FILE_UPLOAD_BUTTON, REPO_CREATE_NEW_FOLDER_BUTTON);
-    }
-
-    /**
+      /**
      * Verify if people finder title is present on the page
      * 
      * @return true if exists
@@ -106,19 +103,7 @@ public class RepositoryPage extends DocumentLibraryPage
     /**
      * Selects the title of the folder link.
      * 
-     * @param title                 folder title
-     * @return                      page response object (same type as this)
+     * @param title folder title
+     * @return page response object (same type as this)
      */
-    @Override
-    public DocumentLibraryPage selectFolder(final String title)
-    {
-        super.selectEntry(title);
-        return new RepositoryPage(drone, title);
-    }
-    
-    public RepositoryPage deleteItem(final String name)
-    {
-        super.deleteItem(name);
-        return new RepositoryPage(drone);
-    }
 }

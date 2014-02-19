@@ -1,6 +1,4 @@
 /*
-
-
  * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
@@ -20,15 +18,18 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -52,16 +53,15 @@ public class CreateContentPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups="alfresco-one")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password).render();
         siteName = "CreateContentPageTest" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
 
-    @AfterClass(alwaysRun=true, groups="alfresco-one")
+    @AfterClass(groups="alfresco-one")
     public void teardown() throws Exception
     {
         if (siteName != null)
@@ -116,7 +116,11 @@ public class CreateContentPageTest extends AbstractDocumentTest
     }
     /**
      * Test case to create content with plain text.
-     * 
+     * Select manage aspects 
+     * Add document aspect 
+     * Verify added aspect removed from available aspects column
+     * Verify added aspect added in selected aspects column
+     * Click Apply changes
      * @throws Exception
      */
     @Test(dependsOnMethods = "createContentWithNullDetails", groups="Enterprise-only")
@@ -125,7 +129,7 @@ public class CreateContentPageTest extends AbstractDocumentTest
         SiteDashboardPage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
-        ContentDetails contentDetails = new ContentDetails();
+    	ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName("Test Doc");
         contentDetails.setTitle("Test");
         contentDetails.setDescription("Desc");
@@ -140,7 +144,59 @@ public class CreateContentPageTest extends AbstractDocumentTest
         detailsPage.render();
         EditTextDocumentPage editPage = detailsPage.selectInlineEdit().render();
         contentDetails = editPage.getDetails();
+        assertEquals(contentDetails.getContent(), "Shan Test Doc");
         contentDetails.setContent("123456789");
         editPage.save(contentDetails).render();
+        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
    }
+    
+    /**
+     * Test case to cancel create content with plain text. Select manage aspects
+     * Add document aspect Verify added aspect removed from available aspects
+     * column Verify added aspect added in selected aspects column Click cancel
+     * 
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = "createContent", groups = "Enterprise-only")
+    public void createCancelContent() throws Exception
+    {
+        CreatePlainTextContentPage contentPage = documentLibPage.getNavigation()
+                .selectCreateContent(ContentType.PLAINTEXT).render();
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName("Test Doc Cancel");
+        contentDetails.setTitle("Test Cancel");
+        contentDetails.setDescription("Desc");
+        contentDetails.setContent("Shan Test Doc");
+        DocumentDetailsPage detailsPage = contentPage.create(contentDetails).render();
+        assertNotNull(detailsPage);
+        SelectAspectsPage aspectsPage = detailsPage.selectManageAspects().render();
+        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+        aspects.add(DocumentAspect.VERSIONABLE);
+        aspects.add(DocumentAspect.CLASSIFIABLE);
+        aspectsPage = aspectsPage.add(aspects).render();
+        assertFalse(aspectsPage.getAvailableAspects().contains(DocumentAspect.VERSIONABLE));
+        assertTrue(aspectsPage.getSelectedAspects().contains(DocumentAspect.VERSIONABLE));
+        detailsPage = aspectsPage.clickCancel().render();
+        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+    }
+
+    /**
+     * Test case to cancel create content with plain text.
+     * 
+     * @throws Exception
+     */
+    @Test(dependsOnMethods="createCancelContent", groups="Enterprise-only")
+    public void cancelCreateContent() throws Exception
+    {
+        CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
+    	ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName("cancel create content");
+        contentDetails.setTitle("cancel create content title");
+        contentDetails.setDescription("cancel create content description");
+        contentDetails.setContent("cancel create content - test content");
+        DocumentLibraryPage documentLibraryPage = contentPage.cancel(contentDetails).render();
+        assertNotNull(documentLibraryPage);
+        assertFalse(documentLibraryPage.isContentUploadedSucessful("cancel create content"));
+    }
+    
 }

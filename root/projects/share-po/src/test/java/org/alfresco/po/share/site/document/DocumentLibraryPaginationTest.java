@@ -1,4 +1,3 @@
-package org.alfresco.po.share.site.document;
 ///*
 // * Copyright (C) 2005-2012 Alfresco Software Limited.
 // *

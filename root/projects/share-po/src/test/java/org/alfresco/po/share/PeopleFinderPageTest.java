@@ -39,7 +39,7 @@ public class PeopleFinderPageTest extends AbstractTest
    
     private DashBoardPage dashBoard;
     
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups={"Enterprise-only","alfresco-one"})
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);

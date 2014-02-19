@@ -181,7 +181,7 @@ public class GoogleSignUpPage extends SharePage
         for (String windowHandle : windowHandles)
         {
             drone.switchToWindow(windowHandle);
-            if (drone.getTitle() == googleAccountTitle)
+            if (drone.getTitle().endsWith(googleAccountTitle))
             {
                 break;
             }

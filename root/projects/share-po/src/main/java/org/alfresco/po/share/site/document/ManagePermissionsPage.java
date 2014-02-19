@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013s Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,7 +18,9 @@ package org.alfresco.po.share.site.document;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
@@ -41,7 +39,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-
 /**
  * Page object for Manage Permissions at granular level.
  * 
@@ -50,21 +47,31 @@ import org.openqa.selenium.WebElement;
  */
 public class ManagePermissionsPage extends SharePage
 {
-    private final By LAST_ROW_OF_PERMISSIONS = By.cssSelector("div[id$='_default-inheritedPermissions'] tr[class^='yui-dt-rec yui-dt-last']");
-    private final By ADD_USER_BUTTON = By.cssSelector("div.add-user-group button");
-    private final By SAVE_BUTTON = By.cssSelector("button[id$='-okButton-button']");
-    private final By CANCEL_BUTTON = By.cssSelector("button[id$='-cancelButton-button']");
-    private final By INHERIT_PERMISSION_BUTTON = By.cssSelector("div[id$='_default-inheritedButtonContainer']");
-    private final By INHERIT_PERMISSION_TABLE = By.cssSelector("div[id$='_default-inheritedPermissions']");
-    private final By ACCESS_TYPE_BUTTON = By.cssSelector("span[id^='roles-'] button");
-    private final By  USER_LIST = By.cssSelector("div[id$='default-directPermissions'] tr[class^='yui-dt-rec']");
-    private final By USER_NAME= By.cssSelector("td[class$='displayName']");
-    private final By USRE_ROLE =  By.cssSelector("td[class$='role']");
-    private final By LIST_USER_ROLE = By.cssSelector("span[id^='roles-']>div>div>ul>li");
+    private final By lastRowPermissions = By.cssSelector("div[id$='_default-inheritedPermissions']");
+    private final By addUserButton = By.cssSelector("div.add-user-group button");
+    private final By saveButtonLocator = By.cssSelector("button[id$='-okButton-button']");
+    private final By cancelButton = By.cssSelector("button[id$='-cancelButton-button']");
+    private final By inheritPermissionButton = By.cssSelector("div[id$='_default-inheritedButtonContainer']");
+    private final By inheritPermissionTable = By.cssSelector("div[id$='_default-inheritedPermissions']");
+    private final By accessTypeButton = By.cssSelector("span[id^='roles-'] button");
+    private final By userListLocator = By.cssSelector("div[id$='default-directPermissions'] tr[class^='yui-dt-rec']");
+    private final By userNameLocator = By.cssSelector("td[class$='displayName']");
+    private final By userRoleLocator = By.cssSelector("td[class*='role']");
+    private final By listUserRole = By.cssSelector("span[id^='roles-']>div>div>ul>li");
+    private final By listRolesWithSites = By.cssSelector("div[id$='_default-inheritedPermissions'] tr[class^='yui-dt-rec']");
+    private final By listUsersGroups = By.cssSelector("td[class$='yui-dt-col-displayName']");
+    private final By listRoleLocator = By.cssSelector("td[class*='yui-dt-col-role'] div");
+    private final By userListInhrtPerm = By.cssSelector("div[id$='default-inheritedPermissions'] tr[class^='yui-dt-rec']");
+    private final By deleteAction = By.cssSelector("td[class*='yui-dt-col-actions'] div div.action-set");
+    private final By areYouSureButtonGroup = By.cssSelector("span.button-group span span button");
+    public enum ButtonType
+    {
+        Yes, No;
+    }
     
     /**
-     * Default constructor is not provided as the client should pass the
-     * {@link FromClass} while creating ManagePermissionsPage.
+     * Default constructor is not provided as the client should pass the {@link FromClass} while creating ManagePermissionsPage.
+     * 
      * @param drone
      * @param fromClass
      */
@@ -74,7 +81,7 @@ public class ManagePermissionsPage extends SharePage
     }
 
     private final Log logger = LogFactory.getLog(ManagePermissionsPage.class);
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public ManagePermissionsPage render()
@@ -95,10 +102,12 @@ public class ManagePermissionsPage extends SharePage
     {
         try
         {
-            elementRender(timer, RenderElement.getVisibleRenderElement(ADD_USER_BUTTON));
-            if (drone.find(INHERIT_PERMISSION_BUTTON).getAttribute("class").contains("on"))
+            elementRender(timer, RenderElement.getVisibleRenderElement(addUserButton));
+            elementRender(timer, RenderElement.getVisibleRenderElement(saveButtonLocator));
+            elementRender(timer, RenderElement.getVisibleRenderElement(cancelButton));
+            if (drone.find(inheritPermissionButton).getAttribute("class").contains("on"))
             {
-                elementRender(timer, RenderElement.getVisibleRenderElement(LAST_ROW_OF_PERMISSIONS));
+                elementRender(timer, RenderElement.getVisibleRenderElement(lastRowPermissions));
             }
         }
         catch (NoSuchElementException e)
@@ -106,9 +115,10 @@ public class ManagePermissionsPage extends SharePage
         }
         return this;
     }
-    
+
     /**
      * Mimics the action of clicking on Add user button.
+     * 
      * @return
      */
     public UserSearchPage selectAddUser()
@@ -117,40 +127,50 @@ public class ManagePermissionsPage extends SharePage
         {
             logger.trace(" - Trying to click Add User button - ");
         }
-        drone.find(ADD_USER_BUTTON).click();
+        drone.find(addUserButton).click();
         return this.new UserSearchPage(drone);
     }
-
     /**
-     * Mimics the action of clicking on Inherit permission button.
-     * 
+     * @param areYouSure
+     */
+    private void clickAreYouSureDialogue(ButtonType areYouSure)
+    {
+        for (WebElement button : drone.findAll(areYouSureButtonGroup))
+        {
+            if(areYouSure.toString().equals(button.getText()))
+            {
+                button.click();
+            }
+        }
+    }
+    /**
      * @param turnOn
-     *            - Inherit permission to be turned on/off. Send true if you
-     *            want to turn on.
+     * @param areYouSure
      * @return
      */
-    public ManagePermissionsPage toggleInheritPermission(boolean turnOn)
+    public ManagePermissionsPage toggleInheritPermission(boolean turnOn, ButtonType areYouSure)
     {
         if (logger.isTraceEnabled())
         {
             logger.trace(" - Trying to click Inherit permissions button - ");
         }
         boolean buttonStatusOn = getInheritButtonStatus();
-        WebElement inheritButton = drone.find(INHERIT_PERMISSION_BUTTON);
-        // requested turn on and the inherited premissions is off then only
-        // click the button.
+        WebElement inheritButton = drone.find(inheritPermissionButton);
+
+        // click the button iff (turnOn = true and inherited permissions is off)
         if (turnOn && !buttonStatusOn)
         {
             inheritButton.findElement(By.cssSelector("button")).click();
         }
-        // requested turn off and the inherited permissions is on then only
-        // click the button.
+
+        // click the button iff (turnOn = false and inherited permissions is on)
         if (!turnOn && buttonStatusOn)
         {
             inheritButton.findElement(By.cssSelector("button")).click();
-            try{
-                //if the confirm Yes/No box appears select yes. This happens only first time.
-                drone.findAndWait(By.cssSelector("div.ft  button:first-of-type"), 1000).click();
+            try
+            {
+                // if the confirm Yes/No box appears select yes. This happens only first time.
+                clickAreYouSureDialogue(areYouSure);
             }
             catch (Exception e)
             {
@@ -162,16 +182,17 @@ public class ManagePermissionsPage extends SharePage
 
     /**
      * Resolves the inherit permission button to 'on' or 'off'
+     * 
      * @return
      */
     private boolean getInheritButtonStatus()
     {
         try
         {
-            drone.findAndWait(By.cssSelector("div[class$='inherited-on']"));
+            drone.findAndWait(By.cssSelector("div[class$='inherited-on']"), WAIT_TIME_3000);
             return true;
         }
-        catch (TimeoutException e) {}
+        catch (TimeoutException e){ }
         return false;
     }
 
@@ -184,9 +205,9 @@ public class ManagePermissionsPage extends SharePage
     {
         try
         {
-            return drone.findAndWait(INHERIT_PERMISSION_TABLE, 500).isDisplayed();
+            return drone.findAndWait(inheritPermissionTable, 500).isDisplayed();
         }
-        catch (Exception e)
+        catch (TimeoutException e)
         {
             return false;
         }
@@ -199,7 +220,7 @@ public class ManagePermissionsPage extends SharePage
      */
     public HtmlPage selectSave()
     {
-        WebElement saveButton = drone.findAndWait(SAVE_BUTTON);
+        WebElement saveButton = drone.findAndWait(saveButtonLocator);
         String saveButtonId = saveButton.getAttribute("id");
         saveButton.click();
         drone.waitUntilElementDeletedFromDom(By.id(saveButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
@@ -214,16 +235,18 @@ public class ManagePermissionsPage extends SharePage
      */
     public HtmlPage selectCancel()
     {
-        drone.findAndWait(CANCEL_BUTTON).click();
+        drone.findAndWait(cancelButton).click();
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return FactorySharePage.resolvePage(drone);
     }
 
     /**
-     * From the drop down, the access level is selected.
+     * From the drop down, the access level is selected for the first user.
      * 
      * @param userRole
+     * @depricated Use {@link ManagePermissionsPage setAccessType(UserProfile, UserRole)} or {@link ManagePermissionsPage setAccessType(String, UserRole)}
      */
+    @Deprecated
     public void setAccessType(UserRole userRole)
     {
         if (null == userRole)
@@ -231,26 +254,114 @@ public class ManagePermissionsPage extends SharePage
             logger.info("Access type was null. Should be set to some level.");
             throw new UnsupportedOperationException("Access type cannot be null");
         }
-        drone.findAndWait(ACCESS_TYPE_BUTTON).click();
-        drone.find(userRole.getAccessType()).click();
+        drone.findAndWait(accessTypeButton).click();
+        getRoleOption(drone, userRole).click();
+    }
+
+    /**
+     * From the drop down, the access level is selected for the specified user.
+     * 
+     * @param userProfile
+     * @param userRole
+     */
+    public void setAccessType(UserProfile userProfile, UserRole userRole)
+    {
+        if (null == userProfile)
+        {
+            logger.info("User Profile is null. Should be specified.");
+            throw new IllegalArgumentException("UserProfile cannot be null");
+        }
+        String userName = userProfile.getfName() + " " + userProfile.getlName();
+        userName = userName.trim();
+        setAccessType(userName, userRole);
+    }
+
+    /**
+     * From the drop down, the access level is selected for the specified user or group.
+     * 
+     * @param name The name of the user or group as it appears on screen including spaces.
+     * @param userRole
+     */
+    public void setAccessType(String name, UserRole userRole)
+    {
+        if (null == userRole)
+        {
+            logger.info("Access type was null. Should be set to some level.");
+            throw new IllegalArgumentException("Access type cannot be null");
+        }
+        if (null == name)
+        {
+            logger.info("Group Name is null. Should be specified.");
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+
+        String userSpecificAccess = "//div[starts-with(text(), '" + name + "')]/../..//span[contains(@id,'roles')] //button";
+        By accessButtonSpecific = By.xpath(userSpecificAccess);
+        try
+        {
+            drone.findAndWait(accessButtonSpecific).click();
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageOperationException("Unable to find Access Specific Button" + te.getMessage());
+        }
+        
+        getRoleOption(drone, userRole).click();
     }
     
     /**
      * Check if user is already added for permission.
-     * @param userName
+     * 
+     * @param name
+     *            - First name or last name or full name <fName><space><lName>
      * @return
      */
-    public boolean isUserExistForPermission(String userName)
+    public boolean isUserExistForPermission(String name)
     {
         boolean isExist = false;
         try
         {
-            List<WebElement> userList = drone.findAndWaitForElements(USER_LIST);
+            List<WebElement> userList = drone.findAndWaitForElements(userListLocator, WAIT_TIME_3000);
             for (WebElement webElement : userList)
-                if (webElement.findElement(USER_NAME).getText().contains(userName))
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(name))
+                {
                     isExist = true;
-
+                }
+            }
             return isExist;
+        }
+        catch (TimeoutException toe)
+        {
+            logger.warn("User name element is not found!!");
+            return isExist;
+        }
+    }
+
+    /**
+     * Check if user is already added for permission.
+     * 
+     * @param name
+     *            - First name or last name or full name <fName><space><lName>
+     * @return
+     */
+    public UserRole getExistingPermissionForInheritPermission(String name)
+    {
+        try
+        {
+            List<WebElement> userList = drone.findAndWaitForElements(userListInhrtPerm);
+            for (WebElement webElement : userList)
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(name))
+                {
+                    String currentRole = webElement.findElement(userRoleLocator).getText().toUpperCase();
+                    if (currentRole.split("").length > 1)
+                    {
+                        currentRole = StringUtils.replace(currentRole.trim(), " ", "");
+                    }
+                    return UserRole.valueOf(currentRole);
+                }
+            }
         }
         catch (TimeoutException toe)
         {
@@ -258,59 +369,126 @@ public class ManagePermissionsPage extends SharePage
         }
         throw new PageOperationException("User name is not found!!");
     }
-    
+
+    /**
+     * Get existing permission for user/group
+     * 
+     * @param name
+     *            - First name or last name or full name <fName><space><lName>
+     * @return
+     */
+    public UserRole getExistingPermission(String name)
+    {
+        try
+        {
+            List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
+            for (WebElement webElement : userList)
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(name))
+                {
+                    String currentRole = webElement.findElement(userRoleLocator).getText().toUpperCase();
+                    return UserRole.valueOf(currentRole);
+                }
+            }
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("User name elementis not found!!");
+        }
+        throw new PageOperationException("User name is not found!!");
+    }
+
     /**
      * Update role of existing Users in permission table.
+     * 
      * @param userName
      * @param userRole
      * @return
      */
     public boolean updateUserRole(String userName, UserRole userRole)
-    {        
-        try{            
-            List <WebElement> elements = drone.findAndWaitForElements(USER_LIST);
+    {
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(userListLocator, WAIT_TIME_3000);
             for (WebElement webElement : elements)
-            {                
-                if(webElement.findElement(USER_NAME).getText().contains(userName))
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(userName))
                 {
-                    WebElement roleElement = webElement.findElement(USRE_ROLE);
-                    roleElement.findElement(ACCESS_TYPE_BUTTON).click();
-                    
+                    WebElement roleElement = webElement.findElement(userRoleLocator);
+                    roleElement.findElement(accessTypeButton).click();
+
                     selectRole(userRole);
                     return true;
                 }
             }
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("User name is not found!!");
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             logger.error("Role element is not found");
         }
         throw new PageOperationException("User or Role doesnt exist!!");
     }
+
+    /**
+     * Delete user or group from permission table.
+     * 
+     * @param name
+     * @param role
+     * @return
+     */
+    public boolean deleteUserOrGroupFromPermission(String name, UserRole role)
+    {
+        try
+        {
+            List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
+            for (WebElement webElement : userList)
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(name))
+                {
+                    if (role.getRoleName().equalsIgnoreCase(webElement.findElement(userRoleLocator).findElement(accessTypeButton).getText()))
+                    {
+                        drone.mouseOverOnElement(webElement.findElement(By.xpath("//td[contains(@class, 'yui-dt-col-actions')]/div")));
+                        WebElement deleteDivElement = webElement.findElement(deleteAction);
+                        drone.find(By.id(deleteDivElement.getAttribute("id"))).findElement(By.cssSelector("a")).click();
+                        selectSave();
+                        return true;
+                    }
+                }
+            }
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("User name elementis not found!!");
+        }
+        throw new PageOperationException("User name is not found!!");
+    }
+
     /**
      * @param userRole
      */
     private void selectRole(UserRole userRole)
     {
-      try{
-            List <WebElement> elements = drone.findAll(LIST_USER_ROLE);
+        try
+        {
+            List<WebElement> elements = drone.findAll(listUserRole);
             for (WebElement webElement : elements)
             {
-                if(userRole.getRoleName().equals(webElement.getText())){
+                if (userRole.getRoleName().equals(webElement.getText()))
+                {
                     webElement.click();
                     return;
                 }
             }
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             logger.error("Roles element is not found");
         }
-      throw new PageOperationException("Role doesnt exist!!");
+        throw new PageOperationException("Role doesnt exist!!");
     }
 
     /**
@@ -320,7 +498,7 @@ public class ManagePermissionsPage extends SharePage
      */
     public UserRole getAccessType()
     {
-        String role = drone.find(ACCESS_TYPE_BUTTON).getText().toUpperCase();
+        String role = drone.findAndWait(accessTypeButton).getText().toUpperCase();
         return UserRole.valueOf(role);
     }
 
@@ -341,7 +519,7 @@ public class ManagePermissionsPage extends SharePage
         {
             return false;
         }
-        
+
         for (WebElement userPermissionRow : userPermissionRows)
         {
             String name = userPermissionRow.findElement(By.cssSelector("td[class$='-displayName']")).getText();
@@ -352,7 +530,9 @@ public class ManagePermissionsPage extends SharePage
         }
         return false;
     }
-
+    
+    
+  
     /**
      * Page object for searching user and selecting user. Ideally should not live w/o
      * ManagePersmissions instance. Hence its an inner class with private constructor.
@@ -400,8 +580,8 @@ public class ManagePermissionsPage extends SharePage
                     if (message.isDisplayed() && message.getText().contains("Searching..."))
                     {
                         continue;
-                    } 
-                    else 
+                    }
+                    else
                     {
                         break;
                     }
@@ -419,53 +599,217 @@ public class ManagePermissionsPage extends SharePage
         }
 
         /**
-         * Enters user arg in search box and clicks the search button. Goes
-         * through the result, finds the appropriate user and clicks Add button.
          * @param userProfile
+         * @return
          */
         public ManagePermissionsPage searchAndSelectUser(UserProfile userProfile)
         {
-            String userName = userProfile.getUsername();
-            if (StringUtils.isEmpty(userName) || userName.length() < 3)
-            {
-                throw new UnsupportedOperationException("User search text cannot be blank - min three characters required");
-            }
+            return searchAndSelect("", userProfile);
+        }
 
+        /**
+         * @param groupName
+         * @return
+         */
+        public ManagePermissionsPage searchAndSelectGroup(String groupName)
+        {
+            return searchAndSelect(groupName, null);
+        }
+        
+        /**
+         * Returns if "EVERYONE" is available in search result.
+         * @param searchText
+         * @return
+         */
+        public boolean isEveryOneDisplayed(String searchText)
+        {
+            try
+            {
+                By usernameSpan = By.cssSelector("h3>span");
+            
+                for (WebElement  element: searchUserAndGroup(searchText))
+                {
+                    if(element.findElement(usernameSpan).getText().contains("EVERYONE"))
+                     {
+                        return true;
+                     }
+                }
+            }catch(NoSuchElementException nse)
+            {
+                throw new PageException("User with username containing - '" + searchText + "' not found");
+            }
+            return false;
+        }
+
+        
+        /**
+         * @param groupName
+         * @param userProfile
+         * @return
+         */
+        private ManagePermissionsPage searchAndSelect(String groupName, UserProfile userProfile)
+        {
+            String searchText = "";
+            boolean isGroupSearch = false;
+            if (!StringUtils.isEmpty(groupName))
+            {
+                searchText = groupName;
+                isGroupSearch = true;
+            }
+            else if (!StringUtils.isEmpty(userProfile.getUsername()))
+            {
+                searchText = userProfile.getUsername();
+            }
+            else
+            {
+                throw new UnsupportedOperationException(" Name search text cannot be blank - min three characters required");
+            }           
+            return selectUserOrGroup(searchUserAndGroup(searchText), searchText, isGroupSearch, userProfile);
+                
+        }
+        /**
+         * @param searchText
+         * @return
+         */
+        private List<WebElement> searchUserAndGroup(String searchText)
+        {
             drone.find(SEARCH_USER_INPUT).clear();
-            drone.find(SEARCH_USER_INPUT).sendKeys(userName);
+            drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
 
             drone.find(SEARCH_USER_BUTTON).click();
             this.render();
-            By DATA_ROWS = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
+            By dataRows = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
+            return drone.findAndWaitForElements(dataRows, maxPageLoadingTime);
+        }
+        
+        /**
+         * @param searchRows
+         * @param searchText
+         * @param isGroupSearch
+         * @param userProfile
+         * @return
+         */
+        private ManagePermissionsPage selectUserOrGroup(List<WebElement> searchRows, String searchText, boolean isGroupSearch,  UserProfile userProfile)
+        {
             By USERNAME_SPAN = By.cssSelector("h3>span");
             By NAME_ANCHOR = By.cssSelector("h3>a");
-
             try
             {
-                List<WebElement> searchRows = drone.findAndWaitForElements(DATA_ROWS, maxPageLoadingTime);
                 for (WebElement searchRow : searchRows)
                 {
-                    if (searchRow.findElement(USERNAME_SPAN).getText().contains(userName))
+                    if (isGroupSearch)
+                    {
+                        if (searchRow.findElement(USERNAME_SPAN).getText().contains(searchText))
+                        {
+                            searchRow.findElement(By.cssSelector("button")).click();
+                            return new ManagePermissionsPage(drone);
+                        }
+
+                    }
+                    else
                     {
                         String fullName = searchRow.findElement(NAME_ANCHOR).getText();
                         String[] name = fullName.split(" ");
                         userProfile.setfName(name[0]);
 
                         if (name.length > 1)
+                        {
                             userProfile.setlName(name[1]);
+                        }
                         else
+                        {
                             userProfile.setlName("");
+                        }
 
                         searchRow.findElement(By.cssSelector("button")).click();
                         return new ManagePermissionsPage(drone);
                     }
                 }
-                throw new PageException("User with username containing - '" + userName + "' not found");
+                throw new PageException("User with username containing - '" + searchText + "' not found");
             }
             catch (Exception e)
             {
-                throw new PageException("No users found for - " + userName);
+                throw new PageException("No users found for - " + searchText, e);
             }
         }
     }
+
+    /**
+     * Finds the CSS for user role and clicks it option.
+     * 
+     * @param drone
+     * @param userRole
+     * @return
+     */
+    private WebElement getRoleOption(WebDrone drone, UserRole userRole)
+    {
+        List<WebElement> options = drone.findAndWaitForElements(By.cssSelector("div.bd li"));
+        for (WebElement role : options)
+        {
+            if (userRole.getRoleName().equalsIgnoreCase(role.getText()))
+            {
+                return role;
+            }
+        }
+        throw new PageException("Role option not found.");
+    }
+
+    /**
+     * Get Inherited Site permission table in map key value pair.
+     * 
+     * @return
+     */
+    public Map<String, String> getInheritedPermissions()
+    {
+        try
+        {
+            Map<String, String> usersAndPermissions = new HashMap<String, String>();
+            List<WebElement> rowsOfInheritedPermission = drone.findAndWaitForElements(listRolesWithSites);
+            for (WebElement webElement : rowsOfInheritedPermission)
+            {
+                usersAndPermissions.put(webElement.findElement(listUsersGroups).getText(), webElement.findElement(listRoleLocator).getText());
+            }
+            return usersAndPermissions;
+        }
+        catch (TimeoutException toe)
+        {
+            throw new PageException("Element not found:" + listRolesWithSites, toe);
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageException("Element not found:" + listUsersGroups + " Or " + listRoleLocator, nse);
+        }
+    }
+
+    /**
+     * Verifies the delete button for the user is present in the page object.
+     * 
+     * @return
+     */
+    public boolean isUserDeleteButtonPresent(String name)
+    {
+        boolean isExist = false;
+        try
+        {
+            List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
+            for (WebElement webElement : userList)
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(name))
+                {
+                    if (webElement.findElement(deleteAction).isEnabled())
+                    {
+                        isExist = true;
+                    }
+                }
+            }
+            return isExist;
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("User delete element is not found!!");
+            return isExist;
+        }
+    }
+    
+
 }

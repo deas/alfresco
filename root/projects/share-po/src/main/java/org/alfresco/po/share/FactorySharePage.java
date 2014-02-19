@@ -29,13 +29,15 @@ import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
 import org.alfresco.po.share.search.RepositoryResultsPage;
 import org.alfresco.po.share.search.SiteResultsPage;
+import org.alfresco.po.share.site.AddGroupsPage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
-import org.alfresco.po.share.site.ManageRulesPage;
-import org.alfresco.po.share.site.RulesPage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
+import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.SiteMembersPage;
 import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
@@ -48,7 +50,9 @@ import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.task.EditTaskPage;
+import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.user.CloudSyncPage;
+import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.user.TrashCanPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
@@ -58,6 +62,8 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.PageFactory;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -72,12 +78,13 @@ import org.openqa.selenium.WebElement;
  */
 public class FactorySharePage implements PageFactory
 {
+    private static Log logger = LogFactory.getLog(FactorySharePage.class);
     private static final String CREATE_PAGE_ERROR_MSG = "Unabel to instantiate the page";
     protected static final String NODE_REF_IDENTIFIER = "?nodeRef";
     public static final String DOCUMENTLIBRARY = "documentlibrary";
     public static final String NODE_REFRESH_META_DATA_IDENTIFIER = "?refreshMetadata"; 
     protected static final String FAILURE_PROMPT = "div[id='prompt']";
-    protected static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
+    private static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
     static 
     {
         pages = new ConcurrentHashMap<String, Class<? extends SharePage>>();
@@ -116,8 +123,14 @@ public class FactorySharePage implements PageFactory
         pages.put("siteResultsPage", SiteResultsPage.class);
         pages.put("repositoryResultsPage", RepositoryResultsPage.class);
         pages.put("allSitesResultsPage", AllSitesResultsPage.class);
-        pages.put("folder-rules", ManageRulesPage.class);
-        pages.put("rule-edit", RulesPage.class);
+        pages.put("folder-rules", FolderRulesPreRender.class);
+        pages.put("rule-edit", CreateRulePage.class);
+        pages.put("task-edit", EditTaskPage.class);
+        pages.put("task-details", TaskDetailsPage.class);
+        pages.put("change-locale", LanguageSettingsPage.class);
+        pages.put("groups", GroupsPage.class);
+        pages.put("site-groups", SiteGroupsPage.class);
+        pages.put("add-groups", AddGroupsPage.class);
         pages.put("task-edit", EditTaskPage.class);
         pages.put("search", SiteResultsPage.class);
         pages.put("start-workflow", StartWorkFlowPage.class);
@@ -140,6 +153,7 @@ public class FactorySharePage implements PageFactory
     public static HtmlPage resolvePage(final WebDrone drone) throws PageException
     {
         // Determine if user is logged in if not return login page
+        //         if (drone.getTitle().toLowerCase().contains(drone.getLanguageValue("login.title")))
         if (drone.getTitle().toLowerCase().contains("login"))
         {
             return new LoginPage(drone);
@@ -151,7 +165,7 @@ public class FactorySharePage implements PageFactory
                 WebElement errorPrompt = drone.find(By.cssSelector(FAILURE_PROMPT));
                 if(errorPrompt.isDisplayed())
                 {
-                    return new ShareErrorPopup(drone);
+                    return new SharePopup(drone);
                 }
             }
             catch(NoSuchElementException nse){ }
@@ -180,8 +194,14 @@ public class FactorySharePage implements PageFactory
      */
     protected static <T extends HtmlPage> T instantiatePage(WebDrone drone, Class<T> pageClassToProxy) 
     {
-        if(drone == null) throw new IllegalArgumentException("WebDrone is required");
-        if(pageClassToProxy == null) throw new IllegalArgumentException("Page object is required");
+        if(drone == null)
+        {
+            throw new IllegalArgumentException("WebDrone is required");
+        }
+        if(pageClassToProxy == null)
+        {
+            throw new IllegalArgumentException("Page object is required");
+        }
         try
         {
             try
@@ -220,6 +240,10 @@ public class FactorySharePage implements PageFactory
     public static SharePage getPage(final String url, WebDrone drone)
     {
         String pageName = resolvePage(url);
+        if(logger.isTraceEnabled())
+        {
+            logger.trace(url + " : page name: " + pageName);
+        }
         return instantiatePage(drone, pages.get(pageName));
     }
     
@@ -249,9 +273,9 @@ public class FactorySharePage implements PageFactory
         {
             if(url.endsWith("customise-site-dashboard"))
             {
-                return "customise-site-dashboard";
+            	return "customise-site-dashboard";
             }
-            if(url.contains("site"))
+            if(url.contains("/page/site/"))
             {
                 return "site-dashboard";
             }
@@ -275,6 +299,11 @@ public class FactorySharePage implements PageFactory
             url = url.subSequence(0, index).toString();
         }
 
+        if(url.contains("/repository"))
+        {
+            return "repository";
+        }
+        
         //Get the last element of url
         StringTokenizer st = new StringTokenizer(url,"/");
         String val = "";

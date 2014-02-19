@@ -17,11 +17,24 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
+import org.alfresco.po.share.workflow.StartWorkFlowPage;
+import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -32,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -40,6 +54,8 @@ import org.openqa.selenium.WebElement;
  * sub navigation bar that appears on the document library site page.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
+ * 
  * @since 1.0
  */
 public class DocumentLibraryNavigation extends SharePage
@@ -57,12 +73,18 @@ public class DocumentLibraryNavigation extends SharePage
     private static final By REQUEST_SYNC = By.cssSelector(".onActionCloudSyncRequest");
     private static final String FILE_UPLOAD_ERROR_MESSAGE = "Unable to create file upload page";
     private static final String CREATE_FOLDER_ERROR_MESSAGE = "Unable to create new folder page";
+    private static final By DELETE = By.cssSelector(".onActionDelete");
+    private static final By COPY_TO = By.cssSelector(".onActionCopyTo");
+    private static final By MOVE_TO = By.cssSelector(".onActionMoveTo");
+    private static final By DESELECT_ALL = By.cssSelector(".onActionDeselectAll");
+    private static final By START_WORKFLOW = By.cssSelector(".onActionAssignWorkflow");
+    
     private Log logger = LogFactory.getLog(this.getClass());
     
     /**
      * Constructor.
      */
-    public DocumentLibraryNavigation(WebDrone drone, String fileUploadButtonId, String createNewFolderButtonId)
+    public DocumentLibraryNavigation(WebDrone drone)
     {
         super(drone);
     }
@@ -112,15 +134,14 @@ public class DocumentLibraryNavigation extends SharePage
      * 
      * @return HtmlPage response page object
      */
-    public UploadFilePage selectFileUpload()
+    public HtmlPage selectFileUpload()
     {
         if(!alfrescoVersion.isFileUploadHtml5())
         {
-            disbaleFileUploadFlash();   
+            setSingleMode();
         }
         WebElement button = drone.findAndWait(By.cssSelector(FILE_UPLOAD_BUTTON));
         button.click();
-        
         return getFileUpload(drone);
     }
     /**
@@ -130,7 +151,7 @@ public class DocumentLibraryNavigation extends SharePage
      * @param repositoryBrowsing        <tt>true</tt> if we are doing repository browsing
      * @return SharePage page object response
      */
-    public UploadFilePage getFileUpload(WebDrone drone)
+    public HtmlPage getFileUpload(WebDrone drone)
     {
 
         // Verify if it is really file upload page, and then create the page.
@@ -257,7 +278,7 @@ public class DocumentLibraryNavigation extends SharePage
      * 
      * @return {@link DocumentLibraryPage}
      */
-    public DocumentLibraryPage clickSelectedItems()
+    public HtmlPage clickSelectedItems()
     {
         try
         {
@@ -266,14 +287,14 @@ public class DocumentLibraryNavigation extends SharePage
             if(selectedItemsElement.isEnabled())
             {
                 selectedItemsElement.click();
-                return new DocumentLibraryPage(drone);
+                return FactorySharePage.resolvePage(drone);
             }
             throw new PageException("Selected Items Button found, but is not enabled please select one or more item");
         }
         catch (TimeoutException e)
         {
             logger.error("Selected Item not available : " + SELECTED_ITEMS.toString());
-            throw new PageException("Not able to find the Selected Items Button.");
+            throw new PageException("Not able to find the Selected Items Button.", e);
         }
         
     }
@@ -303,6 +324,10 @@ public class DocumentLibraryNavigation extends SharePage
      */
     public DocumentLibraryPage selectDownloadAsZip()
     {
+    	if(!(AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || AlfrescoVersion.Enterprise43.equals(alfrescoVersion)))
+    	{
+    		throw new UnsupportedOperationException("Download as Zip option si not available on this version " + alfrescoVersion.toString());
+    	}
         try
         {
             if(isSelectedItemMenuVisible())
@@ -319,7 +344,7 @@ public class DocumentLibraryNavigation extends SharePage
         {
             String expectionMessage = "Not able to find the download as zip Link";
             logger.error(expectionMessage + e.getMessage());
-            throw new PageException(expectionMessage);
+            throw new PageException(expectionMessage, e);
         }
     }
 
@@ -336,7 +361,7 @@ public class DocumentLibraryNavigation extends SharePage
         {
             String exceptionMessage = "Not able to find the Select Dropdown";
             logger.error(exceptionMessage + e.getMessage());
-            throw new PageException(exceptionMessage);
+            throw new PageException(exceptionMessage, e);
         }
     }
 
@@ -363,7 +388,7 @@ public class DocumentLibraryNavigation extends SharePage
      * Mimics the action select All select dropdown.
      * @return {@link DocumentLibraryPage}
      */
-    public DocumentLibraryPage selectAll()
+    public HtmlPage selectAll()
     {
         try
         {
@@ -371,7 +396,7 @@ public class DocumentLibraryNavigation extends SharePage
             if(isSelectMenuVisible())
             {
                 drone.findAndWait(SELECT_ALL).click();
-                return new DocumentLibraryPage(drone);
+                return FactorySharePage.resolvePage(drone);
             }
             else
             {
@@ -382,7 +407,7 @@ public class DocumentLibraryNavigation extends SharePage
         {
             String exceptionMessage = "Not able to find select All option";
             logger.error(exceptionMessage + e.getMessage());
-            throw new PageException(exceptionMessage);
+            throw new PageException(exceptionMessage, e);
         }
     }
 
@@ -401,7 +426,7 @@ public class DocumentLibraryNavigation extends SharePage
                 WebElement element = drone.findAndWait(SYNC_TO_CLOUD);
                 String id = element.getAttribute("id");
                 element.click();
-                drone.waitUntilElementDisappears(By.id(id), maxPageLoadingTime);
+                drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 if(isSignUpDialogVisible())
                 {
                     return new CloudSignInPage(getDrone());
@@ -420,7 +445,7 @@ public class DocumentLibraryNavigation extends SharePage
         {
             String exceptionMessage = "Not able to find the \"Sync to Cloud\" Link";
             logger.error(exceptionMessage + e.getMessage());
-            throw new PageOperationException(exceptionMessage);
+            throw new PageOperationException(exceptionMessage, e);
         }
     }
 
@@ -505,7 +530,7 @@ public class DocumentLibraryNavigation extends SharePage
                 WebElement element = drone.findAndWait(REQUEST_SYNC);
                 String id = element.getAttribute("id");
                 element.click();
-                drone.waitUntilElementDeletedFromDom(By.id(id), maxPageLoadingTime);
+                drone.waitUntilElementDeletedFromDom(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 return new DocumentLibraryPage(drone);
             }
             else
@@ -517,7 +542,555 @@ public class DocumentLibraryNavigation extends SharePage
         {
             String exceptionMessage = "Not able to find the \"Request Sync\" Link";
             logger.error(exceptionMessage + e.getMessage());
-            throw new PageOperationException(exceptionMessage);
+            throw new PageOperationException(exceptionMessage, e);
         }
+    }
+    
+    /**
+     * Click on delete item of selected items drop down.
+     * @return
+     */
+    public ConfirmDeletePage selectDelete()
+    {
+        try
+        {
+            clickSelectedItems();
+            if(isSelectedItemMenuVisible())
+            {
+                WebElement element = drone.findAndWait(DELETE);
+                String id = element.getAttribute("id");
+                element.click();
+                drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                return new ConfirmDeletePage(drone);
+            }
+            else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find the \"Delete\" Link";
+            logger.error(exceptionMessage + e.getMessage());
+            throw new PageOperationException(exceptionMessage, e);
+        }
+    }
+    
+    
+    /**
+     * Click on copy to item of selected items drop down.
+     * @return
+     */
+    public CopyOrMoveContentPage selectCopyTo()
+    {
+        try
+        {
+            clickSelectedItems();
+            if(isSelectedItemMenuVisible())
+            {
+                WebElement element = drone.findAndWait(COPY_TO);
+                String id = element.getAttribute("id");
+                element.click();
+                drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                return new CopyOrMoveContentPage(drone);
+            }
+            else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find the \"Copy To\" Link";
+            logger.error(exceptionMessage + e.getMessage());
+            throw new PageOperationException(exceptionMessage, e);
+        }
+    }
+    
+    /**
+     * Click on Move to item of selected items drop down.
+     * 
+     * @return
+     */
+    public CopyOrMoveContentPage selectMoveTo()
+    {
+        try
+        {
+            clickSelectedItems();
+            if (isSelectedItemMenuVisible())
+            {
+                WebElement element = drone.findAndWait(MOVE_TO);
+                String id = element.getAttribute("id");
+                element.click();
+                drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                return new CopyOrMoveContentPage(drone);
+            } else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        } catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find the \"Move To\" Link";
+            logger.error(exceptionMessage + e.getMessage());
+            throw new PageOperationException(exceptionMessage, e);
+        }
+    }
+
+    /**
+     * Click on DeselectAll item of selected items drop down.
+     * 
+     * @return
+     */
+    public HtmlPage selectDesellectAll()
+    {
+        try
+        {
+            clickSelectedItems();
+            if (isSelectedItemMenuVisible())
+            {
+                WebElement element = drone.findAndWait(DESELECT_ALL);
+                String id = element.getAttribute("id");
+                element.click();
+                drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                return FactorySharePage.resolvePage(drone);
+            } else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        } catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find the \"Deselect All\" Link";
+            logger.error(exceptionMessage + e.getMessage());
+            throw new PageOperationException(exceptionMessage, e);
+        }
+    }
+
+    /**
+     * Click on Start Work Flow item of selected items drop down.
+     * @return StartWorkFlowPage
+     */
+    public StartWorkFlowPage selectStartWorkFlow()
+    {
+        try
+        {
+            clickSelectedItems();
+            if(isSelectedItemMenuVisible())
+            {
+                WebElement element = drone.findAndWait(START_WORKFLOW);
+                String id = element.getAttribute("id");
+                element.click();
+                drone.waitUntilElementDeletedFromDom(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                return new StartWorkFlowPage(drone);
+            }
+            else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find the \"StartWorkFlow\" Link";
+            logger.error(exceptionMessage + e.getMessage());
+            throw new PageOperationException(exceptionMessage, e);
+        }
+    }
+  
+
+    /**
+     * Select the option drop down, introduced in
+     * Alfresco enterprise 4.2 and clicks on the button in 
+     * the dropdown.
+     * @param By selector location of button in dropdown to select
+     */
+    private void selectItemInOptionsDropDown(By button)
+    {
+        RenderTime timer = new RenderTime(WAIT_TIME_3000);
+        while(true)
+        {
+            timer.start();
+            try
+            {
+                WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
+                HtmlElement dropdownButton = new HtmlElement(btn, drone);
+                dropdownButton.click();
+                
+                WebElement dropdown = drone.findAndWait(By.cssSelector("div[id$='default-options-menu']"));
+                if(dropdown.isDisplayed())
+                {
+                    new HtmlElement(drone.find(button), drone).click();
+                    break;
+                }            
+            }
+            catch (StaleElementReferenceException stale) { }
+            finally { timer.end(); }
+        }
+    }
+    
+    /**
+     * Selects the Detailed View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectDetailedView()
+    {
+        try
+        {
+            switch (alfrescoVersion) 
+            {
+                case Enterprise41:
+                    drone.findAndWait(By.cssSelector("button[title='Detailed View']")).click();
+                    break;
+                    
+                case Cloud:
+                    drone.findAndWait(By.cssSelector("button[id$='default-detailedView-button']")).click();
+                    break;
+                    
+                default:
+                    selectItemInOptionsDropDown(By.cssSelector("span.view.detailed"));
+                    break;
+            }
+            return drone.getCurrentPage();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+            throw new PageException("Exceeded the time to find css.", e);
+        }
+    }
+
+    /**
+     * Selects the Detailed View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectFilmView()
+    {
+        try
+        {
+            switch (alfrescoVersion)
+            {
+            case Enterprise42:
+            case MyAlfresco:
+                selectItemInOptionsDropDown(By.cssSelector("span.view.filmstrip"));
+                break;
+
+            case Cloud:
+                drone.findAndWait(By.cssSelector("button[id$='default-detailedView-button']")).click();
+                break;
+
+            default:
+                drone.findAndWait(By.cssSelector("button[title='Detailed View']")).click();
+                break;
+            }
+            return drone.getCurrentPage();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+            throw new PageException("Exceeded the time to find css.",e);
+        }
+    }
+    
+    /**
+     * Selects the Detailed View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectSimpleView()
+    {
+        try
+        {
+            switch (alfrescoVersion) 
+            {
+                case Enterprise41:
+                    drone.findAndWait(By.cssSelector("button[title='Simple View']")).click();
+                    break;
+                case Cloud:
+                    drone.findAndWait(By.cssSelector("button[id$='default-simpleView-button']")).click();
+                    break;
+                default:
+                    selectItemInOptionsDropDown(By.cssSelector("span.view.simple"));
+                    break;
+            }
+            return drone.getCurrentPage();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+            throw new PageException("Exceeded the time to find css.", e);
+        }
+    }
+    
+    /**
+     * Mimics the action of selecting the Hide Folders in Option Menu.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectHideFolders()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(By.cssSelector(".hideFolders"));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded the time to find css." + te.getMessage());
+        }
+        closeOptionMenu();
+        throw new PageOperationException("Not able to find the Hide Folder Option");
+    }
+    
+    /**
+     * Mimics the action of selecting the Show Folders in Option Menu.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectShowFolders()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(By.cssSelector(".showFolders"));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded the time to find css." + te.getMessage());
+        }
+        closeOptionMenu();
+        throw new PageOperationException("Not able to find the Show Folder Option");
+    }
+    
+    /**
+     * Closes the Option Menu if it is opened.
+     */
+    private void closeOptionMenu()
+    {
+        if(drone.find(By.cssSelector("div[id$='_default-options-menu']")).isDisplayed())
+        {
+            WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
+            HtmlElement dropdownButton = new HtmlElement(btn, drone);
+            dropdownButton.click();
+        }
+    }
+    
+    /**
+     * Mimics the action of selecting the Hide Breadcrump in Option Menu.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectHideBreadcrump()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(By.cssSelector(".hidePath"));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded the time to find css." + te.getMessage());
+        }
+        closeOptionMenu();
+        throw new PageOperationException("Not able to find the Hide Breadcrump Option");
+    }
+    
+    /**
+     * Mimics the action of selecting the Show Folders in Option Menu.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectShowBreadcrump()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(By.cssSelector(".showPath"));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded the time to find css." + te.getMessage());
+        }
+        closeOptionMenu();
+        throw new PageOperationException("Not able to find the Show Breadcrump Option");
+    }
+    
+    /**
+     * Method to check the visibility of navigation bar. 
+     * 
+     * @return true if navigation bar visible else false.
+     */
+    public boolean isNavigationBarVisible()
+    {
+        try
+        {
+            return drone.find(By.cssSelector("div[id$='_default-navBar']")).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }
+    }
+    
+    /**
+     * Mimcis the action of click the folder up button in Navigation bar.
+     * 
+     * @return {@link HtmlPage}
+     */
+    public HtmlPage clickFolderUp()
+    {
+        if(isNavigationBarVisible())
+        {
+            WebElement folderUpElement = drone.find(By.cssSelector("button[id$='folderUp-button-button’]"));
+          if(folderUpElement.isEnabled())
+          {
+              folderUpElement.click();
+              return FactorySharePage.resolvePage(drone);
+          }
+          else
+          {
+              throw new PageOperationException("You may be in the root folder, please check path and use folder up whenever required.");
+          }
+        }
+        else
+        {
+           throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
+        }
+    }
+    
+    /**
+     * Returns the {@link List} for Folders as {@link ShareLink}.
+     * 
+     * @return {@link List} of {@link ShareLink} Folders.
+     */
+    public List<ShareLink> getFoldersInNavBar()
+    {
+        if(isNavigationBarVisible())
+        {
+            List<ShareLink> folderLinks = new ArrayList<ShareLink>();
+            try
+            {
+                List<WebElement> folders = drone.findAll(By.cssSelector("a.folder"));
+                folders.add(drone.find(By.cssSelector(".label>a")));
+                for (WebElement folder : folders)
+                {
+                    folderLinks.add(new ShareLink(folder, drone));
+                }
+            }
+            catch (NoSuchElementException e){}
+            return folderLinks;
+        }
+        else
+        {
+           throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
+        } 
+    }
+    
+    /**
+     * Mimics the action selecting the folder in the navigation bar.
+     * 
+     *  @param folderName - Folder Name to be selected in navigation bar.
+     * 
+     * @return {@link HtmlPage}
+     */
+    public HtmlPage selectFolderInNavBar(String folderName)
+    {
+        if(isNavigationBarVisible())
+        {
+            List<ShareLink> folderLinks = getFoldersInNavBar();
+            for (ShareLink shareLink : folderLinks)
+            {
+                if(shareLink.getDescription().trim().equals(folderName))
+                {
+                    return shareLink.click();
+                }
+            }
+            throw new PageOperationException("Not able to find the folder named: " + folderName);
+        }
+        else
+        {
+           throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
+        }
+    }
+    
+    /**
+     * Selects the Gallery View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectGalleryView()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(By.cssSelector("span.view.gallery"));
+            return drone.getCurrentPage();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+            throw new PageException("Exceeded the time to find css.", e);
+        }
+    }
+    
+    /**
+     * This method is used to find the view type. 
+     * 
+     * @param By selector location of button in dropdown to select
+     */
+    public ViewType getViewType()
+    {
+        try
+        {
+            ViewType type = null;
+            
+            if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+            {
+                try 
+                {
+                    if(drone.findAndWait(By.cssSelector("span[id$='default-simpleView']")).getAttribute("class").contains("checked"))
+                    {
+                        type = ViewType.SIMPLE_VIEW;
+                    }
+                    else
+                    {
+                        if(drone.findAndWait(By.cssSelector("span[id$='default-detailedView']")).getAttribute("class").contains("checked"))
+                        {
+                            type = ViewType.DETAILED_VIEW;
+                        }
+                    }
+                } 
+                catch (TimeoutException e) 
+                {
+                    logger.error("Not able to find the view type " + e.getMessage());
+                    throw new PageOperationException("Not able find the view type on this page.", e);
+                }
+            }
+            else
+            {
+                String text = (String) drone.executeJavaScript("return document.getElementsByClassName('setDefaultView')[0].innerHTML");
+                type = ViewType.getViewType(text);
+            }
+            return type;
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Exceeded the time to find the view css." + te.getMessage());
+        }
+        throw new PageOperationException("Unable to find Document Library view.");
     }
 }

@@ -39,7 +39,7 @@ public class UserProfilePageTest extends AbstractTest
     private UserSearchPage page;
     UserSearchPage results;
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups = "Enterprise-only")
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -58,7 +58,7 @@ public class UserProfilePageTest extends AbstractTest
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void deleteNullUserMethod() throws Exception
     {
-        page = dashBoard.getNav().getUsersPage();
+        page = dashBoard.getNav().getUsersPage().render();
         results = page.searchFor(userinfo).render();
         Assert.assertTrue(results.hasResults());
         results.clickOnUser(null);
@@ -68,7 +68,7 @@ public class UserProfilePageTest extends AbstractTest
     @Test(dependsOnMethods = "deleteNullUserMethod")
     public void deleteUser() throws Exception
     {
-        page = dashBoard.getNav().getUsersPage();
+        page = dashBoard.getNav().getUsersPage().render();
         Assert.assertTrue(page.isLogoPresent());
         Assert.assertTrue(page.isTitlePresent());
         results = page.searchFor(userinfo).render();

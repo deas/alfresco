@@ -36,7 +36,8 @@ public class WorkFlowFormDetails
 
     private String siteName;
     private List<String> reviewers;
-    private String approvalPercentage;
+    private String assignee;
+    private int approvalPercentage;
     private String message;
     private String dueDate;
     private TaskType taskType = TaskType.SIMPLE_CLOUD_TASK;
@@ -72,8 +73,8 @@ public class WorkFlowFormDetails
      */
     public void setDueDate(String dueDate)
     {
-        String DATE_PATTERN = "(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)";
-        Pattern pattern = Pattern.compile(DATE_PATTERN);
+        String datePattern = "(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)";
+        Pattern pattern = Pattern.compile(datePattern);
         Matcher matcher = pattern.matcher(dueDate);
         if (StringUtils.isNotEmpty(dueDate))
         {
@@ -177,12 +178,22 @@ public class WorkFlowFormDetails
         this.reviewers = reviewers;
     }
 
-    public String getApprovalPercentage()
+    public String getAssignee()
+    {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee)
+    {
+        this.assignee = assignee;
+    }
+
+    public int getApprovalPercentage()
     {
         return approvalPercentage;
     }
 
-    public void setApprovalPercentage(String approvalPercentage)
+    public void setApprovalPercentage(int approvalPercentage)
     {
         this.approvalPercentage = approvalPercentage;
     }

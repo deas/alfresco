@@ -64,9 +64,8 @@ public class MyWorkFlowsPageTest extends AbstractTest
      *
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups = "Enterprise4.2")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         uname = "workflow" + System.currentTimeMillis();
         createEnterpriseUser(uname);
@@ -82,7 +81,6 @@ public class MyWorkFlowsPageTest extends AbstractTest
     {
         SharePage sharePage = drone.getCurrentPage().render();
         myWorkFlowsPage = sharePage.getNav().selectWorkFlowsIHaveStarted().render();
-        myWorkFlowsPage.render();
         if(myWorkFlowsPage.isWorkFlowPresent(workFlow1))
         {
             myWorkFlowsPage.cancelWorkFlow(workFlow1);
@@ -154,7 +152,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertEquals(workFlowDetailsList.get(0).getStartDate().toLocalDate(), new DateTime().toLocalDate());
         Assert.assertNull(workFlowDetailsList.get(0).getEndDate());
         Assert.assertEquals(workFlowDetailsList.get(0).getType(), WorkFlowType.NEW_WORKFLOW);
-        Assert.assertEquals(workFlowDetailsList.get(0).getDescription(), "Assign a new task to yourself or a colleague");
+        Assert.assertEquals(workFlowDetailsList.get(0).getDescription(), WorkFlowDescription.ASSIGN_NEW_TASK_TO_YOUR_SELF_OR_COLLEAGUE);
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "getWorkFlowDetails", expectedExceptions = IllegalArgumentException.class)
@@ -178,6 +176,13 @@ public class MyWorkFlowsPageTest extends AbstractTest
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectWorkFlowWithValidData")
+    public void getWorkFlowDetailsHeader()
+    {
+        String workFlowDetailsHeader = "Details: " + workFlow1 + " (Task)";
+        Assert.assertEquals(workFlowDetailsPage.getPageHeader(), workFlowDetailsHeader);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "getWorkFlowDetailsHeader")
     public void verifyTaskDetails()
     {
         myTasksPage = workFlowDetailsPage.getNav().selectMyTasks().render();
@@ -189,7 +194,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
         Assert.assertNull(taskDetails.getEndDate());
         Assert.assertEquals(taskDetails.getStatus(), "Not Yet Started");
-        Assert.assertEquals(taskDetails.getType(), "Task");
+        Assert.assertEquals(taskDetails.getType(), TaskDetailsType.TASK);
         Assert.assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
         Assert.assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
     }
@@ -197,9 +202,9 @@ public class MyWorkFlowsPageTest extends AbstractTest
     @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskDetails")
     public void selectEditTask()
     {
-        myWorkFlowsPage = myTasksPage.getNav().selectWorkFlowsIHaveStarted().render();
+        myWorkFlowsPage = myWorkFlowsPage.getNav().selectWorkFlowsIHaveStarted().render();
         workFlowDetailsPage = myWorkFlowsPage.selectWorkFlow(workFlow1).render();
-        editTaskPage = workFlowDetailsPage.selectEditTask().render();
+        editTaskPage = workFlowDetailsPage.getCurrentTasksList().get(0).getEditTaskLink().click().render();
         Assert.assertTrue(editTaskPage.isBrowserTitle("Edit Task"));
     }
 
@@ -212,7 +217,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertTrue(workFlowDetailsPage.isTitlePresent());
         Assert.assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is in Progress");
 
-        editTaskPage = workFlowDetailsPage.selectEditTask().render();
+        editTaskPage = workFlowDetailsPage.getCurrentTasksList().get(0).getEditTaskLink().click().render();
         editTaskPage.selectStatusDropDown(TaskStatus.COMPLETED);
         editTaskPage.enterComment(workFlowComment);
         workFlowDetailsPage = editTaskPage.selectTaskDoneButton().render();
@@ -237,7 +242,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertEquals(workFlowDetailsList.get(0).getStartDate().toLocalDate(), new DateTime().toLocalDate());
         Assert.assertEquals(workFlowDetailsList.get(0).getEndDate().toLocalDate(), new DateTime().toLocalDate());
         Assert.assertEquals(workFlowDetailsList.get(0).getType(), WorkFlowType.NEW_WORKFLOW);
-        Assert.assertEquals(workFlowDetailsList.get(0).getDescription(), "Assign a new task to yourself or a colleague");
+        Assert.assertEquals(workFlowDetailsList.get(0).getDescription(), WorkFlowDescription.ASSIGN_NEW_TASK_TO_YOUR_SELF_OR_COLLEAGUE);
     }
     @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyCompletedWorkFlowDetails")
     public void selectCancelWorkFlow() throws Exception
@@ -250,11 +255,12 @@ public class MyWorkFlowsPageTest extends AbstractTest
         WorkFlowFormDetails formDetails = getFormDetails(workFlow2);
         myWorkFlowsPage = workFlow.startWorkflow(formDetails).render();
 
-        myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows();
-        myWorkFlowsPage.render();
+        myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
         Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow2));
 
         workFlowDetailsPage = myWorkFlowsPage.selectWorkFlow(workFlow2).render();
+        
+        Assert.assertTrue(workFlowDetailsPage.isCancelTaskOrWorkFlowButtonDisplayed());
         myTasksPage = workFlowDetailsPage.selectCancelWorkFlow().render();
         myWorkFlowsPage = myTasksPage.getNav().selectWorkFlowsIHaveStarted().render();
         Assert.assertFalse(myWorkFlowsPage.isWorkFlowPresent(workFlow2));

@@ -24,7 +24,7 @@ public enum SortType
     MIMETYPE("Mimetype"), 
     TYPE("Type");
 
-    String sortName;
+    private String sortName;
 
     private SortType(String type)
     {

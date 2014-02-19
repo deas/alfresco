@@ -23,13 +23,13 @@ import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
 import org.alfresco.po.share.search.RepositoryResultsPage;
 import org.alfresco.po.share.search.SiteResultsPage;
+import org.alfresco.po.share.site.AddGroupsPage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
-import org.alfresco.po.share.site.ManageRulesPage;
-import org.alfresco.po.share.site.RulesPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -42,12 +42,14 @@ import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.user.CloudSyncPage;
+import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.WebDroneProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -66,7 +68,7 @@ public class FactorySharePageTest
     private static Log logger = LogFactory.getLog(FactorySharePageTest.class);
     
     private final String baseUrl = "http://localhost:8081/share";
-    private final String dashboard = baseUrl + "/-system-/page/user/admin/dashboard";
+    private final String dashboard = baseUrl + "%s/-system-/page/user/admin/dashboard";
     private final String documentLibrary = baseUrl + "/page/site/test/documentlibrary#filter=path%7C%2Ftest%7C&page=1";
     private final String documentLibrary2 = baseUrl + "%s/page/site/test/documentlibrary";
     private final String siteDashboard = baseUrl + "%/page/site/createcontentpagetest1376912493094/dashboard";
@@ -88,7 +90,6 @@ public class FactorySharePageTest
     private final String repository = baseUrl + "%s/page/repository";
     private final String editTasks = baseUrl + "%s/page/task-edit?taskId=activiti$1187&referrer=tasks&myTasksLinkBack=true";
     private final String inlineEdit = baseUrl + "%s/page/inline-edit?nodeRef=workspace://SpacesStore/18f0656e-c2b2-4f24-b197-3123f3e8f53e";
-    private final String manageRules = baseUrl + "%s/page/site/michael/folder-rules?nodeRef=workspace://SpacesStore/d3ebeb36-ce40-437e-b49d-a3d3ac2fa6a8";
     private final String documentDetailsPage = baseUrl + 
             "%s/page/site/swsdp/document-details?nodeRef=workspace://SpacesStore/99cb2789-f67e-41ff-bea9-505c138a6b23";
     private final String managePermission = baseUrl +
@@ -104,16 +105,22 @@ public class FactorySharePageTest
     private final String foldersDetailsPage = baseUrl + 
             "%s/page/site/site1376665231775/folder-details?nodeRef=workspace://SpacesStore/94d767d5-175a-4a5a-8f59-db855f6159f2";
     private final String startWorkFlowPage = baseUrl + "%s/page/start-workflow?referrer=tasks&myTasksLinkBack=true";
-    private final String newRulePage = baseUrl + "%s/page/site/michael/rule-edit?nodeRef=workspace%3A%2F%2FSpacesStore%2Fd3ebeb36-ce40-437e-b49d-a3d3ac2fa6a8";
     private final String cloudSyncPage = baseUrl + "%s/share/page/user/admin/user-cloud-auth";
     private final String workFlowDetailsPage = baseUrl + "%s/share/page/workflow-details?workflowId=activiti$17657&referrer=workflows&myWorkflowsLinkBack=true";
     private final String myWorkFlowsPage = baseUrl + "%s/share/page/my-workflows#filter=workflows|active";
+    private final String taskDetailsPage = baseUrl + "%s/share/page/my-workflows#filter=workflows|active";
+    private final String editTaskPage = baseUrl + "%s/share/page/my-workflows#filter=workflows|active";
+    private final String languageSettingsPage = baseUrl + "%s/page/user/userenterprise42-151739%40hybrid.test/change-locale";
+    private final String groupsPage= baseUrl+"%s/page/console/admin-console/groups";
+    private final String siteGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/site-groups";
+    private final String addGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/add-groups";
+    private final String repositoryWithFolder= baseUrl+"%s/page/repository#filter=path|/Folderhtc-RepositoryFolderTests3|&page=1";
 
     @Test(groups={"unit"})
     public void resolveUrls()
     {
-        WebDrone drone = new WebDroneImpl(new HtmlUnitDriver(), new ShareProperties(AlfrescoVersion.Enterprise42.toString()));
-        
+    	WebDroneProperties properties = new ShareProperties(AlfrescoVersion.Enterprise41.toString());
+        WebDrone drone = new WebDroneImpl(new HtmlUnitDriver(), properties);
         try
         {
             long start = System.currentTimeMillis();
@@ -155,6 +162,9 @@ public class FactorySharePageTest
 
             page = resolvePage(repository, "repository", drone);
             Assert.assertTrue(page instanceof RepositoryPage);
+            
+            page = resolvePage(repositoryWithFolder, "repository", drone);
+            Assert.assertTrue(page instanceof RepositoryPage);
 
             page = resolvePage(managePermission, "managePermission", drone);
             Assert.assertTrue(page instanceof ManagePermissionsPage);
@@ -188,12 +198,7 @@ public class FactorySharePageTest
 
             page = resolvePage(googleDocs, "editGoogleDocs", drone);
             Assert.assertTrue(page instanceof EditInGoogleDocsPage);
-
-            page = resolvePage(manageRules, "manageRulesPage", drone);
-            Assert.assertTrue(page instanceof ManageRulesPage);
-
-            page = resolvePage(newRulePage, "newRulePage", drone);
-            Assert.assertTrue(page instanceof RulesPage);
+            
 
             //---------------search ----------------
             page = resolvePage(advanceSearch, "advanceSearch", drone);
@@ -231,6 +236,24 @@ public class FactorySharePageTest
             
             page = resolvePage(editTasks, "edit-task", drone);
             Assert.assertTrue(page instanceof EditTaskPage);
+            page = resolvePage(taskDetailsPage, "task-edit", drone);
+            Assert.assertTrue(page instanceof MyWorkFlowsPage);
+
+            page = resolvePage(editTaskPage, "task-details", drone);
+            Assert.assertTrue(page instanceof MyWorkFlowsPage);
+
+            page = resolvePage(languageSettingsPage, "change-locale", drone);
+            Assert.assertTrue(page instanceof LanguageSettingsPage);
+            
+            page = resolvePage(groupsPage, "groups", drone);
+            Assert.assertTrue(page instanceof GroupsPage);
+            
+            page = resolvePage(siteGroupsPage, "site-groups", drone);
+            Assert.assertTrue(page instanceof SiteGroupsPage);
+            
+            page = resolvePage(addGroupsPage, "add-groups", drone);
+            Assert.assertTrue(page instanceof AddGroupsPage);
+            
             long duration = System.currentTimeMillis() - start;
             logger.info("Total duration of test in milliseconds: " + duration);
         }

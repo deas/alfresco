@@ -20,12 +20,11 @@ package org.alfresco.po.share.dashlet;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import junit.framework.Assert;
 
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -44,16 +43,16 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
     private static final String SITE_WELCOME = "welcome-site";
     DashBoardPage dashBoard;
 
-    @BeforeClass
+    @BeforeClass(groups = "alfresco-one")
     public void loadFile() throws Exception
     {
         dashBoard = loginAs(username, password);
-        siteName = "WelcomeDashletTests" + System.currentTimeMillis();
+        siteName = "SiteWelcomeDashletTests" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
     
-    @AfterClass
+    @AfterClass(groups = "alfresco-one")
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -75,7 +74,8 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
     public void selectSiteWelcometDashlet() throws Exception
     {
         SiteWelcomeDashlet dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render();
-        if (alfrescoVersion.equals(AlfrescoVersion.Cloud))
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (version.equals(AlfrescoVersion.Cloud))
         {
             assertEquals(dashlet.getOptions().size(), 3);
         }
@@ -91,13 +91,12 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "selectSiteWelcometDashlet")
+    @Test(dependsOnMethods = "selectSiteWelcometDashlet", expectedExceptions = NoSuchDashletExpection.class)
     public void removeAndFindDashlet() throws Exception 
     {
-        SiteWelcomeDashlet dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render();
-        Assert.assertTrue(siteDashBoard.isWelcomeMessageDashletDisplayed());
-        siteDashBoard = dashlet.removeDashlet().render();
-        Assert.assertFalse(siteDashBoard.isWelcomeMessageDashletDisplayed());
+        SiteWelcomeDashlet dashlet;
+        dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render();
+        dashlet.removeDashlet().render();
+        dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render(100);
     }
-
 }

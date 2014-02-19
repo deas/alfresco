@@ -32,9 +32,8 @@ public enum Language
     ITALIAN("it_IT", "italian.properties"),
     JAPANESE("ja_JA", "japanese.properties");
 
-
-    String value;
-    String propertyFileName;
+    private String value;
+    private String propertyFileName;
 
     private Language(String value, String propertyFileName)
     {
@@ -52,7 +51,6 @@ public enum Language
         return propertyFileName;
     }
 
-
     /**
      * Returns the Language from string value.
      * @param value - string value of enum eg - "en_US"
@@ -63,7 +61,9 @@ public enum Language
         for (Language status : Language.values())
         {
             if (value.equalsIgnoreCase(status.value))
+            {
                 return status;
+            }
         }
         throw new IllegalArgumentException("Invalid Language : " + value);
     }

@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ShareProperties implements WebDroneProperties
 {
-    final static String DEFAULT_ALFRESCO = "share";
+    static final String DEFAULT_ALFRESCO = "share";
     private static Log logger = LogFactory.getLog(ShareProperties.class);
     private Properties properties;
     private String propertyFileName;

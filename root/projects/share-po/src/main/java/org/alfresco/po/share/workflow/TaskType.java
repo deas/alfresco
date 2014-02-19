@@ -18,6 +18,7 @@ package org.alfresco.po.share.workflow;
 * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
 */
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 
 /**
@@ -29,19 +30,48 @@ import org.openqa.selenium.By;
 public enum TaskType
 {
 
-    SIMPLE_CLOUD_TASK(By.cssSelector("option[value='task']")),
-    CLOUD_REVIEW_TASK(By.cssSelector("option[value='review']"));
+    SIMPLE_CLOUD_TASK(By.cssSelector("option[value='task']"), "Simple Cloud Task"),
+    CLOUD_REVIEW_TASK(By.cssSelector("option[value='review']"), "Cloud Review Task");
     
     public By getSelector()
     {
         return selector;
     }
 
-    By selector;
+    private By selector;
+    private String type;
 
-    TaskType(By selector)
+    TaskType(By selector, String type)
     {
         this.selector = selector;
+        this.type = type;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    /**
+     * Returns {@link TaskType} based on given value.
+     *
+     * @param value
+     * @return {@link TaskType}
+     */
+    public static TaskType getTaskType(String value)
+    {
+        if(StringUtils.isEmpty(value))
+        {
+            throw new IllegalArgumentException("Value can't be empty or null.");
+        }
+        for (TaskType type : TaskType.values())
+        {
+            if (value.equals(type.type))
+            {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Invalid Tasktype Value: " + value);
     }
 }
 

@@ -43,7 +43,7 @@ import org.openqa.selenium.WebElement;
  */
 public class SearchResultItem
 {
-    WebDrone drone ;
+    private WebDrone drone ;
     private static final String ITEM_NAME_CSS_HOLDER = "h3.itemname a";
     private static final String DOWNLOAD_LINK = "div>a>img[title='Download']";
     private static final String THUMBNAIL_LINK = "div.thumbnail-cell";
@@ -79,7 +79,7 @@ public class SearchResultItem
             }
             catch (NoSuchElementException e)
             {
-                throw new PageOperationException("Unable to find item title");
+                throw new PageOperationException("Unable to find item title", e);
             }
         }
         return title;
@@ -104,7 +104,6 @@ public class SearchResultItem
     {
         WebElement download;
         RenderTime timer = new RenderTime(10000);
-
         try
         {
             WebElement thumbnail = webElement.findElement(By.cssSelector(THUMBNAIL_LINK));
@@ -124,9 +123,7 @@ public class SearchResultItem
                         break;
                     }
                 }
-                catch (ElementNotVisibleException e)
-                {
-                }
+                catch (ElementNotVisibleException e){}
                 finally
                 {
                     timer.end();
@@ -135,7 +132,7 @@ public class SearchResultItem
         }
         catch(ElementNotVisibleException e)
         {
-            throw new PageException("Download link is not visible on Search Results Item");
+            throw new PageException("Download link is not visible on Search Results Item", e);
         }
     }
     
@@ -170,18 +167,12 @@ public class SearchResultItem
                     if (viewInBrowser.isDisplayed())
                     {
                         mainWindow = drone.getWindowHandle();
-
                         viewInBrowser.click();
-
                         windows = drone.getWindowHandles();
                         windows.remove(mainWindow);
-                        
                         newTab = windows.iterator().next();
-                        
                         drone.switchToWindow(newTab);
-                        
                         url = drone.getCurrentUrl();
-                        
                         drone.closeWindow();
                         drone.switchToWindow(mainWindow);
                         
@@ -198,7 +189,7 @@ public class SearchResultItem
         }
         catch(ElementNotVisibleException e) 
         { 
-            throw new ElementNotVisibleException("View in browser link is not visible in Search Results Item");
+            throw new ElementNotVisibleException("View in browser link is not visible in Search Results Item", e);
         }
         
     }
@@ -231,7 +222,6 @@ public class SearchResultItem
         try
         {
             List<WebElement> details = webElement.findElements(By.cssSelector(CONTENT_DETAILS_CSS));
-
             for (WebElement detail : details)
             {
                 if (detail.getText().contains("In folder"))
@@ -239,20 +229,15 @@ public class SearchResultItem
                     String folderPath = detail.findElement(By.cssSelector(FOLDER_PATH_CSS)).getText();
                     StringTokenizer tokens = new StringTokenizer(folderPath, "/");
                     List<String> tokensList = new LinkedList<String>();
-
                     while (tokens.hasMoreElements())
                     {
                         tokensList.add(tokens.nextElement().toString());
                     }
-
                     return tokensList;
                 }
             }
         }
-        catch (NoSuchElementException ne)
-        {
-        }
-
+        catch (NoSuchElementException ne){ }
         return Collections.emptyList();
     }
 }

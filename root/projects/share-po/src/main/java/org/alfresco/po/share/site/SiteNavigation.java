@@ -52,9 +52,9 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         super(drone);
         siteMembersCSS = drone.getElement("site.members");
-        documentLibLink = alfrescoVersion.isDojoSupported() ? LABEL_DOCUMENTLIBRARY_PLACEHOLDER: String.format(SITE_LINK_NAV_PLACEHOLER,3);
-        customizeDashboardLink =  alfrescoVersion.isDojoSupported() ? By.id("HEADER_CUSTOMIZE_SITE_DASHBOARD_text") : CUSTOMISE_DASHBOARD_BTN;
-        moreButton = alfrescoVersion.isDojoSupported() ? By.cssSelector("span.alf-menu-arrow") : By.cssSelector("button[id$='_default-more-button']");
+        documentLibLink = getAlfrescoVersion().isDojoSupported() ? LABEL_DOCUMENTLIBRARY_PLACEHOLDER: String.format(SITE_LINK_NAV_PLACEHOLER,3);
+        customizeDashboardLink =  getAlfrescoVersion().isDojoSupported() ? By.id("HEADER_CUSTOMIZE_SITE_DASHBOARD_text") : CUSTOMISE_DASHBOARD_BTN;
+        moreButton = getAlfrescoVersion().isDojoSupported() ? By.cssSelector("span.alf-menu-arrow") : By.cssSelector("button[id$='_default-more-button']");
     }
 
     /**
@@ -66,7 +66,7 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public HtmlPage selectSiteProjectLibrary()
     {
-        if(alfrescoVersion.isDojoSupported())
+        if(getAlfrescoVersion().isDojoSupported())
         {
             extractLink(PROJECT_LIBRARY).click();
             return new DocumentLibraryPage(getDrone());
@@ -82,11 +82,13 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public HtmlPage selectSiteDocumentLibrary()
     {
-        if(alfrescoVersion.isDojoSupported())
+        if(getAlfrescoVersion().isDojoSupported())
         {
+            //  extractLink(drone.getLanguageValue("document.library")).click();
             extractLink(DOCUMENT_LIBRARY).click();
             return new DocumentLibraryPage(getDrone());
         }
+        // return drone.getLanguageValue("document.library");
         return select(DOCUMENT_LIBRARY);
     }
     
@@ -98,7 +100,7 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public HtmlPage selectSiteWikiPage()
     {
-        if(alfrescoVersion.isDojoSupported())
+        if(getAlfrescoVersion().isDojoSupported())
         {
             extractLink(WIKI).click();
             return new DocumentLibraryPage(getDrone());
@@ -120,9 +122,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public void selectConfigure()
     {
-        if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+        if(AlfrescoVersion.Enterprise41.equals(getAlfrescoVersion()))
         {
-           throw new UnsupportedOperationException("It is not supported for this version of Alfresco : " + alfrescoVersion); 
+           throw new UnsupportedOperationException("It is not supported for this version of Alfresco : " + getAlfrescoVersion()); 
         }
         findAndWait(CONFIGURE_ICON).click();
     }
@@ -144,7 +146,7 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         try
         {
-            if(Enterprise41.equals(alfrescoVersion))
+            if(Enterprise41.equals(getAlfrescoVersion()))
             {
                 selectMore();
                 List<WebElement> elements = findAllWithWait(MORE_BUTTON_LINK);
@@ -175,11 +177,11 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public CustomiseSiteDashboardPage selectCustomizeDashboard()
     {
-        if(alfrescoVersion.isDojoSupported())
+        if(getAlfrescoVersion().isDojoSupported())
         {
             selectConfigurationDropdown();
         }
-        findElement(customizeDashboardLink).click();
+        find(customizeDashboardLink).click();
         return new CustomiseSiteDashboardPage(getDrone());
         
     }
@@ -187,7 +189,7 @@ public class SiteNavigation extends AbstractSiteNavigation
     private WebElement extractLink(final String title)
     {
         List<WebElement> list;
-        if(AlfrescoVersion.Cloud2 == alfrescoVersion)
+        if(AlfrescoVersion.Cloud2 == getAlfrescoVersion())
         {
             list = findElements(By.cssSelector("span"));
         }
@@ -212,7 +214,7 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public HtmlPage selectEditSite()
     {
-        if(alfrescoVersion.isDojoSupported())
+        if(getAlfrescoVersion().isDojoSupported())
         {
             selectConfigurationDropdown();
             find(By.id("HEADER_EDIT_SITE_DETAILS_text")).click();
@@ -241,7 +243,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         }
         catch (NoSuchElementException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage." + e.getMessage());
+            throw new PageException("Unable to find the InviteMembersPage.", e);
         }
    }
     
@@ -254,18 +256,18 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         try
         {
-            if(Enterprise41 == alfrescoVersion)
+            if(Enterprise41 == getAlfrescoVersion())
             {
                 findElement(By.cssSelector(INVITE_BUTTON)).click();
             }
             else
             {
-                find(By.cssSelector(".alf-user-icon")).click();
+                drone.findAndWait(By.cssSelector(".alf-user-icon")).click();
             }
         } 
         catch (TimeoutException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage."+e.getMessage());
+            throw new PageException("Unable to find the InviteMembersPage.", e);
         }
         return new InviteMembersPage(getDrone());
     }
@@ -282,7 +284,7 @@ public class SiteNavigation extends AbstractSiteNavigation
             // This code needs to be removed when this cloud issue is fixed as
             // part of release-31
             // https://issues.alfresco.com/jira/browse/CLOUD-2092
-            if (!AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+            if (!AlfrescoVersion.Cloud2.equals(getAlfrescoVersion()) && !AlfrescoVersion.MyAlfresco.equals(getAlfrescoVersion()))
             {
                 return isLinkActive(By.cssSelector(documentLibLink));
             }

@@ -51,9 +51,10 @@
     </test>
     <test name="Document">
         <packages>
-            <package name="org.alfresco.po.share.site.document" />
+            <package name="org.alfresco.po.share.site.document" >
             <exclude name="org.alfresco.po.share.site.document.CopyOrMoveContentPageTest"> </exclude>
             <exclude name="org.alfresco.po.share.site.document.ChangeTypePageTest"> </exclude>
+            </package>
         </packages>
     </test>
     <test name="Share">

@@ -18,6 +18,8 @@
  */
 package org.alfresco.po.share.site;
 
+import java.util.Arrays;
+
 /**
  * @author nshah
  * version 1.7.0
@@ -54,8 +56,10 @@ public class DestinationAndAssigneeBean
     public String[] getSyncToPath()
     {
         if(syncToPath== null || syncToPath.length <1 )
+        {
             return new String[]{DEFAULT_FOLDER_NAME};
-        return syncToPath;
+        }
+        return Arrays.copyOf(syncToPath, syncToPath.length);
     }
     public void setSyncToPath(String... syncToPath)
     {

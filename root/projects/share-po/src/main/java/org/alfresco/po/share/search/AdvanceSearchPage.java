@@ -57,8 +57,8 @@ public class AdvanceSearchPage extends SharePage
     protected static final By FOLDER_MENU_LIST = By.cssSelector("span[class$='yuimenuitemlabel']");
     protected static final By CONTENT_SEARCH_FORM_DROPDOWN = By.cssSelector("button[id$='selected-form-button-button']");
 
-    private final RenderElement CONTENT_SEARCH_FORM_DROPDOWN_ELEMENT = getVisibleRenderElement(CONTENT_SEARCH_FORM_DROPDOWN);
-    private final RenderElement SEARCH_BUTTON_ELEMENT = getVisibleRenderElement(SEARCH_BUTTON);
+    private final RenderElement contentSearchFormDropdownElement = getVisibleRenderElement(CONTENT_SEARCH_FORM_DROPDOWN);
+    private final RenderElement searchButtonElement = getVisibleRenderElement(SEARCH_BUTTON);
 
     /**
      * Constructor
@@ -366,7 +366,7 @@ public class AdvanceSearchPage extends SharePage
     {
         try
         {
-            elementRender(timer, CONTENT_SEARCH_FORM_DROPDOWN_ELEMENT, SEARCH_BUTTON_ELEMENT);
+            elementRender(timer, contentSearchFormDropdownElement, searchButtonElement);
         }
         catch (NoSuchElementException e) {}
         catch (TimeoutException e) {}

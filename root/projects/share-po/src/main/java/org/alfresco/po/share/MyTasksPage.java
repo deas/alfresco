@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.alfresco.po.share.task.EditTaskPage;
-import org.alfresco.po.share.task.TaskDetailPage;
 import org.alfresco.po.share.task.TaskDetails;
+import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
+import org.alfresco.po.share.workflow.TaskHistoryPage;
 import org.alfresco.po.share.workflow.ViewWorkflowPage;
 import org.alfresco.webdrone.ElementState;
 import org.alfresco.webdrone.RenderElement;
@@ -52,21 +53,18 @@ public class MyTasksPage extends SharePage
 {
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    private final By ACTIVE_LINK = By.cssSelector("a[rel='active']");
-    private final By COMPLETED_LINK = By.cssSelector("a[rel='completed']");
-    private final By TASKS_ROWS = By.cssSelector("div[id$='_default-tasks'] tbody.yui-dt-data tr");
-    private final By TASK_VIEW_LINK = By.cssSelector("div.task-view-link");
-    private final By WORKFLOW_VIEW_LINK = By.cssSelector("div.workflow-view-link>a");
-    final By AVAILABLE_MY_TASKS_TABLE = By.cssSelector("div[id$='default-tasks']>table>tbody.yui-dt-data>tr");
-    final By HEADER_TASKS_TABLE = By.cssSelector("td>div>h3");
-    final By taskLink = By.cssSelector("a");
-    final By INITIATOR = By.cssSelector("div.initiator span");
-    private final By SUB_TITLE = By.cssSelector("h2[id$='_default-filterTitle']");
+    private static final By ACTIVE_LINK = By.cssSelector("a[rel='active']");
+    private static final By COMPLETED_LINK = By.cssSelector("a[rel='completed']");
+    private static final By TASKS_ROWS = By.cssSelector("div[id$='_default-tasks'] tbody.yui-dt-data tr");
+    private static final By TASK_VIEW_LINK = By.cssSelector("div.task-view-link>a>span");
+    private static final By WORKFLOW_VIEW_LINK = By.cssSelector("div.workflow-view-link>a");
+    private static final By taskLink = By.cssSelector("a");
+    private static final By SUB_TITLE = By.cssSelector("h2[id$='_default-filterTitle']");
     private static final By START_WORKFLOW_BUTTON = By.cssSelector("button[id$='-startWorkflow-button-button']");
 
-    RenderElement LOADING_ELEMENT = new RenderElement(By.cssSelector(".yui-dt-loading"), ElementState.INVISIBLE);
-    RenderElement START_WORKFLOW_BUTTON_RENDER = RenderElement.getVisibleRenderElement(START_WORKFLOW_BUTTON);
-    RenderElement CONTENT = new RenderElement(By.cssSelector("div[id$='_my-tasks']"), ElementState.PRESENT);
+    private static final RenderElement LOADING_ELEMENT = new RenderElement(By.cssSelector(".yui-dt-loading"), ElementState.INVISIBLE);
+    private static final RenderElement START_WORKFLOW_BUTTON_RENDER = RenderElement.getVisibleRenderElement(START_WORKFLOW_BUTTON);
+    private static final RenderElement CONTENT = new RenderElement(By.cssSelector("div[id$='_my-tasks']"), ElementState.PRESENT);
 
     /**
      * Constructor.
@@ -153,7 +151,7 @@ public class MyTasksPage extends SharePage
             {
                 clickEdit(element);
             }
-            throw new PageOperationException("Unable to select edit task as its not clickable");
+            throw new PageOperationException("Unable to select edit task as its not clickable", e);
         }
     }
     /**
@@ -187,7 +185,7 @@ public class MyTasksPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            throw new NoSuchElementException("Page Subtitle is not displayed");
+            throw new NoSuchElementException("Page Subtitle is not displayed", te);
         }
     }
     /**
@@ -198,7 +196,7 @@ public class MyTasksPage extends SharePage
     public MyTasksPage selectActiveTasks()
     {
         drone.findAndWait(ACTIVE_LINK).click();
-        drone.waitUntilVisible(SUB_TITLE, "Active Tasks", TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+        drone.waitUntilVisible(SUB_TITLE, drone.getValue("active.tasks.label"), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
         return new MyTasksPage(drone);
     }
 
@@ -210,7 +208,7 @@ public class MyTasksPage extends SharePage
     public MyTasksPage selectCompletedTasks()
     {
         drone.findAndWait(COMPLETED_LINK).click();
-        drone.waitUntilVisible(SUB_TITLE, "Completed Tasks", TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+        drone.waitUntilVisible(SUB_TITLE, drone.getValue("completed.tasks.label"), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
         return new MyTasksPage(drone);
 
     }
@@ -220,10 +218,10 @@ public class MyTasksPage extends SharePage
      * 
      * @return {@link MyTasksPage}
      */
-    public TaskDetailPage selectViewTasks(String taskName)
+    public TaskDetailsPage selectViewTasks(String taskName)
     {
         performActionOnTask(taskName, TASK_VIEW_LINK);
-        return new TaskDetailPage(drone);
+        return new TaskDetailsPage(drone);
 
     }
 
@@ -273,8 +271,10 @@ public class MyTasksPage extends SharePage
         {
             for (WebElement taskRow : taskRows)
             {
-                if (taskName.equals(taskRow.findElement(By.cssSelector("h3 a")).getText()))
+                if (StringUtils.deleteWhitespace(taskName).equals(StringUtils.deleteWhitespace(taskRow.findElement(By.cssSelector("h3 a")).getText())))
+                {
                     return taskRow;
+                }
             }
         }
         return null;
@@ -302,6 +302,7 @@ public class MyTasksPage extends SharePage
             {
                 taskDetails.setTaskName(taskRow.findElement(By.cssSelector("div.yui-dt-liner>h3>a")).getText());
                 taskDetails.setDue(taskRow.findElement(By.cssSelector("div.due>span")).getText());
+                taskDetails.setDueDateString(taskRow.findElement(By.cssSelector("div.due>span")).getText());
                 taskDetails.setStartDate(taskRow.findElement(By.cssSelector("div[class^='started']>span")).getText());
                 taskDetails.setStatus(taskRow.findElement(By.cssSelector("div.status>span")).getText());
                 taskDetails.setType(taskRow.findElement(By.cssSelector("div.type>span")).getText());
@@ -334,5 +335,15 @@ public class MyTasksPage extends SharePage
     {
         return findTaskRow(taskName) != null;
     }
-    
+
+    /**
+     * Clicks on TaskHistory link on mytasks page.
+     * 
+     * @return {@link TaskHistoryPage}
+     */
+    public TaskHistoryPage selectTaskHistory(String taskName)
+    {
+        performActionOnTask(taskName, WORKFLOW_VIEW_LINK);
+        return new TaskHistoryPage(drone);
+    }
 }

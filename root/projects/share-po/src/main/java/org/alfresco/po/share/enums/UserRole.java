@@ -1,6 +1,24 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.po.share.enums;
 
-import org.openqa.selenium.By;
+import java.util.NoSuchElementException;
 
 /**
  * This enums used to describe the user roles.
@@ -9,32 +27,21 @@ import org.openqa.selenium.By;
  * @since v1.0
  */
 public enum UserRole
-{
-    MANAGER         ("Manager"          , null), 
-    EDITOR          ("Editor"           , By.cssSelector("div.bd li:nth-of-type(1)")), 
-    CONSUMER        ("Consumer"         , By.cssSelector("div.bd li:nth-of-type(2)")), 
-    COLLABORATOR    ("Collaborator"     , By.cssSelector("div.bd li:nth-of-type(3)")), 
-    COORDINATOR     ("Coordinator"      , By.cssSelector("div.bd li:nth-of-type(4)")), 
-    CONTRIBUTOR     ("Contributor"      , By.cssSelector("div.bd li:nth-of-type(5)")),
-    SITECONSUMER    ("Site Consumer"    , By.cssSelector("div.bd li:nth-of-type(6)")), 
-    SITECONTRIBUTOR ("Site Contributor" , By.cssSelector("div.bd li:nth-of-type(7)")),
-    SITEMANAGER     ("Site Manager"     , By.cssSelector("div.bd li:nth-of-type(8)")), 
-    SITECOLLABORATOR("Site Collaborator", By.cssSelector("div.bd li:nth-of-type(9)")); 
+{    
+    ALL             ("All"),
+    MANAGER         ("Manager"), 
+    EDITOR          ("Editor"), 
+    CONSUMER        ("Consumer"), 
+    COLLABORATOR    ("Collaborator"), 
+    COORDINATOR     ("Coordinator"), 
+    CONTRIBUTOR     ("Contributor"),
+    SITECONSUMER    ("Site Consumer"), 
+    SITECONTRIBUTOR ("Site Contributor"),
+    SITEMANAGER     ("Site Manager"), 
+    SITECOLLABORATOR("Site Collaborator");
     
 
     private String roleName;
-    By accessType;
-
-    public By getAccessType()
-    {
-        return accessType;
-    }
-
-    private UserRole(String role, By accessType)
-    {
-        this.accessType = accessType;
-        roleName = role;
-    }
  
     private UserRole(String role)
     {
@@ -44,4 +51,18 @@ public enum UserRole
     public String getRoleName() {
         return roleName;
     }
+
+    public static UserRole getUserRoleforName(String name)
+    {
+        for (UserRole role : UserRole.values())
+        {
+            if (role.getRoleName().equalsIgnoreCase(name))
+            {
+                return role;
+            }
+        }
+
+        throw new NoSuchElementException("No Role for value - " + name);
+    }
+
 }

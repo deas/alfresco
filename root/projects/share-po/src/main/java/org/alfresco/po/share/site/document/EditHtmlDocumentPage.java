@@ -32,6 +32,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * @author nshah
@@ -77,7 +79,7 @@ public class EditHtmlDocumentPage extends InlineEditPage
         try
         {
             drone.switchToFrame(IFRAME_ID);      
-            boolean isDesiredPage = drone.isElementDisplayed(By.cssSelector("#tinymce")) ? true: false;
+            boolean isDesiredPage = drone.find(By.cssSelector("#tinymce")).isDisplayed() ? true: false;
             drone.switchToDefaultContent();
             return isDesiredPage;
             
@@ -130,7 +132,7 @@ public class EditHtmlDocumentPage extends InlineEditPage
     {
       try{
             drone.findAndWait(SUBMIT_BUTTON).click(); 
-            drone.waitUntilElementDisappears(SUBMIT_BUTTON, maxPageLoadingTime);
+            drone.waitUntilElementDisappears(SUBMIT_BUTTON,  SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
         }
         catch(TimeoutException toe)

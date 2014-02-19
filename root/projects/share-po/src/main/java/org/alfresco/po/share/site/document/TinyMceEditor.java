@@ -56,6 +56,7 @@ public class TinyMceEditor extends HtmlElement
     private static final String CSS_STR_TEXT_TAG = "#tinymce>p";
     private static final String CSS_STR_FORE_COLOUR = "#template_x002e_comments_x002e_folder-details_x0023_default-add-content_forecolor_open";
     private static final String CSS_BLUE_COLOUR_CODE = "a[title=Blue]";
+    private static final String CSS_BLACK_COLOUR_CODE = "div.mce_forecolor td>a[title='Black']";
     private static final String CSS_COLOR_FONT = "#tinymce>p>font";
     private static final String CSS_UNDO = ".mceIcon.mce_undo";
     private static final String CSS_REDO = ".mceIcon.mce_redo";    
@@ -78,6 +79,7 @@ public class TinyMceEditor extends HtmlElement
         NUMBER_FMT_TXT,
         COLOR,
         COLOR_CODE,
+        BLACK_COLOR_CODE,
         UNDO,
         REDO, 
         DEFAULT,
@@ -117,6 +119,8 @@ public class TinyMceEditor extends HtmlElement
                 return CSS_STR_FORE_COLOUR;
             case COLOR_CODE:
                 return CSS_BLUE_COLOUR_CODE;
+            case BLACK_COLOR_CODE:
+                return CSS_BLACK_COLOUR_CODE;
             case UNDO:
                 return CSS_UNDO;
             case REDO:
@@ -160,7 +164,7 @@ public class TinyMceEditor extends HtmlElement
      */
     public TinyMceEditor(WebDrone drone)
     {
-        super(drone);
+        super(drone);      
     }
 
     /**
@@ -262,7 +266,7 @@ public class TinyMceEditor extends HtmlElement
     /**
      * @param cssString
      */
-    private void selectTextFromEditor()
+    public void selectTextFromEditor()
     {
         //This select all in the edit pane
         /**
@@ -281,7 +285,7 @@ public class TinyMceEditor extends HtmlElement
      * 
      * @param cssString
      */
-    private void clickElementOnRichTextFormatter(String cssString)
+    protected void clickElementOnRichTextFormatter(String cssString)
     {
         try
         {

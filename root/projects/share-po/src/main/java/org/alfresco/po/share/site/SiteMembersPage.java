@@ -117,8 +117,7 @@ public class SiteMembersPage extends SharePage
         {
             throw new UnsupportedOperationException("UserName value is required");
         }
-        if(logger.isTraceEnabled()) logger.trace("Members page: searchUser :" + userName);
-
+        if(logger.isTraceEnabled()){ logger.trace("Members page: searchUser :" + userName);}
         try
         {
             WebElement userRoleSearchTextBox = drone.find(SEARCH_USER_ROLE_TEXT);
@@ -127,7 +126,7 @@ public class SiteMembersPage extends SharePage
 
             WebElement searchButton = drone.find(SEARCH_USER_ROLE_BUTTON);
             searchButton.click();
-            List<WebElement> list = drone.findAndWaitForElements(LIST_OF_USERS);
+            List<WebElement> list = drone.findAndWaitForElements(LIST_OF_USERS, WAIT_TIME_3000);
             List<String> userNamesList = new ArrayList<String>();
             for (WebElement user : list)
             {
@@ -141,11 +140,11 @@ public class SiteMembersPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled()) logger.error("Unable to find the users list css." + e.getMessage());
+            if(logger.isTraceEnabled()){ logger.error("Unable to find the users list css." + e.getMessage());}
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled()) logger.error("Time exceeded to find the users list css." + e.getMessage());
+            if(logger.isTraceEnabled()){ logger.error("Time exceeded to find the users list css." + e.getMessage());}
         }
         return Collections.emptyList();
     }
@@ -194,10 +193,14 @@ public class SiteMembersPage extends SharePage
      */
     public SiteMembersPage assignRole(String userName, UserRole userRole)
     {
-        if (logger.isTraceEnabled()) logger.trace("Members page: Assign role");
+        if (logger.isTraceEnabled()){ logger.trace("Members page: Assign role");}
         if (userName == null || userName.isEmpty()) { throw new UnsupportedOperationException("usreName  is required."); }
         if (userRole == null) { throw new UnsupportedOperationException("userRole is required."); }
 
+        if(!isUserPresent(userName))
+        {
+            throw new UnsupportedOperationException("Unable to find the user");
+        }
         for (WebElement role : getRoles(userName))
         {
             String roleText = role.getText().trim();
@@ -262,9 +265,33 @@ public class SiteMembersPage extends SharePage
         } 
         catch (TimeoutException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage."+e.getMessage());
+            throw new PageException("Unable to find the InviteMembersPage.", e);
         }
         return new InviteMembersPage(getDrone());
 
+    }
+
+    private boolean isUserPresent(String userName)
+    {
+        try
+        {
+            List<WebElement> usersList = drone.findAll(USER_NAME_FROM_LIST);
+
+            for(WebElement user : usersList)
+            {
+                if(user.getText().contains(userName))
+                {
+                    return true;
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find users list");
+            }
+        }
+        return false;
     }
 }

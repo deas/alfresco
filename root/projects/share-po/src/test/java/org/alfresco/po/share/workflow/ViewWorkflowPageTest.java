@@ -25,7 +25,7 @@
  */
 package org.alfresco.po.share.workflow;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,9 +76,9 @@ public class ViewWorkflowPageTest extends AbstractTest
     @Test(groups = "Enterprise4.2")
     public void selectCancelWorkflowButtonTest()
     {
-        MyTasksPage myTasksPage = viewWorkflowPage.selectCancelWorkflowButton();
+        MyTasksPage myTasksPage = viewWorkflowPage.selectCancelWorkflowButton().render();
         myTasksPage.render();
-        assertTrue("MyTaskPage instance must be returned", myTasksPage.isTitlePresent("My Tasks"));
+        assertTrue(myTasksPage.isTitlePresent("My Tasks"), "MyTaskPage instance must be returned");
     }
 
 }

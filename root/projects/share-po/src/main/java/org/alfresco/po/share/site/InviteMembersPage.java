@@ -17,13 +17,17 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site;
+
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -59,13 +63,14 @@ public class InviteMembersPage extends SharePage
     private static final By SEARCH_USER_FROM_LIST = By.cssSelector("td+td>div.yui-dt-liner>h3>span.lighter");
     private static final By SEACH_INVITEE_FROM_LIST = By.cssSelector("td+td>div.yui-dt-liner>h3>span.lighter");
     private static final By SEARCH_USER_RESULTS = By.cssSelector(".itemname>a");
-
+    private final By linkGroup;
     /**
      * Constructor.
      */
     public InviteMembersPage(WebDrone drone)
     {
         super(drone);
+        linkGroup = AlfrescoVersion.Enterprise41.equals(alfrescoVersion) ? By.linkText("Groups") : By.cssSelector("a[id$='-site-groups-link']") ;
     }
 
     @SuppressWarnings("unchecked")
@@ -151,7 +156,10 @@ public class InviteMembersPage extends SharePage
      */
     public List<String> searchUser(String userName)
     {
-        if(logger.isTraceEnabled())logger.trace("Members page: searchUser :" + userName);
+        if(logger.isTraceEnabled())
+        {
+            logger.trace("Members page: searchUser :" + userName);
+        }
 
         if (userName == null || userName.trim().isEmpty())
         {
@@ -245,7 +253,10 @@ public class InviteMembersPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled()) logger.trace("Time exceeded to find the invitees list." + e.getMessage());
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Time exceeded to find the invitees list." + e.getMessage());
+            }
         }
 
         return Collections.emptyList();
@@ -372,5 +383,23 @@ public class InviteMembersPage extends SharePage
         }
         catch (TimeoutException e){ }
         return Collections.emptyList();
+    }
+   
+    
+    /**
+     * Navigate to Site Groups.
+     * @return
+     */
+    public HtmlPage navigateToSiteGroupsPage()
+    {
+        try
+        {
+            drone.find(linkGroup).click();
+            return new SiteGroupsPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageException("Not found Element:" + linkGroup, nse);
+        }
     }
 }

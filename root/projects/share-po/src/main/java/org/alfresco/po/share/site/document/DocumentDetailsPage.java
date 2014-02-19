@@ -75,13 +75,19 @@ public class DocumentDetailsPage extends DetailsPage
     private static final String REQUEST_SYNC_ICON = "a.document-requestsync-link[title='Request Sync']";
     private static final String LOCATION_IN_CLOUD = "p.location";
     private static final String SYNC_STATUS = ".cloud-sync-details-info>p:not(.location)";
-    private static final String FILE_UPDATE_DIALOG_ID = "file.update.dialog.id";
-    private static final String FILE_UPLOAD_ERROR_MESSAGE = "Unable to create file upload page";
-    protected final String previousVersion;
-    protected String documentVersion;
+    private static final String COMMENT_COUNT = "span.comment-count";
+    private String previousVersion;
+    private String expectedVersion;
+    private String documentVersion;
     private boolean isGoogleCreate = false;
-    private final String GOOGLE_DOCS_URL = "googledocsEditor?";
-    
+    private static final String GOOGLE_DOCS_URL = "googledocsEditor?";
+    private static final By WORKFLOW_INFO = By.cssSelector("div.document-workflows>div>div.info");
+    private static final String COPY_THIS_LINK_TO_SHARE_THE_CURRENT_PAGE = "div.link-info input";
+
+    public synchronized void setPreviousVersion(final String previousVersion)
+    {
+        this.previousVersion = previousVersion;
+    }
     /**
      * Constructor
      */
@@ -91,14 +97,13 @@ public class DocumentDetailsPage extends DetailsPage
     }
 
     /**
-     * Constructor
+     * Constructor.
      */
     public DocumentDetailsPage(WebDrone drone, final String previousVersion)
     {
         super(drone);
         this.previousVersion = previousVersion;
     }
-
     /**
      * Verifies if the page has rendered completely by checking the page load is
      * complete and in addition it will observe key HTML elements have rendered.
@@ -110,6 +115,7 @@ public class DocumentDetailsPage extends DetailsPage
     @Override
     public synchronized DocumentDetailsPage render(RenderTime timer)
     {
+        String docVersionOnScreen;
         while (true)
         {
             timer.start();
@@ -122,17 +128,24 @@ public class DocumentDetailsPage extends DetailsPage
                 //If popup is not displayed start render check
                 if(!drone.find(By.cssSelector("div.bd")).isDisplayed())
                 {
-            		String docVersionOnScreen = drone.find(By.cssSelector(DOCUMENT_VERSION_PLACEHOLDER)).getText().trim();
-            		// If the text is not what we expect it to be, then repeat
-            		if (this.previousVersion != null && docVersionOnScreen.equals(this.previousVersion))
-            		{
-            			// We are still seeing the old version number
-            			// Go around again
-            			continue;
-            		}
-            		// Populate the doc version
-            		this.documentVersion = docVersionOnScreen;
-            		break;
+                    docVersionOnScreen = drone.find(By.cssSelector(DOCUMENT_VERSION_PLACEHOLDER)).getText().trim();
+                    // If the text is not what we expect it to be, then repeat
+                    if (this.previousVersion != null && docVersionOnScreen.equals(this.previousVersion))
+                    {
+                        // We are still seeing the old version number
+                        // Go around again
+                        continue;
+                    }
+                    //If we see expected version number, stop and serve.
+                    if(expectedVersion != null && !expectedVersion.isEmpty())
+                    {
+                        if(docVersionOnScreen.equals(this.expectedVersion))
+                        {
+                            break;
+                        }
+                    }
+                    // Populate the doc version
+                    break;
                 }
             }
             catch (TimeoutException te)
@@ -152,6 +165,7 @@ public class DocumentDetailsPage extends DetailsPage
                 timer.end();
             }
         }
+        this.documentVersion = docVersionOnScreen;
         return this;
     }
 
@@ -216,6 +230,24 @@ public class DocumentDetailsPage extends DetailsPage
     		return false;
     	}
     }
+    
+    /**
+     * Check for locked by you banner that appears on the top
+     * of the page when document is locked by edit off line and locked by you when viewing original.
+     * @return          returns <tt>false</tt> always
+     */
+    public boolean isLockedByYou()
+    {
+    	try
+    	{
+    		return drone.find(By.cssSelector("span.lock-owner")).isDisplayed();
+    	}
+    	catch (NoSuchElementException e)
+    	{
+    		return false;
+    	}
+    }
+    
 
     @SuppressWarnings("unchecked")
     @Override
@@ -267,14 +299,14 @@ public class DocumentDetailsPage extends DetailsPage
      * 
      * @return HtmlPage page response object
      */
-    public UpdateFilePage selectUploadNewVersion()
+    public HtmlPage selectUploadNewVersion()
     {
-        if (!alfrescoVersion.isFileUploadHtml5())
-        {
-            disbaleFileUploadFlash();
-        }
-        String version = getDocumentVersion();
+    	if(!alfrescoVersion.isFileUploadHtml5())
+    	{
+    		setSingleMode();
+    	}
         WebElement link = drone.findAndWait(By.cssSelector("div.document-upload-new-version>a"));
+        String version = getDocumentVersion();
         link.click();
         
         return getFileUpdatePage(drone, version, isEditOfflineLinkDisplayed());
@@ -288,26 +320,9 @@ public class DocumentDetailsPage extends DetailsPage
      * @param editOffLine mode status
      * @return {@link UpdateFilePage} page object response
      */
-    public UpdateFilePage getFileUpdatePage(WebDrone drone, final String version, final boolean editOffLine)
+    public HtmlPage getFileUpdatePage(WebDrone drone, final String version, final boolean editOffLine)
     {
-        // Verify if it is really file upload page, and then create the page.
-        try
-        {
-            WebElement element = drone.findAndWaitById(FILE_UPDATE_DIALOG_ID);
-            if (element.isDisplayed())
-            {
-                return new UpdateFilePage(drone, version, editOffLine);
-            }
-        }
-        catch (TimeoutException te)
-        {
-            throw new PageException(FILE_UPLOAD_ERROR_MESSAGE, te);
-        }
-        catch (NoSuchElementException e)
-        {
-            throw new PageException(FILE_UPLOAD_ERROR_MESSAGE, e);
-        }
-        throw new PageException(FILE_UPLOAD_ERROR_MESSAGE);
+        return new UpdateFilePage(drone, version, editOffLine);
     }
     /**
      * Locates the revision history DIV.
@@ -607,7 +622,7 @@ public class DocumentDetailsPage extends DetailsPage
     {
         try
         {
-            return drone.findAndWait(By.cssSelector("form.cloud-auth-form")).isDisplayed();
+            return drone.findAndWait(By.cssSelector("form.cloud-auth-form"), WAIT_TIME_3000).isDisplayed();
         }
         catch (TimeoutException te)
         {
@@ -691,6 +706,25 @@ public class DocumentDetailsPage extends DetailsPage
     }
 
     /**
+     * Mimics the action of clicking on the Start workflow icon in WorkFlow section.
+     *
+     * @return {@link StartWorkFlowPage} page response object
+     */
+    public HtmlPage selectStartWorkFlowIcon()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector("a[name='.onAssignWorkflowClick']")).click();
+            return new StartWorkFlowPage(drone);
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element" + exception);
+        }
+        throw new PageException("Unable to find assign workflow.");
+    }
+
+    /**
      * Checks weather the "Sync to Cloud" option is displayed
      * @return boolean
      */
@@ -719,9 +753,20 @@ public class DocumentDetailsPage extends DetailsPage
         WebElement link = drone.findAndWait(By.cssSelector(LINK_EDIT_IN_GOOGLE_DOCS));
         link.click();
         
-        drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-        drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), "Editing in Google Docs", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        By jsMessage = By.cssSelector("div.bd>span.message");
         
+        //TODO Remove try Catch Block Once Cloud version in 31
+        try
+        {
+            String text = "Editing in Google Docs";
+            drone.waitUntilVisible(jsMessage, text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilNotVisibleWithParitalText(jsMessage, text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        }
+        catch (TimeoutException timeoutException)
+        {
+            
+        }
+            
         if (!drone.getCurrentUrl().contains(GOOGLE_DOCS_URL))
         {
             return new GoogleDocsAuthorisation(drone, documentVersion, isGoogleCreate);
@@ -816,6 +861,47 @@ public class DocumentDetailsPage extends DetailsPage
             return false;
         }
     }
+    /**
+     * Verify if the comment count is displayed or not
+     * @param waitTime
+     * @return
+     */
+    public boolean isCommentCountPresent(long waitTime)
+    {
+        try
+        {
+            return drone.findAndWaitWithRefresh(By.cssSelector(COMMENT_COUNT), waitTime).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            if(logger.isInfoEnabled())
+            {
+                logger.info("Comment count is not displayed");
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Checks if hide record link is displayed.
+     * This will only be visible under the following
+     * condition:
+     * <ul>
+     *  <li> Record management module enabled</li>
+     *  <li> When the document has been declared as record</li>
+     * </ul>
+     * @return true if link is displayed
+     */
+    public boolean isHideRecordLinkDisplayed()
+    {
+        try
+        {
+            return drone.find(By.cssSelector("div#onHideRecordAction.rm-hide-record")).isDisplayed();
+        }
+        catch (NoSuchElementException nse) { }
+        return false;
+    }
 
     /**
      * Method to get Sync Status
@@ -881,10 +967,10 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to revert the document to the specified version.
-     * @param versionNumber
-     * @return
+     * @param versionNumber revision number to revert
+     * @return {@link HtmlPage} page response.
      */
-    public RevertToVersionPage selectRevertToVersion(String versionNumber)
+    public HtmlPage selectRevertToVersion(String versionNumber)
     {
         try
         {
@@ -892,7 +978,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch(NumberFormatException e)
         {
-            throw new IllegalArgumentException("Version number passed is not a number");
+            throw new IllegalArgumentException("Version number passed is not a number : " + versionNumber, e);
         }
         try
         {
@@ -908,4 +994,52 @@ public class DocumentDetailsPage extends DetailsPage
         }
         throw new PageException("Revert to version button for " + versionNumber + " is not displayed");
     }
- }
+
+    /**
+     * Method to verify if a document is part of workflow or not
+     * @return True if it is part of a Workflow
+     */
+    public boolean isPartOfWorkflow()
+    {
+        try
+        {
+            String workFlowInfo = drone.find(WORKFLOW_INFO).getText();
+            if(workFlowInfo.equals("This document is part of the following workflow(s):"))
+            {
+                return true;
+            }
+        }
+        catch (NoSuchElementException nse) {}
+        return false;
+    }
+    
+    /**
+     * Opens the "Copy this link to share the current page" in the new tab  
+     * 
+     * @return {@link DocumentDetailsPage}
+     */
+    public DocumentDetailsPage openCopyThisLinkInNewTab() {
+    	
+		try {
+			WebElement copyThisLink = drone.findAndWait(By.cssSelector(COPY_THIS_LINK_TO_SHARE_THE_CURRENT_PAGE));
+			drone.createNewTab();
+			drone.navigateTo(copyThisLink.getAttribute("value"));
+		} catch (TimeoutException exception) {
+			logger.error("Not able to find the web element: Copy This Link To Share The Current Page ");
+			throw new PageException("Unable to find  Copy This Link To Share The Current Page ", exception);
+		}
+
+		return new DocumentDetailsPage(drone);       
+    }
+	
+    public String getExpectedVersion()
+	{
+        return expectedVersion;
+	}
+	public synchronized void setExpectedVersion(String expectedVersion)
+	{
+        this.expectedVersion = expectedVersion;
+	}
+    
+
+}

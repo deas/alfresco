@@ -57,14 +57,23 @@ public class DestinationAndAssigneePage extends SharePage
     private static final By SITE_ELEMENTS = By.cssSelector("div[id$='cloud-folder-sitePicker']>div");
     private static final By NETWORK = By.cssSelector("button[id*='-cloud-folder-network-']");
     private static final By SUBMIT_SYNC_BUTTON = By.cssSelector("button[id$='cloud-folder-ok-button']");
-    private static final By FOLDER_LABELS = By.cssSelector("div[id$='-cloud-folder-treeview'] .ygtvlabel");
+    private static final By FOLDER_LABELS = By.cssSelector("div[id$='-cloud-folder-treeview'] [id^='ygtvlabel']");
     private static final By INCLUDE_SUB_FOLDER =By.cssSelector("input[id$='includeSubFolders']");
     private static final By LOCK_ON_PREM = By.cssSelector("input[id $='lockSourceCopy']");
     private static final By BUTTON_CANCEL = By.cssSelector("button[id$='-cloud-folder-cancel-button']");
-    private static final By CREATE_NEW_FOLDER_ICON = By.cssSelector("div[title='New folder']");
+    private static final By CLOSE_BUTTON = By.cssSelector("div[id$='-cloud-folder-dialog']>a.container-close");
+    private static final By CREATE_NEW_FOLDER_ICON = By.cssSelector("div.cloud-path-add-folder");
 
-    private final RenderElement FOLDER_PATH_ELEMENT = getVisibleRenderElement(By.cssSelector("div[id$='-cloud-folder-treeview']>div[class^='ygtvitem']"));
-    private final RenderElement HEADER_ELEMENT = getVisibleRenderElement(By.cssSelector(".last>a>h4"));
+    private final RenderElement networkRenderElement = getVisibleRenderElement(NETWORK);
+    private final RenderElement siteRenderElement = getVisibleRenderElement(SITE_ELEMENTS);
+    private final RenderElement folderPathElement = getVisibleRenderElement(By.cssSelector("div[id$='-cloud-folder-treeview']>div[class^='ygtvitem']"));
+    private final RenderElement submitSyncButtonElement = getVisibleRenderElement(SUBMIT_SYNC_BUTTON);
+    private final RenderElement cancelButtonElement = getVisibleRenderElement(BUTTON_CANCEL);
+    private final RenderElement createNewFolderIconElement = getVisibleRenderElement(CREATE_NEW_FOLDER_ICON);
+    private final RenderElement headerElement = getVisibleRenderElement(By.cssSelector(".last>a>h4"));
+    private final RenderElement closeButtonElement = getVisibleRenderElement(CLOSE_BUTTON);
+
+    private static final long FOLDER_LOAD_TIME = 2000;
     /**
      * Constructor.
      *
@@ -79,7 +88,8 @@ public class DestinationAndAssigneePage extends SharePage
     @Override
     public DestinationAndAssigneePage render(RenderTime timer)
     {
-        elementRender(timer, HEADER_ELEMENT, FOLDER_PATH_ELEMENT);
+        elementRender(timer, headerElement, networkRenderElement, siteRenderElement, folderPathElement, submitSyncButtonElement,
+                    cancelButtonElement, createNewFolderIconElement, closeButtonElement);
         return this;
     }
 
@@ -126,14 +136,14 @@ public class DestinationAndAssigneePage extends SharePage
                         {
                             logger.trace("Site " + siteName + " selected");
                         }
-                        // Removed drone.waitFor and replaced with drone.findAndWait with a non existent element
+                        //drone.waitUntilElementDeletedFromDom(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class='ygtvcell ygtvloading']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        //drone.waitForElement(FOLDER_LABELS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         try
                         {
-                            drone.findAndWait(By.cssSelector("img.switch"));
-                        }
-                        catch (TimeoutException te)
-                        {
-                        }
+                            drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(FOLDER_LOAD_TIME, MILLISECONDS));
+                        } 
+                        catch (TimeoutException e) {}
+                        //drone.waitFor(FOLDER_LOAD_TIME);
                         return;
                     }
                 }
@@ -151,7 +161,7 @@ public class DestinationAndAssigneePage extends SharePage
      */
     public String getSyncToCloudTitle()
     {
-        return drone.find(By.cssSelector("div[id$='default-cloud-folder-title']")).getText();
+        return drone.find(By.cssSelector("div[id$='-cloud-folder-title']")).getText();
     }
 
     /**
@@ -159,17 +169,6 @@ public class DestinationAndAssigneePage extends SharePage
      * @param folderName
      * @return true if the given folder class is set to ".no-permission"
      */
-//    public boolean isSyncPermitted(String folderName)
-//    {
-//        try
-//        {
-//            return !drone.findAndWait(By.cssSelector(".no-permission")).getText().equals(folderName);
-//        }
-//        catch (TimeoutException e)
-//        {
-//        }
-//        return false;
-//    }
     public boolean isSyncPermitted(String folderName)
     {
         if(StringUtils.isEmpty(folderName))
@@ -179,9 +178,9 @@ public class DestinationAndAssigneePage extends SharePage
 
         try
         {
-            List<WebElement> disabledFolders = getFoldersList();
+            List<WebElement> folderList = getFoldersList();
 
-            for(WebElement element : disabledFolders)
+            for(WebElement element : folderList)
             {
                 if(logger.isTraceEnabled())
                 {
@@ -351,7 +350,7 @@ public class DestinationAndAssigneePage extends SharePage
                 if (network.equals(webElement.getText()))
                 {
                     webElement.click();
-                    drone.waitUntilElementClickable(SITE_ELEMENTS, maxPageLoadingTime);
+                    drone.waitUntilElementClickable(SITE_ELEMENTS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                     return;
                 }
             }
@@ -444,11 +443,16 @@ public class DestinationAndAssigneePage extends SharePage
         for (String folder : folderPath)
         {
             List<WebElement> folderNames = getFoldersList();
-            for(int i =0; i<folderNames.size(); i++)
+            for(WebElement syncFolder : folderNames)
             {
-                if(folderNames.get(i).getText().equals(folder))
+                if(syncFolder.getText().equals(folder))
                 {
-                    folderNames.get(i).click();
+                    if(!syncFolder.isEnabled())
+                    {
+                        throw new PageOperationException("Sync Folder is disabled");
+                    }
+                    
+                    syncFolder.click();
                     
                     if(logger.isTraceEnabled())
                     {
@@ -457,8 +461,14 @@ public class DestinationAndAssigneePage extends SharePage
                     
                     if(folderPath.length > 1)
                     {
-                        drone.waitUntilElementDeletedFromDom(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class='ygtvcell ygtvloading']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                        drone.waitForElement(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class^='ygtvcell']>a.ygtvspacer"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+//                        drone.waitUntilElementDeletedFromDom(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class='ygtvcell ygtvloading']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+//                        drone.waitForElement(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class^='ygtvcell']>a.ygtvspacer"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                          try
+                          {
+                              drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+                          }
+                          catch (TimeoutException e) {}
+                          //drone.waitFor(FOLDER_LOAD_TIME);
                     }
                     
                     break;
@@ -476,11 +486,20 @@ public class DestinationAndAssigneePage extends SharePage
         try
         {
             WebElement syncButton = drone.findAndWait(SUBMIT_SYNC_BUTTON);
+            if(!syncButton.isEnabled())
+            {
+                throw new PageOperationException("Sync Button is disabled");
+            }
             String saveButtonId = syncButton.getAttribute("id");
             syncButton.click();
             drone.waitUntilElementDisappears(By.id(saveButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-            drone.waitUntilVisible(By.cssSelector("span.message"), "Sync was created", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-            drone.waitUntilElementDeletedFromDom(By.cssSelector("span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+
+            if (!drone.getCurrentUrl().contains("workflow"))
+            {
+                drone.waitUntilElementPresent(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                drone.waitUntilElementDeletedFromDom(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            }
+            
             return FactorySharePage.resolvePage(drone);
         }
         catch(TimeoutException toe)
@@ -500,7 +519,7 @@ public class DestinationAndAssigneePage extends SharePage
             WebElement cancelButton = drone.findAndWait(BUTTON_CANCEL);
             String id = cancelButton.getAttribute("id");
             cancelButton.click();
-            drone.waitUntilElementDisappears(By.id(id), maxPageLoadingTime);
+            drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
         }
         catch(TimeoutException toe)
@@ -513,6 +532,10 @@ public class DestinationAndAssigneePage extends SharePage
         throw new PageException("Time out finding cancel button");
     }
 
+    /**
+     * 
+     * @return
+     */
     public CreateNewFolderInCloudPage selectCreateNewFolder()
     {
         try
@@ -528,5 +551,44 @@ public class DestinationAndAssigneePage extends SharePage
             }
         }
         throw new PageException("Unable to find \"Create New Folder\" element");
+    }
+
+    /**
+     * Select close button on pop up to cancel cloud sync data selection.
+     */
+    public HtmlPage selectCloseButton()
+    {
+        try
+        {
+            WebElement cancelButton = drone.find(CLOSE_BUTTON);
+            String id = cancelButton.getAttribute("id");
+            cancelButton.click();
+            drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find Close button");
+            }
+        }
+        throw new PageException("Unable to find Close button");
+    }
+
+    /**
+     * Method to verify Sync button is enable or not
+     * @return
+     */
+    public boolean isSyncButtonEnabled()
+    {
+        try
+        {
+            return drone.find(SUBMIT_SYNC_BUTTON).isEnabled();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find \"Sync\" button");
+        }
     }
 }

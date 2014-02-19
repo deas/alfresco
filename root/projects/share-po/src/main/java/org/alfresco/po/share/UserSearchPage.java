@@ -19,6 +19,7 @@
 package org.alfresco.po.share;
 
 import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -99,7 +100,7 @@ public class UserSearchPage extends SharePage
      * 
      * @return true if exists
      */
-    public boolean isTitlePresent()
+    protected boolean isTitlePresent()
     {
         return isBrowserTitle("Admin Console");
     }
@@ -207,7 +208,7 @@ public class UserSearchPage extends SharePage
      * 
      * @return NewUserPage
      */
-    public NewUserPage selectNewUser()
+    public HtmlPage selectNewUser()
     {
         try
         {

@@ -1,8 +1,24 @@
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.po.share.site.document;
 
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.AlfrescoVersion;
@@ -10,10 +26,12 @@ import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -68,6 +86,14 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled()) logger.trace("====createData====");
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        try
+        {
+            documentLibPage = documentLibPage.getNavigation().selectShowFolders().render();
+        } 
+        catch (PageOperationException e)
+        {
+        }
+        documentLibPage.render();
         NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
         documentLibPage = newFolderPage.createNewFolder(folderName, folderDescription).render();
         FileDirectoryInfo content = getFolder();
@@ -153,8 +179,9 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled())
             logger.trace("====testColourCodeInsertionInRichTextFormatter====");
         textEditor.clickColorCode();
-        Assert.assertEquals(commentText, textEditor.getText());       
-        if (AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+        Assert.assertEquals(commentText, textEditor.getText());
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (AlfrescoVersion.Cloud2.equals(version))
         {
             fontAtt = fontAttForCloud ;
         }
@@ -174,7 +201,8 @@ public class ContentFormatPageTest extends AbstractTest
             logger.trace("====testUndoAndRedoButtonOfRichTextFormatter====");
         textEditor.clickColorCode();
         Assert.assertEquals(commentText, textEditor.getText());       
-        if (AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (AlfrescoVersion.Cloud2.equals(version))
         {
             fontAtt = fontAttForCloud;
         }
@@ -194,8 +222,9 @@ public class ContentFormatPageTest extends AbstractTest
             logger.trace("====testRedoButtonOfRichTextFormatter====");
       
         textEditor.clickColorCode();
-        Assert.assertEquals(commentText, textEditor.getText());       
-        if (AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+        Assert.assertEquals(commentText, textEditor.getText());  
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (AlfrescoVersion.Cloud2.equals(version))
         {
             fontAtt = fontAttForCloud;
         }
@@ -203,7 +232,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickUndo();        
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
         textEditor.clickRedo();       
-        if (AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+        if (AlfrescoVersion.Cloud2.equals(version))
         {
             fontAtt = fontAttForCloud;
         }

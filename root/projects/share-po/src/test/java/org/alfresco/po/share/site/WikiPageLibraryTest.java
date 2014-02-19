@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.site.wiki.WikiPage.Mode;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -55,6 +54,6 @@ public class WikiPageLibraryTest extends AbstractTest
     public void  deleteWikiPageAndLogOut()
     {
         wikiPage.deleteWiki();      
-        ShareUtil.logout(drone);
+        logout(drone);
     }
 }

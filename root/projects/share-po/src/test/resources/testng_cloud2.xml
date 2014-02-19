@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Share Cloud Tests" verbose="6">
+<suite name="Share Cloud Tests" verbose="6" parallel="classes" thread-count="1">
     <groups>
         <run>
             <include name="unit" />

@@ -18,45 +18,57 @@
  */
 package org.alfresco.po.share.site;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.util.List;
+
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
  * Upload file page object, holds all element of the HTML page relating to
  * share's upload file page in site.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
 public class UploadFilePage extends SharePage
 {
     private Log logger = LogFactory.getLog(this.getClass());
-    private final By UPLOAD_FORM = By.cssSelector("form[id$='_default-htmlupload-form']");
+    private final By uploadField;
+    private final By uploadFolderIcon;
 
     /**
      * Constructor.
      */
     public UploadFilePage(WebDrone drone)
     {
-        super(drone);
+    	super(drone);
+    	boolean isHtml5 = alfrescoVersion.isFileUploadHtml5();
+    	uploadFolderIcon = isHtml5 ? By.cssSelector("img.title-folder") :
+    		By.cssSelector("form[id$='_default-htmlupload-form']");
+    	uploadField = isHtml5 ? By.cssSelector("input.dnd-file-selection-button") :
+    		By.cssSelector("input[id$='default-filedata-file']");
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public UploadFilePage render(RenderTime timer)
     {
-        basicRender(timer);
+        RenderElement uploadForm = RenderElement.getVisibleRenderElement(uploadFolderIcon);
+        elementRender(timer, uploadForm);
         return this;
     }
 
@@ -74,27 +86,6 @@ public class UploadFilePage extends SharePage
         return render(new RenderTime(time));
     }
 
-    /**
-     * Verify if the file upload dialog is displayed. A wait is introduce to
-     * deal with javascript side effects not rendering the page in the same way
-     * as html.
-     * 
-     * @return true if dialog is displayed.
-     */
-    public boolean isUploadFileDialogDisplayed()
-    {
-        boolean displayed = false;
-        try
-        {
-            displayed = drone.find(UPLOAD_FORM).isDisplayed();
-        }
-        catch (TimeoutException e)
-        {
-            displayed = false;
-        }
-
-        return displayed;
-    }
 
     /**
      * Action that selects the submit upload button.
@@ -119,63 +110,61 @@ public class UploadFilePage extends SharePage
             {
                 logger.trace(String.format("operation completed in: %s",ready));
             }
-            while(true)
-            {
-                try
-                {
-                    //Verify button has been actioned
-                    if(!drone.find(selector).isDisplayed())
-                    {
-                        break;
-                    }
-                }
-                catch (NoSuchElementException e)
-                {
-                    break;
-                }
-            }
-            
+            drone.waitUntilElementDisappears(selector, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         }
-        //Check result has been updated
         catch (TimeoutException te){}
+    }
+
+    public boolean isUploadInputDisplayed()
+    {
+    	try
+    	{
+    		return drone.find(uploadField).isDisplayed();
+    	}
+    	catch (Exception e){ }
+    	return false;
     }
 
     /**
      * Uploads a file by entering the file location into the input field and
      * submitting the form.
-     * 
+     *
      * @param filePath String file location to upload
      * @return {@link SharePage} DocumentLibrary or a RepositoryPage response
      */
     public HtmlPage uploadFile(final String filePath)
     {
-        WebElement input;
-        if(alfrescoVersion.isFileUploadHtml5())
+        DocumentLibraryPage lib = upload(filePath).render();
+        lib.setShouldHaveFiles(true);
+        return lib;
+    }
+
+    public HtmlPage upload(final String filePath)
+    {
+    	WebElement uploadFileInput = drone.find(uploadField);
+    	uploadFileInput.sendKeys(filePath);
+        if(!alfrescoVersion.isFileUploadHtml5())
         {
-            input = drone.find(By.cssSelector("input.dnd-file-selection-button"));
-            input.sendKeys(filePath);
-        } 
-        else 
-        {
-            input = drone.find(By.cssSelector("input[id$='default-filedata-file']"));
-            input.sendKeys(filePath);
-            submitUpload(); 
+            submitUpload();
         }
-        
+
         if (logger.isTraceEnabled())
         {
             logger.trace("Upload button has been actioned");
         }
-
-        DocumentLibraryPage lib = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
-        lib.setShouldHaveFiles(true);
-        return lib;
+        return FactorySharePage.getPage(drone.getCurrentUrl(), drone);
     }
     /**
      * Clicks on the cancel link.
      */
-    public void cancel()
-    {
-        drone.findAndWait(By.cssSelector("button[id$='default-cancel-button-button']")).click();
+     public void cancel()
+	    {
+	    	List<WebElement> cancelButton = drone.findAll(By.cssSelector("button[id$='default-cancelOk-button-button']"));
+	    	for (WebElement webElement : cancelButton) {
+				if(webElement.isDisplayed() && webElement.isEnabled())
+				{
+					webElement.click();
+				}
+			}
     }
 }

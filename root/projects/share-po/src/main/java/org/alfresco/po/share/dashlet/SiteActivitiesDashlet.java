@@ -21,11 +21,12 @@ package org.alfresco.po.share.dashlet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.ShareLink;
-import org.alfresco.po.share.dashlet.MyActivitiesDashlet.LinkType;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.dashlet.MyActivitiesDashlet.LinkType;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -38,10 +39,10 @@ import org.openqa.selenium.WebElement;
  */
 public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
 {
-	private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.activities";
-    protected WebElement dashlet;
+    private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.activities";
     private List<ShareLink> userLinks;
     private List<ShareLink> documetLinks;
+    private List<String> activityDescriptions;
     
     /**
      * Constructor.
@@ -72,6 +73,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     {
         userLinks = new ArrayList<ShareLink>();
         documetLinks = new ArrayList<ShareLink>();
+        activityDescriptions = new ArrayList<String>();
         try
         {
             List<WebElement> links = drone.findAll(By.cssSelector("div[id$='default-activityList'] > div.activity"));
@@ -82,6 +84,9 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
 
                 WebElement documentLink = div.findElement(By.cssSelector("a:nth-of-type(2)"));
                 documetLinks.add(new ShareLink(documentLink, drone));
+                
+                WebElement desc = div.findElement(By.cssSelector("div.content>span.detail"));
+                activityDescriptions.add(desc.getText());
             }
         }
         catch (NoSuchElementException nse) 
@@ -137,6 +142,10 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
      */
     private ShareLink extractLink(final String name, List<ShareLink> list)
     {
+        if(StringUtils.isEmpty(name))
+        {
+            throw new IllegalArgumentException("title of item is required");
+        }
         if(!list.isEmpty())
         {
             for(ShareLink link: list)
@@ -147,7 +156,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
                 }
             }
         }
-        throw new PageException("Link searched for can not be found on the page");
+        throw new PageException(String.format("Link searched: %s can not be found on the page",name));
     }
     
     @SuppressWarnings("unchecked")
@@ -177,5 +186,22 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
             case User: return userLinks;
             default: throw new IllegalArgumentException("Invalid link type specified");
         }
+    }
+    
+    
+    /**
+     * Get Activities descriptions.
+     * 
+     * @return {@String} collection
+     */
+    public synchronized List<String> getSiteActivityDescriptions()
+    {
+
+        if (activityDescriptions == null)
+        {
+            populateData();
+        }
+
+        return activityDescriptions;
     }
 }

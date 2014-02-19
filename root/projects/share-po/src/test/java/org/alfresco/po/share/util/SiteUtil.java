@@ -45,6 +45,7 @@ import org.openqa.selenium.NoSuchElementException;
  * </ul>
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  * @since 1.0
  */
 public class SiteUtil 
@@ -196,7 +197,7 @@ public class SiteUtil
         {
             // Alfresco.cloud.constants.CURRENT_TENANT
             String url = drone.getCurrentUrl();
-            String target = url.substring(0, url.indexOf("/page/")) + SITE_FINDER_LOCATION_SUFFIX;
+            String target = url.replaceFirst("^*/page.*", SITE_FINDER_LOCATION_SUFFIX);
             drone.navigateTo(target);
             int count = 0;
             while(count < 5)

@@ -18,7 +18,6 @@
  */
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.DashBoardPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -43,7 +42,8 @@ public class DashBoardPageTest extends AbstractTest
         
         Assert.assertTrue(dashBoard.isLogoPresent());
         // TODO remove this condition once bug Cloud-881 is fixed
-        if(!alfrescoVersion.isCloud())
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if(!version.isCloud())
         {
             Assert.assertTrue(dashBoard.titlePresent());
             Assert.assertEquals("Administrator Dashboard", dashBoard.getPageTitle());

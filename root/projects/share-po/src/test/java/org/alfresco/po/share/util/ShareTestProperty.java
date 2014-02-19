@@ -30,6 +30,7 @@ public class ShareTestProperty
 {
     private final AlfrescoVersion alfrescoVersion;
     private final String shareUrl;
+    private final String gridUrl;
     private final String username;
     private final String password;
     private final String googleUserName;
@@ -38,17 +39,20 @@ public class ShareTestProperty
     private final boolean hybridEnabled;
     private String cloudUserName;
     private String cloudUserPassword;
+    protected long popupRendertime;
     
     public ShareTestProperty (final String shareUrl,
+            final String gridUrl, 
             final String username,
             final String password,
             final String googleUserName,
             final String googlePassword,
             final String alfrescoVersion,
             final String downloadDirectory,
-            final boolean hybridEnabled)
+            final boolean hybridEnabled) 
     {
         this.shareUrl = shareUrl;
+        this.gridUrl = gridUrl;
         this.username = username;
         this.password = password;
         this.googleUserName = googleUserName;
@@ -63,6 +67,11 @@ public class ShareTestProperty
         return shareUrl;
     }
     
+    public String getGridUrl()
+    {
+        return gridUrl;
+    }
+
     public String getUsername()
     {
         return username;
@@ -116,5 +125,14 @@ public class ShareTestProperty
     {
         this.cloudUserPassword = cloudUserPassword;
     }
+
+	public long getPopupRendertime() {
+		return popupRendertime;
+	}
+
+	public void setPopupRendertime(long popupRendertime) {
+		this.popupRendertime = popupRendertime;
+	}
+    
 }
 

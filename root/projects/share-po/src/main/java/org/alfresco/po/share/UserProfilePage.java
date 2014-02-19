@@ -17,11 +17,10 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import java.util.List;
 
-import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.openqa.selenium.By;
@@ -37,16 +36,13 @@ import org.openqa.selenium.WebElement;
  */
 public class UserProfilePage extends SharePage
 {
-    private static final String USER_DETAILS = ".view-main.separator";
-    private static final String GO_BACK_BUTTON = "button[id$='default-goback-button-button']";
-    private static final String EDIT_USER = "button[id$='default-edituser-button-button']";
-    private static final String DELETE_USER = "button[id$='default-deleteuser-button-button']";
-    private static final String BUTTON_GROUP = "span.button-group>span>span>button";
-
-    private final RenderElement USER_DETAILS_ELEMENT = getVisibleRenderElement(By.cssSelector(USER_DETAILS));
-    private final RenderElement GO_BACK_BUTTON_ELEMENT = getVisibleRenderElement(By.cssSelector(GO_BACK_BUTTON));
-    private final RenderElement EDIT_USER_ELEMENT = getVisibleRenderElement(By.cssSelector(EDIT_USER));
-    private final RenderElement DELETE_USER_ELEMENT = getVisibleRenderElement(By.cssSelector(DELETE_USER));
+    @RenderWebElement
+    private final By goBackButton = By.cssSelector("button[id$='default-goback-button-button']");
+    @RenderWebElement
+    private final By editUser = By.cssSelector("button[id$='default-edituser-button-button']");
+    @RenderWebElement
+    private final By deleteUser = By.cssSelector("button[id$='default-deleteuser-button-button']");
+    private final By buttonGroup = By.cssSelector("span.button-group>span>span>button");
 
     /**
      * Constructor.
@@ -63,7 +59,7 @@ public class UserProfilePage extends SharePage
     {
         try
         {
-            elementRender(timer, USER_DETAILS_ELEMENT, GO_BACK_BUTTON_ELEMENT, EDIT_USER_ELEMENT, DELETE_USER_ELEMENT);
+            webElementRender(timer);
             while(true)
             {
                 timer.start();
@@ -84,7 +80,6 @@ public class UserProfilePage extends SharePage
         }
         catch (NoSuchElementException e) {}
         catch (TimeoutException e) {}
-
         return this;
     }
 
@@ -110,7 +105,7 @@ public class UserProfilePage extends SharePage
     {
         try
         {
-            return drone.findAndWaitForElements(By.cssSelector(BUTTON_GROUP));
+            return drone.findAndWaitForElements(buttonGroup);
         }
         catch (TimeoutException te) {}
         throw new PageException("Not able to find the Button group.");
@@ -125,7 +120,7 @@ public class UserProfilePage extends SharePage
     {
         try
         {
-            drone.findAndWait(By.cssSelector(DELETE_USER)).click();
+            drone.findAndWait(deleteUser).click();
             
             List<WebElement> buttons = getButtons();
 
@@ -151,7 +146,7 @@ public class UserProfilePage extends SharePage
     {
         try
         {
-            drone.findAndWait(By.cssSelector(EDIT_USER)).click();
+            drone.findAndWait(editUser).click();
             return new EditUserPage(drone);
         }
         catch (TimeoutException te) {}
@@ -167,7 +162,7 @@ public class UserProfilePage extends SharePage
     {
         try
         {
-            drone.findAndWait(By.cssSelector(GO_BACK_BUTTON)).click();
+            drone.findAndWait(goBackButton).click();
             return new UserSearchPage(drone);
         }
         catch (TimeoutException te) {}

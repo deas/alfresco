@@ -40,7 +40,7 @@ import org.openqa.selenium.WebElement;
  */
 public class CloudSyncPage extends SharePage
 {
-    private final By SIGN_IN_BUTTON = By.cssSelector("button[id$='default-button-signIn-button']");
+    private static final By SIGN_IN_BUTTON = By.cssSelector("button[id$='default-button-signIn-button']");
     public static final By DISCONNECT_BUTTON = By.cssSelector("button[id$='default-button-delete-button']");
 
     private final Log logger = LogFactory.getLog(CloudSyncPage.class);
@@ -57,7 +57,7 @@ public class CloudSyncPage extends SharePage
     
     public ProfileNavigation getProfileNav()
     {
-        return ProfileNavigation.getInstance(drone);
+        return new ProfileNavigation(drone);
     }
     
     @SuppressWarnings("unchecked")
@@ -136,8 +136,8 @@ public class CloudSyncPage extends SharePage
      */
     public void confirmDelete()
     {
-        final String PROMPT_PANEL_ID = "prompt.panel.id";
-        WebElement prompt = drone.findAndWaitById(PROMPT_PANEL_ID);
+        final String promptPanelId = "prompt.panel.id";
+        WebElement prompt = drone.findAndWaitById(promptPanelId);
         List<WebElement> elements = prompt.findElements(By.tagName("button"));
         // Find the delete button in the prompt
         WebElement delete = findButton("Delete", elements);
@@ -164,7 +164,7 @@ public class CloudSyncPage extends SharePage
         catch (NoSuchElementException e)
         {
             logger.info("User is already connected to Cloud account");
-            throw new PageException("User is already connected to Cloud account");
+            throw new PageException("User is already connected to Cloud account", e);
         }
         return new CloudSignInPage(drone);
     }

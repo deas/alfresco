@@ -151,16 +151,11 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
         }
         catch (NoSuchElementException nse)
         {
-            return false;
         }
-        
+        return false;
     }
 
     /**

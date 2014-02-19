@@ -22,12 +22,13 @@ import java.io.IOException;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.ShareErrorPopup;
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -40,6 +41,7 @@ import org.testng.annotations.Test;
  * Site CRUD integration test.
  * 
  * @author Michael Suzuki
+ * @author Shan Nagarajan
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
@@ -53,7 +55,7 @@ public class SiteTest extends AbstractTest
     DashBoardPage dashBoard;
     String testuser = "testuser" + System.currentTimeMillis();
 
-    @BeforeTest
+    @BeforeTest(groups="alfresco-one")
     public void setup()
     {
         siteName = String.format("test-%d-site-crud",System.currentTimeMillis());
@@ -63,7 +65,7 @@ public class SiteTest extends AbstractTest
         // user joining the above sites
     }
     
-    @BeforeClass
+    @BeforeClass(groups="alfresco-one")
     public void loginPrep() throws Exception
     {
         if (!alfrescoVersion.isCloud())
@@ -73,7 +75,7 @@ public class SiteTest extends AbstractTest
         dashBoard = loginAs(username, password);
     }
     
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups="alfresco-one")
     public void teardown() throws Exception
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -97,19 +99,31 @@ public class SiteTest extends AbstractTest
     @Test 
     public void createSite() throws Exception
     {
+        // TODO: Create site option is not available for admin, admin user in Cloud. Pl run tests with other user, i.e. user1@freenet.test
         CreateSitePage createSite = dashBoard.getNav().selectCreateSite().render();
         SiteDashboardPage site = createSite.createNewSite(siteName).render();
+        
+        Assert.assertTrue(FactorySharePage.getPage(drone.getCurrentUrl(), drone) instanceof SiteDashboardPage);
+        
         Assert.assertTrue(siteName.equalsIgnoreCase(site.getPageTitle()));
         Assert.assertTrue(site.getSiteNav().isDashboardActive());
         Assert.assertFalse(site.getSiteNav().isDocumentLibraryActive());
     }
     
-    @Test(dependsOnMethods="createSite", expectedExceptions=ShareException.class)
+    @Test(dependsOnMethods="createSite")
     public void createDuplicateSite() throws Exception
     {
         CreateSitePage createSite = dashBoard.getNav().selectCreateSite().render();
-        ShareErrorPopup errorPopup = createSite.createNewSite(siteName).render();
-        errorPopup.handleErrorMessage();
+        SharePopup errorPopup = createSite.createNewSite(siteName).render();
+        try
+        {
+        errorPopup.handleMessage();
+        Assert.fail("This is exception line");
+        }
+        catch(ShareException se)
+        {
+        }
+        createSite.cancel();
     }
     
     @Test(dependsOnMethods = "createDuplicateSite")
@@ -120,6 +134,9 @@ public class SiteTest extends AbstractTest
         siteFinder = siteFinder.searchForSite(siteName).render();
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
         DocumentLibraryPage docPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+        
+        Assert.assertFalse(FactorySharePage.getPage(drone.getCurrentUrl(), drone) instanceof SiteDashboardPage);
+        
         Assert.assertFalse(docPage.getSiteNav().isDashboardActive());
         Assert.assertTrue(docPage.getSiteNav().isDocumentLibraryActive());
         siteDash = docPage.getSiteNav().selectSiteDashBoard().render();

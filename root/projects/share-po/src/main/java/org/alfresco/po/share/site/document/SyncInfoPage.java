@@ -23,7 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -44,12 +46,12 @@ public class SyncInfoPage extends SharePage
 {
 
     private static Log logger = LogFactory.getLog(FileDirectoryInfo.class);
-    private static final By CLOSE_BUTTON = By.cssSelector(".info-balloon .closeButton");
-    private static final By IS_CLOUD_SYNC_STATUS = By.cssSelector("div.cloud-sync-status-heading+p");
+    private static final By CLOSE_BUTTON = By.cssSelector("div[style*='visible'] div.info-balloon .closeButton");
+    private static final By IS_CLOUD_SYNC_STATUS = By.cssSelector("div[style*='visible'] div.cloud-sync-status-heading+p");
     private static final By SYNC_LOCATION_PRESENT = By.cssSelector("p.location");
-    private static final By REQ_SYNC_BUTTON = By.cssSelector("div.cloud-sync-status-buttons>span>span>button");
-    private static final By REQ_UNSYNC_BUTTON = By.cssSelector("div.cloud-sync-status-buttons>span>span>button");
-    private static final By SYNC_LOCATION = By.cssSelector(".cloud-sync-details-info>p>span[class^='folder-link']>a");
+    private static final By REQ_SYNC_BUTTON = By.cssSelector("div[style*='visible'] div.cloud-sync-status-buttons>span:first-child>span>button");
+    private static final By REQ_UNSYNC_BUTTON = By.cssSelector("div[style*='visible'] div.cloud-sync-status-buttons>span:last-child>span>button");
+    private static final By SYNC_LOCATION = By.cssSelector("div[style*='visible'] .cloud-sync-details-info>p>span[class^='folder-link']>a");
     private static final By SYNC_DOCUMENT_NAME = By.cssSelector(".view-in-cloud");
     private static final By SYNC_PERIOD = By.cssSelector(".cloud-sync-details-info>p>span[title]");
     private static final String DATE_FORMAT = "EEE dd MMM yyyy HH:mm:ss";
@@ -159,25 +161,15 @@ public class SyncInfoPage extends SharePage
      */
     public boolean isRequestSyncButtonPresent()
     {
-        boolean isRequestSyncButtonPresent= false;
         try
         {
-            List<WebElement> buttons =  drone.findAndWaitForElements(REQ_SYNC_BUTTON);
-            for (WebElement button : buttons)
-            {
-                if("Request Sync".equals(button.getText()))
-                {
-                    isRequestSyncButtonPresent=true;
-                    break;
-                }
-            }       
-            return isRequestSyncButtonPresent;
+            return drone.findAndWait(REQ_SYNC_BUTTON, WAIT_TIME_3000).isDisplayed();
         }
         catch (TimeoutException nse)
         {
-            logger.error("Time out finding request sync button!!");
-        }        
-        throw new PageException();
+            logger.error("Time out finding unsync button!!");
+        }
+        return false;
     }
     
     /**
@@ -186,41 +178,32 @@ public class SyncInfoPage extends SharePage
      */
     public boolean isUnsyncButtonPresent()
     {
-        boolean isUnsyncButtonPresent= false;
         try
         {
-            List<WebElement> buttons =  drone.findAndWaitForElements(REQ_UNSYNC_BUTTON);
-            for (WebElement button : buttons)
-            {
-                if("Unsync".equals(button.getText()))
-                {
-                    isUnsyncButtonPresent = true;
-                    break;
-                }
-            }     
-            return isUnsyncButtonPresent;
+            return drone.findAndWait(REQ_UNSYNC_BUTTON, WAIT_TIME_3000).isDisplayed();
         }
         catch (TimeoutException nse)
         {
             logger.error("Time out finding unsync button!!");
         }
-        throw new PageException();
+        return false;
     }
     
     /**
      * Click on sync pop up button to close pop up.
      * @return
      */
-    public void clickOnCloseButton()
+    public HtmlPage clickOnCloseButton()
     {
         try
         {
-            drone.findAndWait(CLOSE_BUTTON).click();            
+            drone.findAndWait(CLOSE_BUTTON).click();
+            return FactorySharePage.getUnknownPage(drone);
         }
         catch(TimeoutException e) 
         {
             logger.error("Unable to find Close button on Sync Info page" + e.getMessage());
-            throw new PageException("Not able to click on Sync Info close button.");
+            throw new PageException("Not able to click on Sync Info close button.", e);
         }
     }
     
@@ -251,7 +234,7 @@ public class SyncInfoPage extends SharePage
         StringBuilder location = new StringBuilder("");
         try
         {
-            List<WebElement> elements = getDrone().findAndWaitForElements(SYNC_LOCATION);
+            List<WebElement> elements = drone.findAndWaitForElements(SYNC_LOCATION);
             int i = elements.size();
             for (WebElement webElement : elements)
             {                
@@ -335,7 +318,9 @@ public class SyncInfoPage extends SharePage
                 }
             }     
             if(removeContentFromCloud)
+            {
                 selectCheckBoxToRemoveContenFromCloud();
+            }
             clickButtonFromPopup(ButtonType.REMOVE);  
             return;
         }
@@ -399,7 +384,12 @@ public class SyncInfoPage extends SharePage
      */
     public boolean isUnSyncIconPresentInDetailsPage()
     {        
-        return drone.isElementDisplayed(By.cssSelector(".document-unsync-link"));
+        try
+        {
+            return drone.find(By.cssSelector(".document-unsync-link")).isDisplayed();
+        } 
+        catch (NoSuchElementException nse) {}
+        return false;
        
     }
 }

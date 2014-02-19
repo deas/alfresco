@@ -20,6 +20,8 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -39,7 +41,7 @@ import org.openqa.selenium.support.ui.Select;
 public class EditDocumentPropertiesPage extends AbstractEditProperties
 {
 
-    final String tagName;
+    private final String tagName;
     
     protected EditDocumentPropertiesPage(WebDrone drone, final String tagName) 
     {
@@ -47,54 +49,57 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
         this.tagName = tagName;
     }
     
-    public EditDocumentPropertiesPage(WebDrone drone) 
-    {
-    	super(drone);
-    	tagName = null;
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public EditDocumentPropertiesPage render(RenderTime timer)
-    {
-        while(true)
-        {
-            timer.start();
-            try
-            {
-                if(isEditPropertiesVisible() && isSaveButtonVisible())
-                {
-                    if(tagName == null || tagName.isEmpty())
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        if(isTagVisible(tagName)) break; 
-                    }
-                }
-            }
-            catch (Exception e) {}
-            finally
-            {
-                timer.end();
-            }
-        }
-    	return this;
-    }
+	public EditDocumentPropertiesPage(WebDrone drone) 
+	{
+		super(drone);
+		tagName = null;
+	}
 
-    /**
-     * Check to see if tags are visible on the page
-     * and match the given tag.
-     * 
-     * @param name identifier tag name
-     * @return true if name matches tag
-     */
-    private boolean isTagVisible(String name)
+	@SuppressWarnings("unchecked")
+	@Override
+	public EditDocumentPropertiesPage render(RenderTime timer)
+	{
+	    while(true)
+	    {
+	        timer.start();
+	        try
+	        {
+	            if(isEditPropertiesVisible() && isSaveButtonVisible())
+	            {
+	                if(tagName == null || tagName.isEmpty())
+	                {
+	                    break;
+	                }
+	                else
+	                {
+	                    if(isTagVisible(tagName))
+	                    {
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+	        catch (Exception e) {}
+	        finally
+	        {
+	            timer.end();
+	        }
+	    }
+		return this;
+	}
+
+	/**
+	 * Check to see if tags are visible on the page
+	 * and match the given tag.
+	 * 
+	 * @param name identifier tag name
+	 * @return true if name matches tag
+	 */
+	private boolean isTagVisible(String name)
     {
-        if(name == null || name.isEmpty()) 
-        {
-            throw new UnsupportedOperationException("Tag name required");
+	    if(name == null || name.isEmpty()) 
+	    {
+	        throw new UnsupportedOperationException("Tag name required");
         }
         try
         {
@@ -111,126 +116,142 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
         return false;
     }
     @SuppressWarnings("unchecked")
-    @Override
-    public EditDocumentPropertiesPage render(long time) 
-    {
-        return render(new RenderTime(time));
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public EditDocumentPropertiesPage render()
-    {
-        return render(new RenderTime(maxPageLoadingTime));
-    }
-    /**
-     * Verify if edit properties element, 
-     * that contains the form is visible.
-     * @return true if displayed
-     */
-    public boolean isEditPropertiesVisible()
-    {
-        try
-        {
-        	return drone.find(By.cssSelector("div#bd div.share-form")).isDisplayed();
-        }
-        catch (NoSuchElementException nse)
-        {
-            return false;
-        }
-    }
-    /**
-     * Get value seen on the author input value.
-     */
-    public String getAuthor()
-    {
-        return getValue(INPUT_AUTHOR_SELECTOR);
-    }
-    /**
-     * Enters a value in to the properties form.
-     * @param author String name input
-     */
-    public void setAuthor(final String author)
-    {
-    	setInput(drone.find(INPUT_AUTHOR_SELECTOR), author);
-    }
-    
-    /**
-     * Check if tags are attached to the particular document value.
-     * @return true if tag elements are displayed
-     */
-    public boolean hasTags()
-    {
-        try
-        {
-            return drone.find(By.cssSelector("div.itemtype-tag")).isDisplayed();
-        }
-        catch (NoSuchElementException nse)
-        {
-            return false;
-        }
-    }
-    
-    /**
-     * Get value seen on the resolution unit input value.
-     */
-    public String getResolutionUnit()
-    {
-        return getValue(INPUT_RESOLUTION_UNIT_SELECTOR);
-    }
-    
-    /**
-     * Enters a value in to the properties form.
-     * @param unit String name input
-     */
-    public void setResolutionUnit(final String unit)
-    {
-        setInput(drone.find(INPUT_RESOLUTION_UNIT_SELECTOR), unit);
-    }
-    /**
-     * Get value seen on the vertical resolution unit input value.
-     */
-    public String getVerticalResolution()
-    {
-        return getValue(INPUT_VERTICAL_RESOLUTION_SELECTOR);
-    }
-    
-    /**
-     * Enters a value in to the properties form.
-     * @param verticalResolution String name input
-     */
-    public void setVerticalResolution(final String verticalResolution)
-    {
-        setInput(drone.find(INPUT_VERTICAL_RESOLUTION_SELECTOR), verticalResolution);
-    }
-    
-    /**
-     * Get value seen on the orientation input value.
-     */
-    public String getOrientation()
-    {
-        return getValue(INPUT_ORIENTATION_SELECTOR);
-    }
-    
-    /**
-     * Enters a value in to the properties form.
-     * @param orientation String name input
-     */
-    public void setOrientation(final String orientation)
-    {
-        setInput(drone.find(INPUT_ORIENTATION_SELECTOR), orientation);
-    }
-    
-    /**
-     * Get the value of selected mime type
-     * @return String value of select mime type
-     */
-    protected String getMimeType()
-    {
-        WebElement selected = drone.find(By.cssSelector("select[id$='prop_mimetype'] option[selected='selected']"));
-        return selected.getText();
-    }
-    
+	@Override
+	public EditDocumentPropertiesPage render(long time) 
+	{
+		return render(new RenderTime(time));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public EditDocumentPropertiesPage render()
+	{
+		return render(new RenderTime(maxPageLoadingTime));
+	}
+	/**
+	 * Verify if edit properties element, 
+	 * that contains the form is visible.
+	 * @return true if displayed
+	 */
+	public boolean isEditPropertiesVisible()
+	{
+		try
+		{
+			return drone.find(By.cssSelector("div#bd div.share-form")).isDisplayed();
+		}
+		catch (NoSuchElementException nse)
+		{
+			return false;
+		}
+	}
+	/**
+	 * Get value seen on the author input value.
+	 */
+	public String getAuthor()
+	{
+		return getValue(INPUT_AUTHOR_SELECTOR);
+	}
+	/**
+	 * Enters a value in to the properties form.
+	 * @param author String name input
+	 */
+	public void setAuthor(final String author)
+	{
+		setInput(drone.find(INPUT_AUTHOR_SELECTOR), author);
+	}
+
+	/**
+	 * Check if tags are attached to the particular document value.
+	 * @return true if tag elements are displayed
+	 */
+	public boolean hasTags()
+	{
+		try
+		{
+			return drone.find(By.cssSelector("div.itemtype-tag")).isDisplayed();
+		}
+		catch (NoSuchElementException nse)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Check if categories are attached to the particular document.
+	 * @return true if category elements are displayed
+	 */
+	//public boolean hasCategories()
+	//{
+		//try
+		//{
+			//return drone.find(By.cssSelector("div[class*='itemtype-cm:category']")).isDisplayed();
+		//}
+		//catch (NoSuchElementException nse)
+		//{
+			//return false;
+		//}
+	//}
+	
+	/**
+	 * Get value seen on the resolution unit input value.
+	 */
+	public String getResolutionUnit()
+	{
+		return getValue(INPUT_RESOLUTION_UNIT_SELECTOR);
+	}
+	
+	/**
+	 * Enters a value in to the properties form.
+	 * @param unit String name input
+	 */
+	public void setResolutionUnit(final String unit)
+	{
+		setInput(drone.find(INPUT_RESOLUTION_UNIT_SELECTOR), unit);
+	}
+	/**
+	 * Get value seen on the vertical resolution unit input value.
+	 */
+	public String getVerticalResolution()
+	{
+		return getValue(INPUT_VERTICAL_RESOLUTION_SELECTOR);
+	}
+	
+	/**
+	 * Enters a value in to the properties form.
+	 * @param verticalResolution String name input
+	 */
+	public void setVerticalResolution(final String verticalResolution)
+	{
+		setInput(drone.find(INPUT_VERTICAL_RESOLUTION_SELECTOR), verticalResolution);
+	}
+	
+	/**
+	 * Get value seen on the orientation input value.
+	 */
+	public String getOrientation()
+	{
+		return getValue(INPUT_ORIENTATION_SELECTOR);
+	}
+	
+	/**
+	 * Enters a value in to the properties form.
+	 * @param orientation String name input
+	 */
+	public void setOrientation(final String orientation)
+	{
+		setInput(drone.find(INPUT_ORIENTATION_SELECTOR), orientation);
+	}
+	
+	/**
+	 * Get the value of selected mime type
+	 * @return String value of select mime type
+	 */
+	protected String getMimeType()
+	{
+		WebElement selected = drone.find(By.cssSelector("select[id$='prop_mimetype'] option[selected='selected']"));
+		return selected.getText();
+	}
+
     /**
      * Selects a mime type from the dropdown by matching
      * the option displayed with the mimeType input. 
@@ -261,35 +282,37 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
                     selected));
         }
     }
-    /**
-     * Verify the save is visible.
-     * @return true if visible
-     */
-    public boolean isSaveButtonVisible()
-    {
-        try
-        {
-            return drone.find(By.cssSelector("span.yui-button.yui-submit-button")).isDisplayed();
-        }
-        catch (NoSuchElementException nse) {}
-        return false;
-    }
-    /**
-     * Clicks on save button.
-     * @return {@link DocumentDetailsPage} page response
-     */
-    public DocumentDetailsPage selectSave()
-    {
-        clickSave();
-        return new DocumentDetailsPage(drone);
-    }
+	/**
+	 * Verify the save is visible.
+	 * @return true if visible
+	 */
+	public boolean isSaveButtonVisible()
+	{
+	    try
+	    {
+	        return drone.find(By.cssSelector("span.yui-button.yui-submit-button")).isDisplayed();
+	    }
+	    catch (NoSuchElementException nse) {}
+	    return false;
+	}
+	/**
+	 * Clicks on save button.
+	 * @return {@link DocumentDetailsPage} page response
+	 */
+	public HtmlPage selectSave()
+	{
+	    clickSave();
+	    // WEBDRONE-523: Amended to return HtmlPage rather than DocumentDetailsPage
+	    return FactorySharePage.resolvePage(drone);
+	}
     /**
      * Select cancel button.
      * @return {@link DocumentDetailsPage} page response
      */
-    protected DocumentDetailsPage selectCancel()
+    public HtmlPage selectCancel()
     {
         clickOnCancel();
-        return new DocumentDetailsPage(drone);
+        // WEBDRONE-523: Amended to return HtmlPage rather than DocumentDetailsPage
+        return FactorySharePage.resolvePage(drone);
     }
 }
