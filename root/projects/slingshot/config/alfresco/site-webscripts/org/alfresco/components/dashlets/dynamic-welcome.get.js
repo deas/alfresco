@@ -318,7 +318,7 @@ function main()
                   "\"" + model.dashboardUrl + "\"",
                   "\"" + model.dashboardType + "\"",
                   "\"" + (model.siteNodeRef == null ? "" : model.siteNodeRef) + "\"",
-                  "\"" + (model.site == null ? "" : jsonUtils.encodeJSONString(model.site)) + "\""]
+                  "\"" + (model.site == null ? "" : encodeURIComponent(jsonUtils.encodeJSONString(model.site))) + "\""]
    };
    model.widgets = [dynamicWelcome];
 }

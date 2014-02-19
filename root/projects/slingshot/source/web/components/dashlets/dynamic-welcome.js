@@ -48,7 +48,7 @@
       this.createSite = null;
       this.dashboardType = dashboardType;
       this.site = site;
-      this.siteTitle = siteTitle;
+      this.siteTitle = decodeURIComponent(siteTitle);
 
       this.services.preferences = new Alfresco.service.Preferences();
       return this;
