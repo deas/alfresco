@@ -1003,8 +1003,8 @@
          </action>
 
          <!-- Inline edit -->
-         <action id="document-inline-edit" type="javascript" label="actions.document.inline-edit">
-            <param name="function">onActionEditInline</param>
+         <action id="document-inline-edit" type="pagelink" label="actions.document.inline-edit">
+            <param name="page">inline-edit?nodeRef={node.nodeRef}</param>
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
