@@ -129,7 +129,7 @@ public class CreateContentPageTest extends AbstractDocumentTest
         SiteDashboardPage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
-    	ContentDetails contentDetails = new ContentDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName("Test Doc");
         contentDetails.setTitle("Test");
         contentDetails.setDescription("Desc");
@@ -140,8 +140,8 @@ public class CreateContentPageTest extends AbstractDocumentTest
         List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
         aspects.add(DocumentAspect.VERSIONABLE);
         aspects.add(DocumentAspect.CLASSIFIABLE);
-        detailsPage = aspectsPage.add(aspects).render();
-        detailsPage.render();
+        aspectsPage.add(aspects).render();
+        detailsPage = aspectsPage.clickApplyChanges().render();
         EditTextDocumentPage editPage = detailsPage.selectInlineEdit().render();
         contentDetails = editPage.getDetails();
         assertEquals(contentDetails.getContent(), "Shan Test Doc");

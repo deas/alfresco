@@ -142,8 +142,8 @@ public class Navigation extends SharePage
      */
     public CreateSitePage selectCreateSite()
     {
-        selectSitesDropdown();
         String selector = isDojoSupport() ? "td#HEADER_SITES_MENU_CREATE_SITE_text" : "ul.create-site-menuitem>li>a";
+        selectSitesDropdown();
         drone.findAndWait(By.cssSelector(selector)).click();
         return new CreateSitePage(drone);
     }
