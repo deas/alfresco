@@ -179,17 +179,30 @@ function showLightbox(objLink)
 
 		// center lightbox and make sure that the top and left values are not negative
 		// and the image placed outside the viewport
-		var lightboxTop = arrayPageScroll[1] + ((arrayPageSize[3] - 35 - imgPreload.height) / 2);
-		var lightboxLeft = ((arrayPageSize[0] - 20 - imgPreload.width) / 2);
+		var width = imgPreload.width,
+		    height = imgPreload.height;
+		// re calculate width/height to ensure at least width of image is visible
+		if (width > arrayPageSize[0])
+		{
+		   width = arrayPageSize[0];
+		   height = width / (imgPreload.width / imgPreload.height);
+		}
+		
+		var lightboxTop = arrayPageScroll[1] + ((arrayPageSize[3] - height) / 2);
+		var lightboxLeft = ((arrayPageSize[0] - 20 - width) / 2);
 		
 		objLightbox.style.top = (lightboxTop < 0) ? "0px" : lightboxTop + "px";
 		objLightbox.style.left = (lightboxLeft < 0) ? "0px" : lightboxLeft + "px";
 
       objLightbox.style.minWidth = '128px';
       objLightboxDetails.style.minWidth = '128px';
-		objLightboxDetails.style.width = imgPreload.width + 'px';
+   
+      // adjust in
+      objLightbox.style.width = width-40 + 'px';
+		objLightboxDetails.style.width = width-40 + 'px';
+		lightboxImage.style.width = width-40 + 'px';
 
-      var title= objLink.title;
+      var title = objLink.title;
       if (!title && objLink.getAttribute)
       {
          // An HTMLELement weas passed in
