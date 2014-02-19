@@ -1,0 +1,20 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+	<test name="dataprep" verbose="1" parallel="classes" thread-count="1">
+		<groups>
+			<run>
+				<include name="DataPrep.*" />
+			</run>
+		</groups>
+		<classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentCreateTests" />
+            <class name="org.alfresco.share.repository.RepositoryDocumentDownloadTests" />
+            <class name="org.alfresco.share.repository.RepositoryDocumentUsersHomeTests" />
+            <class name="org.alfresco.share.repository.RepositoryDocumentWorkflowsTests" />
+             <class name="org.alfresco.share.repository.RepositoryFolderTests3" />
+             <class name="org.alfresco.share.repository.RepositoryFolderTests" />
+            <class name="org.alfresco.share.repository.RepositoryFolderTests2" />
+            <class name="org.alfresco.share.repository.RepositoryManagePermissionTest" />
+		</classes>
+	</test>
+</suite>

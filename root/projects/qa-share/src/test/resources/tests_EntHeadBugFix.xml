@@ -1,0 +1,93 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+	<groups>
+		<run>
+			<exclude name="DataPrep.*" />
+			<exclude name="CloudOnly" />
+			<exclude name="Hybrid.*" />
+		</run>
+	</groups>
+	<test name="CommentsAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.CommentsAPITests" />
+		</classes>
+	</test>
+	<test name="DeploymentsAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.DeploymentsAPITests" />
+		</classes>
+	</test>
+	<test name="FavouriteAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.FavouriteAPITests" />
+		</classes>
+	</test>
+	<test name="ProcessesAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.ProcessesAPITests" />
+		</classes>
+	</test>
+	<test name="SiteMembershipAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.SiteMembershipAPITests" />
+		</classes>
+	</test>
+	<test name="TagsAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.TagsAPITests" />
+		</classes>
+	</test>
+	<test name="WorkflowAPITests" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.api.WorkflowAPITests" />
+		</classes>
+	</test>
+
+	<!-- Merged Already -->
+	<test name="UserLoginAndDashBoardTest" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.LoginTest" />
+			<class name="org.alfresco.share.MyDashBoardTest">
+				<methods>
+					<exclude name="cloud_1507" />
+				</methods>
+			</class>
+			<class name="org.alfresco.share.SiteDashBoardTest" />
+		</classes>
+	</test>
+
+	<test name="DashletTest" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
+		</classes>
+	</test>
+
+	<test name="SearchTest" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.search.AdvanceSearchTest2" />
+			<class name="org.alfresco.share.search.BasicSearchTest" />
+		</classes>
+	</test>
+
+	<test name="DocLibTest" verbose="1" parallel="classes"
+		thread-count="1">
+		<classes>
+			<class name="org.alfresco.share.SiteDocumentLibraryTest">
+				<methods>
+					<exclude name="enterprise40x_5606" />
+				</methods>
+			</class>
+			<class name="org.alfresco.share.site.document.ManageAspectTest" />
+		</classes>
+	</test>
+</suite>

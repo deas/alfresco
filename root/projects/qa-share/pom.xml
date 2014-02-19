@@ -1,0 +1,356 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.alfresco.qa</groupId>
+	<artifactId>qa-share</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<webdrone.version>2.2-SNAPSHOT</webdrone.version>
+		<office.component>libreofficecomponent</office.component>
+		<enable.hybrid>false</enable.hybrid>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>alfresco-public</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>alfresco-public-snapshot</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>alfresco-internal</id>
+			<name>Alfresco Releases Repository</name>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>alfresco-internal-snapshots</id>
+			<name>Alfresco Snapshots Repository </name>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:svn:https://svn.alfresco.com/repos/qa/scripts/qa-share/trunk</connection>
+		<developerConnection>scm:svn:https://svn.alfresco.com/repos/qa/scripts/qa-share/trunk</developerConnection>
+	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>share-po</artifactId>
+			<version>2.1.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>webdrone</artifactId>
+			<version>${webdrone.version}</version>
+		</dependency>
+		<!-- dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>webdrone</artifactId>
+			<version>${webdrone.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+			</dependency -->
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco-benchmark-util</artifactId>
+			<version>1.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Selenium -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.39.0</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>3.1.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco-remote-api</artifactId>
+			<version>4.3.0-SNAPSHOT</version>
+			<classifier>tests</classifier>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco-remote-api</artifactId>
+			<version>4.2.e</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>${testng.xml}</suiteXmlFile>
+						<!-- suiteXmlFile>src/test/resources/qa-share-testng.xml</suiteXmlFile -->
+						<!-- suiteXmlFile>src/test/resources/qa-download-testng.xml</suiteXmlFile -->
+					</suiteXmlFiles>
+					<runOrder>alphabetical</runOrder>
+					<argLine>-Xms512m -Xmx1024m</argLine>
+					<!-- workingDirectory>target</workingDirectory -->
+					<parallel>classes</parallel>
+					<systemPropertyVariables>
+						<webdrone.max.waitTime>${webdrone.max.waitTime}</webdrone.max.waitTime>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop 
+					server -->
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<configuration>
+							<target>
+								<echo>Stopping Alfresco...</echo>
+								<exec executable="${basedir}/target/alf-installation/alfresco.sh"
+									dir="target/alf-installation" failonerror="true">
+									<arg value="stop" />
+								</exec>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>install-alfresco</id>
+			<build>
+				<plugins>
+					<!-- Download and install the specified build of enterprise alfresco installer -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>fetch-installer</id>
+								<phase>generate-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo>Recreating database...</echo>
+										<sql driver="org.postgresql.Driver" url="jdbc:postgresql:template1"
+											userid="alfresco" password="alfresco" autocommit="true">drop
+											database if exists alfresco; create database alfresco</sql>
+										<echo>Downloading Alfresco installer...</echo>
+										<scp
+											remoteFile="tomcat@pbld01.alfresco.com:/data/nightlybuilds/Enterprise?${enterprise.installer.version}/*/ALL/alfresco-enterprise-*-installer-linux-x64.???"
+											localTofile="target/alf-installer.bin" keyfile="${user.home}/.ssh/id_rsa" />
+										<chmod file="target/alf-installer.bin" perm="a+x"
+											verbose="true" />
+										<echo>Installing Alfresco...</echo>
+										<exec executable="${basedir}/target/alf-installer.bin"
+											dir="target" failonerror="true">
+											<arg
+												line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs,${office.component} --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation" />
+										</exec>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.8.2</version>
+							</dependency>
+							<dependency>
+								<groupId>postgresql</groupId>
+								<artifactId>postgresql</artifactId>
+								<version>9.1-901-1.jdbc4</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>run-alfresco</id>
+			<build>
+				<plugins>
+					<!-- Fetch JaCoCo agent and set the argLine property accordingly -->
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.6.3.201306030806</version>
+						<executions>
+							<execution>
+								<id>prepare-jacoco</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<includes>
+								<include>org.alfresco.*</include>
+							</includes>
+						</configuration>
+					</plugin>
+
+					<!-- Starts/stop the installed Alfresco -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>start-alfresco</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo>Starting Alfresco...</echo>
+                                        <exec executable="${basedir}/target/alf-installation/alfresco.sh" dir="target/alf-installation" failonerror="true">
+											<arg value="start" />
+											<env key="CATALINA_OPTS" value="${argLine}" />
+										</exec>
+										<sleep minutes="5" />
+									</target>
+								</configuration>
+							</execution>
+							<execution>
+								<id>stop-alfresco</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo>Stopping Alfresco...</echo>
+                                        <exec executable="${basedir}/target/alf-installation/alfresco.sh" dir="target/alf-installation" failonerror="true">
+											<arg value="stop" />
+										</exec>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>enable-hybrid</id>
+			<activation>
+				<property>
+					<name>enable.hybrid</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Enable hybrid in the installation -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>modify-properties</id>
+								<phase>generate-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+                                        <property name="alf.prop" location="target/alf-installation/tomcat/shared/classes/alfresco-global.properties" />
+										<echo append="true" output="${alf.prop}" />
+										<echo append="true" output="${alf.prop}">
+# Enabling hybrid in the installation - automatically added by the build
+											hybridworkflow.enabled=true
+											sync.cloud.url=https://thybrida.alfresco.me/alfresco/a/{network}/
+										</echo>
+										<echo append="true" output="${alf.prop}" />
+										<copy failonerror="false" verbose="true"
+											todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license"
+											file="${user.home}/binaries/build-classpath/4.2/WEB-INF/alfresco/license/Enterprise42-All.lic" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

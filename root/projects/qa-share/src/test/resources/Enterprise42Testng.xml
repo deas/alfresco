@@ -1,0 +1,64 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="All" verbose="1" preserve-order="true">
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <exclude name="Enterprise41" />
+            <exclude name="Cloud-only" />
+            <exclude name=".*Bug" />
+            <exclude name="ChromeOnly" />
+            <exclude name="Staging" />
+            <exclude name="Download" />
+            <exclude name="Hybrid" />
+            <exclude name="CloudSync" />
+        </run>
+    </groups>
+    <test name="Sanity">
+        <groups>
+            <run>
+                <include name="Sanity" />
+            </run>
+        </groups>
+        <classes>
+            <class name="org.alfresco.share.sanity.InternalAPITest" />
+            <!-- <class name="Add-Classes-in-Sanity-Suite-here" /> -->
+        </classes>
+    </test>
+
+    <test name="Regression" verbose="1" parallel="classes" thread-count="5">
+        <classes>
+            <!-- Login -->
+            <class name="org.alfresco.share.LoginTest" />
+
+            <!-- DashBoard -->
+            <class name="org.alfresco.share.MyDashBoardTest" />
+            <class name="org.alfresco.share.SiteDashBoardTest" />
+            
+            <!-- DocLib -->
+            <class name="org.alfresco.share.SiteDocumentLibraryTest" />
+            <class name="org.alfresco.share.site.document.GoogleDocsTest" />
+            <class name="org.alfresco.share.site.document.ManageAspectTest" />
+            
+            <!-- Search -->
+            <class name="org.alfresco.share.search.AdvanceSearchTest" />
+            <class name="org.alfresco.share.search.BasicSearchTest" />
+            <class name="org.alfresco.share.cloud.AdvanceSearchCRMTest" />
+            
+            <!-- Dashlet -->
+            <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest" />
+            <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
+            <class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete" />
+            
+            <!-- CludSync -->
+           <!--  <class name="org.alfresco.share.cloudsync.CloudSyncAccessTest" /> -->
+            <!-- <class name="org.alfresco.share.cloudsync.CloudSyncAccessTest2" /> -->
+            <!-- <class name="org.alfresco.share.cloudsync.CloudSyncAccessTest3" /> -->
+            
+            <!-- HybridWorkflow -->
+            <!-- <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" /> -->           
+            
+            
+        </classes>
+
+    </test>
+</suite>
