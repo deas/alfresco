@@ -1,0 +1,32 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Regression" verbose="1" parallel="tests" thread-count="5">
+	<test name="Login">
+		<classes>
+			<class name="org.alfresco.share.LoginTest" />
+		</classes>
+	</test>
+	<test name="DashBoard">
+		<classes>
+			<class name="org.alfresco.share.MyDashBoardTest" />
+			<class name="org.alfresco.share.SiteDashBoardTest" />
+		</classes>
+	</test>
+	<test name="DocLib">
+		<classes>
+			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
+			<class name="org.alfresco.share.DownloadFilesAndFoldersTest" />
+			<class name="org.alfresco.share.site.document.ManageAspectTest" />
+		</classes>
+	</test>
+	<test name="Search">
+		<packages>
+			<package name="org.alfresco.share.search" />
+		</packages>
+	</test>
+	<test name="Dashlet">
+		<packages>
+			<package name="org.alfresco.share.dashlet" />
+		</packages>
+	</test>
+</suite>

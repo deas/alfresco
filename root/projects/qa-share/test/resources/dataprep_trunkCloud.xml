@@ -1,0 +1,49 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+	<test name="dataprepCloud" verbose="1" parallel="classes"
+		thread-count="1">
+		<groups>
+			<run>
+				<include name="DataPrep.*" />
+				<!-- <exclude name="EnterpriseOnly" /> -->
+			</run>
+		</groups>
+		<classes>
+			<!-- TDD: Work in Progress -->
+
+			<!-- New in the Sprint -->
+			<class name="org.alfresco.share.api.CommentsAPITests" />
+			<class name="org.alfresco.share.api.DeploymentsAPITests" />
+			<class name="org.alfresco.share.api.FavouriteAPITests" />
+			<class name="org.alfresco.share.api.NodesAPITests" />
+			<class name="org.alfresco.share.api.PeopleAPITests" />
+			<class name="org.alfresco.share.api.ProcessesAPITests" />
+			<class name="org.alfresco.share.api.SiteMembershipAPITests" />
+			<class name="org.alfresco.share.api.SitesAPITests" />
+			<class name="org.alfresco.share.api.TagsAPITests" />
+			<class name="org.alfresco.share.api.WorkflowAPITests" />
+
+			<!-- Merged -->
+
+			<class name="org.alfresco.share.LoginTest" />
+			<class name="org.alfresco.share.MyDashBoardTest" />
+			<class name="org.alfresco.share.SiteDashBoardTest" />
+
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest" />
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
+
+			<class name="org.alfresco.share.search.AdvanceSearchTest" />
+			<class name="org.alfresco.share.search.AdvanceSearchTest2" />
+			<class name="org.alfresco.share.search.BasicSearchTest" />
+
+			<class name="org.alfresco.share.DownloadFilesAndFoldersTest" />
+			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
+			<class name="org.alfresco.share.site.document.ManageAspectTest" />
+
+			<class name="org.alfresco.share.user.trashcan.TrashCanTest" />
+
+			<class name="org.alfresco.share.site.document.GoogleDocsTest" />
+
+		</classes>
+	</test>
+</suite>

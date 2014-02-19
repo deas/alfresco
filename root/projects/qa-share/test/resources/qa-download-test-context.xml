@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+    xsi:schemaLocation="http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-3.0.xsd
+          http://www.springframework.org/schema/data/mongo
+          http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    
+    <!--                                     -->      
+    <!-- Import webdrone application context -->      
+    <!--                                     -->      
+    <bean id="webDroneTestProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+				<value>classpath:webdrone.download.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--                  -->
+    <!-- WebDrone Factory -->
+    <!--                  -->
+    <bean id="webDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory">
+        <constructor-arg name="alfrescoVersion" value="${webdrone.alfresco.version}" />
+        <constructor-arg name="defaultWaitTime" value="${webdrone.element.wait.time}" />
+        <constructor-arg name="browser" value="${webdrone.browser}" />
+        <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.page.render.wait.time}" />
+        <property name="gridUrl" value="${webdrone.grid.url}" />
+        <property name="chromeServerPath" value="${webdrone.chrome.server.path}" />
+        <property name="ieServerPath" value="${webdrone.ie.server.path}" />
+        <property name="downloadDirectory" value="${webdrone.download.directory}" />
+        <property name="mimeTypes" value="${webdrone.download.mime.types}" />
+        <property name="popupRendertime" value="${webdrone.error.popup.render.time}" />
+        <property name="elementWaitInSeconds" value="${webdrone.element.action.wait.seconds}" />
+    </bean>
+    
+    <!--                  -->
+    <!-- WebDrone         -->
+    <!--                  -->    
+    <bean id="webDrone" factory-bean="&amp;webDroneFactoryBean" factory-method="getObject" scope="prototype" destroy-method="quit" />
+    
+    <bean id="shareTestProperties" class="org.alfresco.share.util.ShareTestProperty">
+        <constructor-arg name="shareUrl" value="${webdrone.target}" />
+        <constructor-arg name="gridUrl"  value="${webdrone.grid.url}" />
+        <constructor-arg name="username" value="${webdrone.username}" />
+        <constructor-arg name="password" value="${webdrone.password}" />
+        <constructor-arg name="alfrescoVersion" value="${webdrone.alfresco.version}" />
+        <constructor-arg name="downloadDirectory" value="${webdrone.download.directory}" />
+        <constructor-arg name="cloudUrlForHybrid" value="${webdrone.cloud.target}" />
+        <constructor-arg name="googleUserName" value="${googleUserName}" />
+        <constructor-arg name="googlePassword" value="${googlePassword}" />
+        <constructor-arg name="hybridEnabled" value="${webdrone.hybrid.enabled}" />
+        <constructor-arg name="uniqueTestRunName" value="${uniqueTestRunName}" />
+        <constructor-arg name="domainFree" value="${domainFree}" />
+        <constructor-arg name="domainPremium" value="${domainPremium}" />
+        <constructor-arg name="domainHybrid" value="${domainHybrid}" />
+        <constructor-arg name="defaultUser" value="${defaultUser}" />
+        <constructor-arg name="uniqueTestDataString" value="${uniqueTestDataString}" />  
+        <constructor-arg name="adminUsername" value="${adminUsername}" />
+        <constructor-arg name="adminPassword" value="${adminPassword}" />
+        <constructor-arg name="headerKey" value="${headerKey}" />   
+        <constructor-arg name="httpSecurePort" value="${webdrone.secure.port}" />  
+    </bean>
+
+	<!--                                     					-->      
+    <!-- Share test properties for cloud for hybrid scenario 	-->      
+    <!--                                     					-->   
+    <bean id="hybridShareTestProperties" class="org.alfresco.share.util.ShareTestProperty">
+        <constructor-arg name="shareUrl" value="${webdrone.cloud.target}" />
+        <constructor-arg name="gridUrl" value="null" />
+        <constructor-arg name="username" value="${webdrone.hybrid.cloud.username}" />
+        <constructor-arg name="password" value="${webdrone.hybrid.cloud.password}" />
+        <constructor-arg name="alfrescoVersion" value="Cloud2" />
+        <constructor-arg name="cloudUrlForHybrid" value="" />
+        <constructor-arg name="downloadDirectory" value="${webdrone.download.directory}" />
+		<constructor-arg name="googleUserName" value="${googleUserName}" />
+        <constructor-arg name="googlePassword" value="${googlePassword}" />
+        <constructor-arg name="hybridEnabled" value="${webdrone.hybrid.enabled}" />
+        <constructor-arg name="uniqueTestRunName" value="${uniqueTestRunName}" />
+        <constructor-arg name="domainFree" value="${domainFree}" />
+        <constructor-arg name="domainPremium" value="${domainPremium}" />
+        <constructor-arg name="domainHybrid" value="${domainHybrid}" />
+        <constructor-arg name="defaultUser" value="${defaultUser}" />
+        <constructor-arg name="uniqueTestDataString" value="${uniqueTestDataString}" />  
+        <constructor-arg name="adminUsername" value="${adminUsername}" />
+        <constructor-arg name="adminPassword" value="${adminPassword}" />
+        <constructor-arg name="headerKey" value="${headerKey}" />
+        <constructor-arg name="httpSecurePort" value="${webdrone.secure.port}" />  
+    </bean>
+    
+    <!--                  -->
+    <!-- WebDrone Factory -->
+    <!--                  -->
+    <bean id="hybridWebDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory">
+        <constructor-arg name="alfrescoVersion" value="Cloud2" />
+        <constructor-arg name="defaultWaitTime" value="${webdrone.element.wait.time}" />
+        <constructor-arg name="browser" value="${webdrone.browser}" />
+        <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.page.render.wait.time}" />
+        <property name="gridUrl" value="${webdrone.grid.url}" />
+        <property name="chromeServerPath" value="${webdrone.chrome.server.path}" />
+        <property name="ieServerPath" value="${webdrone.ie.server.path}" />
+        <property name="downloadDirectory" value="${webdrone.download.directory}" />
+        <property name="mimeTypes" value="${webdrone.download.mime.types}" />
+        <property name="popupRendertime" value="${webdrone.error.popup.render.time}" />
+        <property name="elementWaitInSeconds" value="${webdrone.element.action.wait.seconds}" />
+    </bean>
+    
+    <!--                  -->
+    <!-- WebDrone for hybrid workflows        -->
+    <!--                  -->    
+    <bean id="hybridWebDrone" factory-bean="&amp;hybridWebDroneFactoryBean" factory-method="getObject" scope="singleton" destroy-method="quit" lazy-init="true"/>
+    
+</beans>

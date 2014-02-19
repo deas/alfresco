@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+ 
+<suite name="WebDrone Tests" verbose="6" >
+    <parameter name="contextFileName" value="qa-download-test-context.xml" />
+    <test name="WebDrone Test">
+        <classes>
+            <class name="org.alfresco.share.DownloadFilesAndFoldersTest"></class>
+        </classes>
+    </test>
+</suite>
+
