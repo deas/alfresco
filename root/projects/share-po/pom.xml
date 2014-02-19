@@ -90,11 +90,6 @@
 	    </dependency>
     </dependencies>
     
-    <scm>
-        <connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/benchmark/webdrone/share-po/trunk</connection>
-        <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/trunk</developerConnection>
-    </scm>
-
     <!-- Pacakge Application into a standalone  -->
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
