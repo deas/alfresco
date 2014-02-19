@@ -166,7 +166,8 @@ public class DocumentLibraryNavigation extends SharePage
                 element = drone.findAndWait(By.cssSelector("form[id$='_default-htmlupload-form']"));
                 break;
             default:
-                element = drone.findAndWaitById("upload.file.dialog.id");
+                //Find by unique folder icon that appears in the dialog
+                element = drone.findAndWait(By.cssSelector("img.title-folder"));
                 break;
             }
 
