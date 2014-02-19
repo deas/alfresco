@@ -13,7 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
         <webdrone.page.render.wait.time>6000</webdrone.page.render.wait.time>
-        <enterprise.installer.version>4.2</enterprise.installer.version>
+        <enterprise.installer.version>4.3</enterprise.installer.version>
         <test.exclude>nonEnterprise</test.exclude>
     </properties>
     <repositories>
@@ -259,7 +259,7 @@ hybridworkflow.enabled=true
 sync.cloud.url=https://webdronehwa.alfresco.me/alfresco/a/{network}/
                                         </echo>
                                         <echo append="true" output="${alf.prop}" />
-                                        <copy failonerror="false" verbose="true" todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license" file="${user.home}/binaries/build-classpath/4.2/WEB-INF/alfresco/license/Enterprise42-All.lic" /> 
+                                        <copy failonerror="false" verbose="true" todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license" file="${user.home}/binaries/build-classpath/4.3/WEB-INF/alfresco/license/Enterprise43-All.lic" /> 
                                     </target>
                                 </configuration>
                             </execution>
