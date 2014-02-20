@@ -1430,7 +1430,7 @@
                    warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
    </target>
 
-   <target name="deploy-solr" description="Add the repository specific files to the SOLR instance" depends="package-core, package-datamodel, package-solrclient, package-solr" >
+   <target name="deploy-solr" description="Add the repository specific files to the SOLR instance" depends="package-core, package-datamodel, package-legacylucene, package-solrclient, package-solr" >
       <delete includeemptydirs="true">
          <fileset dir="${dir.project.solr.instance.lib}" includes="**/*"/>
       </delete>
@@ -1439,6 +1439,8 @@
             file="${dir.project.core.dist}/${file.name.jar.core}" />
       <copy todir="${dir.project.solr.instance.lib}" 
             file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
+      <copy todir="${dir.project.solr.instance.lib}" 
+            file="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}" />
       <copy todir="${dir.project.solr.instance.lib}" 
             file="${dir.project.solrclient.dist}/${file.name.jar.solrclient}" />
       <copy todir="${dir.project.solr.instance.lib}"
@@ -1451,6 +1453,7 @@
 
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.core}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.datamodel}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.legacylucene}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solrclient}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solr}" libdir="${dir.project.3rdparty}" />
 
