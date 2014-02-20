@@ -79,7 +79,7 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
         }
       
         typeDef.setIsFulltextIndexed(true);
-        typeDef.setIsControllablePolicy(false);
+        typeDef.setIsControllablePolicy(true);
         typeDef.setIsControllableAcl(true);
         typeDef.setIsIncludedInSupertypeQuery(cmisClassDef.getIncludedInSuperTypeQuery());
         typeDef.setIsFileable(false);

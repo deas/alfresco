@@ -666,15 +666,23 @@ public class CMISMapping implements InitializingBean
         	return true;
         }
         
-        TypeDefinition typeDef = dictionaryService.getType(typeQName);
-        if (typeDef == null)
-        {
-            return false;
-        }
-
         if(typeQName.equals(ContentModel.TYPE_BASE))
         {
         	return false;
+        }
+        
+        AspectDefinition aspectDef = dictionaryService.getAspect(typeQName);
+        if (aspectDef != null)
+        {
+        	// aspects are not items - this stops warning from getType
+            return false;
+        }
+        
+        TypeDefinition typeDef = dictionaryService.getType(typeQName);
+        if (typeDef == null)
+        {
+        	// type does not exist
+            return false;
         }
         
         if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_BASE))
