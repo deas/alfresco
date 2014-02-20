@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,13 +20,19 @@ package org.alfresco.repo.search.impl.lucene;
 
 import java.util.List;
 
-import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.Ordering;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.apache.lucene.queryParser.ParseException;
 
 /**
+ * Adaptor class principally to wrap lucene parser implementations and encapsulate changes between lucene versions
+ * of query building.
+ * 
+ * @param <Q> the query type used by the query engine implementation
+ * @param <S> the sort type used by the query engine implementation
+ * @param <E> the exception it throws 
+ * 
  * @author Andy
  *
  */
@@ -44,19 +50,31 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
 
     /**
      * @param field
-     * @param part1
-     * @param part2
+     * @param lower
+     * @param upper
      * @param includeLower
      * @param includeUpper
      * @param analysisMode
      * @param luceneFunction
      * @return
      */
-    Q getRangeQuery(String field, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws E;
+    Q getRangeQuery(String field, String lower, String upper, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws E;
 
     
+    /**
+     * A query that matches all docs
+     * 
+     * @return
+     * @throws E
+     */
     Q getMatchAllQuery() throws E;
     
+    /**
+     * A query that matches no docs.
+     * 
+     * @return
+     * @throws E
+     */
     Q getMatchNoneQuery() throws E;
 
     /**
@@ -73,17 +91,14 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
     SearchParameters getSearchParameters();
 
     /**
-     * @return
-     */
-    MLAnalysisMode getDefaultSearchMLAnalysisMode();
-
-    /**
      * @param field
      * @return
      */
     String getSortField(String field) throws E;
 
     /**
+     * Wrap generating a potentially complex id + version query
+     * 
      * @param field
      * @param stringValue
      * @param analysisMode
@@ -93,6 +108,8 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
     Q getIdentifierQuery(String field, String stringValue, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws E;
 
     /**
+     * Wrap generating a potentially complex id + version query
+     * 
      * @param field
      * @param stringValue
      * @param identifier
@@ -107,12 +124,12 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
     boolean sortFieldExists(String noLocalField);
 
     /**
-     * @param string
-     * @param string2
+     * @param field
+     * @param value
      * @return
      * @throws ParseException 
      */
-    Q getFieldQuery(String string, String string2) throws E;
+    Q getFieldQuery(String field, String value) throws E;
 
     /**
      * @param list 
@@ -132,11 +149,15 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
     Q getFuzzyQuery(String luceneFieldName, String term, Float minSimilarity) throws E;
 
     /**
+     * Get the default field
+     * 
      * @return
      */
     String getField();
 
     /**
+     * Get the default phrase slop
+     * 
      * @return
      */
     int getPhraseSlop();
@@ -146,10 +167,10 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
      * @param term
      * @param analysisMode
      * @param slop
-     * @param field
+     * @param luceneFunction
      * @return
      */
-    Q getFieldQuery(String luceneFieldName, String term, AnalysisMode analysisMode, Integer slop, LuceneFunction field) throws E;
+    Q getFieldQuery(String luceneFieldName, String term, AnalysisMode analysisMode, Integer slop, LuceneFunction luceneFunction) throws E;
 
     /**
      * @param luceneFieldName
@@ -164,10 +185,10 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
      * @param first
      * @param last
      * @param slop
-     * @param b
+     * @param inOrder
      * @return
      */
-    Q getSpanQuery(String luceneFieldName, String first, String last, int slop, boolean b) throws E;
+    Q getSpanQuery(String luceneFieldName, String first, String last, int slop, boolean inOrder) throws E;
 
     /**
      * @param luceneFieldName
@@ -178,6 +199,7 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
     Q getWildcardQuery(String luceneFieldName, String term, AnalysisMode mode) throws E;
     
     /**
+     * Invert a query - add a mandatory must not match anything query alnogside 
      * 
      * @param query
      * @return
@@ -185,12 +207,14 @@ public interface LuceneQueryParserAdaptor<Q, S, E extends Throwable>
     Q getNegatedQuery(Q query) throws E;
     
     /**
-     * 
+     * Utility to build conjunctions, disjunctions and negation
      * @return
      */
     LuceneQueryParserExpressionAdaptor<Q, E> getExpressionAdaptor();
 
     /**
+     * A query that matches all alfresco nodes (not extra stuff that may be in the underlying index)
+     * 
      * @return
      */
     Q getMatchAllNodesQuery(); 

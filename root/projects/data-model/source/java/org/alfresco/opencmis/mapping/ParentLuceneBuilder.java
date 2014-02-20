@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -100,11 +100,9 @@ public class ParentLuceneBuilder extends BaseLuceneBuilder
         if (not)
         {
             return lqpa.getFieldQuery("ISROOT", "T", AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
-            //return new TermQuery(new Term("ISROOT", "T"));
         } else
         {
             return lqpa.getNegatedQuery(lqpa.getFieldQuery("ISROOT", "T", AnalysisMode.IDENTIFIER, LuceneFunction.FIELD));
-            //return new MatchAllDocsQuery();
         }
     }
 

@@ -255,63 +255,6 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
     private  <Q, S, E extends Throwable> String findSortField(LuceneQueryParserAdaptor<Q, S, E> lqpa, String field) throws E
     {
         return lqpa.getSortField(field);
-//        Locale sortLocale;
-//        List<Locale> locales = lqpa.getSearchParameters().getLocales();
-//        if (((locales == null) || (locales.size() == 0)))
-//        {
-//            locales = Collections.singletonList(I18NUtil.getLocale());
-//        }
-//
-//        if (locales.size() > 1)
-//        {
-//            throw new FTSQueryException("Order on text/mltext properties with more than one locale is not curently supported");
-//        }
-//
-//        sortLocale = locales.get(0);
-//        // find best field match
-//
-//        HashSet<String> allowableLocales = new HashSet<String>();
-//        MLAnalysisMode analysisMode = lqpa.getDefaultSearchMLAnalysisMode();
-//        for (Locale l : MLAnalysisMode.getLocales(analysisMode, sortLocale, false))
-//        {
-//            allowableLocales.add(l.toString());
-//        }
-//
-//        String sortField = field;
-//
-//        for (Object current : lqp.getIndexReader().getFieldNames(FieldOption.INDEXED))
-//        {
-//            String currentString = (String) current;
-//            if (currentString.startsWith(field) && currentString.endsWith(AbstractLuceneQueryParser.FIELD_SORT_SUFFIX))
-//            {
-//                String fieldLocale = currentString.substring(field.length() + 1, currentString.length() - 5);
-//                if (allowableLocales.contains(fieldLocale))
-//                {
-//                    if (fieldLocale.equals(sortLocale.toString()))
-//                    {
-//                        sortField = currentString;
-//                        break;
-//                    }
-//                    else if (sortLocale.toString().startsWith(fieldLocale))
-//                    {
-//                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
-//                        {
-//                            sortField = currentString;
-//                        }
-//                    }
-//                    else if (fieldLocale.startsWith(sortLocale.toString()))
-//                    {
-//                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
-//                        {
-//                            sortField = currentString;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        field = sortField;
-//        return field;
     }
 
     public Map<String, NodeRef> getNodeRefs()

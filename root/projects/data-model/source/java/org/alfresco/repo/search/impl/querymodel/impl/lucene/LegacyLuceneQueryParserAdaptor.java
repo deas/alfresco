@@ -123,15 +123,6 @@ public class LegacyLuceneQueryParserAdaptor implements LuceneQueryParserAdaptor<
     }
 
     /* (non-Javadoc)
-     * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor#getDefaultSearchMLAnalysisMode()
-     */
-    @Override
-    public MLAnalysisMode getDefaultSearchMLAnalysisMode()
-    {
-        return lqp.getDefaultSearchMLAnalysisMode();
-    }
-
-    /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor#getSortField(java.lang.String)
      */
     @Override
