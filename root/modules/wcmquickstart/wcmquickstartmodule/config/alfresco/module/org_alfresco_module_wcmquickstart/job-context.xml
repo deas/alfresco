@@ -13,6 +13,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="${wcmqs.feedbackProcessor.schedule}" />
+        <property name="startDelayMinutes">
+        	<value>${system.cronJob.startDelayMinutes}</value>
+       	</property>
    </bean>
 
    <bean id="feedbackProcessor" class="org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.FeedbackProcessor">
@@ -60,6 +63,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="0 0 0 * * ?" />
+        <property name="startDelayMinutes">
+        	<value>${system.cronJob.startDelayMinutes}</value>
+       	</property>
    </bean>
 
    <bean id="org_alfresco_module_wcmquickstart_processPublishingQueues" class="org.alfresco.util.CronTriggerBean">
@@ -80,6 +86,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="${wcmqs.publishQueueProcessor.schedule}" />
+        <property name="startDelayMinutes">
+        	<value>${system.cronJob.startDelayMinutes}</value>
+       	</property>
    </bean>
 
    <bean id="org_alfresco_module_wcmquickstart_dynamicQueryRefreshProcess" class="org.alfresco.util.CronTriggerBean">
@@ -101,6 +110,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="${wcmqs.dynamicCollectionProcessor.schedule}" />
+        <property name="startDelayMinutes">
+        	<value>${system.cronJob.startDelayMinutes}</value>
+       	</property>
    </bean>
 
 </beans>
