@@ -49,6 +49,5 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/jetty/jetty-client-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jetty/jetty-http-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/joda-time-2.3.jar" sourcepath="/3rd Party/src/joda-time-2.3-sources.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/xercesImpl-2.10.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
