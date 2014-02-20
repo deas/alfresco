@@ -21,23 +21,21 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.FTSPrefixTerm;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * Perfix term
  * @author andyh
  *
  */
-public class LuceneFTSPrefixTerm extends FTSPrefixTerm implements LuceneQueryBuilderComponent
+public class LuceneFTSPrefixTerm<Q, S, E extends Throwable> extends FTSPrefixTerm implements LuceneQueryBuilderComponent<Q, S, E>
 {
     /**
      * 
@@ -54,10 +52,10 @@ public class LuceneFTSPrefixTerm extends FTSPrefixTerm implements LuceneQueryBui
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         Argument argument = functionArgs.get(ARG_TERM);
         String term = (String) argument.getValue(functionContext);
         // strip trailing wildcard *
@@ -67,15 +65,15 @@ public class LuceneFTSPrefixTerm extends FTSPrefixTerm implements LuceneQueryBui
         AnalysisMode mode = (AnalysisMode) argument.getValue(functionContext);
         
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
-        Query query;
+        Q query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getPrefixQuery(functionContext.getLuceneFieldName(prop), term, mode);
+            query = lqpa.getPrefixQuery(functionContext.getLuceneFieldName(prop), term, mode);
         }
         else
         {
-            query = lqp.getPrefixQuery(lqp.getField(), term, mode);
+            query = lqpa.getPrefixQuery(lqpa.getField(), term, mode);
             
         }
         return query;

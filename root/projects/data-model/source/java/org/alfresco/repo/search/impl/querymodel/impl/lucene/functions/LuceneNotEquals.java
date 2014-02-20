@@ -21,7 +21,7 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
@@ -29,13 +29,11 @@ import org.alfresco.repo.search.impl.querymodel.QueryModelException;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.NotEquals;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  */
-public class LuceneNotEquals extends NotEquals implements LuceneQueryBuilderComponent
+public class LuceneNotEquals<Q, S, E extends Throwable> extends NotEquals implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -53,13 +51,13 @@ public class LuceneNotEquals extends NotEquals implements LuceneQueryBuilderComp
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         setPropertyAndStaticArguments(functionArgs);
 
-        Query query = functionContext.buildLuceneInequality(lqp, getPropertyName(), getStaticArgument().getValue(functionContext), PredicateMode.ANY, functionContext
+        Q query = functionContext.buildLuceneInequality(lqpa, getPropertyName(), getStaticArgument().getValue(functionContext), PredicateMode.ANY, functionContext
                 .getLuceneFunction(getFunctionArgument()));
 
         if (query == null)

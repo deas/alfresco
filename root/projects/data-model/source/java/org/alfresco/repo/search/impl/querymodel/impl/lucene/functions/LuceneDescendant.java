@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.QueryModelException;
@@ -33,14 +32,12 @@ import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderCo
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Path;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  *
  */
-public class LuceneDescendant extends Descendant implements LuceneQueryBuilderComponent
+public class LuceneDescendant<Q, S, E extends Throwable> extends Descendant implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -51,9 +48,9 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
         super();
     }
 
-    private StoreRef getStore(LuceneQueryBuilderContext luceneContext)
+    private StoreRef getStore(LuceneQueryBuilderContext<Q, S, E> luceneContext)
     {
-    	ArrayList<StoreRef> stores = luceneContext.getLuceneQueryParser().getSearchParameters().getStores();
+    	ArrayList<StoreRef> stores = luceneContext.getLuceneQueryParserAdaptor().getSearchParameters().getStores();
     	if(stores.size() < 1)
     	{
     		// default
@@ -69,10 +66,10 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         Argument argument = functionArgs.get(ARG_ANCESTOR);
         String id = (String) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_SELECTOR);
@@ -114,13 +111,13 @@ public class LuceneDescendant extends Descendant implements LuceneQueryBuilderCo
             Path path = functionContext.getNodeService().getPath(nodeRef);
             StringBuilder builder = new StringBuilder(path.toPrefixString(luceneContext.getNamespacePrefixResolver()));
             builder.append("//*");
-            Query query = lqp.getFieldQuery("PATH", builder.toString());
+            Q query = lqpa.getFieldQuery("PATH", builder.toString());
             return query;
         }
         // SOLR
         else
         {
-            Query query = lqp.getFieldQuery("ANCESTOR", nodeRef.toString());
+            Q query = lqpa.getFieldQuery("ANCESTOR", nodeRef.toString());
             return query;
         }
         

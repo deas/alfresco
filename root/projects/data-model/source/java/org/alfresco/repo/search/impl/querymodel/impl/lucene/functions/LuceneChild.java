@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.QueryModelException;
@@ -32,14 +31,12 @@ import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderCo
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  *
  */
-public class LuceneChild extends Child implements LuceneQueryBuilderComponent
+public class LuceneChild<Q, S, E extends Throwable> extends Child implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -50,9 +47,9 @@ public class LuceneChild extends Child implements LuceneQueryBuilderComponent
         super();
     }
     
-    private StoreRef getStore(LuceneQueryBuilderContext luceneContext)
+    private StoreRef getStore(LuceneQueryBuilderContext<Q, S, E> luceneContext)
     {
-    	ArrayList<StoreRef> stores = luceneContext.getLuceneQueryParser().getSearchParameters().getStores();
+    	ArrayList<StoreRef> stores = luceneContext.getLuceneQueryParserAdaptor().getSearchParameters().getStores();
     	if(stores.size() < 1)
     	{
     		// default
@@ -68,10 +65,10 @@ public class LuceneChild extends Child implements LuceneQueryBuilderComponent
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         Argument argument = functionArgs.get(ARG_PARENT);
         String id = (String) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_SELECTOR);
@@ -103,7 +100,7 @@ public class LuceneChild extends Child implements LuceneQueryBuilderComponent
             nodeRef = new NodeRef(storeRef, id);
         }
 
-        Query query = lqp.getFieldQuery("PARENT", nodeRef.toString());
+        Q query = lqpa.getFieldQuery("PARENT", nodeRef.toString());
         return query;
     }
 }

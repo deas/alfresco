@@ -27,13 +27,11 @@ import org.alfresco.repo.search.impl.querymodel.QueryModelException;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Lower;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  */
-public class LuceneLower extends Lower implements LuceneQueryBuilderComponent
+public class LuceneLower<Q, S, E extends Throwable> extends Lower implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -50,8 +48,8 @@ public class LuceneLower extends Lower implements LuceneQueryBuilderComponent
      * java.util.Map, org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext,
      * org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
         throw new QueryModelException("Unsupported function in query " + getName());
     }

@@ -18,25 +18,22 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.Constraint;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseConjunction;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
+import org.alfresco.util.Pair;
 
 /**
  * @author andyh
  */
-public class LuceneConjunction extends BaseConjunction implements LuceneQueryBuilderComponent
+public class LuceneConjunction<Q, S, E extends Throwable> extends BaseConjunction implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -54,37 +51,37 @@ public class LuceneConjunction extends BaseConjunction implements LuceneQueryBui
      *      java.util.Map, org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext,
      *      org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        BooleanQuery query = new BooleanQuery();
+       
+        LuceneQueryParserExpressionAdaptor<Q, E> expressionAdaptor = luceneContext.getLuceneQueryParserAdaptor().getExpressionAdaptor();
         boolean must = false;
-        @SuppressWarnings("unused")
         boolean should = false;
         boolean must_not = false;
         for (Constraint constraint : getConstraints())
         {
             if (constraint instanceof LuceneQueryBuilderComponent)
             {
-                LuceneQueryBuilderComponent luceneQueryBuilderComponent = (LuceneQueryBuilderComponent) constraint;
-                Query constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, functionArgs, luceneContext, functionContext);
+                @SuppressWarnings("unchecked")
+                LuceneQueryBuilderComponent<Q, S, E> luceneQueryBuilderComponent = (LuceneQueryBuilderComponent<Q, S, E>) constraint;
+                Q constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, functionArgs, luceneContext, functionContext);
                 
                 if (constraintQuery != null)
                 {
-                    constraintQuery.setBoost(constraint.getBoost());
                     switch (constraint.getOccur())
                     {
                     case DEFAULT:
                     case MANDATORY:
-                        query.add(constraintQuery, BooleanClause.Occur.MUST);
+                        expressionAdaptor.addRequired(constraintQuery, constraint.getBoost());
                         must = true;
                         break;
                     case OPTIONAL:
-                        query.add(constraintQuery, BooleanClause.Occur.SHOULD);
+                        expressionAdaptor.addOptional(constraintQuery, constraint.getBoost());
                         should = true;
                         break;
                     case EXCLUDE:
-                        query.add(constraintQuery, BooleanClause.Occur.MUST_NOT);
+                        expressionAdaptor.addExcluded(constraintQuery, constraint.getBoost());
                         must_not = true;
                         break;
                     }
@@ -97,10 +94,11 @@ public class LuceneConjunction extends BaseConjunction implements LuceneQueryBui
             }
             if(!must &&  must_not)
             {
-                query.add(new TermQuery(new Term("ISNODE", "T")),  BooleanClause.Occur.MUST);
+                expressionAdaptor.addRequired(luceneContext.getLuceneQueryParserAdaptor().getMatchAllNodesQuery());
+                //query.add(new TermQuery(new Term("ISNODE", "T")),  BooleanClause.Occur.MUST);
             }
         }
-        return query;
+        return expressionAdaptor.getQuery();
 
     }
 

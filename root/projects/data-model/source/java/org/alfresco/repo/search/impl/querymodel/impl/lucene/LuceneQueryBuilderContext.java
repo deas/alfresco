@@ -18,20 +18,20 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 
 /**
  * @author Andy
  *
  */
-public interface LuceneQueryBuilderContext
+public interface LuceneQueryBuilderContext<Q, S, E extends Throwable>
 {
 
     /**
      * @return - the parser
      */
-    public abstract AbstractLuceneQueryParser getLuceneQueryParser();
+    public abstract LuceneQueryParserAdaptor<Q, S, E> getLuceneQueryParserAdaptor();
 
     /**
      * @return - the namespace prefix resolver

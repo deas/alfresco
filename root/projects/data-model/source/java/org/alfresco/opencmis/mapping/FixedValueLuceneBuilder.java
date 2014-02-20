@@ -23,17 +23,12 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.util.EqualsHelper;
 import org.alfresco.util.SearchLanguageConversion;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 /**
  * Property lucene builder for fixed value mapping (eg to null, true, etc)
@@ -58,41 +53,41 @@ public class FixedValueLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneEquality(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         if (EqualsHelper.nullSafeEquals(value, value))
         {
-            return new MatchAllDocsQuery();
+            return lqpa.getMatchAllQuery();
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
-    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, Boolean not) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneExists(LuceneQueryParserAdaptor<Q, S, E> lqpa, Boolean not) throws E
     {
         if (not)
         {
             if (value == null)
             {
-                return new MatchAllDocsQuery();
+                return lqpa.getMatchAllQuery();
             }
             else
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
         }
         else
         {
             if (value == null)
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
             else
             {
-                return new MatchAllDocsQuery();
+                return lqpa.getMatchAllQuery();
             }
         }
 
@@ -100,50 +95,50 @@ public class FixedValueLuceneBuilder extends AbstractLuceneBuilder
 
     @Override
     @SuppressWarnings("unchecked")
-    public Query buildLuceneGreaterThan(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneGreaterThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         if (value instanceof Comparable)
         {
-            Comparable comparable = (Comparable) value;
+            Comparable<Serializable> comparable = (Comparable<Serializable>) value;
             if (comparable.compareTo(value) > 0)
             {
-                return new MatchAllDocsQuery();
+                return lqpa.getMatchAllQuery();
             }
             else
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Query buildLuceneGreaterThanOrEquals(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneGreaterThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         if (value instanceof Comparable)
         {
-            Comparable comparable = (Comparable) value;
+            Comparable<Serializable> comparable = (Comparable<Serializable>) value;
             if (comparable.compareTo(value) >= 0)
             {
-                return new MatchAllDocsQuery();
+                return lqpa.getMatchAllQuery();
             }
             else
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
-    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneIn(LuceneQueryParserAdaptor<Q, S, E> lqpa, Collection<Serializable> values, Boolean not, PredicateMode mode) throws E
     {
         boolean in = false;
         for (Serializable value : values)
@@ -157,73 +152,72 @@ public class FixedValueLuceneBuilder extends AbstractLuceneBuilder
 
         if (in == !not)
         {
-            return new MatchAllDocsQuery();
+            return lqpa.getMatchAllQuery();
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
-    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneInequality(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         if (!EqualsHelper.nullSafeEquals(value, value))
         {
-            return new MatchAllDocsQuery();
+            return lqpa.getMatchAllQuery();
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Query buildLuceneLessThan(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLessThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         if (value instanceof Comparable)
         {
-            Comparable comparable = (Comparable) value;
+            Comparable<Serializable> comparable = (Comparable<Serializable>) value;
             if (comparable.compareTo(value) < 0)
             {
-                return new MatchAllDocsQuery();
-            }
+                return lqpa.getMatchAllQuery();            }
             else
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Query buildLuceneLessThanOrEquals(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLessThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         if (value instanceof Comparable)
         {
-            Comparable comparable = (Comparable) value;
+            Comparable<Serializable> comparable = (Comparable<Serializable>) value;
             if (comparable.compareTo(value) <= 0)
             {
-                return new MatchAllDocsQuery();
+                return lqpa.getMatchAllQuery();
             }
             else
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
-    public Query buildLuceneLike(AbstractLuceneQueryParser lqp, Serializable value, Boolean not) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLike(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, Boolean not) throws E
     {
         if (value != null)
         {
@@ -242,21 +236,21 @@ public class FixedValueLuceneBuilder extends AbstractLuceneBuilder
 
             if (matches == !not)
             {
-                return new MatchAllDocsQuery();
+                return lqpa.getMatchAllQuery();
             }
             else
             {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
+                return lqpa.getMatchNoneQuery();
             }
         }
         else
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
     }
 
     @Override
-    public String getLuceneSortField(AbstractLuceneQueryParser lqp)
+    public <Q, S, E extends Throwable> String getLuceneSortField(LuceneQueryParserAdaptor<Q, S, E> lqpa)
     {
         throw new UnsupportedOperationException();
     }

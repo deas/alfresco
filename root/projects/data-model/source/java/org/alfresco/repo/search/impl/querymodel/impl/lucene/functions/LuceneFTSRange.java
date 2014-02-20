@@ -21,24 +21,22 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.FTSRange;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * Range
  * @author andyh
  *
  */
-public class LuceneFTSRange extends FTSRange implements LuceneQueryBuilderComponent
+public class LuceneFTSRange<Q, S, E extends Throwable> extends FTSRange implements LuceneQueryBuilderComponent<Q, S, E>
 {
     /**
      * 
@@ -55,10 +53,10 @@ public class LuceneFTSRange extends FTSRange implements LuceneQueryBuilderCompon
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         Argument argument = functionArgs.get(ARG_FROM_INC);
         Boolean fromInc = (Boolean) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_FROM);
@@ -69,15 +67,15 @@ public class LuceneFTSRange extends FTSRange implements LuceneQueryBuilderCompon
         Boolean toInc = (Boolean) argument.getValue(functionContext);
         
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
-        Query query;
+        Q query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getRangeQuery(functionContext.getLuceneFieldName(prop), from, to, fromInc, toInc, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+            query = lqpa.getRangeQuery(functionContext.getLuceneFieldName(prop), from, to, fromInc, toInc, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
         }
         else
         {
-            query = lqp.getRangeQuery(lqp.getField(), from, to, fromInc, toInc, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+            query = lqpa.getRangeQuery(lqpa.getField(), from, to, fromInc, toInc, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
         }
         return query;
     }

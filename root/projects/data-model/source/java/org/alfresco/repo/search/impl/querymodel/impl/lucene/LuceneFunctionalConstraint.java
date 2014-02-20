@@ -25,14 +25,12 @@ import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.Function;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseFunctionalConstraint;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  *
  */
-public class LuceneFunctionalConstraint extends BaseFunctionalConstraint implements LuceneQueryBuilderComponent
+public class LuceneFunctionalConstraint<Q, S, E extends Throwable> extends BaseFunctionalConstraint implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -47,14 +45,15 @@ public class LuceneFunctionalConstraint extends BaseFunctionalConstraint impleme
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent#addComponent(org.apache.lucene.search.BooleanQuery, org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService, java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext) throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E
     {
         Function function = getFunction();
         if(function != null)
         {
             if(function instanceof LuceneQueryBuilderComponent)
             {
-                LuceneQueryBuilderComponent luceneQueryBuilderComponent = (LuceneQueryBuilderComponent)function;
+                @SuppressWarnings("unchecked")
+                LuceneQueryBuilderComponent<Q, S, E> luceneQueryBuilderComponent = (LuceneQueryBuilderComponent<Q, S, E>)function;
                 return luceneQueryBuilderComponent.addComponent(selectors, getFunctionArguments(), luceneContext, functionContext);            
             }
             else

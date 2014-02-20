@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseSelector;
@@ -33,7 +34,7 @@ import org.apache.lucene.search.Query;
  * @author andyh
  *
  */
-public class LuceneSelector extends BaseSelector implements LuceneQueryBuilderComponent
+public class LuceneSelector<Q, S, E extends Throwable> extends BaseSelector implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -48,10 +49,10 @@ public class LuceneSelector extends BaseSelector implements LuceneQueryBuilderCo
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent#addComponent(org.apache.lucene.search.BooleanQuery, org.apache.lucene.search.BooleanQuery)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext) throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
-        return lqp.getFieldQuery("CLASS", getType().toString());
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
+        return lqpa.getFieldQuery("CLASS", getType().toString());
         
     }
 

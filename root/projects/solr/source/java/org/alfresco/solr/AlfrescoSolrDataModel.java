@@ -102,6 +102,7 @@ import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.Sorting;
@@ -1130,7 +1131,7 @@ public class AlfrescoSolrDataModel
         return parser;
     }
 
-    public LuceneQueryBuilderContext getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
+    public LuceneQueryBuilderContext<Query, Sort, ParseException> getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
     {
         LuceneQueryBuilderContextSolrImpl luceneContext = new LuceneQueryBuilderContextSolrImpl(getDictionaryService(alternativeDictionary), namespaceDAO, tenantService, searchParameters,
                 getMLAnalysisMode(), indexReader, alfrescoDataType.getQueryAnalyzer(), this);
@@ -1161,9 +1162,10 @@ public class AlfrescoSolrDataModel
                 searchParameters.getQueryTemplates(), searchParameters.getDefaultFieldName());
         org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = factory.createQuery(null, null, constraint, new ArrayList<Ordering>());
 
-        LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
+        @SuppressWarnings("unchecked")
+        LuceneQueryBuilder<Query, Sort, ParseException> builder = (LuceneQueryBuilder<Query, Sort, ParseException>) queryModelQuery;
 
-        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, CMISStrictDictionaryService.DEFAULT);
+        LuceneQueryBuilderContext<Query, Sort, ParseException> luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, CMISStrictDictionaryService.DEFAULT);
 
         Set<String> selectorGroup = null;
         if (queryModelQuery.getSource() != null)
@@ -1251,8 +1253,9 @@ public class AlfrescoSolrDataModel
 
         Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
 
-        LuceneQueryBuilderContext luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, alternativeDictionary);
-        LuceneQueryBuilder builder = (LuceneQueryBuilder) queryModelQuery;
+        LuceneQueryBuilderContext<Query, Sort, ParseException> luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, alternativeDictionary);
+        @SuppressWarnings("unchecked")
+        LuceneQueryBuilder<Query, Sort, ParseException> builder = (LuceneQueryBuilder<Query, Sort, ParseException>) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
 
         ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);

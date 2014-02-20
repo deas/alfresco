@@ -23,13 +23,11 @@ import java.util.Set;
 
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  */
-public interface LuceneQueryBuilderComponent
+public interface LuceneQueryBuilderComponent<Q, S, E extends Throwable>
 {
     /**
      * Generate the lucene query from the query component
@@ -40,5 +38,5 @@ public interface LuceneQueryBuilderComponent
      * @return - the lucene query fragment for this component
      * @throws ParseException
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext) throws ParseException;
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E;
 }

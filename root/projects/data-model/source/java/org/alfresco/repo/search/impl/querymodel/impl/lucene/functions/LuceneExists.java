@@ -21,7 +21,7 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
@@ -30,13 +30,11 @@ import org.alfresco.repo.search.impl.querymodel.impl.functions.Exists;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  */
-public class LuceneExists extends Exists implements LuceneQueryBuilderComponent
+public class LuceneExists<Q, S, E extends Throwable> extends Exists implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -47,15 +45,15 @@ public class LuceneExists extends Exists implements LuceneQueryBuilderComponent
         super();
     }
 
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         PropertyArgument propertyArgument = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
         Argument inverseArgument = functionArgs.get(ARG_NOT);
         Boolean not = DefaultTypeConverter.INSTANCE.convert(Boolean.class, inverseArgument.getValue(functionContext));
 
-        Query query = functionContext.buildLuceneExists(lqp, propertyArgument.getPropertyName(), not);
+        Q query = functionContext.buildLuceneExists(lqpa, propertyArgument.getPropertyName(), not);
 
         if (query == null)
         {

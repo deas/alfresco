@@ -18,25 +18,22 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.Constraint;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseDisjunction;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
+import org.alfresco.util.Pair;
 
 /**
  * @author andyh
  */
-public class LuceneDisjunction extends BaseDisjunction implements LuceneQueryBuilderComponent
+public class LuceneDisjunction<Q, S, E extends Throwable> extends BaseDisjunction implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -54,34 +51,33 @@ public class LuceneDisjunction extends BaseDisjunction implements LuceneQueryBui
      *      java.util.Map, org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext,
      *      org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        BooleanQuery query = new BooleanQuery();
+        LuceneQueryParserExpressionAdaptor<Q, E> expressionBuilder = luceneContext.getLuceneQueryParserAdaptor().getExpressionAdaptor();
+        ArrayList<Pair<Constraint, Q>> queriestoDisjoin = new ArrayList<>();
         for (Constraint constraint : getConstraints())
         {
             if (constraint instanceof LuceneQueryBuilderComponent)
             {
-                LuceneQueryBuilderComponent luceneQueryBuilderComponent = (LuceneQueryBuilderComponent) constraint;
-                Query constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, functionArgs, luceneContext, functionContext);
+                @SuppressWarnings("unchecked")
+                LuceneQueryBuilderComponent<Q, S, E> luceneQueryBuilderComponent = (LuceneQueryBuilderComponent<Q, S, E>) constraint;
+                Q constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, functionArgs, luceneContext, functionContext);
+                queriestoDisjoin.add(new Pair<Constraint, Q>(constraint, constraintQuery));
                 if (constraintQuery != null)
                 {
-                    constraintQuery.setBoost(constraint.getBoost());
                     switch (constraint.getOccur())
                     {
                     case DEFAULT:
                     case MANDATORY:
                     case OPTIONAL:
-                        query.add(constraintQuery, BooleanClause.Occur.SHOULD);
+                        expressionBuilder.addOptional(constraintQuery, constraint.getBoost());
                         break;
                     case EXCLUDE:
-                        BooleanQuery subQuery = new BooleanQuery();
-                        TermQuery termQuery = new TermQuery(new Term("ISNODE", "T"));
-                        termQuery.setBoost(constraintQuery.getBoost());
-                        subQuery.add(termQuery,  BooleanClause.Occur.MUST);
-                        subQuery.add(constraintQuery, BooleanClause.Occur.MUST_NOT);
-                        subQuery.setBoost(constraintQuery.getBoost());
-                        query.add(subQuery, BooleanClause.Occur.SHOULD);
+                        LuceneQueryParserExpressionAdaptor<Q, E> subExpressionBuilder = luceneContext.getLuceneQueryParserAdaptor().getExpressionAdaptor();
+                        subExpressionBuilder.addRequired(luceneContext.getLuceneQueryParserAdaptor().getMatchAllNodesQuery());
+                        subExpressionBuilder.addExcluded(constraintQuery);
+                        expressionBuilder.addOptional(subExpressionBuilder.getQuery(),  constraint.getBoost());
                         break;
                     }
                 }
@@ -91,7 +87,7 @@ public class LuceneDisjunction extends BaseDisjunction implements LuceneQueryBui
                 throw new UnsupportedOperationException();
             }
         }
-        return query;
+        return expressionBuilder.getQuery();
 
     }
 

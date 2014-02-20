@@ -22,11 +22,10 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.alfresco.opencmis.dictionary.CMISPropertyLuceneBuilder;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * Base class for all property lucene builders
@@ -44,55 +43,67 @@ public abstract class AbstractLuceneBuilder implements CMISPropertyLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneEquality(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         return null;
     }
 
     @Override
-    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, Boolean not) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneExists(LuceneQueryParserAdaptor<Q, S, E> lqpa, Boolean not) throws E
     {
         return null;
     }
 
     @Override
-    public Query buildLuceneGreaterThan(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneGreaterThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         return null;
     }
 
     @Override
-    public Query buildLuceneGreaterThanOrEquals(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneGreaterThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E 
     {
         return null;
     }
 
     @Override
-    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneIn(LuceneQueryParserAdaptor<Q, S, E> lqpa, Collection<Serializable> values, Boolean not, PredicateMode mode) throws E
+    {
+        LuceneQueryParserExpressionAdaptor<Q, E> expressionAdaptor = lqpa.getExpressionAdaptor();
+        for(Serializable value : values)
+        {
+            expressionAdaptor.addOptional(buildLuceneEquality(lqpa, value, mode, LuceneFunction.FIELD));
+        }
+        if(not)
+        {
+            return expressionAdaptor.getNegatedQuery();
+        }
+        else
+        {
+            return expressionAdaptor.getQuery();
+        }
+    }
+
+    @Override
+    public <Q, S, E extends Throwable> Q buildLuceneInequality(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
+    {
+        return lqpa.getNegatedQuery(buildLuceneEquality(lqpa, value, mode, luceneFunction));
+    }
+
+    @Override
+    public <Q, S, E extends Throwable> Q buildLuceneLessThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         return null;
     }
 
     @Override
-    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLessThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         return null;
     }
 
     @Override
-    public Query buildLuceneLessThan(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
-    {
-        return null;
-    }
-
-    @Override
-    public Query buildLuceneLessThanOrEquals(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
-    {
-        return null;
-    }
-
-    @Override
-    public Query buildLuceneLike(AbstractLuceneQueryParser lqp, Serializable value, Boolean not) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLike(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, Boolean not) throws E
     {
         return null;
     }
@@ -104,7 +115,7 @@ public abstract class AbstractLuceneBuilder implements CMISPropertyLuceneBuilder
     }
 
     @Override
-    public String getLuceneSortField(AbstractLuceneQueryParser lqp)
+    public <Q, S, E extends Throwable> String getLuceneSortField(LuceneQueryParserAdaptor<Q, S, E> lqpa) throws E
     {
         throw new UnsupportedOperationException();
     }

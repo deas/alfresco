@@ -21,10 +21,9 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.LuceneUtils;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Column;
 import org.alfresco.repo.search.impl.querymodel.Constraint;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
@@ -34,24 +33,17 @@ import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.Selector;
 import org.alfresco.repo.search.impl.querymodel.Source;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseQuery;
+import org.alfresco.repo.search.impl.querymodel.impl.SimpleConstraint;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.PropertyAccessor;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
 import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
 import org.alfresco.service.cmr.search.SearchParameters.SortDefinition.SortType;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
+import org.alfresco.util.Pair;
 
 /**
  * @author andyh
  */
-public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
+public class LuceneQuery<Q, S, E extends Throwable> extends BaseQuery implements LuceneQueryBuilder<Q, S, E>
 {
 
     /**
@@ -70,16 +62,16 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
      * 
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilder#buildQuery()
      */
-    public Query buildQuery(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext) throws ParseException
+    public Q buildQuery(Set<String> selectors, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E
     {
-
-        BooleanQuery luceneQuery = new BooleanQuery();
+        LuceneQueryParserExpressionAdaptor<Q, E> expressionBuilder = luceneContext.getLuceneQueryParserAdaptor().getExpressionAdaptor();
 
         boolean must = false;
-        @SuppressWarnings("unused")
         boolean should = false;
         boolean must_not = false;
 
+        ArrayList<Pair<Constraint, Q>> queriestoConjoin = new ArrayList<>();
+        
         if (selectors != null)
         {
             for (String selector : selectors)
@@ -87,11 +79,13 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
                 Selector current = getSource().getSelector(selector);
                 if (current instanceof LuceneQueryBuilderComponent)
                 {
-                    LuceneQueryBuilderComponent luceneQueryBuilderComponent = (LuceneQueryBuilderComponent) current;
-                    Query selectorQuery = luceneQueryBuilderComponent.addComponent(selectors, null, luceneContext, functionContext);
+                    @SuppressWarnings("unchecked")
+                    LuceneQueryBuilderComponent<Q, S, E> luceneQueryBuilderComponent = (LuceneQueryBuilderComponent<Q, S, E>) current;
+                    Q selectorQuery = luceneQueryBuilderComponent.addComponent(selectors, null, luceneContext, functionContext);
+                    queriestoConjoin.add(new Pair<Constraint, Q>(new SimpleConstraint(org.alfresco.repo.search.impl.querymodel.Constraint.Occur.MANDATORY), selectorQuery));
                     if (selectorQuery != null)
                     {
-                        luceneQuery.add(selectorQuery, Occur.MUST);
+                        expressionBuilder.addRequired(selectorQuery);
                         must = true;
                     }
                 }
@@ -107,25 +101,26 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
         {
             if (constraint instanceof LuceneQueryBuilderComponent)
             {
-                LuceneQueryBuilderComponent luceneQueryBuilderComponent = (LuceneQueryBuilderComponent) constraint;
-                Query constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, null, luceneContext, functionContext);
+                @SuppressWarnings("unchecked")
+                LuceneQueryBuilderComponent<Q, S, E> luceneQueryBuilderComponent = (LuceneQueryBuilderComponent<Q, S, E>) constraint;
+                Q constraintQuery = luceneQueryBuilderComponent.addComponent(selectors, null, luceneContext, functionContext);
+                queriestoConjoin.add(new Pair<Constraint, Q>(constraint, constraintQuery));
                 
                 if (constraintQuery != null)
                 {
-                    constraintQuery.setBoost(constraint.getBoost());
                     switch (constraint.getOccur())
                     {
                     case DEFAULT:
                     case MANDATORY:
-                        luceneQuery.add(constraintQuery, Occur.MUST);
+                        expressionBuilder.addRequired(constraintQuery, constraint.getBoost());
                         must = true;
                         break;
                     case OPTIONAL:
-                        luceneQuery.add(constraintQuery, Occur.SHOULD);
+                        expressionBuilder.addOptional(constraintQuery, constraint.getBoost());
                         should = true;
                         break;
                     case EXCLUDE:
-                        luceneQuery.add(constraintQuery, Occur.MUST_NOT);
+                        expressionBuilder.addExcluded(constraintQuery, constraint.getBoost());
                         must_not = true;
                         break;
                     }
@@ -139,10 +134,10 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
 
         if (!must && must_not)
         {
-            luceneQuery.add(new TermQuery(new Term("ISNODE", "T")), BooleanClause.Occur.MUST);
+            expressionBuilder.addRequired(luceneContext.getLuceneQueryParserAdaptor().getMatchAllNodesQuery());
         }
 
-        return luceneQuery;
+        return expressionBuilder.getQuery();
 
     }
 
@@ -153,70 +148,17 @@ public class LuceneQuery extends BaseQuery implements LuceneQueryBuilder
      *      org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext,
      *      org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext)
      */
-    public Sort buildSort(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
+    public S buildSort(Set<String> selectors, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E
     {
         if ((getOrderings() == null) || (getOrderings().size() == 0))
         {
             return null;
         }
-
-        int index = 0;
-        SortField[] fields = new SortField[getOrderings().size()];
-
-        for (Ordering ordering : getOrderings())
-        {
-            if (ordering.getColumn().getFunction().getName().equals(PropertyAccessor.NAME))
-            {
-                PropertyArgument property = (PropertyArgument) ordering.getColumn().getFunctionArguments().get(PropertyAccessor.ARG_PROPERTY);
-
-                if (property == null)
-                {
-                    throw new IllegalStateException();
-                }
-
-                String propertyName = property.getPropertyName();
-
-                String luceneField = functionContext.getLuceneSortField(luceneContext.getLuceneQueryParser(), propertyName);
-
-                if (luceneField != null)
-                {
-                    if (LuceneUtils.fieldHasTerm(luceneContext.getLuceneQueryParser().getIndexReader(), luceneField))
-                    {
-                        Locale locale = luceneContext.getLuceneQueryParser().getSearchParameters().getSortLocale();
-//                        if(locale.getLanguage().equals(Locale.ENGLISH.getLanguage()))
-//                        {
-//                            fields[index++] = new SortField(luceneField, (ordering.getOrder() == Order.DESCENDING));
-//                        }
-//                        else
-//                        {
-                        fields[index++] = new SortField(luceneField, locale, (ordering.getOrder() == Order.DESCENDING));
-//                        }
-                    }
-                    else
-                    {
-                        fields[index++] = new SortField(null, SortField.DOC, (ordering.getOrder() == Order.DESCENDING));
-                    }
-                }
-                else
-                {
-                    throw new IllegalStateException();
-                }
-            }
-            else if (ordering.getColumn().getFunction().getName().equals(Score.NAME))
-            {
-                fields[index++] = new SortField(null, SortField.SCORE, !(ordering.getOrder() == Order.DESCENDING));
-            }
-            else
-            {
-                throw new IllegalStateException();
-            }
-
-        }
-
-        return new Sort(fields);
+        
+        return luceneContext.getLuceneQueryParserAdaptor().buildSort(getOrderings(), functionContext);
     }
     
-    public List<SortDefinition> buildSortDefinitions(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
+    public List<SortDefinition> buildSortDefinitions(Set<String> selectors, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
     {
         if ((getOrderings() == null) || (getOrderings().size() == 0))
         {

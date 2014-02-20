@@ -30,6 +30,7 @@ import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.querymodel.FunctionArgument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
@@ -42,9 +43,6 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
-import org.apache.lucene.index.IndexReader.FieldOption;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -122,54 +120,54 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         this.defaultNamespace = defaultNamespace;
     }
 
-    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneEquality(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, String propertyName, Boolean not) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneExists(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Boolean not) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneGreaterThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneGreaterThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneGreaterThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction)
-    throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneGreaterThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction)
+    throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, String propertyName, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneIn(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Collection<Serializable> values, Boolean not, PredicateMode mode) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneInequality(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneLessThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneLessThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneLessThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction)
-    throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneLessThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, PredicateMode mode, LuceneFunction luceneFunction)
+    throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public Query buildLuceneLike(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, Boolean not) throws ParseException
+    public  <Q, S, E extends Throwable> Q buildLuceneLike(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, Boolean not) throws E
     {
         throw new UnsupportedOperationException();
     }
 
-    public String getLuceneSortField(AbstractLuceneQueryParser lqp, String propertyName)
+    public  <Q, S, E extends Throwable> String getLuceneSortField(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName) throws E
     {
         // Score is special
         if (propertyName.equalsIgnoreCase("Score"))
@@ -229,19 +227,15 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
                     }
 
                     String noLocalField = field+".no_locale";
-                    for (Object current : lqp.getIndexReader().getFieldNames(FieldOption.INDEXED))
+                    if(lqpa.sortFieldExists(noLocalField))
                     {
-                        String currentString = (String) current;
-                        if (currentString.equals(noLocalField))
-                        {
-                            return noLocalField;
-                        }
+                        return noLocalField;
                     }
-                    field = findSortField(lqp, field);
+                    field = findSortField(lqpa, field);
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.MLTEXT))
                 {
-                    field = findSortField(lqp, field);
+                    field = findSortField(lqpa, field);
 
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME))
@@ -261,66 +255,68 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
      * @param lqp
      * @param field
      * @return
+     * @throws E 
      */
-    private String findSortField(AbstractLuceneQueryParser lqp, String field)
+    private  <Q, S, E extends Throwable> String findSortField(LuceneQueryParserAdaptor<Q, S, E> lqpa, String field) throws E
     {
-        Locale sortLocale;
-        List<Locale> locales = lqp.getSearchParameters().getLocales();
-        if (((locales == null) || (locales.size() == 0)))
-        {
-            locales = Collections.singletonList(I18NUtil.getLocale());
-        }
-
-        if (locales.size() > 1)
-        {
-            throw new FTSQueryException("Order on text/mltext properties with more than one locale is not curently supported");
-        }
-
-        sortLocale = locales.get(0);
-        // find best field match
-
-        HashSet<String> allowableLocales = new HashSet<String>();
-        MLAnalysisMode analysisMode = lqp.getDefaultSearchMLAnalysisMode();
-        for (Locale l : MLAnalysisMode.getLocales(analysisMode, sortLocale, false))
-        {
-            allowableLocales.add(l.toString());
-        }
-
-        String sortField = field;
-
-        for (Object current : lqp.getIndexReader().getFieldNames(FieldOption.INDEXED))
-        {
-            String currentString = (String) current;
-            if (currentString.startsWith(field) && currentString.endsWith(AbstractLuceneQueryParser.FIELD_SORT_SUFFIX))
-            {
-                String fieldLocale = currentString.substring(field.length() + 1, currentString.length() - 5);
-                if (allowableLocales.contains(fieldLocale))
-                {
-                    if (fieldLocale.equals(sortLocale.toString()))
-                    {
-                        sortField = currentString;
-                        break;
-                    }
-                    else if (sortLocale.toString().startsWith(fieldLocale))
-                    {
-                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
-                        {
-                            sortField = currentString;
-                        }
-                    }
-                    else if (fieldLocale.startsWith(sortLocale.toString()))
-                    {
-                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
-                        {
-                            sortField = currentString;
-                        }
-                    }
-                }
-            }
-        }
-
-        field = sortField;
-        return field;
+        return lqpa.getSortField(field);
+//        Locale sortLocale;
+//        List<Locale> locales = lqpa.getSearchParameters().getLocales();
+//        if (((locales == null) || (locales.size() == 0)))
+//        {
+//            locales = Collections.singletonList(I18NUtil.getLocale());
+//        }
+//
+//        if (locales.size() > 1)
+//        {
+//            throw new FTSQueryException("Order on text/mltext properties with more than one locale is not curently supported");
+//        }
+//
+//        sortLocale = locales.get(0);
+//        // find best field match
+//
+//        HashSet<String> allowableLocales = new HashSet<String>();
+//        MLAnalysisMode analysisMode = lqpa.getDefaultSearchMLAnalysisMode();
+//        for (Locale l : MLAnalysisMode.getLocales(analysisMode, sortLocale, false))
+//        {
+//            allowableLocales.add(l.toString());
+//        }
+//
+//        String sortField = field;
+//
+//        for (Object current : lqp.getIndexReader().getFieldNames(FieldOption.INDEXED))
+//        {
+//            String currentString = (String) current;
+//            if (currentString.startsWith(field) && currentString.endsWith(AbstractLuceneQueryParser.FIELD_SORT_SUFFIX))
+//            {
+//                String fieldLocale = currentString.substring(field.length() + 1, currentString.length() - 5);
+//                if (allowableLocales.contains(fieldLocale))
+//                {
+//                    if (fieldLocale.equals(sortLocale.toString()))
+//                    {
+//                        sortField = currentString;
+//                        break;
+//                    }
+//                    else if (sortLocale.toString().startsWith(fieldLocale))
+//                    {
+//                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
+//                        {
+//                            sortField = currentString;
+//                        }
+//                    }
+//                    else if (fieldLocale.startsWith(sortLocale.toString()))
+//                    {
+//                        if (sortField.equals(field) || (currentString.length() < sortField.length()))
+//                        {
+//                            sortField = currentString;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        field = sortField;
+//        return field;
     }
 
     public Map<String, NodeRef> getNodeRefs()

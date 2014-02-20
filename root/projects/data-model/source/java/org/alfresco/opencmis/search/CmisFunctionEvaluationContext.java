@@ -29,6 +29,7 @@ import org.alfresco.opencmis.dictionary.PropertyDefinitionWrapper;
 import org.alfresco.opencmis.dictionary.TypeDefinitionWrapper;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.FunctionArgument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
@@ -44,8 +45,6 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.Cardinality;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
@@ -245,11 +244,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
         this.score = score;
     }
 
-    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
-            PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneEquality(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value,
+            PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneEquality(lqp, value, mode, luceneFunction);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneEquality(lqpa, value, mode, luceneFunction);
     }
 
     /*
@@ -259,10 +258,10 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * buildLuceneExists(org.alfresco.repo.search.impl.lucene.LuceneQueryParser,
      * org.alfresco.service.namespace.QName, java.lang.Boolean)
      */
-    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, String propertyName, Boolean not) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneExists(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Boolean not) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneExists(lqp, not);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneExists(lqpa, not);
     }
 
     /*
@@ -274,11 +273,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * org.alfresco.service.namespace.QName, java.io.Serializable,
      * org.alfresco.repo.search.impl.querymodel.PredicateMode)
      */
-    public Query buildLuceneGreaterThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
-            PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneGreaterThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value,
+            PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneGreaterThan(lqp, value, mode, luceneFunction);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneGreaterThan(lqpa, value, mode, luceneFunction);
     }
 
     /*
@@ -290,11 +289,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * org.alfresco.service.namespace.QName, java.io.Serializable,
      * org.alfresco.repo.search.impl.querymodel.PredicateMode)
      */
-    public Query buildLuceneGreaterThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
-            PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneGreaterThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value,
+            PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneGreaterThanOrEquals(lqp, value, mode, luceneFunction);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneGreaterThanOrEquals(lqpa, value, mode, luceneFunction);
     }
 
     /*
@@ -306,11 +305,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * java.lang.Boolean,
      * org.alfresco.repo.search.impl.querymodel.PredicateMode)
      */
-    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, String propertyName, Collection<Serializable> values,
-            Boolean not, PredicateMode mode) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneIn(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Collection<Serializable> values,
+            Boolean not, PredicateMode mode) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneIn(lqp, values, not, mode);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneIn(lqpa, values, not, mode);
     }
 
     /*
@@ -322,11 +321,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * org.alfresco.service.namespace.QName, java.io.Serializable,
      * org.alfresco.repo.search.impl.querymodel.PredicateMode)
      */
-    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
-            PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneInequality(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value,
+            PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneInequality(lqp, value, mode, luceneFunction);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneInequality(lqpa, value, mode, luceneFunction);
     }
 
     /*
@@ -338,11 +337,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * org.alfresco.service.namespace.QName, java.io.Serializable,
      * org.alfresco.repo.search.impl.querymodel.PredicateMode)
      */
-    public Query buildLuceneLessThan(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
-            PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLessThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value,
+            PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneLessThan(lqp, value, mode, luceneFunction);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneLessThan(lqpa, value, mode, luceneFunction);
     }
 
     /*
@@ -354,11 +353,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * org.alfresco.service.namespace.QName, java.io.Serializable,
      * org.alfresco.repo.search.impl.querymodel.PredicateMode)
      */
-    public Query buildLuceneLessThanOrEquals(AbstractLuceneQueryParser lqp, String propertyName, Serializable value,
-            PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLessThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value,
+            PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneLessThanOrEquals(lqp, value, mode, luceneFunction);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneLessThanOrEquals(lqpa, value, mode, luceneFunction);
     }
 
     /*
@@ -369,11 +368,11 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * org.alfresco.service.namespace.QName, java.io.Serializable,
      * java.lang.Boolean)
      */
-    public Query buildLuceneLike(AbstractLuceneQueryParser lqp, String propertyName, Serializable value, Boolean not)
-            throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneLike(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName, Serializable value, Boolean not)
+            throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().buildLuceneLike(lqp, value, not);
+        return propertyDef.getPropertyLuceneBuilder().buildLuceneLike(lqpa, value, not);
     }
 
     /*
@@ -382,10 +381,10 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
      * @see org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext#
      * getLuceneSortField(org.alfresco.service.namespace.QName)
      */
-    public String getLuceneSortField(AbstractLuceneQueryParser lqp, String propertyName)
+    public <Q, S, E extends Throwable> String getLuceneSortField(LuceneQueryParserAdaptor<Q, S, E> lqpa, String propertyName) throws E
     {
         PropertyDefinitionWrapper propertyDef = cmisDictionaryService.findProperty(propertyName);
-        return propertyDef.getPropertyLuceneBuilder().getLuceneSortField(lqp);
+        return propertyDef.getPropertyLuceneBuilder().getLuceneSortField(lqpa);
     }
 
     public boolean isObjectId(String propertyName)

@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
@@ -31,14 +31,12 @@ import org.alfresco.repo.search.impl.querymodel.impl.functions.Like;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  *
  */
-public class LuceneLike extends Like implements LuceneQueryBuilderComponent
+public class LuceneLike<Q, S, E extends Throwable> extends Like implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -56,17 +54,17 @@ public class LuceneLike extends Like implements LuceneQueryBuilderComponent
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         PropertyArgument propertyArgument = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
         Argument inverseArgument = functionArgs.get(ARG_NOT);
         Boolean not = DefaultTypeConverter.INSTANCE.convert(Boolean.class, inverseArgument.getValue(functionContext));
         Argument expressionArgument = functionArgs.get(ARG_EXP);
         Serializable expression = expressionArgument.getValue(functionContext);
 
-        Query query = functionContext.buildLuceneLike(lqp, propertyArgument.getPropertyName(), expression, not);
+        Q query = functionContext.buildLuceneLike(lqpa, propertyArgument.getPropertyName(), expression, not);
 
         if (query == null)
         {

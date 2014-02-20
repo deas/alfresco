@@ -20,6 +20,8 @@ package org.alfresco.solr.query;
 
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
+import org.alfresco.repo.search.impl.querymodel.impl.lucene.LegacyLuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -29,15 +31,20 @@ import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.SolrLuceneAnalyser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 
 /**
  * @author andyh
  */
-public class LuceneQueryBuilderContextSolrImpl implements LuceneQueryBuilderContext
+public class LuceneQueryBuilderContextSolrImpl implements LuceneQueryBuilderContext<Query, Sort, ParseException>
 {
     private SolrQueryParser lqp;
 
     private NamespacePrefixResolver namespacePrefixResolver;
+    
+    private LuceneQueryParserAdaptor<Query, Sort, ParseException> lqpa;
 
     /**
      * Context for building lucene queries
@@ -64,14 +71,16 @@ public class LuceneQueryBuilderContextSolrImpl implements LuceneQueryBuilderCont
         lqp.setIndexReader(indexReader);
         lqp.setAllowLeadingWildcard(true);
         this.namespacePrefixResolver = namespacePrefixResolver;
+        
+        lqpa = new LegacyLuceneQueryParserAdaptor(lqp);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext#getLuceneQueryParser()
      */
-    public AbstractLuceneQueryParser getLuceneQueryParser()
+    public LuceneQueryParserAdaptor<Query, Sort, ParseException> getLuceneQueryParserAdaptor()
     {
-        return lqp;
+        return lqpa;
     }
 
     /* (non-Javadoc)

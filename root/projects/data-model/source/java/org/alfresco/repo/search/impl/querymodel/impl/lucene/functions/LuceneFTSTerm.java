@@ -21,22 +21,20 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.FTSTerm;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * @author andyh
  */
-public class LuceneFTSTerm extends FTSTerm implements LuceneQueryBuilderComponent
+public class LuceneFTSTerm<Q, S, E extends Throwable> extends FTSTerm implements LuceneQueryBuilderComponent<Q, S, E>
 {
     /**
      * 
@@ -53,25 +51,25 @@ public class LuceneFTSTerm extends FTSTerm implements LuceneQueryBuilderComponen
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         Argument argument = functionArgs.get(ARG_TERM);
         String term = (String) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_TOKENISATION_MODE);
         AnalysisMode mode = (AnalysisMode) argument.getValue(functionContext);
 
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
-        Query query;
+        Q query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getFieldQuery(functionContext.getLuceneFieldName(prop), term, mode, LuceneFunction.FIELD);
+            query = lqpa.getFieldQuery(functionContext.getLuceneFieldName(prop), term, mode, LuceneFunction.FIELD);
         }
         else
         {
-            query = lqp.getFieldQuery(lqp.getField(), term, mode, LuceneFunction.FIELD);
+            query = lqpa.getFieldQuery(lqpa.getField(), term, mode, LuceneFunction.FIELD);
             
         }
         return query;

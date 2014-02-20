@@ -21,22 +21,20 @@ package org.alfresco.repo.search.impl.querymodel.impl.lucene.functions;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.FTSFuzzyTerm;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderComponent;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 
 /**
  * Fuzzy matching
  * @author andyh
  *
  */
-public class LuceneFTSFuzzyTerm extends FTSFuzzyTerm implements LuceneQueryBuilderComponent
+public class LuceneFTSFuzzyTerm<Q, S, E extends Throwable> extends FTSFuzzyTerm implements LuceneQueryBuilderComponent<Q, S, E>
 {
 
     /**
@@ -54,25 +52,25 @@ public class LuceneFTSFuzzyTerm extends FTSFuzzyTerm implements LuceneQueryBuild
      *      org.apache.lucene.search.BooleanQuery, org.alfresco.service.cmr.dictionary.DictionaryService,
      *      java.lang.String)
      */
-    public Query addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext)
-            throws ParseException
+    public Q addComponent(Set<String> selectors, Map<String, Argument> functionArgs, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext)
+            throws E
     {
-        AbstractLuceneQueryParser lqp = luceneContext.getLuceneQueryParser();
+        LuceneQueryParserAdaptor<Q, S, E> lqpa = luceneContext.getLuceneQueryParserAdaptor();
         Argument argument = functionArgs.get(ARG_TERM);
         String term = (String) argument.getValue(functionContext);
         argument = functionArgs.get(ARG_MIN_SIMILARITY);
         Float minSimilarity = (Float) argument.getValue(functionContext);
 
         PropertyArgument propArg = (PropertyArgument) functionArgs.get(ARG_PROPERTY);
-        Query query;
+        Q query;
         if (propArg != null)
         {
             String prop = propArg.getPropertyName();
-            query = lqp.getFuzzyQuery(functionContext.getLuceneFieldName(prop), term, minSimilarity);
+            query = lqpa.getFuzzyQuery(functionContext.getLuceneFieldName(prop), term, minSimilarity);
         }
         else
         {
-            query = lqp.getFuzzyQuery(lqp.getField(), term, minSimilarity);
+            query = lqpa.getFuzzyQuery(lqpa.getField(), term, minSimilarity);
             
         }
         return query;

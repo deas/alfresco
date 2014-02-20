@@ -19,23 +19,18 @@
 package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.TypeDefinitionWrapper;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
+
 
 /**
  * Get the CMIS object type id property
@@ -56,83 +51,21 @@ public class BaseTypeIdLuceneBuilder extends AbstractLuceneBuilder
     }
 
     @Override
-    public Query buildLuceneEquality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneEquality(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
-        return lqp.getFieldQuery("TYPE", getType(getValueAsString(value)), AnalysisMode.IDENTIFIER, luceneFunction);     
+        return lqpa.getFieldQuery("TYPE", getType(getValueAsString(value)), AnalysisMode.IDENTIFIER, luceneFunction);     
     }
 
     @Override
-    public Query buildLuceneInequality(AbstractLuceneQueryParser lqp, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws ParseException
-    {
-        return lqp.getDoesNotMatchFieldQuery("TYPE", getType(getValueAsString(value)), AnalysisMode.IDENTIFIER, luceneFunction);
-    }
-    
-    @Override
-    public Query buildLuceneIn(AbstractLuceneQueryParser lqp, Collection<Serializable> values, Boolean not, PredicateMode mode) throws ParseException
-    {
-        String field = "TYPE";
-        
-        // Check type conversion
-
-       
-        Collection<String> asStrings = DefaultTypeConverter.INSTANCE.convert(String.class, values);
-
-        if (asStrings.size() == 0)
-        {
-            if (not)
-            {
-                return new MatchAllDocsQuery();
-            }
-            else
-            {
-                return new TermQuery(new Term("NO_TOKENS", "__"));
-            }
-        }
-        else if (asStrings.size() == 1)
-        {
-            String value = asStrings.iterator().next();
-            if (not)
-            {
-                return lqp.getDoesNotMatchFieldQuery(field, getType(value), AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
-            }
-            else
-            {
-                return lqp.getFieldQuery(field, getType(value), AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
-            }
-        }
-        else
-        {
-            BooleanQuery booleanQuery = new BooleanQuery();
-            if (not)
-            {
-                booleanQuery.add(new MatchAllDocsQuery(), Occur.MUST);
-            }
-            for (String value : asStrings)
-            {
-                Query any = lqp.getFieldQuery(field, getType(value), AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
-                if (not)
-                {
-                    booleanQuery.add(any, Occur.MUST_NOT);
-                }
-                else
-                {
-                    booleanQuery.add(any, Occur.SHOULD);
-                }
-            }
-            return booleanQuery;
-        }
-    }
-
-    @Override
-    public Query buildLuceneExists(AbstractLuceneQueryParser lqp, Boolean not) throws ParseException
+    public <Q, S, E extends Throwable> Q buildLuceneExists(LuceneQueryParserAdaptor<Q, S, E> lqpa, Boolean not) throws E
     {
         if (not)
         {
-            return new TermQuery(new Term("NO_TOKENS", "__"));
+            return lqpa.getMatchNoneQuery();
         }
         else
         { 
-            return new MatchAllDocsQuery();
+            return lqpa.getMatchAllQuery();
         }
     }
     

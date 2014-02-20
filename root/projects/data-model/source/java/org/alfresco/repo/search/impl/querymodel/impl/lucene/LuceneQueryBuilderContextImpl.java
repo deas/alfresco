@@ -22,18 +22,24 @@ import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneAnalyser;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 
 /**
  * @author andyh
  */
-public class LuceneQueryBuilderContextImpl implements LuceneQueryBuilderContext
+public class LuceneQueryBuilderContextImpl implements LuceneQueryBuilderContext<Query, Sort, ParseException>
 {
     private LuceneQueryParser lqp;
+    
+    private LuceneQueryParserAdaptor<Query, Sort, ParseException> lqpa;
 
     private NamespacePrefixResolver namespacePrefixResolver;
 
@@ -62,14 +68,16 @@ public class LuceneQueryBuilderContextImpl implements LuceneQueryBuilderContext
         lqp.setIndexReader(indexReader);
         lqp.setAllowLeadingWildcard(true);
         this.namespacePrefixResolver = namespacePrefixResolver;
+        
+        lqpa = new LegacyLuceneQueryParserAdaptor(lqp);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext#getLuceneQueryParser()
      */
-    public AbstractLuceneQueryParser getLuceneQueryParser()
+    public LuceneQueryParserAdaptor<Query, Sort, ParseException> getLuceneQueryParserAdaptor()
     {
-        return lqp;
+        return lqpa;
     }
 
     /* (non-Javadoc)

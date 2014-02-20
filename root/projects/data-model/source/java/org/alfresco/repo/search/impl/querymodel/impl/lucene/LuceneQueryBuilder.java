@@ -24,13 +24,11 @@ import java.util.Set;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
 
 /**
  * @author andyh
  */
-public interface LuceneQueryBuilder
+public interface LuceneQueryBuilder <Q, S, E extends Throwable>
 {
     /**
      * Build the matching lucene query
@@ -40,7 +38,7 @@ public interface LuceneQueryBuilder
      * @return - the query
      * @throws ParseException
      */
-    public  Query buildQuery(Set<String> selectors,  LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext) throws ParseException;
+    public Q buildQuery(Set<String> selectors,  LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E;
 
     /**
      * Build the matching lucene sort
@@ -48,8 +46,9 @@ public interface LuceneQueryBuilder
      * @param luceneContext
      * @param functionContext
      * @return - the sort spec
+     * @throws E 
      */
-    public Sort buildSort(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext);
+    public S buildSort(Set<String> selectors, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext) throws E;
     
     /**
      * Build a sort definition for a sorted result set wrapper
@@ -58,6 +57,6 @@ public interface LuceneQueryBuilder
      * @param functionContext
      * @return
      */
-    public List<SortDefinition> buildSortDefinitions(Set<String> selectors, LuceneQueryBuilderContext luceneContext, FunctionEvaluationContext functionContext);
+    public List<SortDefinition> buildSortDefinitions(Set<String> selectors, LuceneQueryBuilderContext<Q, S, E> luceneContext, FunctionEvaluationContext functionContext);
 
 }
