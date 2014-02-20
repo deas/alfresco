@@ -93,6 +93,7 @@
     <module>projects/slingshot</module>
     <module>projects/web-editor</module>
     <module>projects/web-editor-plugin</module>
+    <module>projects/solr-client</module>
     <module>projects/solr</module>
     <module>projects/file-transfer-receiver</module>
     <!-- Currently being worked out... see BDE-118

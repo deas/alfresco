@@ -37,6 +37,11 @@
             <artifactId>alfresco-data-model</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-solrclient</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- provided dependencies -->
             <dependency>
             <groupId>javax.servlet</groupId>
