@@ -1009,6 +1009,9 @@
       <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-datamodel-doc.zip">
          <zipfileset dir="${dir.project.datamodel.docs.java}" />
       </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-legacylucene-doc.zip">
+         <zipfileset dir="${dir.project.legacylucene.docs.java}" />
+      </zip>
       <zip destfile="${dir.continuous.assemble.sdk}/doc/alfresco-repository-doc.zip">
          <zipfileset dir="${dir.project.repository.docs.java}" />
       </zip>
@@ -1059,6 +1062,8 @@
           basedir="${dir.project.core.src.java}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-sources.zip"
           basedir="${dir.project.datamodel.src.java}" />
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-legacylucene-sources.zip"
+          basedir="${dir.project.legacylucene.src.java}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-deployment-sources.zip"
           basedir="${dir.project.deployment.src.java}" />
       <zip destfile="${dir.continuous.assemble.config}/alfresco-jlan-embed-sources.zip"
@@ -1086,6 +1091,9 @@
       <zip destfile="${dir.continuous.assemble.config}/alfresco-datamodel-test-resources.zip">
           <fileset dir="${dir.project.datamodel.src}/${dir.name.test.resources}" />
           <fileset dir="${dir.project.datamodel.classes.test}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.config}/alfresco-legacylucene-test-resources.zip">
+          <fileset dir="${dir.project.legacylucene.classes.test}" />
       </zip>
       <zip destfile="${dir.continuous.assemble.config}/alfresco-deployment-test-resources.zip">
           <fileset dir="${dir.project.deployment.classes.test}" />
@@ -1134,6 +1142,8 @@
             file="${dir.project.core.dist}/${file.name.jar.core}" />
       <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
             file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
+      <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
+            file="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}" />
       <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
             file="${dir.project.repository.dist}/${file.name.jar.repository}" />
       <copy todir="${dir.continuous.assemble.sdk}/lib/server" 
@@ -1246,6 +1256,9 @@
       </zip>
       <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-datamodel-src.zip">
          <zipfileset dir="${dir.project.datamodel.src}" />
+      </zip>
+      <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-legacylucene-src.zip">
+         <zipfileset dir="${dir.project.legacylucene.src}" />
       </zip>
       <zip destfile="${dir.continuous.assemble.sdk}/src/alfresco-repository-src.zip">
          <zipfileset dir="${dir.project.repository.src}" />
@@ -1385,6 +1398,9 @@
       </copy>
       <copy todir="${dir.continuous.assemble.docs.java}/datamodel">
          <fileset dir="${dir.project.datamodel.docs.java}" />
+      </copy>
+      <copy todir="${dir.continuous.assemble.docs.java}/legacylucene">
+         <fileset dir="${dir.project.legacylucene.docs.java}" />
       </copy>
       <copy todir="${dir.continuous.assemble.docs.java}/repository">
          <fileset dir="${dir.project.repository.docs.java}" />

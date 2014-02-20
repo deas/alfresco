@@ -22,5 +22,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.10.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SOLR Client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Legacy Lucene"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

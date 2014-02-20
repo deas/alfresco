@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.client.Acl;
@@ -230,7 +230,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 {
                     refCounted = core.getSearcher(false, true, null);
                     
-                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
+                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(QueryConstants.FIELD_TXID, target));
                     term = termEnum.term();
                     termEnum.close();
                 }
@@ -482,7 +482,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 {
                     refCounted = core.getSearcher(false, true, null);
                     
-                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(QueryConstants.FIELD_ACLTXID, target));
                     term = termEnum.term();
                     termEnum.close();
                 }

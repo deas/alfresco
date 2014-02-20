@@ -54,7 +54,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -84,6 +84,7 @@ import org.alfresco.util.GUID;
 import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
+import org.alfresco.util.SearchLanguageConversion;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.search.Query;
@@ -5863,21 +5864,21 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"over a lazy\"", 1);
 
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*a*", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*a*", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*A*", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*A*", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*a*\"", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*a*\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*A*\"", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*A*\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*s*", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*s*", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*S*", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":*S*", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*s*\"", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*s*\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "\\@"
-                    + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*S*\"", 1);
+                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "text-indexed-stored-tokenised-atomic").toString()) + ":\"*S*\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:*A*", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"*a*\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"*A*\"", 1);
@@ -5901,12 +5902,12 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             // FTS
 
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"fox\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ":\"fox\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ".mimetype:\"text/plain\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ".locale:\"en_GB\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ".locale:en_*", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ".locale:e*_GB", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ".size:\"298\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ":\"fox\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ".mimetype:\"text/plain\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ".locale:\"en_GB\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ".locale:en_*", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ".locale:e*_GB", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ".size:\"298\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"fox\"", 0, null, new String[] { "@" + ContentModel.PROP_NAME.toString() }, null);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"fox\"", 1, null,
                     new String[] { "@" + ContentModel.PROP_NAME.toString(), "@" + ContentModel.PROP_CONTENT.toString() }, null);
@@ -6067,14 +6068,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:fo*", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:f*x", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:*ox", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ":fox", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ":fo*", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ":f*x", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toString()) + ":*ox", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":fox", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":fo*", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":f*x", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":*ox", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ":fox", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ":fo*", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ":f*x", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ":*ox", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":fox", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":fo*", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":f*x", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toPrefixString(dataModel.getNamespaceDAO())) + ":*ox", 1);
         }
         finally
         {
@@ -6094,10 +6095,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             refCounted = core.getSearcher(false, true, null);
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + LuceneQueryParser.escape(orderText.toString()) + ":[a TO b]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + LuceneQueryParser.escape(orderText.toString()) + ":[a TO \uFFFF]", 15);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + LuceneQueryParser.escape(orderText.toString()) + ":[\u0000 TO b]", 2);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + LuceneQueryParser.escape(orderText.toString()) + ":[d TO \uFFFF]", 12);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[a TO b]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[a TO \uFFFF]", 15);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[\u0000 TO b]", 2);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[d TO \uFFFF]", 12);
 
         }
         finally
@@ -6117,141 +6118,141 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         for (int i = 1; i < 16; i++)
         {
-            testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":LEAF-" + i, 1, null, null, null, null, null, (String) null);
-            testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":AUX-" + i, 1, null, null, null, null, null, (String) null);
+            testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":LEAF-" + i, 1, null, null, null, null, null, (String) null);
+            testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":AUX-" + i, 1, null, null, null, null, null, (String) null);
         }
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":LEAF-*", 16, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":AUX-*", 16, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":ACL-*", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":ACLTX-*", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":TX-*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":LEAF-*", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":AUX-*", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":ACL-*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":ACLTX-*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":TX-*", 1, null, null, null, null, null, (String) null);
 
         // LID is used internally via ID if a node ref is provided
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_LINKASPECT is not used for SOLR
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ANCESTOR + ":\"" + nodeRef + "\"", 10, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ANCESTOR + ":\"" + nodeRef + "\"", 10, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_ISCONTAINER is not used for SOLR
         // AbstractLuceneQueryParser.FIELD_ISCATEGORY is not used for SOLR
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:one\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:two\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:three\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:four\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:five\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:six\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:seven\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-0\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-1\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:nine\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:ten\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:fourteen\"", 2, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:common\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_QNAME + ":\"cm:link\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:one\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:two\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:three\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:four\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:five\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:six\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:seven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eight-0\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eight-1\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:nine\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:ten\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:fourteen\"", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:common\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:link\"", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:one\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:two\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:three\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:four\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:five\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:six\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:seven\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-0\"", 0, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-1\"", 0, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:nine\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:ten\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:fourteen\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:common\"", 0, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME + ":\"cm:link\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:one\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:two\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:three\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:four\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:five\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:six\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:seven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-0\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-1\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-2\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:nine\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:ten\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eleven\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:twelve\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:thirteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:fourteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:fifteen\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:common\"", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:link\"", 0, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_ISROOT is not used in SOLR
 
         testQueryByHandler(report, core, "/afts",
-                AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME + ":\"" + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 4, null, null,
+                QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME + ":\"" + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 4, null, null,
                 null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ISNODE + ":T", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ISNODE + ":T", 16, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ASSOCTYPEQNAME
                 + ":\"" + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 5, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null, null, null, null, null, (String) null);
 
         // TYPE and ASPECT is covered in other tests
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":1", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":2", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":3", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":4", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":5", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":6", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":7", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":8", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":9", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":10", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":11", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":12", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":13", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":14", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":15", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":16", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID + ":17", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":2", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":3", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":4", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":5", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":6", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":7", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":8", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":9", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":10", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":11", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":12", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":13", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":14", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":15", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":16", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":17", 0, null, null, null, null, null, (String) null);
         // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":*", 16, null, null, (String)
         // null);
         // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":[3 TO 4]", 2, null, null,
         // null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_TXID + ":1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_TXID + ":1", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INTXID + ":1", 33, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_INTXID + ":1", 33, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLTXID + ":1", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ACLTXID + ":1", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INACLTXID + ":1", 2, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_INACLTXID + ":2", 0, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_INACLTXID + ":1", 2, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_INACLTXID + ":2", 0, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE
         // addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_ACLID + ":1", 17, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_READER + ":\"GROUP_EVERYONE\"", 16, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":andy", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":bob", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":cid", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":dave", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":eoin", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":fred", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":gail", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":hal", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":ian", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":jake", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":kara", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":loon", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":mike", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":noodle", 1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_OWNER + ":ood", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ACLID + ":1", 17, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_READER + ":\"GROUP_EVERYONE\"", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":andy", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":bob", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":cid", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":dave", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":eoin", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":fred", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":gail", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":hal", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":ian", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":jake", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":kara", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":loon", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":mike", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":noodle", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":ood", 1, null, null, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null, null, null, (String) null);
     }
 
     private void checkAuthorityFilter(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryParser.ParseException
@@ -6323,70 +6324,70 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             refCounted = core.getSearcher(false, true, null);
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfresco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfresc?\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfres??\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfre???\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfr????\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alf?????\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"al??????\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a???????\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????????\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfresco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfresc?\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfres??\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfre???\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfr????\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alf?????\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"al??????\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a???????\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????????\"", 1);
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a??re???\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a??re???\"", 1);
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"?lfresco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"??fresco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???resco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????esco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"?????sco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"??????co\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???????o\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"?lfresco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"??fresco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???resco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????esco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"?????sco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"??????co\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???????o\"", 1);
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???resco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???res?o\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????e?co\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????e?c?\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???re???\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???resco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???res?o\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????e?co\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"????e?c?\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"???re???\"", 1);
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfresc*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfres*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfre*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfr*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alf*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"al*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a*****\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*lfresco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*fresco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*resco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*esco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*sco\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*co\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*o\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"****lf**sc***\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*??*lf**sc***\"", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Alfresc*tutorial\"", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Alf* tut*\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*co *al\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfresc*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfres*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfre*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alfr*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"alf*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"al*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"a*****\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*lfresco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*fresco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*resco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*esco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*sco\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*co\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*o\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"****lf**sc***\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*??*lf**sc***\"", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Alfresc*tutorial\"", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Alf* tut*\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"*co *al\"", 1);
 
             QName mlQName = QName.createQName(TEST_NAMESPACE, "ml");
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":and", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":\"and\"", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banana", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banana", 1, Locale.UK, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banana", 1, Locale.ENGLISH, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banane", 1, Locale.FRENCH, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":香蕉", 1, Locale.CHINESE, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banaan", 1, new Locale("nl"), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banane", 1, Locale.GERMAN, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":μπανάνα", 1, new Locale("el"), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banana", 1, Locale.ITALIAN, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":バナナ", 1, new Locale("ja"), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":바나나", 1, new Locale("ko"), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":banana", 1, new Locale("pt"), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":банан", 1, new Locale("ru"), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(mlQName.toString()) + ":plátano", 1, new Locale("es"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":and", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":\"and\"", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banana", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banana", 1, Locale.UK, null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banana", 1, Locale.ENGLISH, null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banane", 1, Locale.FRENCH, null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":香蕉", 1, Locale.CHINESE, null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banaan", 1, new Locale("nl"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banane", 1, Locale.GERMAN, null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":μπανάνα", 1, new Locale("el"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banana", 1, Locale.ITALIAN, null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":バナナ", 1, new Locale("ja"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":바나나", 1, new Locale("ko"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banana", 1, new Locale("pt"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":банан", 1, new Locale("ru"), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":plátano", 1, new Locale("es"), null, null);
         }
         finally
         {
@@ -6409,66 +6410,66 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
             QName qname = QName.createQName(TEST_NAMESPACE, "int-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"1\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":1", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"01\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":01", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"001\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"0001\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[A TO 2]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[0 TO 2]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[0 TO A]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 1}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{0 TO 1}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{0 TO A}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 2}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{1 TO 2}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{1 TO A}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"1\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":1", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"01\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":01", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"001\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"0001\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[A TO 2]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[0 TO 2]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[0 TO A]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 1}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{0 TO 1}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{0 TO A}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 2}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{1 TO 2}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{1 TO A}", 0);
 
             qname = QName.createQName(TEST_NAMESPACE, "long-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"2\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"02\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"002\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"0002\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[A TO 2]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[0 TO 2]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[0 TO A]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 2}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{0 TO 2}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{0 TO A}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 3}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{2 TO 3}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{2 TO A}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"2\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"02\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"002\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"0002\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[A TO 2]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[0 TO 2]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[0 TO A]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 2}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{0 TO 2}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{0 TO A}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 3}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{2 TO 3}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{2 TO A}", 0);
 
             qname = QName.createQName(TEST_NAMESPACE, "float-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"3.4\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[A TO 4]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[3 TO 4]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[3 TO A]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[A TO 3.4]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[3.3 TO 3.4]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[3.3 TO A]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 3.4}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{3.3 TO 3.4}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{3.3 TO A}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"3.40\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"03.4\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"03.40\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"3.4\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[A TO 4]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[3 TO 4]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[3 TO A]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[A TO 3.4]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[3.3 TO 3.4]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[3.3 TO A]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 3.4}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{3.3 TO 3.4}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{3.3 TO A}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"3.40\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"03.4\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"03.40\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "double-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"5.6\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"05.6\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"5.60\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"05.60\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[A TO 5.7]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[5.5 TO 5.7]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":[5.5 TO A]", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 5.6}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{5.5 TO 5.6}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{5.5 TO A}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{A TO 5.7}", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{5.6 TO 5.7}", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":{5.6 TO A}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"5.6\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"05.6\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"5.60\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"05.60\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[A TO 5.7]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[5.5 TO 5.7]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":[5.5 TO A]", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 5.6}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{5.5 TO 5.6}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{5.5 TO A}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{A TO 5.7}", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{5.6 TO 5.7}", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{5.6 TO A}", 0);
 
             Date date = new Date();
             for (SimpleDateFormatAndResolution df : CachingDateFormat.getLenientFormatters())
@@ -6487,30 +6488,30 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 if (sDate.length() >= 9)
                 {
                     testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":\"" + sDate + "\"", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":\"" + sDate + "\"", 1);
                 }
                 testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
-                        + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":\"" + sDate + "\"", 1);
+                        + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":\"" + sDate + "\"", 1);
 
                 sDate = df.getSimpleDateFormat().format(date);
                 testQuery(dataModel, subReport, solrIndexSearcher, "\\@cm\\:CrEaTeD:[MIN TO " + sDate + "]", 1);
                 testQuery(dataModel, subReport, solrIndexSearcher, "\\@cm\\:created:[MIN TO NOW]", 1);
-                testQuery(dataModel, subReport, solrIndexSearcher, "\\@" + SolrQueryParser.escape(ContentModel.PROP_CREATED.toString()) + ":[MIN TO " + sDate + "]", 1);
+                testQuery(dataModel, subReport, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CREATED.toString()) + ":[MIN TO " + sDate + "]", 1);
 
                 if (sDate.length() >= 9)
                 {
                     sDate = df.getSimpleDateFormat().format(testDate);
                     testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[" + sDate + " TO " + sDate + "]", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[" + sDate + " TO " + sDate + "]", 1);
                     testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[MIN  TO " + sDate + "]", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[MIN  TO " + sDate + "]", 1);
                     testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[" + sDate + " TO MAX]", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "date-ista").toString()) + ":[" + sDate + " TO MAX]", 1);
                 }
 
                 sDate = CachingDateFormat.getDateFormat().format(testDate);
                 testQuery(dataModel, subReport, solrIndexSearcher, "\\@"
-                        + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[MIN TO " + sDate + "]", 1);
+                        + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[MIN TO " + sDate + "]", 1);
 
                 sDate = df.getSimpleDateFormat().format(testDate);
                 for (long i : new long[] { 333, 20000, 20 * 60 * 1000, 8 * 60 * 60 * 1000, 10 * 24 * 60 * 60 * 1000, 4 * 30 * 24 * 60 * 60 * 1000,
@@ -6532,24 +6533,24 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     String endDate = df.getSimpleDateFormat().format(new Date(testDate.getTime() + i));
 
                     testQuery(dataModel, subSubReport1, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + startDate + " TO " + endDate + "]", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + startDate + " TO " + endDate + "]", 1);
                     testQuery(dataModel, subSubReport2, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + sDate + " TO " + endDate + "]", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + sDate + " TO " + endDate + "]", 1);
                     testQuery(dataModel, subSubReport3, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + startDate + " TO " + sDate + "]", 1);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":[" + startDate + " TO " + sDate + "]", 1);
                     testQuery(dataModel, subSubReport4, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":{" + sDate + " TO " + endDate + "}", 0);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":{" + sDate + " TO " + endDate + "}", 0);
                     testQuery(dataModel, subSubReport5, solrIndexSearcher, "\\@"
-                            + SolrQueryParser.escape(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":{" + startDate + " TO " + sDate + "}", 0);
+                            + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "datetime-ista").toString()) + ":{" + startDate + " TO " + sDate + "}", 0);
 
                 }
             }
 
             qname = QName.createQName(TEST_NAMESPACE, "boolean-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"true\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"true\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "qname-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"{wibble}wobble\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"{wibble}wobble\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "category-ista");
             testQuery(
@@ -6557,18 +6558,18 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     report,
                     solrIndexSearcher,
                     "\\@"
-                            + SolrQueryParser.escape(qname.toString()) + ":\""
+                            + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\""
                             + DefaultTypeConverter.INSTANCE.convert(String.class, new NodeRef(new StoreRef("proto", "id"), "CategoryId")) + "\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "noderef-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"" + n01NodeRef + "\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"" + n01NodeRef + "\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "path-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"/{" + NamespaceService.CONTENT_MODEL_1_0_URI + "}three\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"/{" + NamespaceService.CONTENT_MODEL_1_0_URI + "}three\"", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "any-many-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"100\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SolrQueryParser.escape(qname.toString()) + ":\"anyValueAsString\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"100\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"anyValueAsString\"", 1);
 
             //
 
@@ -6577,36 +6578,36 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"Tutorial Alfresco\"~2", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"Tutorial Alfresco\"~3", 1);
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Alfresco Tutorial\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~0", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~1", 0);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~2", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~3", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Alfresco Tutorial\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~0", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~1", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~2", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_DESCRIPTION.toString()) + ":\"Tutorial Alfresco\"~3", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "mltext-many-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":лемур", 1, (new Locale("ru")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":lemur", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":chou", 1, (new Locale("fr")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":cabbage", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":cabba*", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":ca*ge", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":*bage", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":cabage~", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":*b?ag?", 1, (new Locale("en")), null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":cho*", 1, (new Locale("fr")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":лемур", 1, (new Locale("ru")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":lemur", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":chou", 1, (new Locale("fr")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":cabbage", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":cabba*", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":ca*ge", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":*bage", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":cabage~", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":*b?ag?", 1, (new Locale("en")), null, null);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":cho*", 1, (new Locale("fr")), null, null);
 
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(QName.createQName(TEST_NAMESPACE, "content-many-ista").toString()) + ":multicontent", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE, "content-many-ista").toString()) + ":multicontent", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "locale-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":\"en_GB_\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":en_GB_", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":en_*", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":*_GB_*", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":*_gb_*", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"en_GB_\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":en_GB_", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":en_*", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":*_GB_*", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":*_gb_*", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "period-ista");
-            testQuery(dataModel, report, solrIndexSearcher, "@" + LuceneQueryParser.escape(qname.toString()) + ":\"period|12\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":\"period|12\"", 1);
 
         }
         finally
@@ -6857,10 +6858,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         aclTxCmd.overwriteCommitted = true;
         aclTxCmd.overwritePending = true;
         SolrInputDocument aclTxSol = new SolrInputDocument();
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ID, "ACLTX-" + acltxid);
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ACLTXID, acltxid);
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, acltxid);
-        aclTxSol.addField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
+        aclTxSol.addField(QueryConstants.FIELD_ID, "ACLTX-" + acltxid);
+        aclTxSol.addField(QueryConstants.FIELD_ACLTXID, acltxid);
+        aclTxSol.addField(QueryConstants.FIELD_INACLTXID, acltxid);
+        aclTxSol.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
         aclTxCmd.solrDoc = aclTxSol;
         aclTxCmd.doc = CoreTracker.toDocument(aclTxCmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(aclTxCmd);
@@ -6869,14 +6870,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         aclCmd.overwriteCommitted = true;
         aclCmd.overwritePending = true;
         SolrInputDocument aclSol = new SolrInputDocument();
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclid);
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclid);
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, "" + acltxid);
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "GROUP_EVERYONE");
-        aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "pig");
+        aclSol.addField(QueryConstants.FIELD_ID, "ACL-" + aclid);
+        aclSol.addField(QueryConstants.FIELD_ACLID, aclid);
+        aclSol.addField(QueryConstants.FIELD_INACLTXID, "" + acltxid);
+        aclSol.addField(QueryConstants.FIELD_READER, "GROUP_EVERYONE");
+        aclSol.addField(QueryConstants.FIELD_READER, "pig");
         for (int i = 0; i <= maxReader; i++)
         {
-            aclSol.addField(AbstractLuceneQueryParser.FIELD_READER, "READER-" + (totalReader - i));
+            aclSol.addField(QueryConstants.FIELD_READER, "READER-" + (totalReader - i));
         }
         aclCmd.solrDoc = aclSol;
         aclCmd.doc = CoreTracker.toDocument(aclCmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -6918,10 +6919,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         txCmd.overwriteCommitted = true;
         txCmd.overwritePending = true;
         SolrInputDocument input = new SolrInputDocument();
-        input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + txid);
-        input.addField(AbstractLuceneQueryParser.FIELD_TXID, txid);
-        input.addField(AbstractLuceneQueryParser.FIELD_INTXID, txid);
-        input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, (new Date()).getTime());
+        input.addField(QueryConstants.FIELD_ID, "TX-" + txid);
+        input.addField(QueryConstants.FIELD_TXID, txid);
+        input.addField(QueryConstants.FIELD_INTXID, txid);
+        input.addField(QueryConstants.FIELD_TXCOMMITTIME, (new Date()).getTime());
         txCmd.solrDoc = input;
         txCmd.doc = CoreTracker.toDocument(txCmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(txCmd);
@@ -6933,10 +6934,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             Map<QName, PropertyValue> properties, Map<QName, String> content) throws IOException
     {
         SolrInputDocument doc = new SolrInputDocument();
-        doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + dbid);
-        doc.addField(AbstractLuceneQueryParser.FIELD_DBID, "" + dbid);
-        doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeRef);
-        doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, "" + txid);
+        doc.addField(QueryConstants.FIELD_ID, "LEAF-" + dbid);
+        doc.addField(QueryConstants.FIELD_DBID, "" + dbid);
+        doc.addField(QueryConstants.FIELD_LID, nodeRef);
+        doc.addField(QueryConstants.FIELD_INTXID, "" + txid);
 
         if (properties != null)
         {
@@ -6986,17 +6987,17 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             }
         }
 
-        doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, type);
+        doc.addField(QueryConstants.FIELD_TYPE, type);
         if (aspects != null)
         {
             for (QName aspect : aspects)
             {
-                doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect);
+                doc.addField(QueryConstants.FIELD_ASPECT, aspect);
             }
         }
-        doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
-        doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
-        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+        doc.addField(QueryConstants.FIELD_ISNODE, "T");
+        doc.addField(QueryConstants.FIELD_FTSSTATUS, "Clean");
+        doc.addField(QueryConstants.FIELD_TENANT, "_DEFAULT_");
 
         return doc;
     }
@@ -7009,8 +7010,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
             }
             else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
             {
@@ -7032,39 +7033,39 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(stringPropertyValue.getValue());
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
                 }
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
                 }
 
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
                 }
 
             }
             else
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
             }
 
         }
         else
         {
-            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+            doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
         }
     }
 
     private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName, ContentPropertyValue contentPropertyValue, Map<QName, String> content) throws IOException
     {
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
 
         // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
         // ".transformationStatus", response.getStatus());
@@ -7087,14 +7088,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
         StringReader prefix = new StringReader(builder.toString());
         Reader multiReader = new MultiReader(prefix, isr);
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
 
         isr = new StringReader(value);
         builder = new StringBuilder();
         builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
         prefix = new StringReader(builder.toString());
         multiReader = new MultiReader(prefix, isr);
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
 
     }
 
@@ -7111,13 +7112,13 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
                 }
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
                 }
 
                 if (sort.length() > 0)
@@ -7129,14 +7130,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
             if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
             }
         }
         else
         {
             for (Locale locale : mlTextPropertyValue.getLocales())
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
             }
         }
 
@@ -7145,24 +7146,24 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     private SolrInputDocument createAuxDocument(int txid, int dbid, int aclid, String[] paths, String owner, ChildAssociationRef[] parentAssocs, NodeRef[] ancestors)
     {
         SolrInputDocument aux = new SolrInputDocument();
-        aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + dbid);
-        aux.addField(AbstractLuceneQueryParser.FIELD_DBID, "" + dbid);
-        aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, "" + aclid);
-        aux.addField(AbstractLuceneQueryParser.FIELD_INTXID, "" + txid);
+        aux.addField(QueryConstants.FIELD_ID, "AUX-" + dbid);
+        aux.addField(QueryConstants.FIELD_DBID, "" + dbid);
+        aux.addField(QueryConstants.FIELD_ACLID, "" + aclid);
+        aux.addField(QueryConstants.FIELD_INTXID, "" + txid);
 
         if (paths != null)
         {
             for (String path : paths)
             {
-                aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path);
+                aux.addField(QueryConstants.FIELD_PATH, path);
             }
         }
 
         if (owner != null)
         {
-            aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, owner);
+            aux.addField(QueryConstants.FIELD_OWNER, owner);
         }
-        aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, "0");
+        aux.addField(QueryConstants.FIELD_PARENT_ASSOC_CRC, "0");
 
         StringBuilder qNameBuffer = new StringBuilder(64);
         StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
@@ -7177,24 +7178,24 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 }
                 qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
                 assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
+                aux.addField(QueryConstants.FIELD_PARENT, childAssocRef.getParentRef());
 
                 if (childAssocRef.isPrimary())
                 {
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                    aux.addField(QueryConstants.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
 
                 }
             }
-            aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-            aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
+            aux.addField(QueryConstants.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+            aux.addField(QueryConstants.FIELD_QNAME, qNameBuffer.toString());
         }
         if (ancestors != null)
         {
             for (NodeRef ancestor : ancestors)
             {
-                aux.addField(AbstractLuceneQueryParser.FIELD_ANCESTOR, ancestor.toString());
+                aux.addField(QueryConstants.FIELD_ANCESTOR, ancestor.toString());
             }
         }
         return aux;

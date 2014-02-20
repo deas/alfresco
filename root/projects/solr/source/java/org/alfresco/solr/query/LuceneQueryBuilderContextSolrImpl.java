@@ -19,8 +19,8 @@
 package org.alfresco.solr.query;
 
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LegacyLuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.repo.tenant.TenantService;

@@ -20,9 +20,9 @@ package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
 
-import org.alfresco.repo.search.impl.lucene.AnalysisMode;
-import org.alfresco.repo.search.impl.lucene.LuceneFunction;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
+import org.alfresco.repo.search.adaptor.lucene.AnalysisMode;
+import org.alfresco.repo.search.adaptor.lucene.LuceneFunction;
+import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.namespace.QName;

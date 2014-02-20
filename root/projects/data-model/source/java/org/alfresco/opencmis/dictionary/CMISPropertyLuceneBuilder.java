@@ -21,8 +21,8 @@ package org.alfresco.opencmis.dictionary;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.alfresco.repo.search.impl.lucene.LuceneFunction;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
+import org.alfresco.repo.search.adaptor.lucene.LuceneFunction;
+import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 
 

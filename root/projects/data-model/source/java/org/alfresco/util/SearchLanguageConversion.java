@@ -18,8 +18,6 @@
  */
 package org.alfresco.util;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
-import org.apache.lucene.queryParser.QueryParser;
 
 /**
  * Helper class to provide conversions between different search languages
@@ -304,7 +302,7 @@ public class SearchLanguageConversion
                 char[] chars = new char[] { ch };
                 String unescaped = new String(chars);
                 // check it
-                String escaped = AbstractLuceneQueryParser.escape(unescaped);
+                String escaped = SearchLanguageConversion.escapeLuceneQuery(unescaped);
                 if (!escaped.equals(unescaped))
                 {
                     // it was escaped
@@ -319,5 +317,34 @@ public class SearchLanguageConversion
         {
             return (reserved.indexOf(ch) > -1);
         }
+    }
+    
+    /**
+     * We have to escape lucene query strings outside of lucene - as we do not depend on any given version of lucene
+     * The escaping here is taken from lucene 1.4.3
+     *  
+     * The reserved (and escaped characters) are: 
+     *  
+     *  \ + - ! ( ) : ^ [ ] " { } ~ * ? | &
+     *  
+     *  The escape character is \
+     *  
+     * @param query
+     * @return - the escaped query string 
+     */
+    public static String escapeLuceneQuery(String query)
+    {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < query.length(); i++) {
+            char c = query.charAt(i);
+            // These characters are part of the query syntax and must be escaped
+            if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
+                    || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
+                    || c == '*' || c == '?' || c == '|' || c == '&') {
+                sb.append('\\');
+            }
+            sb.append(c);
+        }
+        return sb.toString(); 
     }
 }

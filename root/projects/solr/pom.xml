@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-data-model</artifactId>
+            <artifactId>alfresco-legacy-lucene</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

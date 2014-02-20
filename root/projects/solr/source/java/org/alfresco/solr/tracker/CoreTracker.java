@@ -66,7 +66,7 @@ import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
@@ -785,14 +785,14 @@ public class CoreTracker implements CloseHook
     public void deleteByAclChangeSetId(SolrIndexSearcher solrIndexSearcher, Long aclChangeSetId) throws IOException
     {
 
-        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_INACLTXID, NumericEncoder.encode(aclChangeSetId)));
+        Query query = new TermQuery(new Term(QueryConstants.FIELD_INACLTXID, NumericEncoder.encode(aclChangeSetId)));
         deleteByQuery(solrIndexSearcher, query);
     }
 
     public void deleteByAclId(SolrIndexSearcher solrIndexSearcher, Long aclId) throws IOException
     {
 
-        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_ACLID, NumericEncoder.encode(aclId)));
+        Query query = new TermQuery(new Term(QueryConstants.FIELD_ACLID, NumericEncoder.encode(aclId)));
         deleteByQuery(solrIndexSearcher, query);
     }
 
@@ -808,8 +808,8 @@ public class CoreTracker implements CloseHook
             int current = -1;
             while ((current = openBitSet.nextSetBit(current + 1)) != -1)
             {
-                Document doc = solrIndexSearcher.doc(current, Collections.singleton(AbstractLuceneQueryParser.FIELD_ID));
-                Fieldable fieldable = doc.getFieldable(AbstractLuceneQueryParser.FIELD_ID);
+                Document doc = solrIndexSearcher.doc(current, Collections.singleton(QueryConstants.FIELD_ID));
+                Fieldable fieldable = doc.getFieldable(QueryConstants.FIELD_ID);
                 if (fieldable != null)
                 {
                     idsToDelete.add(fieldable.stringValue());
@@ -821,8 +821,8 @@ public class CoreTracker implements CloseHook
         {
             for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
             {
-                Document doc = solrIndexSearcher.doc(it.nextDoc(), Collections.singleton(AbstractLuceneQueryParser.FIELD_ID));
-                Fieldable fieldable = doc.getFieldable(AbstractLuceneQueryParser.FIELD_ID);
+                Document doc = solrIndexSearcher.doc(it.nextDoc(), Collections.singleton(QueryConstants.FIELD_ID));
+                Fieldable fieldable = doc.getFieldable(QueryConstants.FIELD_ID);
                 if (fieldable != null)
                 {
                     idsToDelete.add(fieldable.stringValue());
@@ -1216,13 +1216,13 @@ public class CoreTracker implements CloseHook
 
     private void deleteByTransactionId(SolrIndexSearcher solrIndexSearcher, Long transactionId) throws IOException
     {
-        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_INTXID, NumericEncoder.encode(transactionId)));
+        Query query = new TermQuery(new Term(QueryConstants.FIELD_INTXID, NumericEncoder.encode(transactionId)));
         deleteByQuery(solrIndexSearcher, query);
     }
 
     private void deleteByNodeId(SolrIndexSearcher solrIndexSearcher, Long nodeId) throws IOException
     {
-        Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeId)));
+        Query query = new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(nodeId)));
         deleteByQuery(solrIndexSearcher, query);
     }
 
@@ -1341,7 +1341,7 @@ public class CoreTracker implements CloseHook
                 try
                 {
                     refCounted = core.getSearcher(false, true, null);
-                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, target));
+                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(QueryConstants.FIELD_TXID, target));
                     term = termEnum.term();
                     termEnum.close();
                 }
@@ -1503,7 +1503,7 @@ public class CoreTracker implements CloseHook
                     {
                         refCounted = core.getSearcher(false, true, null);
 
-                        TermEnum termEnum = refCounted.get().getReader().terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target));
+                        TermEnum termEnum = refCounted.get().getReader().terms(new Term(QueryConstants.FIELD_ACLTXID, target));
                         term = termEnum.term();
                         termEnum.close();
                     }
@@ -1634,8 +1634,8 @@ public class CoreTracker implements CloseHook
                 BooleanQuery query = new BooleanQuery();
 
 
-                query.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_TXID, targetTxId)), Occur.MUST);
-                query.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, targetTxCommitTime)), Occur.MUST);
+                query.add(new TermQuery(new Term(QueryConstants.FIELD_TXID, targetTxId)), Occur.MUST);
+                query.add(new TermQuery(new Term(QueryConstants.FIELD_TXCOMMITTIME, targetTxCommitTime)), Occur.MUST);
 
                 DocSet set = solrIndexSearcher.getDocSet(query);
                 if(set.size() == 0)
@@ -2215,16 +2215,16 @@ public class CoreTracker implements CloseHook
             cmd.overwriteCommitted = overwrite;
             cmd.overwritePending = overwrite;
             SolrInputDocument input = new SolrInputDocument();
-            input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACL-" + aclReaders.getId());
-            input.addField(AbstractLuceneQueryParser.FIELD_ACLID, aclReaders.getId());
-            input.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
+            input.addField(QueryConstants.FIELD_ID, "ACL-" + aclReaders.getId());
+            input.addField(QueryConstants.FIELD_ACLID, aclReaders.getId());
+            input.addField(QueryConstants.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
             String tenant = aclReaders.getTenantDomain();
             for (String reader : aclReaders.getReaders())
             {
                 switch(AuthorityType.getAuthorityType(reader))
                 {
                 case USER:
-                    input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                    input.addField(QueryConstants.FIELD_READER, reader);
                     break;
                 case GROUP:
                 case EVERYONE:
@@ -2232,15 +2232,15 @@ public class CoreTracker implements CloseHook
                     if(tenant.length() == 0)
                     {
                         // Default tenant matches 4.0 
-                        input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                        input.addField(QueryConstants.FIELD_READER, reader);
                     }
                     else
                     {
-                        input.addField(AbstractLuceneQueryParser.FIELD_READER, reader+"@"+tenant);
+                        input.addField(QueryConstants.FIELD_READER, reader+"@"+tenant);
                     }
                     break;
                 default:
-                    input.addField(AbstractLuceneQueryParser.FIELD_READER, reader);
+                    input.addField(QueryConstants.FIELD_READER, reader);
                     break;
                 }
             }
@@ -2264,10 +2264,10 @@ public class CoreTracker implements CloseHook
         cmd.overwriteCommitted = overwrite;
         cmd.overwritePending = overwrite;
         SolrInputDocument input = new SolrInputDocument();
-        input.addField(AbstractLuceneQueryParser.FIELD_ID, "TX-" + info.getId());
-        input.addField(AbstractLuceneQueryParser.FIELD_TXID, info.getId());
-        input.addField(AbstractLuceneQueryParser.FIELD_INTXID, info.getId());
-        input.addField(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
+        input.addField(QueryConstants.FIELD_ID, "TX-" + info.getId());
+        input.addField(QueryConstants.FIELD_TXID, info.getId());
+        input.addField(QueryConstants.FIELD_INTXID, info.getId());
+        input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
         cmd.solrDoc = input;
         cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(cmd);
@@ -2284,10 +2284,10 @@ public class CoreTracker implements CloseHook
         cmd.overwriteCommitted = overwrite;
         cmd.overwritePending = overwrite;
         SolrInputDocument input = new SolrInputDocument();
-        input.addField(AbstractLuceneQueryParser.FIELD_ID, "ACLTX-" + changeSet.getId());
-        input.addField(AbstractLuceneQueryParser.FIELD_ACLTXID, changeSet.getId());
-        input.addField(AbstractLuceneQueryParser.FIELD_INACLTXID, changeSet.getId());
-        input.addField(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
+        input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
+        input.addField(QueryConstants.FIELD_ACLTXID, changeSet.getId());
+        input.addField(QueryConstants.FIELD_INACLTXID, changeSet.getId());
+        input.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
         cmd.solrDoc = input;
         cmd.doc = CoreTracker.toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(cmd);
@@ -2401,8 +2401,8 @@ public class CoreTracker implements CloseHook
                     {
                         log.info(".. checking for path change");
                         BooleanQuery bQuery = new BooleanQuery();
-                        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))), Occur.MUST);
-                        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, NumericEncoder.encode(nodeMetaData.getParentAssocsCrc()))), Occur.MUST);
+                        bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))), Occur.MUST);
+                        bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_PARENT_ASSOC_CRC, NumericEncoder.encode(nodeMetaData.getParentAssocsCrc()))), Occur.MUST);
                         DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
                         if (docSet.size() > 0)
                         {
@@ -2410,7 +2410,7 @@ public class CoreTracker implements CloseHook
                         }
                         else
                         {
-                            docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))));
+                            docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(nodeMetaData.getId()))));
                             if (docSet.size() > 0)
                             {
                                 log.debug("... cascade updating aux doc");
@@ -2455,10 +2455,10 @@ public class CoreTracker implements CloseHook
                                 core.getUpdateHandler().delete(docCmd);
 
                                 SolrInputDocument doc = new SolrInputDocument();
-                                doc.addField(AbstractLuceneQueryParser.FIELD_ID, "UNINDEXED-" + nodeMetaData.getId());
-                                doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
-                                doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
-                                doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
+                                doc.addField(QueryConstants.FIELD_ID, "UNINDEXED-" + nodeMetaData.getId());
+                                doc.addField(QueryConstants.FIELD_DBID, nodeMetaData.getId());
+                                doc.addField(QueryConstants.FIELD_LID, nodeMetaData.getNodeRef());
+                                doc.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
 
                                 leafDocCmd.solrDoc = doc;
                                 leafDocCmd.doc = CoreTracker.toDocument(leafDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
@@ -2503,10 +2503,10 @@ public class CoreTracker implements CloseHook
                     core.getUpdateHandler().delete(docCmd);
 
                     SolrInputDocument doc = new SolrInputDocument();
-                    doc.addField(AbstractLuceneQueryParser.FIELD_ID, "LEAF-" + nodeMetaData.getId());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_LID, nodeMetaData.getNodeRef());
-                    doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
+                    doc.addField(QueryConstants.FIELD_ID, "LEAF-" + nodeMetaData.getId());
+                    doc.addField(QueryConstants.FIELD_DBID, nodeMetaData.getId());
+                    doc.addField(QueryConstants.FIELD_LID, nodeMetaData.getNodeRef());
+                    doc.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
 
                     for (QName propertyQname : properties.keySet())
                     {
@@ -2557,22 +2557,22 @@ public class CoreTracker implements CloseHook
                             }
                         }
                     }
-                    doc.addField(AbstractLuceneQueryParser.FIELD_TYPE, nodeMetaData.getType().toString());
+                    doc.addField(QueryConstants.FIELD_TYPE, nodeMetaData.getType().toString());
                     for (QName aspect : nodeMetaData.getAspects())
                     {
-                        doc.addField(AbstractLuceneQueryParser.FIELD_ASPECT, aspect.toString());
+                        doc.addField(QueryConstants.FIELD_ASPECT, aspect.toString());
                     }
-                    doc.addField(AbstractLuceneQueryParser.FIELD_ISNODE, "T");
-                    doc.addField(AbstractLuceneQueryParser.FIELD_FTSSTATUS, "Clean");
+                    doc.addField(QueryConstants.FIELD_ISNODE, "T");
+                    doc.addField(QueryConstants.FIELD_FTSSTATUS, "Clean");
                     // TODO: Place holder to test tenant queries
                     String tenant =  nodeMetaData.getTenantDomain();
                     if(tenant.length() > 0)
                     {
-                        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, nodeMetaData.getTenantDomain());
+                        doc.addField(QueryConstants.FIELD_TENANT, nodeMetaData.getTenantDomain());
                     }
                     else
                     {
-                        doc.addField(AbstractLuceneQueryParser.FIELD_TENANT, "_DEFAULT_");
+                        doc.addField(QueryConstants.FIELD_TENANT, "_DEFAULT_");
                     }
 
                     leafDocCmd.solrDoc = doc;
@@ -2645,17 +2645,17 @@ public class CoreTracker implements CloseHook
             leafDocCmd.overwritePending = overwrite;
 
             SolrInputDocument doc = new SolrInputDocument();
-            doc.addField(AbstractLuceneQueryParser.FIELD_ID, "ERROR-" + node.getId());
-            doc.addField(AbstractLuceneQueryParser.FIELD_DBID, node.getId());
-            doc.addField(AbstractLuceneQueryParser.FIELD_INTXID, node.getTxnId());
-            doc.addField(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE, e.getMessage());
+            doc.addField(QueryConstants.FIELD_ID, "ERROR-" + node.getId());
+            doc.addField(QueryConstants.FIELD_DBID, node.getId());
+            doc.addField(QueryConstants.FIELD_INTXID, node.getTxnId());
+            doc.addField(QueryConstants.FIELD_EXCEPTION_MESSAGE, e.getMessage());
 
             StringWriter stringWriter = new StringWriter(4096);
             PrintWriter printWriter = new PrintWriter(stringWriter, true);
             try
             {
                 e.printStackTrace(printWriter);
-                doc.addField(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK, stringWriter.toString());
+                doc.addField(QueryConstants.FIELD_EXCEPTION_STACK, stringWriter.toString());
             }
             finally
             {
@@ -2711,7 +2711,7 @@ public class CoreTracker implements CloseHook
         }
 
         BooleanQuery bQuery = new BooleanQuery();
-        bQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_PARENT, parentNodeMetaData.getNodeRef().toString())), Occur.MUST);
+        bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_PARENT, parentNodeMetaData.getNodeRef().toString())), Occur.MUST);
         DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
         ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE, AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
         if (docSet instanceof BitDocSet)
@@ -2761,7 +2761,7 @@ public class CoreTracker implements CloseHook
 
                 // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
                 log.info(".. checking aux doc exists in index before we update it");
-                Query query = new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + childId));
+                Query query = new TermQuery(new Term(QueryConstants.FIELD_ID, "AUX-" + childId));
                 DocSet auxSet = solrIndexSearcher.getDocSet(query);
                 if (auxSet.size() > 0)
                 {
@@ -2789,21 +2789,21 @@ public class CoreTracker implements CloseHook
     private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
     {
         SolrInputDocument aux = new SolrInputDocument();
-        aux.addField(AbstractLuceneQueryParser.FIELD_ID, "AUX-" + nodeMetaData.getId());
-        aux.addField(AbstractLuceneQueryParser.FIELD_DBID, nodeMetaData.getId());
-        aux.addField(AbstractLuceneQueryParser.FIELD_ACLID, nodeMetaData.getAclId());
-        aux.addField(AbstractLuceneQueryParser.FIELD_INTXID, nodeMetaData.getTxnId());
+        aux.addField(QueryConstants.FIELD_ID, "AUX-" + nodeMetaData.getId());
+        aux.addField(QueryConstants.FIELD_DBID, nodeMetaData.getId());
+        aux.addField(QueryConstants.FIELD_ACLID, nodeMetaData.getAclId());
+        aux.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
 
         for (Pair<String, QName> path : nodeMetaData.getPaths())
         {
-            aux.addField(AbstractLuceneQueryParser.FIELD_PATH, path.getFirst());
+            aux.addField(QueryConstants.FIELD_PATH, path.getFirst());
         }
 
         if (nodeMetaData.getOwner() != null)
         {
-            aux.addField(AbstractLuceneQueryParser.FIELD_OWNER, nodeMetaData.getOwner());
+            aux.addField(QueryConstants.FIELD_OWNER, nodeMetaData.getOwner());
         }
-        aux.addField(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc());
+        aux.addField(QueryConstants.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc());
 
         StringBuilder qNameBuffer = new StringBuilder(64);
         StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
@@ -2818,24 +2818,24 @@ public class CoreTracker implements CloseHook
                 }
                 qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
                 assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                aux.addField(AbstractLuceneQueryParser.FIELD_PARENT, childAssocRef.getParentRef());
+                aux.addField(QueryConstants.FIELD_PARENT, childAssocRef.getParentRef());
 
                 if (childAssocRef.isPrimary())
                 {
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                    aux.addField(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                    aux.addField(QueryConstants.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME, ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
 
                 }
             }
-            aux.addField(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-            aux.addField(AbstractLuceneQueryParser.FIELD_QNAME, qNameBuffer.toString());
+            aux.addField(QueryConstants.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+            aux.addField(QueryConstants.FIELD_QNAME, qNameBuffer.toString());
         }
         if(nodeMetaData.getAncestors() != null)
         {
             for(NodeRef ancestor : nodeMetaData.getAncestors())
             {
-                aux.addField(AbstractLuceneQueryParser.FIELD_ANCESTOR, ancestor.toString());
+                aux.addField(QueryConstants.FIELD_ANCESTOR, ancestor.toString());
             }
         }
         return aux;
@@ -2875,10 +2875,10 @@ public class CoreTracker implements CloseHook
         }
 
 
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size", contentPropertyValue.getLength());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale", contentPropertyValue.getLocale());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype", contentPropertyValue.getMimetype());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding", contentPropertyValue.getEncoding());
 
         if(false == transformContent)
         {
@@ -2887,9 +2887,9 @@ public class CoreTracker implements CloseHook
 
         long start = System.nanoTime();
         GetTextContentResponse response = client.getTextContent(nodeMetaData.getId(), propertyQName, null);
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
-        doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationStatus", response.getStatus());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationTime", response.getTransformDuration());
+        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".transformationException", response.getTransformException());
 
         InputStreamReader isr = null;
         InputStream ris = response.getContent();
@@ -2933,7 +2933,7 @@ public class CoreTracker implements CloseHook
             builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
             StringReader prefix = new StringReader(builder.toString());
             Reader multiReader = new MultiReader(prefix, isr);
-            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
+            doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
 
             // Cross language search support
             ris = new BufferedInputStream(new FileInputStream(temp));
@@ -2952,7 +2952,7 @@ public class CoreTracker implements CloseHook
             builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
             prefix = new StringReader(builder.toString());
             multiReader = new MultiReader(prefix, isr);
-            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
+            doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
         }
             }
 
@@ -2969,13 +2969,13 @@ public class CoreTracker implements CloseHook
 
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
                 }
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
                 }
 
                 if (sort.length() > 0)
@@ -2987,14 +2987,14 @@ public class CoreTracker implements CloseHook
 
             if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
             }
         }
         else
         {
             for (Locale locale : mlTextPropertyValue.getLocales())
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), mlTextPropertyValue.getValue(locale));
             }
         }
 
@@ -3008,8 +3008,8 @@ public class CoreTracker implements CloseHook
         {
             if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", stringPropertyValue.getValue());
             }
             else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
             {
@@ -3031,30 +3031,30 @@ public class CoreTracker implements CloseHook
                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(stringPropertyValue.getValue());
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", builder.toString());
                 }
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u", builder.toString());
                 }
 
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE) || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
+                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", builder.toString());
                 }
 
             }
             else
             {
-                doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
             }
 
         }
         else
         {
-            doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
+            doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), stringPropertyValue.getValue());
         }
             }
 
@@ -3219,7 +3219,7 @@ public class CoreTracker implements CloseHook
                 {
                     int docCount = 0;
                     String target = NumericEncoder.encode(i);
-                    Term term = new Term(AbstractLuceneQueryParser.FIELD_TXID, target);
+                    Term term = new Term(QueryConstants.FIELD_TXID, target);
                     if (termDocs == null)
                     {
                         termDocs = reader.termDocs(term);
@@ -3283,7 +3283,7 @@ public class CoreTracker implements CloseHook
                 {
                     int docCount = 0;
                     String target = NumericEncoder.encode(i);
-                    Term term = new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, target);
+                    Term term = new Term(QueryConstants.FIELD_ACLTXID, target);
                     if (termDocs == null)
                     {
                         termDocs = reader.termDocs(term);
@@ -3340,14 +3340,14 @@ public class CoreTracker implements CloseHook
             // LEAF
 
             int leafCount = 0;
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "LEAF-"));
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "LEAF-"));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("LEAF-"))
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("LEAF-"))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -3376,14 +3376,14 @@ public class CoreTracker implements CloseHook
             // AUX
 
             int auxCount = 0;
-            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "AUX-"));
+            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "AUX-"));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("AUX-"))
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("AUX-"))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -3412,14 +3412,14 @@ public class CoreTracker implements CloseHook
             // ERROR
 
             int errorCount = 0;
-            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "ERROR-"));
+            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "ERROR-"));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("ERROR-"))
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("ERROR-"))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -3448,14 +3448,14 @@ public class CoreTracker implements CloseHook
             // UNINDEXED
 
             int unindexedCount = 0;
-            termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "UNINDEXED-"));
+            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "UNINDEXED-"));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("UNINDEXED-"))
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("UNINDEXED-"))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -3499,7 +3499,7 @@ public class CoreTracker implements CloseHook
     {
         long lastTxCommitTimeBeforeHoles = 0;
 
-        TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, ""));
+        TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_TXCOMMITTIME, ""));
         do
         {
             Term term = termEnum.term();
@@ -3507,7 +3507,7 @@ public class CoreTracker implements CloseHook
             {
                 break;
             }
-            if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
+            if (term.field().equals(QueryConstants.FIELD_TXCOMMITTIME))
             {
                 Long txCommitTime = NumericEncoder.decodeLong(term.text());
                 if (txCommitTime < cutOffTime)
@@ -3544,14 +3544,14 @@ public class CoreTracker implements CloseHook
         {
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
             SolrIndexReader reader = solrIndexSearcher.getReader();
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ID, "ERROR-"));
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "ERROR-"));
             do
             {
                 Term term = termEnum.term();
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ID) && term.text().startsWith("ERROR-"))
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("ERROR-"))
                 {
                     int docCount = 0;
-                    TermDocs termDocs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ID, term.text()));
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
                     while (termDocs.next())
                     {
                         if (!reader.isDeleted(termDocs.doc()))
@@ -3582,7 +3582,7 @@ public class CoreTracker implements CloseHook
     {
         long lastTxCommitTimeBeforeHoles = 0;
 
-        TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, ""));
+        TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ACLTXCOMMITTIME, ""));
         do
         {
             Term term = termEnum.term();
@@ -3590,7 +3590,7 @@ public class CoreTracker implements CloseHook
             {
                 break;
             }
-            if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME))
+            if (term.field().equals(QueryConstants.FIELD_ACLTXCOMMITTIME))
             {
                 Long txCommitTime = NumericEncoder.decodeLong(term.text());
                 if (txCommitTime < cutOffTime)
@@ -3618,11 +3618,11 @@ public class CoreTracker implements CloseHook
         long txid = -1;
         if (lastTxCommitTimeBeforeHoles != -1)
         {
-            TermDocs docs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, NumericEncoder.encode(lastTxCommitTimeBeforeHoles)));
+            TermDocs docs = reader.termDocs(new Term(QueryConstants.FIELD_TXCOMMITTIME, NumericEncoder.encode(lastTxCommitTimeBeforeHoles)));
             while (docs.next())
             {
                 Document doc = reader.document(docs.doc());
-                Fieldable field = doc.getFieldable(AbstractLuceneQueryParser.FIELD_TXID);
+                Fieldable field = doc.getFieldable(QueryConstants.FIELD_TXID);
                 if (field != null)
                 {
                     long currentTxId = Long.valueOf(field.stringValue());
@@ -3641,11 +3641,11 @@ public class CoreTracker implements CloseHook
         long txid = -1;
         if (lastChangeSetCommitTimeBeforeHoles != -1)
         {
-            TermDocs docs = reader.termDocs(new Term(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, NumericEncoder.encode(lastChangeSetCommitTimeBeforeHoles)));
+            TermDocs docs = reader.termDocs(new Term(QueryConstants.FIELD_ACLTXCOMMITTIME, NumericEncoder.encode(lastChangeSetCommitTimeBeforeHoles)));
             while (docs.next())
             {
                 Document doc = reader.document(docs.doc());
-                Fieldable field = doc.getFieldable(AbstractLuceneQueryParser.FIELD_ACLTXID);
+                Fieldable field = doc.getFieldable(QueryConstants.FIELD_ACLTXID);
                 if (field != null)
                 {
                     long currentTxId = Long.valueOf(field.stringValue());
@@ -3665,7 +3665,7 @@ public class CoreTracker implements CloseHook
 
         try
         {
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME, ""));
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_TXCOMMITTIME, ""));
             do
             {
                 Term term = termEnum.term();
@@ -3673,7 +3673,7 @@ public class CoreTracker implements CloseHook
                 {
                     break;
                 }
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
+                if (term.field().equals(QueryConstants.FIELD_TXCOMMITTIME))
                 {
                     Long txCommitTime = NumericEncoder.decodeLong(term.text());
                     lastTxCommitTime = txCommitTime;
@@ -3701,7 +3701,7 @@ public class CoreTracker implements CloseHook
 
         try
         {
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_TXID, ""));
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_TXID, ""));
             do
             {
                 Term term = termEnum.term();
@@ -3709,7 +3709,7 @@ public class CoreTracker implements CloseHook
                 {
                     break;
                 }
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_TXID))
+                if (term.field().equals(QueryConstants.FIELD_TXID))
                 {
                     Long txCommitTime = NumericEncoder.decodeLong(term.text());
                     lastTxCommitTime = txCommitTime;
@@ -3737,7 +3737,7 @@ public class CoreTracker implements CloseHook
 
         try
         {
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXID, ""));
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ACLTXID, ""));
             do
             {
                 Term term = termEnum.term();
@@ -3745,7 +3745,7 @@ public class CoreTracker implements CloseHook
                 {
                     break;
                 }
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+                if (term.field().equals(QueryConstants.FIELD_ACLTXID))
                 {
                     Long txCommitTime = NumericEncoder.decodeLong(term.text());
                     lastTxCommitTime = txCommitTime;
@@ -3773,7 +3773,7 @@ public class CoreTracker implements CloseHook
 
         try
         {
-            TermEnum termEnum = reader.terms(new Term(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME, ""));
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ACLTXCOMMITTIME, ""));
             do
             {
                 Term term = termEnum.term();
@@ -3781,7 +3781,7 @@ public class CoreTracker implements CloseHook
                 {
                     break;
                 }
-                if (term.field().equals(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME))
+                if (term.field().equals(QueryConstants.FIELD_ACLTXCOMMITTIME))
                 {
                     Long txCommitTime = NumericEncoder.decodeLong(term.text());
                     lastTxCommitTime = txCommitTime;

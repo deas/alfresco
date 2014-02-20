@@ -22,9 +22,9 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.alfresco.opencmis.dictionary.CMISPropertyLuceneBuilder;
-import org.alfresco.repo.search.impl.lucene.LuceneFunction;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor;
+import org.alfresco.repo.search.adaptor.lucene.LuceneFunction;
+import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor;
+import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserExpressionAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 
 /**

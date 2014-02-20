@@ -95,6 +95,8 @@
          <pathelement location="${dir.project.datamodel.classes}" />
          <pathelement location="${dir.project.datamodel.classes.test}" />
          <pathelement location="${dir.project.datamodel.test.resources}" />
+         <pathelement location="${dir.project.legacylucene.classes}" />
+         <pathelement location="${dir.project.legacylucene.classes.test}" />
          <pathelement location="${dir.project.jlan.classes}" />
          <pathelement location="${dir.project.mbeans.classes}" />
          <pathelement location="${dir.project.deployment.classes}" />
@@ -635,6 +637,7 @@
            description="Performs an incremental build of the dependencies of the Alfresco WAR"
            depends="incremental-core,
                     incremental-datamodel,
+                    incremental-legacylucene,
                     incremental-jlan,
                     incremental-mbeans,
                     incremental-deployment,
@@ -744,6 +747,7 @@
            description="Compiles all documentation for all projects"
            depends="generate-javadocs-core,
                     generate-javadocs-datamodel, 
+                    generate-javadocs-legacylucene, 
                     generate-javadocs-mbeans,
                     generate-javadocs-deployment,
                     generate-javadocs-repository, 
@@ -783,6 +787,7 @@
            description="Cleans all projects related to the webclient project" 
            depends="clean-core,
                     clean-datamodel,
+                    clean-legacylucene,
                     clean-jlan, 
                     clean-mbeans,
                     clean-deployment, 
@@ -931,6 +936,7 @@
          <!-- copy class files -->
          <fileset dir="${dir.project.core.classes}" />
          <fileset dir="${dir.project.datamodel.classes}" />
+         <fileset dir="${dir.project.legacylucene.classes}" />
          <fileset dir="${dir.project.mbeans.classes}" />
          <fileset dir="${dir.project.deployment.classes}" />
          <fileset dir="${dir.project.repository.classes}" 
@@ -1461,6 +1467,7 @@
                     incremental, 
                     test-core,
                     test-datamodel, 
+                    test-legacylucene, 
                     test-deployment, 
                     test-repository,
                     test-remoteapi,

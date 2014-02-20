@@ -1,0 +1,68 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-legacy-lucene</artifactId>
+    <name>Alfresco Legacy Lucene</name>
+    <description>Alfresco Legacy Lucene implementation</description>
+    <parent>
+        <artifactId>alfresco-parent</artifactId>
+        <groupId>org.alfresco</groupId>
+        <version>PLATFORM1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-data-model</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+            <exclusion>
+                <artifactId>antlr</artifactId>
+                <groupId>antlr</groupId>
+            </exclusion>
+            <exclusion>
+                <artifactId>stringtemplate</artifactId>
+                <groupId>org.antlr</groupId>
+            </exclusion>
+            </exclusions>
+        </dependency>
+        <!--  
+            | provided dependencies (are not transitive and not included in webapps)
+            | see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope
+            --> 
+        <!--  
+            | compile dependencies
+            --> 
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${dependency.lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers</artifactId>
+            <version>${dependency.lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-regex</artifactId>
+            <version>${dependency.lucene.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta-regexp</groupId>
+                    <artifactId>jakarta-regexp</artifactId>                
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-snowball</artifactId>
+            <version>${dependency.lucene.version}</version>
+        </dependency>
+    </dependencies>
+</project>

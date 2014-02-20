@@ -117,6 +117,57 @@
       </bind>
    </target>
 
+
+   <!-- *************************** -->
+   <!-- ** Legacy Lucene Project ** -->
+   <!-- *************************** -->
+   
+   <target name="incremental-legacylucene" 
+           depends="package-legacylucene" />
+      
+   <target name="build-legacylucene" 
+           depends="clean-legacylucene, 
+                    incremental-legacylucene" />
+   
+   <target name="clean-legacylucene" 
+           depends="init">
+      <clean projectdir="${dir.project.legacylucene}" />
+   </target>
+   
+   <target name="compile-legacylucene" 
+           depends="compile-legacylucene-java" />
+
+   <target name="compile-legacylucene-java" 
+           depends="init">
+      <compile-java projectdir="${dir.project.legacylucene}" />
+      <compile-java-javac srcdir="${dir.project.legacylucene.src.test}" classesdir="${dir.project.legacylucene.classes.test}">
+        <addPath2>
+            <pathelement location="${dir.project.legacylucene.classes}" />
+        </addPath2>
+      </compile-java-javac>
+   </target>
+   
+   <target name="package-legacylucene"
+           depends="compile-legacylucene">
+      <mkdir dir="${dir.project.legacylucene.dist}" />
+      <jar jarfile="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}" 
+           basedir="${dir.project.legacylucene.classes}" />
+   </target>
+   
+   <target name="test-legacylucene" 
+           depends="compile-legacylucene">
+      <run-tests projectdir="${dir.project.legacylucene}" />
+   </target>
+   
+   <target name="generate-javadocs-legacylucene" 
+           depends="init">
+      <generate-javadocs documenttitle="Alfresco Legacy Lucene API ${version.number}" 
+                         windowtitle="Alfresco Legacy Lucene API" 
+                         projectdir="${dir.project.legacylucene}"/>
+   </target>
+
+
+
    <!-- ******************** -->
    <!-- ** MBeans Project ** -->
    <!-- ******************** -->
@@ -203,6 +254,7 @@
    				package-deployment-jar, 
    				package-repository,
    				package-datamodel,
+   				package-legacylucene,
    				package-core">
       <mkdir dir="${dir.project.deployment.assemble}" />
       <copy todir="${dir.project.deployment.assemble}">
@@ -232,6 +284,9 @@
          </fileset>
          <fileset dir="${dir.project.datamodel.dist}">
            <filename name="${file.name.jar.datamodel}" />
+         </fileset>
+         <fileset dir="${dir.project.legacylucene.dist}">
+           <filename name="${file.name.jar.legacylucene}" />
          </fileset>
          <fileset dir="${dir.project.repository.dist}">
            <filename name="${file.name.jar.repository}" />
@@ -336,6 +391,7 @@
             <pathelement location="${dir.project.repository.classes}" />
             <pathelement location="${dir.project.core.classes.test}" />
             <pathelement location="${dir.project.datamodel.classes.test}" />
+            <pathelement location="${dir.project.legacylucene.classes.test}" />
         </addPath2>
       </compile-java-javac>
    </target>
@@ -353,6 +409,7 @@
          <classpath>
       	    <pathelement path="${dir.project.core.classes}"/>
       	    <pathelement path="${dir.project.datamodel.classes}"/>
+      	    <pathelement path="${dir.project.legacylucene.classes}"/>
             <pathelement path="${dir.project.repository.classes}"/>
       	 </classpath>
      </bind>
@@ -402,6 +459,8 @@
                   includes="${file.name.jar.core}" />
          <fileset dir="${dir.project.datamodel.dist}" 
                   includes="${file.name.jar.datamodel}" />
+         <fileset dir="${dir.project.legacylucene.dist}" 
+                  includes="${file.name.jar.legacylucene}" />
          <fileset dir="${dir.project.repository.dist}" 
                   includes="${file.name.jar.repository}" />
          <fileset dir="${dir.project.core.src.java}" 
@@ -516,6 +575,7 @@
                 <pathelement location="${dir.project.webserviceclient.classes}" />
                 <pathelement location="${dir.project.webserviceclient.classes.test}" />
                 <pathelement location="${dir.project.datamodel.classes}" />
+                <pathelement location="${dir.project.legacylucene.classes}" />
                 <pathelement location="${dir.project.core.classes}" />
 
                 <pathelement location="${dir.project.repository.config}" />
@@ -687,6 +747,8 @@
          <lib dir="${dir.project.datamodel.dist}" 
               includes="${file.name.jar.datamodel}" />
          <classes dir="${dir.project.datamodel.config}"/>
+         <lib dir="${dir.project.legacylucene.dist}" 
+              includes="${file.name.jar.legacylucene}" />
          <classes dir="${dir.project.repository.config}"
               excludes="alfresco/version.properties" />
          <classes file="${dir.project.core.src.java}/log4j.properties" 
@@ -2049,6 +2111,8 @@
                   includes="${file.name.jar.core}" />
          <fileset dir="${dir.project.datamodel.dist}" 
                   includes="${file.name.jar.datamodel}" />
+         <fileset dir="${dir.project.legacylucene.dist}" 
+                  includes="${file.name.jar.legacylucene}" />
          <fileset dir="${dir.project.repository.dist}" 
                   includes="${file.name.jar.repository}" />
          <fileset dir="${dir.project.mbeans.dist}" 
@@ -3016,6 +3080,7 @@
          <fileset dir="${dir.project.repository.dist}" includes="${file.name.jar.repository}" />
          <fileset dir="${dir.project.remoteapi.dist}" includes="${file.name.jar.remoteapi}" />
          <fileset dir="${dir.project.datamodel.dist}" includes="${file.name.jar.datamodel}" />
+         <fileset dir="${dir.project.legacylucene.dist}" includes="${file.name.jar.legacylucene}" />
       </path>
 
       <path id="ftr.launcher.classpath">
@@ -3104,6 +3169,7 @@
          <lib dir="${dir.project.repository.dist}" includes="${file.name.jar.repository}" />
          <lib dir="${dir.project.remoteapi.dist}" includes="${file.name.jar.remoteapi}" />
          <lib dir="${dir.project.datamodel.dist}" includes="${file.name.jar.datamodel}" />
+         <lib dir="${dir.project.legacylucene.dist}" includes="${file.name.jar.legacylucene}" />
          <classes dir="${dir.project.file-transfer-receiver.config}" >
             <exclude name="launcher/**" />
          </classes>

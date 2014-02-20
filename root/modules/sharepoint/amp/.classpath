@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/jetty-util-6.1.26.jar"/>
 	<classpathentry exported="true" kind="lib" path="config"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Web-Client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

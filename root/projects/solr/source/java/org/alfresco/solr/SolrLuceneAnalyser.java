@@ -25,9 +25,9 @@ import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.adaptor.lucene.AnalysisMode;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.AbstractAnalyzer;
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
-import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.analysis.LongAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLAnalayser;
 import org.alfresco.repo.search.impl.lucene.analysis.PathAnalyser;
@@ -115,135 +115,135 @@ public class SolrLuceneAnalyser extends AbstractAnalyzer
      */
     private Analyzer findAnalyser(String fieldName, AnalysisMode analysisMode)
     {
-        if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ID))
+        if (fieldName.equals(QueryConstants.FIELD_ID))
         {
             return new VerbatimAnalyser(false);
         }
-        if (fieldName.equals(AbstractLuceneQueryParser.FIELD_LID))
+        if (fieldName.equals(QueryConstants.FIELD_LID))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_DBID))
+        else if (fieldName.equals(QueryConstants.FIELD_DBID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TXID))
+        else if (fieldName.equals(QueryConstants.FIELD_TXID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_INTXID))
+        else if (fieldName.equals(QueryConstants.FIELD_INTXID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLTXID))
+        else if (fieldName.equals(QueryConstants.FIELD_ACLTXID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_INACLTXID))
+        else if (fieldName.equals(QueryConstants.FIELD_INACLTXID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TXCOMMITTIME))
+        else if (fieldName.equals(QueryConstants.FIELD_TXCOMMITTIME))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLTXCOMMITTIME))
+        else if (fieldName.equals(QueryConstants.FIELD_ACLTXCOMMITTIME))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ACLID))
+        else if (fieldName.equals(QueryConstants.FIELD_ACLID))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TX))
+        else if (fieldName.equals(QueryConstants.FIELD_TX))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PARENT))
+        else if (fieldName.equals(QueryConstants.FIELD_PARENT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_LINKASPECT))
+        else if (fieldName.equals(QueryConstants.FIELD_LINKASPECT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PATH))
+        else if (fieldName.equals(QueryConstants.FIELD_PATH))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ANCESTOR))
+        else if (fieldName.equals(QueryConstants.FIELD_ANCESTOR))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TENANT))
+        else if (fieldName.equals(QueryConstants.FIELD_TENANT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISCONTAINER))
+        else if (fieldName.equals(QueryConstants.FIELD_ISCONTAINER))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_READER))
+        else if (fieldName.equals(QueryConstants.FIELD_READER))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_OWNER))
+        else if (fieldName.equals(QueryConstants.FIELD_OWNER))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISCATEGORY))
+        else if (fieldName.equals(QueryConstants.FIELD_ISCATEGORY))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_QNAME))
+        else if (fieldName.equals(QueryConstants.FIELD_QNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISROOT))
+        else if (fieldName.equals(QueryConstants.FIELD_ISROOT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCTYPEQNAME))
+        else if (fieldName.equals(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PRIMARYASSOCQNAME))
+        else if (fieldName.equals(QueryConstants.FIELD_PRIMARYASSOCQNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PARENT_ASSOC_CRC))
+        else if (fieldName.equals(QueryConstants.FIELD_PARENT_ASSOC_CRC))
         {
             return new LongAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ISNODE))
+        else if (fieldName.equals(QueryConstants.FIELD_ISNODE))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ASSOCTYPEQNAME))
+        else if (fieldName.equals(QueryConstants.FIELD_ASSOCTYPEQNAME))
         {
             return new PathAnalyser();
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_PRIMARYPARENT))
+        else if (fieldName.equals(QueryConstants.FIELD_PRIMARYPARENT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_TYPE))
+        else if (fieldName.equals(QueryConstants.FIELD_TYPE))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_ASPECT))
+        else if (fieldName.equals(QueryConstants.FIELD_ASPECT))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_FTSSTATUS))
+        else if (fieldName.equals(QueryConstants.FIELD_FTSSTATUS))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE))
+        else if (fieldName.equals(QueryConstants.FIELD_EXCEPTION_MESSAGE))
         {
             return new VerbatimAnalyser(false);
         }
-        else if (fieldName.equals(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK))
+        else if (fieldName.equals(QueryConstants.FIELD_EXCEPTION_STACK))
         {
             return new VerbatimAnalyser(false);
         }

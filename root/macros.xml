@@ -224,6 +224,7 @@
 			<copy todir="@{location}/server/lib"  file="${dir.project.catalinavirtual.dist}/${file.name.jar.catalinavirtual}"/>
 			<copy todir="@{location}/common/lib"  file="${dir.project.jndi.dist}/${file.name.jar.jndi}"/>
 			<copy todir="@{location}/common/lib"  file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"/>
+			<copy todir="@{location}/common/lib"  file="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}"/>
 			<copy todir="@{location}/common/lib"  file="${dir.project.repository.dist}/${file.name.jar.repository}"/>
 			<copy todir="@{location}/common/lib"  file="${dir.project.core.dist}/${file.name.jar.core}"/>
 			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-shared.properties"/>

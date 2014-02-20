@@ -48,5 +48,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Remote API"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mybatis-3.0.4-patched.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

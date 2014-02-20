@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/3rd Party"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry kind="lib" path="/Repository/config"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
