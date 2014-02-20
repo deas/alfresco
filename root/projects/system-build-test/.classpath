@@ -51,5 +51,6 @@
 	<classpathentry kind="lib" path="/SOLR/lib/lucene-queries-2.9.3.jar"/>
 	<classpathentry kind="lib" path="/SOLR/lib/lucene-spellchecker-2.9.3.jar"/>
 	<classpathentry kind="lib" path="/SOLR Client/build/classes"/>
+	<classpathentry kind="lib" path="/Web Service Client/source/test-resources"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
