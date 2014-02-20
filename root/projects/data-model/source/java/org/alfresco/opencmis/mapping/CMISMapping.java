@@ -355,10 +355,6 @@ public class CMISMapping implements InitializingBean
         {
             return getCmisTypeId(BaseTypeId.CMIS_SECONDARY, classQName);
         }
-        if (classQName.equals(ContentModel.TYPE_BASE))
-        {
-            return getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
-        }
         if (cmisVersion.equals(CmisVersion.CMIS_1_1) && isValidCmisItem(classQName))
         {
             return getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
