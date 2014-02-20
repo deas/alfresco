@@ -18,8 +18,11 @@
  */
 package org.alfresco.util;
 
+import java.util.Date;
+
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.quartz.CronTrigger;
+import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
 
@@ -28,9 +31,15 @@ import org.quartz.Trigger;
  * 
  * @author Andy Hind
  */
-public class CronTriggerBean extends AbstractTriggerBean 
-       
+public class CronTriggerBean extends AbstractTriggerBean       
 {
+	private static final long MILLISECONDS_PER_MINUTE = 60L * 1000L;
+
+	/*
+	 * Milliseconds delay before the job will be triggered.
+	 */
+	private long startDelay = 0;
+	
     /*
      * The cron expression to trigger execution.
      */
@@ -74,8 +83,42 @@ public class CronTriggerBean extends AbstractTriggerBean
     public Trigger getTrigger() throws Exception
     {
         Trigger trigger = new CronTrigger(getBeanName(), Scheduler.DEFAULT_GROUP, getCronExpression());
+        if (this.startDelay > 0)
+        {
+        	trigger.setStartTime(new Date(System.currentTimeMillis() + this.startDelay));
+        }
+        JobDetail jd = super.getJobDetail();
+        if (jd != null)
+        {
+            String jobName = super.getJobDetail().getKey().getName();
+            if (jobName != null && !jobName.isEmpty())
+            {
+            	trigger.setJobName(jobName);
+            }
+            String jobGroup = super.getJobDetail().getKey().getGroup();
+            if (jobGroup != null && !jobGroup.isEmpty())
+            {
+            	trigger.setJobGroup(jobGroup);
+            }
+        }
         return trigger;
     }
+    
+    public long getStartDelay()
+    {
+        return startDelay;
+    }
+
+    public void setStartDelay(long startDelay)
+    {
+        this.startDelay = startDelay;
+    }
+
+    public void setStartDelayMinutes(long startDelayMinutes)
+    {
+        this.startDelay = startDelayMinutes * MILLISECONDS_PER_MINUTE;
+    }
+
 
     public void afterPropertiesSet() throws Exception
     {
