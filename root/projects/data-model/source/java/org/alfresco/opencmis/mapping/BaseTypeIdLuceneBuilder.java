@@ -141,7 +141,7 @@ public class BaseTypeIdLuceneBuilder extends AbstractLuceneBuilder
         TypeDefinitionWrapper typeDef = dictionaryService.findTypeByQueryName(tableName);
         if (typeDef == null)
         {
-            throw new CmisInvalidArgumentException("Unknwon type: " + tableName);
+            throw new CmisInvalidArgumentException("Unknown type: " + tableName);
         }
         if(!typeDef.isBaseType())
         {

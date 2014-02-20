@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -57,7 +57,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
     public static BaseTypeId[] STRICT_SCOPES = new BaseTypeId[] { BaseTypeId.CMIS_DOCUMENT, BaseTypeId.CMIS_FOLDER };
 
     public static BaseTypeId[] ALFRESCO_SCOPES = new BaseTypeId[] { BaseTypeId.CMIS_DOCUMENT, BaseTypeId.CMIS_FOLDER,
-            BaseTypeId.CMIS_POLICY, BaseTypeId.CMIS_SECONDARY };
+            BaseTypeId.CMIS_POLICY, BaseTypeId.CMIS_SECONDARY, BaseTypeId.CMIS_ITEM };
 
     private Map<String, NodeRef> nodeRefs;
 
