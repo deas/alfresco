@@ -85,33 +85,7 @@
         <dependency>
             <groupId>org.alfresco.cmis.client</groupId>
             <artifactId>alfresco-opencmis-extension</artifactId>
-            <version>0.6</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jaxb-api</artifactId>
-                    <groupId>javax.xml.bind</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>junit</artifactId>
-                    <groupId>junit</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org.osgi.core</artifactId>
-                    <groupId>org.apache.felix</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>saaj-impl</artifactId>
-                    <groupId>com.sun.xml.messaging.saaj</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>stax-api</artifactId>
-                    <groupId>javax.xml.stream</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>wstx-asl</artifactId>
-                    <groupId>org.codehaus.woodstox</groupId>
-                </exclusion>
-            </exclusions>
+            <version>0.8</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.extensions.surf</groupId>
