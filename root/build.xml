@@ -1434,6 +1434,8 @@
       <copy todir="${dir.project.solr.instance.lib}" 
             file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
       <copy todir="${dir.project.solr.instance.lib}" 
+            file="${dir.project.solrclient.dist}/${file.name.jar.solrclient}" />
+      <copy todir="${dir.project.solr.instance.lib}"
             file="${dir.project.solr.dist}/${file.name.jar.solr}" />
 
       <taskdef name="copy-libs-from-classpath"
