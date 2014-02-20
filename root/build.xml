@@ -118,6 +118,8 @@
          <pathelement location="${dir.project.catalinavirtual.classes}" />
          <pathelement location="${dir.project.remoteapi.classes}" />
          <pathelement location="${dir.project.remoteapi.classes.test}" />
+         <pathelement location="${dir.project.solrclient.classes}" />
+         <pathelement location="${dir.project.solrclient.classes.test}" />
          <pathelement location="${dir.project.system-build-test.classes}" />
          <pathelement location="${dir.project.webframeworkcommons.classes}" />
          <pathelement location="${dir.project.webframeworkcommons.classes.test}" />
@@ -651,6 +653,7 @@
                     incremental-slingshot,
                     incremental-webeditor,
                     incremental-webeditor-plugin,
+                    incremental-solrclient,
                     incremental-solr,
                     incremental-file-transfer-receiver" />
 
@@ -753,6 +756,7 @@
                     generate-javadocs-webserviceclient,
                     generate-javadocs-jlan,
                     generate-javadocs-slingshot,
+                    generate-javadocs-solrclient,
                     generate-javadocs-solr,
                     generate-javadocs-webframeworkcommons,
                     generate-javadocs-wcmquickstart-clientapi" />
@@ -770,7 +774,8 @@
            depends="clean-webclient-projects,
                     clean-slingshot-projects,
                     clean-webeditor-projects,
-                    clean-webserviceclient, 
+                    clean-webserviceclient,
+                    clean-solrclient,
                     clean-solr,
                     clean-file-transfer-receiver" />
                     
@@ -1438,6 +1443,7 @@
 
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.core}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.datamodel}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solrclient}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solr}" libdir="${dir.project.3rdparty}" />
 
    </target>

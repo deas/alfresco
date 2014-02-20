@@ -440,6 +440,7 @@
       <compile-java projectdir="${dir.project.system-build-test}" >
 	  <addPath>
             <path refid="classpath.compile.system-build-test" />
+            <pathelement location="${dir.project.solrclient.classes.test}" />
             <pathelement location="${dir.project.solr.classes.test}" />
             <pathelement location="${dir.project.webserviceclient.classes.test}" />
          </addPath>
@@ -530,6 +531,8 @@
 
                 <pathelement location="${dir.project.solr.instance}" />
                 <pathelement location="${dir.project.datamodel.config}" />
+                <pathelement location="${dir.project.solrclient.classes}" />
+                <pathelement location="${dir.project.solrclient.classes.test}" />
                 <pathelement location="${dir.project.solr.classes}" />
                 <pathelement location="${dir.project.solr.classes.test}" />
 
@@ -1075,6 +1078,52 @@
       <generate-javadocs documenttitle="Alfresco SOLR integration ${version.number}" 
                          windowtitle="Alfresco SOLR Integration" 
                          projectdir="${dir.project.solr}"/>
+   </target>
+
+
+   <!-- ****************** -->
+   <!-- ** SOLR Client Project ** -->
+   <!-- ****************** -->
+
+   <target name="incremental-solrclient"
+         depends="package-solrclient" />
+
+   <target name="build-solrclient"
+         depends="clean-solrclient,
+      incremental-solrclient" />
+
+   <target name="clean-solrclient"
+         depends="init">
+      <clean projectdir="${dir.project.solrclient}" />
+   </target>
+
+   <target name="compile-solrclient"
+         depends="init">
+      <compile-java projectdir="${dir.project.solrclient}" />
+      <compile-java-javac srcdir="${dir.project.solrclient.src.test}" classesdir="${dir.project.solrclient.classes.test}">
+         <addPath2>
+            <pathelement location="${dir.project.solrclient.classes}" />
+         </addPath2>
+      </compile-java-javac>
+   </target>
+
+   <target name="package-solrclient"
+         depends="compile-solrclient">
+      <mkdir dir="${dir.project.solrclient.dist}" />
+      <jar jarfile="${dir.project.solrclient.dist}/${file.name.jar.solrclient}"
+            basedir="${dir.project.solrclient.classes}" />
+   </target>
+
+   <target name="test-solrclient"
+         depends="compile-solrclient">
+      <run-tests projectdir="${dir.project.solrclient}" additionalclasspath="classpath.unit.test.beyondrepo" />
+   </target>
+
+   <target name="generate-javadocs-solrclient"
+         depends="init">
+      <generate-javadocs documenttitle="Alfresco SOLR Client ${version.number}"
+            windowtitle="Alfresco SOLR Client"
+            projectdir="${dir.project.solrclient}"/>
    </target>
 
 

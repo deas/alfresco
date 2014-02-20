@@ -9,14 +9,11 @@
 	<classpathentry kind="lib" path="lib/lucene-regex-2.9.3.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-snowball-2.9.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DataModel"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-httpclient-3.1.jar" sourcepath="/3rd Party/src/commons-httpclient-3.1-src.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/docs/apidocs"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jackson-core-asl-1.9.9.jar" sourcepath="/3rd Party/src/jackson-core-asl-1.9.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/apache-solr-dataimporthandler-1.4.1.jar"/>
@@ -30,5 +27,7 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-impl-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-impl-0.10.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SOLR Client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Repository"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
