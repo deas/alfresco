@@ -455,7 +455,7 @@
    </target>
    
    <target name="test-system-build-test" 
-           depends="incremental-webclient-depends, incremental-webclient, package-webserviceclient, package-system-build-test, deploy-solr">
+           depends="incremental-webclient-depends, incremental-webclient, package-webserviceclient, package-solrclient, deploy-solr, package-system-build-test">
 
       <antcall target="-reset-database" />
 
