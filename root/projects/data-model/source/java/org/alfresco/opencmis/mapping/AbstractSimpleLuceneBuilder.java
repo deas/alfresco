@@ -32,12 +32,12 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author davidc
  */
-public abstract class SimpleLuceneBuilder extends BaseLuceneBuilder
+public abstract class AbstractSimpleLuceneBuilder extends BaseLuceneBuilder
 {
     /**
      * Construct
      */
-    protected SimpleLuceneBuilder()
+    protected AbstractSimpleLuceneBuilder()
     {
         super();
     }

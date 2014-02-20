@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
@@ -111,13 +112,13 @@ public class LuceneDescendant<Q, S, E extends Throwable> extends Descendant impl
             Path path = functionContext.getNodeService().getPath(nodeRef);
             StringBuilder builder = new StringBuilder(path.toPrefixString(luceneContext.getNamespacePrefixResolver()));
             builder.append("//*");
-            Q query = lqpa.getFieldQuery("PATH", builder.toString());
+            Q query = lqpa.getFieldQuery(AbstractLuceneQueryParser.FIELD_PATH, builder.toString());
             return query;
         }
         // SOLR
         else
         {
-            Q query = lqpa.getFieldQuery("ANCESTOR", nodeRef.toString());
+            Q query = lqpa.getFieldQuery(AbstractLuceneQueryParser.FIELD_ANCESTOR, nodeRef.toString());
             return query;
         }
         

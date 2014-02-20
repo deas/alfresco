@@ -27,6 +27,11 @@ import org.apache.lucene.queryParser.ParseException;
 
 /**
  * @author andyh
+ * 
+ * @param <Q> the query type used by the query engine implementation
+ * @param <S> the sort type used by the query engine implementation
+ * @param <E> the exception it throws 
+ *
  */
 public interface LuceneQueryBuilder <Q, S, E extends Throwable>
 {

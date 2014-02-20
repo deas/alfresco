@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
@@ -100,7 +101,7 @@ public class LuceneChild<Q, S, E extends Throwable> extends Child implements Luc
             nodeRef = new NodeRef(storeRef, id);
         }
 
-        Q query = lqpa.getFieldQuery("PARENT", nodeRef.toString());
+        Q query = lqpa.getFieldQuery(AbstractLuceneQueryParser.FIELD_PARENT, nodeRef.toString());
         return query;
     }
 }

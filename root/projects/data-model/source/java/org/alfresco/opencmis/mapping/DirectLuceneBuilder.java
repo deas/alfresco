@@ -34,7 +34,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentExcep
  * 
  * @author andyh
  */
-public class DirectLuceneBuilder extends SimpleLuceneBuilder
+public class DirectLuceneBuilder extends AbstractSimpleLuceneBuilder
 {
     private DictionaryService dictionaryService;
     private QName alfrescoName;

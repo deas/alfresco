@@ -31,7 +31,7 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author andyh
  */
-public class ContentStreamLengthLuceneBuilder extends SimpleLuceneBuilder
+public class ContentStreamLengthLuceneBuilder extends AbstractSimpleLuceneBuilder
 {
     private DictionaryService dictionaryService;
     
