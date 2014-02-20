@@ -671,6 +671,11 @@ public class CMISMapping implements InitializingBean
         {
             return false;
         }
+
+        if(typeQName.equals(ContentModel.TYPE_BASE))
+        {
+        	return false;
+        }
         
         if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_BASE))
         {

@@ -69,6 +69,8 @@ public interface CMISNodeInfo
     boolean isDocument();
 
     boolean isRelationship();
+    
+    boolean isItem();
 
     String getName();
 

@@ -70,8 +70,18 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
         typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
                 .getDisplayName());
 
-        typeDef.setIsCreatable(true);
-        typeDef.setIsQueryable(true);
+        if (BaseTypeId.CMIS_ITEM.value().equals(typeId) )
+        {
+        	typeDef.setIsCreatable(false);   // cmis:item is abstract
+        	 // TEMP work around for select * from cmis:item which lists folders and files
+        	typeDef.setIsQueryable(false);
+        }
+        else
+        {
+        	typeDef.setIsCreatable(true);
+        	typeDef.setIsQueryable(true);
+        }
+      
         typeDef.setIsFulltextIndexed(true);
         typeDef.setIsControllablePolicy(false);
         typeDef.setIsControllableAcl(true);
