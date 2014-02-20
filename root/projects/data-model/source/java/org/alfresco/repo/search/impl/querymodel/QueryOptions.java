@@ -80,6 +80,8 @@ public class QueryOptions
     private boolean isBulkFetchEnabled = true;
 
     private QueryConsistency queryConsistency = QueryConsistency.DEFAULT;
+    
+    private Long sinceTxId;
 
     public static QueryOptions create(SearchParameters searchParameters)
     {
@@ -109,6 +111,7 @@ public class QueryOptions
         options.setBulkFetchEnabled(searchParameters.isBulkFetchEnabled());
         options.setExcludeTenantFilter(searchParameters.getExcludeTenantFilter());
         options.setQueryConsistency(searchParameters.getQueryConsistency());
+        options.setSinceTxId(searchParameters.getSinceTxId());
         return options;
     }
     /**
@@ -481,6 +484,22 @@ public class QueryOptions
     }
     
     /**
+     * @return the sinceTxId
+     */
+    public Long getSinceTxId()
+    {
+        return this.sinceTxId;
+    }
+
+    /**
+     * @param sinceTxId the sinceTxId to set
+     */
+    public void setSinceTxId(Long sinceTxId)
+    {
+        this.sinceTxId = sinceTxId;
+    }
+
+    /**
      * @return
      */
     public SearchParameters getAsSearchParmeters()
@@ -521,6 +540,7 @@ public class QueryOptions
         }
         //searchParameters.addTextAttribute()
         searchParameters.setQueryConsistency(this.getQueryConsistency());
+        searchParameters.setSinceTxId(getSinceTxId());
         return searchParameters;
     }
     

@@ -605,6 +605,7 @@
 
   <searchComponent name="setLocale"     class="org.alfresco.solr.SetLocaleSearchComponent" />
   <searchComponent name="clearLocale"     class="org.alfresco.solr.ClearLocaleSearchComponent" />
+  <searchComponent name="addTxId"     class="org.alfresco.solr.TxIdSearchComponent" />
 
   <requestHandler name="/alfresco" class="solr.SearchHandler" >
     <lst name="defaults">
@@ -619,6 +620,7 @@
       <str>stats</str>
       <str>debug</str>
       <str>clearLocale</str>
+      <str>addTxId</str>
     </arr>
   </requestHandler>
 
@@ -635,6 +637,7 @@
       <str>stats</str>
       <str>debug</str>
       <str>clearLocale</str>
+      <str>addTxId</str>
     </arr>
   </requestHandler>
 
@@ -651,6 +654,7 @@
       <str>stats</str>
       <str>debug</str>
       <str>clearLocale</str>
+      <str>addTxId</str>
     </arr>
   </requestHandler>
 

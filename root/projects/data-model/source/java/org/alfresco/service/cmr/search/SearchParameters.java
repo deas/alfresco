@@ -170,6 +170,8 @@ public class SearchParameters
 
     private QueryConsistency queryConsistency = QueryConsistency.DEFAULT;
     
+    private Long sinceTxId;
+    
     /**
      * Default constructor
      */
@@ -209,6 +211,7 @@ public class SearchParameters
         sp.isBulkFetchEnabled = this.isBulkFetchEnabled;
         sp.excludeTenantFilter = this.excludeTenantFilter;
         sp.queryConsistency = this.queryConsistency;
+        sp.sinceTxId = this.sinceTxId;
         return sp;
     }
     
@@ -900,6 +903,25 @@ public class SearchParameters
     }
 
 
+    /**
+     * If not null, then the search should only include results from transactions after {@code sinceTxId}.
+     * @return sinceTxId
+     */
+    public Long getSinceTxId()
+    {
+        return this.sinceTxId;
+    }
+
+    /**
+     * If not null, then the search should only include results from transactions after {@code sinceTxId}.
+     * @param sinceTxId
+     */
+    public void setSinceTxId(Long sinceTxId)
+    {
+        this.sinceTxId = sinceTxId;
+    }
+
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -935,6 +957,7 @@ public class SearchParameters
         result = prime * result + ((stores == null) ? 0 : stores.hashCode());
         result = prime * result + ((textAttributes == null) ? 0 : textAttributes.hashCode());
         result = prime * result + ((useInMemorySort == null) ? 0 : useInMemorySort.hashCode());
+        result = prime * result + ((sinceTxId == null) ? 0 : sinceTxId.hashCode());
         return result;
     }
 
@@ -1075,6 +1098,13 @@ public class SearchParameters
         }
         else if (!useInMemorySort.equals(other.useInMemorySort))
             return false;
+        if (sinceTxId == null)
+        {
+            if (other.sinceTxId != null)
+                return false;
+        }
+        else if (!sinceTxId.equals(other.sinceTxId))
+            return false;
         return true;
     }
 
@@ -1094,7 +1124,7 @@ public class SearchParameters
                 + ", queryTemplates=" + queryTemplates + ", namespace=" + namespace + ", maxPermissionChecks=" + maxPermissionChecks + ", maxPermissionCheckTimeMillis="
                 + maxPermissionCheckTimeMillis + ", defaultFieldName=" + defaultFieldName + ", fieldFacets=" + fieldFacets + ", useInMemorySort=" + useInMemorySort
                 + ", maxRawResultSetSizeForInMemorySort=" + maxRawResultSetSizeForInMemorySort + ", excludeTenantFilter=" + excludeTenantFilter + ", queryConsistency="
-                + queryConsistency + "]";
+                + queryConsistency + ", sinceTxId=" + sinceTxId + "]";
     }
 
 

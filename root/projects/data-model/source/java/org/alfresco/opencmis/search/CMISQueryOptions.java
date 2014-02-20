@@ -74,6 +74,7 @@ public class CMISQueryOptions extends QueryOptions
         options.setDefaultFieldName(searchParameters.getDefaultFieldName());
         options.setBulkFetchEnabled(searchParameters.isBulkFetchEnabled());
         options.setExcludeTenantFilter(searchParameters.getExcludeTenantFilter());
+        options.setSinceTxId(searchParameters.getSinceTxId());
         return options;
     }
     
@@ -179,6 +180,7 @@ public class CMISQueryOptions extends QueryOptions
         //searchParameters.addTextAttribute()
         searchParameters.setBulkFetchEnabled(isBulkFetchEnabled());
         searchParameters.setQueryConsistency(this.getQueryConsistency());
+        searchParameters.setSinceTxId(getSinceTxId());
         return searchParameters;
     }
 }

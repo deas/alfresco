@@ -24,5 +24,5 @@ package org.alfresco.service.cmr.search;
  */
 public enum QueryConsistency
 {
-    EVENTUAL, TRANSACTIONAL, DEFAULT, TRANSACTIONAL_IF_POSSIBLE;
+    EVENTUAL, TRANSACTIONAL, DEFAULT, TRANSACTIONAL_IF_POSSIBLE, HYBRID;
 }
