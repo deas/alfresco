@@ -40,7 +40,6 @@ import org.alfresco.repo.search.impl.querymodel.impl.functions.Upper;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.Cardinality;
@@ -49,6 +48,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentExcep
 /**
  * @author andyh
  */
+@SuppressWarnings("deprecation")
 public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
 {
     private static HashSet<String> EXPOSED_FIELDS = new HashSet<String>();

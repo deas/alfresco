@@ -18,7 +18,6 @@
  */
 package org.alfresco.repo.search;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;

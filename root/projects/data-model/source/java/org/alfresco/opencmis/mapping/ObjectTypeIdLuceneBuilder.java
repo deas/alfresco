@@ -19,8 +19,6 @@
 package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.TypeDefinitionWrapper;
@@ -37,7 +35,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentExcep
  * 
  * @author andyh
  */
-public class ObjectTypeIdLuceneBuilder extends AbstractLuceneBuilder
+public class ObjectTypeIdLuceneBuilder extends BaseLuceneBuilder
 {
     private CMISDictionaryService cmisDictionaryService;
     

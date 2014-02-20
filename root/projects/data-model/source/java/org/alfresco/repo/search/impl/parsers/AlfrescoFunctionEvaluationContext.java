@@ -20,14 +20,10 @@ package org.alfresco.repo.search.impl.parsers;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
-import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
@@ -43,13 +39,13 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * Alfrecso function evaluation context for evaluating FTS expressions against lucene.
  * 
  * @author andyh
  */
+@SuppressWarnings("deprecation")
 public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationContext
 {
     private static HashSet<String> EXPOSED_FIELDS = new HashSet<String>();
@@ -176,7 +172,6 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         }
         String field = getLuceneFieldName(propertyName);
         // need to find the real field to use
-        Locale sortLocale = null;
         if (field.startsWith(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX))
         {
             PropertyDefinition propertyDef = dictionaryService.getProperty(QName.createQName(field.substring(1)));

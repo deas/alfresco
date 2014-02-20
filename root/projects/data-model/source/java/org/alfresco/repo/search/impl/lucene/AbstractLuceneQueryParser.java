@@ -165,6 +165,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
     public static final String FIELD_EXCEPTION_MESSAGE = "EXCEPTIONMESSAGE";
     public static final String FIELD_EXCEPTION_STACK = "EXCEPTIONSTACK";
 
+    @SuppressWarnings("unused")
     private static Log s_logger = LogFactory.getLog(AbstractLuceneQueryParser.class);
 
     protected NamespacePrefixResolver namespacePrefixResolver;
@@ -1372,6 +1373,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected Query getFieldQueryImpl(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
         // Use the analyzer to get all the tokens, and then build a TermQuery,
@@ -1396,7 +1398,6 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             String language = queryText.substring(0, position + 1);
             Locale locale = new Locale(queryText.substring(1, position));
             String token = queryText.substring(position + 1);
-            HashSet<Locale> locales = new HashSet();
             boolean found = false;
             for(Locale current : Locale.getAvailableLocales())
             {
@@ -1987,6 +1988,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
 
         // make sure we remove any tokens we have duplicated
 
+        @SuppressWarnings("rawtypes")
         OrderedHashSet unique = new OrderedHashSet();
         unique.addAll(fixed);
         fixed = new ArrayList<org.apache.lucene.analysis.Token>(unique);
@@ -2009,7 +2011,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             return null;
         else if (list.size() == 1)
         {
-            nextToken = (org.apache.lucene.analysis.Token) list.get(0);
+            nextToken = list.get(0);
             String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
             if (termText.contains("*") || termText.contains("?"))
             {
@@ -2031,7 +2033,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     for (int i = 0; i < list.size(); i++)
                     {
                         Query currentQuery;
-                        nextToken = (org.apache.lucene.analysis.Token) list.get(i);
+                        nextToken = list.get(i);
                         String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
                         if (termText.contains("*") || termText.contains("?"))
                         {
@@ -2055,7 +2057,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     int position = 0;
                     for (int i = 0; i < list.size(); i++)
                     {
-                        nextToken = (org.apache.lucene.analysis.Token) list.get(i);
+                        nextToken = list.get(i);
                         String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
                         
                         Term term = new Term(field, termText);
@@ -2072,11 +2074,11 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                         {
                             if (getEnablePositionIncrements())
                             {
-                                mpq.add((Term[]) multiTerms.toArray(new Term[0]), position);
+                                mpq.add(multiTerms.toArray(new Term[0]), position);
                             }
                             else
                             {
-                                mpq.add((Term[]) multiTerms.toArray(new Term[0]));
+                                mpq.add(multiTerms.toArray(new Term[0]));
                             }
                             checkTermCount(field, queryText, mpq);
                             multiTerms.clear();
@@ -2088,7 +2090,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     {
                         if (multiTerms.size() > 0)
                         {
-                            mpq.add((Term[]) multiTerms.toArray(new Term[0]), position);
+                            mpq.add(multiTerms.toArray(new Term[0]), position);
                         }
 //                        else
 //                        {
@@ -2099,7 +2101,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                     {
                         if (multiTerms.size() > 0)
                         {
-                            mpq.add((Term[]) multiTerms.toArray(new Term[0]));
+                            mpq.add(multiTerms.toArray(new Term[0]));
                         }
 //                        else
 //                        {
@@ -2172,7 +2174,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
                 int position = 0;
                 for (int i = 0; i < list.size(); i++)
                 {
-                    nextToken = (org.apache.lucene.analysis.Token) list.get(i);
+                    nextToken = list.get(i);
                     String termText = new String(nextToken.termBuffer(), 0, nextToken.termLength());
                     Term term = new Term(field, termText);
                     if (getEnablePositionIncrements())
@@ -4774,7 +4776,6 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
         String propertyFieldName = field.substring(1);
 
         String expandedFieldName;
-        QName propertyQName;
         PropertyDefinition propertyDef = matchPropertyDefinition(propertyFieldName);
         IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
         if (propertyDef != null)
@@ -4784,13 +4785,13 @@ public abstract class AbstractLuceneQueryParser extends QueryParser
             {
                 tokenisationMode = IndexTokenisationMode.TRUE;
             }
-            expandedFieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName();
-            propertyQName = propertyDef.getName();
+            QName propertyQName = propertyDef.getName();
+            expandedFieldName = PROPERTY_FIELD_PREFIX +propertyQName;
+            
         }
         else
         {
             expandedFieldName = expandAttributeFieldName(field);
-            propertyQName = QName.createQName(propertyFieldName);
         }
 
 

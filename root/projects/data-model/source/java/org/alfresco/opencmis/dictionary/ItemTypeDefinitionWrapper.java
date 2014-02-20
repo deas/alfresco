@@ -26,8 +26,6 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ItemTypeDefinitionImpl;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
 {
@@ -36,8 +34,6 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
     private ItemTypeDefinitionImpl typeDef;
     private ItemTypeDefinitionImpl typeDefInclProperties;
 
-    private Log logger = LogFactory.getLog(ItemTypeDefinitionWrapper.class);
-    
     public ItemTypeDefinitionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping, 
             PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {

@@ -121,6 +121,7 @@ public class CMISQueryParser
                 : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
     }
 
+    @SuppressWarnings("unused")
     public Query parse(QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext)
     {
 

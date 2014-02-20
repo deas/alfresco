@@ -24,7 +24,7 @@ package org.alfresco.opencmis.mapping;
  * 
  * @author davidc
  */
-public class NotSupportedLuceneBuilder extends AbstractLuceneBuilder
+public class NotSupportedLuceneBuilder extends BaseLuceneBuilder
 {
     /**
      * Construct

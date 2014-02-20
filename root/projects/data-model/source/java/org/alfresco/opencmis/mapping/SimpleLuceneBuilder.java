@@ -19,12 +19,10 @@
 package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
-import org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor;
 import org.alfresco.repo.search.impl.querymodel.PredicateMode;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.namespace.QName;
@@ -34,12 +32,12 @@ import org.alfresco.service.namespace.QName;
  * 
  * @author davidc
  */
-public abstract class AbstractSimpleLuceneBuilder extends AbstractLuceneBuilder
+public abstract class SimpleLuceneBuilder extends BaseLuceneBuilder
 {
     /**
      * Construct
      */
-    protected AbstractSimpleLuceneBuilder()
+    protected SimpleLuceneBuilder()
     {
         super();
     }

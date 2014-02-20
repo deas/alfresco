@@ -18,10 +18,7 @@
  */
 package org.alfresco.service.cmr.search;
 
-import java.util.List;
-
 import org.alfresco.api.AlfrescoPublicApi;
-import org.alfresco.util.Pair;
 
 
 /**

@@ -20,9 +20,7 @@ package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 
-import org.alfresco.repo.search.impl.lucene.AbstractLuceneQueryParser;
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
 import org.alfresco.repo.search.impl.lucene.LuceneQueryParserAdaptor;
@@ -40,7 +38,7 @@ import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
  * @author andyh
  * 
  */
-public class ParentLuceneBuilder extends AbstractLuceneBuilder
+public class ParentLuceneBuilder extends BaseLuceneBuilder
 {
     private DictionaryService dictionaryService;
 

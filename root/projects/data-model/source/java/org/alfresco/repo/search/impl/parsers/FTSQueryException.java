@@ -23,6 +23,11 @@ import org.alfresco.error.AlfrescoRuntimeException;
 public class FTSQueryException extends AlfrescoRuntimeException
 {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4554441051084471802L;
+
     public FTSQueryException(String msgId, Object[] msgParams, Throwable cause)
     {
         super(msgId, msgParams, cause);

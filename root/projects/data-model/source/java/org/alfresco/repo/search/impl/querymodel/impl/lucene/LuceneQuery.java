@@ -67,7 +67,6 @@ public class LuceneQuery<Q, S, E extends Throwable> extends BaseQuery implements
         LuceneQueryParserExpressionAdaptor<Q, E> expressionBuilder = luceneContext.getLuceneQueryParserAdaptor().getExpressionAdaptor();
 
         boolean must = false;
-        boolean should = false;
         boolean must_not = false;
 
         ArrayList<Pair<Constraint, Q>> queriestoConjoin = new ArrayList<>();
@@ -117,7 +116,6 @@ public class LuceneQuery<Q, S, E extends Throwable> extends BaseQuery implements
                         break;
                     case OPTIONAL:
                         expressionBuilder.addOptional(constraintQuery, constraint.getBoost());
-                        should = true;
                         break;
                     case EXCLUDE:
                         expressionBuilder.addExcluded(constraintQuery, constraint.getBoost());

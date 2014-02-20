@@ -91,7 +91,7 @@ import org.alfresco.service.namespace.QName;
 /**
  * @author andyh
  */
-public class LuceneQueryModelFactory implements QueryModelFactory
+public class LuceneQueryModelFactory<Q, S, E extends Throwable> implements QueryModelFactory
 {
     private HashMap<String, Function> functions = new HashMap<String, Function>();
 
@@ -100,32 +100,32 @@ public class LuceneQueryModelFactory implements QueryModelFactory
      */
     public LuceneQueryModelFactory()
     {
-        functions.put(Equals.NAME, new LuceneEquals());
-        functions.put(PropertyAccessor.NAME, new LucenePropertyAccessor());
-        functions.put(Score.NAME, new LuceneScore());
-        functions.put(Upper.NAME, new LuceneUpper());
-        functions.put(Lower.NAME, new LuceneLower());
+        functions.put(Equals.NAME, new LuceneEquals<Q, S, E>());
+        functions.put(PropertyAccessor.NAME, new LucenePropertyAccessor<Q, S, E>());
+        functions.put(Score.NAME, new LuceneScore<Q, S, E>());
+        functions.put(Upper.NAME, new LuceneUpper<Q, S, E>());
+        functions.put(Lower.NAME, new LuceneLower<Q, S, E>());
 
-        functions.put(NotEquals.NAME, new LuceneNotEquals());
-        functions.put(LessThan.NAME, new LuceneLessThan());
-        functions.put(LessThanOrEquals.NAME, new LuceneLessThanOrEquals());
-        functions.put(GreaterThan.NAME, new LuceneGreaterThan());
-        functions.put(GreaterThanOrEquals.NAME, new LuceneGreaterThanOrEquals());
+        functions.put(NotEquals.NAME, new LuceneNotEquals<Q, S, E>());
+        functions.put(LessThan.NAME, new LuceneLessThan<Q, S, E>());
+        functions.put(LessThanOrEquals.NAME, new LuceneLessThanOrEquals<Q, S, E>());
+        functions.put(GreaterThan.NAME, new LuceneGreaterThan<Q, S, E>());
+        functions.put(GreaterThanOrEquals.NAME, new LuceneGreaterThanOrEquals<Q, S, E>());
 
-        functions.put(In.NAME, new LuceneIn());
-        functions.put(Like.NAME, new LuceneLike());
-        functions.put(Exists.NAME, new LuceneExists());
+        functions.put(In.NAME, new LuceneIn<Q, S, E>());
+        functions.put(Like.NAME, new LuceneLike<Q, S, E>());
+        functions.put(Exists.NAME, new LuceneExists<Q, S, E>());
 
-        functions.put(Child.NAME, new LuceneChild());
-        functions.put(Descendant.NAME, new LuceneDescendant());
+        functions.put(Child.NAME, new LuceneChild<Q, S, E>());
+        functions.put(Descendant.NAME, new LuceneDescendant<Q, S, E>());
 
-        functions.put(FTSTerm.NAME, new LuceneFTSTerm());
-        functions.put(FTSPhrase.NAME, new LuceneFTSPhrase());
-        functions.put(FTSProximity.NAME, new LuceneFTSProximity());
-        functions.put(FTSRange.NAME, new LuceneFTSRange());
-        functions.put(FTSPrefixTerm.NAME, new LuceneFTSPrefixTerm());
-        functions.put(FTSWildTerm.NAME, new LuceneFTSWildTerm());
-        functions.put(FTSFuzzyTerm.NAME, new LuceneFTSFuzzyTerm());
+        functions.put(FTSTerm.NAME, new LuceneFTSTerm<Q, S, E>());
+        functions.put(FTSPhrase.NAME, new LuceneFTSPhrase<Q, S, E>());
+        functions.put(FTSProximity.NAME, new LuceneFTSProximity<Q, S, E>());
+        functions.put(FTSRange.NAME, new LuceneFTSRange<Q, S, E>());
+        functions.put(FTSPrefixTerm.NAME, new LuceneFTSPrefixTerm<Q, S, E>());
+        functions.put(FTSWildTerm.NAME, new LuceneFTSWildTerm<Q, S, E>());
+        functions.put(FTSFuzzyTerm.NAME, new LuceneFTSFuzzyTerm<Q, S, E>());
     }
 
     /*
@@ -146,7 +146,7 @@ public class LuceneQueryModelFactory implements QueryModelFactory
      */
     public Constraint createConjunction(List<Constraint> constraints)
     {
-        return new LuceneConjunction(constraints);
+        return new LuceneConjunction<Q, S, E>(constraints);
     }
 
     /*
@@ -156,7 +156,7 @@ public class LuceneQueryModelFactory implements QueryModelFactory
      */
     public Constraint createDisjunction(List<Constraint> constraints)
     {
-        return new LuceneDisjunction(constraints);
+        return new LuceneDisjunction<Q, S, E>(constraints);
     }
 
     /*
@@ -167,7 +167,7 @@ public class LuceneQueryModelFactory implements QueryModelFactory
      */
     public Constraint createFunctionalConstraint(Function function, Map<String, Argument> functionArguments)
     {
-        return new LuceneFunctionalConstraint(function, functionArguments);
+        return new LuceneFunctionalConstraint<Q, S, E>(function, functionArguments);
     }
 
     /*
@@ -235,7 +235,7 @@ public class LuceneQueryModelFactory implements QueryModelFactory
      */
     public Query createQuery(List<Column> columns, Source source, Constraint constraint, List<Ordering> orderings)
     {
-        return new LuceneQuery(columns, source, constraint, orderings);
+        return new LuceneQuery<Q, S, E>(columns, source, constraint, orderings);
     }
 
     /*
@@ -246,7 +246,7 @@ public class LuceneQueryModelFactory implements QueryModelFactory
      */
     public Selector createSelector(QName classQName, String alias)
     {
-        return new LuceneSelector(classQName, alias);
+        return new LuceneSelector<Q, S, E>(classQName, alias);
     }
 
     /*

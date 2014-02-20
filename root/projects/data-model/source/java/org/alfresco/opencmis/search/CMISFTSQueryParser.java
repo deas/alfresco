@@ -30,13 +30,13 @@ import org.alfresco.repo.search.impl.parsers.FTSQueryException;
 import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.Column;
 import org.alfresco.repo.search.impl.querymodel.Constraint;
+import org.alfresco.repo.search.impl.querymodel.Constraint.Occur;
 import org.alfresco.repo.search.impl.querymodel.Function;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.LiteralArgument;
 import org.alfresco.repo.search.impl.querymodel.QueryModelFactory;
-import org.alfresco.repo.search.impl.querymodel.Selector;
-import org.alfresco.repo.search.impl.querymodel.Constraint.Occur;
 import org.alfresco.repo.search.impl.querymodel.QueryOptions.Connective;
+import org.alfresco.repo.search.impl.querymodel.Selector;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.FTSPhrase;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.FTSTerm;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -50,6 +50,7 @@ import org.antlr.runtime.tree.Tree;
 
 public class CMISFTSQueryParser
 {
+    @SuppressWarnings("unused")
     static public Constraint buildFTS(String ftsExpression, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext, Selector selector,
             Map<String, Column> columnMap, String defaultField)
     {

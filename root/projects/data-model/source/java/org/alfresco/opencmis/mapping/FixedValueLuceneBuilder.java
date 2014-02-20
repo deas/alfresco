@@ -35,7 +35,7 @@ import org.alfresco.util.SearchLanguageConversion;
  * 
  * @author andyh
  */
-public class FixedValueLuceneBuilder extends AbstractLuceneBuilder
+public class FixedValueLuceneBuilder extends BaseLuceneBuilder
 {
     private Serializable value;
 

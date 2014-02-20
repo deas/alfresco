@@ -18,7 +18,6 @@
  */
 package org.alfresco.repo.search.impl.querymodel.impl.lucene;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +27,6 @@ import org.alfresco.repo.search.impl.querymodel.Argument;
 import org.alfresco.repo.search.impl.querymodel.Constraint;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.impl.BaseConjunction;
-import org.alfresco.util.Pair;
 
 /**
  * @author andyh
@@ -57,7 +55,6 @@ public class LuceneConjunction<Q, S, E extends Throwable> extends BaseConjunctio
        
         LuceneQueryParserExpressionAdaptor<Q, E> expressionAdaptor = luceneContext.getLuceneQueryParserAdaptor().getExpressionAdaptor();
         boolean must = false;
-        boolean should = false;
         boolean must_not = false;
         for (Constraint constraint : getConstraints())
         {
@@ -78,7 +75,6 @@ public class LuceneConjunction<Q, S, E extends Throwable> extends BaseConjunctio
                         break;
                     case OPTIONAL:
                         expressionAdaptor.addOptional(constraintQuery, constraint.getBoost());
-                        should = true;
                         break;
                     case EXCLUDE:
                         expressionAdaptor.addExcluded(constraintQuery, constraint.getBoost());
@@ -95,7 +91,6 @@ public class LuceneConjunction<Q, S, E extends Throwable> extends BaseConjunctio
             if(!must &&  must_not)
             {
                 expressionAdaptor.addRequired(luceneContext.getLuceneQueryParserAdaptor().getMatchAllNodesQuery());
-                //query.add(new TermQuery(new Term("ISNODE", "T")),  BooleanClause.Occur.MUST);
             }
         }
         return expressionAdaptor.getQuery();

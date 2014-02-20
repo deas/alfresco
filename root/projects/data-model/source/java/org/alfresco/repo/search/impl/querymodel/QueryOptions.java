@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.alfresco.repo.search.MLAnalysisMode;
-import org.alfresco.repo.search.impl.parsers.FTSParser;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.LimitBy;
 import org.alfresco.service.cmr.search.QueryConsistency;

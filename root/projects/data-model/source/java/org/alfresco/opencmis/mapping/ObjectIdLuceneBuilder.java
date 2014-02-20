@@ -20,7 +20,6 @@ package org.alfresco.opencmis.mapping;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.alfresco.repo.search.impl.lucene.AnalysisMode;
 import org.alfresco.repo.search.impl.lucene.LuceneFunction;
@@ -40,7 +39,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentExcep
  * @author andyh
  * @author dward
  */
-public class ObjectIdLuceneBuilder extends AbstractLuceneBuilder
+public class ObjectIdLuceneBuilder extends BaseLuceneBuilder
 {
     private DictionaryService dictionaryService;
     

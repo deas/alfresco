@@ -97,6 +97,7 @@ public class LuceneAnalyser extends AbstractAnalyzer
      * @param fieldName
      * @return
      */
+    @SuppressWarnings("deprecation")
     private Analyzer findAnalyser(String fieldName, AnalysisMode analysisMode)
     {
         Analyzer analyser;

@@ -22,14 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.alfresco.repo.search.impl.lucene.index.CachingIndexReader;
 import org.alfresco.repo.search.impl.lucene.query.LeafScorer.Counter;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermPositions;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Scorer;

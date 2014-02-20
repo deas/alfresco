@@ -32,38 +32,38 @@ import org.alfresco.repo.search.impl.querymodel.PredicateMode;
  * 
  * @author davidc
  */
-public abstract class AbstractLuceneBuilder implements CMISPropertyLuceneBuilder
+public class BaseLuceneBuilder implements CMISPropertyLuceneBuilder
 {
     /**
      * Construct
      * 
      */
-    protected AbstractLuceneBuilder()
+    protected BaseLuceneBuilder()
     {
     }
 
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneEquality(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneExists(LuceneQueryParserAdaptor<Q, S, E> lqpa, Boolean not) throws E
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneGreaterThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneGreaterThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E 
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -93,19 +93,19 @@ public abstract class AbstractLuceneBuilder implements CMISPropertyLuceneBuilder
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneLessThan(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneLessThanOrEquals(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, PredicateMode mode, LuceneFunction luceneFunction) throws E
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <Q, S, E extends Throwable> Q buildLuceneLike(LuceneQueryParserAdaptor<Q, S, E> lqpa, Serializable value, Boolean not) throws E
     {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
