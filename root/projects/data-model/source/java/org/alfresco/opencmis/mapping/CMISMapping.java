@@ -85,6 +85,7 @@ public class CMISMapping implements InitializingBean
     public static QName POLICY_QNAME = QName.createQName(CMIS_MODEL_URI, "policy");
     public static QName SECONDARY_TYPES_QNAME = QName.createQName(CMIS_MODEL_URI, "secondary"); // cmis 1.1
     public static QName ASPECTS_QNAME = QName.createQName(CMIS_EXT_URI, "aspects"); // cmis 1.0
+    public static QName ITEM_QNAME = QName.createQName(CMIS_MODEL_URI, "item"); // cmis 1.1
 
     // CMIS Internal Type Ids
     public static String OBJECT_TYPE_ID = "cmisext:object";
@@ -138,13 +139,16 @@ public class CMISMapping implements InitializingBean
         mapAlfrescoQNameToTypeId.put(FOLDER_QNAME, BaseTypeId.CMIS_FOLDER.value());
         mapAlfrescoQNameToTypeId.put(RELATIONSHIP_QNAME, BaseTypeId.CMIS_RELATIONSHIP.value());
         mapAlfrescoQNameToTypeId.put(SECONDARY_TYPES_QNAME, BaseTypeId.CMIS_SECONDARY.value());
+        mapAlfrescoQNameToTypeId.put(ITEM_QNAME, BaseTypeId.CMIS_ITEM.value());
         mapAlfrescoQNameToTypeId.put(POLICY_QNAME, BaseTypeId.CMIS_POLICY.value());
 
         mapAlfrescoQNameToCmisQName.put(ContentModel.TYPE_CONTENT, DOCUMENT_QNAME);
         mapAlfrescoQNameToCmisQName.put(ContentModel.TYPE_FOLDER, FOLDER_QNAME);
+        mapAlfrescoQNameToCmisQName.put(ContentModel.TYPE_BASE, ITEM_QNAME);
 
         mapCmisQNameToAlfrescoQName.put(DOCUMENT_QNAME, ContentModel.TYPE_CONTENT);
         mapCmisQNameToAlfrescoQName.put(FOLDER_QNAME, ContentModel.TYPE_FOLDER);
+        mapCmisQNameToAlfrescoQName.put(ITEM_QNAME, ContentModel.TYPE_BASE);
         mapCmisQNameToAlfrescoQName.put(RELATIONSHIP_QNAME, null);
         mapCmisQNameToAlfrescoQName.put(POLICY_QNAME, null);
 
@@ -298,12 +302,16 @@ public class CMISMapping implements InitializingBean
             case CMIS_POLICY:
                 p = "P";
                 break;
+            case CMIS_ITEM:
+                p = "I";
+                break;
             default:
                 throw new CmisRuntimeException("Invalid base type!");
             }
 
             return p + ":" + typeQName.toPrefixString(namespaceService);
-        } else
+        } 
+        else
         {
             return typeId;
         }
@@ -347,6 +355,14 @@ public class CMISMapping implements InitializingBean
         {
             return getCmisTypeId(BaseTypeId.CMIS_SECONDARY, classQName);
         }
+        if (classQName.equals(ContentModel.TYPE_BASE))
+        {
+            return getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
+        }
+        if (cmisVersion.equals(CmisVersion.CMIS_1_1) && isValidCmisItem(classQName))
+        {
+            return getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
+        }
         if (cmisVersion.equals(CmisVersion.CMIS_1_0) && isValidCmisPolicy(classQName))
         {
             return getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
@@ -385,6 +401,8 @@ public class CMISMapping implements InitializingBean
             return isValidCmisRelationship(qname);
         case CMIS_SECONDARY:
             return isValidCmisSecondaryType(qname);
+        case CMIS_ITEM:
+            return isValidCmisItem(qname);
         }
 
         return false;
@@ -627,6 +645,54 @@ public class CMISMapping implements InitializingBean
         
         return false;
     }
+    
+    /**
+     * Is this a valid CMIS item type?
+     * 
+     * @param dictionaryService
+     * @param typeQName
+     * @return
+     */
+    public boolean isValidCmisItem(QName typeQName)
+    {
+    	if(isExcluded(typeQName))
+    	{
+            return false;
+        }
+
+        if (typeQName == null)
+        {
+            return false;
+        }
+        
+        if(typeQName.equals(ITEM_QNAME))
+        {
+        	return true;
+        }
+        
+        TypeDefinition typeDef = dictionaryService.getType(typeQName);
+        if (typeDef == null)
+        {
+            return false;
+        }
+        
+        if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_BASE))
+        {
+        	if(dictionaryService.isSubClass(typeQName, ContentModel.TYPE_FOLDER))
+        	{
+        		return false;
+        	}
+        	if(dictionaryService.isSubClass(typeQName, ContentModel.TYPE_CONTENT))
+        	{
+        		return false;
+        	}
+        	
+        	return true;
+        }
+        
+        return false;
+    }
+
     
     
     /**

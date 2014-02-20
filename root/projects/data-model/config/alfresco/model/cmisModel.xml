@@ -420,6 +420,14 @@
       </properties>
     </type>
     
+    <type name="cmis:item">
+      <title>Item Type</title>
+      <description>CMIS Item</description>
+      <parent>cmisext:object</parent>
+      <properties>
+      </properties>
+    </type>
+    
     <type name="cmisext:aspects">
       <title>Aspects</title>
       <description>Aspects Type</description>

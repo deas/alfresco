@@ -26,19 +26,25 @@ import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * CMIS Dictionary which provides Types that strictly conform to the CMIS
  * specification.
  * 
  * That is, only maps types to one of root Document, Folder, Relationship &
- * Policy.
+ * Policy.   
+ * 
+ * And Item which is pretty much anything that is not a Document, Folder, Relationship or Policy.
  * 
  * @author steveglover
  * @author davidc
+ * @author mrogers
  */
 public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
 {
+	private Log logger = LogFactory.getLog(CMISStrictDictionaryService.class);
     
     public static final String DEFAULT = "DEFAULT_DICTIONARY";
 
@@ -87,6 +93,11 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
             {
                 typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
                 objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+            }
+            else if (cmisMapping.isValidCmisItem(classQName))
+            {
+                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
+                objectTypeDef = new ItemTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
             }
 
             if (objectTypeDef != null)
