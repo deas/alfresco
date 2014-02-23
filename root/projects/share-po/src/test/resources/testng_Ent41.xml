@@ -9,6 +9,7 @@
             <include name="Enterprise-only" />
             <!-- <include name="Repository" /> -->
             <exclude name=".*Bug" />
+            <exclude name="Cloud-only" />
             <exclude name="chromeOnly" />
             <exclude name="Hybrid" />
             <exclude name="download" />
