@@ -33,11 +33,12 @@ import org.testng.annotations.Test;
  * @since 1.6.1
  */
 @Listeners(FailedTestListener.class)
+@Test(groups ={"Enterprise-only"})
 public class UserSearchPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
 
-    @BeforeClass(groups ={"Cloud-only", "Enterprise-only"})
+    @BeforeClass()
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);

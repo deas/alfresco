@@ -20,12 +20,13 @@ import org.testng.annotations.Test;
  * @since 1.7
  */
 @Listeners(FailedTestListener.class)
+@Test(groups ={"Enterprise-only"})
 public class EditUserPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
     private String userinfo = "user" + System.currentTimeMillis() + "@test.com";
 
-    @BeforeClass(groups = {"Enterprise-only", "Cloud-only"})
+    @BeforeClass()
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);

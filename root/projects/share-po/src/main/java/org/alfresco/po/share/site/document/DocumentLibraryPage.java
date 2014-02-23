@@ -56,8 +56,6 @@ public class DocumentLibraryPage extends SitePage
     protected static final String JS_DOCUMENT_VIEW_TYPE = "return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').options.viewRendererName;";
     private static final String JS_SCRIPT_CHECK_DOCLIST = "return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').widgets.dataTable._getViewRecords();";
     private static Log logger = LogFactory.getLog(DocumentLibraryPage.class);
-    //private static final String SITE_FILE_UPLOAD_BUTTON = "site.document.library.nav.upload.id";
-    //private static final String SITE_CREATE_NEW_FOLDER_BUTTON = "site.document.library.nav.create.folder.id";
     private static final String PAGINATION_BUTTON_NEXT = "a.yui-pg-next";
     private static final String PAGINATION_BUTTON_PREVIOUS = "a.yui-pg-previous";
     public static final String FILES_AND_DOCUMENTS_TABLE_CSS = "table#yuievtautoid-0 > tbody.yui-dt-data > tr";
@@ -196,7 +194,7 @@ public class DocumentLibraryPage extends SitePage
         
         if(!(this instanceof RepositoryPage))
         {
-        	viewType = getNavigation().getViewType();
+            viewType = getNavigation().getViewType();
         }
         return this;
     }
@@ -260,7 +258,7 @@ public class DocumentLibraryPage extends SitePage
     private boolean hasNoData()
     {
         try
-        {                                                              
+        {
             WebElement td = drone.find(By.cssSelector("tbody.yui-dt-message tr td"));
             boolean visible = td.isDisplayed();
             return visible;
@@ -357,7 +355,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (Exception e) 
         {
-        	logger.debug("Unable to determine if in sub folder of: " + subfolderName);
+            logger.debug("Unable to determine if in sub folder of: " + subfolderName);
         }
 
         return false;
@@ -484,7 +482,7 @@ public class DocumentLibraryPage extends SitePage
                     {
                         logger.trace("adding file" + file.getName());
                     }
-                	fileDirectoryList.add(file);
+                    fileDirectoryList.add(file);
                 }
                 return fileDirectoryList;
             }
@@ -604,15 +602,15 @@ public class DocumentLibraryPage extends SitePage
      */
     public boolean isFilesVisible()
     {
-    	try
-    	{
-    		WebElement content = drone.find(By.cssSelector("div[id$='default-documents']"));
-    		return content.isDisplayed();
-    	}
-    	catch (NoSuchElementException nse)
-    	{
-    		return false;
-		}
+        try
+        {
+            WebElement content = drone.find(By.cssSelector("div[id$='default-documents']"));
+            return content.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
     }
     /**
      * The number of comments value displayed
