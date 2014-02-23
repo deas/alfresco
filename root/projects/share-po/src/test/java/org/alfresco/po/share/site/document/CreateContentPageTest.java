@@ -47,6 +47,7 @@ public class CreateContentPageTest extends AbstractDocumentTest
     private String siteName;
     private DocumentLibraryPage documentLibPage;
     DashBoardPage dashBoard;
+    private String uname = "muser" + System.currentTimeMillis();
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -56,7 +57,8 @@ public class CreateContentPageTest extends AbstractDocumentTest
     @BeforeClass(groups="alfresco-one")
     public void prepare() throws Exception
     {
-        dashBoard = loginAs(username, password).render();
+        createEnterpriseUser(uname);
+        dashBoard = loginAs(uname, "password").render();
         siteName = "CreateContentPageTest" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }

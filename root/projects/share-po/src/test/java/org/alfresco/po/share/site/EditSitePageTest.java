@@ -18,7 +18,7 @@ public class EditSitePageTest extends AbstractTest
     @BeforeClass(groups = "alfresco-one")
     public void setup() throws Exception
     {
-        siteName = String.format("test-%d-site-crud", System.currentTimeMillis());
+        siteName = String.format("test-%d-editSite", System.currentTimeMillis());
 
         DashBoardPage dashBoard = loginAs(username, password);
         dashBoard.render();

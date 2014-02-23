@@ -66,15 +66,15 @@ public enum DocumentAspect
      */
     public static DocumentAspect getAspect(String name) throws Exception
     {
-    	if(StringUtils.isEmpty(name))
-    	{
-    		throw new UnsupportedOperationException("Name can't null or empty, It is required.");
-    	}
-		for (DocumentAspect aspect : DocumentAspect.values()) {
-			if (aspect.value != null && aspect.value.equalsIgnoreCase(name.trim())) {
-				return aspect;
-			}
-		}
+        if(StringUtils.isEmpty(name))
+        {
+            throw new UnsupportedOperationException("Name can't null or empty, It is required.");
+        }
+        for (DocumentAspect aspect : DocumentAspect.values()) {
+            if (aspect.value != null && aspect.value.equalsIgnoreCase(name.trim())) {
+                return aspect;
+            }
+        }
         throw new IllegalArgumentException("Not able to find the Document Aspect for given name : " + name);
     }
 }

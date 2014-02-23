@@ -62,7 +62,7 @@ public class SelectContentPageTest extends AbstractTest
     public void prepare() throws Exception
     {
         dashBoardPage = loginAs(username, password);
-        siteName = String.format("test-%d-site-crud", System.currentTimeMillis());
+        siteName = String.format("test-%d-selectContent", System.currentTimeMillis());
         CreateSitePage createSite = dashBoardPage.getNav().selectCreateSite().render();
         SiteDashboardPage site = (SiteDashboardPage) createSite.createNewSite(siteName);
         site.render();

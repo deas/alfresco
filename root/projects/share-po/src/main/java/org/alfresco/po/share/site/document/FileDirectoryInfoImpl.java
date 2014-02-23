@@ -870,26 +870,19 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             throw new UnsupportedOperationException(String.format("Content noderef is required: %s",nodeRef));
         }
-
-        List<WebElement> elements = getDrone().findAll(By.cssSelector(String.format("input[value='%s']",nodeRef)));
-        if(elements == null || elements.isEmpty())
+        try
+        {
+            WebElement element = getDrone().findAndWait(By.cssSelector(String.format("input[value='%s']",nodeRef)));
+            WebElement row = element.findElement(By.xpath("../../.."));
+            if(row.getAttribute("class").contains("alf-gallery-item-thumbnail"))
+            {
+                row = element.findElement(By.xpath("../../../.."));
+            }
+            setWebElement(row);
+        }
+        catch (TimeoutException te)
         {
             throw new UnsupportedOperationException("there are no elements matching the node ref : " + nodeRef);
-        }
-
-        for(WebElement element : elements)
-        {
-            if(element.getText() != null && element.getAttribute("value").equalsIgnoreCase(nodeRef))
-            {
-                WebElement row = element.findElement(By.xpath("../../.."));
-
-                if(row.getAttribute("class").contains("alf-gallery-item-thumbnail"))
-                {
-                    row = element.findElement(By.xpath("../../../.."));
-                }
-
-                setWebElement(row);
-            }
         }
     }
 

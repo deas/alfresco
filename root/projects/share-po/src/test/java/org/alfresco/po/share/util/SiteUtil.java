@@ -82,7 +82,7 @@ public class SiteUtil
         OutputStreamWriter writer = null;
         try
         {
-			String fileName = (name != null && !name.isEmpty() ? name :"myfile");
+            String fileName = (name != null && !name.isEmpty() ? name :"myfile");
             file = File.createTempFile(fileName, ".txt");
             
             writer = new OutputStreamWriter(new FileOutputStream(file),

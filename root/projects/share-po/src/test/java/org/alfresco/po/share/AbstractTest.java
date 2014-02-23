@@ -242,12 +242,12 @@ public abstract class AbstractTest
         FileUtils.copyFile(file, tmp);
         try 
         {
-			saveOsScreenShot(methodName);
-		} 
+            saveOsScreenShot(methodName);
+        } 
         catch (AWTException e) 
         {
-        	logger.error("Not able to take the OS screen shot: " + e.getMessage());
-		}
+            logger.error("Not able to take the OS screen shot: " + e.getMessage());
+        }
     }
     
     public void savePageSource(String methodName) throws IOException
