@@ -48,7 +48,6 @@ import org.testng.annotations.Test;
 @Test(groups = { "Enterprise4.2", "Cloud2", "Firefox17Ent"})
 public class ManagePermissionsTest extends AbstractTest
 {
-
     private static String FNAME = "Administrator";
     private String siteName;
     private File sampleFile;
@@ -105,8 +104,7 @@ public class ManagePermissionsTest extends AbstractTest
         UserProfile userProfile = new UserProfile();
         userProfile.setUsername(username);
         UserSearchPage searchPage = pageReturned;
-        pageUnderTest = searchPage.searchAndSelectUser(userProfile);
-        pageUnderTest.render();
+        pageUnderTest = searchPage.searchAndSelectUser(userProfile).render();
         assertTrue(pageUnderTest.isDirectPermissionForUser(userProfile), "User did not get added to 'Locally Set Permissions' table as user");
     }
     

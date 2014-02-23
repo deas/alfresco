@@ -179,13 +179,6 @@ public class NewWorkflowPage extends WorkFlowPage
         {
             throw new UnsupportedOperationException("siteName or message or cloudUsers cannot be blank");
         }
-        enterMessageText(formDetails.getMessage());
-        if(formDetails.getDueDate() != null)
-        {
-            enterDueDateText(formDetails.getDueDate());
-        }
-        AssignmentPage assignmentPage = selectReviewer().render();
-        assignmentPage.selectReviewers(formDetails.getReviewers());
         WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
         String cancelButtonId = cancelButton.getAttribute("id");
         cancelButton.click();

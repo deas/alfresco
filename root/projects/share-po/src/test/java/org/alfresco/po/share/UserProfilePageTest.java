@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
 @Test(groups = "Enterprise-only")
 public class UserProfilePageTest extends AbstractTest
 {
-    String userinfo = "user" + System.currentTimeMillis() + "@test.com";
+    String userinfo = "puser" + System.currentTimeMillis() + "@test.com";
     private DashBoardPage dashBoard;
     private UserSearchPage page;
     UserSearchPage results;
