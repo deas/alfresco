@@ -7,7 +7,7 @@
             <include name="alfresco-one" />
             <include name="Enterprise4.2" />
             <include name="Enterprise-only" />
-            <!-- <include name="Repository" /> -->
+            <exclude name="Cloud-only" />
             <exclude name=".*Bug42" />
             <exclude name=".*Bug" />
             <exclude name="chromeOnly" />
