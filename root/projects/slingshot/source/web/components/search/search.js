@@ -889,12 +889,18 @@
       {
          // disables  "All Sites" link
          var toggleLink = Dom.get(this.id + "-all-sites-link");
-         Event.removeListener(toggleLink, "click");
-         toggleLink.style.color="#aaa";
+         if (toggleLink)
+         {
+            Event.removeListener(toggleLink, "click");
+            toggleLink.style.color="#aaa";
+         }
          // disables  "Repository" link
          toggleLink = Dom.get(this.id + "-repo-link");
-         Event.removeListener(toggleLink, "click");
-         toggleLink.style.color="#aaa";
+         if (toggleLink)
+         {
+            Event.removeListener(toggleLink, "click");
+            toggleLink.style.color="#aaa";
+         }
          //disables Site link
          toggleLink = Dom.get(this.id + "-site-link");
          if (toggleLink)
@@ -915,12 +921,18 @@
       {
          // enables  "All Sites" link
          var toggleLink = Dom.get(this.id + "-all-sites-link");
-         Event.addListener(toggleLink, "click", this.onAllSiteSearch, this, true);
-         toggleLink.style.color="";
+         if (toggleLink)
+         {
+            Event.addListener(toggleLink, "click", this.onAllSiteSearch, this, true);
+            toggleLink.style.color="";
+         }
          // enables  "Repository" link
          toggleLink = Dom.get(this.id + "-repo-link");
-         Event.addListener(toggleLink, "click", this.onRepositorySearch, this, true);
-         toggleLink.style.color="";
+         if (toggleLink)
+         {
+            Event.addListener(toggleLink, "click", this.onRepositorySearch, this, true);
+            toggleLink.style.color="";
+         }
          // enables  "Site" link
          toggleLink = Dom.get(this.id + "-site-link");
          if (toggleLink)
