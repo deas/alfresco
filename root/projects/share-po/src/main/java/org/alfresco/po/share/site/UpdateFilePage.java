@@ -133,21 +133,7 @@ public class UpdateFilePage extends SharePage
         //Get the expected version number
         String previousVersion = (String) drone.executeJavaScript("Alfresco.getFileUploadInstance(this).showConfig.updateVersion;");
         drone.findAndWait(By.cssSelector(submitButton)).click();
-        int countCheck = 0;
-        //Check upload file dialog had gone
-        while(countCheck < 3)
-        {
-            try
-            {
-            	drone.find(By.cssSelector(UPDATE_PAGE_TITLE_SPAN_CSS));
-            }
-            catch (Exception e)
-            {
-                //We are now ready to move off the page.
-                break;
-            }
-            countCheck ++;
-        }
+        drone.waitUntilElementDisappears(By.cssSelector(".container-close"), drone.getDefaultWaitTime());
         HtmlPage page = drone.getCurrentPage();
         if(page instanceof DocumentDetailsPage)
         {
