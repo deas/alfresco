@@ -101,7 +101,7 @@
                      <url>/components/node-details/node-header</url>
                      <properties>
                         <nodeRef>{nodeRef}</nodeRef>
-                        <libraryRoot>alfresco://shared</libraryRoot>
+                        <libraryRoot>alfresco://company/shared</libraryRoot>
                         <rootPage>context/shared/sharedfiles</rootPage>
                         <rootLabelId>location.path.shared</rootLabelId>
                      </properties>
