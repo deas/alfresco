@@ -14,6 +14,7 @@
         <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
         <webdrone.page.render.wait.time>6000</webdrone.page.render.wait.time>
         <enterprise.build.plan>e.g.ALF-ENTERPRISEHEAD0</enterprise.build.plan>
+        <testng.xml>src/test/resources/testng.xml</testng.xml>
         <test.exclude>nonEnterprise</test.exclude>
     </properties>
     <repositories>
