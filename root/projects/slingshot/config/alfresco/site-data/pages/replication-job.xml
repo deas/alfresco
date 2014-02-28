@@ -6,16 +6,4 @@
    <description-id>page.createEditReplicationJob.description</description-id>
    <template-instance>replication-job</template-instance>
    <authentication>admin</authentication>
-   <components>
-
-      <!-- Title -->
-      <component>
-         <region-id>title</region-id>
-         <url>/components/title/simple-title</url>
-         <properties>
-            <title>page.adminConsole.title</title>
-         </properties>
-      </component>
-
-   </components>
 </page>
