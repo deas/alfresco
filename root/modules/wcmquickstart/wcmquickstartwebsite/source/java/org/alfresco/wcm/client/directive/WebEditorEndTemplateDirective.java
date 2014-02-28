@@ -77,7 +77,12 @@ public class WebEditorEndTemplateDirective extends AbstractTemplateDirective
                 List<MarkedContent> markedContent = AlfrescoTagUtil.getMarkedContent(request);
                 
                 out.write("\nvar urlParts = window.location.href.split(\"/\");");
-                out.write("\nvar categoryRootUrl =  urlParts[0] + \"//\" + urlParts[2] + \"/\" + urlParts[3] + \"/\" + urlParts[4] + \"/index.html\";");
+                out.write("\nvar categoryRootUrl =  urlParts[0] + \"//\";");
+                out.write("\nfor (var i=2; i < urlParts.length - 1; i++)");
+                out.write("\n{");
+                out.write("\n   categoryRootUrl += urlParts[i] + \"/\";");
+                out.write("\n}");
+                out.write("\ncategoryRootUrl += \"index.html\";");
                 out.write("\nWEF.ConfigRegistry.registerConfig('org.alfresco.awe',{id:'awe',name:'awe',editables:[\n");
                 boolean first = true;
                 for (MarkedContent content : markedContent)
