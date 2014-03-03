@@ -13,16 +13,16 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="${wcmqs.feedbackProcessor.schedule}" />
-        <property name="startDelayMinutes">
-        	<value>${system.cronJob.startDelayMinutes}</value>
-       	</property>
+      <property name="startDelayMinutes">
+         <value>${system.cronJob.startDelayMinutes}</value>
+      </property>
    </bean>
 
    <bean id="feedbackProcessor" class="org.alfresco.module.org_alfresco_module_wcmquickstart.jobs.FeedbackProcessor">
       <property name="nodeService" ref="nodeService" />
       <property name="searchService" ref="searchService" />
       <property name="txHelper" ref="retryingTransactionHelper" />
-      <property name="repositoryState" ref="repositoryState"/>
+      <property name="repositoryState" ref="repositoryState" />
       <property name="jobLockService" ref="jobLockService" />
    </bean>
 
@@ -54,7 +54,7 @@
                   <property name="searchService" ref="searchService" />
                   <property name="txHelper" ref="retryingTransactionHelper" />
                   <property name="behaviourFilter" ref="policyBehaviourFilter" />
-                  <property name="repositoryState" ref="repositoryState"/>
+                  <property name="repositoryState" ref="repositoryState" />
                   <property name="jobLockService" ref="jobLockService" />
                </bean>
             </property>
@@ -63,9 +63,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="0 0 0 * * ?" />
-        <property name="startDelayMinutes">
-        	<value>${system.cronJob.startDelayMinutes}</value>
-       	</property>
+      <property name="startDelayMinutes">
+         <value>${system.cronJob.startDelayMinutes}</value>
+      </property>
    </bean>
 
    <bean id="org_alfresco_module_wcmquickstart_processPublishingQueues" class="org.alfresco.util.CronTriggerBean">
@@ -76,7 +76,7 @@
                   <property name="searchService" ref="searchService" />
                   <property name="transactionService" ref="TransactionService" />
                   <property name="publishService" ref="org_alfresco_module_wcmquickstart_publishingService" />
-                  <property name="repositoryState" ref="repositoryState"/>
+                  <property name="repositoryState" ref="repositoryState" />
                   <property name="jobLockService" ref="jobLockService" />
                </bean>
             </property>
@@ -86,9 +86,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="${wcmqs.publishQueueProcessor.schedule}" />
-        <property name="startDelayMinutes">
-        	<value>${system.cronJob.startDelayMinutes}</value>
-       	</property>
+      <property name="startDelayMinutes">
+         <value>${system.cronJob.startDelayMinutes}</value>
+      </property>
    </bean>
 
    <bean id="org_alfresco_module_wcmquickstart_dynamicQueryRefreshProcess" class="org.alfresco.util.CronTriggerBean">
@@ -100,7 +100,7 @@
                   <property name="transactionService" ref="TransactionService" />
                   <property name="nodeService" ref="nodeService" />
                   <property name="collectionHelper" ref="org_alfresco_module_wcmquickstart_collectionHelper" />
-                  <property name="repositoryState" ref="repositoryState"/>
+                  <property name="repositoryState" ref="repositoryState" />
                   <property name="jobLockService" ref="jobLockService" />
                </bean>
             </property>
@@ -110,9 +110,9 @@
       </property>
       <property name="scheduler" ref="schedulerFactory" />
       <property name="cronExpression" value="${wcmqs.dynamicCollectionProcessor.schedule}" />
-        <property name="startDelayMinutes">
-        	<value>${system.cronJob.startDelayMinutes}</value>
-       	</property>
+      <property name="startDelayMinutes">
+         <value>${system.cronJob.startDelayMinutes}</value>
+      </property>
    </bean>
 
 </beans>
