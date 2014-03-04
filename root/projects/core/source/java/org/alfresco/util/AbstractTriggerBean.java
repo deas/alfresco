@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -46,7 +46,6 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
 
     private String beanName;
     
-
     private Trigger trigger;
     
     private boolean enabled = true;
@@ -140,7 +139,8 @@ public abstract class AbstractTriggerBean implements InitializingBean, JobDetail
             
             	if(logger.isDebugEnabled())
             	{
-            		logger.debug("schedule job:" + jobDetail + this.trigger);
+                    logger.debug("schedule job:" + jobDetail + " using " + this.trigger
+                                + " startTime: " + this.trigger.getStartTime());
             	}
                 scheduler.scheduleJob(jobDetail, this.trigger);
             }
