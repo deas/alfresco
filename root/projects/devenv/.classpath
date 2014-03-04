@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/devenv/ant-1.7.1.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/dom4j-1.6.1.jar" sourcepath="C:/Users/nsmith/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
