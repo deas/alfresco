@@ -33,7 +33,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/docs/apidocs"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-codec-1.5.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mybatis-3.0.4-patched.jar"/>
@@ -51,5 +50,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/joda-time-2.3.jar" sourcepath="/3rd Party/src/joda-time-2.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/xercesImpl-2.10.0-alfresco-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/alfresco-xmlfactory-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
