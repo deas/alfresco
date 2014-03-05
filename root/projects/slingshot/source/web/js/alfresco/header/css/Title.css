@@ -1,9 +1,9 @@
-.alfresco-share .alf-menu-title,
-.alfresco-share h1 {
+.alfresco-share .alf-menu-title {
    margin-top: 14px;
 }
 
-.alfresco-share h1 > .alf-menu-title-text {
+.alfresco-share .alf-menu-title-text {
    font-family: Open Sans Condensed,Arial,sans-serif;
+   font-size: 230%;
    color: #333 !important;
 }
