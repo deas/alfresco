@@ -110,7 +110,7 @@ public class SlingshotRemoteClient extends RemoteClient
                             if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml"))
                             {
                                 // process with HTML stripper
-                                content = StringUtils.stripUnsafeHTMLTags(content, false);
+                                content = StringUtils.stripUnsafeHTMLDocument(content, false);
                             }
                             else if (mimetype.equals("text/xml"))
                             {
