@@ -84,11 +84,11 @@
             <artifactId>spring-context</artifactId>
             <version>3.1.1.RELEASE</version>
         </dependency>
-	    <dependency>
-		  <groupId>joda-time</groupId>
-		  <artifactId>joda-time</artifactId>
-		  <version>2.3</version>
-	    </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+        </dependency>
     </dependencies>
     
     <!-- Pacakge Application into a standalone  -->
@@ -106,6 +106,13 @@
             </testResource>
         </testResources> 
         <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagNameFormat>V@{project.version}</tagNameFormat>
+                    <tagBase>https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags</tagBase>
+                </configuration>
+            </plugin>
             <plugin>
                <artifactId>maven-compiler-plugin</artifactId>
                <configuration>
