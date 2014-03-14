@@ -30,12 +30,19 @@ public class AlfrescoTicketCmisAuthenticationProvider extends StandardAuthentica
     private String ticket = null;
     private WebScriptCaller webscriptCaller;
     private ReentrantLock ticketLock = new ReentrantLock(true);
+    private long ticketLastFetched = System.currentTimeMillis();
     private long refetchTicketNotBefore = System.currentTimeMillis();
     private long refetchTicketDelay = 10000L;
+
+    private long ticketDuration = 60*60*1000;
 
     public void setWebscriptCaller(WebScriptCaller webscriptCaller)
     {
         this.webscriptCaller = webscriptCaller;
+    }
+
+    public void setTicketDuration(long ticketDuration) {
+        this.ticketDuration = ticketDuration;
     }
 
     protected void setRefetchTicketDelay(long refetchTicketDelay)
@@ -57,14 +64,19 @@ public class AlfrescoTicketCmisAuthenticationProvider extends StandardAuthentica
 
     private String getTicket()
     {
-        if (ticket == null)
+        // MNT-9344 fix - refetch Ticket due to expiration
+        boolean refetchTicket = System.currentTimeMillis() >= ticketLastFetched + ticketDuration;
+
+        if (ticket == null || refetchTicket)
         {
             ticketLock.lock();
             try
             {
-                if (ticket == null)
+                if (ticket == null || refetchTicket)
                 {
                     ticket = webscriptCaller.getTicket(super.getUser(), super.getPassword());
+                    
+                    ticketLastFetched = System.currentTimeMillis();
                     refetchTicketNotBefore = System.currentTimeMillis() + refetchTicketDelay;
                 }
             }

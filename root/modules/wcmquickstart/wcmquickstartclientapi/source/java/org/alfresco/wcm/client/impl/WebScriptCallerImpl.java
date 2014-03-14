@@ -63,6 +63,9 @@ public class WebScriptCallerImpl implements WebScriptCaller
     private String baseUrl;
     HttpClient httpClient;
     private AuthScope authScope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM);
+    
+    private String username = null;
+    private String password = null;;
 
     public WebScriptCallerImpl()
     {
@@ -93,6 +96,14 @@ public class WebScriptCallerImpl implements WebScriptCaller
         this.authScope = authScope;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+     }
+
     public void init()
     {
     }
@@ -103,7 +114,7 @@ public class WebScriptCallerImpl implements WebScriptCaller
         List<WebscriptParam> paramList = new ArrayList<WebscriptParam>();
         paramList.add(new WebscriptParam("u", user));
         paramList.add(new WebscriptParam("pw", password));
-        get("login", responseHandler, paramList);
+        get("login", responseHandler, paramList, true);
         Credentials credentials = new UsernamePasswordCredentials(user, password); 
         if (responseHandler.ticket != null)
         {
@@ -127,8 +138,13 @@ public class WebScriptCallerImpl implements WebScriptCaller
     
     public void get(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params)
     {
+        get(servicePath, handler, params, false);
+    }
+    
+    private void get(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params, boolean ignoreUnauthorized)
+    {
         GetMethod getMethod = getGETMethod(servicePath, params);
-        executeRequest(handler, getMethod);
+        executeRequest(handler, getMethod, ignoreUnauthorized);
     }
     
     public void post(String servicePath, WebscriptResponseHandler handler, List<WebscriptParam> params)
@@ -139,6 +155,11 @@ public class WebScriptCallerImpl implements WebScriptCaller
 
     private void executeRequest(WebscriptResponseHandler handler, HttpMethod httpMethod)
     {
+        executeRequest(handler, httpMethod, false);
+    }
+
+    private void executeRequest(WebscriptResponseHandler handler, HttpMethod httpMethod, boolean ignoreUnauthorized)
+    {
         long startTime = 0L;
         if (log.isDebugEnabled())
         {
@@ -147,6 +168,15 @@ public class WebScriptCallerImpl implements WebScriptCaller
         try
         {
             httpClient.executeMethod(httpMethod);
+            
+            if ((httpMethod.getStatusCode() == 401 || httpMethod.getStatusCode() == 403) && !ignoreUnauthorized)
+            {
+                discardResponse(httpMethod);
+                
+                this.getTicket(username, password);
+                httpClient.executeMethod(httpMethod);
+            }
+            
             if (httpMethod.getStatusCode() == 200)
             {
                 handler.handleResponse(httpMethod.getResponseBodyAsStream());

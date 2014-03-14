@@ -34,6 +34,7 @@
 
    <bean id="cmisAuthenticationProvider" class="org.alfresco.wcm.client.util.impl.AlfrescoTicketCmisAuthenticationProvider">
       <property name="webscriptCaller" ref="webscriptCaller" />
+      <property name="ticketDuration" value="%{wcmqs.api.alfresco.ticketTtl}" />
    </bean>
 
    <!-- Pool of anonymous CMIS sessions -->
@@ -154,6 +155,8 @@
    <!--  Web script caller -->
    <bean id="webscriptCaller" class="org.alfresco.wcm.client.impl.WebScriptCallerImpl" init-method="init" >
       <property name="baseUrl" value="%{wcmqs.api.alfresco.webscript}" />
+      <property name="username" value="%{wcmqs.api.user}" />
+      <property name="password" value="%{wcmqs.api.password}" />
    </bean>
 
    <!--  EH Cache manager -->
