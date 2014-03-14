@@ -817,6 +817,7 @@
                         text: this.msg("message.failure")
                      });
                   }
+                  createFolder.widgets.cancelButton.set("disabled", false);
                },
                scope: this
             }
