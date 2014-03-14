@@ -78,7 +78,7 @@
             if (result.length > 1)
             {
                var re = /^([^\|\]]+)(?:\|([^\]]+))?\]\]/;
-               var uri, i, ii, str, matches, page, exists;
+               var uri, i, ii, str, matches, page, exists, anchor;
                text = result[0];
             
                for (i = 1, ii = result.length; i < ii; i++)
@@ -87,14 +87,29 @@
                   if (re.test(str))
                   {
                      matches = re.exec(str);
+                     // ALF-20817
+                     anchor = matches[1].split("#");
+                     if (anchor[1])
+                     {
+                        matches[1] = anchor[0];
+                     }
+                     else if (matches[2])
+                     {
+                        anchor = matches[2].split("#");
+                        if (anchor[1])
+                        {
+                           matches[2] = anchor[0];
+                        }
+                     }
+					 
                      // Replace " " character in page URL with "_"
                      page = matches[1].replace(/\s+/g, "_");
                      exists = Alfresco.util.arrayContains(pages, page);
-                     uri = '<a href="' + this.URL + encodeURIComponent(Alfresco.util.decodeHTML(page)) + '" class="' + (exists ? 'theme-color-1' : 'wiki-missing-page') + '">';
-                     uri += (matches[2] ? matches[2] : matches[1]);
+                     uri = '<a href="' + this.URL + encodeURIComponent(Alfresco.util.decodeHTML(anchor[1] ? page + "#" + anchor[1] : page)) + '" class="' + (exists ? 'theme-color-1' : 'wiki-missing-page') + '">';
+                     uri += (matches[2] ? matches[2] : anchor[1] ? matches[1] + "#" + anchor[1] : matches[1]);
                      uri += '</a>';
                      
-                     text += uri;
+                     text += uri.replace("%23", "#");
                      text += str.substring(matches[0].length);
                   }
                }

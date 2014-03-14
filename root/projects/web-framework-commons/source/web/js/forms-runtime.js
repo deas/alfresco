@@ -2133,7 +2133,7 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
          args = {};
       }
       
-      args.pattern = /([\\\?\/\|]+)|([\.]?[\.]+$)/;
+      args.pattern = /([#\\\?\/\|]+)|([\.]?[\.]+$)/;
       args.match = false;
 
       return Alfresco.forms.validation.regexMatch(field, args, event, form, silent, message);
