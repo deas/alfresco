@@ -128,24 +128,29 @@ public class DocumentDetailsPage extends DetailsPage
                 //If popup is not displayed start render check
                 if(!drone.find(By.cssSelector("div.bd")).isDisplayed())
                 {
-                    docVersionOnScreen = drone.find(By.cssSelector(DOCUMENT_VERSION_PLACEHOLDER)).getText().trim();
-                    // If the text is not what we expect it to be, then repeat
-                    if (this.previousVersion != null && docVersionOnScreen.equals(this.previousVersion))
+                    //upload dialog should not be displayed.
+                    if(!drone.find(By.cssSelector("div.yui-dt-bd")).isDisplayed())
                     {
-                        // We are still seeing the old version number
-                        // Go around again
-                        continue;
-                    }
-                    //If we see expected version number, stop and serve.
-                    if(expectedVersion != null && !expectedVersion.isEmpty())
-                    {
-                        if(docVersionOnScreen.equals(this.expectedVersion))
+                        docVersionOnScreen = drone.find(By.cssSelector(DOCUMENT_VERSION_PLACEHOLDER)).getText().trim();
+                        // If the text is not what we expect it to be, then repeat
+                        if (this.previousVersion != null && docVersionOnScreen.equals(this.previousVersion))
                         {
-                            break;
+                            // We are still seeing the old version number
+                            // Go around again
+                            continue;
                         }
+                        //If we see expected version number, stop and serve.
+                        if(expectedVersion != null && !expectedVersion.isEmpty())
+                        {
+                            if(docVersionOnScreen.equals(this.expectedVersion))
+                            {
+                                break;
+                            }
+                        }
+                        // Populate the doc version
+                        break;
                     }
-                    // Populate the doc version
-                    break;
+                    
                 }
             }
             catch (TimeoutException te)
@@ -221,14 +226,14 @@ public class DocumentDetailsPage extends DetailsPage
      */
     public boolean isEditOfflineDisplayed()
     {
-    	try
-    	{
-    		return drone.find(By.cssSelector("span.editing")).isDisplayed();
-    	}
-    	catch (NoSuchElementException e)
-    	{
-    		return false;
-    	}
+        try
+        {
+            return drone.find(By.cssSelector("span.editing")).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }
     }
 
     /**
@@ -238,14 +243,14 @@ public class DocumentDetailsPage extends DetailsPage
      */
     public boolean isLockedByYou()
     {
-    	try
-    	{
-    		return drone.find(By.cssSelector("span.lock-owner")).isDisplayed();
-    	}
-    	catch (NoSuchElementException e)
-    	{
-    		return false;
-    	}
+        try
+        {
+            return drone.find(By.cssSelector("span.lock-owner")).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }
     }
 
 
