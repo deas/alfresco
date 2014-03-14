@@ -11,7 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<webdrone.version>2.4</webdrone.version>
-		<share-po.version>4.3.0-BF-SNAPSHOT</share-po.version>
+		<share-po.version>4.3.0-SNAPSHOT</share-po.version>
 		<office.component>libreofficecomponent</office.component>
 		<enable.hybrid>false</enable.hybrid>
 	</properties>

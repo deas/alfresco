@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>share-po</artifactId>
-  <version>2.1</version>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-parent</artifactId>
@@ -341,8 +340,8 @@ sync.cloud.url=https://webdronehwa.alfresco.me/alfresco/a/{network}/
     </profiles>
 
   <scm>
-    <connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/benchmark/webdrone/share-po/tags/V2.1</connection>
-    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags/V2.1</developerConnection>
-    <url>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags/V2.1</url>
+    <connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/benchmark/webdrone/share-po/tags/V2.2</connection>
+    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags/V2.2</developerConnection>
+    <url>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags/V2.2</url>
   </scm>
 </project>
