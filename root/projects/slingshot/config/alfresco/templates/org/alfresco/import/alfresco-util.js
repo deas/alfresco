@@ -111,6 +111,19 @@ var AlfrescoUtil =
       }
       return repositoryUrl;
    },
+   
+   getActivitiAdminUrl: function getActivitiAdminUrl()
+   {
+      // Repository Url
+      var activitiAdminUrl = null,
+      activitiAdminConfig = config.scoped["ActivitiAdmin"]["activiti-admin-url"];
+
+      if (activitiAdminConfig !== null)
+      {
+         activitiAdminUrl = activitiAdminConfig.value;
+      }
+      return activitiAdminUrl;
+   },
 
    getRootNode: function getRootNode()
    {

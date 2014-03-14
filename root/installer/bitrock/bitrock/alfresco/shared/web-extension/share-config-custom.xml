@@ -318,6 +318,13 @@
       </kerberos>
    </config>
 
+   <!-- Uncomment and modify the URL to Activiti Admin Console if required. -->
+   <!--
+   <config evaluator="string-compare" condition="ActivitiAdmin" replace="true">
+      <activiti-admin-url>http://localhost:8080/alfresco/activiti-admin</activiti-admin-url>
+   </config>
+   -->
+
    <config evaluator="string-compare" condition="Remote">
       <remote>
          <endpoint>
