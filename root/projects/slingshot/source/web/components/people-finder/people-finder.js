@@ -1016,7 +1016,7 @@
        */
       _buildSearchParams: function PeopleFinder__buildSearchParams(searchTerm)
       {
-         return "filter=" + encodeURIComponent(searchTerm) + "&maxResults=" + this.options.maxSearchResults;
+         return "sortBy=fullName&dir=asc&filter=" + encodeURIComponent(searchTerm) + "&maxResults=" + this.options.maxSearchResults;
       }
    });
 })();
