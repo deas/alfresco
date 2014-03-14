@@ -62,7 +62,7 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
         folder2Name = "The Second Folder";
         folderDescription = String.format("Description of %s", folderName);
         createEnterpriseUser(uname);
-        loginAs(uname, "password").render();
+        loginAs(uname, UNAME_PASSWORD).render();
         if(isHybridEnabled())
         {
             signInToCloud(drone, cloudUserName, cloudUserPassword);

@@ -92,7 +92,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (logger.isTraceEnabled()) logger.trace("====uploadFile====");
         SitePage site = (SitePage) drone.getCurrentPage();
         site.render();
-        DocumentLibraryPage docPage = (DocumentLibraryPage) site.getSiteNav().selectSiteDocumentLibrary();
+        DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
         docPage.render();
         docPage = (docPage.getNavigation().selectDetailedView()).render();
         // DocumentLibraryPage docPage = getDocumentLibraryPage(siteName).render();

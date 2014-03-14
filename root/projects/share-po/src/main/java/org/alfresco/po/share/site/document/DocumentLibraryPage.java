@@ -813,7 +813,7 @@ public class DocumentLibraryPage extends SitePage
      * Check the uploaded content has uploaded successfully
      * @param - String
      * @return - Boolean
-     * @deprecated as of 2.1, use docPage.findFileOrFolder(name) to determine if file exists
+     * @deprecated as of 2.1, use isItemVisble to determine if file exists
      */
     public synchronized boolean isContentUploadedSucessful(String contentName)
     {

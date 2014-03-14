@@ -115,7 +115,6 @@ public class NewGroupPage extends SharePage
         case CREATE_GROUP:
             drone.findAndWait(By.cssSelector(BUTTON_CREATE_GROUP)).click();
             canResume();
-            
             return new GroupsPage(drone);
 
         case CREATE_ANOTHER:

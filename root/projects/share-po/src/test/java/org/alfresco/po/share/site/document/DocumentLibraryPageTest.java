@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
@@ -44,7 +43,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     private static DocumentLibraryPage documentLibPage;
     private File file1;
     private File file2;
-
+    private String uname = "dlpt1user" + System.currentTimeMillis();
     /**
      * Pre test setup of a dummy file to upload.
      * 
@@ -59,7 +58,8 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         folderName3 = folderName + "-2";
         folderNameDelete = folderName + "delete";
         folderDescription = String.format("Description of %s", folderName);
-        ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        createEnterpriseUser(uname);
+        loginAs(uname, UNAME_PASSWORD).render();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file1 = SiteUtil.prepareFile();
         file2 = SiteUtil.prepareFile();
@@ -392,8 +392,8 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     @Test(dependsOnMethods="selectUploadNewVersion", groups="Enterprise4.2")
     public void selectDeleteforContent() throws Exception
     {
-       documentLibPage.render();
-       FileDirectoryInfo file;
+        documentLibPage.render();
+        FileDirectoryInfo file;
         ConfirmDeletePage confirmdialog;
         int fileSize = 0;
         File tempFile = SiteUtil.prepareFile();

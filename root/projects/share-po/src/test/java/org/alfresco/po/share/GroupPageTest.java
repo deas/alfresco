@@ -49,7 +49,7 @@ public class GroupPageTest extends AbstractTest
         page = page.navigateToAddAndEditGroups().render();
         NewGroupPage newGroupPage = page.navigateToNewGroupPage().render();
         page = newGroupPage.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
-        Assert.assertTrue(page.getGroupList().contains(groupName), "Group is not created!!");
+        Assert.assertTrue(page.getGroupList().contains(groupName), String.format("Group: %s can not be found", groupName));
        
     }
     

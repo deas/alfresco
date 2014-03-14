@@ -92,7 +92,7 @@ public abstract class AbstractTest
     protected String testName;
     protected String hybridUserName;
     protected String hybridUserPassword;
-    
+    protected static final String UNAME_PASSWORD = "password";
     protected long popupRendertime;
     public static long maxWaitTime_CloudSync = 50000;
     

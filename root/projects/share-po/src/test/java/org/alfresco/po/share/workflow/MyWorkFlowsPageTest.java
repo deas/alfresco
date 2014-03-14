@@ -69,7 +69,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
     {
         uname = "workflow" + System.currentTimeMillis();
         createEnterpriseUser(uname);
-        dashBoardPage = loginAs(uname, "password");
+        dashBoardPage = loginAs(uname, UNAME_PASSWORD);
         workFlow1 = "MyWF-" + System.currentTimeMillis() + "-1";
         workFlow2 = "MyWF-" + System.currentTimeMillis() + "-2";
         dueDate = "17/09/2015";

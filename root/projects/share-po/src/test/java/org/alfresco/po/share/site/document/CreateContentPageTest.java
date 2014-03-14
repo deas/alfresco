@@ -58,7 +58,7 @@ public class CreateContentPageTest extends AbstractDocumentTest
     public void prepare() throws Exception
     {
         createEnterpriseUser(uname);
-        dashBoard = loginAs(uname, "password").render();
+        dashBoard = loginAs(uname, UNAME_PASSWORD).render();
         siteName = "CreateContentPageTest" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }

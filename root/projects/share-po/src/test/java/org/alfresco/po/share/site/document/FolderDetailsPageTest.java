@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.po.share.AbstractTest;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -35,6 +34,8 @@ import org.testng.annotations.Test;
 public class FolderDetailsPageTest extends AbstractTest
 {
 
+
+
     private final Log logger = LogFactory.getLog(this.getClass());
 
     private static String siteName;
@@ -42,6 +43,7 @@ public class FolderDetailsPageTest extends AbstractTest
     private static String folderDescription;
     private static DocumentLibraryPage documentLibPage;
     private FolderDetailsPage folderDetailsPage;
+    private String uname = "fdpt1user" + System.currentTimeMillis();
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -56,9 +58,9 @@ public class FolderDetailsPageTest extends AbstractTest
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";
         folderDescription = String.format("Description of %s", folderName);
-        // String shrarUrl =
-        // "http://127.0.0.1:8081/share/page/site/site1373896284646/folder-details?nodeRef=workspace://SpacesStore/44de4cda-b693-4cd9-a973-0ae25e9bb9d9"
-        ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        createEnterpriseUser(uname);
+        loginAs(uname, UNAME_PASSWORD).render();
+        drone.navigateTo(shareUrl);
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
 
@@ -208,7 +210,7 @@ public class FolderDetailsPageTest extends AbstractTest
             logger.trace("====testDownloadAsZipFolder====");
         }
         Assert.assertTrue(folderDetailsPage.isDownloadAsZipAtTopRight());
-        folderDetailsPage.selectDownloadFolderAsZip("folder").render();
+        //folderDetailsPage.selectDownloadFolderAsZip("folder").render();
     }
 
     /*
