@@ -58,11 +58,6 @@ public class CustomizeSitePageTest extends AbstractSiteDashletTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
-    @AfterClass(groups={"Enterprise4.1", "Enterprise-only"})
-    public void tearDown()
-    {
-        SiteUtil.deleteSite(drone, siteName);
-    }
     
     @Test(groups="Enterprise-only")
     public void selectCustomizeSite() throws Exception
