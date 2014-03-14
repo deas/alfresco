@@ -10,7 +10,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<webdrone.version>2.2-SNAPSHOT</webdrone.version>
+		<webdrone.version>2.4</webdrone.version>
+		<share-po.version>4.3.0-BF-SNAPSHOT</share-po.version>
 		<office.component>libreofficecomponent</office.component>
 		<enable.hybrid>false</enable.hybrid>
 	</properties>
@@ -51,17 +52,22 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.11</version>
+			<version>1.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.11</version>
+			<version>1.7.2</version>
 		</dependency>
 		<dependency>
+		    <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
 			<groupId>org.alfresco</groupId>
 			<artifactId>share-po</artifactId>
-			<version>4.3.0-SNAPSHOT</version>
+			<version>${share-po.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -69,13 +75,6 @@
 			<artifactId>webdrone</artifactId>
 			<version>${webdrone.version}</version>
 		</dependency>
-		<!-- dependency>
-			<groupId>org.alfresco</groupId>
-			<artifactId>webdrone</artifactId>
-			<version>${webdrone.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-			</dependency -->
 		<dependency>
 			<groupId>org.alfresco</groupId>
 			<artifactId>alfresco-benchmark-util</artifactId>
@@ -135,6 +134,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>share-po</artifactId>
+            <version>${share-po.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>		
 		<dependency>
 		<!-- This dependency is necessary for ProcessAPITests processes/{processId}/image -->
 			<groupId>org.alfresco</groupId>

@@ -56,38 +56,18 @@ public class ShareTestProperty
     private final int httpSecurePort;
     private final String mimeTypes;
 
-    public ShareTestProperty(
-            final String shareUrl, 
-            final String gridUrl, 
-            final String username, 
-            final String password, 
-            AlfrescoVersion alfrescoVersion, 
-            String cloudUrlForHybrid, 
-            final String downloadDirectory, 
-            final String googleUserName, 
-            final String googlePassword, 
-            final boolean hybridEnabled,            
-            final String uniqueTestRunName,
-            final String domainFree,
-            final String domainPremium,
-            final String domainHybrid,
-            final String defaultUser,
-            final String uniqueTestDataString,
-            final String adminUsername,
-            final String adminPassword,
-            final String superadminUsername,
-            final String superadminPassword,
-            final int httpSecurePort,
-            final String headerKey,
-            final String mimeTypes
-            )
+    public ShareTestProperty(final String shareUrl, final String gridUrl, final String username, final String password, String alfrescoVersion,
+            String cloudUrlForHybrid, final String downloadDirectory, final String googleUserName, final String googlePassword, final boolean hybridEnabled,
+            final String uniqueTestRunName, final String domainFree, final String domainPremium, final String domainHybrid, final String defaultUser,
+            final String uniqueTestDataString, final String adminUsername, final String adminPassword, final String superadminUsername,
+            final String superadminPassword, final int httpSecurePort, final String headerKey, final String mimeTypes)
     {
         this.shareUrl = shareUrl;
         this.cloudUrlForHybrid = cloudUrlForHybrid;
         this.gridUrl = gridUrl;
         this.username = username;
         this.password = password;
-        this.alfrescoVersion = alfrescoVersion;
+        this.alfrescoVersion = AlfrescoVersion.fromString(alfrescoVersion);
         this.downloadDirectory = downloadDirectory;
         this.googleUserName = googleUserName;
         this.googlePassword = googlePassword;
@@ -176,7 +156,7 @@ public class ShareTestProperty
     {
         return hybridEnabled;
     }
-    
+
     /**
      * @return the uniqueTestRunName
      */
@@ -200,7 +180,7 @@ public class ShareTestProperty
     {
         return domainPremium;
     }
-    
+
     /**
      * @return the domainHybrid
      */
@@ -240,7 +220,7 @@ public class ShareTestProperty
     {
         return adminPassword;
     }
-    
+
     /**
      * @return the headerKey
      */
@@ -248,7 +228,7 @@ public class ShareTestProperty
     {
         return headerKey;
     }
-    
+
     /**
      * @return the adminUsername
      */
@@ -264,7 +244,7 @@ public class ShareTestProperty
     {
         return superadminPassword;
     }
-    
+
     /**
      * @return The Mime Types.
      */

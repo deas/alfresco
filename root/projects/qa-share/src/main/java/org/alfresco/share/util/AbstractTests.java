@@ -34,6 +34,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -220,7 +221,13 @@ public abstract class AbstractTests
     { "contextFileName" })
     public static void setupContext(@Optional("qashare-test-context.xml") String contextFileName)
     {
-        ctx = new ClassPathXmlApplicationContext(new String[] { contextFileName });        
+        List<String> contextXMLList = new ArrayList<String>();
+        contextXMLList.add("webdrone-context.xml");
+        contextXMLList.add("share-po-context.xml");
+        contextXMLList.add("share-po-test-context.xml");
+        contextXMLList.add(contextFileName);
+        ctx = new ClassPathXmlApplicationContext(contextXMLList.toArray(new String[contextXMLList.size()]));
+              
         testProperties = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = testProperties.getShareUrl();
         cloudUrlForHybrid = testProperties.getCloudUrlForHybrid();
