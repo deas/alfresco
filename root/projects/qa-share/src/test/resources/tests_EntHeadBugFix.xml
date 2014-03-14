@@ -7,13 +7,7 @@
 			<exclude name="Hybrid.*" />
 		</run>
 	</groups>
-	<test name="test" verbose="1" parallel="classes"
-		thread-count="1">
-		<classes>
-			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
-		</classes>
-	</test>
-<!-- 	<test name="DeploymentsAPITests" verbose="1" parallel="classes"
+	<test name="DeploymentsAPITests" verbose="1" parallel="classes"
 		thread-count="1">
 		<classes>
 			<class name="org.alfresco.share.api.DeploymentsAPITests" />
@@ -89,5 +83,5 @@
 			</class>
 			<class name="org.alfresco.share.site.document.ManageAspectTest" />
 		</classes>
-	</test> -->
+	</test>
 </suite>
