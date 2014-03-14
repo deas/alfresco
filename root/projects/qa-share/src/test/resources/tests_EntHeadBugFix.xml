@@ -7,13 +7,13 @@
 			<exclude name="Hybrid.*" />
 		</run>
 	</groups>
-	<test name="CommentsAPITests" verbose="1" parallel="classes"
+	<test name="test" verbose="1" parallel="classes"
 		thread-count="1">
 		<classes>
-			<class name="org.alfresco.share.api.CommentsAPITests" />
+			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
 		</classes>
 	</test>
-	<test name="DeploymentsAPITests" verbose="1" parallel="classes"
+<!-- 	<test name="DeploymentsAPITests" verbose="1" parallel="classes"
 		thread-count="1">
 		<classes>
 			<class name="org.alfresco.share.api.DeploymentsAPITests" />
@@ -50,7 +50,7 @@
 		</classes>
 	</test>
 
-	<!-- Merged Already -->
+	Merged Already
 	<test name="UserLoginAndDashBoardTest" verbose="1" parallel="classes"
 		thread-count="1">
 		<classes>
@@ -89,5 +89,5 @@
 			</class>
 			<class name="org.alfresco.share.site.document.ManageAspectTest" />
 		</classes>
-	</test>
+	</test> -->
 </suite>

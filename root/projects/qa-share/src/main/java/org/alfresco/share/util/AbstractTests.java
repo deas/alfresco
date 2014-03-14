@@ -227,7 +227,7 @@ public abstract class AbstractTests
         contextXMLList.add("share-po-test-context.xml");
         contextXMLList.add(contextFileName);
         ctx = new ClassPathXmlApplicationContext(contextXMLList.toArray(new String[contextXMLList.size()]));
-              
+        
         testProperties = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = testProperties.getShareUrl();
         cloudUrlForHybrid = testProperties.getCloudUrlForHybrid();
