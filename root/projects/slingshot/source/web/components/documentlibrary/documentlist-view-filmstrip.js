@@ -52,7 +52,8 @@
       HEADER_HEIGHT = 50,
       SHARE_DOCLIB_HEADER_FOOTER_HEIGHT = 315,
       FILMSTRIP_WINDOW_RESIZE_CHECK_TIME = 50,
-      FILMSTRIP_WINDOW_RESIZE_MIN_TIME = 200;
+      FILMSTRIP_WINDOW_RESIZE_MIN_TIME = 200,
+      CAROUSEL_CONTENT_MIN_HEIGHT = 372;
       MIMETYPE_PREFIX_IMAGE = "image/";
    
    /**
@@ -397,6 +398,18 @@
                webPreviewDivs[0].style.height = previewHeight + 'px';
             }
          }
+
+          // MNT-10678 fix. Set CAROUSEL_CONTENT_MIN_HEIGHT according web flash preview height.
+          var webPreviewersRealDivs = Dom.getElementsByClassName('real', 'div'),
+              itemHeaderHeight = Dom.get(scope.id + "-item-header-yui-rec50").offsetHeight,
+              webPreviewerHeight;
+
+          if (webPreviewersRealDivs.length !== 0)
+          {
+              webPreviewerHeight = webPreviewersRealDivs[0].offsetHeight;
+
+              CAROUSEL_CONTENT_MIN_HEIGHT = webPreviewerHeight + itemHeaderHeight;
+          }
       }, this);
    };
    
@@ -616,6 +629,14 @@
          viewRendererInstance.resizeView(scope, sRequest, oResponse, oPayload);
       };
       this.setupWindowResizeListener();
+
+       // MNT-10678 fix. Fix for small screen resolutions. Setting up the minimal height for Carousel Content div.
+       var carouselContentDivs = Dom.getElementsByClassName('yui-carousel-element');
+       carouselContentDivsHeight = carouselContentDivs[0].style.minHeight = CAROUSEL_CONTENT_MIN_HEIGHT + "px";
+
+       // hide scrol panel for the carousel element when it's hidden.
+       var filmstripNavDiv = Dom.get(scope.id+ '-filmstrip');
+       filmstripNavDiv.style.overflow = "hidden";
       
       var fadeIn = new YAHOO.util.Anim(
             container, { opacity: {from: 0, to: 1 } }, 0.4, YAHOO.util.Easing.easeOut);

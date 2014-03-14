@@ -1048,6 +1048,14 @@
          var galleryItemDetailDiv = Dom.getElementsByClassName(galleryViewRenderer.infoPanelClassName, null, galleryItem)[0];
          
          Dom.setStyle(galleryItemDetailDiv, 'display', '');
+
+          // MNT-10678 fix. Set the heigher z-index for galleryItemDetailDiv panel.
+          // Make the panel in front of other elements. I.e. in filmstrip view make galleryItemDetailDiv panel in front
+          // of the 'Nex' navigation button.
+         var panelOldZIndex = galleryItemDetailDiv.panel.cfg.getProperty('zIndex'),
+             panelNewZIndex = 3;
+         galleryItemDetailDiv.panel.cfg.setProperty("zIndex", panelNewZIndex);
+
          galleryItemDetailDiv.panel.render();
          galleryItemDetailDiv.panel.show(galleryItemDetailDiv.panel);
          
@@ -1057,6 +1065,9 @@
             galleryViewRenderer.onEventUnhighlightRow(scope, event, galleryItem);
             galleryItemDetailDiv.panel.hide(galleryItemDetailDiv.panel);
             Dom.setStyle(galleryItemDetailDiv, 'display', 'none');
+
+            // set the previous z-index for galleryItemDetailDiv panel.
+            galleryItemDetailDiv.panel.cfg.setProperty("zIndex", panelOldZIndex);
          };
          
          // Initial after-click hide timer - 4x the mouseOut timer delay
