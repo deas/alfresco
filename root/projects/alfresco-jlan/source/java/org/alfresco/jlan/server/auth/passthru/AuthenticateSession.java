@@ -1005,7 +1005,7 @@ public class AuthenticateSession {
    * @exception IOException If a network error occurs
    * @exception SMBException If a CIFS error occurs
    */
-  public final void doSessionSetup(String domain, String userName, String wksName,
+  public void doSessionSetup(String domain, String userName, String wksName,
           byte[] ascPwd, byte[] uniPwd, int vcNum)
     throws IOException, SMBException
   {
