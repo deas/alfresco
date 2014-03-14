@@ -22,7 +22,7 @@ function main(siteType)
          i, ii, j, jj;
       
       // Create javascript objects from the server response
-      sites = eval('(' + result + ')');
+      sites = JSON.parse(result);
       
       if (sites.length > 0)
       {

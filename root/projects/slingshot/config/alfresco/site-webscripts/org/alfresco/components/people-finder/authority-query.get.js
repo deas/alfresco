@@ -130,7 +130,7 @@ function main()
          result = connector.get(mapping.url);
          if (result.status == 200)
          {
-            data = eval('(' + result + ')');
+            data = JSON.parse(result);
             dataObj = (mapping.rootObject)? data[mapping.rootObject] : data;
             for (j = 0, jj = dataObj.length; j < jj; j++)
             {

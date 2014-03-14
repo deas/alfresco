@@ -11,7 +11,7 @@ function doPostCall(url, paramsJSON)
                      "status: " + result.status + ", response: " + result.response);
       return null;
    }
-   return eval('(' + result.response + ')');
+   return JSON.parse(result.response);
 };
 
 
@@ -28,7 +28,7 @@ function doPutCall(url, paramsJSON)
                      "status: " + result.status + ", response: " + result.response);
       return null;
    }
-   return eval('(' + result.response + ')');
+   return JSON.parse(result.response);
 };
 
 
@@ -45,5 +45,5 @@ function doGetCall(url)
                      "status: " + result.status + ", response: " + result.response);
       return null;
    }
-   return eval('(' + result.response + ')');
+   return JSON.parse(result.response);
 };

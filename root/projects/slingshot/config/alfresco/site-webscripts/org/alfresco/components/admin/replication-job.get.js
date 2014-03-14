@@ -9,7 +9,7 @@ function main()
       var response = remote.call("/api/replication-definition/" + encodeURIComponent(jobName));
       if (response.status == 200)
       {
-         var json = eval('(' + response + ')');
+         var json = JSON.parse(response);
          jobDetail = json.data;
       }
    }

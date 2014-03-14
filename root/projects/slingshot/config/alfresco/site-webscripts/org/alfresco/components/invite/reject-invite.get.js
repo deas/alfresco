@@ -36,7 +36,7 @@ function main()
    if (json.status == 200)
    {
       // Create javascript objects from the repo response
-      data = eval('(' + json + ')');
+      data = JSON.parse(json);
       model.invite = data.invite;
    }
    else

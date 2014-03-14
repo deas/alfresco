@@ -39,7 +39,7 @@ switch (resource)
 
       var yahooServiceUrl = "http://search.yahooapis.com/WebSearchService/V1/relatedSuggestion?query="+query+"&appid="+appid+"&output=json";
       var connector = remote.connect("http");
-      var jsonStr = eval("(" + connector.call(yahooServiceUrl) + ")");
+      var jsonStr = JSON.parse(connector.call(yahooServiceUrl));
 
       var suggestion;
       for each (suggestion in jsonStr.ResultSet.Result)

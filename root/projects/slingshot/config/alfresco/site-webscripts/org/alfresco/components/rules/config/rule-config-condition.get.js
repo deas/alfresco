@@ -119,7 +119,7 @@ function main()
       var result = connector.get("/api/properties?name=" + propertiesParam.join("&name="));
       if (result.status == 200)
       {
-         var properties = eval('(' + result + ')');
+         var properties = JSON.parse(result);
          for (var i = 0, il = properties.length; i < il; i++)
          {
             property = properties[i];

@@ -100,7 +100,7 @@ function doPostCall(theUrl, paramsJSON)
    var result = connector.post(theUrl, paramsJSON, "application/json");
    if (result.status == status.STATUS_OK)
    {
-      return eval('(' + result.response + ')');
+      return JSON.parse(result.response);
    }
    else
    {
@@ -119,7 +119,7 @@ function doPutCall(theUrl, paramsJSON)
    var result = connector.put(theUrl, paramsJSON, "application/json");
    if (result.status == status.STATUS_OK)
    {
-      return eval('(' + result.response + ')');
+      return JSON.parse(result.response);
    }
    else
    {
@@ -138,7 +138,7 @@ function doGetCall(theUrl)
    var result = connector.get(theUrl);
    if (result.status == status.STATUS_OK)
    {
-      return eval('(' + result.response + ')');
+      return JSON.parse(result.response);
    }
    else
    {

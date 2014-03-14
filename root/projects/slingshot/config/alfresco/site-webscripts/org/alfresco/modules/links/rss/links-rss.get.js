@@ -19,7 +19,7 @@ function main()
       return null;
    }
 
-   data = eval('(' + result.response + ')');
+   data = JSON.parse(result.response);
    model.items = data.items;
 
    // set additional properties

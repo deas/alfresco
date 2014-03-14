@@ -15,7 +15,7 @@ function main()
          json = remote.call("/api/sites/" + stringUtils.urlEncode(siteId) + "/memberships/" + stringUtils.urlEncode(user.name));
       if (json.status == 200)
       {
-         obj = eval('(' + json + ')');
+         obj = JSON.parse(json);
       }
       if (obj)
       {

@@ -10,7 +10,7 @@ function main()
    var result = remote.call("/api/admin/usage");
    if (result.status.code == status.STATUS_OK)
    {
-      usage = eval('(' + result + ')');
+      usage = JSON.parse(result);
    }
    
    model.usage = usage;

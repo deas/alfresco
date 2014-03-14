@@ -246,7 +246,7 @@ var CalendarScriptHelper = (function()
          var result = connector.get(uri);
          if (result.status == status.STATUS_OK) 
          {
-            var eventList = eval('(' + result.response + ')').events;
+            var eventList = JSON.parse(result.response).events;
             return eventList;
          }
       },
@@ -346,7 +346,7 @@ var CalendarScriptHelper = (function()
       isUserPermittedToCreateEvents: function()
       {
          var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name)),
-            membership = eval('(' + json + ')');
+            membership = JSON.parse(json);
 
          // If the user isn't a member of the site, the response won't have role.
          return (membership.role && membership.role !== "SiteConsumer")? true : false;

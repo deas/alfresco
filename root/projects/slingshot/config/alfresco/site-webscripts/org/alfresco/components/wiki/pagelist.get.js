@@ -12,7 +12,7 @@ function main()
    var result = connector.get(uri);
    if (result.status.code == status.STATUS_OK)
    {
-      model.pageList = eval('(' + result.response + ')');
+      model.pageList = JSON.parse(result.response);
    }
    else
    {

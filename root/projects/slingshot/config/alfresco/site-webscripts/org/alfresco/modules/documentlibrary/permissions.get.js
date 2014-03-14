@@ -4,7 +4,7 @@ function getIsSitePublic()
    var json = remote.call("/api/sites/" + args.site);
    if (json.status == status.STATUS_OK)
    {
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          isPublic = obj.isPublic;
@@ -19,7 +19,7 @@ function getRoles()
    var json = remote.call("/api/sites/" + args.site + "/roles");
    if (json.status == status.STATUS_OK)
    {
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          roles = obj;

@@ -18,7 +18,7 @@ function main()
    model.numPeople = 0;
    if (result.status == 200)
    {
-      var people = eval('(' + result + ')');
+      var people = JSON.parse(result);
       model.data = people;
       model.numPeople = people.people.length;
    }
@@ -27,7 +27,7 @@ function main()
    model.privatelist = false;
    if (result.status == 200)
    {
-      model.privatelist = eval('(' + result + ')')['private'];
+      model.privatelist = JSON.parse(result)['private'];
    }
 
    // Widget instantiation metadata...

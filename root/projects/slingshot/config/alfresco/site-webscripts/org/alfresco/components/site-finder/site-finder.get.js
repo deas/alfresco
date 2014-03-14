@@ -6,7 +6,7 @@ function main()
 
    if (result.status == status.STATUS_OK)
    {
-      var json = eval('(' + result.response + ')');
+      var json = JSON.parse(result.response);
       inviteData = json.data;
    }
    

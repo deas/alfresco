@@ -6,7 +6,7 @@ function main()
 {
    // Get clients json request as a "normal" js object literal
    var clientRequest = json.toString();
-   var clientJSON = eval('(' + clientRequest + ')');
+   var clientJSON = JSON.parse(clientRequest);
    
    // The site and pages we are modifiying
    var siteId = clientJSON.siteId;

@@ -37,7 +37,7 @@ function inviteUser(site)
    var connector = remote.connect("alfresco");
    var result = connector.post("/api/sites/"+stringUtils.urlEncode(site)+"/invitations",params, "application/json");
 
-   return eval('('+ result +')');   
+   return JSON.parse(result);   
 }
 
 

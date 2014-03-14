@@ -10,7 +10,7 @@ function main()
    // get the membership info for the current user in the current site
    theUrl = "/api/sites/" + siteId + "/memberships/" + encodeURIComponent(user.name);
    json = remote.call(theUrl);
-   membership = eval('(' + json + ')');
+   membership = JSON.parse(json);
    
    // add the role to the model
    model.currentUserRole = membership.role ? membership.role : "";
@@ -18,7 +18,7 @@ function main()
    // get the roles available in the current site
    theUrl = "/api/sites/" + siteId + "/roles";
    json = remote.call(theUrl);
-   data = eval('(' + json + ')');
+   data = JSON.parse(json);
    
    // add all roles except "None"
    model.siteRoles = [];

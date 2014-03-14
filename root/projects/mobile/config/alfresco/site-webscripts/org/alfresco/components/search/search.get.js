@@ -17,7 +17,7 @@ function getDocType(doc)
 function getContentSearchResults(term)
 {
   var data  = remote.call("/slingshot/search?term="+stringUtils.urlEncode(term)+"&site=&container=&maxResults="+maxResults);
-  data = eval('('+ data+')');
+  data = JSON.parse(data);
   for (var i=0,len=data.items.length;i<len;i++)
   {
     var doc = data.items[i];
@@ -39,13 +39,13 @@ function getContentSearchResults(term)
 function getSiteResults(term)
 {
   var data =remote.call("/api/sites?size=" + maxResults +"&nf=" + stringUtils.urlEncode(term));
-  return eval('('+ data+')');
+  return JSON.parse(data);
 }
 
 function getPeopleResults(term)
 {
   var data = remote.call("/api/people?filter="+ stringUtils.urlEncode(term) +"&maxResults=" +maxResults)
-  return eval('('+ data+')');  
+  return JSON.parse(data);  
 }
 
 var query = page.url.args.term;

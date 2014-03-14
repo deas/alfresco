@@ -37,7 +37,7 @@ function getSiteTitle()
       result = remote.call("/api/sites/" + encodeURIComponent(siteId));
       if (result.status == 200 && result != "{}")
       {
-         response = eval('(' + result + ')');
+         response = JSON.parse(result);
          siteTitle = response.title;
          if (typeof siteTitle != "string")
          {
@@ -107,7 +107,7 @@ function getLicenseInfo()
       var result = remote.call("/api/admin/usage");
       if (result.status.code == status.STATUS_OK)
       {
-         usage = eval('(' + result + ')');
+         usage = JSON.parse(result);
          // if warnings or errors are present, display them to the admin or user
          // admin sees messages if WARN_ADMIN, WARN_ALL, LOCKED_DOWN
          // users see messages if WARN_ALL, LOCKED_DOWN

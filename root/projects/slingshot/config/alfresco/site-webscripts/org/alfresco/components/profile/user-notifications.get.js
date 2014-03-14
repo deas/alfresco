@@ -9,7 +9,7 @@ function main()
    var result = remote.call("/api/people/" + encodeURIComponent(user.id));
    if (result.status == 200)
    {
-      var person = eval('(' + result + ')');
+      var person = JSON.parse(result);
       // we are interested in the "cm:emailFeedDisabled" property
       emailFeedDisabled = person.emailFeedDisabled;
    }

@@ -18,7 +18,7 @@ function main()
    if (result.status.code == status.STATUS_OK)
    {
       // Strip out possible malicious code
-      var posts = eval("(" + result.response + ")");
+      var posts = JSON.parse(result.response);
       if (posts && posts.items) {
          for (var i = 0, il = posts.items.length; i < il; i++)
          {

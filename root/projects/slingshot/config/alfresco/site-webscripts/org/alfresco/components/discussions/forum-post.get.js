@@ -8,7 +8,7 @@ function main()
    if (result.status.code == status.STATUS_OK)
    {
       // Strip out possible malicious code
-      var post = eval("(" + result.response + ")");
+      var post = JSON.parse(result.response);
       if (post && post.item && post.item.content) {
          post.item.content = stringUtils.stripUnsafeHTML(post.item.content);
       }

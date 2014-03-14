@@ -5,7 +5,7 @@ function getSites()
 
    if (json.status == 200)
    {
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          sites = obj;

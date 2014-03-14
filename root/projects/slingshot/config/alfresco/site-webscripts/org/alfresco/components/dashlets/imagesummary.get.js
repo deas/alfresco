@@ -12,7 +12,7 @@ function main()
        json = remote.call("/api/sites/" + siteId + "/memberships/" + encodeURIComponent(user.name));
    if (json.status == 200)
    {
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          userIsSiteManager = (obj.role == "SiteManager");
@@ -24,7 +24,7 @@ function main()
    json = remote.call("/api/sites/" + siteId);
    if (json.status == 200)
    {
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          siteTitle = obj.title;

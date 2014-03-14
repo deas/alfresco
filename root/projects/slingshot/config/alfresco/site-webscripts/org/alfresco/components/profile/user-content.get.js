@@ -24,7 +24,7 @@ function main()
    if (result.status == 200)
    {
       // Create javascript objects from the server response
-      var data = eval('(' + result + ')');
+      var data = JSON.parse(result);
       
       ['created','modified'].forEach(function(type)
       {

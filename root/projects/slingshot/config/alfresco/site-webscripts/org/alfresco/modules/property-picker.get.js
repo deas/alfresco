@@ -8,7 +8,7 @@ function main()
    var templates = [];
    if (result.status == 200)
    {
-      model.transientContentProperties = jsonUtils.toJSONString(eval('(' + result + ')').data.values);
+      model.transientContentProperties = jsonUtils.toJSONString(JSON.parse(result).data.values);
    }
 
    // Load filter for aspects, types and property evalurators that shall be visible

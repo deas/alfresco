@@ -3,7 +3,7 @@
 function getDocDetails(nodeRef) 
 {
    var data = remote.call('/slingshot/doclib/doclist/documents/node/' + nodeRef.replace(":/", "") + '?filter=node');
-   data = eval('(' + data + ')');
+   data = JSON.parse(data);
    var imgTypes = 'png,gif,jpg,jpeg,tiff,bmp';
    for (var i=0,len=data.items.length; i<len; i++)
    {

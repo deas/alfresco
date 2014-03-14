@@ -3,7 +3,7 @@ function main()
    // Call the repo to collect server meta-data
    var conn = remote.connect("alfresco"),
       res = conn.get("/api/server"),
-      json = eval('(' + res + ')');
+      json = JSON.parse(res);
 
 
    // Create model and defaults

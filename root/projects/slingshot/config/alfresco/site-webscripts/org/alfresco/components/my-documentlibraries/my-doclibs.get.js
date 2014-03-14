@@ -28,7 +28,7 @@ function main()
    if (result.status == 200)
    {
       // Create javascript objects from the server response
-      mySites = eval('(' + result + ')');
+      mySites = JSON.parse(result);
       for (i = 0, ii = mySites.length; i < ii; i++)
       {
          objMySites[mySites[i].shortName] = true;
@@ -42,7 +42,7 @@ function main()
    if (result.status == 200)
    {
       // Create javascript objects from the server response
-      publicSites = eval('(' + result + ')');
+      publicSites = JSON.parse(result);
       for (i = 0, ii = publicSites.length; i < ii; i++)
       {
          if (!objMySites.hasOwnProperty(publicSites[i].shortName))

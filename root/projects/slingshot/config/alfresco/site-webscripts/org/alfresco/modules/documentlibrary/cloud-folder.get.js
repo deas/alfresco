@@ -10,7 +10,7 @@ function main()
    // Check and parse the response
    if (networkResult.status.code === 200)
    {
-      var response = eval('(' + networkResult + ')');
+      var response = JSON.parse(networkResult);
       var networks = [];
 
       if (response.multiTenancyEnabled)

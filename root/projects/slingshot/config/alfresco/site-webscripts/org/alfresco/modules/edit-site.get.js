@@ -10,7 +10,7 @@ function main()
    if (json.status == 200)
    {
       // Create javascript object from the repo response
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          profile = obj;

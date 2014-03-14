@@ -16,7 +16,7 @@ function main()
       // Check and parse the response
       if (connectionResult.status == 200)
       {
-         var connectionSettings = eval('(' + connectionResult + ')');
+         var connectionSettings = JSON.parse(connectionResult);
          if (connectionSettings.known)
          {
             model.cloudConnected = true;
@@ -31,7 +31,7 @@ function main()
          var personResult = remote.call("/api/people/" + encodeURIComponent(user.id));
          if (personResult.status == 200)
          {
-            var person = eval('(' + personResult + ')');
+            var person = JSON.parse(personResult);
             model.email = person.email;
          }
       }

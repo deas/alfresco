@@ -58,7 +58,7 @@ function main()
       }
       else
       {
-         var repoJSON = eval('(' + result + ')');
+         var repoJSON = JSON.parse(result);
          if (repoJSON.success !== undefined)
          {
             model.success = repoJSON.success;

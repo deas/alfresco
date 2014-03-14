@@ -17,14 +17,14 @@ function main()
    var following = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/following/count");
    if (following.status == 200)
    {
-      model.following = eval('(' + following + ')').count;
+      model.following = JSON.parse(following).count;
 
       if (model.activeUserProfile)
       {
          var followers = remote.call("/api/subscriptions/" + encodeURIComponent(userId) + "/followers/count");
          if(followers.status == 200)
          {
-            model.followers = eval('(' + followers + ')').count;
+            model.followers = JSON.parse(followers).count;
          }
 
          model.syncEnabled = (syncMode.getValue() != "OFF");

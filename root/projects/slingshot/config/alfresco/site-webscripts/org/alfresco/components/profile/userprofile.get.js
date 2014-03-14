@@ -50,7 +50,7 @@ function main()
                                   "application/json");
       if (result.status == 200)
       {
-         model.follows = eval('(' + result + ')')[0][page.url.templateArgs["userid"]];
+         model.follows = JSON.parse(result)[0][page.url.templateArgs["userid"]];
       }
    }
    

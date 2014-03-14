@@ -9,7 +9,7 @@ function main()
    result = connector.get("/api/node/" + page.url.args.nodeRef.replace("://", "/") + "/ruleset");
    if (result.status == 200)
    {
-      var ruleset = eval('(' + result + ')').data;
+      var ruleset = JSON.parse(result).data;
       if (!ruleset)
       {
          ruleset = {};
@@ -47,7 +47,7 @@ function loadDisplayInfo(connector, nodeRef)
    var result = connector.get(url);
    if (result.status == 200)
    {
-      var location = eval('(' + result + ')').item.location;
+      var location = JSON.parse(result).item.location;
       return (
       {
          nodeRef: nodeRef,

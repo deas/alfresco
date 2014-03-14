@@ -40,7 +40,7 @@ function getWorkflowDefinitions()
       result = connector.get("/api/workflow-definitions?exclude=" + hiddenWorkflowNames.join(","));
    if (result.status == 200)
    {
-      var workflows = eval('(' + result + ')').data;
+      var workflows = JSON.parse(result).data;
       workflows.sort(sortByTitle);
       return workflows;
    }

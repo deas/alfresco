@@ -908,7 +908,7 @@ var surfDoclist_main = function surfDoclist_main()
 
    if (result.status == 200)
    {
-      var obj = eval('(' + result + ')');
+      var obj = JSON.parse(result);
       if (obj && (obj.item || obj.items))
       {
          DocList.processResult(obj,

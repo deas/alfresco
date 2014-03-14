@@ -22,7 +22,7 @@ function main()
          result = connector.get("/cloud/sites/shareUrl?nodeRef=" + encodeURIComponent(remoteNodeInfo.remoteNodeRef) + "&network=" + remoteNodeInfo.remoteNetworkId);
       if (result.status == 200)
       {
-         var resultObj = eval('(' + result + ')');
+         var resultObj = JSON.parse(result);
          if (resultObj.url)
          {
             status.code = 303;

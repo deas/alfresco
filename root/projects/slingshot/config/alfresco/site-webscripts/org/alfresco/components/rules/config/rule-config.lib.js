@@ -83,7 +83,7 @@ function loadRuleConfigDefinitions(xmlConfig)
       var result = connector.get(configDefinitionsNode.@webscript.toString());
       if (result.status == 200)
       {
-         var ruleConfigDefinitions = eval('(' + result + ')').data;
+         var ruleConfigDefinitions = JSON.parse(result).data;
 
          // Remove configuration definitions that NOT shall show up in the ui
          if (configDefinitionsNode.remove)
@@ -130,7 +130,7 @@ function loadRuleConstraints(xmlConfig)
       var result = connector.get(constraintsNode.@webscript.toString());
       if (result.status == 200)
       {
-         var constraintsArr = eval('(' + result + ')').data,
+         var constraintsArr = JSON.parse(result).data,
             constraintsObj = {},
             values;
          for (var i = 0, il = constraintsArr.length, constraint; i < il; i++)

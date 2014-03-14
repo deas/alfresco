@@ -12,7 +12,7 @@ if (nodeRef == null || nodeRef.length == 0)
 
 // Call the repo for metadata
 var json = remote.call("/api/metadata?nodeRef=" + nodeRef)
-var node = eval('(' + json + ')');
+var node = JSON.parse(json);
 
 /**
  * If no viewer is configured for the nodes mime-type display

@@ -38,7 +38,7 @@ function main()
    {
       // redirect to the site dashboard
       model.doRedirect = true;
-      data = eval('(' + result.response + ')');
+      data = JSON.parse(result.response);
       model.siteShortName = data.siteShortName;
    }
 }

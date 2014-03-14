@@ -75,15 +75,11 @@ Surf.Component.getSourceContentData = function(modelObject)
 	if(content != null)
 	{
 		var metadata = content.json;
-		obj = eval('(' + metadata + ')');
+		obj = JSON.parse(metadata);
 	}
 	
 	return obj;
 }
-
-
-
-
 
 
 Surf.Component.bind = function(modelObject)

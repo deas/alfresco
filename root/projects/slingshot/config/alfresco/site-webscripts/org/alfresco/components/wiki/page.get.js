@@ -30,7 +30,7 @@ function main()
       // the 404 response means we can create a new page for the title
       if (result.status.code == status.STATUS_OK || result.status.code == status.STATUS_NOT_FOUND)
       {
-         var response = eval('(' + result.response + ')'),
+         var response = JSON.parse(result.response),
             myConfig = new XML(config.script);
          
          if (response.pagetext)

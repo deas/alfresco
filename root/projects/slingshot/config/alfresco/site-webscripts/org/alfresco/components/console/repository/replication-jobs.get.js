@@ -12,7 +12,7 @@ function main()
 
    if (response.status == 200)
    {
-      var json = eval('(' + response + ')'),
+      var json = JSON.parse(response),
          parent = json.data.parent;
 
       targetGroupPath = "/" + parent.displayPath.split("/").slice(2).join("/") + "/" + parent.name;

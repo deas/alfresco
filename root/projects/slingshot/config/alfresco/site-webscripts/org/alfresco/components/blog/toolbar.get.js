@@ -12,7 +12,7 @@ function main()
 
    // Call the repo to get the permissions for the user for this blog
    var result = remote.call("/api/blog/site/" + page.url.templateArgs.site + "/" + (template.properties.container ? template.properties.container : "blog"));
-   var obj = eval('(' + result + ')');
+   var obj = JSON.parse(result);
    if (result.status == 200)
    {
       // Prepare the model for the template

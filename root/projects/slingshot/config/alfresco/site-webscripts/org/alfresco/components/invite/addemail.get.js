@@ -2,7 +2,7 @@ function main()
 {
    // get details of the authentication chain
    var res = remote.call("/api/authentication");
-   var json = eval('(' + res + ')');
+   var json = JSON.parse(res);
 
    model.allowEmailInvite = json.data.creationAllowed;
 

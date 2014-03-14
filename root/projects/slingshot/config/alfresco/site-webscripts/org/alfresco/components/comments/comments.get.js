@@ -13,7 +13,7 @@ function main()
    if (result.status.code == status.STATUS_OK)
    {
       // Strip out possible malicious code
-      var comments = eval("(" + result.response + ")");
+      var comments = JSON.parse(result.response);
       if (comments && comments.items) {
          for (var i = 0, il = comments.items.length; i < il; i++)
          {

@@ -45,7 +45,7 @@ function getNodeMetadata(proxy, api, nodeRef)
       node;
    if (result.status == 200)
    {
-      var nodeMetadata = eval('(' + result + ')');
+      var nodeMetadata = JSON.parse(result);
       node = {};
       node.name = nodeMetadata.name || nodeMetadata.title;
       node.mimeType = nodeMetadata.mimetype;

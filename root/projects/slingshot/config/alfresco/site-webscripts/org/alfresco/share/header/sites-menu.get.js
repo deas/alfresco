@@ -153,7 +153,7 @@ function getSitesMenuData() {
    if (result.status == 200)
    {
       // Create JavaScript objects from the server response
-      var sites = eval('(' + result + ')'), site;
+      var sites = JSON.parse(result), site;
       if (sites.length != 0)
       {
          // Iterate over the list and construct the favourites list...

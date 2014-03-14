@@ -25,12 +25,12 @@ function main()
    if (result.status == 200)
    {
       // Create javascript objects from the server response
-      model.sites = eval('(' + result + ')');
+      model.sites = JSON.parse(result);
       
       result = remote.call("/api/activities/feed/controls");
       if (result.status == 200)
       {
-         var feedControls = eval('(' + result + ')');
+         var feedControls = JSON.parse(result);
          for(var i = 0; i < feedControls.length; i++)
          {
             model.feedControls.push(feedControls[i].siteId);

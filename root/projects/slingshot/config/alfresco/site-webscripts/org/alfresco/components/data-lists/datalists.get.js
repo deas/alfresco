@@ -24,7 +24,7 @@ function getListTypes()
    
    if (result.status == 200)
    {
-      var classes = eval('(' + result + ')'),
+      var classes = JSON.parse(result),
          subclass;
       
       for (var i = 0, ii = classes.length; i < ii; i++)

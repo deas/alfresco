@@ -6,7 +6,7 @@ function main()
           result = remote.call("/api/attachments?nodeRef=" + args.nodeRef);
       if (result.status == 200)
       {
-         attachmentsAssocs = eval('(' + result + ')');
+         attachmentsAssocs = JSON.parse(result);
       }
       model.attachmentsAssocs = attachmentsAssocs;      
    }

@@ -8,7 +8,7 @@ function main()
 	{
 		model.nodeRef = nodeRef;
 
-		var detailsObj = eval( '(' + result + ')' );
+		var detailsObj = JSON.parse(result);
 		if (detailsObj.data)
 		{
 			model.translationData = detailsObj.data;

@@ -36,7 +36,7 @@ function main()
       return null;
    }
    
-   var data = eval('(' + result.response + ')');
+   var data = JSON.parse(result.response);
    model.items = data.items;
 }
 

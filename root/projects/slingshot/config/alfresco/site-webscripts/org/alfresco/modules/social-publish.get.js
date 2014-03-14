@@ -7,7 +7,7 @@ function getDocumentChannels(nodeRef)
    {
       AlfrescoUtil.error(result.status, 'Could not load publishing channels');
    }
-   return eval('(' + result + ')').data;
+   return JSON.parse(result).data;
 }
 
 function main() 

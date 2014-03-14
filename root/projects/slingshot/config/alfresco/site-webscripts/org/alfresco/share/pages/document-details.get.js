@@ -63,25 +63,13 @@ if (socialLinksConfig !== null)
    }
 }
 
-
-// function getNode(nodeRef) {
-//    var nodeJson = {};
-//    var result = remote.connect("alfresco").get("/slingshot/doclib2/node/" + nodeRef.replace(/:\//g, ""));
-//    if (result.status == 200)
-//    {
-//       nodeJson = eval('(' + result + ')');
-//    }
-//    return nodeJson;
-// }
-
 function getNodeMetadata(proxy, api, nodeRef)
 {
-
    var result = remote.connect(proxy).get("/" + api + "/node/" + nodeRef.replace(/:\//g, "") + "/metadata"),
       node;
    if (result.status == 200)
    {
-      var nodeMetadata = eval('(' + result + ')');
+      var nodeMetadata = JSON.parse(result);
       node = {};
       node.name = nodeMetadata.name || nodeMetadata.title;
       node.mimeType = nodeMetadata.mimetype;
@@ -91,9 +79,6 @@ function getNodeMetadata(proxy, api, nodeRef)
    }
    return node;
 }
-
-// // Set the group from the component property...
-// model.dependencyGroup =  (args.dependencyGroup != null) ? args.dependencyGroup : "web-preview";
 
 // Check to see that Node information has been included in the URL...
 // Otherwise there will be nothing to display...
@@ -110,9 +95,6 @@ if (page.url.templateArgs.store_type != null &&
    });
    if (nodeMetadata)
    {
-      // var jsonNode = getNode(nodeRef);
-
-      
       // Get the actions for the node...
       var actions = [];
       for (var i=0; i<jsonNode.item.actions.length; i++)

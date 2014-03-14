@@ -7,7 +7,7 @@ function getDocumentWorkflows(nodeRef)
    {
       AlfrescoUtil.error(result.status, 'Could not load document workflows for ' + nodeRef);
    }
-   return eval('(' + result + ')').data;
+   return JSON.parse(result).data;
 }
 
 function main()

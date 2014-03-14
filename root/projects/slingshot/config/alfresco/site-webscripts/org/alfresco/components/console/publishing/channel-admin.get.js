@@ -14,7 +14,7 @@ function main()
 	      return null;
 	   }
 	   
-	   var data = eval('(' + result.response + ')');
+	   var data = JSON.parse(result.response);
 	   model.channelTypes = data.data;
 	   
 	   // Widget instantiation metadata...

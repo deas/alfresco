@@ -14,7 +14,7 @@ function main()
    var clientRequest = json.toString();
    
    // Convert client json request to a usable js object to retrieve site preset name
-   var clientJSON = eval('(' + clientRequest + ')');
+   var clientJSON = JSON.parse(clientRequest);
    
    // Call the repo to create the st:site folder structure
    var conn = remote.connect("alfresco");
@@ -25,7 +25,7 @@ function main()
    }
    else
    {
-      var repoJSON = eval('(' + repoResponse + ')');
+      var repoJSON = JSON.parse(repoResponse);
       // Check if we got a positive result from create site
       if (repoJSON.shortName)
       {

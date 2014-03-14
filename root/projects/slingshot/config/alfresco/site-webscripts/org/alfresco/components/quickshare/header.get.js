@@ -19,7 +19,7 @@ function main()
       var result = remote.connect("alfresco").get("/api/internal/shared/node/" + encodeURIComponent(shareId) + "/read");
       if (result.status == 200)
       {
-         var nodeMetadata = eval('(' + result + ')');
+         var nodeMetadata = JSON.parse(result);
          if (nodeMetadata.canRead == true)
          {
             model.linkButtons.push({

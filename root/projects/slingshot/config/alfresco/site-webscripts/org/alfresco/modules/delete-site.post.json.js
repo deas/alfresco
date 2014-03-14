@@ -1,7 +1,7 @@
 function main()
 {
    // parse the input json into an object - to retrieve shortName
-   var reqJSON = eval('(' + json.toString() + ')');
+   var reqJSON = JSON.parse(json.toString());
    
    // collect up objects to delete later - as the repo removes component
    // definitions and we cannot retrieve them after
@@ -12,7 +12,7 @@ function main()
    // Call the repo to delete the site
    var conn = remote.connect("alfresco"),
        res = conn.del("/api/sites/" + reqJSON.shortName),
-       resJSON = eval('(' + res + ')');
+       resJSON = JSON.parse(res);
    
    // Check if we got a positive result
    if (resJSON.success)

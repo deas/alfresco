@@ -14,7 +14,7 @@ function main()
       if (json.status == 200)
       {
          // Create javascript objects from the repo response
-         var obj = eval('(' + json + ')');
+         var obj = JSON.parse(json);
          if (obj)
          {
             siteTitle = (obj.title.length != 0) ? obj.title : obj.shortName;

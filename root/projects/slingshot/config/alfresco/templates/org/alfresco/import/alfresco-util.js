@@ -143,7 +143,7 @@ var AlfrescoUtil =
       result = remote.connect("alfresco").get(url);
       if (result.status == 200)
       {
-         return eval('(' + result + ')');
+         return JSON.parse(result);
       }
       return null;
    },
@@ -155,7 +155,7 @@ var AlfrescoUtil =
       if (result.status == 200)
       {
          var siteRoles = [];
-         var roles = eval('(' + result + ')').siteRoles;
+         var roles = JSON.parse(result).siteRoles;
          for (var i = 0; i < roles.length; i++)
          {
             if (roles[i] != "None")
@@ -194,7 +194,7 @@ var AlfrescoUtil =
 
       if (result.status == 200)
       {
-         var details = eval('(' + result + ')');
+         var details = JSON.parse(result);
          if (details && (details.item || details.items))
          {
             DocList.processResult(details, options);
@@ -230,7 +230,7 @@ var AlfrescoUtil =
          }
          AlfrescoUtil.error(result.status, 'Could not link details for link ' + link + ' in container ' + container + ' in site ' + site);
       }
-      return eval('(' + result + ')').item;
+      return JSON.parse(result).item;
    },
 
    getBlogPostDetails: function getBlogPostDetails(nodeRef, defaultValue)
@@ -245,7 +245,7 @@ var AlfrescoUtil =
          }
          AlfrescoUtil.error(result.status, 'Could not blog details for post ' + nodeRef);
       }
-      return eval('(' + result + ')').item;
+      return JSON.parse(result).item;
    },
 
    getBlogPostDetailsByPostId: function getBlogPostDetailsByPostId(site, container, post, defaultValue)
@@ -260,7 +260,7 @@ var AlfrescoUtil =
          }
          AlfrescoUtil.error(result.status, 'Could not blog details for post ' + post + ' in container ' + container + ' in site ' + site);
       }
-      return eval('(' + result + ')').item;
+      return JSON.parse(result).item;
    },
 
    getMetaData: function getMetaData(nodeRef, defaultValue)
@@ -274,7 +274,7 @@ var AlfrescoUtil =
          }
          AlfrescoUtil.error(result.status, 'Could not load meta data ' + nodeRef);
       }
-      result = eval('(' + result + ')');
+      result = JSON.parse(result);
       return result;
    },
 
@@ -289,7 +289,7 @@ var AlfrescoUtil =
          }
          AlfrescoUtil.error(result.status, 'Could not load thumbnail definitions for ' + nodeRef);
       }
-      return eval('(' + result + ')');
+      return JSON.parse(result);
    },
 
    /**
@@ -402,7 +402,7 @@ var AlfrescoUtil =
       var json = remote.call("/api/sites/" + encodeURIComponent(siteId) + "/memberships/" + encodeURIComponent(user.name));
       if (json.status == 200)
       {
-         response = eval('(' + json + ')');
+         response = JSON.parse(json);
          if (response)
          {
             obj =
@@ -452,8 +452,8 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a native Array (wrap in an object to keep toObject happy)
-                  sitePages = jsonUtils.toObject('{"tmp":' + dashboardPageData.properties.sitePages + '}').tmp;
+                  // Print array as json and use JSON.parse so we get a Rhino javascript Array to execute as usual
+                  sitePages = JSON.parse('{"$":' + sitePages + '}').$;
                }
                catch(e)
                {
@@ -468,8 +468,8 @@ var AlfrescoUtil =
             {
                try
                {
-                  // Parse json using Java to a native Object
-                  pageMetadata = jsonUtils.toObject(pageMetadata);
+                  // use JSON.parse so we get a Rhino javascript object to execute as usual
+                  pageMetadata = JSON.parse(pageMetadata);
                }
                catch(e)
                {
@@ -701,11 +701,11 @@ var AlfrescoUtil =
       var result = connector.get("/enterprise/sync/remotesyncednode?nodeRef="+encodeURIComponent(localNodeRef));
       if (result.status == 200)
       {
-         return eval('(' + result + ')');
+         return JSON.parse(result);
       } else if (result.status == 403)
       {
          // Node Not Synced.
-         return {error: eval('(' + result + ')')};
+         return {error: JSON.parse(result)};
       } else
       {
          return null;

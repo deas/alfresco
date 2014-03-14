@@ -3,7 +3,7 @@ if(templateConfig != null)
 {
 	model.conf = templateConfig;
 	
-	var myJson = eval('(' + templateConfig + ')');
+	var myJson = JSON.parse(templateConfig);
 	model.templateConfig = myJson;
 	//model.layoutType = myJson.type;
 

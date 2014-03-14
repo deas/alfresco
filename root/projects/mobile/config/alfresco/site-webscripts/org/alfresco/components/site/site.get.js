@@ -2,7 +2,7 @@
 function getSiteInfo(site)
 {
   var data  = remote.call("/api/sites/" + stringUtils.urlEncode(site));
-  return eval('(' + data + ')');
+  return JSON.parse(data);
 }
 
 model.site = getSiteInfo(page.url.args.site);

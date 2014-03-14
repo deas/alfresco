@@ -5,7 +5,7 @@ function main()
    var templates = [];
    if (result.status == 200)
    {
-      templates = eval('(' + result + ')').data[0].values;
+      templates = JSON.parse(result).data[0].values;
    }
    model.templates = templates;
 }

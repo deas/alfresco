@@ -58,7 +58,7 @@ function main()
                      "status: " + result.status + ", response: " + result.response);
       return null;
    }
-   data = eval('(' + result.response + ')');
+   data = JSON.parse(result.response);
    convertPostsJSONData(data);
    model.items = data.items;
 

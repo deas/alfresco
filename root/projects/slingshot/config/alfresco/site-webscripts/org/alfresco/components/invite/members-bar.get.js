@@ -10,7 +10,7 @@ function main()
    var json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
    if (json.status == 200)
    {
-      obj = eval('(' + json + ')');
+      obj = JSON.parse(json);
    }
    if (obj)
    {

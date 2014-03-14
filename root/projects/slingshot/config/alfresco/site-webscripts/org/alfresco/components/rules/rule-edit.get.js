@@ -12,7 +12,7 @@ function main()
       result = connector.get("/api/node/" + ruleNodeRef.replace("://", "/") + "/ruleset/rules/" + ruleId);
       if (result.status == 200)
       {
-         rule = eval('(' + result + ')');
+         rule = JSON.parse(result);
          model.ruleTitle = rule.title;
       }
    }
@@ -22,7 +22,7 @@ function main()
 
    if (result.status == 200)
    {
-      var constraintsArr = eval('(' + result + ')').data;
+      var constraintsArr = JSON.parse(result).data;
       var constraintsObj = {};
       for (var i = 0, il = constraintsArr.length, constraint; i < il; i++)
       {

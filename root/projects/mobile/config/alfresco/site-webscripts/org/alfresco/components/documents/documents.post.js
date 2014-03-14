@@ -14,7 +14,7 @@ function assignWorkflow()
    var connector = remote.connect("alfresco");
    //send post, not forgetting to strip wrapped rounded brackets that toSource() adds.
    var result = connector.post('/slingshot/doclib/action/assign-workflow',params.slice(1,params.length-1) , "application/json");
-   return eval('('+ result +')');
+   return JSON.parse(result);
 }
 
 model.recentDocs = getDocuments(page.url.args.site,'documentLibrary','recentlyModified',30).items;

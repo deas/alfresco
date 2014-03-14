@@ -216,7 +216,7 @@ function main()
       }
       else
       {
-         var formModel = eval('(' + json + ')');
+         var formModel = JSON.parse(json);
          
          // if we got a successful response attempt to render the form
          if (json.status == 200)

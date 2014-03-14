@@ -50,7 +50,7 @@ function main()
                      "status: " + result.status + ", response: " + result.response);
       return null;
    }
-   data = eval('(' + result.response + ')');
+   data = JSON.parse(result.response);
    convertTopicsJSONData(data);
    model.items = data.items;
 

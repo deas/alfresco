@@ -17,7 +17,7 @@ function main()
       {
          activity = activityFeed[i];
 
-            summary = eval("(" + activity.activitySummary + ")");
+            summary = JSON.parse(activity.activitySummary);
             fullName = trim(summary.firstName + " " + summary.lastName);
             date = AlfrescoUtil.fromISO8601(activity.postDate);
 
@@ -175,7 +175,7 @@ function getActivities()
    if (result.status == 200)
    {
       // Create javascript objects from the server response
-      return eval("(" + result + ")");
+      return JSON.parse(result);
    }
    
    status.setCode(result.status, result.response);
@@ -223,7 +223,7 @@ function getSiteTitles(p_sites)
    
    if (result.status == 200)
    {
-      var sites = eval('(' + result + ')'), site;
+      var sites = JSON.parse(result), site;
 
       // Extract site titles
       for (var i = 0, ii = sites.length; i < ii; i++)

@@ -78,7 +78,7 @@ function getLocationType()
       var result = connector.get("/slingshot/doclib/container/" + siteId + "/" + containerId + "?type=" + toRepoType(contentType));
       if (result.status == 200)
       {
-         var data = eval('(' + result + ')');
+         var data = JSON.parse(result);
          containerType = data.container.type;
       }
    }

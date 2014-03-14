@@ -13,7 +13,7 @@ function main()
    
    if (result.status == 200)
    {
-      response = eval('(' + result.response + ')');
+      response = JSON.parse(result.response);
       lists = response.datalists;
       lists.sort(sortByTitle);
       canCreate = response.permissions.create;

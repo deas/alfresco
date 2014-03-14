@@ -22,7 +22,7 @@ function main()
    
    if (json.status == 200)
    {
-      var obj = eval('(' + json + ')');
+      var obj = JSON.parse(json);
       if (obj)
       {
          userIsSiteManager = (obj.role == "SiteManager");

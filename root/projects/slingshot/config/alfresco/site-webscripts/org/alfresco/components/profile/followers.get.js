@@ -16,7 +16,7 @@ function main()
    model.numPeople = 0;
    if (result.status == 200)
    {
-      var people = eval('(' + result + ')');
+      var people = JSON.parse(result);
       var peopleCount = people.people.length;
       // convert status update times to relative time messages
       for (var i=0,person; i<peopleCount; i++)

@@ -9,7 +9,7 @@ function main()
 
    if (result.status == 200)
    {
-      var metadata = eval('(' + result + ')');
+      var metadata = JSON.parse(result);
       nodeType = metadata.node.isContainer ? "folder" : "document";
       fileName = metadata.node.fileName;
    }

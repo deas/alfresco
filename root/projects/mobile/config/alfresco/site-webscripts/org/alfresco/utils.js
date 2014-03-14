@@ -2,7 +2,7 @@ function getDocuments(site,container,filter,amount)
 {
     var uri = '/slingshot/doclib/doclist/documents/site/'+site+'/'+container+'/?filter='+filter+'&size='+amount;
     var data  = remote.call(uri);
-    var data = eval('('+ data+')');
+    data = JSON.parse(data);
 
     var imgTypes = 'png,gif,jpg,jpeg,tiff,bmp';
     for (var i=0,len=data.items.length;i<len;i++)
@@ -47,14 +47,14 @@ function getUserTasks(filter)
 {
   var filter = filter || 'all';
   var data = remote.call("/slingshot/dashlets/my-tasks?filter=" + filter);
-  data = eval('(' + data + ')');
+  data = JSON.parse(data);
   return data;
 }
 
 function getUserEvents()
 {
   var data = remote.call("/calendar/events/user");
-  return eval('(' + data + ')');
+  return JSON.parse(data);
 }
 
 const PREF_FAVOURITE_SITES = "org.alfresco.share.sites.favourites";
@@ -62,7 +62,7 @@ const PREF_FAVOURITE_SITES = "org.alfresco.share.sites.favourites";
 function getAllSites()
 {
   var data  = remote.call("/api/sites");
-  return eval('('+ data+')');
+  return JSON.parse(data);
 }
 
 function getUserSites(u)
@@ -75,7 +75,7 @@ function getUserSites(u)
       var i, ii, j, jj;
 
       // Create javascript objects from the server response
-      var sites = eval('(' + result + ')'), site, favourites = {}, userfavs = [];
+      var sites = JSON.parse(result), site, favourites = {}, userfavs = [];
 
       if (sites.length > 0)
       {
@@ -83,7 +83,7 @@ function getUserSites(u)
          result = remote.call("/api/people/" + stringUtils.urlEncode(userName) + "/preferences?pf=" + PREF_FAVOURITE_SITES);
          if (result.status == 200 && result != "{}")
          {
-            var prefs = eval('(' + result + ')');
+            var prefs = JSON.parse(result);
             
             // Populate the favourites object literal for easy look-up later
             favourites = eval('(prefs.' + PREF_FAVOURITE_SITES + ')');

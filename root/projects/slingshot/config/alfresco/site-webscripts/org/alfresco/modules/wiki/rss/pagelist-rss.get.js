@@ -35,7 +35,7 @@ function main()
            "status: " + result.status + ", response: " + result.response);
        return null;
    }
-   data = eval('(' + result.response + ')');
+   data = JSON.parse(result.response);
    convertPagesJSONData(data);
    model.pages = data.pages;
    // set additional properties

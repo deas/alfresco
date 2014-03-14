@@ -21,7 +21,7 @@ function getLicenseUsage() {
       var result = remote.call("/api/admin/usage");
       if (result.status.code == status.STATUS_OK)
       {
-         usage = eval('(' + result + ')');
+         usage = JSON.parse(result);
       }
    }
    return usage;
@@ -172,7 +172,7 @@ function getSiteData()
          if (json.status == 200)
          {
             // Create javascript objects from the repo response
-            var obj = eval('(' + json + ')');
+            var obj = JSON.parse(json);
             if (obj)
             {
                profile = obj;
@@ -185,7 +185,7 @@ function getSiteData()
          json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
          if (json.status == 200)
          {
-            var obj = eval('(' + json + ')');
+            var obj = JSON.parse(json);
             if (obj)
             {
                userIsMember = true;
@@ -248,8 +248,8 @@ function getPages(includeUnusedPages)
          {
             try
             {
-               // Parse json using Java to a native Array (wrap in an object to keep toObject happy)
-               sitePages = jsonUtils.toObject('{"tmp":' + sitePages + '}').tmp;
+               // Print array as json and use JSON.parse so we get a Rhino javascript Array to execute as usual
+               sitePages = JSON.parse('{"$":' + sitePages + '}').$;
             }
             catch(e)
             {
@@ -264,8 +264,8 @@ function getPages(includeUnusedPages)
          {
             try
             {
-               // Parse json using Java to a native Object
-               pageMetadata = jsonUtils.toObject(pageMetadata);
+               // use JSON.parse so we get a Rhino javascript object to execute as usual
+               pageMetadata = JSON.parse(pageMetadata);
             }
             catch(e)
             {

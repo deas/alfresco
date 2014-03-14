@@ -85,7 +85,7 @@ function main()
       
       // Create javascript objects from the server response
       // Each item is a favourite site that the user is a member of
-      var sites = eval('(' + result + ')'), site;
+      var sites = JSON.parse(result), site;
       
       if (sites.length != 0)
       {

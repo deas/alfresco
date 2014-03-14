@@ -197,7 +197,7 @@ function main()
          if (json.status == 200)
          {
             // Create javascript objects from the repo response
-            var obj = eval('(' + json + ')');
+            var obj = JSON.parse(json);
             if (obj)
             {
                profile = obj;
@@ -253,7 +253,7 @@ function main()
          json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
          if (json.status == 200)
          {
-            obj = eval('(' + json + ')');
+            obj = JSON.parse(json);
          }
          if (obj)
          {

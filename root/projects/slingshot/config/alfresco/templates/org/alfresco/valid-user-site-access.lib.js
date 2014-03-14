@@ -26,7 +26,7 @@ function isValidUserOrSite(siteManager)
          {
             // Any 200 return from the call means the site was not Private or
             // we are a valid member of a Private site.
-            var site = eval('(' + json + ')');
+            var site = JSON.parse(json);
             if (site.visibility != "MODERATED")
             {
                // Do we want to test for SiteManager role status?

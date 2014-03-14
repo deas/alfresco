@@ -6,7 +6,7 @@ function main()
 
    if (result.status == 200)
    {
-      var nodeMetadata = eval('(' + result + ')');
+      var nodeMetadata = JSON.parse(result);
 
       // Display name
       model.title = nodeMetadata.name;

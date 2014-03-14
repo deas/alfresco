@@ -1,5 +1,5 @@
 var clientRequest = json.toString();
-var clientJSON = eval('(' + clientRequest + ')');
+var clientJSON = JSON.parse(clientRequest);
 
 // The dashboard we are modifiying
 var dashboardPage = decodeURIComponent(clientJSON.dashboardUrl);

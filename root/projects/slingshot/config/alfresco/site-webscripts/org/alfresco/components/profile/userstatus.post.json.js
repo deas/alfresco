@@ -17,7 +17,7 @@ function main()
       // update local cached user with status and date updated 
       user.properties["userStatus"] = json.get("status");
       var now = new Date();
-      var userStatusTime = eval('(' + result.response + ')').userStatusTime.iso8601;
+      var userStatusTime = JSON.parse(result.response).userStatusTime.iso8601;
       user.properties["userStatusTime"] = userStatusTime;
       model.userStatusTime = userStatusTime;
    }

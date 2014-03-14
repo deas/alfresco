@@ -7,7 +7,7 @@ function main()
    // get the roles available for the given site
    theUrl = "/api/sites/" + siteId + "/roles";
    json = remote.call(theUrl);
-   data = eval('(' + json + ')');
+   data = JSON.parse(json);
 
    // add all roles except "None"
    model.siteRoles = [];
