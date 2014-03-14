@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
  * @since 1.7.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one"})
+@Test(groups={"alfresco-one","AutomationBug"})
 public class CopyOrMoveContentPageTest extends AbstractTest
 {
     private String siteName1;
