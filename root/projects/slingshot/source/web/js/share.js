@@ -2203,15 +2203,18 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
       {
          this.dashletTitle = Selector.query("div.title", this.dashlet, true); 
          var titlePadding = parseInt(Dom.getStyle(this.dashletTitle, "padding-bottom"), 10) + parseInt(Dom.getStyle(this.dashletTitle, "padding-bottom"), 10); 
+         var borderHeight = parseInt(this.dashletTitle.offsetHeight, 10) - parseInt(this.dashletTitle.clientHeight, 10);
          var toolbars = YUISelector.query("div.toolbar", this.dashlet); 
          var toolbarHeight = 0; 
 
+         //MNT-10241 Need take into account height of border between toolbars
          for (i = 0; i < toolbars.length; i++) 
          { 
             toolbarHeight += parseInt(toolbars[i].clientHeight, 10); 
+            borderHeight += parseInt(toolbars[i].offsetHeight, 10) - parseInt(toolbars[i].clientHeight, 10); 
          } 
 
-         this.heightDelta = toolbarHeight + parseInt(this.dashletTitle.clientHeight, 10) + titlePadding; 
+         this.heightDelta = toolbarHeight + borderHeight + parseInt(this.dashletTitle.clientHeight, 10) + titlePadding; 
      
          var height = parseInt(Dom.getStyle(this.dashlet, "height"), 10) - this.heightDelta;
          
