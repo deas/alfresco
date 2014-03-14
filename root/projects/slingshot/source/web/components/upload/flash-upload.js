@@ -448,7 +448,6 @@
          this.widgets.cancelOkButton = Alfresco.util.createYUIButton(this, "cancelOk-button", this.onCancelOkButtonClick);
 
          // Create and save a reference to the uploader so we can call it later
-         Dom.addClass(this.id + "-flashuploader-div", "browse");
          this.uploader = new YAHOO.widget.Uploader(this.id + "-flashuploader-div", Alfresco.constants.URL_RESCONTEXT + "themes/" + Alfresco.constants.THEME + "/images/upload-button-sprite.png", true);
          this.uploader.subscribe("fileSelect", this.onFileSelect, this, true);
          this.uploader.subscribe("uploadComplete",this.onUploadComplete, this, true);
@@ -468,11 +467,6 @@
             fn: this.onCancelOkButtonClick,
             scope: this,
             correctScope: true
-         });
-         
-         YAHOO.lang.later(this, 2000, function()
-         {
-            Dom.addClass(this.id + "-flashuploader-div", "hidden");
          });
       },
 

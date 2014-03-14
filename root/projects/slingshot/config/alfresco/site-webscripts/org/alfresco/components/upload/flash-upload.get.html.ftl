@@ -22,7 +22,7 @@
          <div class="bd">
             <div class="browse-wrapper">
                <div class="center">
-                  <div id="${el}-flashuploader-div"></div>
+                  <div class="hidden browse" id="${el}-flashuploader-div">
                   <div class="label">${msg("label.browse")}</div>
                </div>
             </div>
