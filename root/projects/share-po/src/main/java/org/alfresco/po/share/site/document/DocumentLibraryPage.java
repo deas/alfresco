@@ -32,6 +32,7 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
@@ -798,11 +799,21 @@ public class DocumentLibraryPage extends SitePage
          return tagNames;
     }
 
-    
+    public boolean isItemVisble(String contentName)
+    {
+        WebDroneUtil.checkMandotaryParam("contentName", contentName);
+        try
+        {
+            return null != findFileOrFolder(contentName);
+        }
+        catch (Exception e){ }
+        return false;
+    }
     /**
      * Check the uploaded content has uploaded successfully
      * @param - String
      * @return - Boolean
+     * @deprecated as of 2.1, use docPage.findFileOrFolder(name) to determine if file exists
      */
     public synchronized boolean isContentUploadedSucessful(String contentName)
     {

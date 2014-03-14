@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -42,6 +41,7 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
 
     private static String siteName;
     private static String folderName;
+    private String uname = "m1user" + System.currentTimeMillis();
     @SuppressWarnings("unused")
     private static String folderDescription;
     private static DocumentLibraryPage documentLibPage;
@@ -61,7 +61,8 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
         folderName = "The first folder";
         folder2Name = "The Second Folder";
         folderDescription = String.format("Description of %s", folderName);
-        ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        createEnterpriseUser(uname);
+        loginAs(uname, "password").render();
         if(isHybridEnabled())
         {
             signInToCloud(drone, cloudUserName, cloudUserPassword);

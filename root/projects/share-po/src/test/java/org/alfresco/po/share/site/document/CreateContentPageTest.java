@@ -198,7 +198,7 @@ public class CreateContentPageTest extends AbstractDocumentTest
         contentDetails.setContent("cancel create content - test content");
         DocumentLibraryPage documentLibraryPage = contentPage.cancel(contentDetails).render();
         assertNotNull(documentLibraryPage);
-        assertFalse(documentLibraryPage.isContentUploadedSucessful("cancel create content"));
+        assertFalse(documentLibraryPage.isItemVisble("cancel create content"));
     }
     
 }

@@ -258,7 +258,16 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         File file1 = SiteUtil.prepareFile();
         UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(file1.getCanonicalPath()).render();
-        Assert.assertTrue(documentLibPage.isContentUploadedSucessful(file1.getName()), "File is uploaded successfully");
+        int count = 0;
+        while(true)
+        {
+            if(documentLibPage.isItemVisble(file1.getName())||count > 5)
+            {
+                break;
+            }
+            count++;
+        }
+        Assert.assertTrue(documentLibPage.isItemVisble(file1.getName()), "File is uploaded successfully");
     }
     
     @Test(dependsOnMethods="isContentUploadedSucessfulTest", groups="Enterprise4.2")

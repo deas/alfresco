@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -47,6 +46,7 @@ import org.testng.annotations.Test;
 public class FileDirectoryInfoTest extends AbstractDocumentTest
 {
     private final Log logger = LogFactory.getLog(this.getClass());
+    private String uname = "ms1user" + System.currentTimeMillis();
     private static String siteName;
     private static String folderName;
     private static String folderDescription;
@@ -68,7 +68,8 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";
         folderDescription = String.format("Description of %s", folderName);
-        ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        createEnterpriseUser(uname);
+        loginAs(uname, "password").render();
         if(isHybridEnabled())
         {
             signInToCloud(drone, cloudUserName, cloudUserPassword);

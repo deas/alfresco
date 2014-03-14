@@ -263,7 +263,6 @@ public class DocumentLibraryNavigation extends SharePage
         {
            drone.findAndWait(CREATE_CONTENT_BUTTON).click();
            drone.findAndWait(content.getContentLocator()).click();
-
           }
         catch (TimeoutException exception)
         {
@@ -325,7 +324,7 @@ public class DocumentLibraryNavigation extends SharePage
      */
     public DocumentLibraryPage selectDownloadAsZip()
     {
-        if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+        if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion) || alfrescoVersion.isCloud())
         {
             throw new UnsupportedOperationException("Download as Zip option si not available on this version " + alfrescoVersion.toString());
         }

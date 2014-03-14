@@ -46,17 +46,16 @@ public class UpdateFilePage extends SharePage
     private static final String MAJOR_BTN_CSS = "div[id*='%s'] input[id$='majorVersion-radioButton']";
     private static final String MINOR_BTN_CSS = "div[id*='%s'] input[id$='minorVersion-radioButton']";
     private static final String TEXT_AREA_CSS = "div[id*='%s'] textarea[id$='-description-textarea']";
-	private static final String PLANIN_HTML_IDENTIFIER = "html-upload";
-	private static final String HTML5_IDENTIFIER = "dnd-upload";
+    private static final String PLANIN_HTML_IDENTIFIER = "html-upload";
+    private static final String HTML5_IDENTIFIER = "dnd-upload";
     private static final String NON_HTML5_INPUT_FILE_FIELD = "input[id$='default-filedata-file']";
-	private static final String INPUT_DND_FILE_SELECTION_BUTTON = "input.dnd-file-selection-button";
-	private static final String UPDATE_PAGE_TITLE_SPAN_CSS = "div[id$='html-upload'] span[id$='default-title-span']";
-	private String textAreaCssLocation;
+    private static final String INPUT_DND_FILE_SELECTION_BUTTON = "input.dnd-file-selection-button";
+    private String textAreaCssLocation;
     private String minorVersionRadioButton;
-	private String majorVersionRadioButton;
-	private String submitButton;
-	private String cancelButton;
-	private String documentVersion;
+    private String majorVersionRadioButton;
+    private String submitButton;
+    private String cancelButton;
+    private String documentVersion;
     @SuppressWarnings("unused")
     private final boolean isEditOffLine;
 
