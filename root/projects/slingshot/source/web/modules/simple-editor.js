@@ -166,13 +166,15 @@ Alfresco.util.createImageEditor = function(id, options)
       {
          if (payload && payload[1].items)
          {
+            var selText = ed.selection.getContent();
             // Iterate over the list of selected documents and links for them...
             for (var i = 0, j = payload[1].items.length; i < j; i++)
             {
-               // Construct the link, the title of the document will be the label...
+               // Construct the link, the title will be selected text
+               // if no selection then document name will be used
                var selectedItem = payload[1].items[i],
                    nodeRef = encodeURIComponent(selectedItem.nodeRef),
-                   label = selectedItem.name;
+                   label = (selText && selText.length > 0) ? selText : selectedItem.name;
                var link = Alfresco.util.siteURL("document-details?nodeRef=" + nodeRef);
                var html = '<a href="' + link + '">' + label + '</a> ';
 
