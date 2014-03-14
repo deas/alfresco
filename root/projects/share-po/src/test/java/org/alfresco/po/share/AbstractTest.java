@@ -94,7 +94,6 @@ public abstract class AbstractTest
     protected String hybridUserPassword;
     
     protected long popupRendertime;
-
     public static long maxWaitTime_CloudSync = 50000;
     
     public WebDrone getDrone()

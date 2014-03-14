@@ -113,7 +113,7 @@ public class LoginPageTest extends AbstractTest
         if (alfrescoVersion.isCloud())
         {
             Assert.assertFalse(csrfToken1.equals(csrfToken2));
-        }        
+        }
     }
     
     /**
@@ -130,5 +130,4 @@ public class LoginPageTest extends AbstractTest
         }
         return "";
     }
-           
 }

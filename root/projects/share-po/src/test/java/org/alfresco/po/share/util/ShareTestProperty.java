@@ -42,14 +42,14 @@ public class ShareTestProperty
     protected long popupRendertime;
     
     public ShareTestProperty (final String shareUrl,
-            final String gridUrl, 
-            final String username,
-            final String password,
-            final String googleUserName,
-            final String googlePassword,
-            final String alfrescoVersion,
-            final String downloadDirectory,
-            final boolean hybridEnabled) 
+                              final String gridUrl, 
+                              final String username,
+                              final String password,
+                              final String googleUserName,
+                              final String googlePassword,
+                              final String alfrescoVersion,
+                              final String downloadDirectory,
+                              final boolean hybridEnabled) 
     {
         this.shareUrl = shareUrl;
         this.gridUrl = gridUrl;
@@ -126,13 +126,12 @@ public class ShareTestProperty
         this.cloudUserPassword = cloudUserPassword;
     }
 
-	public long getPopupRendertime() {
-		return popupRendertime;
-	}
+    public long getPopupRendertime() {
+        return popupRendertime;
+    }
 
-	public void setPopupRendertime(long popupRendertime) {
-		this.popupRendertime = popupRendertime;
-	}
-    
+    public void setPopupRendertime(long popupRendertime) {
+        this.popupRendertime = popupRendertime;
+    }
 }
 
