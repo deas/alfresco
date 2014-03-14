@@ -106,13 +106,13 @@
 
             case "blogpost":
             {
-               url = "blog-postview?postId=" + name;
+               url = "blog-postview?postId=" + encodeURIComponent(name);
                break;
             }
 
             case "forumpost":
             {
-               url = "discussions-topicview?topicId=" + name;
+               url = "discussions-topicview?topicId=" + encodeURIComponent(name);
                break;
             }
 
@@ -124,20 +124,20 @@
 
             case "wikipage":
             {
-               url = "wiki-page?title=" + name;
+               url = "wiki-page?title=" + encodeURIComponent(name);
                break;
             }
 
             case "link":
             {
-               url = "links-view?linkId=" + name;
+               url = "links-view?linkId=" + encodeURIComponent(name);
                break;
             }
 
             case "datalist":
             case "datalistitem":
             {
-               url = "data-lists?list=" + name;
+               url = "data-lists?list=" + encodeURIComponent(name);
                break;
             }
          }
