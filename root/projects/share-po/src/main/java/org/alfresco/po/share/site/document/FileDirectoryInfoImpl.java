@@ -252,7 +252,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             getDrone().mouseOverOnElement(actions);
             WebElement moreLink = findElement(By.cssSelector("a.show-more"));
             moreLink.click();
-            WebElement deleteLink = findElement(By.cssSelector("div[class$='delete'] a"));
+            WebElement deleteLink = findElement(By.cssSelector("div#onActionDelete a"));
             deleteLink.click();
         }
         catch (NoSuchElementException e) { }
