@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.alfresco.api.AlfrescoPublicApi;
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 
 /**
