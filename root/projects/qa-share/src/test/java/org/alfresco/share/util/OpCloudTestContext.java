@@ -19,9 +19,12 @@
 
 package org.alfresco.share.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,7 +55,7 @@ public class OpCloudTestContext
 
         this.concreteTest = concreteTest;
         this.runId = System.currentTimeMillis();
-        this.createdUsers = new HashSet<String>();
+        this.createdUsers = new LinkedHashSet<String>();
         this.createdSites = new HashMap<String, Set<String>>();
         this.drone = concreteTest.drone;
     }
@@ -135,6 +138,19 @@ public class OpCloudTestContext
     public Map<String, Set<String>> getCreatedSites()
     {
         return this.createdSites;
+    }
+
+    /**
+     * @return the createdSites as a list.
+     */
+    public List<String> getCreatedSitesAsList()
+    {
+        List<String> sites = new ArrayList<>(createdSites.size());
+        for (Map.Entry<String, Set<String>> site : createdSites.entrySet())
+        {
+            sites.addAll(site.getValue());
+        }
+        return sites;
     }
 
     /**
