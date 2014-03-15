@@ -1686,7 +1686,7 @@ public class ShareUser extends AbstractTests
             ShareUser.login(driver, ADMIN_USERNAME, ADMIN_PASSWORD);
             DashBoardPage dash = (DashBoardPage) driver.getCurrentPage().render();
             GroupsPage page = dash.getNav().getGroupsPage();
-            NewGroupPage newGrp = page.navigateToAddAndEditGroups().render().navigateToNewGroupPage().render();
+            NewGroupPage newGrp = page.clickBrowse().render().navigateToNewGroupPage().render();
             page = newGrp.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
             if (page.getGroupList().contains(groupName))
             {
